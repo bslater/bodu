@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Working-day arithmetic | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Working-day arithmetic | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="working-day-arithmetic">Working-day arithmetic</h1>
+
+<p><code>Bodu.Globalization.Calendar</code> ships parallel extension surfaces — <code>NotableDateOnlyExtensions</code> (over <code>DateOnly</code>), <code>NotableDateTimeExtensions</code> (over <code>DateTime</code>), and <code>NotableDateTimeOffsetExtensions</code> (over <code>DateTimeOffset</code>) — under the <code>Bodu.Extensions</code> namespace. Each method hangs off an <a class="xref" href="../../api/Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a> and produces working-day-aware results that respect the working-week definition and the non-working notable dates for the queried territory.</p>
+<p>These extensions are <strong>not</strong> auto-imported. Add the using directive explicitly:</p>
+<pre><code class="lang-csharp">using Bodu.Extensions;
+</code></pre>
+<p>Every method takes an <code>INotableDateService service</code> and a territory <code>string</code>. Working-day operations accept an optional trailing <code>WeekPattern? workingWeek = null</code>; notable-date operations accept an optional trailing <code>NotableDateFilter? filter = null</code>. The service is always passed explicitly — there is no ambient context.</p>
+<p><code>DateOnly</code> is the authoritative surface and carries the full method set. The <code>DateTime</code> and <code>DateTimeOffset</code> surfaces are a subset (see <a href="#surface-differences">Surface differences</a>).</p>
+<p>The signatures below show the <code>DateOnly</code> overloads.</p>
+<h2 id="lookup">Lookup</h2>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Returns</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>IsWeekend(WeekPattern? workingWeek = null)</code></td>
+<td><code>true</code> when the date falls outside the working week (no service needed).</td>
+</tr>
+<tr>
+<td><code>IsWorkingDay(service, territory, WeekPattern? workingWeek = null)</code></td>
+<td><code>true</code> when the date is neither a weekend nor a non-working notable date for the territory.</td>
+</tr>
+<tr>
+<td><code>IsNonWorkingDay(service, territory, WeekPattern? workingWeek = null)</code></td>
+<td><code>true</code> when the date <em>is</em> a weekend or a non-working notable date.</td>
+</tr>
+<tr>
+<td><code>IsNotableDate(service, territory, NotableDateFilter? filter = null)</code></td>
+<td><code>true</code> when any notable date (matching the optional filter) applies for the territory.</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-csharp">using Bodu.Extensions;
+using Bodu.Globalization.Calendar;
+
+DateOnly today = DateOnly.FromDateTime(DateTime.Today);
+
+bool isWeekend  = today.IsWeekend();                       // weekend per the default Mon–Fri week
+bool isHoliday  = today.IsNotableDate(service, &quot;AU-NSW&quot;);
+bool isWorking  = today.IsWorkingDay(service, &quot;AU-NSW&quot;);
+bool isClosed   = today.IsNonWorkingDay(service, &quot;AU-NSW&quot;);
+</code></pre>
+<h2 id="navigation">Navigation</h2>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>NextWorkingDay(service, territory, WeekPattern? workingWeek = null)</code></td>
+<td>Advance to the next working day.</td>
+</tr>
+<tr>
+<td><code>PreviousWorkingDay(service, territory, WeekPattern? workingWeek = null)</code></td>
+<td>Retreat to the previous working day.</td>
+</tr>
+<tr>
+<td><code>NextNonWorkingDay(service, territory, WeekPattern? workingWeek = null)</code></td>
+<td>Advance to the next non-working day. Throws <code>InvalidOperationException</code> if none is found.</td>
+</tr>
+<tr>
+<td><code>PreviousNonWorkingDay(service, territory, WeekPattern? workingWeek = null)</code></td>
+<td>Retreat to the previous non-working day. Throws <code>InvalidOperationException</code> if none is found.</td>
+</tr>
+<tr>
+<td><code>NextNotableDate(service, territory, NotableDateFilter? filter = null)</code></td>
+<td>The next <code>NotableDate?</code> matching the optional filter, or <code>null</code> when none is found.</td>
+</tr>
+<tr>
+<td><code>PreviousNotableDate(service, territory, NotableDateFilter? filter = null)</code></td>
+<td>The previous <code>NotableDate?</code> matching the optional filter, or <code>null</code>.</td>
+</tr>
+</tbody>
+</table>
+<!-- compile -->
+<pre><code class="lang-csharp">NotableDateService service = AsiaPacificCalendarData.CreateService(&quot;AU-NSW&quot;);
+DateOnly today = new DateOnly(2026, 1, 26);
+
+DateOnly nextOpen    = today.NextWorkingDay(service, &quot;AU-NSW&quot;);
+DateOnly lastOpen    = today.PreviousWorkingDay(service, &quot;AU-NSW&quot;);
+NotableDate? holiday = today.NextNotableDate(service, &quot;AU-NSW&quot;);
+</code></pre>
+<h2 id="snap">Snap</h2>
+<p>The <code>Snap*</code> operations are no-ops when the input is already a working day; otherwise they shift to the nearest working day in the requested direction.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SnapToWorkingDay(service, territory, WeekPattern? workingWeek = null)</code></td>
+<td>If the date is non-working, advance forward to the first working day.</td>
+</tr>
+<tr>
+<td><code>SnapToWorkingDayBackward(service, territory, WeekPattern? workingWeek = null)</code></td>
+<td>If the date is non-working, retreat to the previous working day.</td>
+</tr>
+<tr>
+<td><code>SnapToNearestWorkingDay(service, territory, WeekPattern? workingWeek = null)</code></td>
+<td>If the date is non-working, choose the closer of forward / backward snaps.</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-csharp">DateOnly saturday = new DateOnly(2026, 1, 3);                    // Saturday
+DateOnly snapped  = saturday.SnapToWorkingDay(service, &quot;AU-NSW&quot;); // Monday 5 Jan 2026
+</code></pre>
+<h2 id="arithmetic">Arithmetic</h2>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AddWorkingDays(int count, service, territory, WeekPattern? workingWeek = null)</code></td>
+<td>Add (or subtract, when <code>count</code> is negative) the signed number of working days, skipping non-working dates.</td>
+</tr>
+<tr>
+<td><code>WorkingDaysBetween(DateOnly end, service, territory, WeekPattern? workingWeek = null)</code></td>
+<td>Count the working days between the receiver and <code>end</code>.</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-csharp">DateOnly inFive  = today.AddWorkingDays(5, service, &quot;AU-NSW&quot;);
+DateOnly fiveAgo = today.AddWorkingDays(-5, service, &quot;AU-NSW&quot;);
+int span         = today.WorkingDaysBetween(inFive, service, &quot;AU-NSW&quot;);
+</code></pre>
+<h2 id="enumeration">Enumeration</h2>
+<p>The day enumerations return a lazily-evaluated <code>IEnumerable&lt;DateOnly&gt;</code> over the inclusive range from the receiver to <code>end</code>, so they compose naturally with LINQ and stop early when you do. <code>EnumerateNotableDates</code> returns an already-materialized <code>IReadOnlyList&lt;NotableDate&gt;</code> — a notable-date enumeration resolves the whole range up front rather than streaming.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Yields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>EnumerateWorkingDays(DateOnly end, service, territory, WeekPattern? workingWeek = null)</code></td>
+<td><code>IEnumerable&lt;DateOnly&gt;</code> — every working day in the inclusive range (lazy).</td>
+</tr>
+<tr>
+<td><code>EnumerateNonWorkingDays(DateOnly end, service, territory, WeekPattern? workingWeek = null)</code></td>
+<td><code>IEnumerable&lt;DateOnly&gt;</code> — every non-working day in the inclusive range (lazy).</td>
+</tr>
+<tr>
+<td><code>EnumerateNotableDates(DateOnly end, service, territory, NotableDateFilter? filter = null)</code></td>
+<td><code>IReadOnlyList&lt;NotableDate&gt;</code> — every notable date in the inclusive range (eager).</td>
+</tr>
+</tbody>
+</table>
+<!-- compile -->
+<pre><code class="lang-csharp">NotableDateService service = AsiaPacificCalendarData.CreateService(&quot;AU-NSW&quot;);
+DateOnly start = new DateOnly(2026, 1, 1);
+DateOnly end   = new DateOnly(2026, 1, 31);
+
+foreach (DateOnly workday in start.EnumerateWorkingDays(end, service, &quot;AU-NSW&quot;))
+{
+    // process each open business day in January 2026
+}
+</code></pre>
+<h2 id="notable-date-lookups">Notable-date lookups</h2>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Returns</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GetNotableDates(service, territory, NotableDateFilter? filter = null)</code></td>
+<td>The notable dates that apply on the receiver date.</td>
+</tr>
+<tr>
+<td><code>GetNotableDatesInMonth(service, territory, NotableDateFilter? filter = null)</code></td>
+<td>Notable dates in the calendar month containing the receiver. <em>(<code>DateOnly</code> only.)</em></td>
+</tr>
+<tr>
+<td><code>GetNotableDatesInYear(service, territory, NotableDateFilter? filter = null)</code></td>
+<td>Notable dates in the calendar year containing the receiver. <em>(<code>DateOnly</code> only.)</em></td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-csharp">IReadOnlyList&lt;NotableDate&gt; onDay     = today.GetNotableDates(service, &quot;AU-NSW&quot;);
+IReadOnlyList&lt;NotableDate&gt; thisMonth = today.GetNotableDatesInMonth(service, &quot;AU-NSW&quot;);
+IReadOnlyList&lt;NotableDate&gt; thisYear  = today.GetNotableDatesInYear(service, &quot;AU-NSW&quot;);
+</code></pre>
+<p>To resolve a whole year independently of a receiver date, prefer the by-year service extension <code>service.Resolve(2026, &quot;AU-NSW&quot;)</code>. See <a href="notable-dates.html">Using NotableDateService</a>.</p>
+<h2 id="the-working-week">The working week</h2>
+<p>The optional trailing <code>WeekPattern? workingWeek</code> argument overrides the default Monday–Friday working week for a single call. <code>WeekPattern</code> is the <a class="xref" href="../../api/Bodu.WeekPattern.html">WeekPattern</a> value type from <code>Bodu.Core</code>; any day outside the pattern is treated as a weekend. Use the named presets for common shapes, or compose a custom pattern for non-standard schedules:</p>
+<table>
+<thead>
+<tr>
+<th>Preset</th>
+<th>Working days</th>
+<th>Weekend days</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>WeekPattern.MondayToFriday</code> <em>(default)</em></td>
+<td>Mon–Fri</td>
+<td>Saturday + Sunday (most western territories).</td>
+</tr>
+<tr>
+<td><code>WeekPattern.SundayToThursday</code></td>
+<td>Sun–Thu</td>
+<td>Friday + Saturday (much of the Middle East).</td>
+</tr>
+<tr>
+<td><code>WeekPattern.SundayToFriday</code></td>
+<td>Sun–Fri</td>
+<td>Saturday only.</td>
+</tr>
+<tr>
+<td><code>WeekPattern.SaturdayToThursday</code></td>
+<td>Sat–Thu</td>
+<td>Friday only.</td>
+</tr>
+<tr>
+<td><code>WeekPattern.SaturdayToWednesday</code></td>
+<td>Sat–Wed</td>
+<td>Thursday + Friday.</td>
+</tr>
+<tr>
+<td><code>WeekPattern.MondayToSaturday</code></td>
+<td>Mon–Sat</td>
+<td>Sunday only.</td>
+</tr>
+<tr>
+<td><code>WeekPattern.MondayToThursdayAndSaturday</code></td>
+<td>Mon–Thu + Sat</td>
+<td>Friday + Sunday.</td>
+</tr>
+<tr>
+<td><code>WeekPattern.AllDays</code></td>
+<td>Every day</td>
+<td>No weekend — every day is working unless a non-working notable date applies.</td>
+</tr>
+</tbody>
+</table>
+<p><code>WeekPattern</code> is composable beyond these presets — see <a href="../core/week-pattern.html">WeekPattern</a> for building a custom selection from arbitrary days.</p>
+<pre><code class="lang-csharp">using Bodu;                 // WeekPattern
+using Bodu.Extensions;
+
+DateOnly today = DateOnly.FromDateTime(DateTime.Today);
+
+// Sunday–Thursday working week (Friday/Saturday weekend, e.g. parts of the Middle East):
+DateOnly nextOpen = today.NextWorkingDay(service, &quot;AE&quot;, WeekPattern.SundayToThursday);
+bool     isOpen   = today.IsWorkingDay(service, &quot;AE&quot;, WeekPattern.SundayToThursday);
+</code></pre>
+<p>When omitted, the working-day extensions fall back to Monday–Friday. To bake a non-default working week into resolution itself (so adjustment triggers such as <code>IfWeekend</code> agree), set it on the resource's <code>&lt;ResolutionPolicy workingDays=&quot;…&quot;&gt;</code> (a 7-character Sunday-first binary string). See <a href="identity-and-resolution.html">Identity and resolution</a>.</p>
+<h2 id="fiscal-year-helpers">Fiscal-year helpers</h2>
+<p><code>NotableDateFiscalExtensions</code> (over <code>DateOnly</code>) computes working-day boundaries of a fiscal year or quarter. Each method takes the month the fiscal year starts in (<code>1</code>–<code>12</code>), the service, the territory, and an optional working week:</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Returns</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>FirstWorkingDayOfFiscalYear(int fiscalYearStartMonth, service, territory, WeekPattern? workingWeek = null)</code></td>
+<td>The first working day of the fiscal year containing the receiver.</td>
+</tr>
+<tr>
+<td><code>LastWorkingDayOfFiscalYear(int fiscalYearStartMonth, service, territory, WeekPattern? workingWeek = null)</code></td>
+<td>The last working day of that fiscal year.</td>
+</tr>
+<tr>
+<td><code>FirstWorkingDayOfFiscalQuarter(int fiscalYearStartMonth, service, territory, WeekPattern? workingWeek = null)</code></td>
+<td>The first working day of the fiscal quarter containing the receiver.</td>
+</tr>
+<tr>
+<td><code>LastWorkingDayOfFiscalQuarter(int fiscalYearStartMonth, service, territory, WeekPattern? workingWeek = null)</code></td>
+<td>The last working day of that fiscal quarter.</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-csharp">using Bodu.Extensions;
+
+DateOnly today = DateOnly.FromDateTime(DateTime.Today);
+
+// Australian fiscal year starts in July (month 7):
+DateOnly fyOpen  = today.FirstWorkingDayOfFiscalYear(7, service, &quot;AU-NSW&quot;);
+DateOnly fyClose = today.LastWorkingDayOfFiscalYear(7, service, &quot;AU-NSW&quot;);
+DateOnly qOpen   = today.FirstWorkingDayOfFiscalQuarter(7, service, &quot;AU-NSW&quot;);
+</code></pre>
+<h2 id="surface-differences">Surface differences</h2>
+<p><code>DateOnly</code> is authoritative and carries every method above. The <code>DateTime</code> and <code>DateTimeOffset</code> surfaces are subsets:</p>
+<table>
+<thead>
+<tr>
+<th>Capability</th>
+<th><code>DateOnly</code></th>
+<th><code>DateTime</code></th>
+<th><code>DateTimeOffset</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Lookup (<code>IsWeekend</code>, <code>IsWorkingDay</code>, <code>IsNonWorkingDay</code>, <code>IsNotableDate</code>)</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>GetNotableDates</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Navigation (<code>NextWorkingDay</code>, <code>PreviousWorkingDay</code>)</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Snap (<code>SnapToWorkingDay</code>, <code>SnapToWorkingDayBackward</code>, <code>SnapToNearestWorkingDay</code>)</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>AddWorkingDays</code>, <code>WorkingDaysBetween</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>EnumerateWorkingDays</code>, <code>EnumerateNotableDates</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>NextNonWorkingDay</code>, <code>PreviousNonWorkingDay</code>, <code>EnumerateNonWorkingDays</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>NextNotableDate</code>, <code>PreviousNotableDate</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>GetNotableDatesInMonth</code>, <code>GetNotableDatesInYear</code></td>
+<td>✓</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Fiscal helpers (<code>NotableDateFiscalExtensions</code>)</td>
+<td>✓</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p>When you need the month/year notable-date lookups or the fiscal helpers, work in <code>DateOnly</code>. The same operations over <code>DateTime</code> / <code>DateTimeOffset</code> are otherwise identical in shape.</p>
+<h2 id="public-holidays-vs-observances">Public holidays vs. observances</h2>
+<p>Working-day arithmetic respects a resolved date's <code>IsNonWorkingDay</code> flag — not its category. A <code>NotableDateCategory.PublicHoliday</code> occurrence with <code>IsNonWorkingDay = false</code> does <strong>not</strong> cause working-day arithmetic to skip the date. Conversely, a <code>BankHoliday</code>, <code>Civic</code>, or <code>Cultural</code> occurrence flagged non-working <em>does</em> skip.</p>
+<p>Authors choose this when defining the rule (via <code>defaultNonWorkingDay</code> / <code>nonWorking</code>). The data packs follow the convention that nationally legislated closures (public holidays, bank closures) are non-working, while purely commemorative observances are not.</p>
+<h2 id="territory-specific-calculation">Territory-specific calculation</h2>
+<p>Every method takes a territory <code>string</code>. Because territories are hierarchical, a call with <code>&quot;AU-NSW&quot;</code> honours both national <code>AU</code> rules and NSW-specific <code>AU-NSW</code> rules. See <a href="territories.html">Territories and regional composition</a> for the containment semantics.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="notable-dates.html">Using NotableDateService</a></strong> — building the service, filters, and range queries.</li>
+<li><strong><a href="territories.html">Territories and regional composition</a></strong> — how the territory argument composes national and regional rules.</li>
+<li><strong><a href="adjustment-rules.html">Observance adjustment rules</a></strong> — how a rule's nominal date becomes the observed non-working day that working-day arithmetic ultimately skips.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Globalization.Calendar.html">Bodu.Globalization.Calendar API reference</a></strong> — <code>NotableDateOnlyExtensions</code>, <code>NotableDateTimeExtensions</code>, <code>NotableDateTimeOffsetExtensions</code>, <code>NotableDateFiscalExtensions</code>.</li>
+<li><strong><a href="../topics/globalization-and-calendars.html">Globalization &amp; Calendars guides</a></strong> — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

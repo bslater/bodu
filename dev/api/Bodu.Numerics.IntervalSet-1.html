@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Struct IntervalSet&lt;T&gt; | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Struct IntervalSet&lt;T&gt; | BODU ">
+    
+    <meta name="description" content="Represents an immutable set of values as a normalized collection of disjoint, non-adjacent  pieces in ascending order — the general result of interval algebra that can produce a disconnected range.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Numerics.IntervalSet`1">
+
+
+
+  <h1 id="Bodu_Numerics_IntervalSet_1" data-uid="Bodu.Numerics.IntervalSet`1" class="text-break">Struct IntervalSet&lt;T&gt;</h1>
+  <div class="markdown level0 summary"><p>Represents an immutable set of values as a normalized collection of disjoint, non-adjacent
+<a class="xref" href="Bodu.Numerics.Interval-1.html">Interval&lt;T&gt;</a> pieces in ascending order — the general result of interval algebra that can produce a
+disconnected range.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="implements">
+    <h5>Implements</h5>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="Bodu.Numerics.IntervalSet-1.html">IntervalSet</a>&lt;T&gt;&gt;</div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Numerics.html">Numerics</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Numerics.dll</h6>
+  <h5 id="Bodu_Numerics_IntervalSet_1_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly struct IntervalSet&lt;T&gt; : IEquatable&lt;IntervalSet&lt;T&gt;&gt; where T : INumber&lt;T&gt;</code></pre>
+  </div>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">T</span></td>
+        <td><p>The numeric type used for the intervals' endpoints.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="Bodu_Numerics_IntervalSet_1_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+Where <a class="xref" href="Bodu.Numerics.Interval-1.html">Interval&lt;T&gt;</a> models a single connected range and <a class="xref" href="Bodu.Numerics.IntervalPair-1.html">IntervalPair&lt;T&gt;</a> the at-most-two
+pieces of a binary difference, <a class="xref" href="Bodu.Numerics.IntervalSet-1.html">IntervalSet&lt;T&gt;</a> models an arbitrary union of ranges. Overlapping and
+adjacent inputs are coalesced at construction, so the pieces are always disjoint, non-adjacent, sorted, and free of
+empty entries — a canonical form in which set equality is piecewise equality.
+</p>
+<p>
+The type is the home for the operations a single interval cannot express as one value: N-ary
+<a class="xref" href="Bodu.Numerics.IntervalSet-1.Union.html#Bodu_Numerics_IntervalSet_1_Union_Bodu_Numerics_Interval__0__">Union(Interval&lt;T&gt;)</a>, <a class="xref" href="Bodu.Numerics.IntervalSet-1.Except.html#Bodu_Numerics_IntervalSet_1_Except_Bodu_Numerics_Interval__0__">Except(Interval&lt;T&gt;)</a>, and <a class="xref" href="Bodu.Numerics.IntervalSet-1.Complement.html#Bodu_Numerics_IntervalSet_1_Complement">Complement()</a> (the values not
+in the set, over the whole line). It composes with <a class="xref" href="Bodu.Numerics.Interval-1.html">Interval&lt;T&gt;</a> throughout.
+</p>
+</div>
+  <h5 id="Bodu_Numerics_IntervalSet_1_examples"><strong>Examples</strong></h5>
+  <pre><code class="lang-csharp">var set = IntervalSet&lt;int&gt;.Of(Interval&lt;int&gt;.Closed(1, 3), Interval&lt;int&gt;.Closed(2, 5), Interval&lt;int&gt;.Closed(8, 9));
+set.Count;                 // 2 — [1, 5] and [8, 9] (the first two coalesced)
+set.Contains(4);           // True
+set.Complement();          // (-∞, 1) ∪ (5, 8) ∪ (9, +∞)</code></pre>
+
+  <h3 id="properties">Properties
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Numerics_IntervalSet_1_Count" data-uid="Bodu.Numerics.IntervalSet`1.Count">
+          <a class="xref" href="Bodu.Numerics.IntervalSet-1.Count.html#Bodu_Numerics_IntervalSet_1_Count">Count</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the number of disjoint pieces in the set.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_IntervalSet_1_Empty" data-uid="Bodu.Numerics.IntervalSet`1.Empty">
+          <a class="xref" href="Bodu.Numerics.IntervalSet-1.Empty.html#Bodu_Numerics_IntervalSet_1_Empty">Empty</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the empty set — the set containing no values.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_IntervalSet_1_IsEmpty" data-uid="Bodu.Numerics.IntervalSet`1.IsEmpty">
+          <a class="xref" href="Bodu.Numerics.IntervalSet-1.IsEmpty.html#Bodu_Numerics_IntervalSet_1_IsEmpty">IsEmpty</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a value indicating whether the set contains no values.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_IntervalSet_1_Item_System_Int32_" data-uid="Bodu.Numerics.IntervalSet`1.Item(System.Int32)">
+          <a class="xref" href="Bodu.Numerics.IntervalSet-1.Item.html#Bodu_Numerics_IntervalSet_1_Item_System_Int32_">this[int]</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the piece at <code class="paramref">index</code>, ordered lowest-first.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Numerics_IntervalSet_1_Complement" data-uid="Bodu.Numerics.IntervalSet`1.Complement">
+          <a class="xref" href="Bodu.Numerics.IntervalSet-1.Complement.html#Bodu_Numerics_IntervalSet_1_Complement">Complement()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the complement of this set — every value not in the set, over the whole line
+<code>(-∞, +∞)</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_IntervalSet_1_Contains__0_" data-uid="Bodu.Numerics.IntervalSet`1.Contains(`0)">
+          <a class="xref" href="Bodu.Numerics.IntervalSet-1.Contains.html#Bodu_Numerics_IntervalSet_1_Contains__0_">Contains(T)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether <code class="paramref">value</code> is a member of any piece of the set.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_IntervalSet_1_Encloses_Bodu_Numerics_Interval__0__" data-uid="Bodu.Numerics.IntervalSet`1.Encloses(Bodu.Numerics.Interval{`0})">
+          <a class="xref" href="Bodu.Numerics.IntervalSet-1.Encloses.html#Bodu_Numerics_IntervalSet_1_Encloses_Bodu_Numerics_Interval__0__">Encloses(Interval&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether every value of <code class="paramref">interval</code> is a member of the set.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_IntervalSet_1_Equals_Bodu_Numerics_IntervalSet__0__" data-uid="Bodu.Numerics.IntervalSet`1.Equals(Bodu.Numerics.IntervalSet{`0})">
+          <a class="xref" href="Bodu.Numerics.IntervalSet-1.Equals.html#Bodu_Numerics_IntervalSet_1_Equals_Bodu_Numerics_IntervalSet__0__">Equals(IntervalSet&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether this set equals <code class="paramref">other</code> — the same normalized pieces in the same order.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_IntervalSet_1_Equals_System_Object_" data-uid="Bodu.Numerics.IntervalSet`1.Equals(System.Object)">
+          <a class="xref" href="Bodu.Numerics.IntervalSet-1.Equals.html#Bodu_Numerics_IntervalSet_1_Equals_System_Object_">Equals(object?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether this set equals the boxed <code class="paramref">obj</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_IntervalSet_1_Except_Bodu_Numerics_IntervalSet__0__" data-uid="Bodu.Numerics.IntervalSet`1.Except(Bodu.Numerics.IntervalSet{`0})">
+          <a class="xref" href="Bodu.Numerics.IntervalSet-1.Except.html#Bodu_Numerics_IntervalSet_1_Except_Bodu_Numerics_IntervalSet__0__">Except(IntervalSet&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns this set with the members of <code class="paramref">other</code> removed — the set difference.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_IntervalSet_1_Except_Bodu_Numerics_Interval__0__" data-uid="Bodu.Numerics.IntervalSet`1.Except(Bodu.Numerics.Interval{`0})">
+          <a class="xref" href="Bodu.Numerics.IntervalSet-1.Except.html#Bodu_Numerics_IntervalSet_1_Except_Bodu_Numerics_Interval__0__">Except(Interval&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns this set with the members of <code class="paramref">interval</code> removed — the set difference.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_IntervalSet_1_From_System_Collections_Generic_IEnumerable_Bodu_Numerics_Interval__0___" data-uid="Bodu.Numerics.IntervalSet`1.From(System.Collections.Generic.IEnumerable{Bodu.Numerics.Interval{`0}})">
+          <a class="xref" href="Bodu.Numerics.IntervalSet-1.From.html#Bodu_Numerics_IntervalSet_1_From_System_Collections_Generic_IEnumerable_Bodu_Numerics_Interval__0___">From(IEnumerable&lt;Interval&lt;T&gt;&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates a set from a sequence of intervals, coalescing overlapping and adjacent pieces into a normalized form.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_IntervalSet_1_GetEnumerator" data-uid="Bodu.Numerics.IntervalSet`1.GetEnumerator">
+          <a class="xref" href="Bodu.Numerics.IntervalSet-1.GetEnumerator.html#Bodu_Numerics_IntervalSet_1_GetEnumerator">GetEnumerator()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns an enumerator over the disjoint pieces in ascending order.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_IntervalSet_1_GetHashCode" data-uid="Bodu.Numerics.IntervalSet`1.GetHashCode">
+          <a class="xref" href="Bodu.Numerics.IntervalSet-1.GetHashCode.html#Bodu_Numerics_IntervalSet_1_GetHashCode">GetHashCode()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a hash code consistent with <a class="xref" href="Bodu.Numerics.IntervalSet-1.Equals.html#Bodu_Numerics_IntervalSet_1_Equals_Bodu_Numerics_IntervalSet__0__">Equals(IntervalSet&lt;T&gt;)</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_IntervalSet_1_Intersect_Bodu_Numerics_IntervalSet__0__" data-uid="Bodu.Numerics.IntervalSet`1.Intersect(Bodu.Numerics.IntervalSet{`0})">
+          <a class="xref" href="Bodu.Numerics.IntervalSet-1.Intersect.html#Bodu_Numerics_IntervalSet_1_Intersect_Bodu_Numerics_IntervalSet__0__">Intersect(IntervalSet&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the intersection of this set with <code class="paramref">other</code> — the members in both.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_IntervalSet_1_Intersect_Bodu_Numerics_Interval__0__" data-uid="Bodu.Numerics.IntervalSet`1.Intersect(Bodu.Numerics.Interval{`0})">
+          <a class="xref" href="Bodu.Numerics.IntervalSet-1.Intersect.html#Bodu_Numerics_IntervalSet_1_Intersect_Bodu_Numerics_Interval__0__">Intersect(Interval&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the intersection of this set with <code class="paramref">interval</code> — the members shared with it.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_IntervalSet_1_Of_Bodu_Numerics_Interval__0____" data-uid="Bodu.Numerics.IntervalSet`1.Of(Bodu.Numerics.Interval{`0}[])">
+          <a class="xref" href="Bodu.Numerics.IntervalSet-1.Of.html#Bodu_Numerics_IntervalSet_1_Of_Bodu_Numerics_Interval__0____">Of(params Interval&lt;T&gt;[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates a set from the supplied intervals, coalescing overlapping and adjacent pieces into a normalized form.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_IntervalSet_1_ToString" data-uid="Bodu.Numerics.IntervalSet`1.ToString">
+          <a class="xref" href="Bodu.Numerics.IntervalSet-1.ToString.html#Bodu_Numerics_IntervalSet_1_ToString">ToString()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a set-notation string representation — the pieces joined by the union symbol, or the empty-set glyph.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_IntervalSet_1_Union_Bodu_Numerics_IntervalSet__0__" data-uid="Bodu.Numerics.IntervalSet`1.Union(Bodu.Numerics.IntervalSet{`0})">
+          <a class="xref" href="Bodu.Numerics.IntervalSet-1.Union.html#Bodu_Numerics_IntervalSet_1_Union_Bodu_Numerics_IntervalSet__0__">Union(IntervalSet&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the union of this set with <code class="paramref">other</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_IntervalSet_1_Union_Bodu_Numerics_Interval__0__" data-uid="Bodu.Numerics.IntervalSet`1.Union(Bodu.Numerics.Interval{`0})">
+          <a class="xref" href="Bodu.Numerics.IntervalSet-1.Union.html#Bodu_Numerics_IntervalSet_1_Union_Bodu_Numerics_Interval__0__">Union(Interval&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the union of this set with <code class="paramref">interval</code>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="operators">Operators
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Numerics_IntervalSet_1_op_Equality_Bodu_Numerics_IntervalSet__0__Bodu_Numerics_IntervalSet__0__" data-uid="Bodu.Numerics.IntervalSet`1.op_Equality(Bodu.Numerics.IntervalSet{`0},Bodu.Numerics.IntervalSet{`0})">
+          <a class="xref" href="Bodu.Numerics.IntervalSet-1.op_Equality.html#Bodu_Numerics_IntervalSet_1_op_Equality_Bodu_Numerics_IntervalSet__0__Bodu_Numerics_IntervalSet__0__">operator ==(IntervalSet&lt;T&gt;, IntervalSet&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether two sets are equal.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_IntervalSet_1_op_Inequality_Bodu_Numerics_IntervalSet__0__Bodu_Numerics_IntervalSet__0__" data-uid="Bodu.Numerics.IntervalSet`1.op_Inequality(Bodu.Numerics.IntervalSet{`0},Bodu.Numerics.IntervalSet{`0})">
+          <a class="xref" href="Bodu.Numerics.IntervalSet-1.op_Inequality.html#Bodu_Numerics_IntervalSet_1_op_Inequality_Bodu_Numerics_IntervalSet__0__Bodu_Numerics_IntervalSet__0__">operator !=(IntervalSet&lt;T&gt;, IntervalSet&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether two sets are not equal.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Clamp.html#Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.Clamp&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsBetween.html#Bodu_Extensions_ComparableExtensions_IsBetween__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsBetween&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThan.html#Bodu_Extensions_ComparableExtensions_IsGreaterThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThan.html#Bodu_Extensions_ComparableExtensions_IsLessThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsOutside.html#Bodu_Extensions_ComparableExtensions_IsOutside__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsOutside&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

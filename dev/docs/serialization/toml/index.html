@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Bodu.Text.Toml — Introduction | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Bodu.Text.Toml — Introduction | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../../images/favicon.svg">
+      <link rel="stylesheet" href="../../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../../styles/docfx.css">
+      <link rel="stylesheet" href="../../../styles/main.css">
+      <meta property="docfx:navrel" content="../../../toc.html">
+      <meta property="docfx:tocrel" content="../../toc.html">
+    
+    <meta property="docfx:rel" content="../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../../index.html">
+                <img id="logo" class="svg" src="../../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+
+
+<p><img src="../../../images/hero-toml.svg" alt="Bodu.Text.Toml"></p>
+<h1 id="bodutexttoml">Bodu.Text.Toml</h1>
+<p><strong>Bodu.Text.Toml</strong> is a library for <a href="https://toml.io/">TOML</a> v1.0.0 and v1.1.0, the human-readable configuration format built around typed key/value pairs and tables. It is one of the three <a href="../index.html">Bodu serializers</a> — it shares the architecture described in the <a href="../index.html">family introduction</a> (the serializer / DOM / reader-writer tiers, converters, attributes, naming policies) with its sibling libraries <a href="../bencode/index.html">Bodu.Text.Bencode</a> and <a href="../yaml/index.html">Bodu.Text.Yaml</a>, so the family vocabulary applies here unchanged. This page covers what is <em>specific</em> to TOML.</p>
+<h2 id="the-format-in-one-paragraph">The format in one paragraph</h2>
+<p>TOML is a text format aimed squarely at configuration files: obvious to read, typed without annotations, and table-structured. It has a rich native value model — strings, integers, floats (including <code>inf</code> / <code>nan</code>), Booleans, arrays, tables, arrays of tables, and the four RFC 3339 date-time forms (offset date-time, local date-time, local date, local time). The document root is always a table, so the type you serialize at the root must map to an object; a top-level scalar or array throws.</p>
+<h2 id="a-rich-native-value-model">A rich native value model</h2>
+<p>Because TOML carries real scalar kinds, most everyday .NET types map without converters:</p>
+<ul>
+<li><code>bool</code> → boolean; <code>double</code> / <code>float</code> / <code>Half</code> → float; the integer family → integer (within the i64 range).</li>
+<li><code>DateTimeOffset</code>, <code>DateTime</code>, <code>DateOnly</code>, and <code>TimeOnly</code> map one-to-one onto the four RFC 3339 date-time forms — no string conventions to invent.</li>
+<li><code>string</code>, <code>char</code>, <code>Guid</code>, <code>Uri</code>, and <code>Version</code> → string; <code>TimeSpan</code> → the invariant <code>&quot;c&quot;</code>-format string.</li>
+<li><code>decimal</code> and <code>byte[]</code> have two representations each, selected on the options: <a class="xref" href="../../../api/Bodu.Text.Toml.TomlDecimalHandling.html">TomlDecimalHandling</a> chooses between a native (binary64-bounded) float and a lossless string, and <a class="xref" href="../../../api/Bodu.Text.Toml.TomlByteArrayHandling.html">TomlByteArrayHandling</a> chooses between an integer array and a Base64 string.</li>
+</ul>
+<p>TOML has no null, so a <code>null</code> member is omitted on write by default. The full per-type catalog lives in the <a href="../../../guides/serialization/toml/using.html">type-mapping table</a> and the <a href="../../../guides/serialization/toml/builtin-converters.html">built-in converter catalog</a>.</p>
+<h2 id="spec-versions">Spec versions</h2>
+<p><a class="xref" href="../../../api/Bodu.Text.Toml.TomlSpecVersion.html">TomlSpecVersion</a> on the options selects the grammar the reader enforces. The default is strict <strong>v1.0.0</strong>; opting in to <strong>v1.1.0</strong> additionally accepts:</p>
+<ul>
+<li>the <code>\e</code> (escape, U+001B) and <code>\xHH</code> (two-hex-digit) string escapes;</li>
+<li>time values written without seconds (<code>09:30</code> rather than <code>09:30:00</code>);</li>
+<li>inline tables that span multiple lines and carry a trailing comma.</li>
+</ul>
+<p>The version affects <em>parsing only</em>. The writer always emits output valid under <em>both</em> versions, so produced documents never lock consumers into the newer grammar — the <code>SpecVersion</code> property on the writer options is obsolete and ignored.</p>
+<h2 id="diagnostics-with-positions">Diagnostics with positions</h2>
+<p>TOML files are edited by hand, so parse failures must point at the offending line. A malformed document raises <a class="xref" href="../../../api/Bodu.Text.Toml.TomlFormatException.html">TomlFormatException</a> carrying the <strong>line, column, and byte offset</strong> (<code>LineNumber</code>, <code>ColumnNumber</code>, <code>Offset</code>); a document that parses but cannot bind to your type raises <a class="xref" href="../../../api/Bodu.Text.Toml.TomlSerializationException.html">TomlSerializationException</a>, which carries the same positions where known plus a <code>Path</code> naming the member that failed to bind.</p>
+<h2 id="headline-types">Headline types</h2>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../../api/Bodu.Text.Toml.TomlSerializer.html">TomlSerializer</a></td>
+<td><code>Serialize</code> to <code>string</code> / <code>IBufferWriter&lt;byte&gt;</code> (UTF-8), or to a <code>Stream</code> via <code>SerializeAsync</code>; <code>Deserialize&lt;T&gt;</code> from <code>string</code> / <code>ReadOnlySpan&lt;byte&gt;</code> / <code>Stream</code> (with <code>DeserializeAsync</code>).</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../../api/Bodu.Text.Toml.TomlSerializerOptions.html">TomlSerializerOptions</a></td>
+<td>Converters, naming policy, ignore conditions, <code>SpecVersion</code>, <code>ByteArrayHandling</code>, <code>DecimalHandling</code>, depth.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../../api/Bodu.Text.Serialization.NamingPolicy.html">NamingPolicy</a></td>
+<td>Property-name policy: <code>CamelCase</code>, <code>SnakeCaseLower</code>, <code>SnakeCaseUpper</code>, <code>KebabCaseLower</code>, <code>KebabCaseUpper</code>.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../../api/Bodu.Text.Toml.Serialization.TomlConverter-1.html">TomlConverter&lt;T&gt;</a></td>
+<td>Base class for a custom converter over the reader/writer pair; attach one to a member or type with <a class="xref" href="../../../api/Bodu.Text.Serialization.ConverterAttribute.html">ConverterAttribute</a>. Built-in enum converters: <a class="xref" href="../../../api/Bodu.Text.Toml.Serialization.TomlStringEnumConverter.html">TomlStringEnumConverter</a> and <a class="xref" href="../../../api/Bodu.Text.Toml.Serialization.TomlNumberEnumConverter-1.html">TomlNumberEnumConverter&lt;TEnum&gt;</a>.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../../api/Bodu.Text.Toml.Nodes.TomlNode.html">TomlNode</a></td>
+<td>Mutable DOM — <code>Parse</code>, index, mutate, write back.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../../api/Bodu.Text.Toml.Document.TomlDocument.html">TomlDocument</a></td>
+<td>Read-only, low-allocation DOM walked through <code>RootElement</code>.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../../api/Bodu.Text.Toml.Reader.Utf8TomlReader.html">Utf8TomlReader</a> / <a class="xref" href="../../../api/Bodu.Text.Toml.Reader.TomlDocumentReader.html">TomlDocumentReader</a> / <a class="xref" href="../../../api/Bodu.Text.Toml.Writer.Utf8TomlWriter.html">Utf8TomlWriter</a></td>
+<td>Forward-only, allocation-free <code>ref struct</code> token machines: the source-order lexer, the normalized structural cursor a converter receives, and the writer.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../../api/Bodu.Text.Toml.TomlFormatException.html">TomlFormatException</a> / <a class="xref" href="../../../api/Bodu.Text.Toml.TomlSerializationException.html">TomlSerializationException</a></td>
+<td>Malformed input (with line/column/offset) vs a value that cannot bind.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="common-scenarios">Common scenarios</h2>
+<table>
+<thead>
+<tr>
+<th>You want to…</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Load an application's <code>.toml</code> configuration into a typed record</td>
+<td><code>TomlSerializer.Deserialize&lt;T&gt;</code></td>
+</tr>
+<tr>
+<td>Emit configuration a human will edit</td>
+<td><code>TomlSerializer.Serialize</code> — canonical output in document order, <code>[PropertyOrder]</code> honored</td>
+</tr>
+<tr>
+<td>Patch one value in an existing file without a model</td>
+<td><a class="xref" href="../../../api/Bodu.Text.Toml.Nodes.TomlNode.html">TomlNode</a> — index, mutate, write back</td>
+</tr>
+<tr>
+<td>Inspect a document with minimal allocation</td>
+<td><a class="xref" href="../../../api/Bodu.Text.Toml.Document.TomlDocument.html">TomlDocument</a> and <code>RootElement</code></td>
+</tr>
+<tr>
+<td>Accept TOML v1.1.0 input</td>
+<td><code>SpecVersion = TomlSpecVersion.V1_1</code> on the options</td>
+</tr>
+<tr>
+<td>Keep <code>decimal</code> values lossless on the wire</td>
+<td><code>DecimalHandling = TomlDecimalHandling.String</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="../index.html">Bodu serializers introduction</a></strong> — the shared shape: tiers, converters, attributes, callbacks, naming policies.</li>
+<li><strong><a href="concepts.html">Core concepts</a></strong> — the TOML vocabulary, including the full value-mapping table.</li>
+<li><strong><a href="getting-started.html">Getting started</a></strong> — install and the first round trip.</li>
+<li><strong><a href="../../../guides/serialization/toml/using.html">Using TOML</a></strong> — worked patterns: type mapping, spec-version selection, both DOMs, raw tokens.</li>
+<li><strong>API reference</strong> — <a class="xref" href="../../../api/Bodu.Text.Toml.html">Bodu.Text.Toml</a>.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../styles/main.js"></script>
+  </body>
+</html>

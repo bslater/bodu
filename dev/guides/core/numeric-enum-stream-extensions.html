@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Numeric, enum, array, span, and stream extensions | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Numeric, enum, array, span, and stream extensions | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="numeric-enum-array-span-and-stream-extensions">Numeric, enum, array, span, and stream extensions</h1>
+
+<p>Beyond the <a href="string-extensions.html">string</a> and <a href="date-extensions.html">date</a> families, <code>Bodu.Extensions</code> carries a set of small, focused helper classes for numbers, comparables, enums, arrays, spans, streams, and raw byte buffers. None of them holds state — every member is a pure function of its arguments — so they are safe to call from any thread.</p>
+<table>
+<thead>
+<tr>
+<th>Class</th>
+<th>What it adds</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Extensions.NumericExtensions.html">NumericExtensions</a></td>
+<td>Digit manipulation, primality, GCD / LCM, bit / byte / word reversal and rotation, significant-digit rounding, byte extraction.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Extensions.ComparableExtensions.html">ComparableExtensions</a> / <a class="xref" href="../../api/Bodu.Extensions.ComparableHelper.html">ComparableHelper</a></td>
+<td>Clamp, bounds, and comparison predicates over <code>IComparable&lt;T&gt;</code>, with nullable-aware helpers.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Extensions.EnumExtensions.html">EnumExtensions</a> / <a class="xref" href="../../api/Bodu.Extensions.Enums.html">Enums</a></td>
+<td>Flag manipulation, <code>[Description]</code> / <code>[Display]</code> text, and cached <code>GetValues</code> / <code>GetNames</code> / <code>TryParse</code>.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Extensions.ArrayExtensions.html">ArrayExtensions</a> / <a class="xref" href="../../api/Bodu.Extensions.SpanExtensions.html">SpanExtensions</a></td>
+<td>Copy, slice, pad, reverse, clear, and jagged-to-rectangular conversion; read-only and reversed span views.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Extensions.StreamExtensions.html">StreamExtensions</a></td>
+<td><code>ReadAllBytes</code> / <code>WriteAllBytes</code> and their async forms.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Extensions.BufferConverter.html">BufferConverter</a></td>
+<td>Reinterpreting byte buffers as primitives and back, with endian swapping.</td>
+</tr>
+</tbody>
+</table>
+<p>Every example was run; the comments are the real outputs.</p>
+<h2 id="pattern-1--numericextensions">Pattern 1 — <code>NumericExtensions</code></h2>
+<pre><code class="lang-csharp">using Bodu.Extensions;
+
+byte[] digits   = 90210u.ToDigitArray();                    // [9, 0, 2, 1, 0]
+uint reversed   = 90210u.ReverseDigits();                   // 1209 — leading zero dropped
+uint rotL       = 12345u.RotateDigitsLeft();                // 23451
+uint rotR       = 12345u.RotateDigitsRight(2);              // 45123
+
+bool p1 = 97.IsPrime();                                     // true
+bool p2 = 91L.IsPrime();                                    // false (7 × 13)
+
+int gcd    = 84.GreatestCommonDivisor(36);                  // 12
+int gcdAll = new[] { 12, 18, 30 }.GreatestCommonDivisor();  // 6
+int lcm    = 4.LeastCommonMultiple(6);                      // 12
+long lcmAll = new long[] { 4, 6, 10 }.LeastCommonMultiple();// 60
+
+uint bitsFlipped = 0b0000_0001u.ReverseBits();              // 0x80000000 — full 32-bit mirror
+byte nibble      = ((byte)0b0110).ReverseBits(bitLength: 4);// 6 — mirror within the low 4 bits only
+uint bytesSwapped = 0x12345678u.ReverseBytes();             // 0x78563412
+uint wordsSwapped = 0x12345678u.ReverseWords();             // 0x34127856 — 16-bit halves exchanged
+uint rotl = 0x80000001u.RotateBitsLeft(1);                  // 3
+ushort rotr = ((ushort)1).RotateBitsRight(1);               // 32768
+
+double sig  = 123456.789.RoundToSignificantDigits(4);       // 123500
+decimal sigD = 0.00123456m.RoundToSignificantDigits(2);     // 0.0012
+
+byte[] le = 0x0102u.GetBytes();                             // 02-01-00-00 — little-endian
+byte[] be = 0x0102u.GetBytes(asBigEndian: true);            // 00-00-01-02
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Group</th>
+<th>Members and widths</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Digits</td>
+<td><code>ToDigitArray</code>, <code>ReverseDigits</code>, <code>RotateDigitsLeft</code>, <code>RotateDigitsRight</code> (+ <code>count</code> overloads) on <code>ushort</code>, <code>uint</code>, <code>ulong</code></td>
+</tr>
+<tr>
+<td>Number theory</td>
+<td><code>IsPrime</code> on <code>short</code> … <code>ulong</code>; <code>GreatestCommonDivisor</code> / <code>LeastCommonMultiple</code> as pairs and over arrays, <code>short</code> … <code>ulong</code></td>
+</tr>
+<tr>
+<td>Bits</td>
+<td><code>ReverseBits</code> (whole width, or the low <code>bitLength</code> bits) on <code>byte</code> … <code>ulong</code> and <code>byte[]</code>; <code>RotateBitsLeft</code> / <code>RotateBitsRight</code> on <code>byte</code> … <code>ulong</code></td>
+</tr>
+<tr>
+<td>Bytes and words</td>
+<td><code>ReverseBytes</code> on <code>ushort</code> … <code>ulong</code>; <code>ReverseWords</code> on <code>ushort</code> … <code>ulong</code>, <code>byte[]</code>, and <code>Span&lt;byte&gt;</code> (in place)</td>
+</tr>
+<tr>
+<td>Rounding</td>
+<td><code>RoundToSignificantDigits(digits)</code> on <code>double</code> and <code>decimal</code></td>
+</tr>
+<tr>
+<td>Extraction</td>
+<td><code>GetBytes&lt;T&gt;(asBigEndian = false)</code> for any unmanaged <code>T</code></td>
+</tr>
+</tbody>
+</table>
+<p>Rotation counts must lie in <code>[0, width]</code> (0 and the full width are no-ops; anything else throws <code>ArgumentOutOfRangeException</code>), <code>RoundToSignificantDigits</code> accepts 1–15 significant digits for <code>double</code> (<code>ArgumentOutOfRangeException</code> otherwise), and the array forms of <code>GreatestCommonDivisor</code> / <code>LeastCommonMultiple</code> reject an empty array.</p>
+<h2 id="pattern-2--comparableextensions-and-comparablehelper">Pattern 2 — <code>ComparableExtensions</code> and <code>ComparableHelper</code></h2>
+<p>The extension forms work on any <code>IComparable&lt;T&gt;</code> (with an <code>IComparer&lt;T&gt;</code> overload each); the bounds may be <code>null</code> to mean &quot;unbounded&quot; for reference types and, for <code>Clamp</code> on value types, <code>Nullable&lt;T&gt;</code>.</p>
+<pre><code class="lang-csharp">using Bodu.Extensions;
+
+int clamped  = 15.Clamp(0, 10);                  // 10
+int floor    = (-3).AtLeast(0);                  // 0
+int ceiling  = 42.AtMost(10);                    // 10
+bool inside  = 5.IsBetween(1, 10);               // true — inclusive
+bool reversed = 5.IsBetween(10, 1);              // true — bound order does not matter
+bool outside = 15.IsOutside(1, 10);              // true
+int upperOnly = 5.Clamp(min: null, max: 3);      // 3 — null bound = unbounded (value types use Nullable&lt;T&gt;)
+bool strIn   = &quot;m&quot;.IsBetween(&quot;a&quot;, &quot;z&quot;);          // true
+bool strNull = &quot;m&quot;.IsBetween(null, &quot;z&quot;);         // false — a null bound on a reference type never matches
+bool greater = &quot;b&quot;.IsGreaterThan(&quot;a&quot;);           // true
+int max = 3.Max(7), min = 3.Min(7);              // 7, 3
+bool sameCi  = &quot;Apple&quot;.IsEqualTo(&quot;apple&quot;, StringComparer.OrdinalIgnoreCase);   // true
+
+string? first = ComparableHelper.Coalesce&lt;string&gt;(null, &quot;b&quot;);   // &quot;b&quot;
+string? larger = ComparableHelper.Max&lt;string&gt;(&quot;a&quot;, null);       // &quot;a&quot; — null is ignored, not treated as smallest
+bool bothNull = ComparableHelper.Min&lt;string&gt;(null, null) is null;   // true
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Semantics</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Clamp(min, max)</code></td>
+<td>Returns <code>value</code> limited to <code>[min, max]</code>; <code>min &gt; max</code> throws <code>ArgumentException</code>.</td>
+</tr>
+<tr>
+<td><code>AtLeast(min)</code> / <code>AtMost(max)</code></td>
+<td>One-sided clamps.</td>
+</tr>
+<tr>
+<td><code>IsBetween(a, b)</code> / <code>IsOutside(a, b)</code></td>
+<td>Inclusive membership in the range spanned by <code>a</code> and <code>b</code> in either order.</td>
+</tr>
+<tr>
+<td><code>IsLessThan</code>, <code>IsLessThanOrEqual</code>, <code>IsGreaterThan</code>, <code>IsGreaterThanOrEqual</code>, <code>IsEqualTo(other, comparer)</code></td>
+<td>Comparison predicates; <code>IsEqualTo</code> requires a comparer.</td>
+</tr>
+<tr>
+<td><code>Min(other)</code> / <code>Max(other)</code></td>
+<td>Pairwise.</td>
+</tr>
+<tr>
+<td><code>ComparableHelper.Min</code> / <code>Max</code> / <code>Coalesce</code></td>
+<td>Static, nullable-aware: a <code>null</code> operand is skipped and the other returned; both <code>null</code> gives <code>null</code>.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="pattern-3--enumextensions-and-enums">Pattern 3 — <code>EnumExtensions</code> and <code>Enums</code></h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using Bodu.Extensions;
+
+[Flags]
+public enum Access
+{
+    None = 0,
+    [Description(&quot;Read access&quot;)] [Display(Name = &quot;Read&quot;)] Read = 1,
+    [Description(&quot;Write access&quot;)] [Display(Name = &quot;Write&quot;)] Write = 2,
+    [Description(&quot;Execute access&quot;)] Execute = 4,
+}
+</code></pre>
+<pre><code class="lang-csharp">using Bodu.Extensions;
+
+Access access = Access.Read;
+access = access.SetFlag(Access.Write);                       // Read, Write
+bool both = access.HasAllFlags(Access.Read | Access.Write);  // true
+bool any  = access.HasAnyFlag(Access.Execute);               // false
+access = access.ClearFlag(Access.Read).ToggleFlag(Access.Execute);   // Write, Execute
+
+string desc    = Access.Read.GetDescription();               // &quot;Read access&quot;   — [Description]
+string display = Access.Read.GetDisplayName();               // &quot;Read&quot;          — [Display(Name)]
+string fallback = Access.Execute.GetDisplayName();           // &quot;Execute access&quot; — falls back to [Description], then the name
+bool hasDesc   = Access.None.TryGetDescription(out string d); // false; d == &quot;None&quot; (the member name)
+
+Access[] all  = Enums.GetValues&lt;Access&gt;();                   // None, Read, Write, Execute — a copy of the cached array
+string[] names = Enums.GetNames&lt;Access&gt;();
+bool parsed   = Enums.TryParse(&quot;write&quot;, ignoreCase: true, out Access w);       // true, Write
+bool unknown  = Enums.TryParse(&quot;Bogus&quot;, out Access _);                          // false
+bool byDesc   = Enums.TryParseDescription(&quot;Execute access&quot;, out Access x);     // true, Execute
+</code></pre>
+<p><code>SetFlag</code> / <code>ClearFlag</code> / <code>ToggleFlag</code> / <code>HasAllFlags</code> / <code>HasAnyFlag</code> work on any enum, converting through the underlying integer without boxing. The attribute readers are generic over <code>TEnum</code> and read the attributes once per enum type into a static cache; <code>GetValues</code> and <code>GetNames</code> return a fresh copy of their cached arrays on every call, so callers may mutate the result freely. <code>GetDisplayName</code> prefers <code>[Display(Name = …)]</code>, then <code>[Description]</code>, then the member name; <code>GetDescription</code> prefers <code>[Description]</code> and falls back to the name; <code>TryGetDescription</code> reports whether an attribute was actually found.</p>
+<h2 id="pattern-4--arrayextensions-and-spanextensions">Pattern 4 — <code>ArrayExtensions</code> and <code>SpanExtensions</code></h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Extensions;
+
+int[] source = { 1, 2, 3, 4, 5 };
+
+int[] middle   = source.Slice(1, 3);            // 2, 3, 4
+int[] partRev  = source.ToReversed(1, 3);       // 1, 4, 3, 2, 5 — a new array; source untouched
+int[] rangeRev = source.ToReversed(..2);        // 2, 1, 3, 4, 5
+int[] padL     = source.PadLeft(7, 0);          // 0, 0, 1, 2, 3, 4, 5
+int[] padR     = source.PadRight(6, 9);         // 1, 2, 3, 4, 5, 9
+int[] copy     = source.Copy();
+copy.Clear(1, 2);                               // 1, 0, 0, 4, 5 — in place, source untouched
+
+int[,] matrix     = new[] { new[] { 1, 2, 3 }, new[] { 4, 5, 6 } }.ToMatrix(transpose: false);   // 2×3
+int[,] transposed = new[] { new[] { 1, 2, 3 }, new[] { 4, 5, 6 } }.ToMatrix(transpose: true);    // 3×2; [2, 1] == 6
+
+Span&lt;int&gt; span = stackalloc int[] { 1, 2, 3 };
+ReadOnlySpan&lt;int&gt; readOnly = span.AsReadOnly();
+Span&lt;int&gt; reversed = readOnly.ToReversed();     // new buffer: 3, 2, 1; span still 1, 2, 3
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Copy()</code></td>
+<td>Shallow copy.</td>
+</tr>
+<tr>
+<td><code>Slice(index[, count])</code></td>
+<td>New array.</td>
+</tr>
+<tr>
+<td><code>PadLeft(totalLength, padValue)</code> / <code>PadRight(totalLength, padValue)</code></td>
+<td>Returns the input unchanged when already long enough.</td>
+</tr>
+<tr>
+<td><code>ToReversed()</code> / <code>ToReversed(index, count)</code> / <code>ToReversed(Range)</code></td>
+<td><strong>Returns a new array</strong> — unlike <code>Array.Reverse</code>, which is in place. Non-generic <code>Array</code> overloads exist too. Named <code>ToReversed</code> to match <code>SpanExtensions.ToReversed</code> below and the BCL's <code>To*</code> convention for materializing a new collection; the old name <code>Reverse</code> also collided with <code>Enumerable.Reverse&lt;TSource&gt;(TSource[])</code>, added in .NET 10. An array binds to this overload rather than the span one, which takes a conversion.</td>
+</tr>
+<tr>
+<td><code>Clear()</code> / <code>Clear(index[, count])</code></td>
+<td>In place; generic and non-generic forms.</td>
+</tr>
+<tr>
+<td><code>ToMatrix(transpose)</code></td>
+<td>Jagged <code>T[][]</code> → rectangular <code>T[,]</code>; every row must have the same length.</td>
+</tr>
+<tr>
+<td><code>AsReadOnly()</code></td>
+<td><code>Span&lt;T&gt;</code> → <code>ReadOnlySpan&lt;T&gt;</code> without a cast.</td>
+</tr>
+<tr>
+<td><code>ToReversed()</code> (+ <code>(index, count)</code> / <code>Range</code>)</td>
+<td>The span counterpart of the array member above: a reversed <strong>copy</strong> into a new array-backed <code>Span&lt;T&gt;</code>; the source is not modified.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="pattern-5--streamextensions-and-bufferconverter">Pattern 5 — <code>StreamExtensions</code> and <code>BufferConverter</code></h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Extensions;
+
+using var stream = new MemoryStream();
+stream.WriteAllBytes(new byte[] { 0x78, 0x56, 0x34, 0x12, 0x01, 0x00 });
+stream.Position = 0;
+byte[] all = stream.ReadAllBytes();                        // 6 bytes — reads to the end from the current position
+
+uint first    = all.Read&lt;uint&gt;(0);                         // 0x12345678 — little-endian reinterpretation
+ushort second = all.Read&lt;ushort&gt;(4);                       // 1
+ushort[] words = all.ToArray&lt;ushort&gt;(0, 3);                // 0x5678, 0x1234, 0x0001
+
+byte[] target = new byte[4];
+0xAABBCCDDu.CopyTo(target, 0);                             // DD-CC-BB-AA
+
+Span&lt;uint&gt; swap = stackalloc uint[] { 0x11223344 };
+swap.SwapEndian();                                         // 0x44332211 — in place
+</code></pre>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Extensions;
+
+using var stream = new MemoryStream();
+await stream.WriteAllBytesAsync(new byte[] { 1, 2, 3 });
+stream.Position = 0;
+byte[] bytes = await stream.ReadAllBytesAsync();           // 3 bytes
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ReadAllBytes()</code> / <code>ReadAllBytesAsync(cancellationToken)</code></td>
+<td>Reads from the current position to the end and leaves the stream open. A seekable stream gets a single buffer sized to the remaining length; a non-seekable one is read in chunks.</td>
+</tr>
+<tr>
+<td><code>WriteAllBytes(ReadOnlySpan&lt;byte&gt;)</code> / <code>WriteAllBytesAsync(ReadOnlyMemory&lt;byte&gt;, cancellationToken)</code></td>
+<td>Writes the whole payload at the current position; the stream is neither flushed nor closed.</td>
+</tr>
+<tr>
+<td><code>Read&lt;T&gt;(index)</code> on <code>byte[]</code> / <code>Read&lt;T&gt;()</code> on <code>ReadOnlySpan&lt;byte&gt;</code></td>
+<td>Reinterprets the bytes at that position as an unmanaged <code>T</code> in the platform's byte order.</td>
+</tr>
+<tr>
+<td><code>ToArray&lt;T&gt;(sourceIndex, count)</code></td>
+<td>Reinterprets <code>count</code> consecutive <code>T</code> values.</td>
+</tr>
+<tr>
+<td><code>CopyTo&lt;T&gt;(…)</code></td>
+<td>Value → byte array, byte array → <code>T[]</code>, span → span, and memory → memory forms.</td>
+</tr>
+<tr>
+<td><code>SwapEndian&lt;T&gt;()</code> on <code>Span&lt;T&gt;</code> / <code>SwapEndian(source, destination, elementSize)</code></td>
+<td>Reverses the byte order of each element.</td>
+</tr>
+</tbody>
+</table>
+<p><code>BufferConverter</code> uses the platform's native byte order (little-endian on every supported .NET target); combine with <code>SwapEndian</code> or <code>ReverseBytes</code> when a wire format is big-endian.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="string-extensions.html">String extensions</a> and <a href="date-extensions.html">Date and time extensions</a> — the two large families in the same namespace.</li>
+<li><a href="pooled-buffer-builder.html">Pooled buffer builder</a> — <code>ArrayPool&lt;T&gt;</code>-backed accumulation when the byte payload is built incrementally.</li>
+<li><a href="sequence-operators.html">Sequence operators and generators</a> — the <code>IEnumerable&lt;T&gt;</code> / <code>IList&lt;T&gt;</code> / <code>IDictionary&lt;TKey,TValue&gt;</code> helpers.</li>
+<li><a class="xref" href="../../api/Bodu.Extensions.html"><code>Bodu.Extensions</code> API reference</a> — every overload with full signatures.</li>
+<li><strong><a href="../topics/core-foundations.html">Core Foundations guides</a></strong> — every guide in this topic.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

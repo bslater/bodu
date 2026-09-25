@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Line formats — Introduction | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Line formats — Introduction | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="the-bodu-line-formats">The Bodu line formats</h1>
+
+<p>The Bodu line-oriented text formats — <strong>Delimited</strong> (RFC 4180 CSV / TSV), <strong>DotEnv</strong>, and <strong>INI</strong> — ship as three standalone libraries, each shaped after <code>System.Text.Json</code>:</p>
+<ul>
+<li><strong><code>Bodu.Text.Delimited</code></strong> — tabular records with the RFC 4180 quoting rules and real-world dialect policies.</li>
+<li><strong><code>Bodu.Text.DotEnv</code></strong> — flat <code>KEY=value</code> environment files with <code>export</code> prefixes, quoting, and inline comments.</li>
+<li><strong><code>Bodu.Text.Ini</code></strong> — sectioned <code>[name]</code> / <code>key=value</code> configuration files with a comment-preserving mutable model.</li>
+</ul>
+<p>The <strong><code>Bodu.Text.Formats</code></strong> package is a thin umbrella that references all three; depend on it when you want the whole family, or on a single format package when you do not.</p>
+<h2 id="key-concepts">Key concepts</h2>
+<p>Every format exposes the same quartet, mirroring <code>Bodu.Text.Bencode</code> / <code>Bodu.Text.Toml</code> / <code>Bodu.Text.Yaml</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Surface</th>
+<th>Delimited</th>
+<th>DotEnv</th>
+<th>INI</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Token reader / writer (ref struct, UTF-8)</td>
+<td><code>Utf8DelimitedReader</code> / <code>Utf8DelimitedWriter</code></td>
+<td><code>Utf8DotEnvReader</code> / <code>Utf8DotEnvWriter</code></td>
+<td><code>Utf8IniReader</code> / <code>Utf8IniWriter</code> (+ normalized <code>IniDocumentReader</code>)</td>
+</tr>
+<tr>
+<td>Serializer (POCO ↔ format)</td>
+<td><code>DelimitedSerializer</code></td>
+<td><code>DotEnvSerializer</code></td>
+<td><code>IniSerializer</code></td>
+</tr>
+<tr>
+<td>Mutable DOM</td>
+<td><code>DelimitedNode</code> / <code>DelimitedArray</code> / <code>DelimitedObject</code> / <code>DelimitedValue</code></td>
+<td><code>DotEnvNode</code> / <code>DotEnvObject</code> / <code>DotEnvValue</code></td>
+<td><code>IniNode</code> / <code>IniObject</code> / <code>IniValue</code></td>
+</tr>
+<tr>
+<td>Read-only DOM (<code>IDisposable</code>)</td>
+<td><code>DelimitedDocument</code> / <code>DelimitedElement</code></td>
+<td><code>DotEnvDocument</code> / <code>DotEnvElement</code></td>
+<td><code>IniDocument</code> / <code>IniElement</code></td>
+</tr>
+</tbody>
+</table>
+<p>Two properties distinguish the line formats from the structured-text quartet:</p>
+<h3 id="string-only-wire">String-only wire</h3>
+<p>All three formats carry values as <strong>text</strong>. The serializers convert scalars (numbers, booleans, dates, GUIDs) with <code>InvariantCulture</code> at the binding layer; there is no per-format number or date syntax.</p>
+<h3 id="trivia-in-the-mutable-doms">Trivia in the mutable DOMs</h3>
+<p>The read-only <code>*Document</code> DOMs are trivia-free, like the rest of the quartet. The <strong>mutable DotEnv and INI DOMs deliberately preserve trivia</strong> — DotEnv keeps the per-entry <code>export</code> flag, and the INI node tree carries leading and trailing comment lines — so tooling can rewrite files a human still owns without destroying their annotations.</p>
+<h2 id="worked-example--a-small-ini-document">Worked example — a small INI document</h2>
+<pre><code class="lang-csharp">using Bodu.Text.Ini;
+using Bodu.Text.Ini.Document;
+
+byte[] ini = File.ReadAllBytes(&quot;app.ini&quot;);
+using IniDocument document = IniDocument.Parse(ini);
+
+IniElement root = document.RootElement;
+string environment = root.GetProperty(&quot;environment&quot;).GetString(); // global key
+string host = root.GetProperty(&quot;server&quot;).GetProperty(&quot;host&quot;).GetString();
+</code></pre>
+<h2 id="ini-primitives-vs-configuration-layering">INI primitives vs. configuration layering</h2>
+<p><code>Bodu.Text.Ini</code> is the general-purpose INI library. <code>Bodu.Text.Configuration</code> is the EditorConfig-style configuration engine (profiles, glob resolution, typed views) built over its <strong>own</strong> internal INI document model — it does not depend on the format packages.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="getting-started.html">Getting started</a> — install and first parse/serialize calls per format.</li>
+<li><a href="concepts.html">Core concepts</a> — the quartet vocabulary.</li>
+<li><a href="parser-policies.html">Parser policies</a> — the dialect and strictness knobs.</li>
+<li>The <a href="../../guides/formats/index.html">format guides</a> — recipe-style walk-throughs.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

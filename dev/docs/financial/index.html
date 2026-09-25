@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Bodu.Financial — Introduction | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Bodu.Financial — Introduction | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="bodufinancial">Bodu.Financial</h1>
+
+<p><img src="../../images/hero-financial.svg" alt="Bodu.Financial"></p>
+<p><strong>Bodu.Financial</strong> is the monetary-primitives package of the Bodu suite. It ships type-parameter-tagged and runtime-tagged money types, a shipped catalogue of 184 ISO 4217 currencies (155 active and 29 historic), an exchange-rate provider stack with both timeless and dated lookup, and — in the companion <code>Bodu.Financial.Serialization.Json</code> package — JSON converters with three policy shapes for ledger-style, lenient-import, and compact-wire integrations. Part of the <strong><a href="../topics/numerics-and-financial.html">Numerics &amp; Financial</a></strong> topic.</p>
+<p>The package depends on <code>Bodu.Numerics</code> so <code>Money&lt;TCurrency&gt;</code> can round-trip through <code>Fraction&lt;BigInteger&gt;</code> for sub-minor-unit-precise intermediate calculations — interest accumulation, percentage-of-percentage, and other chains where deferred rounding matters.</p>
+<p><img src="../../images/diagrams/financial-namespace-map.svg" alt="Bodu.Financial namespace map — four namespaces and the exchange-rate provider stack"></p>
+<h2 id="namespaces-and-headline-types">Namespaces and headline types</h2>
+<h3 id="bodufinancial-1"><code>Bodu.Financial</code></h3>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a></td>
+<td>Immutable, value-equatable monetary amount whose currency is encoded as the type parameter. Cross-currency arithmetic fails the build, not at runtime.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Financial.Money.html">Money</a></td>
+<td>Runtime-tagged sister type — currency carried as a <a class="xref" href="../../api/Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a>. The fallback when the currency is data rather than type, e.g. deserialisation or generic invoicing.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Financial.MoneyBag.html">MoneyBag</a></td>
+<td>Immutable mixed-currency portfolio. Aggregates per-ISO balances, prunes zero balances, enumerates in lexicographic ISO order.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Financial.CurrencyDisplay.html">CurrencyDisplay</a></td>
+<td>Currency symbol / display-name formatting for presenting an amount's currency.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Financial.MoneyConversionResult-2.html">MoneyConversionResult&lt;TSource, TTarget&gt;</a></td>
+<td>Audit record returned by extension methods that convert through a dated provider — pairs source and target amount with the full lookup result.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="bodufinancialcurrencies"><code>Bodu.Financial.Currencies</code></h3>
+<p>All currency metadata lives in this namespace — the runtime lookup surface alongside the tag catalogue:</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Financial.Currencies.ICurrency.html">ICurrency</a></td>
+<td>Static-abstract interface carrying ISO code, minor-unit count, cash rounding increment, and demonetisation metadata. Implemented by every shipped currency tag.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Financial.Currencies.CurrencyInfo.html">CurrencyInfo</a>, <a class="xref" href="../../api/Bodu.Financial.Currencies.CurrencyRegistry.html">CurrencyRegistry</a></td>
+<td>Runtime currency metadata record and a read-only catalogue over the shipped ISO 4217 currencies (active and historic).</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Financial.Currencies.ICurrencyLookup.html">ICurrencyLookup</a>, <a class="xref" href="../../api/Bodu.Financial.Currencies.CurrencyLookupService.html">CurrencyLookupService</a>, <a class="xref" href="../../api/Bodu.Financial.Currencies.CurrencyResolution.html">CurrencyResolution</a></td>
+<td>The runtime lookup contract, its default implementation over the registry, and the ambient resolution seam for substituting or restricting the metadata source.</td>
+</tr>
+</tbody>
+</table>
+<p>Alongside these sit the sealed tag types — one class per ISO 4217 code — each implementing <code>ICurrency</code>. The catalogue ships 184 codes:</p>
+<ul>
+<li><strong>155 active currencies</strong> — USD, EUR, GBP, JPY, AUD, CAD, CHF, CNY, …</li>
+<li><strong>29 historic currencies</strong> — the Euro-zone predecessors (ATS, BEF, CYP, DEM, EEK, ESP, FIM, FRF, GRD, HRK, IEP, ITL, LTL, LUF, LVL, MTL, NLG, PTE, SIT, SKK) plus other notable replacements (AZM, GHC, MZM, ROL, SRG, TMM, VEB, VEF, ZWL). Each declares <code>IsHistoric =&gt; true</code>, <code>DemonetizedOn</code>, and <code>SuccessorIsoCode</code>.</li>
+</ul>
+<p>Each tag is source-generated from <code>currencies.json</code> and exposes get-only <code>static</code> members — <code>IsoCode</code>, <code>NumericCode</code>, <code>MinorUnits</code>, and (where they differ from the interface defaults) <code>CashRoundingIncrement</code>, <code>EnglishName</code>, <code>IsHistoric</code>, <code>DemonetizedOn</code>, <code>SuccessorIsoCode</code>. The tag types only ever exist statically — every one has a <code>private</code> constructor — so <code>Money&lt;USD&gt;</code> is the only way to materialise a value. The runtime <a class="xref" href="../../api/Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a> enum carries the same 184 codes plus a <code>None = 0</code> sentinel (185 members), keyed by ISO 4217 numeric code and tagged with each currency's <code>CurrencyStatus</code> (<code>Active</code> / <code>Historic</code>).</p>
+<h3 id="bodufinancialexchangerates"><code>Bodu.Financial.ExchangeRates</code></h3>
+<p>The exchange-rate values, stores, and provider contracts, shipped in the core <code>Bodu.Financial</code> assembly:</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.ExchangeRate.html">ExchangeRate</a>, <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.CurrencyPair.html">CurrencyPair</a>, <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateObservation.html">RateObservation</a>, <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateSeries.html">RateSeries</a></td>
+<td>Immutable FX observation value object, strongly-typed (from, to) key, single dated observation, and an O(log n) time series over observations.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateSeriesBuilder.html">RateSeriesBuilder</a>, <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateSeriesKey.html">RateSeriesKey</a>, <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateTableBuilder.html">RateTableBuilder</a></td>
+<td>Mutable companion to <code>RateSeries</code> for building or editing observations, the <code>(pair, provider)</code> key, and a higher-level multi-series editor for import workflows.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.IRateProvider.html">IRateProvider</a>, <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.IDatedRateProvider.html">IDatedRateProvider</a></td>
+<td>Timeless and dated provider contracts. The dated form returns an <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateLookupResult.html">RateLookupResult</a> with provenance metadata (offset days, resolution policy, provider name).</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.FixedRateTable.html">FixedRateTable</a>, <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.FixedDatedRateProvider.html">FixedDatedRateProvider</a></td>
+<td>In-memory provider implementations. Grouping several FX sources behind one entry point (prioritised fallback, averaging, per-FX-pair routing) lives in the <code>Bodu.Financial.ExchangeRates.Caching</code> package as <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider.html"><code>AggregatingRateProvider</code></a>.</td>
+</tr>
+</tbody>
+</table>
+<p>The same namespace is also where the separate <strong><code>Bodu.Financial.ExchangeRates</code></strong> package adds the web-provider machinery (<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.WebRateProvider.html">WebRateProvider</a>, <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.PairWebRateProvider-1.html">PairWebRateProvider&lt;TSeries&gt;</a>, and their supporting types) that the per-source feed packages build on — see <a href="#exchange-rate-providers-and-caching">Exchange-rate providers and caching</a> below. The core <code>Bodu.Financial</code> package itself carries no HTTP machinery.</p>
+<h3 id="bodufinancialserializationjson-companion-package"><code>Bodu.Financial.Serialization.Json</code> (companion package)</h3>
+<p><code>System.Text.Json</code> converters and the <a class="xref" href="../../api/Bodu.Financial.Serialization.Json.FinancialJsonPolicy.html">FinancialJsonPolicy</a> enum (<code>Strict = 0</code>, <code>Lenient = 1</code>, <code>Compact = 2</code>), shipped in the companion <code>Bodu.Financial.Serialization.Json</code> package — the core library is serialization-agnostic and its types carry no <code>[JsonConverter]</code> attribute. <code>FinancialJsonSerializerOptionsExtensions.AddFinancialJsonConverters(options, policy)</code> registers all six converters at once — for <code>Money&lt;TCurrency&gt;</code> (via a <code>JsonConverterFactory</code>), <code>Money</code>, <a class="xref" href="../../api/Bodu.Financial.CalculatedMoney.html">CalculatedMoney</a>, <code>MoneyBag</code>, <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.ExchangeRate.html">ExchangeRate</a>, and <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.CurrencyPair.html">CurrencyPair</a> — under the chosen policy, and returns the same <code>JsonSerializerOptions</code> for chaining. Each converter also has a parameterless constructor that defaults to <code>Strict</code>.</p>
+<h2 id="exchange-rate-providers-and-caching">Exchange-rate providers and caching</h2>
+<p>The exchange-rate core (<code>IRateProvider</code> / <code>IDatedRateProvider</code>, <code>ExchangeRate</code>, the in-memory tables) lives in the <code>Bodu.Financial.ExchangeRates</code> namespace, shipped in the core <code>Bodu.Financial</code> package. The web/HTTP machinery — the abstract <code>WebRateProvider</code> and <code>PairWebRateProvider&lt;TSeries&gt;</code> bases, <code>WebRateProviderOptions</code>, and the single-flight and response-cache plumbing — is factored into the separate <strong><code>Bodu.Financial.ExchangeRates</code></strong> package, so the core package carries no HTTP machinery (and no logging dependency). Live feeds ship as per-source packages over that base, each isolating one feed's HTTP and parsing dependencies (a named <code>HttpClient</code> plus Polly resilience, registered through the generic <code>AddWebRateProvider</code> machinery). Every provider type and its DI registration extension share the single flattened <code>Bodu.Financial.ExchangeRates</code> namespace.</p>
+<table>
+<thead>
+<tr>
+<th>Source (package)</th>
+<th>Provider type</th>
+<th>Coverage</th>
+<th>DI registration</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Reserve Bank of Australia (<code>…ExchangeRates.Rba</code>)</td>
+<td><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RbaRateProvider.html">RbaRateProvider</a></td>
+<td>base AUD, historical</td>
+<td><code>AddRbaExchangeRates()</code></td>
+</tr>
+<tr>
+<td>European Central Bank (<code>…ExchangeRates.Ecb</code>)</td>
+<td><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.EcbRateProvider.html">EcbRateProvider</a></td>
+<td>base EUR, reference</td>
+<td><code>AddEcbExchangeRates()</code></td>
+</tr>
+<tr>
+<td>Bank of England (<code>…ExchangeRates.Boe</code>)</td>
+<td><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.BoeRateProvider.html">BoeRateProvider</a></td>
+<td>base GBP, reference</td>
+<td><code>AddBoeExchangeRates()</code></td>
+</tr>
+<tr>
+<td>Yahoo (<code>…ExchangeRates.Yahoo</code>)</td>
+<td><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.YahooRateProvider.html">YahooRateProvider</a></td>
+<td>any pair</td>
+<td><code>AddYahooExchangeRates()</code></td>
+</tr>
+<tr>
+<td>OFX (<code>…ExchangeRates.Ofx</code>)</td>
+<td><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.OfxRateProvider.html">OfxRateProvider</a></td>
+<td>any pair</td>
+<td><code>AddOfxExchangeRates()</code></td>
+</tr>
+<tr>
+<td>XE (<code>…ExchangeRates.Xe</code>)</td>
+<td><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.XeRateProvider.html">XeRateProvider</a></td>
+<td>any pair</td>
+<td><code>AddXeExchangeRates()</code></td>
+</tr>
+<tr>
+<td>OANDA (<code>…ExchangeRates.Oanda</code>)</td>
+<td><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.OandaRateProvider.html">OandaRateProvider</a></td>
+<td>any pair, rolling ~180 days</td>
+<td><code>AddOandaExchangeRates()</code></td>
+</tr>
+<tr>
+<td>Fixer (<code>…ExchangeRates.Fixer</code>)</td>
+<td><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.FixerRateProvider.html">FixerRateProvider</a></td>
+<td>any pair, <code>access_key</code></td>
+<td><code>AddFixerExchangeRates()</code></td>
+</tr>
+<tr>
+<td>exchangerate.host (<code>…ExchangeRates.ExchangeRateHost</code>)</td>
+<td><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.ExchangeRateHostRateProvider.html">ExchangeRateHostRateProvider</a></td>
+<td>any pair, <code>access_key</code></td>
+<td><code>AddExchangeRateHostExchangeRates()</code></td>
+</tr>
+<tr>
+<td>FRED (<code>…ExchangeRates.Fred</code>)</td>
+<td><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.FredRateProvider.html">FredRateProvider</a></td>
+<td>mapped pairs, <code>api_key</code></td>
+<td><code>AddFredExchangeRates()</code></td>
+</tr>
+<tr>
+<td>IMF (<code>…ExchangeRates.Imf</code>)</td>
+<td><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.ImfRateProvider.html">ImfRateProvider</a></td>
+<td>base USD, keyless, daily</td>
+<td><code>AddImfExchangeRates()</code></td>
+</tr>
+</tbody>
+</table>
+<p>RBA, ECB, BoE, and IMF quote one base currency against many others (AUD, EUR, GBP, USD) and extend <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.WebRateProvider.html">WebRateProvider</a> directly — IMF downloads the IMF's monthly Representative Exchange Rates TSV report and normalizes its quotation direction to a consistent USD base; Yahoo, OFX, XE, OANDA, Fixer, exchangerate.host, and FRED fetch a distinct series per pair and extend <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.PairWebRateProvider-1.html">PairWebRateProvider&lt;TSeries&gt;</a> (FRED maps each pair to a source series identifier through its options; Fixer, exchangerate.host, and FRED require an API key). Each provider exposes two public constructors — an options-only form that builds and owns its <code>HttpClient</code>, and a form that takes a caller-supplied <code>HttpClient</code> (the shape the DI registration uses, backed by <code>IHttpClientFactory</code>). The shared <code>Bodu.Financial.ExchangeRates.DependencyInjection</code> package supplies the generic <code>AddWebRateProvider&lt;TProvider, TOptions&gt;</code> machinery every provider's <code>Add&lt;Source&gt;...</code> method delegates to: it binds the options from a configuration section, registers a named <code>HttpClient</code> with the standard Polly resilience handler (<code>AddStandardResilienceHandler</code>), and exposes the provider as both <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.IDatedRateProvider.html">IDatedRateProvider</a> and <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.IRateProvider.html">IRateProvider</a>. Each <code>Add&lt;Source&gt;...</code> method binds a default section (<code>Financial:Rba</code>, <code>Financial:Ecb</code>, <code>Financial:Boe</code>, <code>Financial:Yahoo</code>, <code>Financial:Ofx</code>, <code>Financial:Xe</code>, <code>Financial:Oanda</code>, <code>Financial:Fixer</code>, <code>Financial:ExchangeRateHost</code>, <code>Financial:Fred</code>, <code>Financial:Imf</code>) and returns the <a class="xref" href="../../api/Bodu.Financial.IFinancialServiceBuilder.html">IFinancialServiceBuilder</a> for chaining. Every provider advertises how far back it serves rates through <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.WebRateProvider.HistoryAvailability.html#Bodu_Financial_ExchangeRates_WebRateProvider_HistoryAvailability">HistoryAvailability</a> — an <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateHistoryAvailability.html">RateHistoryAvailability</a> that is unbounded, a fixed earliest date, or a rolling window (for example OANDA's anonymous endpoint exposes roughly the last 180 days) — so a caller can resolve the earliest date worth requesting before issuing a lookup.</p>
+<p>A provider-agnostic caching layer in <code>Bodu.Financial.ExchangeRates.Caching</code> wraps any of these. <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.CachingRateProvider.html">CachingRateProvider</a> is a read-through decorator over an <code>IRateCache</code>, and <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider.html">AggregatingRateProvider</a> fronts several sources at once (priority / average strategies, per-pair routing). The core caching package ships in-memory and TOML-file caches; durable backends add on as <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.SqliteRateCache.html">SqliteRateCache</a> (<code>…Caching.Sqlite</code>) and <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.DistributedRateCache.html">DistributedRateCache</a> (<code>…Caching.Distributed</code>, e.g. Redis through <code>IDistributedCache</code>). Each package ships its own registration extensions — <code>AddCachedRateProvider</code>, <code>AddAggregatedRateProvider</code>, <code>AddSqliteRateCache</code>, and <code>AddDistributedRateCache</code> / <code>AddRedisRateCache</code> — all declared in the root <code>Bodu.Financial.ExchangeRates</code> namespace.</p>
+<p>See the <a href="../../guides/financial/exchange-rate-providers.html">exchange-rate providers</a>, <a href="../../guides/financial/exchange-rate-caching.html">caching</a>, and <a href="../../guides/financial/exchange-rate-lookups.html">lookups</a> guides for the full provider, cache, and dated-lookup workflows.</p>
+<h2 id="allocation">Allocation</h2>
+<p>Splitting <code>$1.00</code> into three shares cannot return <code>[0.33, 0.33, 0.33]</code> — that loses a cent. <code>Money&lt;T&gt;.Allocate(int parts)</code> splits an amount into shares whose sum equals the original exactly: the residual minor units are distributed one per share from the start of the array, and the rule is sign-stable, so a negative amount distributes the residual in the same direction. <code>Allocate(ReadOnlySpan&lt;decimal&gt; ratios)</code> weights the shares proportionally:</p>
+<pre><code class="lang-csharp">Money&lt;USD&gt;[] shares = new Money&lt;USD&gt;(0.10m).Allocate(3);
+// [0.04, 0.03, 0.03]  — sums to exactly 0.10
+
+decimal[] ratios = { 1m, 1m, 2m };
+Money&lt;USD&gt;[] split = new Money&lt;USD&gt;(100m).Allocate(ratios);
+// [25.00, 25.00, 50.00]
+</code></pre>
+<p>The residual-distribution rule is the <a class="xref" href="../../api/Bodu.Financial.AllocationPolicy.html">AllocationPolicy</a> <code>LargestRemainder</code> (Hamilton) strategy — each leftover minor unit goes to the share with the largest fractional remainder, with ties broken by stable input order — so the parts always sum back to the original amount with no penny lost or invented, deterministically across runs. See <a href="../../guides/financial/money.html">Working with <code>Money&lt;TCurrency&gt;</code></a> for the validation rules and worked examples.</p>
+<h2 id="cash-rounding">Cash rounding</h2>
+<p>A handful of currencies round physical cash totals to a coarser increment than their electronic minor unit — Switzerland's 5-rappen coin, Australia's and Canada's 5-cent cash totals, New Zealand's 10-cent rounding, Sweden and Norway's whole-krona rounding. The shipped catalogue surfaces the convention through <a class="xref" href="../../api/Bodu.Financial.Currencies.ICurrency.CashRoundingIncrement.html#Bodu_Financial_Currencies_ICurrency_CashRoundingIncrement">CashRoundingIncrement</a> (the smallest cash denomination in the major unit, or <code>0m</code> when no special rounding applies), and <code>Money&lt;T&gt;.RoundToCash()</code> snaps an amount to the nearest multiple of that increment using banker's rounding by default:</p>
+<pre><code class="lang-csharp">new Money&lt;CHF&gt;(12.34m).RoundToCash();    // CHF 12.35
+new Money&lt;NZD&gt;(5.07m).RoundToCash();     // NZD 5.10
+new Money&lt;USD&gt;(19.99m).RoundToCash();    // USD 19.99 — no-op, no cash increment
+</code></pre>
+<p>Cash rounding is a presentation choice for physical payments, not a storage rule: electronic transactions retain full minor-unit precision, so call <code>RoundToCash()</code> only at the point a total becomes a cash payment. An explicit <code>MidpointRounding</code> argument opts out of the banker's-rounding default.</p>
+<h2 id="json-serialization">JSON serialization</h2>
+<p>JSON support ships in the companion <code>Bodu.Financial.Serialization.Json</code> package; registration via <code>AddFinancialJsonConverters</code> is required — the monetary types carry no <code>[JsonConverter]</code> attribute. The <a class="xref" href="../../api/Bodu.Financial.Serialization.Json.FinancialJsonPolicy.html">FinancialJsonPolicy</a> enum selects the wire shape and parsing strictness:</p>
+<table>
+<thead>
+<tr>
+<th>Policy</th>
+<th>Wire shape</th>
+<th>Use case</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Strict</code> (default)</td>
+<td><code>{ &quot;amount&quot;: 19.99, &quot;currency&quot;: &quot;USD&quot; }</code> for money; <code>{ &quot;balances&quot;: { … } }</code> for bags.</td>
+<td>Canonical ledger, persistence, audit.</td>
+</tr>
+<tr>
+<td><code>Lenient</code></td>
+<td>Same shape as <code>Strict</code>, but normalizes lowercase ISO codes to uppercase and trims whitespace before validation.</td>
+<td>Spreadsheet and external-feed import — not a canonical storage shape.</td>
+</tr>
+<tr>
+<td><code>Compact</code></td>
+<td>Single string <code>&quot;19.99 USD&quot;</code> for money; flat object <code>{ &quot;USD&quot;: 19.99, &quot;EUR&quot;: 12.34 }</code> for bags.</td>
+<td>Wire-size-sensitive APIs and human-readable logs.</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-csharp">using Bodu.Financial.Serialization.Json;
+
+var options = new JsonSerializerOptions();
+options.AddFinancialJsonConverters(FinancialJsonPolicy.Compact);
+
+string json = JsonSerializer.Serialize(new Money&lt;USD&gt;(19.99m), options);   // &quot;19.99 USD&quot;
+</code></pre>
+<p>Deserialization on <code>Money&lt;TCurrency&gt;</code> rejects payloads whose <code>currency</code> field does not match <code>TCurrency.IsoCode</code> — currency drift surfaces as <code>JsonException</code>, not as a silently re-interpreted amount.</p>
+<h2 id="scenarios-this-library-covers">Scenarios this library covers</h2>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Reach for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Type-safe monetary arithmetic that catches USD-vs-JPY mistakes at compile time</td>
+<td><a class="xref" href="../../api/Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a></td>
+</tr>
+<tr>
+<td>Runtime-tagged amount for deserialisation or generic invoicing</td>
+<td><a class="xref" href="../../api/Bodu.Financial.Money.html">Money</a></td>
+</tr>
+<tr>
+<td>Multi-currency portfolio with aggregate-then-convert workflows</td>
+<td><a class="xref" href="../../api/Bodu.Financial.MoneyBag.html">MoneyBag</a></td>
+</tr>
+<tr>
+<td>Sub-minor-unit-precise interest / percentage chains</td>
+<td><code>Money&lt;T&gt;.ToFraction()</code> / <code>FromFraction()</code> / <code>MultiplyExact()</code></td>
+</tr>
+<tr>
+<td>Splitting an amount fairly across N shares without remainder loss</td>
+<td><code>Money&lt;T&gt;.Allocate(parts)</code> / <code>Allocate(ratios)</code></td>
+</tr>
+<tr>
+<td>Cash rounding for currencies with coarse coin denominations (CHF, AUD, NZD, …)</td>
+<td><code>Money&lt;T&gt;.RoundToCash()</code> and <code>ICurrency.CashRoundingIncrement</code></td>
+</tr>
+<tr>
+<td>ISO 4217 currency lookup at runtime</td>
+<td><a class="xref" href="../../api/Bodu.Financial.Currencies.CurrencyRegistry.html">CurrencyRegistry</a></td>
+</tr>
+<tr>
+<td>A generic amount in a unit outside the shipped catalogue</td>
+<td>your own <code>ICurrency</code> tag + <code>Money&lt;TCurrency&gt;</code> (generic only; cannot bridge to runtime <code>Money</code>)</td>
+</tr>
+<tr>
+<td>Dated FX lookup with audit-grade provenance metadata</td>
+<td><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.IDatedRateProvider.html">IDatedRateProvider</a> + <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateLookupResult.html">RateLookupResult</a></td>
+</tr>
+<tr>
+<td>Prioritised fallback (or averaging) across multiple FX sources</td>
+<td><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider.html"><code>AggregatingRateProvider</code></a> (in <code>Bodu.Financial.ExchangeRates.Caching</code>)</td>
+</tr>
+<tr>
+<td>Build a rate series imperatively, or edit an existing one and snapshot the result</td>
+<td><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateSeriesBuilder.html">RateSeriesBuilder</a>, <code>RateSeries.ToBuilder()</code> / <code>WithRate(...)</code> / <code>WithoutRate(...)</code></td>
+</tr>
+<tr>
+<td>Import rates for many <code>(pair, provider)</code> combinations before producing immutable snapshots</td>
+<td><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateTableBuilder.html">RateTableBuilder</a></td>
+</tr>
+<tr>
+<td>Three JSON wire shapes (strict-canonical, lenient-import, compact-string) for the same monetary type</td>
+<td><a class="xref" href="../../api/Bodu.Financial.Serialization.Json.FinancialJsonPolicy.html">FinancialJsonPolicy</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="design-choices">Design choices</h2>
+<ul>
+<li><strong>Currency in the type system, not as a field.</strong> <code>Money&lt;USD&gt;</code> and <code>Money&lt;JPY&gt;</code> are different types. Adding them fails the build rather than running with the wrong unit. The escape hatch is <code>Money</code> when the currency is genuinely unknown until runtime.</li>
+<li><strong>Banker's rounding default.</strong> Construction rounds to the currency's minor-unit precision using <code>MidpointRounding.ToEven</code>, matching .NET's <code>decimal</code> convention and IEEE 754. Pass an explicit <code>MidpointRounding</code> argument to opt out.</li>
+<li><strong>Audit-friendly FX.</strong> Dated provider lookups return <code>RateLookupResult</code>, which carries the provider name, the actual date used, the offset-day distance from the requested date, the resolution policy that fired, and an inversion flag — enough to reconstruct any conversion after the fact.</li>
+<li><strong>Zero-balance pruning.</strong> <code>MoneyBag</code> removes zero balances on every operation, so equality and enumeration are stable across insertion order and across serialisation round trips.</li>
+</ul>
+<h2 id="bodufinancialdependencyinjection">Bodu.Financial.DependencyInjection</h2>
+<p>The companion <strong><code>Bodu.Financial.DependencyInjection</code></strong> package — a separate, Stable package — wires the stack into a <code>Microsoft.Extensions.DependencyInjection</code> container:</p>
+<pre><code class="lang-bash">dotnet add package Bodu.Financial.DependencyInjection
+</code></pre>
+<p>The entry point is <code>AddFinancialService(...)</code>, an <code>IServiceCollection</code> extension method in the <code>Bodu.Financial</code> namespace. Both overloads register the default <a class="xref" href="../../api/Bodu.Financial.Currencies.ICurrency.html">ICurrency</a> lookup and return a fluent <a class="xref" href="../../api/Bodu.Financial.IFinancialServiceBuilder.html">IFinancialServiceBuilder</a> on which you compose the rest of the stack: a replacement currency lookup, named monetary contexts, and timeless and dated exchange-rate providers. Passing an <code>IConfiguration</code> additionally binds <a class="xref" href="../../api/Bodu.Financial.FinancialOptions.html">FinancialOptions</a> from a configuration section (default <code>&quot;Financial&quot;</code>). Financial JSON registration (<code>services.AddFinancialJson(policy)</code>) ships in the companion <code>Bodu.Financial.Serialization.Json</code> package.</p>
+<pre><code class="lang-csharp">using Bodu.Financial;
+using Microsoft.Extensions.DependencyInjection;
+
+builder.Services.AddFinancialService(configure: financial =&gt;
+{
+    financial
+        .AddExchangeRateProvider&lt;MyRateProvider&gt;()
+        .AddDatedExchangeRateProvider&lt;HistoricalRateProvider&gt;();
+});
+</code></pre>
+<p>The package references <code>Bodu.Financial</code> and <code>Bodu.Core</code> plus the <code>Microsoft.Extensions</code> abstractions it binds against (<code>DependencyInjection.Abstractions</code>, <code>Options</code>, <code>Options.ConfigurationExtensions</code>, <code>Configuration.Abstractions</code>, <code>Configuration.Binder</code>); applications that construct the financial types by hand (consoles, libraries, tests) do not need to reference it. See <a href="../../guides/financial/dependency-injection.html">Financial dependency injection</a> for the full builder surface, options binding, and the post-build <code>UseCurrencyResolution</code> activation step.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="concepts.html">Core concepts</a></strong> — glossary the rest of the documentation assumes.</li>
+<li><strong><a href="getting-started.html">Getting started</a></strong> — install the package and run minimal samples for <code>Money&lt;TCurrency&gt;</code>, <code>Money</code>, <code>MoneyBag</code>, the FX provider stack, and the JSON policies.</li>
+<li><strong><a href="../../guides/financial/money.html">Working with <code>Money&lt;TCurrency&gt;</code></a></strong> — type-parameter currency, allocation, conversion, exact-arithmetic chains, formatting and parsing, cash rounding, historic currencies, <code>Money</code> interop, <code>MoneyBag</code> portfolios.</li>
+<li><strong><a href="../../guides/financial/dependency-injection.html">Financial dependency injection</a></strong> — <code>AddFinancialService</code>, the fluent builder, options binding, and activation.</li>
+<li><strong><a href="../topics/numerics-and-financial.html">Numerics &amp; Financial topic overview</a></strong> — how this package, <code>Bodu.Numerics</code>, and the DI companion fit together.</li>
+<li><strong><a href="../../guides/topics/numerics-and-financial.html">Numerics &amp; Financial guides</a></strong> — the guides landing page for both libraries.</li>
+<li><strong><a href="../numerics/index.html">Bodu.Numerics introduction</a></strong> — the rational-arithmetic library that backs <code>Money&lt;T&gt;.ToFraction()</code>.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Financial.html">Bodu.Financial API reference</a></strong> — full type-by-type docs.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Financial.Currencies.html">Bodu.Financial.Currencies API reference</a></strong> — the currency metadata surface and the shipped ISO 4217 catalogue.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.html">Bodu.Financial.ExchangeRates API reference</a></strong> — the exchange-rate stack: core FX types, the web-provider machinery, and the per-source providers.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Financial.Serialization.Json.html">Bodu.Financial.Serialization.Json API reference</a></strong> — JSON converters and policies (companion package).</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

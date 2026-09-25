@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 300" role="img" aria-labelledby="wp-t wp-d">
+  <title id="wp-t">WeekPattern — an immutable seven-day bitmask</title>
+  <desc id="wp-d">WeekPattern is a value type holding one bit per day of the week, indexed by DayOfWeek from Sunday (bit 0) to Saturday (bit 6). The example pattern selects Monday through Friday, giving the bit string 0111110 and the formatted form MTuWThF. Because the type is immutable, With adds a day and Without clears one, each returning a new instance; the bitwise operators compose patterns by union, intersection, exclusive-or, and complement.</desc>
+
+  <defs>
+    <style>
+      .wp-bg   { fill: #0F172A; }
+      .wp-pan  { fill: #1E293B; stroke: #334155; stroke-width: 1; }
+      .wp-hdr  { fill: #111827; stroke: #334155; stroke-width: 1; }
+      .wp-ttl  { fill: #F8FAFC; font: 700 15px/1 "Segoe UI",Arial,sans-serif; }
+      .wp-form { fill: #94A3B8; font: italic 12px/1 "Cambria",Georgia,serif; }
+      .wp-on   { fill: #0D3331; stroke: #2DD4BF; stroke-width: 1.4; }
+      .wp-off  { fill: #1A2335; stroke: #475569; stroke-width: 1; }
+      .wp-day  { font: 700 14px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .wp-day-on  { fill: #5EEAD4; }
+      .wp-day-off { fill: #64748B; }
+      .wp-idx  { fill: #94A3B8; font: 400 10px/1 "Consolas",Menlo,monospace; text-anchor: middle; }
+      .wp-bit-on  { fill: #2DD4BF; font: 700 16px/1 "Consolas",Menlo,monospace; text-anchor: middle; }
+      .wp-bit-off { fill: #475569; font: 700 16px/1 "Consolas",Menlo,monospace; text-anchor: middle; }
+      .wp-lbl  { fill: #CBD5E1; font: 700 11px/1 "Segoe UI",Arial,sans-serif; }
+      .wp-val  { fill: #FBBF24; font: 700 13px/1 "Consolas",Menlo,monospace; }
+      .wp-op   { fill: #E2E8F0; font: 400 11px/1 "Segoe UI",Arial,sans-serif; }
+      .wp-opk  { fill: #A78BFA; font: 700 11px/1 "Consolas",Menlo,monospace; }
+    </style>
+  </defs>
+
+  <rect class="wp-bg" width="820" height="300"/>
+
+  <g transform="translate(10 10)">
+    <rect class="wp-pan" width="800" height="280" rx="8"/>
+    <rect class="wp-hdr" width="800" height="46" rx="8"/>
+    <rect class="wp-hdr" y="38" width="800" height="8"/>
+    <text class="wp-ttl" x="16" y="29">WeekPattern — one bit per day, indexed by DayOfWeek</text>
+    <text class="wp-form" x="784" y="29" text-anchor="end">immutable value type — every change returns a new instance</text>
+
+    <!-- day cells: Sunday (bit 0) .. Saturday (bit 6); weekdays selected -->
+    <g>
+      <!-- Sun -->
+      <rect class="wp-off" x="54" y="66" width="92" height="58" rx="7"/>
+      <text class="wp-day wp-day-off" x="100" y="91">Sun</text>
+      <text class="wp-idx" x="100" y="112">bit 0</text>
+      <text class="wp-bit-off" x="100" y="158">0</text>
+      <!-- Mon -->
+      <rect class="wp-on" x="154" y="66" width="92" height="58" rx="7"/>
+      <text class="wp-day wp-day-on" x="200" y="91">Mon</text>
+      <text class="wp-idx" x="200" y="112">bit 1</text>
+      <text class="wp-bit-on" x="200" y="158">1</text>
+      <!-- Tue -->
+      <rect class="wp-on" x="254" y="66" width="92" height="58" rx="7"/>
+      <text class="wp-day wp-day-on" x="300" y="91">Tue</text>
+      <text class="wp-idx" x="300" y="112">bit 2</text>
+      <text class="wp-bit-on" x="300" y="158">1</text>
+      <!-- Wed -->
+      <rect class="wp-on" x="354" y="66" width="92" height="58" rx="7"/>
+      <text class="wp-day wp-day-on" x="400" y="91">Wed</text>
+      <text class="wp-idx" x="400" y="112">bit 3</text>
+      <text class="wp-bit-on" x="400" y="158">1</text>
+      <!-- Thu -->
+      <rect class="wp-on" x="454" y="66" width="92" height="58" rx="7"/>
+      <text class="wp-day wp-day-on" x="500" y="91">Thu</text>
+      <text class="wp-idx" x="500" y="112">bit 4</text>
+      <text class="wp-bit-on" x="500" y="158">1</text>
+      <!-- Fri -->
+      <rect class="wp-on" x="554" y="66" width="92" height="58" rx="7"/>
+      <text class="wp-day wp-day-on" x="600" y="91">Fri</text>
+      <text class="wp-idx" x="600" y="112">bit 5</text>
+      <text class="wp-bit-on" x="600" y="158">1</text>
+      <!-- Sat -->
+      <rect class="wp-off" x="654" y="66" width="92" height="58" rx="7"/>
+      <text class="wp-day wp-day-off" x="700" y="91">Sat</text>
+      <text class="wp-idx" x="700" y="112">bit 6</text>
+      <text class="wp-bit-off" x="700" y="158">0</text>
+    </g>
+
+    <!-- value readout -->
+    <text class="wp-lbl" x="54" y="190">value</text>
+    <text class="wp-val" x="100" y="190">0b0111110</text>
+    <text class="wp-lbl" x="230" y="190">ToString()</text>
+    <text class="wp-val" x="305" y="190">"MTuWThF"</text>
+    <text class="wp-lbl" x="440" y="190">Parse / TryParse</text>
+    <text class="wp-op" x="540" y="190">round-trips the formatted form</text>
+
+    <!-- operator legend -->
+    <rect x="54" y="208" width="692" height="50" rx="6" fill="#0F172A" stroke="#334155" stroke-width="1"/>
+    <text class="wp-lbl" x="68" y="227">Composition</text>
+    <text class="wp-op" x="150" y="227"><tspan class="wp-opk">With(day)</tspan> sets a bit · <tspan class="wp-opk">Without(day)</tspan> clears a bit</text>
+    <text class="wp-lbl" x="68" y="247">Operators</text>
+    <text class="wp-op" x="150" y="247"><tspan class="wp-opk">|</tspan> union  ·  <tspan class="wp-opk">&amp;</tspan> intersection  ·  <tspan class="wp-opk">^</tspan> toggle  ·  <tspan class="wp-opk">~</tspan> complement  —  enumerable as DayOfWeek values</text>
+  </g>
+</svg>

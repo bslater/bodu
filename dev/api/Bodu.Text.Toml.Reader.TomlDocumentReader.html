@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Struct TomlDocumentReader | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Struct TomlDocumentReader | BODU ">
+    
+    <meta name="description" content="Provides a forward-only cursor over the normalized, tree-order token stream of a parsed TOML document, serving as the binding layer through which converters consume values. The reader is a ref struct, so it cannot be boxed or captured; pass it by ref to thread it through a converter.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Text.Toml.Reader.TomlDocumentReader">
+
+
+
+  <h1 id="Bodu_Text_Toml_Reader_TomlDocumentReader" data-uid="Bodu.Text.Toml.Reader.TomlDocumentReader" class="text-break">Struct TomlDocumentReader</h1>
+  <div class="markdown level0 summary"><p>Provides a forward-only cursor over the normalized, tree-order token stream of a parsed TOML document, serving as
+the binding layer through which converters consume values. The reader is a <code>ref struct</code>, so it
+cannot be boxed or captured; pass it by <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/ref">ref</a> to thread it through a converter.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetype.equals">ValueType.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetype.gethashcode">ValueType.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetype.tostring">ValueType.ToString()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Toml.html">Toml</a>.<a class="xref" href="Bodu.Text.Toml.Reader.html">Reader</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Text.Toml.dll</h6>
+  <h5 id="Bodu_Text_Toml_Reader_TomlDocumentReader_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ref struct TomlDocumentReader</code></pre>
+  </div>
+  <h5 id="Bodu_Text_Toml_Reader_TomlDocumentReader_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+TOML cannot be tokenized into tree order in a single forward pass: out-of-line <code>[table]</code> and
+<code>[[array-of-tables]]</code> headers contribute to structure declared elsewhere in the document. The constructor
+therefore parses the entire document up front — scanning the UTF-8 bytes with <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.html">Utf8TomlReader</a> and
+enforcing TOML's key, value, table, and array-of-tables rules through <span class="xref">Bodu.Text.Toml.Reader.TomlDocumentBuilder</span> — into a
+flat row store, and <a class="xref" href="Bodu.Text.Toml.Reader.TomlDocumentReader.Read.html#Bodu_Text_Toml_Reader_TomlDocumentReader_Read">Read()</a> advances a depth-first cursor over that store, emitting the normalized token
+stream on demand rather than materializing it. This type walks a parsed document; <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.html">Utf8TomlReader</a>
+reads the UTF-8 source in document order.
+</p>
+<p>
+The stream is normalized: the several TOML spellings of structure collapse to a single nested shape. A header table,
+a dotted key, and an inline <code>{ … }</code> table all surface as <a class="xref" href="Bodu.Text.Toml.TomlTokenType.html#Bodu_Text_Toml_TomlTokenType_PropertyName">PropertyName</a> followed by
+<a class="xref" href="Bodu.Text.Toml.TomlTokenType.html#Bodu_Text_Toml_TomlTokenType_StartTable">StartTable</a> … <a class="xref" href="Bodu.Text.Toml.TomlTokenType.html#Bodu_Text_Toml_TomlTokenType_EndTable">EndTable</a>, with out-of-line headers merged
+into the correct nested table. An array-of-tables surfaces as <a class="xref" href="Bodu.Text.Toml.TomlTokenType.html#Bodu_Text_Toml_TomlTokenType_StartArray">StartArray</a> whose elements
+are each a <a class="xref" href="Bodu.Text.Toml.TomlTokenType.html#Bodu_Text_Toml_TomlTokenType_StartTable">StartTable</a>. Scalars are decoded once during parsing and exposed through the
+typed accessors.
+</p>
+<p>
+Because parsing happens in the constructor, a malformed document raises <a class="xref" href="Bodu.Text.Toml.TomlFormatException.html">TomlFormatException</a> from the
+constructor rather than from <a class="xref" href="Bodu.Text.Toml.Reader.TomlDocumentReader.Read.html#Bodu_Text_Toml_Reader_TomlDocumentReader_Read">Read()</a>.
+</p>
+<p>
+Date-time values map onto the CLR date and time types, which imposes three deliberate deviations from the RFC 3339
+grammar that TOML incorporates by reference: a leap second (<code>23:59:60</code>) is rejected because
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> and <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.timeonly">TimeOnly</a> cannot represent second 60; year <code>0000</code> is rejected because
+the CLR calendar begins at year 1; and offsets beyond ±14:00 are rejected by <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetimeoffset">DateTimeOffset</a>. Each
+surfaces as a <a class="xref" href="Bodu.Text.Toml.TomlFormatException.html">TomlFormatException</a>.
+</p>
+</div>
+  <h3 id="constructors">Constructors
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_TomlDocumentReader__ctor_System_Buffers_ReadOnlySequence_System_Byte___" data-uid="Bodu.Text.Toml.Reader.TomlDocumentReader.#ctor(System.Buffers.ReadOnlySequence{System.Byte}@)">
+          <a class="xref" href="Bodu.Text.Toml.Reader.TomlDocumentReader.-ctor.html#Bodu_Text_Toml_Reader_TomlDocumentReader__ctor_System_Buffers_ReadOnlySequence_System_Byte___">TomlDocumentReader(in ReadOnlySequence&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Text.Toml.Reader.TomlDocumentReader.html">TomlDocumentReader</a> struct over the supplied sequence, enforcing
+strict TOML v1.0.0.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_TomlDocumentReader__ctor_System_Buffers_ReadOnlySequence_System_Byte___Bodu_Text_Toml_Reader_TomlReaderOptions_" data-uid="Bodu.Text.Toml.Reader.TomlDocumentReader.#ctor(System.Buffers.ReadOnlySequence{System.Byte}@,Bodu.Text.Toml.Reader.TomlReaderOptions)">
+          <a class="xref" href="Bodu.Text.Toml.Reader.TomlDocumentReader.-ctor.html#Bodu_Text_Toml_Reader_TomlDocumentReader__ctor_System_Buffers_ReadOnlySequence_System_Byte___Bodu_Text_Toml_Reader_TomlReaderOptions_">TomlDocumentReader(in ReadOnlySequence&lt;byte&gt;, TomlReaderOptions)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Text.Toml.Reader.TomlDocumentReader.html">TomlDocumentReader</a> struct over the supplied sequence using the
+supplied options.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_TomlDocumentReader__ctor_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Toml.Reader.TomlDocumentReader.#ctor(System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.Text.Toml.Reader.TomlDocumentReader.-ctor.html#Bodu_Text_Toml_Reader_TomlDocumentReader__ctor_System_ReadOnlySpan_System_Byte__">TomlDocumentReader(ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Text.Toml.Reader.TomlDocumentReader.html">TomlDocumentReader</a> struct over the supplied bytes, enforcing
+strict TOML v1.0.0.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_TomlDocumentReader__ctor_System_ReadOnlySpan_System_Byte__Bodu_Text_Toml_Reader_TomlReaderOptions_" data-uid="Bodu.Text.Toml.Reader.TomlDocumentReader.#ctor(System.ReadOnlySpan{System.Byte},Bodu.Text.Toml.Reader.TomlReaderOptions)">
+          <a class="xref" href="Bodu.Text.Toml.Reader.TomlDocumentReader.-ctor.html#Bodu_Text_Toml_Reader_TomlDocumentReader__ctor_System_ReadOnlySpan_System_Byte__Bodu_Text_Toml_Reader_TomlReaderOptions_">TomlDocumentReader(ReadOnlySpan&lt;byte&gt;, TomlReaderOptions)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Text.Toml.Reader.TomlDocumentReader.html">TomlDocumentReader</a> struct over the supplied bytes using the
+supplied options.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_TomlDocumentReader_CurrentDepth" data-uid="Bodu.Text.Toml.Reader.TomlDocumentReader.CurrentDepth">
+          <a class="xref" href="Bodu.Text.Toml.Reader.TomlDocumentReader.CurrentDepth.html#Bodu_Text_Toml_Reader_TomlDocumentReader_CurrentDepth">CurrentDepth</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the current container nesting depth.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_TomlDocumentReader_TokenType" data-uid="Bodu.Text.Toml.Reader.TomlDocumentReader.TokenType">
+          <a class="xref" href="Bodu.Text.Toml.Reader.TomlDocumentReader.TokenType.html#Bodu_Text_Toml_Reader_TomlDocumentReader_TokenType">TokenType</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the kind of the current token.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_TomlDocumentReader_GetBoolean" data-uid="Bodu.Text.Toml.Reader.TomlDocumentReader.GetBoolean">
+          <a class="xref" href="Bodu.Text.Toml.Reader.TomlDocumentReader.GetBoolean.html#Bodu_Text_Toml_Reader_TomlDocumentReader_GetBoolean">GetBoolean()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads the current token as a Boolean.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_TomlDocumentReader_GetDateOnly" data-uid="Bodu.Text.Toml.Reader.TomlDocumentReader.GetDateOnly">
+          <a class="xref" href="Bodu.Text.Toml.Reader.TomlDocumentReader.GetDateOnly.html#Bodu_Text_Toml_Reader_TomlDocumentReader_GetDateOnly">GetDateOnly()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads the current token as a local date.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_TomlDocumentReader_GetDateTime" data-uid="Bodu.Text.Toml.Reader.TomlDocumentReader.GetDateTime">
+          <a class="xref" href="Bodu.Text.Toml.Reader.TomlDocumentReader.GetDateTime.html#Bodu_Text_Toml_Reader_TomlDocumentReader_GetDateTime">GetDateTime()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads the current token as a local date-time.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_TomlDocumentReader_GetDateTimeOffset" data-uid="Bodu.Text.Toml.Reader.TomlDocumentReader.GetDateTimeOffset">
+          <a class="xref" href="Bodu.Text.Toml.Reader.TomlDocumentReader.GetDateTimeOffset.html#Bodu_Text_Toml_Reader_TomlDocumentReader_GetDateTimeOffset">GetDateTimeOffset()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads the current token as an offset date-time.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_TomlDocumentReader_GetDouble" data-uid="Bodu.Text.Toml.Reader.TomlDocumentReader.GetDouble">
+          <a class="xref" href="Bodu.Text.Toml.Reader.TomlDocumentReader.GetDouble.html#Bodu_Text_Toml_Reader_TomlDocumentReader_GetDouble">GetDouble()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads the current token as an IEEE 754 binary64 floating-point value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_TomlDocumentReader_GetInt64" data-uid="Bodu.Text.Toml.Reader.TomlDocumentReader.GetInt64">
+          <a class="xref" href="Bodu.Text.Toml.Reader.TomlDocumentReader.GetInt64.html#Bodu_Text_Toml_Reader_TomlDocumentReader_GetInt64">GetInt64()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads the current token as a 64-bit signed integer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_TomlDocumentReader_GetString" data-uid="Bodu.Text.Toml.Reader.TomlDocumentReader.GetString">
+          <a class="xref" href="Bodu.Text.Toml.Reader.TomlDocumentReader.GetString.html#Bodu_Text_Toml_Reader_TomlDocumentReader_GetString">GetString()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads the current token as UTF-8 text.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_TomlDocumentReader_GetTimeOnly" data-uid="Bodu.Text.Toml.Reader.TomlDocumentReader.GetTimeOnly">
+          <a class="xref" href="Bodu.Text.Toml.Reader.TomlDocumentReader.GetTimeOnly.html#Bodu_Text_Toml_Reader_TomlDocumentReader_GetTimeOnly">GetTimeOnly()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads the current token as a local time.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_TomlDocumentReader_Read" data-uid="Bodu.Text.Toml.Reader.TomlDocumentReader.Read">
+          <a class="xref" href="Bodu.Text.Toml.Reader.TomlDocumentReader.Read.html#Bodu_Text_Toml_Reader_TomlDocumentReader_Read">Read()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Advances the reader to the next token.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_TomlDocumentReader_Skip" data-uid="Bodu.Text.Toml.Reader.TomlDocumentReader.Skip">
+          <a class="xref" href="Bodu.Text.Toml.Reader.TomlDocumentReader.Skip.html#Bodu_Text_Toml_Reader_TomlDocumentReader_Skip">Skip()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Skips the current value, including the entire subtree when the reader is positioned on a
+<a class="xref" href="Bodu.Text.Toml.TomlTokenType.html#Bodu_Text_Toml_TomlTokenType_StartTable">StartTable</a> or <a class="xref" href="Bodu.Text.Toml.TomlTokenType.html#Bodu_Text_Toml_TomlTokenType_StartArray">StartArray</a>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

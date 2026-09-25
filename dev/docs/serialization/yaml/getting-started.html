@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Bodu.Text.Yaml — Getting started | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Bodu.Text.Yaml — Getting started | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../../images/favicon.svg">
+      <link rel="stylesheet" href="../../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../../styles/docfx.css">
+      <link rel="stylesheet" href="../../../styles/main.css">
+      <meta property="docfx:navrel" content="../../../toc.html">
+      <meta property="docfx:tocrel" content="../../toc.html">
+    
+    <meta property="docfx:rel" content="../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../../index.html">
+                <img id="logo" class="svg" src="../../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="getting-started">Getting started</h1>
+
+<p>This page installs <strong>Bodu.Text.Yaml</strong>, runs a first round trip, renames members, and edits a document with the DOM. For the format specifics see the <a href="index.html">introduction</a>; for the moving parts see <a href="concepts.html">core concepts</a>.</p>
+<h2 id="install">Install</h2>
+<p>Bodu.Text.Yaml targets <code>net8.0</code>. Add the package:</p>
+<pre><code class="lang-bash">dotnet add package Bodu.Text.Yaml
+</code></pre>
+<h2 id="a-first-round-trip">A first round trip</h2>
+<p><code>Serialize&lt;T&gt;</code> writes an object graph to a YAML <code>string</code>; <code>Deserialize&lt;T&gt;</code> binds the text back to a type. Note that <code>Deserialize&lt;T&gt;</code> returns <code>T?</code>, so use <code>!</code> where the document is known to be non-null:</p>
+<pre><code class="lang-csharp">using Bodu.Text.Yaml;
+
+public sealed class ServerConfig
+{
+    public string Host { get; set; } = &quot;&quot;;
+    public int Port { get; set; }
+}
+
+var config = new ServerConfig { Host = &quot;localhost&quot;, Port = 8080 };
+
+string yaml = YamlSerializer.Serialize(config);
+// Host: localhost
+// Port: 8080
+
+ServerConfig back = YamlSerializer.Deserialize&lt;ServerConfig&gt;(yaml)!;
+// back.Port → 8080
+</code></pre>
+<p><code>Deserialize&lt;T&gt;</code> also accepts UTF-8 bytes directly:</p>
+<pre><code class="lang-csharp">ReadOnlySpan&lt;byte&gt; utf8 = Encoding.UTF8.GetBytes(yaml);
+ServerConfig fromBytes = YamlSerializer.Deserialize&lt;ServerConfig&gt;(utf8)!;
+</code></pre>
+<p><code>Deserialize&lt;T&gt;(Stream)</code> and <code>DeserializeAsync&lt;T&gt;(Stream)</code> read a stream to its end, and <code>Serialize&lt;T&gt;(IBufferWriter&lt;byte&gt;, …)</code> / <code>SerializeAsync&lt;T&gt;(Stream, …)</code> write UTF-8 bytes. The stream overloads buffer the whole document in memory — only the stream copy is asynchronous.</p>
+<h2 id="rename-members">Rename members</h2>
+<p>A naming policy renames every member; <a class="xref" href="../../../api/Bodu.Text.Serialization.PropertyNameAttribute.html">PropertyNameAttribute</a> pins a single one and always wins over the policy:</p>
+<pre><code class="lang-csharp">using Bodu.Text.Serialization;
+using Bodu.Text.Yaml;
+
+public sealed class Endpoint
+{
+    [PropertyName(&quot;display-name&quot;)]
+    public string DisplayName { get; set; } = &quot;Health check&quot;;
+
+    public int MaxRetryCount { get; set; } = 5;
+}
+
+var options = new YamlSerializerOptions
+{
+    PropertyNamingPolicy = NamingPolicy.SnakeCaseLower,
+};
+
+string yaml = YamlSerializer.Serialize(new Endpoint(), options);
+// display-name: Health check
+// max_retry_count: 5
+</code></pre>
+<p>The naming policies are <code>CamelCase</code>, <code>SnakeCaseLower</code> / <code>SnakeCaseUpper</code>, and <code>KebabCaseLower</code> / <code>KebabCaseUpper</code>; the <code>YamlSerializerDefaults.Web</code> preset selects camel-case with case-insensitive matching. Member shaping beyond renaming and ignoring is covered in <a href="../../../guides/serialization/yaml/attributes.html">Mapping attributes</a>.</p>
+<h2 id="edit-a-document-without-a-model">Edit a document without a model</h2>
+<p>When you do not have a POCO, parse to the mutable <a class="xref" href="../../../api/Bodu.Text.Yaml.Nodes.YamlNode.html">YamlNode</a> DOM, index into the tree, build new scalars with <code>YamlValue.Create(…)</code>, and write the document back with <code>ToYamlString()</code>:</p>
+<pre><code class="lang-csharp">using Bodu.Text.Yaml.Nodes;
+
+string source = &quot;&quot;&quot;
+    server:
+      host: localhost
+      port: 8080
+    &quot;&quot;&quot;;
+
+YamlNode root = YamlNode.Parse(source)!;
+root[&quot;server&quot;]![&quot;port&quot;] = YamlValue.Create(9090);
+
+string updated = root.ToYamlString();
+// server:
+//   host: localhost
+//   port: 9090
+</code></pre>
+<p><code>YamlValue.Create</code> has overloads for <code>string</code>, <code>long</code>, <code>double</code>, and <code>bool</code>. To read a value back out, use <code>GetValue&lt;T&gt;()</code> on a <code>YamlValue</code>.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="../../../guides/serialization/yaml/using.html">Using YAML</a></strong> — the full set of worked patterns, including both DOMs and multi-document streams.</li>
+<li><strong><a href="../../../guides/serialization/yaml/attributes.html">Mapping attributes</a></strong> — naming policies, <code>[PropertyName]</code>, <code>[Ignore]</code>, the wider attribute family, and the options flags.</li>
+<li><strong><a href="../../../guides/serialization/yaml/converters.html">Writing converters</a></strong> — custom shapes with <code>YamlConverter&lt;T&gt;</code>.</li>
+<li><strong><a href="concepts.html">Core concepts</a></strong> and the <strong><a href="index.html">introduction</a></strong> — the family vocabulary and the YAML format specifics.</li>
+<li><strong><a href="../index.html">Bodu serializers introduction</a></strong> — the family parent.</li>
+<li><strong>API reference</strong> — <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlSerializer.html">YamlSerializer</a>, <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlSerializerOptions.html">YamlSerializerOptions</a>.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../styles/main.js"></script>
+  </body>
+</html>

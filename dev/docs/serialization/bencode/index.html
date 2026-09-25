@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Bodu.Text.Bencode — Introduction | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Bodu.Text.Bencode — Introduction | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../../images/favicon.svg">
+      <link rel="stylesheet" href="../../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../../styles/docfx.css">
+      <link rel="stylesheet" href="../../../styles/main.css">
+      <meta property="docfx:navrel" content="../../../toc.html">
+      <meta property="docfx:tocrel" content="../../toc.html">
+    
+    <meta property="docfx:rel" content="../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../../index.html">
+                <img id="logo" class="svg" src="../../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+
+
+<p><img src="../../../images/hero-bencode.svg" alt="Bodu.Text.Bencode"></p>
+<h1 id="bodutextbencode">Bodu.Text.Bencode</h1>
+<p><strong>Bodu.Text.Bencode</strong> is a library for <a href="https://www.bittorrent.org/beps/bep_0003.html">Bencode (BEP 3)</a>, the compact binary encoding used by BitTorrent for <code>.torrent</code> metadata and tracker responses. It is one of the three <a href="../index.html">Bodu serializers</a> and shares the architecture described in the <a href="../index.html">family introduction</a> (the serializer / DOM / reader-writer tiers, converters, attributes, naming policies) member-for-member with its siblings <a href="../toml/index.html">Bodu.Text.Toml</a> and <a href="../yaml/index.html">Bodu.Text.Yaml</a>. This page covers what is <em>specific</em> to Bencode.</p>
+<h2 id="the-format-in-one-paragraph">The format in one paragraph</h2>
+<p>Bencode has exactly four kinds: <strong>byte strings</strong> (<code>4:spam</code>), <strong>integers</strong> (<code>i42e</code>), <strong>lists</strong> (<code>l…e</code>), and <strong>dictionaries</strong> (<code>d…e</code>) whose keys are byte strings in ascending bytewise order. There is no Boolean, no floating-point, no date-time, and no null. Documents are binary, self-framing, and — when the BEP 3 canonical rules are followed — byte-for-byte deterministic for the same data, which is why torrent info-hashes can be computed over the encoded form.</p>
+<h2 id="byte-strings-not-text">Byte strings, not text</h2>
+<p>The native Bencode scalar is a <em>byte</em> string, not a character string. <a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeSerializer.html">BencodeSerializer</a> therefore treats binary data as a first-class citizen:</p>
+<ul>
+<li><code>byte[]</code>, <code>Memory&lt;byte&gt;</code>, and <code>ReadOnlyMemory&lt;byte&gt;</code> map directly to byte strings with no transcoding or Base64 detour.</li>
+<li><code>string</code> values are written as UTF-8 byte strings.</li>
+<li><code>enum</code> values are written as member-name byte strings.</li>
+</ul>
+<p>This makes Bencode a natural fit for payloads that mix identifiers with raw hashes or binary blobs — the torrent <code>pieces</code> field being the canonical example.</p>
+<h2 id="canonical-output">Canonical output</h2>
+<p>The writer always emits canonical BEP 3: dictionary entries appear in ascending bytewise key order regardless of member declaration order, integers carry no leading or negative zeros, and a <code>null</code> member is omitted. The reader is equally strict by default — it accepts only canonical input (unique ascending keys, a single root, no trailing bytes), so a successful round trip is byte-identical. Two opt-in switches relax the <em>read</em> path alone for documents from older, looser encoders — <code>AllowUnsortedKeys</code> and <code>AllowDuplicateKeys</code> on <a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeSerializerOptions.html">BencodeSerializerOptions</a> — while the writer stays unconditionally canonical. The library's conformance to BEP 3 and the BEP 52 canonical-form clarifications is pinned by data-driven tests in <code>Bodu.Text.Bencode/test</code> (integer grammar, byte-string grammar, dictionary key rules, container balance, single-root documents); the engineering review behind them lives in the repository under <code>docs/reviews/</code> and is not part of the published site.</p>
+<h2 id="what-bencode-cannot-represent">What Bencode cannot represent</h2>
+<p>Because the format has only four kinds, several everyday .NET types have <strong>no native Bencode form</strong>. The serializer refuses to guess: serializing such a member fails with <code>NotSupportedException</code> (&quot;No converter is configured for type '…'&quot;) unless a converter supplies a representation.</p>
+<table>
+<thead>
+<tr>
+<th>.NET kind</th>
+<th>Native form</th>
+<th>Bridge</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>bool</code></td>
+<td>none</td>
+<td>a <a href="../../../guides/serialization/bencode/converters.html">custom converter</a> — e.g. map to <code>i0e</code> / <code>i1e</code></td>
+</tr>
+<tr>
+<td><code>double</code> / <code>float</code> / <code>decimal</code></td>
+<td>none</td>
+<td>a custom converter — e.g. a scaled integer or a byte string</td>
+</tr>
+<tr>
+<td><code>DateTime</code> / <code>DateTimeOffset</code> / <code>DateOnly</code> / <code>TimeOnly</code></td>
+<td>none</td>
+<td>a custom converter — e.g. Unix seconds as an integer</td>
+</tr>
+<tr>
+<td><code>null</code> values</td>
+<td>none</td>
+<td>omitted on write by design</td>
+</tr>
+</tbody>
+</table>
+<p>The library never invents a lossy representation on your behalf; the choice of encoding for these kinds is yours, made explicit through a <a class="xref" href="../../../api/Bodu.Text.Bencode.Serialization.BencodeConverter-1.html">BencodeConverter&lt;T&gt;</a>.</p>
+<h2 id="headline-types">Headline types</h2>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeSerializer.html">BencodeSerializer</a></td>
+<td><code>Serialize</code> / <code>Deserialize&lt;T&gt;</code> over <code>byte[]</code>, <code>ReadOnlySpan&lt;byte&gt;</code>, <code>IBufferWriter&lt;byte&gt;</code>, and <code>Stream</code> (with async variants), plus the DOM bridges <code>SerializeToNode</code> / <code>SerializeToDocument</code> and <code>Deserialize&lt;T&gt;(BencodeNode)</code>.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeSerializerOptions.html">BencodeSerializerOptions</a></td>
+<td>Converters, naming policy, case-insensitive matching, ignore conditions, unmapped-member and object-creation policy, read-path leniency (<code>AllowUnsortedKeys</code> / <code>AllowDuplicateKeys</code>), depth.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../../api/Bodu.Text.Serialization.NamingPolicy.html">NamingPolicy</a></td>
+<td>Property-name policy: <code>CamelCase</code>, <code>SnakeCaseLower</code>, <code>SnakeCaseUpper</code>, <code>KebabCaseLower</code>, <code>KebabCaseUpper</code>.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../../api/Bodu.Text.Bencode.Serialization.BencodeConverter-1.html">BencodeConverter&lt;T&gt;</a></td>
+<td>Base class for a custom converter over the reader/writer pair; attach one to a member or type with <a class="xref" href="../../../api/Bodu.Text.Serialization.ConverterAttribute.html">ConverterAttribute</a>. Built-in enum converters: <a class="xref" href="../../../api/Bodu.Text.Bencode.Serialization.BencodeStringEnumConverter.html">BencodeStringEnumConverter</a> and <a class="xref" href="../../../api/Bodu.Text.Bencode.Serialization.BencodeNumberEnumConverter-1.html">BencodeNumberEnumConverter&lt;TEnum&gt;</a>.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../../api/Bodu.Text.Bencode.Nodes.BencodeNode.html">BencodeNode</a></td>
+<td>Mutable DOM — <code>Parse</code>, index, mutate, write back.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../../api/Bodu.Text.Bencode.Document.BencodeDocument.html">BencodeDocument</a></td>
+<td>Read-only, low-allocation DOM walked through <code>RootElement</code>.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../../api/Bodu.Text.Bencode.Reader.Utf8BencodeReader.html">Utf8BencodeReader</a> / <a class="xref" href="../../../api/Bodu.Text.Bencode.Writer.Utf8BencodeWriter.html">Utf8BencodeWriter</a></td>
+<td>Forward-only, allocation-free <code>ref struct</code> token machines.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeFormatException.html">BencodeFormatException</a> / <a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeSerializationException.html">BencodeSerializationException</a></td>
+<td>Malformed input vs a value that cannot bind.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="common-scenarios">Common scenarios</h2>
+<table>
+<thead>
+<tr>
+<th>You want to…</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Encode or decode torrent-style metadata</td>
+<td><code>BencodeSerializer.Serialize</code> / <code>Deserialize&lt;T&gt;</code></td>
+</tr>
+<tr>
+<td>Inspect a <code>.torrent</code> file without a model</td>
+<td><a class="xref" href="../../../api/Bodu.Text.Bencode.Document.BencodeDocument.html">BencodeDocument</a> and <code>RootElement</code></td>
+</tr>
+<tr>
+<td>Edit one dictionary entry and write the document back</td>
+<td><a class="xref" href="../../../api/Bodu.Text.Bencode.Nodes.BencodeNode.html">BencodeNode</a></td>
+</tr>
+<tr>
+<td>Carry raw hashes alongside text fields</td>
+<td><code>byte[]</code> members — they map straight to byte strings</td>
+</tr>
+<tr>
+<td>Produce deterministic bytes for hashing or signing</td>
+<td>the canonical writer — output order is independent of member order</td>
+</tr>
+<tr>
+<td>Represent a <code>bool</code> or timestamp on the wire</td>
+<td>a <a href="../../../guides/serialization/bencode/converters.html">custom converter</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="../index.html">Bodu serializers introduction</a></strong> — the shared shape: tiers, converters, attributes, callbacks, naming policies.</li>
+<li><strong><a href="concepts.html">Core concepts</a></strong> — the Bencode vocabulary, including the full Bencode value-mapping table.</li>
+<li><strong><a href="getting-started.html">Getting started</a></strong> — install and the first round trip.</li>
+<li><strong><a href="../../../guides/serialization/bencode/using.html">Using Bencode</a></strong> — worked patterns: type mapping, converters for unrepresentable kinds, both DOMs, raw tokens.</li>
+<li><strong>API reference</strong> — <a class="xref" href="../../../api/Bodu.Text.Bencode.html">Bodu.Text.Bencode</a>.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../styles/main.js"></script>
+  </body>
+</html>

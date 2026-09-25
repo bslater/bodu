@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Evicting dictionary | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Evicting dictionary | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="evicting-dictionary">Evicting dictionary</h1>
+
+<p><code>EvictingDictionary&lt;TKey, TValue&gt;</code> is a fixed-capacity dictionary that automatically removes the least-worthy entry when capacity is exceeded. It implements the full <code>IDictionary&lt;TKey, TValue&gt;</code> surface, so it is a drop-in replacement for <code>Dictionary&lt;TKey, TValue&gt;</code> wherever a bounded cache is wanted — the eviction is the only behavioural difference. The victim is selected by one of <strong>six</strong> eviction policies, fixed at construction:</p>
+<table>
+<thead>
+<tr>
+<th>Policy</th>
+<th>Evicts</th>
+<th>Best for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>FirstInFirstOut</code></td>
+<td>The entry added earliest, regardless of access.</td>
+<td>Bounded queues; sliding time windows where age, not use, decides.</td>
+</tr>
+<tr>
+<td><code>LeastRecentlyUsed</code></td>
+<td>The entry accessed furthest in the past.</td>
+<td>General-purpose caches where recency predicts future use.</td>
+</tr>
+<tr>
+<td><code>LeastFrequentlyUsed</code></td>
+<td>The entry with the lowest cumulative access count.</td>
+<td>Long-lived caches where popularity predicts future use.</td>
+</tr>
+<tr>
+<td><code>MostRecentlyUsed</code></td>
+<td>The entry accessed most recently.</td>
+<td>Scan-resistant workloads where the just-touched item is least likely to be wanted again (e.g. a sequential cursor over a table).</td>
+</tr>
+<tr>
+<td><code>RandomReplacement</code></td>
+<td>A uniformly randomly chosen entry.</td>
+<td>Cheap, metadata-free eviction where any approximation is acceptable.</td>
+</tr>
+<tr>
+<td><code>SecondChance</code></td>
+<td>A FIFO scan that skips entries flagged as recently accessed (the flag clears on skip), evicting the first unflagged entry.</td>
+<td>A low-overhead approximation of LRU — the <em>clock</em> algorithm — without per-access timestamp bookkeeping.</td>
+</tr>
+</tbody>
+</table>
+<p><img src="../../images/diagrams/evicting-dictionary.svg" alt="EvictingDictionary entries with FIFO, LRU, and LFU eviction lanes"></p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>The enum declaration order is <code>FirstInFirstOut</code>, <code>LeastRecentlyUsed</code>, <code>LeastFrequentlyUsed</code>, <code>MostRecentlyUsed</code>, <code>RandomReplacement</code>, <code>SecondChance</code> — LFU precedes MRU. Do not depend on the numeric values; refer to the members by name.</p>
+</div>
+<p>The default policy when none is specified is <code>LeastRecentlyUsed</code>, and the default capacity is <code>16</code>.</p>
+<h2 id="how-the-policies-track-worthiness">How the policies track worthiness</h2>
+<p>Each entry carries the metadata its policy needs — an insertion order link, a recency link, an access count, and a recently-accessed flag — and the policy decides which structure is the next-victim oracle:</p>
+<table>
+<thead>
+<tr>
+<th>Policy</th>
+<th>Internal structure</th>
+<th>A successful read…</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>FirstInFirstOut</code></td>
+<td>Insertion-ordered linked list.</td>
+<td>…does not move the entry.</td>
+</tr>
+<tr>
+<td><code>LeastRecentlyUsed</code> / <code>SecondChance</code></td>
+<td>Recency linked list (head = victim).</td>
+<td>…moves the entry to the most-recent end (LRU) or sets its reference flag (SecondChance).</td>
+</tr>
+<tr>
+<td><code>MostRecentlyUsed</code></td>
+<td>Recency linked list (tail = victim).</td>
+<td>…moves the entry to the most-recent end.</td>
+</tr>
+<tr>
+<td><code>LeastFrequentlyUsed</code></td>
+<td>Frequency-bucketed sorted structure.</td>
+<td>…increments the access count and re-buckets.</td>
+</tr>
+<tr>
+<td><code>RandomReplacement</code></td>
+<td>None (plain hash table).</td>
+<td>…does not move the entry.</td>
+</tr>
+</tbody>
+</table>
+<p>Reads via the <code>this[key]</code> getter and <code>TryGetValue</code> count as accesses and update the policy metadata; the <code>TotalTouches</code> counter increments. <code>ContainsKey</code> and <code>PeekEvictionCandidate</code> are pure reads and do <strong>not</strong> count as accesses. <code>Touch</code> promotes a key without reading the value.</p>
+<div class="IMPORTANT">
+<h5>Important</h5>
+<p>Because reads mutate eviction metadata for LRU, MRU, LFU, and SecondChance, even concurrent read-read is unsafe. See <a href="#thread-safety">Thread safety</a> below.</p>
+</div>
+<h2 id="pattern-1--lru-cache">Pattern 1 — LRU cache</h2>
+<pre><code class="lang-csharp">using Bodu.Collections.Generic;
+
+var cache = new EvictingDictionary&lt;string, byte[]&gt;(
+    capacity: 50,
+    EvictingDictionaryPolicy.LeastRecentlyUsed);
+
+cache[&quot;config.json&quot;] = LoadFile(&quot;config.json&quot;);
+cache[&quot;schema.xsd&quot;]  = LoadFile(&quot;schema.xsd&quot;);
+
+// Reading a key marks it as recently used.
+if (cache.TryGetValue(&quot;config.json&quot;, out byte[]? data))
+    Use(data);
+</code></pre>
+<h2 id="pattern-2--fifo-bounded-store">Pattern 2 — FIFO bounded store</h2>
+<pre><code class="lang-csharp">using Bodu.Collections.Generic;
+
+var recent = new EvictingDictionary&lt;Guid, string&gt;(
+    capacity: 100,
+    EvictingDictionaryPolicy.FirstInFirstOut);
+
+// Oldest entry is evicted once capacity is reached.
+foreach (var (id, message) in incoming)
+    recent[id] = message;
+</code></pre>
+<h2 id="pattern-3--lfu-cache-for-hot-spot-data">Pattern 3 — LFU cache for hot-spot data</h2>
+<pre><code class="lang-csharp">using Bodu.Collections.Generic;
+
+var hot = new EvictingDictionary&lt;int, CompiledQuery&gt;(
+    capacity: 200,
+    EvictingDictionaryPolicy.LeastFrequentlyUsed);
+
+hot[queryId] = Compile(sql);
+if (hot.TryGetValue(queryId, out CompiledQuery? q))
+    Execute(q);   // increments the access counter
+</code></pre>
+<h2 id="pattern-4--scan-resistant-cache-mru">Pattern 4 — scan-resistant cache (MRU)</h2>
+<p><code>MostRecentlyUsed</code> evicts the entry just touched. It is the right choice when the access pattern is a one-pass sweep — a sequential cursor or a streaming join — where the item you have just read is the <em>least</em> likely to be needed again, and the older entries are the ones worth keeping:</p>
+<pre><code class="lang-csharp">using Bodu.Collections.Generic;
+
+var cursorCache = new EvictingDictionary&lt;long, Page&gt;(
+    capacity: 64,
+    EvictingDictionaryPolicy.MostRecentlyUsed);
+
+// A forward scan: each page read is unlikely to be revisited,
+// so on overflow the just-read page is the eviction victim,
+// preserving the earlier pages.
+foreach (long pageId in scanOrder)
+    cursorCache[pageId] = ReadPage(pageId);
+</code></pre>
+<h2 id="pattern-5--clock-approximation-of-lru-secondchance">Pattern 5 — clock approximation of LRU (SecondChance)</h2>
+<p><code>SecondChance</code> is the <em>clock</em> algorithm: a FIFO ring where each entry carries a reference bit. On overflow the scan inspects the head; if its bit is set, the bit clears and the entry gets a second chance (rotated to the back), otherwise it is evicted. It approximates LRU's hit rate without LRU's per-access list-splice, so it is cheaper on write-heavy workloads:</p>
+<pre><code class="lang-csharp">using Bodu.Collections.Generic;
+
+var cache = new EvictingDictionary&lt;string, byte[]&gt;(
+    capacity: 4096,
+    EvictingDictionaryPolicy.SecondChance);
+</code></pre>
+<h2 id="pattern-6--random-replacement">Pattern 6 — random replacement</h2>
+<p><code>RandomReplacement</code> keeps no recency or frequency metadata at all — eviction is a uniformly random pick. It is the cheapest policy per write and is a reasonable default when the access pattern has no exploitable locality:</p>
+<pre><code class="lang-csharp">using Bodu.Collections.Generic;
+
+var cache = new EvictingDictionary&lt;int, Tile&gt;(
+    capacity: 256,
+    EvictingDictionaryPolicy.RandomReplacement);
+</code></pre>
+<h2 id="pattern-7--explicit-eviction-promotion-touch">Pattern 7 — explicit eviction promotion (Touch)</h2>
+<p>Call <code>Touch</code> to promote a key without reading its value — useful when you want to mark an entry as recently used based on external logic. <code>Touch</code> returns <code>false</code> if the key is absent; <code>TouchOrThrow</code> raises <code>KeyNotFoundException</code> instead:</p>
+<pre><code class="lang-csharp">using Bodu.Collections.Generic;
+
+var lru = new EvictingDictionary&lt;string, Session&gt;(
+    capacity: 1000,
+    EvictingDictionaryPolicy.LeastRecentlyUsed);
+
+// Extend the session's lifetime on heartbeat.
+void OnHeartbeat(string sessionId)
+{
+    if (!lru.Touch(sessionId))   // false — the session was already evicted
+        ReloadSession(sessionId);
+}
+</code></pre>
+<h2 id="pattern-8--observing-evictions">Pattern 8 — observing evictions</h2>
+<p>Two events fire around each eviction, both typed <code>Action&lt;TKey, TValue&gt;</code>:</p>
+<ul>
+<li><code>ItemEvicting</code> — raised immediately <strong>before</strong> the entry is removed (informational; it cannot cancel the eviction).</li>
+<li><code>ItemEvicted</code> — raised immediately <strong>after</strong> removal, when the key and value are no longer present.</li>
+</ul>
+<p>Use them to flush a dirty entry to its backing store, decrement a resource counter, or emit a metric:</p>
+<pre><code class="lang-csharp">using Bodu.Collections.Generic;
+
+var cache = new EvictingDictionary&lt;string, Document&gt;(
+    capacity: 500,
+    EvictingDictionaryPolicy.LeastRecentlyUsed);
+
+cache.ItemEvicting += (key, doc) =&gt;
+{
+    if (doc.IsDirty)
+        FlushToDisk(key, doc);   // persist before it leaves the cache
+};
+</code></pre>
+<div class="IMPORTANT">
+<h5>Important</h5>
+<p>Event handlers must not mutate the dictionary. <code>Add</code>, <code>Remove</code>, <code>Clear</code>, and the indexer setter are guarded against re-entry from inside an eviction handler and throw <code>InvalidOperationException</code> if called there. Keep handlers side-effect-only with respect to the dictionary itself.</p>
+</div>
+<h2 id="time-based-expiration-ttl">Time-based expiration (TTL)</h2>
+<p>Capacity policies answer <em>&quot;which entry is least worth keeping?&quot;</em>; expiration answers <em>&quot;which entries are too old to serve?&quot;</em>. The two are orthogonal — supplying an <code>EvictingDictionaryExpiration</code> at construction adds a time dimension on top of <strong>any</strong> of the six policies:</p>
+<pre><code class="lang-csharp">using Bodu.Collections.Generic;
+
+var cache = new EvictingDictionary&lt;string, Session&gt;(
+    capacity: 1000,
+    EvictingDictionaryPolicy.LeastRecentlyUsed,
+    new EvictingDictionaryExpiration(
+        timeToLive: TimeSpan.FromMinutes(20),
+        kind: EvictingDictionaryExpirationKind.Sliding));
+</code></pre>
+<p>The options type is immutable and carries three settings:</p>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TimeToLive</code> (<code>TimeSpan?</code>)</td>
+<td>Default lifetime for entries added without a per-entry override. <code>null</code> means such entries never expire (only per-entry TTLs apply). Must be positive when non-null.</td>
+</tr>
+<tr>
+<td><code>Kind</code></td>
+<td><code>Absolute</code> — the entry expires <code>TimeToLive</code> after it was added or last updated; reads never extend it. <code>Sliding</code> — every successful read access restarts the countdown.</td>
+</tr>
+<tr>
+<td><code>TimeProvider</code></td>
+<td>The clock (defaults to <code>TimeProvider.System</code>). Inject a fake provider to drive expiry deterministically in tests.</td>
+</tr>
+</tbody>
+</table>
+<p>Without an expiration configuration (<code>Expiration == null</code>) the dictionary never reads a clock and behaves exactly as the capacity-only cache described above.</p>
+<h3 id="which-members-slide">Which members slide</h3>
+<p>Under <code>Sliding</code>, the deadline is refreshed by the members that <em>return the entry's value</em>: <code>TryGetValue</code> and the indexer getter. <code>ContainsKey</code> does <strong>not</strong> slide — it is a pure read that confirms presence without touching the deadline (symmetric with <code>Touch</code>). Enumeration does <strong>not</strong> slide either, and neither does <code>Touch</code> — <code>Touch</code> promotes the entry in the capacity policy only.</p>
+<h3 id="per-entry-ttl-overrides">Per-entry TTL overrides</h3>
+<p><code>Add(key, value, timeToLive)</code> and <code>TryAdd(key, value, timeToLive)</code> give one entry its own lifetime, overriding the default. Both throw <code>InvalidOperationException</code> if the dictionary was constructed without an <code>EvictingDictionaryExpiration</code> (the feature needs a clock), and <code>ArgumentOutOfRangeException</code> for a non-positive TTL. <code>TryAdd</code> returns <code>false</code> without modifying anything when a live entry already exists; an expired-but-unpurged entry does not block it.</p>
+<p>A later plain <code>Add(key, value)</code> or indexer assignment is a <em>fresh lease</em>: it restarts the lifetime using the dictionary default and discards any per-entry override the entry previously carried.</p>
+<pre><code class="lang-csharp">cache.Add(&quot;otp:42&quot;, oneTimeCode, TimeSpan.FromSeconds(30));   // short-lived override
+bool added = cache.TryAdd(&quot;otp:42&quot;, other, TimeSpan.FromSeconds(30)); // false while alive
+</code></pre>
+<h3 id="visibility-lazy-removal-and-the-count-contract">Visibility, lazy removal, and the <code>Count</code> contract</h3>
+<p>Expired entries become invisible immediately — <code>ContainsKey</code>, <code>TryGetValue</code>, the indexer getter, <code>Values.Contains</code>, and enumeration all treat them as absent even before they are physically removed. Removal is lazy:</p>
+<ul>
+<li>a key-directed access (<code>TryGetValue</code>, <code>ContainsKey</code>, indexer, <code>Touch</code>) that hits an expired entry removes it on the spot and reports a miss;</li>
+<li>capacity pressure purges <strong>all</strong> expired entries before the policy picks a victim — expired entries are always the preferred victims, so live entries are never evicted while an expired one exists;</li>
+<li><code>RemoveExpired()</code> purges everything expired right now and returns the number removed (<code>0</code> when expiry is not configured).</li>
+</ul>
+<p><code>Count</code> deliberately reports the <strong>raw stored count, including expired-but-unpurged entries</strong> — it stays an O(1) read that never touches the clock (the cachetools model). Enumeration may therefore yield fewer pairs than <code>Count</code> reports; call <code>RemoveExpired()</code> to reconcile. <code>Remove(key)</code> likewise operates on the physical entry and returns <code>true</code> for an expired-but-unpurged key.</p>
+<p>Every expiry removal raises the same <code>ItemEvicting</code> / <code>ItemEvicted</code> events and increments the same <code>EvictionCount</code> as a capacity eviction.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>There is <strong>no background timer</strong> — the dictionary only removes expired entries when something touches it. A cache that can sit idle for long periods holds expired entries (and their values) until the next access; schedule a periodic <code>RemoveExpired()</code> call if timely reclamation matters.</p>
+</div>
+<h3 id="testing-with-a-fake-clock">Testing with a fake clock</h3>
+<pre><code class="lang-csharp">var clock = new FakeTimeProvider();           // any TimeProvider test double
+var cache = new EvictingDictionary&lt;string, int&gt;(
+    8, new EvictingDictionaryExpiration(TimeSpan.FromMinutes(5),
+        EvictingDictionaryExpirationKind.Absolute, clock));
+
+cache.Add(&quot;A&quot;, 1);
+clock.Advance(TimeSpan.FromMinutes(6));
+bool alive = cache.ContainsKey(&quot;A&quot;);          // false — no real waiting
+</code></pre>
+<h2 id="inspecting-the-next-victim">Inspecting the next victim</h2>
+<p><code>PeekEvictionCandidate</code> returns the key that <em>would</em> be evicted on the next overflow, or <code>default</code> when the dictionary is empty. It is a pure read — it does not touch recency or frequency metadata — so it is safe to call in a monitoring loop:</p>
+<pre><code class="lang-csharp">TKey? nextOut = cache.PeekEvictionCandidate();
+</code></pre>
+<p>The <code>EvictionCount</code> and <code>TotalTouches</code> properties expose running totals of how many entries have been evicted and how many accesses have occurred since construction — useful for cache-effectiveness telemetry.</p>
+<h2 id="pattern-9--assignment-semantics">Pattern 9 — assignment semantics</h2>
+<p>Unlike <code>Dictionary&lt;TKey, TValue&gt;.Add</code>, assigning to an existing key replaces the value <strong>and</strong> resets its eviction metadata. Note that <code>Add(key, value)</code> here is also add-<em>or-replace</em> — it does <strong>not</strong> throw on a duplicate key the way <code>Dictionary&lt;TKey, TValue&gt;.Add</code> does. There is no plain <code>TryAdd</code> or <code>GetOrAdd</code>; use the indexer or <code>Add</code> (the only <code>TryAdd</code> overload is the TTL-taking one described under <a href="#time-based-expiration-ttl">Time-based expiration</a>):</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Collections.Generic;
+
+var lru = new EvictingDictionary&lt;string, int&gt;(
+    capacity: 3,
+    EvictingDictionaryPolicy.LeastRecentlyUsed);
+
+lru[&quot;a&quot;] = 1;
+lru[&quot;b&quot;] = 2;
+lru[&quot;c&quot;] = 3;
+
+// Re-assigning &quot;a&quot; resets its recency to newest.
+lru[&quot;a&quot;] = 10;
+
+// Adding &quot;d&quot; evicts the LRU entry, which is now &quot;b&quot;.
+lru[&quot;d&quot;] = 4;
+
+bool hasB = lru.ContainsKey(&quot;b&quot;);   // false — evicted
+</code></pre>
+<h2 id="choosing-a-capacity-and-comparer">Choosing a capacity and comparer</h2>
+<p>The capacity is the hard ceiling on entry count and must be greater than zero (the constructor throws <code>ArgumentOutOfRangeException</code> otherwise). A custom <code>IEqualityComparer&lt;TKey&gt;</code> can be supplied through the comparer-taking constructor overloads — for example <code>StringComparer.OrdinalIgnoreCase</code> for case-insensitive keys — and a seed collection can be supplied to pre-populate the cache:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Collections.Generic;
+
+var cache = new EvictingDictionary&lt;string, int&gt;(
+    capacity: 1000,
+    policy: EvictingDictionaryPolicy.LeastRecentlyUsed,
+    comparer: StringComparer.OrdinalIgnoreCase);
+</code></pre>
+<h2 id="thread-safety">Thread safety</h2>
+<p><code>EvictingDictionary&lt;TKey, TValue&gt;</code> is <strong>not thread-safe</strong>. Concurrent reads can mutate eviction metadata (LRU/MRU recency order, LFU access counts, SecondChance reference flags), so concurrent read-read is also not safe without external synchronization. Wrap with a lock or <code>ReaderWriterLockSlim</code> when multiple threads access the same instance, or use the thread-safe variant: <a href="concurrent-collections.html"><code>ConcurrentEvictingDictionary&lt;TKey,TValue&gt;</code></a> in the companion <code>Bodu.Collections.Concurrent</code> package supports all six policies over lock-striped segments, with optional TTL and single-flight <code>GetOrAdd</code>.</p>
+<h2 id="keys--values-enumeration-order"><code>Keys</code> / <code>Values</code> enumeration order</h2>
+<p><code>Keys</code> and <code>Values</code> are live views, but their enumeration order reflects the <strong>current eviction order</strong>, not insertion order — FIFO/LRU/SecondChance walk the recency list head-to-tail, MRU walks it tail-to-head, LFU walks ascending frequency buckets, and <code>RandomReplacement</code> follows the underlying hash-table order. Do not rely on <code>Keys</code> to recover insertion order under a recency-based policy.</p>
+<p>Because reads reorder those structures, enumerators are invalidated not only by writes but by <strong>successful lookups</strong>: under LRU, MRU, or LFU, a <code>TryGetValue</code>, indexer read, or <code>Touch</code> between iteration steps causes the next <code>MoveNext</code> to throw <code>InvalidOperationException</code>. Materialize the view first (<code>ToArray()</code> / <code>ToList()</code>) when interleaving reads with iteration.</p>
+<h2 id="api-summary">API summary</h2>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>this[TKey]</code> (get)</td>
+<td>Returns the value; throws <code>KeyNotFoundException</code> if absent. Counts as an access (promotes in LRU / MRU / LFU / SecondChance).</td>
+</tr>
+<tr>
+<td><code>this[TKey]</code> (set)</td>
+<td>Adds or replaces the entry, resetting its eviction metadata. Evicts the policy's victim if capacity is exceeded.</td>
+</tr>
+<tr>
+<td><code>Add(TKey, TValue)</code></td>
+<td>Add-or-replace; does <strong>not</strong> throw on a duplicate key. Restarts the entry's lifetime when expiry is configured.</td>
+</tr>
+<tr>
+<td><code>Add(TKey, TValue, TimeSpan)</code></td>
+<td>Add-or-replace with a per-entry TTL override. Requires an expiration configuration.</td>
+</tr>
+<tr>
+<td><code>TryAdd(TKey, TValue, TimeSpan)</code></td>
+<td>Adds with a per-entry TTL only if no live entry exists; returns <code>false</code> otherwise. Requires an expiration configuration.</td>
+</tr>
+<tr>
+<td><code>TryGetValue(TKey, out TValue)</code></td>
+<td>Returns the value without throwing; counts as an access. Slides the deadline under sliding expiry.</td>
+</tr>
+<tr>
+<td><code>ContainsKey(TKey)</code></td>
+<td>Returns <code>true</code> without counting as an access. A pure read: it does <strong>not</strong> slide the deadline under sliding expiry (it still treats an expired entry as absent and removes it lazily).</td>
+</tr>
+<tr>
+<td><code>RemoveExpired()</code></td>
+<td>Purges all expired entries now; returns the number removed (<code>0</code> when expiry is not configured).</td>
+</tr>
+<tr>
+<td><code>Expiration</code></td>
+<td>The <code>EvictingDictionaryExpiration</code> configuration, or <code>null</code> when expiry is disabled (get only).</td>
+</tr>
+<tr>
+<td><code>Touch(TKey)</code></td>
+<td>Promotes the key without reading the value; returns <code>false</code> if absent.</td>
+</tr>
+<tr>
+<td><code>TouchOrThrow(TKey)</code></td>
+<td>As <code>Touch</code>, but throws <code>KeyNotFoundException</code> when the key is absent.</td>
+</tr>
+<tr>
+<td><code>PeekEvictionCandidate()</code></td>
+<td>Returns the key that would be evicted next, or <code>default</code> when empty. Pure read.</td>
+</tr>
+<tr>
+<td><code>Remove(TKey)</code></td>
+<td>Removes the entry.</td>
+</tr>
+<tr>
+<td><code>Clear()</code></td>
+<td>Removes all entries and resets the running counters.</td>
+</tr>
+<tr>
+<td><code>Count</code></td>
+<td>Number of entries currently held.</td>
+</tr>
+<tr>
+<td><code>Capacity</code></td>
+<td>Maximum entries before eviction (get only).</td>
+</tr>
+<tr>
+<td><code>Policy</code></td>
+<td>The active <code>EvictingDictionaryPolicy</code> (get only).</td>
+</tr>
+<tr>
+<td><code>EvictionCount</code></td>
+<td>Total entries evicted since construction.</td>
+</tr>
+<tr>
+<td><code>TotalTouches</code></td>
+<td>Total accesses (reads + <code>Touch</code>) since construction.</td>
+</tr>
+<tr>
+<td><code>Keys</code> / <code>Values</code></td>
+<td>Live views in current eviction order (see above).</td>
+</tr>
+<tr>
+<td><code>ItemEvicting</code> / <code>ItemEvicted</code></td>
+<td><code>Action&lt;TKey, TValue&gt;</code> events raised before / after each eviction.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="circular-buffer.html">Circular buffer</a> — fixed-capacity FIFO ring buffer.</li>
+<li><a href="week-pattern.html">WeekPattern</a> — immutable bitmask value type for sets of days of the week.</li>
+<li><a href="index.html">Bodu.Collections guide index</a> — all key types at a glance.</li>
+<li><a class="xref" href="../../api/Bodu.Collections.Generic.html">Bodu.Collections.Generic API reference</a> — full namespace overview.</li>
+<li><strong><a href="../topics/core-foundations.html">Core Foundations guides</a></strong> — every guide in this topic.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

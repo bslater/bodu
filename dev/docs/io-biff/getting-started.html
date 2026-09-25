@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Bodu.IO.Biff — Getting started | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Bodu.IO.Biff — Getting started | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="boduiobiff--getting-started">Bodu.IO.Biff — Getting started</h1>
+
+<p>Unfamiliar with terms like <em>record</em>, <em>substream</em>, <em>CONTINUE</em>, <em>shared string table</em>, or <em>RK</em>? Read <a href="concepts.html">Core concepts</a> first.</p>
+<h2 id="install">Install</h2>
+<pre><code class="lang-bash">dotnet add package Bodu.IO.Biff
+</code></pre>
+<p>Targets <code>net8.0</code>. Depends on <code>Bodu.Core</code> (shared throw-helpers) and <code>System.Text.Encoding.CodePages</code> (BIFF5 byte strings). For the spreadsheet view — sheets, cells by position, number formats, dates — install <code>Bodu.Formats.Excel.Binary</code> instead (it references this package) and see <a href="../excel/index.html">its introduction</a>.</p>
+<h2 id="walk-a-record-stream">Walk a record stream</h2>
+<p>The reader takes the bytes of a BIFF stream. Where they come from is up to you — for an <code>.xls</code> file, the <code>Workbook</code> stream of the compound file, read with <code>Bodu.IO.Compound</code>:</p>
+<pre><code class="lang-csharp">using Bodu.IO.Biff;
+using Bodu.IO.Compound;
+
+using CompoundFile container = CompoundFile.OpenRead(&quot;report.xls&quot;);
+using CompoundStream workbook = container.RootStorage.OpenStream(&quot;Workbook&quot;);
+byte[] bytes = new byte[workbook.Length];
+workbook.ReadExactly(bytes);
+
+var reader = new BiffReader(bytes);
+while (reader.Read())
+    Console.WriteLine($&quot;{reader.RecordType,-14} id=0x{reader.RecordId:X4} length={reader.RecordLength}&quot;);
+</code></pre>
+<p><code>Read()</code> advances to the next physical record and returns <code>false</code> at the clean end of the buffer. Nothing is allocated by advancing; <code>ValueSpan</code> is a slice of the buffer you supplied.</p>
+<h2 id="decode-the-records-you-care-about">Decode the records you care about</h2>
+<p>Typed accessors interpret the current record only. Calling one on a record of another type throws <code>InvalidOperationException</code>; a record too short for its layout throws <a class="xref" href="../../api/Bodu.IO.Biff.BiffFormatException.html">BiffFormatException</a>.</p>
+<pre><code class="lang-csharp">using Bodu.IO.Biff;
+
+var reader = new BiffReader(bytes);
+while (reader.Read())
+{
+    switch (reader.RecordType)
+    {
+        case BiffRecordType.Bof:
+            BiffBofRecord bof = reader.GetBof();
+            Console.WriteLine($&quot;{bof.Version} {bof.SubstreamType} substream&quot;);
+            break;
+
+        case BiffRecordType.BoundSheet:
+            BiffBoundSheetRecord sheet = reader.GetBoundSheet();
+            Console.WriteLine($&quot;sheet '{sheet.Name.GetString()}' at offset {sheet.StreamOffset}&quot;);
+            break;
+
+        case BiffRecordType.Number:
+            BiffNumberRecord number = reader.GetNumber();
+            Console.WriteLine($&quot;R{number.Row}C{number.Column} = {number.Value}&quot;);
+            break;
+
+        case BiffRecordType.Label:
+            BiffLabelRecord label = reader.GetLabel();
+            Console.WriteLine($&quot;R{label.Row}C{label.Column} = \&quot;{label.Text.GetString()}\&quot;&quot;);
+            break;
+
+        case BiffRecordType.Formula:
+            BiffFormulaRecord formula = reader.GetFormula();
+            Console.WriteLine($&quot;R{formula.Row}C{formula.Column} cached {formula.CachedResultKind}, {formula.Tokens.Length} token bytes&quot;);
+            break;
+    }
+}
+</code></pre>
+<p>The version-dependent accessors (<code>GetBoundSheet</code>, <code>GetDimensions</code>, <code>GetLabel</code>, <code>GetString</code>, <code>GetFormat</code>, <code>GetFont</code>, <code>GetFilePass</code>) need the version to be known: read the <code>BOF</code> first, or supply it through the options. The <a href="records.html">Record reference</a> lists every accessor with the record it decodes and the writer that pairs with it.</p>
+<h2 id="read-the-shared-string-table">Read the shared string table</h2>
+<p>BIFF8 pools cell text in the workbook globals. <a class="xref" href="../../api/Bodu.IO.Biff.BiffSstReader.html">BiffSstReader</a> is created while the reader is on the <code>SST</code> record and pulls the <code>CONTINUE</code> records itself, advancing the parent as it goes:</p>
+<pre><code class="lang-csharp">using Bodu.IO.Biff;
+
+var reader = new BiffReader(bytes);
+var sharedStrings = new List&lt;string&gt;();
+
+while (reader.Read())
+{
+    if (reader.RecordType != BiffRecordType.Sst)
+        continue;
+
+    var strings = new BiffSstReader(ref reader);
+    Console.WriteLine($&quot;{strings.Header.UniqueCount} unique strings, {strings.Header.TotalCount} references&quot;);
+
+    while (strings.Read(ref reader))
+        sharedStrings.Add(strings.GetString());
+}
+</code></pre>
+<p><code>GetString()</code> works for every string. When a string lies within one record, <code>strings.Current</code> is a span-backed <a class="xref" href="../../api/Bodu.IO.Biff.BiffString.html">BiffString</a> you can inspect without allocating; when it straddles a <code>CONTINUE</code> boundary, <code>IsFragmented</code> is <code>true</code> and <code>Current</code> is unavailable.</p>
+<h2 id="work-with-text-without-allocating">Work with text without allocating</h2>
+<p><a class="xref" href="../../api/Bodu.IO.Biff.BiffString.html">BiffString</a> is a view over the record. It knows whether it is a BIFF8 Unicode string (16-bit or compressed) or a BIFF5 byte string, and which code page the latter is in:</p>
+<pre><code class="lang-csharp">using Bodu.IO.Biff;
+
+BiffLabelRecord label = reader.GetLabel();
+BiffString text = label.Text;
+
+Span&lt;char&gt; buffer = stackalloc char[text.GetCharCount()];
+int written = text.CopyTo(buffer);
+ReadOnlySpan&lt;char&gt; value = buffer.Slice(0, written);
+
+Console.WriteLine($&quot;{value.Length} chars, unicode={text.IsUnicode}, wide={text.IsHighByte}, code page={text.CodePage}&quot;);
+</code></pre>
+<h2 id="read-a-sheet-substream-with-a-known-version">Read a sheet substream with a known version</h2>
+<p>A sheet's substream carries its own <code>BOF</code>, so a reader started at the sheet's offset establishes the version itself. When you want the version-dependent accessors to work before that — or you are resuming from a saved state — seed the reader:</p>
+<pre><code class="lang-csharp">using Bodu.IO.Biff;
+
+var options = new BiffReaderOptions { Version = BiffVersion.Biff8, CodePage = 1252 };
+var sheet = new BiffReader(bytes.AsSpan(sheetOffset), options);
+</code></pre>
+<h2 id="resume-across-buffers">Resume across buffers</h2>
+<p><a class="xref" href="../../api/Bodu.IO.Biff.BiffReader.html">BiffReader</a> is a <code>ref struct</code> and cannot live in a field. A class that reads one record per call, or a loop feeding chunks of a stream, carries <a class="xref" href="../../api/Bodu.IO.Biff.BiffReaderState.html">BiffReaderState</a> instead:</p>
+<pre><code class="lang-csharp">using Bodu.IO.Biff;
+
+BiffReaderState state = default;
+int position = 0;
+
+// Each pass constructs a reader over the unread remainder with the state from the previous pass.
+var reader = new BiffReader(bytes.AsSpan(position), isFinalBlock: true, state);
+if (reader.Read())
+{
+    // ... use reader ...
+    position += reader.BytesConsumed;
+    state = reader.CurrentState;
+}
+</code></pre>
+<p>With <code>isFinalBlock: false</code>, an incomplete trailing record makes <code>Read()</code> return <code>false</code> without consuming it, so a chunked source can append more bytes and try again.</p>
+<h2 id="write-records">Write records</h2>
+<p><a class="xref" href="../../api/Bodu.IO.Biff.BiffWriter.html">BiffWriter</a> emits to any <code>IBufferWriter&lt;byte&gt;</code> under an explicit version. Typed writers produce the version's layout; <code>WriteRecord</code> writes anything from an identifier and payload; <code>WriteSst</code> splits the table into <code>CONTINUE</code> records by the format's rules.</p>
+<pre><code class="lang-csharp">using System.Buffers;
+using Bodu.IO.Biff;
+
+var output = new ArrayBufferWriter&lt;byte&gt;();
+var writer = new BiffWriter(output, BiffVersion.Biff8);
+
+writer.WriteBof(BiffSubstreamType.WorkbookGlobals);
+writer.WriteCodePage(1200);
+writer.WriteSst([&quot;alpha&quot;, &quot;beta&quot;]);
+long boundSheetOffset = writer.BytesCommitted;            // patch the sheet offset here once it is known
+writer.WriteBoundSheet(0, BiffSheetState.Visible, BiffSheetType.Worksheet, &quot;Sheet1&quot;);
+writer.WriteEof();
+
+long sheetOffset = writer.BytesCommitted;
+writer.WriteBof(BiffSubstreamType.Worksheet);
+writer.WriteDimensions(new BiffDimensionsRecord(0, 1, 0, 3));
+writer.WriteLabelSst(0, 0, 0, 1);
+writer.WriteNumber(0, 1, 0, 42.5);
+if (BiffRk.TryEncode(0.25, out uint rk))
+    writer.WriteRk(0, 2, 0, rk);
+writer.WriteEof();
+
+byte[] stream = output.WrittenSpan.ToArray();
+</code></pre>
+<p>The writer serializes records; assembling a workbook — ordering, the <code>BOUNDSHEET</code> offsets, the compound-file container — is the caller's job, which is why <code>BytesCommitted</code> is exposed.</p>
+<h2 id="copy-a-stream-preserving-everything">Copy a stream, preserving everything</h2>
+<p>Because unknown records are readable and writable raw, a stream can be transformed without understanding all of it:</p>
+<pre><code class="lang-csharp">using System.Buffers;
+using Bodu.IO.Biff;
+
+var output = new ArrayBufferWriter&lt;byte&gt;();
+var writer = new BiffWriter(output, BiffVersion.Biff8);
+var reader = new BiffReader(bytes);
+
+while (reader.Read())
+{
+    if (reader.RecordType == BiffRecordType.Number &amp;&amp; reader.GetNumber().Value &lt; 0)
+        continue;                                          // drop negative numbers, keep everything else verbatim
+
+    writer.WriteRecord(reader.RecordId, reader.ValueSpan);
+}
+</code></pre>
+<h2 id="handle-malformed-input">Handle malformed input</h2>
+<pre><code class="lang-csharp">using Bodu.IO.Biff;
+
+try
+{
+    var reader = new BiffReader(bytes);
+    while (reader.Read())
+    {
+        // ...
+    }
+}
+catch (BiffUnsupportedVersionException ex)
+{
+    Console.WriteLine($&quot;Well-formed but too old: version marker 0x{ex.RawVersion:X4}.&quot;);
+}
+catch (BiffFormatException ex)
+{
+    Console.WriteLine($&quot;Malformed at offset {ex.Offset}: {ex.Message}&quot;);
+}
+</code></pre>
+<h2 id="read-a-workbook-instead">Read a workbook instead</h2>
+<p>For cells with number formats and date detection over a whole <code>.xls</code>, use <code>Bodu.Formats.Excel.Binary</code>, which opens the container, parses the globals with this codec, and streams each sheet's cells:</p>
+<pre><code class="lang-csharp">using Bodu.Formats.Excel;
+
+using ExcelBinaryWorkbook workbook = ExcelBinaryWorkbook.OpenRead(&quot;report.xls&quot;);
+Console.WriteLine($&quot;{workbook.BiffVersion}: {workbook.Worksheets.Count} sheets&quot;);
+</code></pre>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="concepts.html">Core concepts</a></strong> — the full vocabulary.</li>
+<li><strong><a href="records.html">Record reference</a></strong> — every record the codec decodes and writes, by version.</li>
+<li><strong><a href="../../samples/io-biff.html">Runnable sample</a></strong> — the <code>BiffBasics</code> console project.</li>
+<li><strong>API reference</strong> — <a class="xref" href="../../api/Bodu.IO.Biff.html">Bodu.IO.Biff</a>.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

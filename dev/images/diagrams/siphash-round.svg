@@ -1,0 +1,169 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 320" role="img" aria-labelledby="sh-title sh-desc">
+  <title id="sh-title">SipHash SipRound — the ARX mixing network</title>
+  <desc id="sh-desc">One SipRound mixes the four 64-bit state words v0, v1, v2, and v3 using only additions modulo 2^64, fixed bit rotations, and exclusive-OR. The two halves are processed in parallel: v0 absorbs v1 and v2 absorbs v3, the partner words are rotated and XORed back, then v0 and v2 are swapped diagonally and v0 is rotated by 32. SipHash-2-4 applies two such rounds per 8-byte message block and four during finalization.</desc>
+
+  <defs>
+    <style>
+      .bg { fill: #0F172A; }
+      .panel { fill: #1E293B; stroke: #334155; stroke-width: 1; }
+      .header { fill: #111827; stroke: #334155; stroke-width: 1; }
+      .title { fill: #F8FAFC; font: 700 15px/1 "Segoe UI",Arial,sans-serif; }
+      .formula { fill: #94A3B8; font: italic 12px/1 "Cambria",Georgia,serif; }
+      .label { fill: #F8FAFC; font: 700 13px/1 "Segoe UI",Arial,sans-serif; }
+      .sub { fill: #CBD5E1; font: 400 11px/1 "Segoe UI",Arial,sans-serif; }
+      .sub-muted { fill: #94A3B8; font: 400 10.5px/1 "Segoe UI",Arial,sans-serif; }
+      .word-v0 { fill: #14B8A6; stroke: #2DD4BF; stroke-width: 1; }
+      .word-v1 { fill: #A78BFA; stroke: #C4B5FD; stroke-width: 1; }
+      .word-v2 { fill: #3B82F6; stroke: #60A5FA; stroke-width: 1; }
+      .word-v3 { fill: #F59E0B; stroke: #FBBF24; stroke-width: 1; }
+      .word-text { fill: #0F172A; font: 700 13px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .op { fill: #1E293B; stroke: #F8FAFC; stroke-width: 1.4; }
+      .op-sym { fill: #F8FAFC; font: 700 13px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .rot { fill: #111827; stroke: #64748B; stroke-width: 1; }
+      .rot-text { fill: #E2E8F0; font: 700 10px/1 "Consolas","Menlo",monospace; text-anchor: middle; }
+      .wire { stroke: #CBD5E1; stroke-width: 1.6; fill: none; }
+      .wire-v0 { stroke: #2DD4BF; stroke-width: 1.8; fill: none; }
+      .wire-v1 { stroke: #C4B5FD; stroke-width: 1.8; fill: none; }
+      .wire-v2 { stroke: #60A5FA; stroke-width: 1.8; fill: none; }
+      .wire-v3 { stroke: #FBBF24; stroke-width: 1.8; fill: none; }
+    </style>
+    <marker id="sh-arr-d" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#CBD5E1"/>
+    </marker>
+    <marker id="sh-arr-v0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#2DD4BF"/>
+    </marker>
+    <marker id="sh-arr-v1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#C4B5FD"/>
+    </marker>
+    <marker id="sh-arr-v2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#60A5FA"/>
+    </marker>
+    <marker id="sh-arr-v3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#FBBF24"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" width="820" height="320"/>
+
+  <g transform="translate(10 10)">
+    <rect class="panel" width="800" height="300" rx="8"/>
+    <rect class="header" width="800" height="46" rx="8"/>
+    <rect class="header" y="38" width="800" height="8"/>
+    <text class="title" x="16" y="20">SipHash SipRound — add, rotate, XOR on four 64-bit words</text>
+    <text class="formula" x="784" y="38" text-anchor="end">v ← (v + v) mod 2⁶⁴;   v ← v ⋘ k;   v ← v ⊕ v</text>
+
+    <!-- ===== input words (left column) ===== -->
+    <g transform="translate(60 84)">
+      <rect class="word-v0" x="0" y="0" width="78" height="30" rx="5"/>
+      <text class="word-text" x="39" y="20">v0</text>
+    </g>
+    <g transform="translate(60 134)">
+      <rect class="word-v1" x="0" y="0" width="78" height="30" rx="5"/>
+      <text class="word-text" x="39" y="20">v1</text>
+    </g>
+    <g transform="translate(60 200)">
+      <rect class="word-v2" x="0" y="0" width="78" height="30" rx="5"/>
+      <text class="word-text" x="39" y="20">v2</text>
+    </g>
+    <g transform="translate(60 250)">
+      <rect class="word-v3" x="0" y="0" width="78" height="30" rx="5"/>
+      <text class="word-text" x="39" y="20">v3</text>
+    </g>
+
+    <!-- ===== top half: v0 + v1, v1 rotl 13, xor, v0 rotl 32 ===== -->
+    <!-- ADD: v0 += v1 -->
+    <g transform="translate(210 99)">
+      <circle class="op" cx="0" cy="0" r="14"/>
+      <text class="op-sym" x="0" y="5">+</text>
+    </g>
+    <line class="wire-v0" x1="138" y1="99" x2="194" y2="99" marker-end="url(#sh-arr-v0)"/>
+    <path class="wire-v1" d="M 138 149 L 175 149 L 175 110 L 196 102" marker-end="url(#sh-arr-v1)"/>
+
+    <!-- v1 rotl 13 -->
+    <g transform="translate(290 149)">
+      <rect class="rot" x="-34" y="-13" width="68" height="26" rx="5"/>
+      <text class="rot-text" x="0" y="4">⋘ 13</text>
+    </g>
+    <line class="wire-v1" x1="138" y1="149" x2="254" y2="149" marker-end="url(#sh-arr-v1)"/>
+
+    <!-- XOR: v1 ^= v0 -->
+    <g transform="translate(390 149)">
+      <circle class="op" cx="0" cy="0" r="14"/>
+      <text class="op-sym" x="0" y="5">⊕</text>
+    </g>
+    <line class="wire-v1" x1="324" y1="149" x2="374" y2="149" marker-end="url(#sh-arr-v1)"/>
+    <path class="wire-v0" d="M 224 99 L 390 99 L 390 133" marker-end="url(#sh-arr-v0)"/>
+
+    <!-- v0 rotl 32 -->
+    <g transform="translate(480 99)">
+      <rect class="rot" x="-34" y="-13" width="68" height="26" rx="5"/>
+      <text class="rot-text" x="0" y="4">⋘ 32</text>
+    </g>
+    <line class="wire-v0" x1="404" y1="99" x2="444" y2="99" marker-end="url(#sh-arr-v0)"/>
+
+    <!-- ===== bottom half: v2 + v3, v3 rotl 16, xor ===== -->
+    <!-- ADD: v2 += v3 -->
+    <g transform="translate(210 215)">
+      <circle class="op" cx="0" cy="0" r="14"/>
+      <text class="op-sym" x="0" y="5">+</text>
+    </g>
+    <line class="wire-v2" x1="138" y1="215" x2="194" y2="215" marker-end="url(#sh-arr-v2)"/>
+    <path class="wire-v3" d="M 138 265 L 175 265 L 175 226 L 196 218" marker-end="url(#sh-arr-v3)"/>
+
+    <!-- v3 rotl 16 -->
+    <g transform="translate(290 265)">
+      <rect class="rot" x="-34" y="-13" width="68" height="26" rx="5"/>
+      <text class="rot-text" x="0" y="4">⋘ 16</text>
+    </g>
+    <line class="wire-v3" x1="138" y1="265" x2="254" y2="265" marker-end="url(#sh-arr-v3)"/>
+
+    <!-- XOR: v3 ^= v2 -->
+    <g transform="translate(390 265)">
+      <circle class="op" cx="0" cy="0" r="14"/>
+      <text class="op-sym" x="0" y="5">⊕</text>
+    </g>
+    <line class="wire-v3" x1="324" y1="265" x2="374" y2="265" marker-end="url(#sh-arr-v3)"/>
+    <path class="wire-v2" d="M 224 215 L 390 215 L 390 249" marker-end="url(#sh-arr-v2)"/>
+
+    <!-- ===== diagonal swap zone ===== -->
+    <g transform="translate(560 84)">
+      <rect class="panel" x="0" y="0" width="84" height="196" rx="8" stroke-dasharray="5 3"/>
+      <text class="sub-muted" x="42" y="-8" text-anchor="middle">swap v0 ↔ v2</text>
+    </g>
+    <!-- v0 (after rotl32) crosses down to v2 slot -->
+    <path class="wire-v0" d="M 516 99 L 602 99 L 602 215" marker-end="url(#sh-arr-v0)"/>
+    <!-- v2 crosses up to v0 slot -->
+    <path class="wire-v2" d="M 404 215 L 540 215 L 540 99" marker-end="url(#sh-arr-v2)"/>
+
+    <!-- ===== output words (right column) ===== -->
+    <g transform="translate(688 84)">
+      <rect class="word-v0" x="0" y="0" width="78" height="30" rx="5"/>
+      <text class="word-text" x="39" y="20">v0′</text>
+    </g>
+    <g transform="translate(688 134)">
+      <rect class="word-v1" x="0" y="0" width="78" height="30" rx="5"/>
+      <text class="word-text" x="39" y="20">v1′</text>
+    </g>
+    <g transform="translate(688 200)">
+      <rect class="word-v2" x="0" y="0" width="78" height="30" rx="5"/>
+      <text class="word-text" x="39" y="20">v2′</text>
+    </g>
+    <g transform="translate(688 250)">
+      <rect class="word-v3" x="0" y="0" width="78" height="30" rx="5"/>
+      <text class="word-text" x="39" y="20">v3′</text>
+    </g>
+    <line class="wire-v2" x1="644" y1="99" x2="684" y2="99" marker-end="url(#sh-arr-v2)"/>
+    <line class="wire-v1" x1="404" y1="149" x2="684" y2="149" marker-end="url(#sh-arr-v1)"/>
+    <line class="wire-v0" x1="644" y1="215" x2="684" y2="215" marker-end="url(#sh-arr-v0)"/>
+    <line class="wire-v3" x1="404" y1="265" x2="684" y2="265" marker-end="url(#sh-arr-v3)"/>
+
+    <!-- legend -->
+    <g transform="translate(560 56)">
+      <text class="sub" x="0" y="0">SipHash-2-4: 2 compression rounds per 8-byte block · 4 finalization rounds</text>
+    </g>
+
+    <!-- footer note -->
+    <text class="sub" x="20" y="290">ARX only — no S-boxes or lookup tables. The 128-bit key seeds v0..v3, so the network is invertible only with knowledge of the key.</text>
+  </g>
+</svg>

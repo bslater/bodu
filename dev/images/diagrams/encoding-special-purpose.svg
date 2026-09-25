@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 300" role="img" aria-labelledby="esp-t esp-d">
+  <title id="esp-t">Special-purpose encodings — Base45, Base62, Bech32</title>
+  <desc id="esp-d">Three special-purpose encodings sit alongside the core radix families. Base45 (RFC 9285) packs each pair of bytes into three characters drawn from the QR-code Alphanumeric-mode alphabet (0-9, A-Z and nine symbols) with no padding; a trailing odd byte becomes two characters. It carries binary payloads inside QR codes and the EU Digital COVID Certificate. Base62 uses the GMP-style alphabet 0-9 A-Z a-z and big-integer division by 62, preserving leading zero bytes as leading zero characters; it produces compact, URL-safe identifiers and short links. Bech32 and Bech32m (BIP 173 / 350) are not plain binary-to-text encodings: an encoded string is a human-readable part, the 1 separator, 5-bit data groups, and a six-symbol error-detecting checksum. They encode Bitcoin SegWit addresses and Lightning invoices.</desc>
+
+  <defs>
+    <style>
+      .bg    { fill: #0F172A; }
+      .pan   { fill: #1E293B; stroke: #334155; stroke-width: 1; }
+      .hdr   { fill: #111827; stroke: #334155; stroke-width: 1; }
+      .ttl   { fill: #F8FAFC; font: 700 15px/1 "Segoe UI",Arial,sans-serif; }
+      .name  { font: 700 14px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .ttag  { fill: #94A3B8; font: 700 9px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; letter-spacing: 1px; }
+      .mut   { fill: #94A3B8; font: 400 10px/1.3 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .use   { fill: #CBD5E1; font: 400 10px/1.25 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .mono  { font: 700 11px/1 "Consolas","Menlo",monospace; text-anchor: middle; }
+      .c1    { fill: #15262B; stroke: #2DD4BF; stroke-width: 1.5; }
+      .c2    { fill: #20193A; stroke: #A78BFA; stroke-width: 1.5; }
+      .c3    { fill: #2A1B07; stroke: #FBBF24; stroke-width: 1.5; }
+      .box   { fill: #0F172A; stroke: #475569; stroke-width: 1; }
+      .seg-h { fill: #0D3331; stroke: #2DD4BF; stroke-width: 1.4; }
+      .seg-s { fill: #1E293B; stroke: #64748B; stroke-width: 1.4; }
+      .seg-d { fill: #1E3A5F; stroke: #60A5FA; stroke-width: 1.4; }
+      .seg-c { fill: #431407; stroke: #FBBF24; stroke-width: 1.4; }
+    </style>
+    <marker id="esp-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#94A3B8"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" width="820" height="300"/>
+
+  <g transform="translate(10 10)">
+    <rect class="pan" width="800" height="280" rx="8"/>
+    <rect class="hdr" width="800" height="30" rx="8"/>
+    <rect class="hdr" y="22" width="800" height="8"/>
+    <text class="ttl" x="16" y="20">Special-purpose encodings — Base45 · Base62 · Bech32</text>
+
+    <!-- ============ Base45 ============ -->
+    <g transform="translate(16 44)">
+      <rect class="c1" width="246" height="216" rx="8"/>
+      <text class="ttag" x="123" y="24">RFC 9285</text>
+      <text class="name" fill="#2DD4BF" x="123" y="44">Base45</text>
+      <line x1="20" y1="56" x2="226" y2="56" stroke="#334155"/>
+
+      <!-- byte-pair → 3 chars -->
+      <rect class="box" x="26"  y="74" width="36" height="24" rx="3"/>
+      <rect class="box" x="64"  y="74" width="36" height="24" rx="3"/>
+      <text class="mono" fill="#E2E8F0" x="44" y="90">b0</text>
+      <text class="mono" fill="#E2E8F0" x="82" y="90">b1</text>
+      <line x1="106" y1="86" x2="132" y2="86" stroke="#94A3B8" stroke-width="1.4" marker-end="url(#esp-a)"/>
+      <rect class="box" x="138" y="74" width="26" height="24" rx="3"/>
+      <rect class="box" x="166" y="74" width="26" height="24" rx="3"/>
+      <rect class="box" x="194" y="74" width="26" height="24" rx="3"/>
+      <text class="mono" fill="#2DD4BF" x="151" y="90">c</text>
+      <text class="mono" fill="#2DD4BF" x="179" y="90">c</text>
+      <text class="mono" fill="#2DD4BF" x="207" y="90">c</text>
+      <text class="mut" x="123" y="118">2 bytes → 3 chars · no padding</text>
+
+      <text class="mono" fill="#E2E8F0" x="123" y="146">{ 0x41, 0x42 }  →  "BB8"</text>
+      <text class="mut" x="123" y="170">alphabet: 0-9 A-Z space $%*+-./:</text>
+      <text class="use" x="123" y="196">QR-code payloads · EU DCC</text>
+    </g>
+
+    <!-- ============ Base62 ============ -->
+    <g transform="translate(277 44)">
+      <rect class="c2" width="246" height="216" rx="8"/>
+      <text class="ttag" x="123" y="24">GMP RADIX-62</text>
+      <text class="name" fill="#C4B5FD" x="123" y="44">Base62</text>
+      <line x1="20" y1="56" x2="226" y2="56" stroke="#334155"/>
+
+      <!-- big-integer divmod -->
+      <rect class="box" x="26" y="74" width="92" height="24" rx="3"/>
+      <text class="mono" fill="#E2E8F0" x="72" y="90">bytes → int</text>
+      <line x1="122" y1="86" x2="148" y2="86" stroke="#94A3B8" stroke-width="1.4" marker-end="url(#esp-a)"/>
+      <rect class="box" x="154" y="74" width="66" height="24" rx="3"/>
+      <text class="mono" fill="#C4B5FD" x="187" y="90">÷ 62</text>
+      <text class="mut" x="123" y="118">big-integer arithmetic, radix 62</text>
+
+      <text class="mono" fill="#E2E8F0" x="123" y="146">0-9  A-Z  a-z</text>
+      <text class="mut" x="123" y="170">leading 0x00 byte → leading '0'</text>
+      <text class="use" x="123" y="196">short URLs · compact IDs · slugs</text>
+    </g>
+
+    <!-- ============ Bech32 ============ -->
+    <g transform="translate(538 44)">
+      <rect class="c3" width="246" height="216" rx="8"/>
+      <text class="ttag" x="123" y="24">BIP 173 / 350</text>
+      <text class="name" fill="#FBBF24" x="123" y="44">Bech32 / Bech32m</text>
+      <line x1="20" y1="56" x2="226" y2="56" stroke="#334155"/>
+
+      <!-- segmented structure: HRP | 1 | data | checksum -->
+      <rect class="seg-h" x="20"  y="74" width="48"  height="26" rx="3"/>
+      <rect class="seg-s" x="68"  y="74" width="18"  height="26" rx="3"/>
+      <rect class="seg-d" x="86"  y="74" width="86"  height="26" rx="3"/>
+      <rect class="seg-c" x="172" y="74" width="54"  height="26" rx="3"/>
+      <text class="mono" fill="#2DD4BF" x="44"  y="91">hrp</text>
+      <text class="mono" fill="#CBD5E1" x="77"  y="91">1</text>
+      <text class="mono" fill="#93C5FD" x="129" y="91">data</text>
+      <text class="mono" fill="#FBBF24" x="199" y="91" style="font-size:9px">checksum</text>
+      <text class="mut" x="123" y="118">5-bit data + 6-symbol checksum</text>
+
+      <text class="mono" fill="#E2E8F0" x="123" y="146">bc1qw508d6...k90wsj</text>
+      <text class="mut" x="123" y="170">lower-case canonical · error-detecting</text>
+      <text class="use" x="123" y="196">SegWit addresses · Lightning</text>
+    </g>
+  </g>
+</svg>

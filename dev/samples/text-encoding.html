@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Runnable samples | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Runnable samples | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="runnable-samples">Runnable samples</h1>
+
+<p>The repository ships runnable, self-contained sample projects for <code>Bodu.Text.Encoding</code> under
+<a href="https://github.com/bslater/bodu/tree/master/samples/Text.Encoding"><code>samples/Text.Encoding/</code></a>.
+Both samples are <strong>pure computation over fixed payloads</strong> — offline, deterministic, no data
+files — and are members of <code>bodu.slnx</code>, built and executed by CI; the companion contract-test
+project runs with the test suites. Each README documents every scenario individually: its
+intent, what the code does, the output to expect, and the APIs demonstrated.</p>
+<p>Run either sample from the repository root:</p>
+<pre><code class="lang-bash">dotnet run --project samples/Text.Encoding/&lt;SampleName&gt;
+</code></pre>
+<h2 id="the-samples">The samples</h2>
+<h3 id="bodutextencodingsamplesencodingtour">Bodu.Text.Encoding.Samples.EncodingTour</h3>
+<p>The catalogue, end to end: one payload through every base family (Base16/32/45/58/62/64/85)
+and one family through its variants (<a class="xref" href="../api/Bodu.Text.Encoding.Base32Variant.html">Base32Variant</a>,
+<a class="xref" href="../api/Bodu.Text.Encoding.Base85Variant.html">Base85Variant</a>) — the alphabet is an enum argument, not a different
+API; the option enums that bracket every codec —
+<a class="xref" href="../api/Bodu.Text.Encoding.BaseFormattingOptions.html">BaseFormattingOptions</a> shaping produced text (case, <code>0x</code> prefixes,
+spacing, padding) and <a class="xref" href="../api/Bodu.Text.Encoding.BaseFormatStyles.html">BaseFormatStyles</a> declaring parse tolerance
+(prefixes, whitespace, missing padding); the checksummed schemes for identifiers humans
+re-type — <a class="xref" href="../api/Bodu.Text.Encoding.Base58Check.html">Base58Check</a> and <a class="xref" href="../api/Bodu.Text.Encoding.Bech32.html">Bech32</a> — each
+shown detecting a single corrupted character; the <code>Guid</code> convenience overloads (36-char Guid
+string down to 22 chars in Base58); and the name-addressable
+<a class="xref" href="../api/Bodu.Text.Encoding.BinaryEncodings.html">BinaryEncodings</a> registry driving codecs through
+<a class="xref" href="../api/Bodu.Text.Encoding.IBinaryEncoding.html">IBinaryEncoding</a> when the encoding is chosen at runtime. <em>Package:
+<code>Bodu.Text.Encoding</code>.</em></p>
+<h3 id="bodutextencodingsamplescustomencoding--test">Bodu.Text.Encoding.Samples.CustomEncoding (+ .Test)</h3>
+<p>Extending the catalogue: a complete Base36 codec (digits <code>0-9</code> then <code>A-Z</code> — license keys,
+short URLs) implementing <a class="xref" href="../api/Bodu.Text.Encoding.IBinaryEncoding.html">IBinaryEncoding</a> with the big-endian
+integer model and leading zero bytes preserved as <code>'0'</code>; exercised through its own surface
+(round trips, validation, the Try pattern, <code>FormatException</code> on malformed input) and then
+side by side with registry codecs through the shared interface — a drop-in peer. The
+companion test project derives the library's <code>BinaryEncodingContractTests&lt;Base36Encoding&gt;</code>
+(from the <code>Bodu.Text.Encoding.Test</code> contracts) with known-answer and invalid-input KAT rows,
+inheriting the encode/decode/round-trip/Try contract suite the built-in codecs pass.
+<em>Package: <code>Bodu.Text.Encoding</code>.</em></p>
+<h2 id="guarded-documentation">Guarded documentation</h2>
+<p>The encoding guides under <a href="../guides/text-encoding/index.html"><code>docs/guides/text-encoding/</code></a>
+carry compile-guarded snippets: examples marked with a <code>&lt;!-- compile --&gt;</code> sentinel are
+compiled against the current public API by <code>DocumentationSnippetCompileTests</code> in the
+library's test project (Regression tier).</p>
+<h2 id="related">Related</h2>
+<ul>
+<li><a href="../guides/text-encoding/index.html">Text.Encoding guides</a> — per-base pages, the helpers, and
+the <code>IBinaryEncoding</code> interface documentation.</li>
+<li><a href="bencode.html">Bencode samples</a> — the torrent info-hash scenario consumes <code>Base16</code> from this
+package.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

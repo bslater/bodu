@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Hashing &amp; Cryptography — Concepts | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Hashing &amp; Cryptography — Concepts | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="hashing--cryptography--concepts">Hashing &amp; Cryptography — Concepts</h1>
+
+<p>This page is the cross-package vocabulary for the Hashing &amp; Cryptography topic — the full taxonomy of &quot;things that summarize or protect bytes,&quot; and the guarantee each one does and does not make. Read the <a href="hashing-and-cryptography.html">topic overview</a> first for the package split; the per-package concept pages linked at the bottom go deeper on each term.</p>
+<h2 id="adversary-model">Adversary model</h2>
+<p>An <strong>adversary model</strong> is the formal statement of what an attacker is assumed to know, observe, and control. It is the single concept that organizes everything else on this page. A primitive <em>with</em> an adversary model remains secure even against an attacker who knows the algorithm, sees many input/output pairs, and chooses inputs adaptively. A primitive <em>without</em> one makes no claim at all against deliberate manipulation — its guarantees hold only for accidental errors on trusted input.</p>
+<p>Everything in <code>Bodu.IO.Hashing</code> has <strong>no</strong> adversary model. Everything in <code>Bodu.Security.Cryptography</code> has one. There is no middle ground: &quot;probably hard to fake&quot; is not a security property.</p>
+<h2 id="the-taxonomy">The taxonomy</h2>
+<table>
+<thead>
+<tr>
+<th>Kind</th>
+<th>Keyed?</th>
+<th>Reversible?</th>
+<th>Guarantee made</th>
+<th>Guarantee <em>not</em> made</th>
+<th>Bodu examples</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Fingerprint</strong></td>
+<td>No</td>
+<td>No</td>
+<td>Even distribution and good avalanche over the output range.</td>
+<td>Nothing about error patterns or forgery — trivially collidable on purpose.</td>
+<td><code>Fnv1a64</code>, <code>CityHash64</code>, <code>MurmurHash3_128</code></td>
+</tr>
+<tr>
+<td><strong>Checksum</strong></td>
+<td>No</td>
+<td>No</td>
+<td>Detects <em>characterized accidental</em> error patterns — burst errors, bit flips, transpositions.</td>
+<td>Tamper evidence; even distribution (checksums make poor hash-table keys).</td>
+<td><code>Crc</code>, <code>Fletcher32</code>, <code>Adler32</code></td>
+</tr>
+<tr>
+<td><strong>Check digit</strong></td>
+<td>No</td>
+<td>No</td>
+<td>Catches human transcription errors (substitutions, adjacent transpositions) in a <em>printed identifier</em>.</td>
+<td>Unforgeability — anyone can compute a valid check digit for any payload.</td>
+<td><code>Luhn</code>, <code>Damm</code>, <code>Verhoeff</code>, <code>Iban</code>, <code>Isbn13</code></td>
+</tr>
+<tr>
+<td><strong>Cryptographic digest</strong></td>
+<td>No</td>
+<td>No</td>
+<td>Pre-image, second-pre-image, and collision resistance.</td>
+<td>Authenticity — a digest only proves integrity when it travels via an authenticated channel.</td>
+<td><code>Blake2b</code>, <code>Blake3</code>, <code>Tiger</code>, <code>Whirlpool</code>, <code>Skein512</code>, <code>AsconHash256</code></td>
+</tr>
+<tr>
+<td><strong>MAC (keyed hash)</strong></td>
+<td>Yes</td>
+<td>No</td>
+<td>Integrity <em>and</em> authenticity: no one can forge a valid tag without the key.</td>
+<td>Confidentiality — the message itself is not hidden.</td>
+<td><code>SipHash64</code> / <code>SipHash128</code> (reusable PRF), <code>Poly1305</code> (one-time key)</td>
+</tr>
+<tr>
+<td><strong>XOF</strong></td>
+<td>No</td>
+<td>No</td>
+<td>A digest whose output length the <em>caller</em> chooses at squeeze time, with security up to the construction's capacity.</td>
+<td>Anything a plain digest does not make; output length is a parameter, not extra strength.</td>
+<td><code>Shake</code>, <code>AsconXof128</code>, <code>AsconCxof128</code></td>
+</tr>
+<tr>
+<td><strong>AEAD</strong></td>
+<td>Yes</td>
+<td>Yes (decrypt)</td>
+<td>Confidentiality, integrity, and authenticity in a single pass; optional associated data is authenticated but not encrypted.</td>
+<td>Safety under nonce reuse — a repeated <code>(key, nonce)</code> pair voids the guarantees.</td>
+<td><code>AsconAead128</code>; <code>AesBlockCipher</code> + <code>GcmModeTransform</code> / <code>SivModeTransform</code> / …; <code>XChaCha20Poly1305</code> / <code>XSalsa20Poly1305Aead</code></td>
+</tr>
+<tr>
+<td><strong>Password KDF</strong></td>
+<td>Yes (secret input)</td>
+<td>No</td>
+<td>Stretches a low-entropy secret (a password) into key material at a <em>deliberately high</em> cost — memory-hard against GPU/ASIC attack.</td>
+<td>Speed. A KDF that is fast is broken by definition for password storage.</td>
+<td><code>Argon2id</code> / <code>Argon2i</code> / <code>Argon2d</code>, <code>Scrypt</code></td>
+</tr>
+<tr>
+<td><strong>Extract-and-expand KDF</strong></td>
+<td>Yes (high-entropy input)</td>
+<td>No</td>
+<td>Derives one or more context-bound keys from a secret that is <em>already</em> high-entropy (a DH or KEM output).</td>
+<td>Password stretching — it is fast by design.</td>
+<td><code>Hkdf</code></td>
+</tr>
+<tr>
+<td><strong>Signature</strong></td>
+<td>Key pair</td>
+<td>No</td>
+<td>Integrity and authenticity verifiable by anyone holding the public key; no shared secret.</td>
+<td>Confidentiality.</td>
+<td><code>Ed25519</code>, <code>MLDsa44</code> / <code>MLDsa65</code> / <code>MLDsa87</code> (post-quantum)</td>
+</tr>
+<tr>
+<td><strong>Key agreement / KEM</strong></td>
+<td>Key pair</td>
+<td>No</td>
+<td>A shared secret that only the two key holders can derive.</td>
+<td>Authentication of the peer — bind identities separately.</td>
+<td><code>X25519</code>, <code>MLKem512</code> / <code>MLKem768</code> / <code>MLKem1024</code> (post-quantum)</td>
+</tr>
+<tr>
+<td><strong>Hybrid public-key encryption</strong></td>
+<td>Key pair</td>
+<td>Yes (open)</td>
+<td>Seals a message to a public key by composing a KEM, a KDF, and an AEAD.</td>
+<td>Sender authentication in the base mode.</td>
+<td><code>Hpke</code> / <code>HpkeSender</code> / <code>HpkeReceiver</code></td>
+</tr>
+<tr>
+<td><strong>One-time password</strong></td>
+<td>Yes (shared secret)</td>
+<td>No</td>
+<td>A short code that proves possession of the shared secret for one counter value or time step.</td>
+<td>Confidentiality; replay across the verification window.</td>
+<td><code>Hotp</code>, <code>Totp</code></td>
+</tr>
+</tbody>
+</table>
+<p>Three placement rules fall out of the table:</p>
+<ul>
+<li>A <strong>checksum</strong> guards a binary payload only software sees; a <strong>check digit</strong> guards a printed identifier a human copies; a <strong>fingerprint</strong> just needs fast, even distribution. They are not interchangeable — CRC distributes poorly as a hash key, and FNV gives weaker burst-error guarantees than CRC.</li>
+<li>A <strong>digest</strong> alone never proves authenticity. If the attacker can replace both the file and its published hash, the digest verifies perfectly. Use a MAC or AEAD when the channel is untrusted.</li>
+<li>A <strong>MAC</strong> and a <strong>cipher</strong> both take keys but serve opposite purposes: the cipher hides a message without summarizing it; the MAC summarizes a message without hiding it. AEAD is the packaged combination.</li>
+</ul>
+<h2 id="distinctions-inside-the-cryptographic-side">Distinctions inside the cryptographic side</h2>
+<p><strong>MAC vs. one-time authenticator.</strong> Both are keyed hashes; the difference is how many messages one key can safely authenticate. A MAC in the PRF sense — <code>SipHash64</code> / <code>SipHash128</code> — authenticates many messages under one key. A one-time authenticator — <code>Poly1305</code> — is provably secure when its key is used <em>exactly once</em> and trivially broken on the second message, which is why it is normally paired with a stream cipher that derives a fresh per-message key from <code>(key, nonce)</code>.</p>
+<p><strong>AEAD and nonce discipline.</strong> AEAD's three-property guarantee is conditional on a single rule: the <code>(key, nonce)</code> pair must never repeat. The nonce is public and need not be unpredictable — a counter is fine — but reuse leaks plaintext relationships and enables forgery in most modes. The SIV and GCM-SIV transforms degrade more gracefully under nonce misuse, which is exactly why they exist.</p>
+<p><strong>Digest vs. XOF.</strong> A plain digest has a fixed output length baked into the algorithm; an XOF lets the caller squeeze any number of output bytes. Asking an XOF for more bytes does not add strength — security is bounded by the construction's internal capacity — but it removes the awkward truncate-or-concatenate dance when a protocol needs a non-standard output length, and it makes one primitive serve as digest, KDF-style expander, and stream of derived values.</p>
+<p><strong>KDF vs. digest for passwords.</strong> A password has so little entropy that any fast hash — cryptographic or not — falls to offline guessing. A KDF inverts the usual performance goal: it is <em>engineered to be expensive</em>, and memory-hard designs (Argon2, scrypt) tie the cost to RAM, the resource GPUs and ASICs scale worst. Cost parameters (memory, iterations, parallelism) are part of the stored output so they can be raised over time. Never store passwords behind a plain digest, however modern.</p>
+<h2 id="distinctions-inside-the-non-cryptographic-side">Distinctions inside the non-cryptographic side</h2>
+<p><strong>Avalanche vs. error coverage.</strong> A fingerprint is judged on <em>avalanche</em> — flipping one input bit flips roughly half the output bits, so keys spread evenly across hash-table buckets. A checksum is judged on <em>characterized error coverage</em> — which burst lengths, bit-flip counts, and transpositions it is guaranteed to catch on a channel. The two goals conflict: a well-chosen CRC polynomial catches every burst of its width or shorter but leaves output regions sparse for typical inputs, and a fast fingerprint makes no promise about any specific error pattern. This is why the subfamilies live in separate namespaces and the <a href="../io-hashing/index.html">Bodu.IO.Hashing introduction</a> selects by job, not by speed.</p>
+<p><strong>Streaming and snapshots.</strong> Everything on the non-cryptographic side shares the <code>Append</code> / <code>GetCurrentHash</code> / <code>Reset</code> lifecycle, and <code>GetCurrentHash</code> is a <em>non-destructive snapshot</em> — you can read a rolling tag mid-stream and keep appending. <code>Crc</code>, the FNV family, the Fletcher family, and the Adler family go further, implementing <code>IResumableHashAlgorithm</code> to reverse-finalize a stored digest and continue.</p>
+<h2 id="collision-and-pre-image-resistance">Collision and pre-image resistance</h2>
+<p>A cryptographic digest makes three related promises, in increasing order of difficulty for the attacker: given a digest, it is infeasible to find <em>any</em> input that produces it (<strong>pre-image resistance</strong>); given an input, it is infeasible to find a <em>different</em> input with the same digest (<strong>second-pre-image resistance</strong>); and it is infeasible to find <em>any two</em> inputs that collide (<strong>collision resistance</strong>). Collision resistance is the weakest link — birthday attacks halve the effective bit strength, which is why a 256-bit digest offers roughly 128-bit collision resistance, and why broken-but-shipped legacy digests (Snefru in Bodu's catalogue) are flagged as interop-only.</p>
+<h2 id="constant-time-comparison">Constant-time comparison</h2>
+<p>Comparing a computed tag or digest with <code>==</code> or <code>SequenceEqual</code> leaks timing: the comparison exits at the first mismatched byte, and an attacker who can measure response times can recover a valid tag byte by byte. Always compare MAC tags, AEAD tags, and security-relevant digests with <code>CryptographicOperations.FixedTimeEquals</code> (or the library's <code>VerifyHash</code> helpers, which use it internally). Bodu's AEAD transforms verify internally and reject mismatches with a <code>CryptographicException</code> — do not catch and ignore it, and do not re-implement the comparison around them.</p>
+<p>None of this applies to <code>Bodu.IO.Hashing</code>: a CRC or fingerprint comparison protects no secret, so an early-exit <code>SequenceEqual</code> is fine there. The moment a comparison gates a security decision, the primitive — and the comparison — must both come from the cryptographic side.</p>
+<h2 id="member-concept-pages">Member concept pages</h2>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Concepts coverage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Bodu.IO.Hashing</td>
+<td><a href="../io-hashing/concepts.html">Bodu.IO.Hashing — Core concepts</a> — the adversary-model table, fingerprint / checksum / check digit boundaries, the <code>NonCryptographicHashAlgorithm</code> contract, avalanche, CRC parameters and the RevEng catalogue, twin-sum checksums, check-digit subfamilies, and endianness.</td>
+</tr>
+<tr>
+<td>Bodu.Security.Cryptography</td>
+<td><a href="../cryptography/concepts.html">Bodu.Security.Cryptography — Core concepts</a> — confidentiality / integrity / authenticity, block vs. stream ciphers, modes of operation, padding, IV vs. nonce, AEAD and tags, tweakable ciphers, digest output shapes, MAC vs. one-time authenticator, sponges, Merkle trees (the split point, domain separation and the attacks it stops, inclusion and consistency proofs, the tree-size ambiguity and length-bound roots, total verification), and the BCL surface.</td>
+</tr>
+</tbody>
+</table>
+<p>For the package map, contrast table, and decision rule, return to the <a href="hashing-and-cryptography.html">Hashing &amp; Cryptography overview</a>; for hands-on walk-throughs, see the <a href="../../guides/topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a>.</p>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

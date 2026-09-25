@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Using Serpent | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Using Serpent | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="using-serpent">Using Serpent</h1>
+
+<p>Serpent is the AES finalist by Anderson, Biham, and Knudsen: a 32-round substitution–permutation network over a 128-bit block with 128-, 192-, or 256-bit keys. <code>Bodu.Security.Cryptography</code> ships it in two very different forms. <a class="xref" href="../../api/Bodu.Security.Cryptography.Serpent128.html">Serpent128</a> is the standard cipher, verified against the NESSIE submission vectors. <a class="xref" href="../../api/Bodu.Security.Cryptography.Serpent256.html">Serpent256</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.Serpent512.html">Serpent512</a>, and <a class="xref" href="../../api/Bodu.Security.Cryptography.Serpent1024.html">Serpent1024</a> are <strong>Bodu-defined, non-standard, tweakable wide-block constructions</strong> that reuse Serpent's S-boxes over a wider state — they interoperate with nothing but themselves.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Like the rest of the library, these implementations are not independently audited and offer best-effort, not guaranteed, side-channel resistance. The source states that control flow is constant-time but each 4-bit S-box substitution reads a 16-byte table at a data-dependent index, so the implementation is <strong>not</strong> hardened against cache-timing attacks.</p>
+</div>
+<h2 id="the-family-at-a-glance">The family at a glance</h2>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Role</th>
+<th>Block</th>
+<th>Key</th>
+<th>Tweak</th>
+<th>Rounds</th>
+<th>Standard</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.Serpent128.html">Serpent128</a></td>
+<td><code>SymmetricAlgorithm</code> wrapper (an <a class="xref" href="../../api/Bodu.Security.Cryptography.ExtendedSymmetricAlgorithm.html">ExtendedSymmetricAlgorithm</a>)</td>
+<td>128 bits</td>
+<td>128 (default) / 192 / 256 bits</td>
+<td>—</td>
+<td>32</td>
+<td>Serpent (NESSIE vectors)</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.Serpent128Cipher.html">Serpent128Cipher</a></td>
+<td>raw <a class="xref" href="../../api/Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a> engine</td>
+<td>128 bits</td>
+<td>16 / 24 / 32 bytes</td>
+<td>—</td>
+<td>32</td>
+<td>Serpent</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.Serpent256.html">Serpent256</a> / <a class="xref" href="../../api/Bodu.Security.Cryptography.Serpent256Cipher.html">Serpent256Cipher</a></td>
+<td>tweakable wrapper (<a class="xref" href="../../api/Bodu.Security.Cryptography.Serpent.html">Serpent</a>) / engine</td>
+<td>256 bits</td>
+<td>256 bits</td>
+<td>128 bits</td>
+<td>48</td>
+<td><strong>Bodu-only</strong></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.Serpent512.html">Serpent512</a> / <a class="xref" href="../../api/Bodu.Security.Cryptography.Serpent512Cipher.html">Serpent512Cipher</a></td>
+<td>tweakable wrapper / engine</td>
+<td>512 bits</td>
+<td>512 bits</td>
+<td>128 bits</td>
+<td>64</td>
+<td><strong>Bodu-only</strong></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.Serpent1024.html">Serpent1024</a> / <a class="xref" href="../../api/Bodu.Security.Cryptography.Serpent1024Cipher.html">Serpent1024Cipher</a></td>
+<td>tweakable wrapper / engine</td>
+<td>1024 bits</td>
+<td>1024 bits</td>
+<td>128 bits</td>
+<td>80</td>
+<td><strong>Bodu-only</strong></td>
+</tr>
+</tbody>
+</table>
+<p>The wide variants take a key exactly as long as their block and a fixed 16-byte tweak; the engines expose <code>KeySize</code> constants (256 / 512 / 1024) and the wrappers report <code>LegalTweakSizes</code> of exactly 128 bits. <a class="xref" href="../../api/Bodu.Security.Cryptography.SerpentBlockCipherBase.html">SerpentBlockCipherBase</a> is the shared abstract base (S-boxes, linear transform, disposal) under both engine families, and <a class="xref" href="../../api/Bodu.Security.Cryptography.SerpentBlockCipher.html">SerpentBlockCipher</a> is the abstract wide-block engine that <code>Serpent256Cipher</code> and siblings specialize.</p>
+<h2 id="pattern-1--a-known-answer-check-on-the-raw-engine">Pattern 1 — a known-answer check on the raw engine</h2>
+<p><a class="xref" href="../../api/Bodu.Security.Cryptography.Serpent128Cipher.html">Serpent128Cipher</a> is the primitive: one block in, one block out. The Serpent NESSIE set 1 vector 0 (all-zero key and plaintext) is the quickest way to confirm you have standard Serpent:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+
+using IBlockCipher cipher = new Serpent128Cipher(new byte[16]);      // 16-, 24-, or 32-byte key
+byte[] block = new byte[16];
+byte[] ciphertext = new byte[16];
+cipher.Encrypt(block, ciphertext);
+// 3620B17AE6A993D09618B8768266BAE9
+
+byte[] recovered = new byte[16];
+cipher.Decrypt(ciphertext, recovered);                                // back to the zero block
+
+using IBlockCipher keyed = new Serpent128Cipher(Convert.FromHexString(&quot;000102030405060708090A0B0C0D0E0F&quot;));
+keyed.Encrypt(Convert.FromHexString(&quot;33B3DC87EDDD9B0F6A1F407D14919365&quot;), ciphertext);
+// 00112233445566778899AABBCCDDEEFF  (NESSIE set 1 vector 9)
+</code></pre>
+<p>An engine validates lengths strictly: a key that is not 16, 24, or 32 bytes throws <code>ArgumentException</code> (<code>key</code>), and <code>Encrypt</code> / <code>Decrypt</code> throw <code>ArgumentException</code> unless both spans are exactly 16 bytes.</p>
+<h2 id="pattern-2--serpent-128-through-the-wrapper">Pattern 2 — Serpent-128 through the wrapper</h2>
+<p><code>Serpent128</code> behaves like every other <a class="xref" href="../../api/Bodu.Security.Cryptography.ExtendedSymmetricAlgorithm.html">ExtendedSymmetricAlgorithm</a>: set <code>Key</code>, <code>IV</code>, <code>BlockMode</code>, and <code>Padding</code>, then use <code>CreateEncryptor</code> / <code>CryptoStream</code> or the one-shot extensions. <code>Serpent128.Create()</code> is the factory-style equivalent of <code>new Serpent128()</code>. The default key size is 128 bits; set <code>KeySize</code> <strong>before</strong> assigning or generating a longer key.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Security.Cryptography;
+using Bodu.Security.Cryptography;
+using Bodu.Security.Cryptography.Extensions;
+
+byte[] plaintext = &quot;Serpent-128 through the SymmetricAlgorithm wrapper&quot;u8.ToArray();
+
+using var alg = Serpent128.Create();
+alg.KeySize = 256;                                                   // 128 (default), 192, or 256
+alg.Key = Convert.FromHexString(&quot;000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f&quot;);
+alg.IV  = Convert.FromHexString(&quot;101112131415161718191a1b1c1d1e1f&quot;);
+alg.BlockMode = CipherModeKind.CBC;
+alg.Padding = PaddingMode.PKCS7;
+
+byte[] ciphertext = alg.Encrypt(plaintext);                          // 64 bytes: 040E605C…848BCFAC
+byte[] recovered  = alg.Decrypt(ciphertext);
+</code></pre>
+<p><code>LegalKeySizes</code> reports 128–256 in 64-bit steps. Because it is a 128-bit-block cipher, <code>Serpent128Cipher</code> is <em>not</em> accepted by the AEAD transforms — those are written for <a class="xref" href="../../api/Bodu.Security.Cryptography.AesBlockCipher.html">AesBlockCipher</a> only — but every classic mode and padding scheme in <a href="cipher-composition-reference.html">Modes, transforms, and factories</a> applies.</p>
+<h2 id="pattern-3--the-wide-block-tweakable-variants">Pattern 3 — the wide-block, tweakable variants</h2>
+<p>The three wide variants derive from <a class="xref" href="../../api/Bodu.Security.Cryptography.Serpent.html">Serpent</a>, itself a <a class="xref" href="../../api/Bodu.Security.Cryptography.TweakableSymmetricAlgorithm.html">TweakableSymmetricAlgorithm</a>. They add <code>Tweak</code> / <code>GenerateTweak()</code> and the three-argument <code>CreateEncryptor(key, iv, tweak)</code>, and carry their own <code>BlockMode</code> property (the inherited <code>Mode</code> is not synchronized). Each variant has a static <code>Create()</code>.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Security.Cryptography;
+using Bodu.Security.Cryptography;
+using Bodu.Security.Cryptography.Extensions;
+
+byte[] plaintext = &quot;wide-block, tweakable, Bodu-only&quot;u8.ToArray();   // 32 bytes = exactly one block
+
+using var alg = Serpent256.Create();
+alg.Key   = Convert.FromHexString(&quot;000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f&quot;);   // 32 bytes = block size
+alg.IV    = Convert.FromHexString(&quot;202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f&quot;);   // 32 bytes
+alg.Tweak = Convert.FromHexString(&quot;404142434445464748494a4b4c4d4e4f&quot;);                                   // 16 bytes, always
+alg.BlockMode = CipherModeKind.CTR;
+alg.Padding = PaddingMode.None;
+
+byte[] ciphertext = alg.Encrypt(plaintext);      // A63B7A5F4029BFA7E86CEF5834AB9097A83E57EF51C100D502945EC189B957C3
+byte[] recovered  = alg.Decrypt(ciphertext);
+
+alg.Tweak = Convert.FromHexString(&quot;404142434445464748494a4b4c4d4e50&quot;);   // one bit of tweak → unrelated ciphertext
+byte[] other = alg.Encrypt(plaintext);           // B8B27397…351E678C
+</code></pre>
+<p>The tweak is injected into the state after every fourth round together with a round counter, so — as with Threefish — it separates <em>domains</em> under one key rather than replacing the IV. <a href="threefish-256.html#what-the-tweak-is--and-why-it-is-not-an-iv">Using Threefish-256</a> explains the IV-versus-tweak distinction; it applies verbatim here.</p>
+<p>The raw engines take the key and tweak together and drop into <code>BlockCipherModeFactory</code> like any other <code>IBlockCipher</code>:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+
+byte[] key = new byte[32], tweak = new byte[16], iv = new byte[32];
+using IBlockCipher cipher = new Serpent256Cipher(key, tweak);        // Serpent512Cipher: 64-byte key; Serpent1024Cipher: 128-byte key
+using IBlockCipherModeTransform ctr = BlockCipherModeFactory.Create(CipherModeKind.CTR, cipher, iv);
+
+byte[] plaintext = &quot;raw engine + CTR&quot;u8.ToArray();
+byte[] ciphertext = new byte[plaintext.Length];
+ctr.Transform(plaintext, ciphertext, encrypt: true);                 // 0BC34B78EC9E17A0F388E6E7B845F6C8
+</code></pre>
+<p>A wrong key length throws <code>ArgumentException</code> (<code>key</code>); a tweak that is not 16 bytes throws <code>ArgumentException</code> (<code>tweak</code>). All-zero key, tweak, and plaintext encrypt under Serpent-256 to <code>79A23C5889F070C99DEDC6CC9806A29A98A3F2B854B61D719C1FA832ADF900D0</code> — a value you can pin in your own tests, but not one any other implementation will reproduce.</p>
+<h2 id="when-not-to-use-the-wide-variants">When not to use the wide variants</h2>
+<div class="WARNING">
+<h5>Warning</h5>
+<p><code>Serpent256</code>, <code>Serpent512</code>, and <code>Serpent1024</code> are experimental constructions defined by this library. There is no specification, no third-party implementation, no published cryptanalysis, and no test vector outside this repository. Do not use them where interoperability, external review, or a compliance regime matters. For a standard cipher use <code>Serpent128</code> or, preferably, AES; for a <em>reviewed</em> tweakable wide-block cipher use <a href="threefish-256.html">Threefish</a>, which comes from the Skein SHA-3 submission and carries published vectors.</p>
+</div>
+<p>They exist for experiments that want Serpent's S-box structure over a wider state — for example comparing wide-block behaviour against Threefish under identical modes. Treat any ciphertext they produce as tied to this library's version.</p>
+<h2 id="api-summary">API summary</h2>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Serpent-128</th>
+<th>Serpent-256 / 512 / 1024</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Wrapper type</td>
+<td><code>Serpent128 : ExtendedSymmetricAlgorithm</code></td>
+<td><code>Serpent256</code> … <code>: Serpent : TweakableSymmetricAlgorithm</code></td>
+</tr>
+<tr>
+<td>Engine type</td>
+<td><code>Serpent128Cipher(ReadOnlySpan&lt;byte&gt; key)</code></td>
+<td><code>Serpent256Cipher(key, tweak)</code> …</td>
+</tr>
+<tr>
+<td><code>Create()</code></td>
+<td><code>Serpent128.Create()</code></td>
+<td><code>Serpent256.Create()</code>, <code>Serpent512.Create()</code>, <code>Serpent1024.Create()</code> (none on the abstract <code>Serpent</code>)</td>
+</tr>
+<tr>
+<td>Block / key sizes</td>
+<td>128 / 128–256 step 64</td>
+<td>block = key = 256 / 512 / 1024</td>
+</tr>
+<tr>
+<td>Tweak</td>
+<td>—</td>
+<td><code>Tweak</code>, <code>TweakSize</code> (128), <code>LegalTweakSizes</code>, <code>GenerateTweak()</code></td>
+</tr>
+<tr>
+<td>Mode selection</td>
+<td><code>BlockMode</code> (synced with <code>Mode</code>) + <code>BlockPadding</code> / <code>Padding</code></td>
+<td>own <code>BlockMode</code>; BCL <code>Padding</code> only</td>
+</tr>
+<tr>
+<td>Transforms</td>
+<td><code>CreateEncryptor(key, iv)</code></td>
+<td><code>CreateEncryptor(key, iv, tweak)</code> and the parameterless overload</td>
+</tr>
+</tbody>
+</table>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="aes-family.html">AES-family block ciphers</a> — Serpent-128 beside AES, Twofish, and Camellia.</li>
+<li><a href="threefish-256.html">Using Threefish-256</a> — the reviewed tweakable alternative.</li>
+<li><a href="cipher-composition-reference.html">Modes, transforms, and factories</a> — what the wrappers and engines plug into.</li>
+<li><a href="security-posture.html">Security guarantees and limitations</a> — the table-lookup timing caveat in context.</li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Enum Base32Variant | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Enum Base32Variant | BODU ">
+    
+    <meta name="description" content="Identifies the Base32 alphabet and decoding rules used by .">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Text.Encoding.Base32Variant">
+
+
+
+
+  <h1 id="Bodu_Text_Encoding_Base32Variant" data-uid="Bodu.Text.Encoding.Base32Variant" class="text-break">Enum Base32Variant</h1>
+  <div class="markdown level0 summary"><p>Identifies the Base32 alphabet and decoding rules used by <a class="xref" href="Bodu.Text.Encoding.Base32.html">Base32</a>.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Encoding.html">Encoding</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Text.Encoding.dll</h6>
+  <h5 id="Bodu_Text_Encoding_Base32Variant_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public enum Base32Variant : byte</code></pre>
+  </div>
+  <h5 id="Bodu_Text_Encoding_Base32Variant_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>Each variant differs in its alphabet, default casing, padding convention, and decoder leniency around visually
+ambiguous characters. The encoder always emits the canonical case for the chosen variant; the decoder is
+case-insensitive for every variant.</p>
+<example>
+<pre><code class="lang-csharp">byte[] payload = { 0xDE, 0xAD, 0xBE, 0xEF };
+
+var rfc = Base32.Encode(payload);                                  // RFC 4648 alphabet
+var hex = Base32.Encode(payload, Base32Variant.HexExtended);       // sortable hex-extended
+var human = Base32.Encode(payload, Base32Variant.Crockford);       // transcription-safe</code></pre>
+</example>
+</div>
+  <h3 id="fields">Fields
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    <thead>
+    </thead></thead><tbody>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base32Variant_Standard">Standard</td>
+        <td><p>RFC 4648 §6 Base32 using the alphabet <code>A-Z</code> followed by <code>2-7</code>. Encoded output is padded with <code>=</code>
+characters to align to multiples of eight by default.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base32Variant_HexExtended">HexExtended</td>
+        <td><p>RFC 4648 §7 base32hex (sometimes called &quot;hex-extended&quot;) using the alphabet <code>0-9</code> followed by <code>A-V</code>.
+Used by NSEC3 DNSSEC labels. Encoded output is padded with <code>=</code> by default.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base32Variant_Crockford">Crockford</td>
+        <td><p>Crockford Base32 — alphabet <code>0-9</code> then <code>A-Z</code> with <code>I</code>, <code>L</code>, <code>O</code>, and <code>U</code> excluded
+to reduce visual ambiguity. The decoder aliases <code>I</code>/<code>L</code> to <code>1</code> and <code>O</code> to <code>0</code>. No
+padding is emitted by default.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base32Variant_ZBase32">ZBase32</td>
+        <td><p>z-base-32 — a lowercase, human-oriented alphabet designed for spoken transmission. No padding is emitted by
+default.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Bodu.Extensions.BufferConverter.CopyTo.html#Bodu_Extensions_BufferConverter_CopyTo__1___0_System_Byte___System_Int32_">BufferConverter.CopyTo&lt;Base32Variant&gt;(Base32Variant, byte[], int)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;Base32Variant&gt;(Base32Variant, Base32Variant, IComparer&lt;Base32Variant&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;Base32Variant&gt;(Base32Variant, Base32Variant, IComparer&lt;Base32Variant&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Clamp.html#Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.Clamp&lt;Base32Variant&gt;(Base32Variant, Base32Variant?, Base32Variant?, IComparer&lt;Base32Variant&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsBetween.html#Bodu_Extensions_ComparableExtensions_IsBetween__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsBetween&lt;Base32Variant&gt;(Base32Variant, Base32Variant?, Base32Variant?, IComparer&lt;Base32Variant&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;Base32Variant&gt;(Base32Variant, Base32Variant, IComparer&lt;Base32Variant&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThanOrEqual&lt;Base32Variant&gt;(Base32Variant, Base32Variant?, IComparer&lt;Base32Variant&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThan.html#Bodu_Extensions_ComparableExtensions_IsGreaterThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThan&lt;Base32Variant&gt;(Base32Variant, Base32Variant?, IComparer&lt;Base32Variant&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThanOrEqual&lt;Base32Variant&gt;(Base32Variant, Base32Variant?, IComparer&lt;Base32Variant&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThan.html#Bodu_Extensions_ComparableExtensions_IsLessThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThan&lt;Base32Variant&gt;(Base32Variant, Base32Variant?, IComparer&lt;Base32Variant&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsOutside.html#Bodu_Extensions_ComparableExtensions_IsOutside__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsOutside&lt;Base32Variant&gt;(Base32Variant, Base32Variant?, Base32Variant?, IComparer&lt;Base32Variant&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;Base32Variant&gt;(Base32Variant, Base32Variant, IComparer&lt;Base32Variant&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;Base32Variant&gt;(Base32Variant, Base32Variant, IComparer&lt;Base32Variant&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.EnumExtensions.ClearFlag.html#Bodu_Extensions_EnumExtensions_ClearFlag__1___0___0_">EnumExtensions.ClearFlag&lt;Base32Variant&gt;(Base32Variant, Base32Variant)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.EnumExtensions.GetDescription.html#Bodu_Extensions_EnumExtensions_GetDescription__1___0_">EnumExtensions.GetDescription&lt;Base32Variant&gt;(Base32Variant)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.EnumExtensions.GetDisplayName.html#Bodu_Extensions_EnumExtensions_GetDisplayName__1___0_">EnumExtensions.GetDisplayName&lt;Base32Variant&gt;(Base32Variant)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.EnumExtensions.HasAllFlags.html#Bodu_Extensions_EnumExtensions_HasAllFlags__1___0___0_">EnumExtensions.HasAllFlags&lt;Base32Variant&gt;(Base32Variant, Base32Variant)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.EnumExtensions.HasAnyFlag.html#Bodu_Extensions_EnumExtensions_HasAnyFlag__1___0___0_">EnumExtensions.HasAnyFlag&lt;Base32Variant&gt;(Base32Variant, Base32Variant)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.EnumExtensions.SetFlag.html#Bodu_Extensions_EnumExtensions_SetFlag__1___0___0_">EnumExtensions.SetFlag&lt;Base32Variant&gt;(Base32Variant, Base32Variant)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.EnumExtensions.ToggleFlag.html#Bodu_Extensions_EnumExtensions_ToggleFlag__1___0___0_">EnumExtensions.ToggleFlag&lt;Base32Variant&gt;(Base32Variant, Base32Variant)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.EnumExtensions.TryGetDescription.html#Bodu_Extensions_EnumExtensions_TryGetDescription__1___0_System_String__">EnumExtensions.TryGetDescription&lt;Base32Variant&gt;(Base32Variant, out string)</a>
+  </div>
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

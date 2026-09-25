@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Samples | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Samples | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="samples">Samples</h1>
+
+<p>The repository ships runnable, self-contained sample projects under
+<a href="https://github.com/bslater/bodu/tree/master/samples"><code>samples/</code></a>, organised by domain folder
+named after the namespace segment they demonstrate (<code>Core/</code>, <code>Collections/</code>,
+<code>Collections.Concurrent/</code>, <code>Financial/</code>, <code>Formats.Excel/</code>, <code>Globalization.Calendar/</code>,
+<code>Globalization.Recurrence/</code>, <code>IO.Biff/</code>, <code>IO.Compound/</code>, <code>IO.Pst/</code>, <code>IO.Hashing/</code>, <code>Numerics/</code>,
+<code>Security.Cryptography/</code>, <code>Text.Toml/</code>, <code>Text.Yaml/</code>, <code>Text.Bencode/</code>, <code>Text.Formats/</code>, <code>Text.Configuration/</code>, <code>Text.Encoding/</code>, <code>Text.Filtering/</code>).
+This section catalogues them; each domain page walks its samples individually.</p>
+<p>Every sample:</p>
+<ul>
+<li><strong>runs offline by default</strong> — no network, no accounts, no API keys. Exchange-rate samples
+read committed static data files; calendar samples use the embedded data packs. Where a live
+feed <em>could</em> be used, a fenced comment block shows the exact switch, and the one deliberately
+online sample (<code>Bodu.Financial.Samples.LiveRates</code>) is clearly marked and excluded from CI
+execution.</li>
+<li><strong>is deterministic</strong> — running a sample twice prints the same output, so samples double as
+executable documentation and as CI smoke tests. Every sample is a member of <code>bodu.slnx</code>
+(API drift breaks the build) and is executed by the CI samples step.</li>
+<li><strong>is documented to a fixed README standard</strong> — one section per scenario stating the intent,
+what the code does, the output to expect (with the load-bearing lines explained), and the
+APIs demonstrated.</li>
+<li>references the library projects via <code>ProjectReference</code>, with the equivalent
+<code>dotnet add package</code> commands listed per sample.</li>
+</ul>
+<p>Run any sample from the repository root:</p>
+<pre><code class="lang-bash">dotnet run --project samples/&lt;Domain&gt;/&lt;SampleName&gt;
+</code></pre>
+<h2 id="domains">Domains</h2>
+<table>
+<thead>
+<tr>
+<th>Domain</th>
+<th>Samples</th>
+<th>Highlights</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="core.html">Core</a></td>
+<td>3 projects</td>
+<td>The <code>Bodu.Functional</code> railway (<code>Option</code>/<code>Result</code>/<code>Either</code>/<code>Memoizer</code> and async companions), the utility toolbox (<code>SequenceGenerator</code>, <code>PooledBufferBuilder</code>, the enumerable operators, string/comparable/numeric extensions, <code>WeekPattern</code>, the async threading primitives), and the <code>Bodu.Text</code> encoding utilities (BOM detection, transcoding, pooled string encoding)</td>
+</tr>
+<tr>
+<td><a href="collections.html">Collections</a></td>
+<td>3 projects</td>
+<td>The specialized collection catalogue (ring/deque/evicting/multi-value/multiset/ordered/indexed/bi/navigable/sequenced/priority), the structural collections (ranges, interval tree, graph algorithms, disjoint set, trees/tries, Aho-Corasick), and the probabilistic sketches (Bloom, count-min, HyperLogLog) with a stable comparer for reproducible error</td>
+</tr>
+<tr>
+<td><a href="collections-concurrent.html">Collections.Concurrent</a></td>
+<td>1 project</td>
+<td>The thread-safe variants — <code>ConcurrentCircularBuffer</code>, <code>ConcurrentHashSet</code>, and <code>ConcurrentEvictingDictionary</code> (single-flight <code>GetOrAdd</code>, <code>ItemEvicted</code>) — with a parallel workload that asserts only deterministic aggregates</td>
+</tr>
+<tr>
+<td><a href="financial.html">Financial</a></td>
+<td>8 projects + 1 test project</td>
+<td>Money arithmetic and the three-tier rounding model, the offline static-rate-file pattern, read-through caching and tiered stacking, multi-provider aggregation and routing, DI hosting, a consumer-written provider proven by the shipped contract-test base, and the live-provider exception</td>
+</tr>
+<tr>
+<td><a href="excel.html">Formats.Excel</a></td>
+<td>1 project</td>
+<td>The read-only BIFF5 and BIFF8 <code>.xls</code> reader over a real ~18,000-cell workbook: the session/sheet-directory surface, constant-memory forward-only streaming, the materialized worksheet, and format-classified serial-date decoding</td>
+</tr>
+<tr>
+<td><a href="calendar.html">Globalization.Calendar</a></td>
+<td>5 projects + 1 test project</td>
+<td>Holiday queries with ISO 3166-2 subdivision shadowing, working-day and fiscal arithmetic with <code>WeekPattern</code> overrides, fluent calendar authoring with catalogue imports and the XML round trip, DI with live data reload, and custom date algorithms proven by the shared data-pack test base</td>
+</tr>
+<tr>
+<td><a href="recurrence.html">Globalization.Recurrence</a></td>
+<td>5 projects</td>
+<td>The RFC 5545 <code>RRULE</code> form with the <code>BY*</code> semantics implementations disagree on and <code>WKST</code> week numbering, the Vixie cron dialect with its day-field union rule and oversized-step handling, the calendar-free anchored interval with the duration grammar's exact boundary, <code>RDATE</code>/<code>EXDATE</code> set composition and the iCalendar property-block round trip, and an integrating host that puts all four behind one adapter with a reproducible catch-up loop</td>
+</tr>
+<tr>
+<td><a href="io-biff.html">IO.Biff</a></td>
+<td>1 project</td>
+<td>The BIFF record codec beneath the Excel reader: walking a workbook stream record by record with <code>BiffReader</code>, decoding cells and the shared string table, extracting the <code>Workbook</code> stream from an <code>.xls</code> with <code>Bodu.IO.Compound</code>, and authoring a BIFF8 sheet with <code>BiffWriter</code> that reads back through the codec</td>
+</tr>
+<tr>
+<td><a href="io-compound.html">IO.Compound</a></td>
+<td>1 project</td>
+<td>The OLE2 structured-storage container: builder-based authoring and byte-exact read-back, typed OLE property sets on authored and real Word files, signature detection with the v3/v4 sector knob, and walking a real <code>.doc</code>'s storage tree</td>
+</tr>
+<tr>
+<td><a href="io-pst.html">IO.Pst</a></td>
+<td>1 project</td>
+<td>The PST container and the mail-store reader built on it: format detection and the open handshake over Unicode and ANSI files, the raw property-context and table-context views, chunked data streaming under strict validation with a truncated copy rejected, and the same files as an <code>OutlookMailStore</code> with folders, messages, recipients, attachments, bodies, and named properties</td>
+</tr>
+<tr>
+<td><a href="io-hashing.html">IO.Hashing</a></td>
+<td>3 projects + 1 test project</td>
+<td>The 112-standard parametric CRC catalogue, checksum families with corruption detection, streaming/resumable digests, non-cryptographic bucket routing, identifier check digits across domains with error-class comparisons, and a custom scheme proven by the shared contract-test base</td>
+</tr>
+<tr>
+<td><a href="numerics.html">Numerics</a></td>
+<td>4 projects</td>
+<td><code>Fraction&lt;T&gt;</code> exact rational arithmetic, parse/format, generic math and continued fractions; the <code>Interval</code>/<code>DiscreteInterval</code>/<code>IntervalSet</code> algebra; the single-pass streaming statistics (<code>RunningStatistics</code>, <code>MovingSum</code>/<code>MovingMinMax</code>, <code>RunningQuantile</code>, <code>BigDecimal</code>); and the <code>System.Text.Json</code> converter registration and policy shapes</td>
+</tr>
+<tr>
+<td><a href="cryptography.html">Security.Cryptography</a></td>
+<td>4 projects + 1 test project</td>
+<td>Cryptographic and keyed hashes, XOFs, KDFs and one-time passwords; block ciphers, cipher modes, AEAD and stream ciphers; X25519/Ed25519 and ML-KEM/ML-DSA; and a consumer-authored hash proven against the shared <code>BlockHashAlgorithmTests</code> contract base — all with fixed RFC/NIST key material for reproducible output</td>
+</tr>
+<tr>
+<td><a href="bencode.html">Text.Bencode</a></td>
+<td>1 project</td>
+<td>A real BitTorrent metainfo file end to end: DOM inspection, canonical byte-exact round trips, the info-hash from the raw <code>info</code> slice, and typed POCO mapping with keys containing spaces</td>
+</tr>
+<tr>
+<td><a href="text-configuration.html">Text.Configuration</a></td>
+<td>2 projects</td>
+<td>The parse/resolve/save pipeline with diagnostics and the EditorConfig-style path cascade, <code>unset</code> dialect handling, and the <code>Microsoft.Extensions.Configuration</code> bridge into <code>IOptions&lt;T&gt;</code></td>
+</tr>
+<tr>
+<td><a href="text-encoding.html">Text.Encoding</a></td>
+<td>2 projects + 1 test project</td>
+<td>The base-encoding catalogue and variants, formatting/parse-style knobs, checksummed Base58Check/Bech32 corruption detection, the runtime registry, and a custom Base36 codec proven by the library's contract-test base</td>
+</tr>
+<tr>
+<td><a href="text-filtering.html">Text.Filtering</a></td>
+<td>1 project</td>
+<td>The include/exclude filtering engine: AnyMatch sets and gitignore-style ordered rules, the glob grammar with deciding-pattern diagnostics, and the statistics/observer telemetry</td>
+</tr>
+<tr>
+<td><a href="formats.html">Text.Formats</a></td>
+<td>2 projects</td>
+<td>RFC 4180 CSV/TSV with typed getters and dirty-input policies, streaming reader/writer pipelines, INI comment-preserving edit loops, and DotEnv's literal no-interpolation contract</td>
+</tr>
+<tr>
+<td><a href="toml.html">Text.Toml</a></td>
+<td>2 projects</td>
+<td>The <code>TomlSerializer</code> POCO surface with TOML's four native temporal kinds and naming/attribute layering, plus the mutable and read-only DOMs, the UTF-8 token layer, and resumable streaming reads</td>
+</tr>
+<tr>
+<td><a href="yaml.html">Text.Yaml</a></td>
+<td>2 projects</td>
+<td>The <code>YamlSerializer</code> POCO surface with YAML's implicit scalar typing and naming/attribute layering, plus the mutable <code>YamlNode</code> and read-only <code>YamlDocument</code> DOMs, the UTF-8 token layer, and the stream/async facade</td>
+</tr>
+</tbody>
+</table>
+<h2 id="testing-companions">Testing companions</h2>
+<p>Five samples ship test projects that derive the repository's contract-test bases —
+<code>DatedRateProviderContractTests&lt;T&gt;</code> (from the in-repo <code>Bodu.Financial.ExchangeRates.Testing</code>
+project, which is not published to NuGet), <code>CalendarDataTestsBase</code> (repository-internal),
+<code>BinaryEncodingContractTests&lt;TEncoding&gt;</code> (from the <code>Bodu.Text.Encoding</code> test suite),
+<code>CheckDigitContractTests&lt;TAlgorithm&gt;</code> (from the <code>Bodu.IO.Hashing</code> test suite), and
+<code>BlockHashAlgorithmTests&lt;TTest, TAlgorithm, TVariant&gt;</code> (from the <code>Bodu.Security.Cryptography</code>
+test suite) — demonstrating how consumer-written providers, calendars, algorithms, encodings,
+check-digit schemes, and hash algorithms are validated against the same contracts the built-in
+implementations pass. All run in CI with the library suites.</p>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

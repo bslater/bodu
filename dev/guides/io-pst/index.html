@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Bodu.IO.Pst guides | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Bodu.IO.Pst guides | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="boduiopst-guides">Bodu.IO.Pst guides</h1>
+
+<p>Recipe-style walk-throughs for <strong>Bodu.IO.Pst</strong>, the low-level, read-only container reader for the Outlook personal-folders format (<code>.pst</code> / MS-PST, Unicode and ANSI formats). The package reads the node database (NDB) — header, node and block B-trees, block data with the format's content encodings decoded and checksums verified, multi-block data trees, per-node subnode trees — and the LTP layer over it: heap-on-node, BTree-on-heap, and the property-context and table-context views with wire-typed values.</p>
+<p>The library has no MAPI knowledge: it exposes nodes, raw payloads, and property bags whose values keep their on-disk wire types, and leaves <em>meaning</em> (subjects, senders, folders) to the caller. The mail-store reader in <a href="../outlook/index.html">Bodu.Formats.Outlook.Pst</a> is built directly on top of it — the same container/format split as <code>Bodu.IO.Compound</code> beneath <code>Bodu.Formats.Excel.Binary</code>.</p>
+<p>If you are new to the library, start with the <a href="../../docs/io-pst/index.html">introduction</a>, the <a href="../../docs/io-pst/concepts.html">Core concepts</a> glossary, and the <a href="../../docs/io-pst/getting-started.html">getting-started page</a>. The guides below assume you know the vocabulary (node, NID, data tree, subnode tree, heap-on-node, property context, table context).</p>
+<h2 id="how-the-library-works">How the library works</h2>
+<p>A PST file is a flat, B-tree-indexed database of <strong>nodes</strong> in a single file. <a class="xref" href="../../api/Bodu.IO.Pst.PstFile.html">PstFile</a> opens it as a disposable session; every object — folders, messages, tables, internal maps — is a <a class="xref" href="../../api/Bodu.IO.Pst.PstNode.html">PstNode</a> addressed by a 32-bit <a class="xref" href="../../api/Bodu.IO.Pst.PstNodeId.html">PstNodeId</a> whose five low bits carry the node's <a class="xref" href="../../api/Bodu.IO.Pst.PstNodeType.html">PstNodeType</a>. A node has a data payload (assembled transparently from its data tree), a private subnode tree, and two LTP views over its heap: <a class="xref" href="../../api/Bodu.IO.Pst.PstPropertyContext.html">PstPropertyContext</a>, the property bag, and <a class="xref" href="../../api/Bodu.IO.Pst.PstTableContext.html">PstTableContext</a>, the table.</p>
+<p>Reads are lazy and seek the source on demand — the file is never buffered whole. Opening parses only the header; node lookups walk the node B-tree; payloads resolve when asked for, through a bounded least-recently-used cache of decoded blocks; and every payload has a streaming twin (<code>OpenDataStream</code>, <code>TryOpenValueStream</code>, <code>TryOpenCellStream</code>) that keeps one block resident regardless of the logical size. The session is single-threaded.</p>
+<blockquote>
+<p>These guides cover the container. For folders, messages, recipients, attachments, and bodies with MAPI semantics, see <a href="../outlook/reading-pst-mail-stores.html">Reading .pst mail stores</a>.</p>
+</blockquote>
+<h2 id="namespace-map">Namespace map</h2>
+<table>
+<thead>
+<tr>
+<th>Namespace</th>
+<th>What lives here</th>
+<th>Guides</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Pst.html">Bodu.IO.Pst</a></td>
+<td>The <code>PstFile</code> session and <code>PstFileOptions</code>; <code>PstNode</code> with <code>PstNodeId</code> / <code>PstNodeType</code> / <code>PstNodeInfo</code>; the LTP views <code>PstPropertyContext</code> / <code>PstPropertyValue</code> and <code>PstTableContext</code> / <code>PstTableColumn</code> / <code>PstTableRow</code>; <code>PstFileFormat</code>, <code>PstCryptMethod</code>, <code>PstValidationLevel</code>; and the <code>PstFileException</code> family with its <code>PstFileError</code> category.</td>
+<td><a href="reading-nodes-and-tables.html">Reading nodes and tables</a> · <a href="streaming-and-validation.html">Streaming and validation</a></td>
+</tr>
+</tbody>
+</table>
+<p>The NDB and LTP record layers (<code>Bodu.IO.Pst.Internal</code>) are internal and not part of the public surface.</p>
+<h2 id="guides">Guides</h2>
+<div class="bodu-cards">
+<div class="bodu-card">
+  <h3><a href="reading-nodes-and-tables.html">Reading nodes and tables</a></h3>
+  <p>Open a file, construct and decode node identifiers, walk the node directory and a node's subnodes, and read the two LTP views — the property context with its typed accessors and the table context with streaming rows and keyed lookup.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="streaming-and-validation.html">Streaming and validation</a></h3>
+  <p>Price and stream large payloads with the length/stream pairs, tune <code>PstFileOptions</code> (validation level, block cache, node-data and data-tree limits), and classify every failure with the complete <code>PstFileError</code> catalogue.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="../outlook/reading-pst-mail-stores.html">Reading .pst mail stores</a></h3>
+  <p>The mail-store reader built on this package: folders, messages, recipients, attachments, embedded messages, bodies, and store-wide named properties, with the two exception families kept apart.</p>
+</div>
+</div>
+<h2 id="suggested-reading-path">Suggested reading path</h2>
+<ol>
+<li><strong><a href="reading-nodes-and-tables.html">Reading nodes and tables</a></strong> — the open → look up → read recipe every other use builds on.</li>
+<li><strong><a href="streaming-and-validation.html">Streaming and validation</a></strong> — once payloads are large, input is untrusted, or you need to say <em>why</em> a file was rejected.</li>
+<li><strong><a href="../outlook/reading-pst-mail-stores.html">Reading .pst mail stores</a></strong> — when you want messages rather than nodes.</li>
+</ol>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="../../samples/io-pst.html">Runnable samples</a> — the offline PstBasics sample under <code>samples/IO.Pst/</code>: detection and open, the node and table views, streaming under <code>Strict</code>, and the mail-store view over the same Unicode and ANSI fixtures.</li>
+<li><a class="xref" href="../../api/Bodu.IO.Pst.html">Bodu.IO.Pst API reference</a> — every type and member.</li>
+<li><a href="../outlook/index.html">Bodu.Formats.Outlook guides</a> — the readers that share the MAPI value model.</li>
+<li><a href="../../docs/package-matrix.html">Package matrix</a> — where Bodu.IO.Pst sits in the suite and its dependency stack.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

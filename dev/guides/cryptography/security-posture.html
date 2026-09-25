@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Security guarantees and limitations | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Security guarantees and limitations | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="security-guarantees-and-limitations">Security guarantees and limitations</h1>
+
+<p>This page states, in one place, what <code>Bodu.Security.Cryptography</code> does and does not promise: its audit status, which primitives assert constant-time behaviour and which explicitly disclaim it, what gets zeroed and when, how the SIMD fast paths affect determinism, the exception contract, the single-use rules, and the thread-safety model. Every claim below is taken from the source's own documentation or observed by running the library; nothing here is inferred.</p>
+<h2 id="audit-status">Audit status</h2>
+<p><strong>The library is not independently audited.</strong> The source repeats the same sentence on the KDFs, the asymmetric algorithms, the OTP generators, and HPKE: the implementation &quot;offers best-effort side-channel resistance and has not been independently audited&quot;. It is developed against published test vectors (NIST, RFC, NESSIE, Wycheproof and ACVP files in the test project) and a contract-test suite, which establishes <em>correctness</em> against the specifications, not resistance to an adversary with physical or timing access. Treat the library as you would any unaudited implementation: prefer the BCL where it implements the same algorithm (<a href="choosing-a-primitive.html">Choosing a primitive</a>), and do not deploy the Bodu-only constructions (<code>XSalsa20Poly1305Aead</code>, <code>Serpent256/512/1024</code>) where an external review is expected.</p>
+<h2 id="constant-time-claims-by-primitive">Constant-time claims by primitive</h2>
+<p>The source distinguishes three postures. Only the first is a positive claim.</p>
+<table>
+<thead>
+<tr>
+<th>Posture</th>
+<th>Primitives</th>
+<th>What the source says</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Constant-time with respect to secrets</strong></td>
+<td><code>X25519</code> / Curve25519 field arithmetic, <code>Ed25519</code> (signing, precomputed-table selection, ladder), <code>MLKem</code> (decapsulation compare and implicit-rejection key selection), GHASH / POLYVAL (<code>GcmModeTransform</code>, <code>GcmSivModeTransform</code> — both the PCLMULQDQ and scalar paths), every AEAD tag comparison, <code>Hotp</code> / <code>Totp</code> code comparison, the value types' equality, <code>Pkcs7Padding</code> / <code>Ansix923Padding</code> / <code>Iso7816_4Padding</code> unpad validation, the ARX designs (BLAKE2, BLAKE3, Threefish) by construction</td>
+<td>&quot;runs in constant time with respect to the private key&quot;; &quot;the tag is compared in constant time before any plaintext byte is written&quot;; &quot;no secret-dependent branches or table lookups&quot;.</td>
+</tr>
+<tr>
+<td><strong>Constant-time control flow, data-dependent table reads — explicitly <em>not</em> hardened</strong></td>
+<td><code>Blowfish</code>, <code>Skipjack</code>, <code>Camellia</code>, <code>Twofish</code>, <code>Serpent128</code>, <code>Serpent256/512/1024</code>, <code>Tiger</code>, <code>Whirlpool</code>, <code>Snefru</code></td>
+<td>&quot;control flow is constant-time, but the S-box lookup tables are read at data-dependent indices … <strong>not</strong> hardened against timing or cache-based side-channel attacks.&quot; Serpent's per-substitution table is a single 16-byte line, which the source says <em>limits but does not formally eliminate</em> the exposure.</td>
+</tr>
+<tr>
+<td><strong>Deliberately not constant-time</strong></td>
+<td><code>Iso10126Padding</code> unpad (random-filled interior; validation is &quot;deliberately not masked&quot;), <code>MLDsa</code> rejection sampling (public values only; &quot;the values involved carry no secrets&quot;)</td>
+<td>Documented as safe because no secret drives the timing.</td>
+</tr>
+<tr>
+<td><strong>Best-effort, unqualified</strong></td>
+<td><code>Hkdf</code>, <code>Argon2*</code>, <code>Scrypt</code>, <code>Hpke</code>, <code>Hotp</code>, <code>Totp</code>, <code>MLDsa</code></td>
+<td>&quot;best-effort, not guaranteed, side-channel resistance&quot;.</td>
+</tr>
+</tbody>
+</table>
+<p><code>Argon2i</code> and <code>Argon2id</code> use data-independent memory addressing for their first pass; <code>Argon2d</code> does not, by design. <code>SipHash</code>, <code>Poly1305</code>, <code>Skein</code>, <code>CubeHash</code>, <code>Shake</code>, the Ascon family, and the stream ciphers make no explicit statement either way in their documentation; their designs are ARX or permutation-based without secret-indexed tables, but the library does not assert a guarantee for them.</p>
+<p><code>AesBlockCipher</code> delegates each block to the BCL <code>Aes</code>, so its timing posture is the platform's (hardware AES-NI where available).</p>
+<h2 id="zeroization-on-dispose">Zeroization on dispose</h2>
+<p>What is cleared, per the source and observed behaviour:</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>On <code>Dispose</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Block-cipher wrappers (<code>Blowfish</code>, <code>Camellia</code>, <code>Twofish</code>, <code>Serpent128</code>, <code>Skipjack</code>, <code>Threefish*</code>, <code>Serpent256/512/1024</code>)</td>
+<td><code>Key</code> and <code>IV</code> backing arrays are zeroed; reading <code>Key</code> afterwards throws <code>ObjectDisposedException</code>. A copy you took earlier via <code>alg.Key</code> is <em>yours</em> and is not cleared.</td>
+</tr>
+<tr>
+<td><code>BlockCipherTransform</code></td>
+<td>clears any held-back decryption block, disposes the mode transform (which zeroes its chaining vector / counter / tweak / feedback register) <strong>and the engine</strong>.</td>
+</tr>
+<tr>
+<td><code>SymmetricStreamAlgorithm</code> and the Poly1305 AEADs</td>
+<td>retained key and nonce zeroed.</td>
+</tr>
+<tr>
+<td>Hashes (<code>BufferedBlockHashAlgorithm</code> family)</td>
+<td>residual block and <code>HashValue</code> cleared; keyed hashes (<code>KeyedBlockHashAlgorithm</code>, <code>KeyedDeferredFinalBlockHashAlgorithm</code>) also clear the key. Reading members afterwards throws <code>ObjectDisposedException</code>.</td>
+</tr>
+<tr>
+<td>Asymmetric (<code>RawKeyAsymmetricAlgorithm</code>: <code>X25519</code>, <code>Ed25519</code>, <code>MLKem*</code>, <code>MLDsa*</code>)</td>
+<td>private key material zeroed exactly once; replacing a key (<code>GenerateKey</code>, <code>Import*</code>) zeroes the previous private key first.</td>
+</tr>
+<tr>
+<td><code>SecretBytes</code></td>
+<td>pinned buffer zeroed and the instance latched; <code>Clear()</code> zeroes without disposing.</td>
+</tr>
+<tr>
+<td>Pooled buffers (<code>AppendData</code>, <code>TransformAsync</code>, <code>HashAlgorithmHelper</code>, <code>MerkleTree</code>)</td>
+<td>returned to <code>ArrayPool&lt;byte&gt;.Shared</code> with <code>clearArray: true</code> on every exit path.</td>
+</tr>
+<tr>
+<td><code>Nonce</code>, <code>Salt</code>, <code>HashValue</code>, <code>AuthenticationTag</code>, <code>SignatureValue</code></td>
+<td>nothing — they are public values by design.</td>
+</tr>
+</tbody>
+</table>
+<p>What is <strong>not</strong> covered: arrays you allocate and hand to the library (<code>byte[] key = …</code>) are copied, not adopted; clear your own copies with <code>CryptographicOperations.ZeroMemory</code>. Managed memory can still be copied by the GC before <code>Dispose</code> runs; only <code>SecretBytes</code> pins.</p>
+<h2 id="simd-determinism-and-the-disablesimd-switch">SIMD determinism and the <code>DisableSimd</code> switch</h2>
+<p>BLAKE2b, BLAKE2s, BLAKE3, Threefish-256/512/1024, and CubeHash carry AVX-512 kernels; GHASH in GCM / GCM-SIV has a PCLMULQDQ path. All of them produce <strong>bit-identical output</strong> to their scalar reference — the switch exists for reproducibility and audit, not safety. The feature switch <code>Bodu.Security.Cryptography.DisableSimd</code> forces the scalar path for the whole process:</p>
+<pre><code class="lang-xml">&lt;ItemGroup&gt;
+  &lt;RuntimeHostConfigurationOption Include=&quot;Bodu.Security.Cryptography.DisableSimd&quot; Value=&quot;true&quot; Trim=&quot;false&quot; /&gt;
+&lt;/ItemGroup&gt;
+</code></pre>
+<p>or, in a <code>runtimeconfig.template.json</code>, <code>{ &quot;configProperties&quot;: { &quot;Bodu.Security.Cryptography.DisableSimd&quot;: true } }</code>, or <code>AppContext.SetSwitch(&quot;Bodu.Security.Cryptography.DisableSimd&quot;, true)</code> before the first accelerated primitive runs. The switch is read <strong>once</strong> at type initialization and cannot be toggled afterwards. The repository proves the scalar paths independently: <code>Bodu.Security.Cryptography.Simd.Test</code> is a separate test assembly whose <code>runtimeconfig.template.json</code> sets the switch, so the accelerated primitives are exercised through their scalar code and must still reproduce the published digests. See <a href="hardware-acceleration.html">Hardware acceleration and the SIMD opt-out</a>.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+
+AppContext.TryGetSwitch(&quot;Bodu.Security.Cryptography.DisableSimd&quot;, out bool disabled);
+using var blake = new Blake2b();
+byte[] digest = blake.ComputeHash(&quot;abc&quot;u8.ToArray());     // BA80A53F981C4D0D… whether or not the switch is set
+</code></pre>
+<h2 id="the-exception-contract">The exception contract</h2>
+<p>The library uses four exception families with consistent meaning. The table lists the boundary, the type you will see, and a representative trigger — each row was produced by running the library.</p>
+<table>
+<thead>
+<tr>
+<th>Situation</th>
+<th>Exception</th>
+<th>Examples</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument is structurally wrong for a <strong>raw engine, transform, or value type</strong></td>
+<td><code>ArgumentException</code> (<code>ParamName</code> set) / <code>ArgumentOutOfRangeException</code> / <code>ArgumentNullException</code></td>
+<td><code>new CamelliaBlockCipher(10-byte key)</code>, <code>new Serpent256Cipher(key, 8-byte tweak)</code>, <code>new GcmModeTransform(cipher, 16-byte nonce)</code>, <code>new XChaCha20Poly1305(key, 16-byte nonce)</code>, a ciphertext shorter than the tag, a detached tag of the wrong length, secretbox given AAD, partial buffer overlap, <code>BlockCipherModeFactory</code> without an IV, <code>Blake2b(100)</code>, <code>Nonce.Random(0)</code>, <code>Hkdf</code> with MD5, Argon2 memory below <code>8 × parallelism</code>, scrypt <code>N</code> not a power of two, HKDF output over <code>255 × HashLen</code>, OTP <code>digits</code> outside 6–8, <code>SignatureValue.FromBytes</code> with an undefined format, <code>Ed25519.ImportPublicKey(31 bytes)</code>, ML-KEM ciphertext of the wrong length</td>
+</tr>
+<tr>
+<td>Key material or configuration is invalid on a <strong><code>SymmetricAlgorithm</code> / stream-algorithm wrapper</strong>, or a cryptographic check fails</td>
+<td><code>CryptographicException</code></td>
+<td><code>camellia.Key = 10 bytes</code>, <code>CreateEncryptor</code> with a mis-sized or missing IV, <code>chacha.Key = 8 bytes</code>, <code>Blake2b.Key</code> over 64 bytes, <code>AesBlockCipher(10-byte key)</code> (from the BCL <code>Aes</code>), an unknown <code>PaddingMode</code>, invalid PKCS7 padding on decrypt, an XTS input that is not whole blocks, CFB/OFB input not block-aligned, <strong>any AEAD tag mismatch</strong>, <code>Ed25519.SignData</code> without a private key, <code>X25519</code> given a low-order peer point, a second stream-cipher transform for the same nonce, a second Poly1305 message under one key</td>
+</tr>
+<tr>
+<td>A <code>HashAlgorithm</code> is reconfigured after hashing has started</td>
+<td><code>CryptographicUnexpectedOperationException</code></td>
+<td>setting <code>Tiger.Variant</code> after <code>TransformBlock</code></td>
+</tr>
+<tr>
+<td>The object's <strong>lifecycle</strong> forbids the call</td>
+<td><code>InvalidOperationException</code></td>
+<td>a second <code>Encrypt</code> / <code>Decrypt</code> on any AEAD transform (including after a failed decrypt), <code>TransformFinalBlock</code> twice on a <code>BlockCipherTransform</code></td>
+</tr>
+<tr>
+<td>The feature is not implemented for this type</td>
+<td><code>NotSupportedException</code></td>
+<td><code>BlockMode = CipherModeKind.CTS</code> / <code>XTS</code> / <code>OCB</code> / <code>EAX</code> / <code>SIV</code> at <code>CreateEncryptor</code>, the BCL one-shots (<code>EncryptCbc</code> …), <code>ToXmlString</code>, encrypted PKCS#8, PKCS#8 / SPKI on ML-KEM / ML-DSA, <code>Poly1305</code> with padding</td>
+</tr>
+<tr>
+<td>Use after <code>Dispose</code></td>
+<td><code>ObjectDisposedException</code></td>
+<td>any member of a disposed hash, cipher, transform, asymmetric algorithm, or <code>SecretBytes</code></td>
+</tr>
+<tr>
+<td>Text that is not hex</td>
+<td><code>FormatException</code></td>
+<td><code>HashValue.ParseHex(&quot;zz&quot;)</code>; PHC-string parsing in <code>Argon2.Verify</code> / <code>Scrypt.Verify</code></td>
+</tr>
+</tbody>
+</table>
+<p>Two rules follow. First, <strong>a failed authentication is <code>CryptographicException</code></strong> everywhere — AEAD tags, Poly1305, signature verification does <em>not</em> throw but returns <code>false</code> (<code>Ed25519.VerifyData</code>, <code>MLDsa.VerifyData</code>, <code>Hotp.VerifyCode</code> return <code>false</code> for a wrong or wrongly sized input). Second, the <em>same</em> mistake surfaces differently by layer: a bad key length is <code>ArgumentException</code> on an engine and <code>CryptographicException</code> on its wrapper, because the wrapper follows the BCL <code>SymmetricAlgorithm</code> convention. Catch <code>CryptographicException</code> on the wrapper path and <code>ArgumentException</code> when you compose engines yourself.</p>
+<h2 id="single-use-rules">Single-use rules</h2>
+<table>
+<thead>
+<tr>
+<th>Object</th>
+<th>Rule</th>
+<th>Violation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Every AEAD transform (<code>GcmModeTransform</code>, <code>GcmSivModeTransform</code>, <code>CcmModeTransform</code>, <code>OcbModeTransform</code>, <code>EaxModeTransform</code>, <code>SivModeTransform</code>, <code>AsconAead128</code>, <code>XChaCha20Poly1305</code>, <code>XSalsa20Poly1305</code>, <code>XSalsa20Poly1305Aead</code>)</td>
+<td>one <code>Encrypt</code> <strong>or</strong> one <code>Decrypt</code> per instance; a failed decrypt also consumes it</td>
+<td><code>InvalidOperationException</code></td>
+</tr>
+<tr>
+<td><code>Poly1305</code></td>
+<td>one message per key; <code>Initialize()</code> does not reset the one-time latch</td>
+<td><code>CryptographicException</code></td>
+</tr>
+<tr>
+<td><code>SymmetricStreamAlgorithm</code> (<code>ChaCha20</code> …)</td>
+<td>one transform per nonce through the parameterless <code>CreateEncryptor()</code> / <code>CreateDecryptor()</code>; use <code>GenerateNonce()</code> or the <code>(key, nonce)</code> overloads for another</td>
+<td><code>CryptographicException</code></td>
+</tr>
+<tr>
+<td><code>BlockCipherTransform</code> and the stream-cipher transforms</td>
+<td><code>CanReuseTransform == false</code>; nothing after <code>TransformFinalBlock</code></td>
+<td><code>InvalidOperationException</code></td>
+</tr>
+<tr>
+<td><code>HashAlgorithm</code> subclasses</td>
+<td>reusable: <code>ComputeHash</code> resets; <code>Initialize()</code> resets a streaming computation</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Nonces and IVs</td>
+<td>never reuse a <code>(key, nonce)</code> pair for GCM, CTR, CCM, OCB, EAX, or any stream cipher; SIV and GCM-SIV degrade gracefully; XChaCha20 / XSalsa20 nonces are safe to draw at random</td>
+<td>not detected — a protocol responsibility</td>
+</tr>
+</tbody>
+</table>
+<h2 id="thread-safety">Thread safety</h2>
+<p>No instance in the library is thread-safe, with one deliberate exception. The source states the single-caller rule for the mode transforms, the AEAD transforms, and <code>SecretBytes</code>; the <code>HashAlgorithm</code> and <code>SymmetricAlgorithm</code> bases inherit the BCL's per-instance model. Static entry points (<code>Hkdf</code>, <code>Hotp</code>, <code>Totp</code>, <code>Hpke</code>, <code>Argon2id.DeriveKey</code>, <code>Scrypt.DeriveKey</code>, <code>HashAlgorithmHelper</code>, <code>BlockCipherModeFactory</code>, <code>PaddingFactory</code>) hold no shared mutable state and may be called concurrently.</p>
+<p>The exception is <a class="xref" href="../../api/Bodu.Security.Cryptography.MerkleTree.html">MerkleTree</a>: it is immutable, holds no per-computation state, and every operation is safe for concurrent use — a single instance may be registered as a singleton and used from many handlers at once. That guarantee rests entirely on the <code>Func&lt;HashAlgorithm&gt;</code> it is given returning a <strong>fresh</strong> algorithm on each call, as <code>SHA256.Create</code> does. A factory handing back one shared instance is unsafe, will corrupt concurrent computations, and cannot serve a parallel tree at all. A parallel instance spreads leaf hashing across workers inside one call, one algorithm per worker, and folds the results in order on the calling thread. Share a factory (<code>IHashAlgorithmFactory&lt;T&gt;</code>, or a plain delegate), not an algorithm.</p>
+<h2 id="trimming-and-aot">Trimming and AOT</h2>
+<p>The library's public API is reflection-free (<code>Enum.TryParse</code> is used only for mode/padding name mapping on the wrappers), and the feature switch is declared with <code>Trim=&quot;false&quot;</code> in the recommended project snippet so it survives trimming. No member is annotated with <code>RequiresUnreferencedCode</code> or <code>RequiresDynamicCode</code>. This is an observation about the source, not a tested guarantee; the repository does not ship a trimmed or AOT-published test.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="choosing-a-primitive.html">Choosing a primitive</a> — when to prefer the BCL.</li>
+<li><a href="hardware-acceleration.html">Hardware acceleration and the SIMD opt-out</a> — the accelerated kernels and the switch in depth.</li>
+<li><a href="value-types.html">Nonces, salts, tags, and secrets</a> — the constant-time value types and <code>SecretBytes</code>.</li>
+<li><a href="stream-aead.html">Authenticated stream ciphers</a> and <a href="aead-modes.html">AEAD modes</a> — the single-use contract in practice.</li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

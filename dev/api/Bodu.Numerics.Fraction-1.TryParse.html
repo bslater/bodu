@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Method TryParse | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Method TryParse | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Numerics.Fraction`1.TryParse*">
+
+
+
+<h1 id="Bodu_Numerics_Fraction_1_TryParse_" data-uid="Bodu.Numerics.Fraction`1.TryParse*">Method TryParse</h1>
+<div class="markdown level0 summary"></div>
+<div class="markdown level0 conceptual"></div>
+
+<a id="Bodu_Numerics_Fraction_1_TryParse_" data-uid="Bodu.Numerics.Fraction`1.TryParse*"></a>
+<h4 id="Bodu_Numerics_Fraction_1_TryParse_System_String_Bodu_Numerics_Fraction__0___" data-uid="Bodu.Numerics.Fraction`1.TryParse(System.String,Bodu.Numerics.Fraction{`0}@)">TryParse(string?, out Fraction&lt;T&gt;)</h4>
+<div class="markdown level1 summary"><p>Attempts to parse a string into a <a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a>.</p>
+</div>
+<div class="markdown level1 conceptual"></div>
+<h5 class="declaration">Declaration</h5>
+<div class="codewrapper">
+  <pre><code class="lang-csharp hljs">public static bool TryParse(string? s, out Fraction&lt;T&gt; result)</code></pre>
+</div>
+<h5 class="parameters">Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+      <td><span class="parametername">s</span></td>
+      <td><p>The string to parse.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction</a>&lt;T&gt;</td>
+      <td><span class="parametername">result</span></td>
+      <td><p>When this method returns, contains the parsed value, or zero on failure.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="returns">Returns</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></td>
+      <td><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if parsing succeeded; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 id="Bodu_Numerics_Fraction_1_TryParse_System_String_Bodu_Numerics_Fraction__0____examples">Examples</h5>
+<pre><code class="lang-csharp">// Parse a ratio, a mixed number, and a Unicode vulgar fraction.
+var half = Fraction&lt;int&gt;.Parse("1/2");          // 1/2
+var mixed = Fraction&lt;int&gt;.Parse("2 1/4");       // 9/4
+var glyph = Fraction&lt;int&gt;.Parse("¾");           // 3/4
+
+// Round-trip: the parsed value formats back to the same canonical text.
+var value = Fraction&lt;int&gt;.Parse("6/8");         // reduced to 3/4
+string text = value.ToString();                 // "3/4"
+
+if (Fraction&lt;int&gt;.TryParse("not a fraction", out var parsed))
+{
+    // not reached
+}</code></pre>
+
+<a id="Bodu_Numerics_Fraction_1_TryParse_" data-uid="Bodu.Numerics.Fraction`1.TryParse*"></a>
+<h4 id="Bodu_Numerics_Fraction_1_TryParse_System_String_System_IFormatProvider_Bodu_Numerics_Fraction__0___" data-uid="Bodu.Numerics.Fraction`1.TryParse(System.String,System.IFormatProvider,Bodu.Numerics.Fraction{`0}@)">TryParse(string?, IFormatProvider?, out Fraction&lt;T&gt;)</h4>
+<div class="markdown level1 summary"><p>Attempts to parse a string into a <a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a> using the specified culture.</p>
+</div>
+<div class="markdown level1 conceptual"></div>
+<h5 class="declaration">Declaration</h5>
+<div class="codewrapper">
+  <pre><code class="lang-csharp hljs">public static bool TryParse(string? s, IFormatProvider? provider, out Fraction&lt;T&gt; result)</code></pre>
+</div>
+<h5 class="parameters">Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+      <td><span class="parametername">s</span></td>
+      <td><p>The string to parse.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iformatprovider">IFormatProvider</a></td>
+      <td><span class="parametername">provider</span></td>
+      <td><p>The culture used to interpret the numeric components.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction</a>&lt;T&gt;</td>
+      <td><span class="parametername">result</span></td>
+      <td><p>When this method returns, contains the parsed value, or zero on failure.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="returns">Returns</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></td>
+      <td><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if parsing succeeded; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="implements">Implements</h5>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iparsable-1.tryparse">IParsable&lt;TSelf&gt;.TryParse(string, IFormatProvider, out TSelf)</a></div>
+<a id="Bodu_Numerics_Fraction_1_TryParse_" data-uid="Bodu.Numerics.Fraction`1.TryParse*"></a>
+<h4 id="Bodu_Numerics_Fraction_1_TryParse_System_ReadOnlySpan_System_Char__System_IFormatProvider_Bodu_Numerics_Fraction__0___" data-uid="Bodu.Numerics.Fraction`1.TryParse(System.ReadOnlySpan{System.Char},System.IFormatProvider,Bodu.Numerics.Fraction{`0}@)">TryParse(ReadOnlySpan&lt;char&gt;, IFormatProvider?, out Fraction&lt;T&gt;)</h4>
+<div class="markdown level1 summary"><p>Attempts to parse a character span into a <a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a> using the specified culture.</p>
+</div>
+<div class="markdown level1 conceptual"></div>
+<h5 class="declaration">Declaration</h5>
+<div class="codewrapper">
+  <pre><code class="lang-csharp hljs">public static bool TryParse(ReadOnlySpan&lt;char&gt; s, IFormatProvider? provider, out Fraction&lt;T&gt; result)</code></pre>
+</div>
+<h5 class="parameters">Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</td>
+      <td><span class="parametername">s</span></td>
+      <td><p>The span to parse.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iformatprovider">IFormatProvider</a></td>
+      <td><span class="parametername">provider</span></td>
+      <td><p>The culture used to interpret the numeric components.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction</a>&lt;T&gt;</td>
+      <td><span class="parametername">result</span></td>
+      <td><p>When this method returns, contains the parsed value, or zero on failure.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="returns">Returns</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></td>
+      <td><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if parsing succeeded; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="implements">Implements</h5>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.ispanparsable-1.tryparse">ISpanParsable&lt;TSelf&gt;.TryParse(ReadOnlySpan&lt;char&gt;, IFormatProvider, out TSelf)</a></div>
+<a id="Bodu_Numerics_Fraction_1_TryParse_" data-uid="Bodu.Numerics.Fraction`1.TryParse*"></a>
+<h4 id="Bodu_Numerics_Fraction_1_TryParse_System_ReadOnlySpan_System_Byte__System_IFormatProvider_Bodu_Numerics_Fraction__0___" data-uid="Bodu.Numerics.Fraction`1.TryParse(System.ReadOnlySpan{System.Byte},System.IFormatProvider,Bodu.Numerics.Fraction{`0}@)">TryParse(ReadOnlySpan&lt;byte&gt;, IFormatProvider?, out Fraction&lt;T&gt;)</h4>
+<div class="markdown level1 summary"><p>Attempts to parse a UTF-8 byte span into a <a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a> using the specified culture.</p>
+</div>
+<div class="markdown level1 conceptual"></div>
+<h5 class="declaration">Declaration</h5>
+<div class="codewrapper">
+  <pre><code class="lang-csharp hljs">public static bool TryParse(ReadOnlySpan&lt;byte&gt; utf8Text, IFormatProvider? provider, out Fraction&lt;T&gt; result)</code></pre>
+</div>
+<h5 class="parameters">Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</td>
+      <td><span class="parametername">utf8Text</span></td>
+      <td><p>The UTF-8 encoded text to parse.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iformatprovider">IFormatProvider</a></td>
+      <td><span class="parametername">provider</span></td>
+      <td><p>The culture used to interpret the numeric components.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction</a>&lt;T&gt;</td>
+      <td><span class="parametername">result</span></td>
+      <td><p>When this method returns, contains the parsed value, or zero on failure.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="returns">Returns</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></td>
+      <td><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if parsing succeeded; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="implements">Implements</h5>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iutf8spanparsable-1.tryparse">IUtf8SpanParsable&lt;TSelf&gt;.TryParse(ReadOnlySpan&lt;byte&gt;, IFormatProvider, out TSelf)</a></div>
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

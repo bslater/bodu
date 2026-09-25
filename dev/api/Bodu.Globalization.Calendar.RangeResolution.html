@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Namespace Bodu.Globalization.Calendar.RangeResolution | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Namespace Bodu.Globalization.Calendar.RangeResolution | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Globalization.Calendar.RangeResolution">
+
+  <h1 id="Bodu_Globalization_Calendar_RangeResolution" data-uid="Bodu.Globalization.Calendar.RangeResolution" class="text-break">Namespace Bodu.Globalization.Calendar.RangeResolution</h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual">
+<p><img src="../images/hero-calendar.svg" alt="Bodu.Globalization.Calendar.RangeResolution"></p>
+<h1 id="boduglobalizationcalendarrangeresolution">Bodu.Globalization.Calendar.RangeResolution</h1>
+<h2 id="purpose">Purpose</h2>
+<p><strong>Bodu.Globalization.Calendar.RangeResolution</strong> holds the policy vocabulary that governs how resolved occurrences are de-duplicated, how same-day and overlapping-span collisions are settled, which occurrence (actual or observed) controls range-query inclusion, and which days count as the working week.</p>
+<p>These policies are carried by the document's <code>&lt;ResolutionPolicy&gt;</code> element and surfaced as <a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.html">ResolutionPolicy</a> on the loaded <a class="xref" href="Bodu.Globalization.Calendar.NotableDateResource.html">NotableDateResource</a>. They are resource-level (authored once per document) rather than per-query.</p>
+<h2 id="static-documentation">Static documentation</h2>
+<ul>
+<li><strong><a href="../guides/calendar/resolution-pipeline.html">The resolution pipeline</a></strong> — the stages a query runs through and where each policy applies.</li>
+<li><strong><a href="../guides/calendar/identity-and-resolution.html">Rule identity, priority, and observed-date resolution</a></strong> — duplicate / collision settlement and observed-date range inclusion in detail.</li>
+</ul>
+<h2 id="key-types">Key types</h2>
+<ul>
+<li><a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.html">ResolutionPolicy</a> — the policy bundle: <code>DuplicatePolicy</code>, <code>SameDayCollisionPolicy</code>, <code>SpanCollisionPolicy</code>, <code>PriorityDirection</code>, <code>ObservedDateRangePolicy</code>, and the working week (a <code>Bodu.Core</code> <code>WeekPattern</code>, default Monday–Friday). <code>ResolutionPolicy.Default</code> is the all-defaults instance.</li>
+<li><a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.DuplicatePolicy.html">DuplicatePolicy</a> — how identical occurrences are reconciled: <code>Error</code>, <code>KeepFirst</code>, <code>KeepLast</code>, <code>Merge</code>.</li>
+<li><a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy.html">CollisionPolicy</a> — how distinct rules landing on the same day (or with overlapping spans) are settled: <code>KeepAll</code>, <code>HighestPriorityOnly</code>, <code>CategoryPriority</code>, <code>Custom</code>.</li>
+<li><a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.PriorityDirection.html">PriorityDirection</a> — whether a higher or lower <code>Priority</code> wins: <code>HigherWins</code>, <code>LowerWins</code>.</li>
+<li><a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.EmissionMode.html">EmissionMode</a> — what an adjustment emits: <code>ActualOnly</code>, <code>ObservedOnly</code>, <code>ActualAndObserved</code>, <code>ObservedAsAdditional</code>, <code>Suppress</code>.</li>
+<li><a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy.html">ObservedDateRangePolicy</a> — which occurrence date controls inclusion in a range query: <code>ObservedOccurrenceControlsInclusion</code>, <code>ActualOccurrenceControlsInclusion</code>, <code>BothOccurrencesControlInclusion</code>.</li>
+<li><a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.INotableDateCollisionResolver.html">INotableDateCollisionResolver</a> — <code>Resolve(DateOnly date, IReadOnlyList&lt;NotableDate&gt; colliding)</code>. Implement this to settle same-day collisions yourself; it is consulted only under <code>CollisionPolicy.Custom</code> and is supplied through <a class="xref" href="Bodu.Globalization.Calendar.NotableDateServiceOptions.html">NotableDateServiceOptions</a><code>.CollisionResolver</code> when the <code>NotableDateService</code> is constructed.</li>
+</ul>
+<h2 id="authored-example">Authored example</h2>
+<pre><code class="lang-xml">&lt;ResolutionPolicy duplicatePolicy=&quot;KeepFirst&quot;
+                  sameDayCollisionPolicy=&quot;HighestPriorityOnly&quot;
+                  priorityDirection=&quot;HigherWins&quot;
+                  observedDateRangePolicy=&quot;ObservedOccurrenceControlsInclusion&quot;
+                  workingDays=&quot;0111110&quot; /&gt;   &lt;!-- Sunday-first; Mon–Fri working --&gt;
+</code></pre>
+</div>
+  <div class="markdown level0 remarks"></div>
+    <h3 id="classes">
+Classes
+</h3>
+      <h4><a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.html">ResolutionPolicy</a></h4>
+      <section><p>Captures the resource-level policies that govern duplicate handling, collision handling, priority direction, and
+observed-date range inclusion.</p>
+</section>
+    <h3 id="interfaces">
+Interfaces
+</h3>
+      <h4><a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.INotableDateCollisionResolver.html">INotableDateCollisionResolver</a></h4>
+      <section><p>Resolves a set of notable-date occurrences that share the same emitted date, used when the resource's same-day
+collision policy is <a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy.html#Bodu_Globalization_Calendar_RangeResolution_CollisionPolicy_Custom">Custom</a>.</p>
+</section>
+    <h3 id="enums">
+Enums
+</h3>
+      <h4><a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy.html">CollisionPolicy</a></h4>
+      <section><p>Determines how the resolver treats multiple distinct notable dates that resolve to the same day or overlapping span.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.DuplicatePolicy.html">DuplicatePolicy</a></h4>
+      <section><p>Determines how the loader treats two rules that resolve to the same full identity within a resource graph.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.EmissionMode.html">EmissionMode</a></h4>
+      <section><p>Controls which occurrences an adjustment policy emits when its trigger is active: the originally calculated (actual)
+occurrence, the adjusted (observed) occurrence, both, or neither.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy.html">ObservedDateRangePolicy</a></h4>
+      <section><p>Determines which emitted occurrence controls whether a resolved notable date is included by a date-range query.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.PriorityDirection.html">PriorityDirection</a></h4>
+      <section><p>Determines whether a higher or lower numeric priority value takes precedence during selection.</p>
+</section>
+
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

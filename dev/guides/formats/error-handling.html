@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Errors across the line formats | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Errors across the line formats | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="errors-across-the-line-formats">Errors across the line formats</h1>
+
+<p>Each line format — <strong>Delimited</strong>, <strong>DotEnv</strong>, and <strong>INI</strong> — reports failure through exactly two exception types, and the split is the same in all three: a <em>format</em> exception for input that is not well-formed, and a <em>serialization</em> exception for a well-formed document that does not bind to the target type. This guide shows what each type carries, which inputs trigger it, how to catch it, and which reader-option policies turn a would-be error into tolerated input.</p>
+<h2 id="the-two-families">The two families</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Format exception</th>
+<th>Serialization exception</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Delimited</td>
+<td><a class="xref" href="../../api/Bodu.Text.Delimited.DelimitedFormatException.html">DelimitedFormatException</a> — <code>LineNumber</code>, <code>Offset</code></td>
+<td><a class="xref" href="../../api/Bodu.Text.Delimited.DelimitedSerializationException.html">DelimitedSerializationException</a></td>
+</tr>
+<tr>
+<td>DotEnv</td>
+<td><a class="xref" href="../../api/Bodu.Text.DotEnv.DotEnvFormatException.html">DotEnvFormatException</a> — <code>LineNumber</code>, <code>ColumnNumber</code>, <code>Offset</code></td>
+<td><a class="xref" href="../../api/Bodu.Text.DotEnv.DotEnvSerializationException.html">DotEnvSerializationException</a></td>
+</tr>
+<tr>
+<td>INI</td>
+<td><a class="xref" href="../../api/Bodu.Text.Ini.IniFormatException.html">IniFormatException</a> — <code>LineNumber</code>, <code>Offset</code></td>
+<td><a class="xref" href="../../api/Bodu.Text.Ini.IniSerializationException.html">IniSerializationException</a></td>
+</tr>
+<tr>
+<td>Base type</td>
+<td><code>FormatException</code></td>
+<td><code>Exception</code></td>
+</tr>
+<tr>
+<td>Raised by</td>
+<td>the readers, both DOMs, and the serializer's read path</td>
+<td>the serializer's bind (read) and shape checks (write)</td>
+</tr>
+<tr>
+<td>Position members</td>
+<td>1-based <code>LineNumber</code>, 0-based byte <code>Offset</code> (DotEnv adds a 1-based <code>ColumnNumber</code>); all <code>int?</code> — <code>null</code> when the failure has no single position</td>
+<td>none; the message names the key or column</td>
+</tr>
+<tr>
+<td><code>InnerException</code></td>
+<td>rarely set</td>
+<td>the <code>FormatException</code> from a failed scalar conversion, when there is one</td>
+</tr>
+</tbody>
+</table>
+<p>Two points follow from the table. First, the position members are nullable: a structural rule that spans the whole document — an INI global key colliding with a section of the same name, for example — reports no line. Second, the serializer's read path can throw <em>either</em> type: the document is parsed first (format exception), then bound (serialization exception), so a catch that must handle both needs two clauses.</p>
+<h2 id="pattern-1--delimited-malformed-input">Pattern 1 — Delimited: malformed input</h2>
+<p>The Delimited reader enforces RFC 4180 structure. An unterminated quoted field, a record whose field count disagrees with the header, characters after a closing quote, and a duplicate header name are all <code>DelimitedFormatException</code>:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Text.Delimited;
+using Bodu.Text.Delimited.Document;
+
+try
+{
+    using DelimitedDocument doc = DelimitedDocument.Parse(&quot;symbol,qty\nMSFT,\&quot;10\n&quot;u8);
+}
+catch (DelimitedFormatException ex)
+{
+    Console.WriteLine($&quot;{ex.Message} (line {ex.LineNumber}, offset {ex.Offset})&quot;);
+}
+// A quoted delimited field was not terminated before the end of the input. (line 3, offset 20)
+</code></pre>
+<p>The other structural failures, with the position each reports:</p>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Message</th>
+<th>Position</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>symbol,qty</code> / <code>MSFT,10,extra</code></td>
+<td><em>A delimited record has 3 field(s) but the header declares 2.</em></td>
+<td>line 3, offset 25</td>
+</tr>
+<tr>
+<td><code>symbol,qty</code> / <code>MSFT,&quot;10&quot;x</code></td>
+<td><em>A delimited record has 1 field(s) but the header declares 2.</em></td>
+<td>line 3, offset 22</td>
+</tr>
+<tr>
+<td><code>symbol,symbol</code> / <code>MSFT,10</code></td>
+<td><em>The delimited header row contains the duplicate column name 'symbol'.</em></td>
+<td>line 2, offset 14</td>
+</tr>
+</tbody>
+</table>
+<p>The line number is the line on which the reader <em>detected</em> the problem — for a record error that is the line after the offending record's terminator, which is why single-line records report line 3 here.</p>
+<h2 id="pattern-2--delimited-tolerating-dirty-input">Pattern 2 — Delimited: tolerating dirty input</h2>
+<p>Three <a class="xref" href="../../api/Bodu.Text.Delimited.Reader.DelimitedReaderOptions.html">DelimitedReaderOptions</a> policies convert the errors above into accepted input. Each has a strict default; the leniency is opt-in:</p>
+<table>
+<thead>
+<tr>
+<th>Policy</th>
+<th>Default</th>
+<th>Lenient value</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>FieldCountBehavior</code></td>
+<td><code>Strict</code></td>
+<td><code>Ragged</code></td>
+<td>Records with more or fewer fields than the header are accepted as-is.</td>
+</tr>
+<tr>
+<td><code>MalformedRecordBehavior</code></td>
+<td><code>Throw</code></td>
+<td><code>SkipRecord</code></td>
+<td>A record with a structural error (text after a closing quote) is truncated at the error and reading continues with the next record.</td>
+</tr>
+<tr>
+<td><code>DuplicateHeaderBehavior</code></td>
+<td><code>Throw</code></td>
+<td><code>TakeFirst</code> / <code>TakeLast</code></td>
+<td>A repeated column name maps to the first or last occurrence.</td>
+</tr>
+</tbody>
+</table>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Text.Delimited.Reader;
+
+using DelimitedDocument ragged = DelimitedDocument.Parse(
+    &quot;symbol,qty\nMSFT,10,extra\nAAPL\n&quot;u8,
+    new DelimitedReaderOptions { FieldCountBehavior = DelimitedFieldCountBehavior.Ragged });
+int raggedCount = ragged.RootElement.GetArrayLength();    // 2 records
+
+using DelimitedDocument skipped = DelimitedDocument.Parse(
+    &quot;symbol,qty\nMSFT,\&quot;10\&quot;x\nAAPL,5\n&quot;u8,
+    new DelimitedReaderOptions { MalformedRecordBehavior = DelimitedMalformedRecordBehavior.SkipRecord });
+int skippedCount = skipped.RootElement.GetArrayLength();  // 2 records — the malformed record is truncated at the error, not dropped
+
+using DelimitedDocument last = DelimitedDocument.Parse(
+    &quot;symbol,symbol\nMSFT,10\n&quot;u8,
+    new DelimitedReaderOptions { DuplicateHeaderBehavior = DelimitedDuplicateHeaderBehavior.TakeLast });
+string symbol = last.RootElement[0].GetProperty(&quot;symbol&quot;).GetString();   // &quot;10&quot;
+</code></pre>
+<p>An unterminated quoted field is never tolerated — there is no policy for it, because the reader cannot know where the record was meant to end. The full dialect table is on the <a href="../../docs/formats/parser-policies.html">parser policies</a> page. Note that these policies live on the <em>reader</em> options, which the DOMs and the token reader accept; <a class="xref" href="../../api/Bodu.Text.Delimited.DelimitedSerializerOptions.html">DelimitedSerializerOptions</a> exposes only the dialect characters (<code>Delimiter</code>, <code>Quote</code>, <code>NoHeader</code>), so a typed <code>DelimitedSerializer.Deserialize&lt;T&gt;</code> always reads strictly.</p>
+<h2 id="pattern-3--delimited-binding-failures">Pattern 3 — Delimited: binding failures</h2>
+<p>A well-formed document that does not fit the record type raises <code>DelimitedSerializationException</code>. The typical cause is a scalar that does not parse; the <code>FormatException</code> from the conversion is preserved as the inner exception:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">public sealed class Trade
+{
+    public string Symbol { get; set; } = &quot;&quot;;
+    public int Quantity { get; set; }
+}
+</code></pre>
+<!-- compile -->
+<pre><code class="lang-csharp">try
+{
+    DelimitedSerializer.Deserialize&lt;Trade&gt;(&quot;Symbol,Quantity\nMSFT,ten\n&quot;);
+}
+catch (DelimitedSerializationException ex)
+{
+    Console.WriteLine(ex.Message);
+    Console.WriteLine(ex.InnerException?.Message);
+}
+// The delimited value for column 'Quantity' could not be converted to type 'System.Int32'.
+// The input string 'ten' was not in a correct format.
+</code></pre>
+<p>A <em>missing</em> column is not an error — Delimited does not honor <code>[Required]</code>, so <code>Symbol\nMSFT\n</code> binds a <code>Trade</code> with <code>Quantity</code> left at its default. And because the document is parsed before it is bound, a structural error inside the same call still surfaces as the format exception:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">DelimitedSerializer.Deserialize&lt;Trade&gt;(&quot;Symbol,Quantity\nMSFT,\&quot;1\n&quot;);
+// → throws DelimitedFormatException: A quoted delimited field was not terminated before the end of the input.
+</code></pre>
+<h2 id="pattern-4--dotenv-malformed-input">Pattern 4 — DotEnv: malformed input</h2>
+<p>The DotEnv reader reports a line, a column, and a byte offset on every structural failure:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Text.DotEnv;
+using Bodu.Text.DotEnv.Document;
+
+try
+{
+    using DotEnvDocument doc = DotEnvDocument.Parse(&quot;API_KEY=\&quot;abc\n&quot;);
+}
+catch (DotEnvFormatException ex)
+{
+    Console.WriteLine($&quot;{ex.Message} (line {ex.LineNumber}, column {ex.ColumnNumber}, offset {ex.Offset})&quot;);
+}
+// Unterminated double-quoted DotEnv value beginning on line 1. (line 1, column 1, offset 13)
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Message</th>
+<th>Position</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>=abc</code></td>
+<td><em>Invalid DotEnv key name '=' on line 1; keys must match [A-Za-z_][A-Za-z0-9_]*.</em></td>
+<td>line 1, column 1, offset 0</td>
+</tr>
+<tr>
+<td><code>API KEY=abc</code></td>
+<td><em>Malformed DotEnv entry on line 1; expected 'KEY=VALUE'.</em></td>
+<td>line 1, column 1, offset 4</td>
+</tr>
+<tr>
+<td><code>export API_KEY=abc</code> with <code>DisallowExportPrefix = true</code></td>
+<td><em>Malformed DotEnv entry on line 1; expected 'KEY=VALUE'.</em></td>
+<td>line 1, column 1, offset 7</td>
+</tr>
+</tbody>
+</table>
+<p>The DotEnv knobs on <a class="xref" href="../../api/Bodu.Text.DotEnv.Reader.DotEnvReaderOptions.html">DotEnvReaderOptions</a> run in the <em>strict</em> direction — the default dialect is already the permissive mainstream <code>dotenv</code> reading, and each option removes a feature: <code>DisallowExportPrefix</code> makes an <code>export</code> line malformed (above), <code>DisallowInlineComments</code> stops <code> # note</code> from terminating an unquoted value (so <code>KEY=abc # note</code> reads as <code>abc # note</code> instead of <code>abc</code>), and <code>SkipComments</code> drops comment lines from the token stream. None of them turns an error into accepted input.</p>
+<h2 id="pattern-5--dotenv-binding-failures">Pattern 5 — DotEnv: binding failures</h2>
+<p><code>DotEnvSerializationException</code> covers the two binding failures the format can have: a <code>[Required]</code> key that is absent, and a value that does not convert:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">public sealed class ApiSettings
+{
+    [Required]
+    public string ApiKey { get; set; } = &quot;&quot;;
+
+    public int Timeout { get; set; } = 30;
+}
+</code></pre>
+<!-- compile -->
+<pre><code class="lang-csharp">DotEnvSerializer.Deserialize&lt;ApiSettings&gt;(&quot;TIMEOUT=10\n&quot;);
+// → throws DotEnvSerializationException: Required DotEnv key 'ApiKey' was not present in the document.
+
+DotEnvSerializer.Deserialize&lt;ApiSettings&gt;(&quot;ApiKey=k\nTimeout=soon\n&quot;);
+// → throws DotEnvSerializationException: The DotEnv value for key 'Timeout' could not be converted to type 'System.Int32'.
+//   InnerException: FormatException: The input string 'soon' was not in a correct format.
+</code></pre>
+<p>As with Delimited, a syntax error in the same call is the format exception (<code>ApiKey=&quot;k</code> → <em>Unterminated double-quoted DotEnv value beginning on line 1.</em>), so handlers around <code>Deserialize&lt;T&gt;</code> need both clauses.</p>
+<h2 id="pattern-6--ini-malformed-input-and-document-model-rules">Pattern 6 — INI: malformed input and document-model rules</h2>
+<p>The INI reader's dialect is deliberately conservative: <code>=</code> is the only delimiter, a header must close on its line, and comments are full-line only. Those produce positioned <code>IniFormatException</code>s:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Text.Ini;
+using Bodu.Text.Ini.Document;
+
+try
+{
+    using IniDocument doc = IniDocument.Parse(&quot;[server]\nport: 8080\n&quot;);
+}
+catch (IniFormatException ex)
+{
+    Console.WriteLine($&quot;{ex.Message} (line {ex.LineNumber}, offset {ex.Offset})&quot;);
+}
+// Malformed INI entry on line 2; expected 'key=value'. (line 2, offset 19)
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Message</th>
+<th>Position</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>[server</code> / <code>port=8080</code></td>
+<td><em>An INI section header was not terminated with ']' before the end of the line.</em></td>
+<td>line 1, offset 7</td>
+</tr>
+<tr>
+<td><code># c</code> / <code>k=1</code> with <code>DisallowHashComments = true</code></td>
+<td><em>Malformed INI entry on line 1; expected 'key=value'.</em></td>
+<td>line 1, offset 3</td>
+</tr>
+<tr>
+<td><code>server=1</code> / <code>[server]</code> / <code>port=8080</code></td>
+<td><em>The global INI key 'server' collides with a section of the same name.</em></td>
+<td>no position (<code>null</code>)</td>
+</tr>
+</tbody>
+</table>
+<p>INI has a second source of format exceptions: the <strong>document-model</strong> duplicate policies in <a class="xref" href="../../api/Bodu.Text.Ini.IniDocumentOptions.html">IniDocumentOptions</a>. The source-order reader reports the file verbatim; it is the normalized document (and therefore both DOMs and the serializer) that decides what a repeated key or section means. The defaults are lenient (<code>Merge</code> sections, <code>LastWins</code> keys) and the strict values raise the format exception:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Text.Ini.Reader;
+
+IniDocument.Parse(&quot;[s]\nk=1\nk=2\n&quot;u8, IniReaderOptions.Default,
+    new IniDocumentOptions { DuplicateKeyBehavior = IniDuplicateKeyBehavior.Disallowed });
+// → throws IniFormatException: The INI section 's' defines the key 'k' more than once. (line 4, offset 12)
+
+IniDocument.Parse(&quot;[s]\nk=1\n[s]\nj=2\n&quot;u8, IniReaderOptions.Default,
+    new IniDocumentOptions { DuplicateSectionBehavior = IniDuplicateSectionBehavior.Disallowed });
+// → throws IniFormatException: The INI document defines the section 's' more than once. (line 4, offset 12)
+</code></pre>
+<p><code>IniSerializerOptions</code> surfaces the same two policies, and its <code>Strict</code> preset (<code>IniSerializerDefaults.Strict</code>) sets both to <code>Disallowed</code> — the <code>configparser</code> strict mode. The global/section name collision is the one duplicate that no policy tolerates, because both entries would claim the same root property; <code>IniSerializerOptions.GlobalSectionName</code> sidesteps it by mapping the global entries to a reserved root key instead of hoisting them.</p>
+<h2 id="pattern-7--ini-binding-failures">Pattern 7 — INI: binding failures</h2>
+<p><code>IniSerializationException</code> adds a third cause to the two the other formats share — the format's depth limit. INI is two levels deep (section, then key), so a member that would need a third level is rejected, on write as well as on read:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">public sealed class AppConfig
+{
+    [Required]
+    public string Name { get; set; } = &quot;&quot;;
+
+    public Server Server { get; set; } = new();
+}
+
+public sealed class Server
+{
+    public int Port { get; set; } = 80;
+}
+</code></pre>
+<!-- compile -->
+<pre><code class="lang-csharp">IniSerializer.Deserialize&lt;AppConfig&gt;(&quot;[Server]\nPort=8080\n&quot;);
+// → throws IniSerializationException: The INI document does not contain the required key 'Name'.
+
+IniSerializer.Deserialize&lt;AppConfig&gt;(&quot;Name=x\n[Server]\nPort=eighty\n&quot;);
+// → throws IniSerializationException: The INI value for key 'Port' could not be converted to type 'System.Int32'.
+//   InnerException: FormatException: The input string 'eighty' was not in a correct format.
+</code></pre>
+<p>A <code>Server</code> type that itself held an object-typed member — <code>public Tls? Tls { get; set; }</code> — fails at first use with <em>INI supports only two levels (section then key); the member 'Tls' nests deeper.</em>, whether or not the member is <code>null</code>: the check is on the type's shape, not the instance.</p>
+<h2 id="pattern-8--catch-both-families">Pattern 8 — Catch both families</h2>
+<p>Because the serializer's read path parses and then binds, a robust handler distinguishes the two and uses the position when there is one:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">public static AppConfig? TryLoad(string ini, Action&lt;string&gt; report)
+{
+    try
+    {
+        return IniSerializer.Deserialize&lt;AppConfig&gt;(ini);
+    }
+    catch (IniFormatException ex) when (ex.LineNumber is int line)
+    {
+        report($&quot;line {line}: {ex.Message}&quot;);
+    }
+    catch (IniFormatException ex)
+    {
+        report(ex.Message);
+    }
+    catch (IniSerializationException ex)
+    {
+        report(ex.InnerException is null ? ex.Message : $&quot;{ex.Message} ({ex.InnerException.Message})&quot;);
+    }
+
+    return null;
+}
+</code></pre>
+<p>The format exceptions derive from <code>FormatException</code>, so a single <code>catch (FormatException)</code> covers all three formats' syntax errors where the format is not known in advance; the serialization exceptions derive directly from <code>Exception</code> and have no common base, by design — a caller binding a known format catches the specific type.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="../../docs/formats/parser-policies.html">Parser policies</a> — every reader-option knob per format, with its default.</li>
+<li><a href="writer-options-and-dom-options.html">Writer options and DOM options</a> — the writer-side and document-model structs, including the INI duplicate policies from the DOM side.</li>
+<li>The per-format guides — <a href="delimited.html">Delimited</a>, <a href="dotenv.html">DotEnv</a>, <a href="ini.html">INI</a> — each with an <em>Exceptions</em> section in context.</li>
+<li><a href="streaming.html">Streams and token-level I/O</a> — what a mid-stream format exception means for the bytes already consumed.</li>
+<li><a href="../serialization/options-and-lifetime.html">Serializer options: freezing, caching, and thread safety</a> — the <code>InvalidOperationException</code> the options themselves throw once frozen.</li>
+<li><a href="../../samples/formats.html">Runnable samples</a>, the <a href="index.html">line-format guides hub</a>, and the <a href="../topics/text-and-serialization.html">Text &amp; Serialization guides</a>.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Built-in exchange-rate providers | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Built-in exchange-rate providers | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="built-in-exchange-rate-providers">Built-in exchange-rate providers</h1>
+
+<p>Bodu ships eleven exchange-rate providers, one per published source. Each is a thin
+<strong>fetcher</strong> that downloads and parses its source and serves the result through the
+same <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.IDatedRateProvider.html"><code>IDatedRateProvider</code></a>
+and timeless <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.IRateProvider.html"><code>IRateProvider</code></a>
+contracts — so any provider drops into the same lookups, the same
+<a href="exchange-rate-caching.html">caching and aggregation</a> layer, and the same
+<a href="money.html"><code>Money</code> conversions</a> as every other. None of them knows anything about
+caching; that is added in front (see the caching guide).</p>
+<h2 id="the-providers-at-a-glance">The providers at a glance</h2>
+<table>
+<thead>
+<tr>
+<th>Provider</th>
+<th>Package</th>
+<th>Base</th>
+<th>Source format</th>
+<th>History depth</th>
+<th>DI registration</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Reserve Bank of Australia</td>
+<td><code>Bodu.Financial.ExchangeRates.Rba</code></td>
+<td>AUD</td>
+<td>published <code>.xls</code> workbooks, per <strong>era</strong></td>
+<td>since 1983‑01‑01 (first era)</td>
+<td><code>AddRbaExchangeRates()</code></td>
+</tr>
+<tr>
+<td>European Central Bank</td>
+<td><code>Bodu.Financial.ExchangeRates.Ecb</code></td>
+<td>EUR</td>
+<td>the <code>eurofxref</code> XML <strong>feed</strong></td>
+<td>since 1999‑01‑04 (euro epoch)</td>
+<td><code>AddEcbExchangeRates()</code></td>
+</tr>
+<tr>
+<td>Bank of England</td>
+<td><code>Bodu.Financial.ExchangeRates.Boe</code></td>
+<td>GBP</td>
+<td>CSV over a date <strong>window</strong></td>
+<td>since 1975‑01‑02 (daily spot inception)</td>
+<td><code>AddBoeExchangeRates()</code></td>
+</tr>
+<tr>
+<td>Yahoo Finance</td>
+<td><code>Bodu.Financial.ExchangeRates.Yahoo</code></td>
+<td><em>any pair</em></td>
+<td>per-<strong>ticker</strong> chart JSON</td>
+<td>since 2003‑12‑01 (chart inception)</td>
+<td><code>AddYahooExchangeRates()</code></td>
+</tr>
+<tr>
+<td>OFX (ofx.com)</td>
+<td><code>Bodu.Financial.ExchangeRates.Ofx</code></td>
+<td><em>any pair</em></td>
+<td>per-<strong>pair</strong> spot-rate-history JSON</td>
+<td>unbounded (multi-decade, no published floor)</td>
+<td><code>AddOfxExchangeRates()</code></td>
+</tr>
+<tr>
+<td>XE.com</td>
+<td><code>Bodu.Financial.ExchangeRates.Xe</code></td>
+<td><em>any pair</em></td>
+<td>per-<strong>pair</strong> charting-rates JSON</td>
+<td>rolling ~10 years (server-determined, estimated)</td>
+<td><code>AddXeExchangeRates()</code></td>
+</tr>
+<tr>
+<td>OANDA</td>
+<td><code>Bodu.Financial.ExchangeRates.Oanda</code></td>
+<td><em>any pair</em></td>
+<td>per-<strong>pair</strong> rate-history JSON</td>
+<td>rolling ~180 days</td>
+<td><code>AddOandaExchangeRates()</code></td>
+</tr>
+<tr>
+<td>Fixer (fixer.io)</td>
+<td><code>Bodu.Financial.ExchangeRates.Fixer</code></td>
+<td><em>any pair</em></td>
+<td>per-<strong>pair</strong> time-series / single-date JSON (<code>access_key</code>)</td>
+<td>since 1999‑01‑01</td>
+<td><code>AddFixerExchangeRates()</code></td>
+</tr>
+<tr>
+<td>exchangerate.host</td>
+<td><code>Bodu.Financial.ExchangeRates.ExchangeRateHost</code></td>
+<td><em>any pair</em></td>
+<td>per-<strong>pair</strong> time-series / single-date JSON (<code>access_key</code>)</td>
+<td>since 1999‑01‑01</td>
+<td><code>AddExchangeRateHostExchangeRates()</code></td>
+</tr>
+<tr>
+<td>FRED (St. Louis Fed)</td>
+<td><code>Bodu.Financial.ExchangeRates.Fred</code></td>
+<td><em>mapped pairs</em></td>
+<td>per-<strong>pair</strong> <code>series_id</code> observations JSON (<code>api_key</code>)</td>
+<td>unbounded (per series)</td>
+<td><code>AddFredExchangeRates()</code></td>
+</tr>
+<tr>
+<td>IMF</td>
+<td><code>Bodu.Financial.ExchangeRates.Imf</code></td>
+<td>USD</td>
+<td>monthly representative-rates <strong>TSV report</strong> (keyless, daily)</td>
+<td>unbounded</td>
+<td><code>AddImfExchangeRates()</code></td>
+</tr>
+</tbody>
+</table>
+<p>RBA, ECB, BoE, and IMF quote one base currency against many others (AUD, EUR, GBP,
+and USD respectively); direct (<code>BASE→X</code>) and inverse (<code>X→BASE</code>) lookups are supported,
+cross pairs are not. Yahoo, OFX, XE, OANDA, Fixer, and exchangerate.host fetch a
+distinct series per pair, so they serve arbitrary pairs directly (subject to their
+plan's base-currency rules). FRED is per-pair too, but each pair must be mapped to a
+FRED series identifier — it ships a built-in map for the major pairs and accepts more
+through its options. Fixer, exchangerate.host, and FRED require an API key on their
+options; IMF is keyless.</p>
+<p>Every provider advertises its history depth through
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.WebRateProvider.HistoryAvailability.html#Bodu_Financial_ExchangeRates_WebRateProvider_HistoryAvailability"><code>HistoryAvailability</code></a>,
+so a caller can resolve the earliest date worth requesting before issuing a
+lookup. The value is advisory — it describes the source's published coverage,
+not a per-day or per-series guarantee: BoE and Yahoo floors reflect their
+longest-running series (later-inception series exist), ECB's floor follows the
+configured feeds (rolling when the full-history feed is excluded), RBA's
+follows the configured era catalogue, and XE's window is an estimate of a
+server-determined range. The pair providers expose the value as a settable
+option; BoE adds its own options property for the same purpose.</p>
+<p>The value is also discoverable at runtime through the
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.IHistoricalRateProvider.html"><code>IHistoricalRateProvider</code></a>
+capability interface, and the caching and aggregation decorators consume it by
+default: fetches for declared-unavailable dates are skipped or clamped rather
+than issued. See
+<a href="exchange-rate-caching.html#respecting-advertised-history">Respecting advertised history</a>
+in the caching guide.</p>
+<h2 id="what-every-provider-shares">What every provider shares</h2>
+<p>Because the surface is uniform, the same code drives any provider — the only
+difference is the type you construct and its options.</p>
+<p><strong>Two construction styles.</strong> The options-only constructor builds and <strong>owns</strong> an
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.net.http.httpclient"><code>HttpClient</code></a>; dispose the provider to release
+it. The constructor that takes an <code>HttpClient</code> uses the caller's client as-is and
+never disposes it — the form the dependency-injection registration uses, backed by
+<code>IHttpClientFactory</code>.</p>
+<pre><code class="lang-csharp">using Bodu.Financial;
+using Bodu.Financial.ExchangeRates;
+
+// The provider owns the HttpClient it builds from the options; dispose it to release the client.
+using var provider = new RbaRateProvider(new RbaRateProviderOptions());
+</code></pre>
+<p><strong>Warm, then look up.</strong> A provider loads its source on demand. Warm the in-memory
+store first with <code>LoadRangeAsync</code> (or the provider's preload method), then resolve
+synchronously:</p>
+<pre><code class="lang-csharp">await provider.LoadRangeAsync(new DateOnly(2023, 1, 1), new DateOnly(2026, 6, 30));
+
+RateLookupResult usd = provider.GetRate(&quot;AUD&quot;, &quot;USD&quot;, new DateOnly(2023, 1, 3));
+// usd.Rate.Rate, usd.Rate.Provider == &quot;RBA&quot;, usd.Provenance.Origin == RateOrigin.Live
+</code></pre>
+<p>A synchronous lookup that misses an unloaded span blocks to download it only when
+<code>AllowSynchronousNetworkAccess</code> is set to <code>true</code>; it defaults to <code>false</code>, which
+keeps callers on the asynchronous surface or an explicit preload. Concurrent
+loads of the same span are coalesced, so a burst of misses triggers at most one
+download.</p>
+<p><strong>A common warm-up surface across every provider.</strong> Each provider also carries
+source-specific warm-up methods shaped to its feed (<code>LoadRangeAsync</code> and
+<code>PreloadAsync</code> for the bulk feeds; <code>LoadPairAsync</code> for the pair feeds). On top of
+those, every provider implements
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.IPairRateLoader.html">IPairRateLoader</a> — <code>LoadPairAsync(from, to, start, end)</code>
+and <code>GetLoadedPairs()</code> — so a consumer can warm a pair's window and enumerate the
+loaded pairs uniformly without knowing whether the source fetches by pair, era,
+feed, or range. On a single-base feed such as RBA the pair must involve its base
+currency (for example AUD); an unsupported pair is rejected before any download.</p>
+<pre><code class="lang-csharp">IPairRateLoader loader = provider;
+await loader.LoadPairAsync(&quot;AUD&quot;, &quot;USD&quot;, new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 31));
+
+foreach (CurrencyPair pair in loader.GetLoadedPairs())
+{
+    // pair.From, pair.To
+}
+</code></pre>
+<p><strong>Lookups behave identically across providers.</strong> Dated and timeless lookups,
+<code>TryGetRate</code>, range reads, date-resolution policies, and inverse fallback all work
+the same way described in <a href="exchange-rates.html">Working with exchange rates</a>:</p>
+<pre><code class="lang-csharp">// Dated, with a fallback policy and the resolution metadata.
+provider.TryGetRate(&quot;AUD&quot;, &quot;USD&quot;, new DateOnly(2024, 1, 6),
+    RateLookupOptions.PreviousWithin(7), out RateLookupResult prev);
+
+// A whole window at once (AUD-based pairs; the reverse direction is inverted).
+RateRangeResult series =
+    await provider.GetRatesAsync(&quot;AUD&quot;, &quot;JPY&quot;, new DateOnly(2026, 1, 1), new DateOnly(2026, 6, 12));
+
+// The timeless surface resolves the most recent rate.
+decimal latest = ((IRateProvider)provider).GetRate(&quot;AUD&quot;, &quot;USD&quot;);
+</code></pre>
+<p><strong>Logging is opt-in and free when unused.</strong> Pass an
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.ilogger"><code>ILogger</code></a> (or let the DI package wire
+one); with no logger the provider uses <code>NullLogger</code>. Each provider's options expose
+per-event <code>*LogLevel</code> properties, defaulting to one <code>Information</code> line per
+completed download, <code>Debug</code> for download starts, and <code>Trace</code> for per-observation
+detail.</p>
+<p><strong>Downloaded payloads are cached on disk.</strong> The bulk providers (ECB, BoE, RBA, IMF)
+keep a best-effort cache of the raw bytes they downloaded through <code>EnableDiskCache</code>
+(on by default for ECB, BoE, and IMF; off for RBA), so immutable history is not
+re-fetched; the pair providers do not cache payloads. This is distinct from the <a href="exchange-rate-caching.html">rate cache</a>:
+the on-disk payload cache avoids re-downloading the source file, while the rate
+cache stores parsed, resolved rates in front of the provider.</p>
+<p><strong>Shared options.</strong> The pair-provider options — Yahoo, OFX, XE, OANDA, Fixer,
+exchangerate.host, and FRED — plus the IMF options derive from the abstract
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.WebRateProviderOptions.html">WebRateProviderOptions</a>, so they share its surface — the
+<code>BaseAddress</code>, <code>HttpTimeout</code> (default 30s), <code>UserAgent</code>, <code>AllowSynchronousNetworkAccess</code>,
+<code>DefaultLookback</code> (default 7 days), a <code>CurrencyAliases</code> map for non-ISO source symbols,
+and the per-event <code>*LogLevel</code> knobs. RBA, ECB, and BoE carry their own option types
+(<code>RbaRateProviderOptions</code> and friends) with source-specific settings such as the RBA's
+era list. The DI registration's <code>configureResilience</code> parameter tunes the standard
+Polly handler (<code>HttpStandardResilienceOptions</code>) wrapped around the named <code>HttpClient</code>.</p>
+<h2 id="reserve-bank-of-australia-aud">Reserve Bank of Australia (AUD)</h2>
+<p><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RbaRateProvider.html"><code>RbaRateProvider</code></a>
+serves the RBA's published historical daily rates. The RBA splits its history into
+<strong>eras</strong>, each a published <code>.xls</code> workbook covering a span of dates; a range load
+fetches every era overlapping the request. Configure the eras, base URL, timeout,
+user agent, and disk cache through
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RbaRateProviderOptions.html"><code>RbaRateProviderOptions</code></a>;
+warm the store with <code>PreloadAsync</code>, <code>LoadEraAsync</code>, or <code>LoadRangeAsync</code>.</p>
+<pre><code class="lang-csharp">using Bodu.Financial.ExchangeRates;
+
+using var rba = new RbaRateProvider(new RbaRateProviderOptions());
+await rba.LoadRangeAsync(new DateOnly(2023, 1, 1), new DateOnly(2026, 6, 30));
+
+RateLookupResult aud = rba.GetRate(&quot;AUD&quot;, &quot;USD&quot;, new DateOnly(2023, 1, 3));
+
+foreach (RbaSeriesInfo info in rba.GetAvailablePairs())
+    Console.WriteLine($&quot;{info.Pair.From}/{info.Pair.To} ({info.SeriesId})&quot;);
+</code></pre>
+<h2 id="european-central-bank-eur">European Central Bank (EUR)</h2>
+<p><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.EcbRateProvider.html"><code>EcbRateProvider</code></a>
+serves the ECB euro foreign-exchange reference rates from the <code>eurofxref</code> XML feed.
+The feed carries the full published history, so one load covers every date it
+contains. Options are
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.EcbRateProviderOptions.html"><code>EcbRateProviderOptions</code></a>.</p>
+<pre><code class="lang-csharp">using Bodu.Financial.ExchangeRates;
+
+using var ecb = new EcbRateProvider(new EcbRateProviderOptions());
+await ecb.LoadRangeAsync(new DateOnly(2023, 1, 1), new DateOnly(2023, 12, 31));
+
+RateLookupResult usd = ecb.GetRate(&quot;EUR&quot;, &quot;USD&quot;, new DateOnly(2023, 1, 3));
+RateLookupResult inverse = ecb.GetRate(&quot;USD&quot;, &quot;EUR&quot;, new DateOnly(2023, 1, 3)); // inverted
+</code></pre>
+<h2 id="bank-of-england-gbp">Bank of England (GBP)</h2>
+<p><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.BoeRateProvider.html"><code>BoeRateProvider</code></a>
+serves the Bank of England daily spot rates, downloaded as CSV over a requested
+date <strong>window</strong>. A synchronous miss loads a window around the requested date;
+<code>LoadRangeAsync</code> warms an explicit range. Options are
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.BoeRateProviderOptions.html"><code>BoeRateProviderOptions</code></a>.</p>
+<pre><code class="lang-csharp">using Bodu.Financial.ExchangeRates;
+
+using var boe = new BoeRateProvider(new BoeRateProviderOptions());
+await boe.LoadRangeAsync(new DateOnly(2023, 1, 1), new DateOnly(2023, 12, 31));
+
+RateLookupResult gbp = boe.GetRate(&quot;GBP&quot;, &quot;USD&quot;, new DateOnly(2023, 1, 3));
+</code></pre>
+<h2 id="yahoo-finance-any-pair">Yahoo Finance (any pair)</h2>
+<p><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.YahooRateProvider.html"><code>YahooRateProvider</code></a>
+fetches a Yahoo Finance chart per currency pair (the ticker <code>AUDUSD=X</code> for AUD/USD),
+so unlike the central-bank providers it serves arbitrary pairs rather than one base
+currency. Warm a pair over a window with <code>LoadPairAsync</code>. Options are
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.YahooRateProviderOptions.html"><code>YahooRateProviderOptions</code></a>.</p>
+<pre><code class="lang-csharp">using Bodu.Financial.ExchangeRates;
+
+using var yahoo = new YahooRateProvider(new YahooRateProviderOptions());
+await yahoo.LoadPairAsync(&quot;AUD&quot;, &quot;USD&quot;, new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 31));
+
+RateLookupResult aud = yahoo.GetRate(&quot;AUD&quot;, &quot;USD&quot;, new DateOnly(2023, 1, 3));
+</code></pre>
+<h2 id="ofx-any-pair">OFX (any pair)</h2>
+<p><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.OfxRateProvider.html"><code>OfxRateProvider</code></a>
+fetches the OFX (ofx.com) public spot-rate-history JSON service per currency pair,
+so like Yahoo it serves arbitrary pairs rather than one base currency. Warm a pair
+over a window with <code>LoadPairAsync</code>. Options are
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.OfxRateProviderOptions.html"><code>OfxRateProviderOptions</code></a>.</p>
+<pre><code class="lang-csharp">using Bodu.Financial.ExchangeRates;
+
+using var ofx = new OfxRateProvider(new OfxRateProviderOptions());
+await ofx.LoadPairAsync(&quot;USD&quot;, &quot;AUD&quot;, new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 31));
+
+RateLookupResult aud = ofx.GetRate(&quot;USD&quot;, &quot;AUD&quot;, new DateOnly(2023, 1, 3));
+</code></pre>
+<h2 id="xecom-any-pair">XE.com (any pair)</h2>
+<p><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.XeRateProvider.html"><code>XeRateProvider</code></a>
+fetches the XE.com charting-rates JSON service per currency pair, so like Yahoo and
+OFX it serves arbitrary pairs rather than one base currency. Warm a pair over a
+window with <code>LoadPairAsync</code>. The authorization token the endpoint requires is
+acquired automatically from the XE website, so no API key or manual setup is needed.
+Options are
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.XeRateProviderOptions.html"><code>XeRateProviderOptions</code></a>.</p>
+<div class="WARNING">
+<h5>Warning</h5>
+<p>This package is <strong>Experimental</strong>. The authorization token is recovered by scraping
+an unversioned public XE page, so a change to the site's markup or bundling can
+silently reduce the provider to empty results — a broken scraper looks the same as
+&quot;no rate for this pair&quot;. Treat it as best-effort: do not rely on it as your sole
+rate source in production, and pair it with a stable primary feed (for example the
+ECB, Bank of England, or RBA providers).</p>
+</div>
+<pre><code class="lang-csharp">using Bodu.Financial.ExchangeRates;
+
+using var xe = new XeRateProvider(new XeRateProviderOptions());
+await xe.LoadPairAsync(&quot;AUD&quot;, &quot;USD&quot;, new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 31));
+
+RateLookupResult usd = xe.GetRate(&quot;AUD&quot;, &quot;USD&quot;, new DateOnly(2023, 1, 3));
+</code></pre>
+<h2 id="oanda-any-pair">OANDA (any pair)</h2>
+<p><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.OandaRateProvider.html"><code>OandaRateProvider</code></a>
+fetches the OANDA Historical Currency Converter rate-history JSON service per
+currency pair, so like Yahoo and OFX it serves arbitrary pairs rather than one base
+currency. Warm a pair over a window with <code>LoadPairAsync</code>. Options are
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.OandaRateProviderOptions.html"><code>OandaRateProviderOptions</code></a>.</p>
+<p>The anonymous endpoint serves only a rolling recent window — roughly the last 180
+days — so a request for an earlier start date returns just what the feed publishes.
+The provider advertises this through
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.WebRateProvider.HistoryAvailability.html#Bodu_Financial_ExchangeRates_WebRateProvider_HistoryAvailability"><code>HistoryAvailability</code></a>,
+so a caller can resolve the earliest date worth requesting before issuing a lookup.</p>
+<pre><code class="lang-csharp">using Bodu.Financial.ExchangeRates;
+
+using var oanda = new OandaRateProvider(new OandaRateProviderOptions());
+var today = DateOnly.FromDateTime(DateTime.UtcNow);
+await oanda.LoadPairAsync(&quot;AUD&quot;, &quot;USD&quot;, today.AddDays(-30), today);
+
+RateLookupResult usd = oanda.GetRate(&quot;AUD&quot;, &quot;USD&quot;, today.AddDays(-1));
+</code></pre>
+<h2 id="fixer-any-pair-api-key">Fixer (any pair, API key)</h2>
+<p><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.FixerRateProvider.html"><code>FixerRateProvider</code></a>
+fetches the Fixer (fixer.io) time-series and single-date JSON endpoints per currency
+pair. It denominates the response against the source currency and requests the
+destination currency as the quote symbol. Set the <code>access_key</code> through
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.FixerRateProviderOptions.html"><code>FixerRateProviderOptions.ApiKey</code></a>.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Fixer's free plan is locked to a EUR base and to the latest and single-date
+endpoints; changing the base currency and the time-series endpoint require a paid
+plan. A request the plan does not permit surfaces as a fetch failure, so on the free
+plan request pairs whose source currency is EUR (or rely on the inverse fallback).</p>
+</div>
+<pre><code class="lang-csharp">using Bodu.Financial.ExchangeRates;
+
+using var fixer = new FixerRateProvider(new FixerRateProviderOptions { ApiKey = &quot;…&quot; });
+await fixer.LoadPairAsync(&quot;EUR&quot;, &quot;USD&quot;, new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 31));
+
+RateLookupResult usd = fixer.GetRate(&quot;EUR&quot;, &quot;USD&quot;, new DateOnly(2023, 1, 3));
+</code></pre>
+<h2 id="exchangeratehost-any-pair-api-key">exchangerate.host (any pair, API key)</h2>
+<p><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.ExchangeRateHostRateProvider.html"><code>ExchangeRateHostRateProvider</code></a>
+fetches the exchangerate.host time-series and single-date JSON endpoints per currency
+pair. The response keys quotes by the concatenated source+quote code (for example
+<code>EURUSD</code>). Set the <code>access_key</code> through
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.ExchangeRateHostRateProviderOptions.html"><code>ExchangeRateHostRateProviderOptions.ApiKey</code></a>;
+the free plan is locked to a USD source currency.</p>
+<pre><code class="lang-csharp">using Bodu.Financial.ExchangeRates;
+
+using var host = new ExchangeRateHostRateProvider(new ExchangeRateHostRateProviderOptions { ApiKey = &quot;…&quot; });
+await host.LoadPairAsync(&quot;USD&quot;, &quot;EUR&quot;, new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 31));
+
+RateLookupResult eur = host.GetRate(&quot;USD&quot;, &quot;EUR&quot;, new DateOnly(2023, 1, 3));
+</code></pre>
+<h2 id="fred-mapped-pairs-api-key">FRED (mapped pairs, API key)</h2>
+<p><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.FredRateProvider.html"><code>FredRateProvider</code></a>
+serves the St. Louis Fed FRED <code>series/observations</code> endpoint. FRED publishes one
+directional series per pair (for example <code>DEXUSEU</code> for EUR/USD), so each pair is
+mapped to its series identifier through
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.FredRateProviderOptions.html"><code>FredRateProviderOptions.SeriesMap</code></a>.
+The options ship a built-in map for the major USD pairs and accept more; a pair with
+no mapping returns no data. Missing values (FRED's <code>&quot;.&quot;</code>) are skipped. Set the
+<code>api_key</code> through <code>FredRateProviderOptions.ApiKey</code>.</p>
+<pre><code class="lang-csharp">using Bodu.Financial.ExchangeRates;
+
+using var fred = new FredRateProvider(new FredRateProviderOptions { ApiKey = &quot;…&quot; });
+await fred.LoadPairAsync(&quot;EUR&quot;, &quot;USD&quot;, new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 31));
+
+RateLookupResult usd = fred.GetRate(&quot;EUR&quot;, &quot;USD&quot;, new DateOnly(2023, 1, 3));
+</code></pre>
+<h2 id="imf-usd-base-keyless-daily">IMF (USD base, keyless, daily)</h2>
+<p><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.ImfRateProvider.html"><code>ImfRateProvider</code></a>
+serves the IMF <strong>Representative Exchange Rates</strong> — daily rates reported by member central
+banks — downloaded as the IMF's published <strong>monthly tab-separated report</strong>. Like the
+central-bank providers it is a single-base source (base <strong>USD</strong>): <code>USD→X</code> and <code>X→USD</code>
+resolve, cross pairs do not. It is keyless. The report quotes most currencies as units per
+USD and a few (for example AUD, GBP, EUR) as USD per unit; the provider normalizes the
+quotation direction on ingest, so consumers always see a consistent <code>USD→X</code> rate. Loading is
+month-based — one download covers every currency across a month's business days — and closed
+months are cached permanently. Options are
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.ImfRateProviderOptions.html"><code>ImfRateProviderOptions</code></a>.</p>
+<pre><code class="lang-csharp">using Bodu.Financial.ExchangeRates;
+
+using var imf = new ImfRateProvider(new ImfRateProviderOptions());
+await imf.LoadRangeAsync(new DateOnly(2026, 4, 1), new DateOnly(2026, 4, 30));
+
+RateLookupResult jpy = imf.GetRate(&quot;USD&quot;, &quot;JPY&quot;, new DateOnly(2026, 4, 1));
+RateLookupResult usd = imf.GetRate(&quot;JPY&quot;, &quot;USD&quot;, new DateOnly(2026, 4, 1)); // inverted
+</code></pre>
+<h2 id="registering-a-provider-with-dependency-injection">Registering a provider with dependency injection</h2>
+<p>Each provider package ships its own DI registration — there is no separate
+<code>*.DependencyInjection</code> package. The <code>Add&lt;Source&gt;...</code> extension method registers the
+provider on the <a class="xref" href="../../api/Bodu.Financial.IFinancialServiceBuilder.html"><code>IFinancialServiceBuilder</code></a>,
+backed by a named <code>HttpClient</code> with the standard Polly resilience handler, and
+resolvable as both the dated and timeless surfaces. The <code>Add&lt;Source&gt;...</code> extension
+methods live in the <code>Bodu.Financial.ExchangeRates</code> namespace (<code>AddFinancialService</code>
+lives in <code>Bodu.Financial</code>), so both <code>using</code> directives bring
+the chain into scope:</p>
+<pre><code class="lang-csharp">using Bodu.Financial;
+using Bodu.Financial.ExchangeRates;
+using Microsoft.Extensions.DependencyInjection;
+
+services.AddFinancialService()
+        .AddRbaExchangeRates(builder.Configuration)    // section Financial:Rba
+        .AddEcbExchangeRates(builder.Configuration);     // section Financial:Ecb
+
+// AddBoeExchangeRates(), AddYahooExchangeRates(), AddOfxExchangeRates(),
+// AddXeExchangeRates(), AddOandaExchangeRates(), AddFixerExchangeRates(),
+// AddExchangeRateHostExchangeRates(), AddFredExchangeRates(), and
+// AddImfExchangeRates() register the others.
+</code></pre>
+<h2 id="adding-caching-in-front">Adding caching in front</h2>
+<p>A provider is a pure fetcher, so wrap it in the <a href="exchange-rate-caching.html">caching layer</a>
+to serve repeated lookups without re-hitting the source. The source must be
+registered first — the cached registration resolves it, it does not build it:</p>
+<pre><code class="lang-csharp">using Bodu.Financial;
+using Bodu.Financial.ExchangeRates;
+using Microsoft.Extensions.DependencyInjection;
+
+services.AddFinancialService()
+        .AddRbaExchangeRates()
+        .AddCachedRateProvider&lt;RbaRateProvider&gt;(&quot;RBA&quot;,
+            configure: o =&gt; o.DefaultExpiry = TimeSpan.FromHours(12));
+</code></pre>
+<p>To serve several sources behind one entry point with per-pair routing and a
+fallback or averaging strategy, group them with the
+<a href="exchange-rate-caching.html#grouping-providers-with-the-aggregator">aggregator</a>.</p>
+<h2 id="snapshotting-and-exporting-rates">Snapshotting and exporting rates</h2>
+<p>Every web provider maintains its accumulated observations as an immutable
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateBook.html"><code>RateBook</code></a> plus a ready-to-query
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.FixedDatedRateProvider.html"><code>FixedDatedRateProvider</code></a>,
+and both are exposed directly:
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.WebRateProvider.GetLoadedBook.html#Bodu_Financial_ExchangeRates_WebRateProvider_GetLoadedBook"><code>GetLoadedBook()</code></a> and
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.WebRateProvider.GetLoadedSnapshot.html#Bodu_Financial_ExchangeRates_WebRateProvider_GetLoadedSnapshot"><code>GetLoadedSnapshot()</code></a>
+return the current instances without copying or locking. The results are pinned
+at call time — later fetches swap the provider's internal references and never
+mutate an instance already handed out — so a snapshot is deterministic, works
+offline, and survives disposing the source provider. Call again after further
+loads to observe newly accumulated data.</p>
+<p>To pin a window of history from <em>any</em>
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.IDatedRateProvider.html"><code>IDatedRateProvider</code></a> —
+including a cached or aggregated one — materialize it with
+<a class="xref" href="../../api/Bodu.Financial.Extensions.DatedRateProviderExtensions.html"><code>ToFixedProviderAsync</code></a>:</p>
+<pre><code class="lang-csharp">using Bodu.Financial.Currencies;
+using Bodu.Financial.ExchangeRates;
+using Bodu.Financial.Extensions;
+
+using var rba = new RbaRateProvider(new RbaRateProviderOptions());
+
+// Fetch and freeze AUD/USD and AUD/EUR for Q1, decoupled from the live provider.
+FixedDatedRateProvider q1 = await rba.ToFixedProviderAsync(
+    new[]
+    {
+        new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD),
+        new CurrencyPair(CurrencyCode.AUD, CurrencyCode.EUR),
+    },
+    new DateOnly(2024, 1, 1),
+    new DateOnly(2024, 3, 31));
+</code></pre>
+<p>The conversion surface composes in both directions. A rate sequence — for
+example the rows a range lookup returned — materializes into a book with
+<a class="xref" href="../../api/Bodu.Financial.Extensions.ExchangeRateEnumerableExtensions.html"><code>ToBook()</code></a>,
+which keeps one series per (pair, provider) and stores inverse-resolved rows
+under their natively quoted direction; a book wraps into a provider with
+<a class="xref" href="../../api/Bodu.Financial.Extensions.RateBookExtensions.html"><code>ToFixedProvider()</code></a>
+(optionally with a provider-priority list); and
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateBook.ToBuilder.html#Bodu_Financial_ExchangeRates_RateBook_ToBuilder"><code>RateBook.ToBuilder()</code></a>
+round-trips a book into a mutable
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateTableBuilder.html"><code>RateTableBuilder</code></a> for
+editing — <code>book.ToBuilder()</code> … edit … <code>ToBook().ToFixedProvider()</code>. Each series'
+fetch instant (<code>FetchedAtUtc</code>) is preserved through every step, so provenance
+survives a web → fixed round trip losslessly.</p>
+<h2 id="failure-modes-and-exceptions">Failure modes and exceptions</h2>
+<p>Every provider fails the same way, because the failures are raised by the shared bases or by
+the shared exception types the sources are required to use. Each row names the type, the
+condition, and where in the call chain it surfaces:</p>
+<table>
+<thead>
+<tr>
+<th>Exception</th>
+<th>Raised when</th>
+<th>Surfaces from</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>KeyNotFoundException</code></td>
+<td>A pair the provider covers has no observation on the requested date under the lookup options — the ordinary miss. <code>TryGetRate</code> returns <code>false</code> for the same case.</td>
+<td><code>GetRate</code> / <code>GetRateAsync</code>, after any fetch the call was allowed to make</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateSeriesNotFoundException.html">RateSeriesNotFoundException</a> (a <code>KeyNotFoundException</code>)</td>
+<td>A single-base feed is asked for a pair it structurally cannot carry — <code>USD/JPY</code> on the ECB, a cross pair on RBA, BoE, or IMF. Thrown by <code>ValidateRangeRequest</code> <strong>before any download</strong>. Catch it ahead of the base type to tell &quot;never&quot; from &quot;not today&quot;.</td>
+<td><code>GetRates</code> / <code>GetRatesAsync</code> / <code>LoadPairAsync</code> / <code>LoadRangeAsync</code></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.ExchangeRateFormatException.html">ExchangeRateFormatException</a> (a <code>FormatException</code>)</td>
+<td>A downloaded payload is malformed or lacks the expected rows (a maintenance page, an API error envelope, a changed schema). Never retried by the resilience pipeline.</td>
+<td>The call that triggered the fetch: a warm-up, an asynchronous lookup, or a synchronous lookup with <code>AllowSynchronousNetworkAccess</code> on</td>
+</tr>
+<tr>
+<td><code>HttpRequestException</code></td>
+<td>DNS, connection, TLS, or a non-success status. On a hand-built provider it is immediate; under DI it appears only after the standard resilience handler has exhausted its retries and timeouts.</td>
+<td>The call that triggered the fetch</td>
+</tr>
+<tr>
+<td><code>TaskCanceledException</code></td>
+<td>The per-request timeout of a provider-owned <code>HttpClient</code> (<code>HttpTimeout</code>), or the caller's token.</td>
+<td>The call that triggered the fetch</td>
+</tr>
+<tr>
+<td><code>InvalidOperationException</code></td>
+<td><code>AllowSynchronousNetworkAccess</code> is <code>true</code>, a synchronous lookup misses, and the calling thread carries a <code>SynchronizationContext</code> — blocking there could deadlock, so the provider refuses. With the option at its default <code>false</code>, a synchronous miss is simply a miss (row 1) and never reaches the network.</td>
+<td>Synchronous <code>GetRate</code> / <code>TryGetRate</code> / <code>GetRates</code></td>
+</tr>
+<tr>
+<td><code>ArgumentException</code> / <code>ArgumentNullException</code></td>
+<td>A malformed or null ISO code, an inverted range (<code>endDate &lt; startDate</code>), or options that fail <code>Validate</code> in a constructor.</td>
+<td>Argument validation, before any work</td>
+</tr>
+<tr>
+<td><code>ObjectDisposedException</code></td>
+<td>Any member after <code>Dispose()</code>. Snapshots already handed out stay valid.</td>
+<td>Every public member</td>
+</tr>
+</tbody>
+</table>
+<p>Each case, exercised against the ECB provider over a
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Testing.StubHttpMessageHandler.html">StubHttpMessageHandler</a> (the two-day <code>eurofxref</code>
+document from <a href="testing-providers.html#pattern-3--stubhttpmessagehandler-drives-a-real-provider-offline">Testing your own provider</a>
+is the feed constant here), with the payload cache off so nothing touches the disk:</p>
+<pre><code class="lang-csharp">using System.Net;
+using System.Text;
+using Bodu.Financial.ExchangeRates;
+using Bodu.Financial.ExchangeRates.Testing;
+
+static EcbRateProvider CreateEcb(byte[] payload, HttpStatusCode status = HttpStatusCode.OK, bool allowSync = false) =&gt;
+    new(new HttpClient(new StubHttpMessageHandler(payload, status)),
+        new EcbRateProviderOptions { EnableDiskCache = false, AllowSynchronousNetworkAccess = allowSync });
+
+byte[] feed = Encoding.UTF8.GetBytes(EcbFeed);
+
+// 1. A pair the single-base feed structurally cannot serve: rejected before any download.
+using (EcbRateProvider ecb = CreateEcb(feed))
+{
+    try { await ecb.GetRatesAsync(&quot;USD&quot;, &quot;JPY&quot;, new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 4)); }
+    catch (RateSeriesNotFoundException ex) { Console.WriteLine($&quot;cross pair: {ex.Message}&quot;); }
+}
+
+// 2. A covered pair with no observation on the date: an ordinary miss.
+using (EcbRateProvider ecb = CreateEcb(feed))
+{
+    await ecb.LoadRangeAsync(new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 4));
+    Console.WriteLine(ecb.TryGetRate(&quot;EUR&quot;, &quot;USD&quot;, new DateOnly(2023, 1, 1), RateLookupOptions.Exact, out _));   // False
+    try { ecb.GetRate(&quot;EUR&quot;, &quot;USD&quot;, new DateOnly(2023, 1, 1)); }
+    catch (KeyNotFoundException ex) when (ex is not RateSeriesNotFoundException) { Console.WriteLine($&quot;miss: {ex.Message}&quot;); }
+}
+
+// 3. A payload the parser cannot read.
+using (EcbRateProvider ecb = CreateEcb(Encoding.UTF8.GetBytes(&quot;&lt;html&gt;maintenance page&lt;/html&gt;&quot;)))
+{
+    try { await ecb.LoadRangeAsync(new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 4)); }
+    catch (ExchangeRateFormatException ex) { Console.WriteLine($&quot;format: {ex.Message}&quot;); }
+}
+
+// 4. Transport failure: on a hand-built client there is no retry; under DI the resilience
+//    pipeline retries first and this surfaces only when it gives up.
+using (EcbRateProvider ecb = CreateEcb(Array.Empty&lt;byte&gt;(), HttpStatusCode.BadGateway))
+{
+    try { await ecb.LoadRangeAsync(new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 4)); }
+    catch (HttpRequestException ex) { Console.WriteLine($&quot;transport: {ex.StatusCode}&quot;); }
+}
+
+// 5. A synchronous miss with AllowSynchronousNetworkAccess left at false never touches the network:
+//    it is reported as a miss, exactly like case 2.
+using (EcbRateProvider ecb = CreateEcb(feed))
+{
+    Console.WriteLine(ecb.TryGetRate(&quot;EUR&quot;, &quot;USD&quot;, new DateOnly(2023, 1, 3), null, out _));   // False — nothing loaded, no fetch
+}
+
+// 6. With AllowSynchronousNetworkAccess enabled, a synchronous miss blocks to fetch — unless the calling
+//    thread carries a SynchronizationContext, where blocking could deadlock: InvalidOperationException instead.
+using (EcbRateProvider ecb = CreateEcb(feed, allowSync: true))
+{
+    SynchronizationContext? previous = SynchronizationContext.Current;
+    SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
+    try
+    {
+        ecb.GetRates(&quot;EUR&quot;, &quot;USD&quot;, new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 4));
+    }
+    catch (InvalidOperationException ex) { Console.WriteLine($&quot;captured context: {ex.Message}&quot;); }
+    finally { SynchronizationContext.SetSynchronizationContext(previous); }
+}
+</code></pre>
+<p>Fetch failures (rows 3–5) are logged at <code>DownloadFailedLogLevel</code> (<code>Warning</code> by default) and
+rethrown; the pair base logs anything else under a distinct error event so a bug is not
+mislabelled as a feed problem. Cancellation is never logged. Under the
+<a href="exchange-rate-caching.html">caching decorator</a>, a miss for a date the provider has declared
+unavailable is answered without the provider being called at all.</p>
+<h2 id="range-reads-and-raterangeresult">Range reads and <code>RateRangeResult</code></h2>
+<p><code>GetRates</code> / <code>GetRatesAsync</code> return every observation whose date falls inside the inclusive
+window as a <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateRangeResult.html">RateRangeResult</a>. It implements
+<code>IReadOnlyList&lt;ExchangeRate&gt;</code>, so it enumerates, indexes, and composes with LINQ like a plain
+sequence — and it carries the request alongside the data, so a caller can see how much of the
+window actually had observations without re-deriving it:</p>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>FromIsoCode</code> / <code>ToIsoCode</code></td>
+<td>The requested direction.</td>
+</tr>
+<tr>
+<td><code>RequestedStartDate</code> / <code>RequestedEndDate</code></td>
+<td>The inclusive window you asked for.</td>
+</tr>
+<tr>
+<td><code>Rates</code></td>
+<td>The observations, ordered by date; also exposed through <code>Count</code>, <code>this[int]</code>, and enumeration.</td>
+</tr>
+<tr>
+<td><code>IsEmpty</code></td>
+<td><code>true</code> when no observation fell inside the window — an empty window is a result, not an exception.</td>
+</tr>
+<tr>
+<td><code>FirstObservedDate</code> / <code>LastObservedDate</code></td>
+<td>The observed span, or <code>null</code> when empty. Compare with the requested window to measure the gap at either end.</td>
+</tr>
+</tbody>
+</table>
+<p>No date-resolution policy applies to a range — you get the rows that exist — and each row's
+<code>Provider</code>, <code>Date</code>, and <code>IsInverted</code> travel on the <code>ExchangeRate</code> itself, so nothing is
+repeated per row:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Financial.Currencies;
+using Bodu.Financial.ExchangeRates;
+
+IDatedRateProvider rates = new FixedDatedRateProvider(new[]
+{
+    new ExchangeRate(CurrencyCode.AUD, CurrencyCode.USD, new DateOnly(2024, 1, 3), 0.6606m, &quot;RBA&quot;),
+    new ExchangeRate(CurrencyCode.AUD, CurrencyCode.USD, new DateOnly(2024, 1, 4), 0.6629m, &quot;RBA&quot;),
+    new ExchangeRate(CurrencyCode.AUD, CurrencyCode.USD, new DateOnly(2024, 1, 5), 0.6648m, &quot;RBA&quot;),
+});
+
+RateRangeResult january = rates.GetRates(&quot;AUD&quot;, &quot;USD&quot;, new DateOnly(2024, 1, 1), new DateOnly(2024, 1, 7));
+
+Console.WriteLine($&quot;{january.FromIsoCode}/{january.ToIsoCode}: {january.Count} observations&quot;);   // AUD/USD: 3 observations
+Console.WriteLine($&quot;{january.RequestedStartDate:yyyy-MM-dd}..{january.RequestedEndDate:yyyy-MM-dd}&quot;);   // 2024-01-01..2024-01-07
+Console.WriteLine($&quot;{january.FirstObservedDate:yyyy-MM-dd}..{january.LastObservedDate:yyyy-MM-dd}&quot;);   // 2024-01-03..2024-01-05
+Console.WriteLine(january.IsEmpty);          // False
+Console.WriteLine(january[0].Rate);          // 0.6606 — IReadOnlyList&lt;ExchangeRate&gt;
+
+decimal average = january.Average(r =&gt; r.Rate);
+int missingDays = (january.RequestedEndDate.DayNumber - january.RequestedStartDate.DayNumber + 1) - january.Count;
+Console.WriteLine($&quot;average {average:0.0000}, {missingDays} days without an observation&quot;);
+
+// The reverse direction is answered by reciprocating each row; IsInverted records it.
+RateRangeResult usdAud = rates.GetRates(&quot;USD&quot;, &quot;AUD&quot;, new DateOnly(2024, 1, 1), new DateOnly(2024, 1, 7));
+Console.WriteLine($&quot;{usdAud[0].Rate:0.0000} inverted={usdAud[0].IsInverted}&quot;);   // 1.5138 inverted=True
+
+RateRangeResult empty = rates.GetRates(&quot;AUD&quot;, &quot;USD&quot;, new DateOnly(2023, 6, 1), new DateOnly(2023, 6, 30));
+Console.WriteLine($&quot;{empty.IsEmpty} {empty.FirstObservedDate is null}&quot;);   // True True — an empty window does not throw
+</code></pre>
+<p>On a web provider the asynchronous form fetches whatever unit covers the window first (the
+pair, the era, the feed); the synchronous form serves the current snapshot and blocks to fetch
+only under <code>AllowSynchronousNetworkAccess</code>. A range that starts before the provider's
+advertised history is served from what exists — see
+<a href="exchange-rate-caching.html#respecting-advertised-history">Respecting advertised history</a> for
+how the caching layer clamps such requests.</p>
+<h2 id="discovering-series">Discovering series</h2>
+<p>A provider knows nothing about a pair until it has fetched it. Afterwards, two views report what
+it holds. <code>GetAvailablePairs()</code> — declared on each provider with its own series type — returns
+one metadata object per fetched pair, carrying what the feed reported about it;
+<code>GetLoadedPairs()</code>, from the provider-agnostic
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.IPairRateLoader.html">IPairRateLoader</a>, projects the same set to plain
+<code>CurrencyPair</code>s so cache-warming code can treat every provider alike. Both return a snapshot
+array; a cold provider reports nothing.</p>
+<table>
+<thead>
+<tr>
+<th>Provider</th>
+<th>Series type</th>
+<th>Members beyond <code>Pair</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RBA</td>
+<td><code>RbaSeriesInfo</code></td>
+<td><code>QuoteIsoCode</code>, <code>SeriesId</code>, <code>Description</code>, <code>Units</code> — the workbook column.</td>
+</tr>
+<tr>
+<td>ECB</td>
+<td><code>EcbSeriesInfo</code></td>
+<td><code>QuoteIsoCode</code>.</td>
+</tr>
+<tr>
+<td>Bank of England</td>
+<td><code>BoeSeriesInfo</code></td>
+<td><code>QuoteIsoCode</code>, <code>SeriesCode</code>, <code>Description</code> — the IADB series.</td>
+</tr>
+<tr>
+<td>IMF</td>
+<td><code>ImfSeriesInfo</code></td>
+<td><code>QuoteIsoCode</code>.</td>
+</tr>
+<tr>
+<td>Yahoo Finance</td>
+<td><code>YahooSeriesInfo</code></td>
+<td><code>Symbol</code> (the ticker, <code>AUDUSD=X</code>), <code>QuoteIsoCode</code>.</td>
+</tr>
+<tr>
+<td>OFX</td>
+<td><code>OfxSeriesInfo</code></td>
+<td><code>QuoteIsoCode</code>.</td>
+</tr>
+<tr>
+<td>XE.com</td>
+<td><code>XeSeriesInfo</code></td>
+<td><code>QuoteIsoCode</code>.</td>
+</tr>
+<tr>
+<td>OANDA</td>
+<td><code>OandaSeriesInfo</code></td>
+<td><code>QuoteIsoCode</code>, <code>Price</code> (<code>bid</code> / <code>mid</code> / <code>ask</code>).</td>
+</tr>
+<tr>
+<td>Fixer</td>
+<td><code>FixerSeriesInfo</code></td>
+<td><code>BaseIsoCode</code>, <code>QuoteIsoCode</code>.</td>
+</tr>
+<tr>
+<td>exchangerate.host</td>
+<td><code>ExchangeRateHostSeriesInfo</code></td>
+<td><code>SourceIsoCode</code>, <code>QuoteIsoCode</code>.</td>
+</tr>
+<tr>
+<td>FRED</td>
+<td><code>FredSeriesInfo</code></td>
+<td><code>SeriesId</code> (the FRED identifier, <code>DEXUSEU</code>).</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-csharp">using Bodu.Financial.ExchangeRates;
+
+Console.WriteLine(ecb.GetAvailablePairs().Count);   // 0 — nothing fetched yet
+await ecb.LoadRangeAsync(new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 4));
+
+foreach (EcbSeriesInfo series in ecb.GetAvailablePairs())
+    Console.WriteLine($&quot;{series.Pair.From}/{series.Pair.To} quote={series.QuoteIsoCode}&quot;);   // EUR/USD quote=USD, EUR/JPY quote=JPY
+
+// The provider-agnostic view: the same pairs, without the feed-specific metadata.
+IPairRateLoader loader = ecb;
+foreach (CurrencyPair pair in loader.GetLoadedPairs())
+    Console.WriteLine($&quot;{pair.From}/{pair.To}&quot;);
+
+// The advertised depth — what to ask for, not a per-date guarantee.
+RateHistoryAvailability history = ecb.HistoryAvailability;
+DateOnly today = DateOnly.FromDateTime(DateTime.UtcNow);
+Console.WriteLine($&quot;{history.Kind}: earliest {history.GetEarliestAvailable(today)}&quot;);
+</code></pre>
+<p>Discovery is <em>post hoc</em> by design: none of the feeds publishes a cheap catalogue endpoint, so
+the providers report what they have loaded rather than pretend to know what the source could
+serve. To find out whether a pair <em>would</em> resolve, warm it (<code>LoadPairAsync</code>, or
+<code>LoadRangeAsync</code> on a bulk feed) and inspect the result; a single-base feed rejects a cross
+pair up front with <code>RateSeriesNotFoundException</code>, as the table above describes.</p>
+<h2 id="choosing-a-provider">Choosing a provider</h2>
+<table>
+<thead>
+<tr>
+<th>Need</th>
+<th>Reach for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Official AUD rates with deep history</td>
+<td>RBA</td>
+</tr>
+<tr>
+<td>Official EUR reference rates</td>
+<td>ECB</td>
+</tr>
+<tr>
+<td>Official GBP spot rates</td>
+<td>BoE</td>
+</tr>
+<tr>
+<td>An arbitrary pair not quoted by a central bank</td>
+<td>Yahoo, OFX, XE, OANDA, Fixer, or exchangerate.host</td>
+</tr>
+<tr>
+<td>Recent rates for an arbitrary pair (rolling ~180-day window)</td>
+<td>OANDA</td>
+</tr>
+<tr>
+<td>A commercial API you already hold a key for</td>
+<td>Fixer or exchangerate.host</td>
+</tr>
+<tr>
+<td>Official US-published FX series (per mapped pair)</td>
+<td>FRED</td>
+</tr>
+<tr>
+<td>Official daily USD representative rates (keyless)</td>
+<td>IMF</td>
+</tr>
+<tr>
+<td>One pair from several sources, with fallback or an average</td>
+<td>the <a href="exchange-rate-caching.html">aggregator</a> over any mix</td>
+</tr>
+</tbody>
+</table>
+<h2 id="see-also">See also</h2>
+<ul>
+<li><a href="exchange-rates.html">Working with exchange rates</a> — the provider contracts, lookup
+options, provenance, and series these providers serve.</li>
+<li><a href="exchange-rate-caching.html">Caching and aggregating exchange rates</a> — adding a
+read-through cache and grouping providers.</li>
+<li><a href="exchange-types.html">Exchange-rate types catalogue</a> — every FX type mapped to a scenario.</li>
+<li><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RbaRateProvider.html"><code>RbaRateProvider</code></a>,
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.EcbRateProvider.html"><code>EcbRateProvider</code></a>,
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.BoeRateProvider.html"><code>BoeRateProvider</code></a>,
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.YahooRateProvider.html"><code>YahooRateProvider</code></a>,
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.OfxRateProvider.html"><code>OfxRateProvider</code></a>,
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.XeRateProvider.html"><code>XeRateProvider</code></a>,
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.OandaRateProvider.html"><code>OandaRateProvider</code></a>,
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.FixerRateProvider.html"><code>FixerRateProvider</code></a>,
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.ExchangeRateHostRateProvider.html"><code>ExchangeRateHostRateProvider</code></a>,
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.FredRateProvider.html"><code>FredRateProvider</code></a>,
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.ImfRateProvider.html"><code>ImfRateProvider</code></a></li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

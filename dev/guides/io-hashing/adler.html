@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Using Adler | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Using Adler | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="using-adler">Using Adler</h1>
+
+<p>The Adler checksum — introduced by Mark Adler for zlib — maintains two running sums, <strong>A</strong> and <strong>B</strong>, reduced modulo a prime. It is cheap, position-dependent (so it catches transpositions), and the canonical <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Adler32.html">Adler32</a> is the checksum embedded in every zlib stream.</p>
+<p><img src="../../images/diagrams/adler-twin-sum.svg" alt="Adler-32 twin running sums: A starts at 1 and accumulates each byte modulo 65521, B accumulates the running A, and the output is B shifted left 16 bits combined with A"></p>
+<p><strong>Bodu.IO.Hashing</strong> provides three variants:</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Width</th>
+<th>Modulus</th>
+<th>Intended use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Adler32.html">Adler32</a></td>
+<td>32 bits</td>
+<td>65521 (largest prime below 2¹⁶)</td>
+<td>Canonical Adler-32 — zlib, PNG, rsync.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Adler32C.html">Adler32C</a></td>
+<td>32 bits</td>
+<td>65536</td>
+<td>SIMD-friendly variant; faster on vector pipelines, <strong>not</strong> wire-compatible with Adler-32.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Adler64.html">Adler64</a></td>
+<td>64 bits</td>
+<td>4294967291 (largest prime below 2³²)</td>
+<td>Extended width for long buffers where a 32-bit space is uncomfortable.</td>
+</tr>
+</tbody>
+</table>
+<p>All three derive from <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.hashing.noncryptographichashalgorithm">NonCryptographicHashAlgorithm</a> via a shared <code>Adler&lt;T&gt;</code> base and live in the <code>Bodu.IO.Hashing.Checksums</code> namespace.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Add <code>using Bodu.IO.Hashing.Checksums;</code> for <code>Adler32</code> / <code>Adler32C</code> / <code>Adler64</code>, not <code>using Bodu.IO.Hashing;</code>.</p>
+</div>
+<h2 id="pattern-1--compute-a-digest-in-one-call">Pattern 1 — compute a digest in one call</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Text;
+using Bodu.IO.Hashing.Checksums;
+
+byte[] data = Encoding.UTF8.GetBytes(&quot;the quick brown fox&quot;);
+
+var adler = new Adler32();
+adler.Append(data);
+byte[] digest = adler.GetCurrentHash();
+string hex    = Convert.ToHexString(digest);   // 4 bytes, 8 hex characters, big-endian
+</code></pre>
+<p>Swap <code>Adler32</code> for <code>Adler64</code> when you need the wider space, or for <code>Adler32C</code> when you want the SIMD-friendly modulus and don't need interoperability with zlib.</p>
+<h2 id="pattern-2--the-append--getcurrenthash--reset-lifecycle">Pattern 2 — the <code>Append</code> / <code>GetCurrentHash</code> / <code>Reset</code> lifecycle</h2>
+<pre><code class="lang-csharp">using Bodu.IO.Hashing.Checksums;
+
+var adler = new Adler32();
+
+adler.Append(chunk1);                       // update A and B
+adler.Append(chunk2);
+byte[] partial = adler.GetCurrentHash();    // snapshot, non-destructive
+adler.Append(chunk3);                       // state preserved after GetCurrentHash
+byte[] full = adler.GetCurrentHash();
+
+adler.Reset();                              // A = 1, B = 0 — zlib's canonical initial state
+</code></pre>
+<p><code>GetCurrentHash</code> finalizes on a copy of the accumulators, so calling it mid-stream is cheap and safe.</p>
+<h2 id="pattern-3--streaming-a-file">Pattern 3 — streaming a file</h2>
+<pre><code class="lang-csharp">using Bodu.IO.Hashing.Checksums;
+
+var adler = new Adler32();
+
+using (FileStream fs = File.OpenRead(&quot;archive.bin&quot;))
+{
+    byte[] buffer = new byte[64 * 1024];
+    int read;
+    while ((read = fs.Read(buffer, 0, buffer.Length)) &gt; 0)
+    {
+        adler.Append(buffer.AsSpan(0, read));
+    }
+}
+
+byte[] fingerprint = adler.GetCurrentHash();
+</code></pre>
+<p>There is no restriction on chunk size — the two-sum update is byte-by-byte internally, so arbitrary boundaries are safe.</p>
+<h2 id="pattern-4--wire-compatible-zlib-checksum">Pattern 4 — wire-compatible zlib checksum</h2>
+<p>A zlib stream carries an Adler-32 trailer in <strong>big-endian</strong> byte order. <code>GetCurrentHash</code> returns the digest in the BCL-standard big-endian layout already, so you can write it to the stream directly:</p>
+<pre><code class="lang-csharp">using Bodu.IO.Hashing.Checksums;
+
+var adler = new Adler32();
+adler.Append(deflateOutput);
+
+// 4-byte big-endian Adler-32 trailer, per RFC 1950 §2.2.
+byte[] trailer = adler.GetCurrentHash();
+outputStream.Write(trailer);
+</code></pre>
+<h2 id="picking-a-variant">Picking a variant</h2>
+<ul>
+<li><strong>Need interoperability with zlib, PNG, rsync, or any tool that speaks RFC 1950?</strong> Use <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Adler32.html">Adler32</a>. The modulus (65521) and initial state (<code>A=1, B=0</code>) are fixed by the specification.</li>
+<li><strong>Hashing large buffers in a hot loop on a SIMD-capable CPU?</strong> Use <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Adler32C.html">Adler32C</a>. The power-of-two modulus removes the <code>% 65521</code> reduction and lets auto-vectorization stay vectorized. The digest is <strong>not</strong> interchangeable with Adler-32.</li>
+<li><strong>Checksumming very long streams where a 32-bit space is uncomfortable?</strong> Use <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Adler64.html">Adler64</a>. Four bytes of digest become eight.</li>
+</ul>
+<h2 id="error-detection-profile-and-the-short-input-weakness">Error-detection profile and the short-input weakness</h2>
+<p>Adler maintains <code>A</code> (the running byte sum, starting at 1) and <code>B</code> (the running sum of <code>A</code>). The prime modulus (65521) of the canonical variant spreads error patterns more evenly than the next-larger composite would — its single advantage over a power-of-two reduction. But the structure has a well-known weakness on <strong>short inputs</strong>:</p>
+<ul>
+<li>Each byte first lands in <code>A</code>, and <code>B</code> only accumulates the <em>running</em> <code>A</code>. For a short message <code>A</code> stays small, so <code>B</code> grows slowly and the high bits of the 32-bit digest barely move. The effective digest space is far narrower than 32 bits until the payload is a few hundred bytes long.</li>
+<li>This is the reason RFC 1950 carries Adler-32 only as a trailer over an already-substantial deflate stream, and the reason a CRC-32 is the better checksum for short frames.</li>
+</ul>
+<p>Like Fletcher, Adler catches every single-bit error and every adjacent-byte transposition, and like Fletcher it offers no per-position burst guarantee. Choose it for zlib interoperability or for long, benign payloads — not for short frames on a noisy link.</p>
+<div class="IMPORTANT">
+<h5>Important</h5>
+<p><code>Adler32C</code> trades the prime modulus for <code>2^16</code>, which removes the <code>% 65521</code> reduction and keeps an auto-vectorised loop vectorised — but the power-of-two modulus weakens error coverage further and the digest is <strong>not</strong> interchangeable with a real Adler-32. Use it only inside your own system, never on a zlib/PNG/rsync wire.</p>
+</div>
+<h2 id="adler-vs-fletcher-vs-crc">Adler vs Fletcher vs CRC</h2>
+<ul>
+<li><strong>Adler</strong> is position-dependent and fast; weaker than CRC on short inputs (the first few bytes leave <code>A</code> small, so <code>B</code> grows slowly).</li>
+<li><strong>Fletcher</strong> uses a similar twin-accumulator structure with word-sized rather than byte-sized updates; comparable error-detection on uncorrelated noise, slightly different distribution.</li>
+<li><strong>CRC</strong> is polynomial-arithmetic over GF(2); better at catching the kind of burst errors common on physical links, and it is what wire formats usually specify.</li>
+</ul>
+<p>All three are <strong>non-cryptographic</strong> — none of them resists a motivated adversary. If you need authentication, see the <a href="../cryptography/hashing.html">cryptography hashing guide</a>.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="fletcher.html">Using Fletcher</a> — the other twin-accumulator family.</li>
+<li><a href="crc.html">Using CRC</a> — the polynomial-arithmetic family.</li>
+<li><a class="xref" href="../../api/Bodu.IO.Hashing.html">Bodu.IO.Hashing namespace page</a> — key types and design notes.</li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

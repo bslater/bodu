@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class RateTableBuilder | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class RateTableBuilder | BODU ">
+    
+    <meta name="description" content="Provides a mutable collection of  instances keyed by currency pair and provider, intended for assembling rate observations across many series before producing immutable snapshots.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Financial.ExchangeRates.RateTableBuilder">
+
+
+
+  <h1 id="Bodu_Financial_ExchangeRates_RateTableBuilder" data-uid="Bodu.Financial.ExchangeRates.RateTableBuilder" class="text-break">Class RateTableBuilder</h1>
+  <div class="markdown level0 summary"><p>Provides a mutable collection of <a class="xref" href="Bodu.Financial.ExchangeRates.RateSeriesBuilder.html">RateSeriesBuilder</a> instances keyed by currency pair and provider,
+intended for assembling rate observations across many series before producing immutable snapshots.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><span class="xref">RateTableBuilder</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Financial.html">Financial</a>.<a class="xref" href="Bodu.Financial.ExchangeRates.html">ExchangeRates</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Financial.dll</h6>
+  <h5 id="Bodu_Financial_ExchangeRates_RateTableBuilder_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class RateTableBuilder</code></pre>
+  </div>
+  <h5 id="Bodu_Financial_ExchangeRates_RateTableBuilder_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+The table delegates per-series mutation to the underlying <a class="xref" href="Bodu.Financial.ExchangeRates.RateSeriesBuilder.html">RateSeriesBuilder</a> instances, so
+single-observation edits, bulk import, and snapshot semantics behave identically to working with a builder directly.
+The table itself adds only the multi-series indexing, lazy creation, and bulk snapshot operations.
+</p>
+<p>
+Instances are not thread-safe; concurrent mutation requires external synchronisation.
+</p>
+<example>
+The builder → book → provider chain is the offline-first pattern: pour any rate data you already hold (a file, a
+database table, an archived API response) through the builder, freeze it, and serve it through the same contracts
+the live web providers implement.
+<pre><code class="lang-csharp">using Bodu.Financial.Currencies;
+using Bodu.Financial.ExchangeRates;
+
+var builder = new RateTableBuilder();
+
+builder.Upsert(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD), "SampleData", new DateOnly(2024, 3, 15), 0.6580m);
+builder.Upsert(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.EUR), "SampleData", new DateOnly(2024, 3, 15), 0.6196m);
+
+// Freeze every series into an immutable book, then wrap it in a dated provider.
+var rates = new FixedDatedRateProvider(builder.ToBook());
+
+RateLookupResult usd = rates.GetRate("AUD", "USD", new DateOnly(2024, 3, 15));</code></pre>
+</example>
+</div>
+  <h3 id="constructors">Constructors
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Financial_ExchangeRates_RateTableBuilder__ctor" data-uid="Bodu.Financial.ExchangeRates.RateTableBuilder.#ctor">
+          <a class="xref" href="Bodu.Financial.ExchangeRates.RateTableBuilder.-ctor.html#Bodu_Financial_ExchangeRates_RateTableBuilder__ctor">RateTableBuilder()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Financial.ExchangeRates.RateTableBuilder.html">RateTableBuilder</a> class with no series.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Financial_ExchangeRates_RateTableBuilder_Count" data-uid="Bodu.Financial.ExchangeRates.RateTableBuilder.Count">
+          <a class="xref" href="Bodu.Financial.ExchangeRates.RateTableBuilder.Count.html#Bodu_Financial_ExchangeRates_RateTableBuilder_Count">Count</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the number of series currently tracked.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_ExchangeRates_RateTableBuilder_Keys" data-uid="Bodu.Financial.ExchangeRates.RateTableBuilder.Keys">
+          <a class="xref" href="Bodu.Financial.ExchangeRates.RateTableBuilder.Keys.html#Bodu_Financial_ExchangeRates_RateTableBuilder_Keys">Keys</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the set of keys currently tracked.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Financial_ExchangeRates_RateTableBuilder_ContainsSeries_Bodu_Financial_ExchangeRates_CurrencyPair_System_String_" data-uid="Bodu.Financial.ExchangeRates.RateTableBuilder.ContainsSeries(Bodu.Financial.ExchangeRates.CurrencyPair,System.String)">
+          <a class="xref" href="Bodu.Financial.ExchangeRates.RateTableBuilder.ContainsSeries.html#Bodu_Financial_ExchangeRates_RateTableBuilder_ContainsSeries_Bodu_Financial_ExchangeRates_CurrencyPair_System_String_">ContainsSeries(CurrencyPair, string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reports whether the table tracks a series for the supplied pair and provider.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_ExchangeRates_RateTableBuilder_GetOrAddSeries_Bodu_Financial_ExchangeRates_CurrencyPair_System_String_" data-uid="Bodu.Financial.ExchangeRates.RateTableBuilder.GetOrAddSeries(Bodu.Financial.ExchangeRates.CurrencyPair,System.String)">
+          <a class="xref" href="Bodu.Financial.ExchangeRates.RateTableBuilder.GetOrAddSeries.html#Bodu_Financial_ExchangeRates_RateTableBuilder_GetOrAddSeries_Bodu_Financial_ExchangeRates_CurrencyPair_System_String_">GetOrAddSeries(CurrencyPair, string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the builder for the supplied pair and provider, creating an empty one if it does not yet exist.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_ExchangeRates_RateTableBuilder_Remove_Bodu_Financial_ExchangeRates_CurrencyPair_System_String_" data-uid="Bodu.Financial.ExchangeRates.RateTableBuilder.Remove(Bodu.Financial.ExchangeRates.CurrencyPair,System.String)">
+          <a class="xref" href="Bodu.Financial.ExchangeRates.RateTableBuilder.Remove.html#Bodu_Financial_ExchangeRates_RateTableBuilder_Remove_Bodu_Financial_ExchangeRates_CurrencyPair_System_String_">Remove(CurrencyPair, string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Removes the entire series for the supplied pair and provider.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_ExchangeRates_RateTableBuilder_ToBook" data-uid="Bodu.Financial.ExchangeRates.RateTableBuilder.ToBook">
+          <a class="xref" href="Bodu.Financial.ExchangeRates.RateTableBuilder.ToBook.html#Bodu_Financial_ExchangeRates_RateTableBuilder_ToBook">ToBook()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Produces an immutable <a class="xref" href="Bodu.Financial.ExchangeRates.RateBook.html">RateBook</a> snapshot containing one series per non-empty builder.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_ExchangeRates_RateTableBuilder_ToSeries" data-uid="Bodu.Financial.ExchangeRates.RateTableBuilder.ToSeries">
+          <a class="xref" href="Bodu.Financial.ExchangeRates.RateTableBuilder.ToSeries.html#Bodu_Financial_ExchangeRates_RateTableBuilder_ToSeries">ToSeries()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Produces immutable snapshots for every non-empty series in the table.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_ExchangeRates_RateTableBuilder_TryGetBuilder_Bodu_Financial_ExchangeRates_CurrencyPair_System_String_Bodu_Financial_ExchangeRates_RateSeriesBuilder__" data-uid="Bodu.Financial.ExchangeRates.RateTableBuilder.TryGetBuilder(Bodu.Financial.ExchangeRates.CurrencyPair,System.String,Bodu.Financial.ExchangeRates.RateSeriesBuilder@)">
+          <a class="xref" href="Bodu.Financial.ExchangeRates.RateTableBuilder.TryGetBuilder.html#Bodu_Financial_ExchangeRates_RateTableBuilder_TryGetBuilder_Bodu_Financial_ExchangeRates_CurrencyPair_System_String_Bodu_Financial_ExchangeRates_RateSeriesBuilder__">TryGetBuilder(CurrencyPair, string, out RateSeriesBuilder?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to retrieve the builder for the supplied pair and provider without creating one.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_ExchangeRates_RateTableBuilder_TryGetSeries_Bodu_Financial_ExchangeRates_CurrencyPair_System_String_Bodu_Financial_ExchangeRates_RateSeries__" data-uid="Bodu.Financial.ExchangeRates.RateTableBuilder.TryGetSeries(Bodu.Financial.ExchangeRates.CurrencyPair,System.String,Bodu.Financial.ExchangeRates.RateSeries@)">
+          <a class="xref" href="Bodu.Financial.ExchangeRates.RateTableBuilder.TryGetSeries.html#Bodu_Financial_ExchangeRates_RateTableBuilder_TryGetSeries_Bodu_Financial_ExchangeRates_CurrencyPair_System_String_Bodu_Financial_ExchangeRates_RateSeries__">TryGetSeries(CurrencyPair, string, out RateSeries?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to retrieve an immutable snapshot of the series for the supplied pair and provider.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_ExchangeRates_RateTableBuilder_Upsert_Bodu_Financial_ExchangeRates_CurrencyPair_System_String_System_DateOnly_System_Decimal_System_Nullable_System_DateTimeOffset__" data-uid="Bodu.Financial.ExchangeRates.RateTableBuilder.Upsert(Bodu.Financial.ExchangeRates.CurrencyPair,System.String,System.DateOnly,System.Decimal,System.Nullable{System.DateTimeOffset})">
+          <a class="xref" href="Bodu.Financial.ExchangeRates.RateTableBuilder.Upsert.html#Bodu_Financial_ExchangeRates_RateTableBuilder_Upsert_Bodu_Financial_ExchangeRates_CurrencyPair_System_String_System_DateOnly_System_Decimal_System_Nullable_System_DateTimeOffset__">Upsert(CurrencyPair, string, DateOnly, decimal, DateTimeOffset?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Upserts an observation into the series identified by <code class="paramref">pair</code> and <code class="paramref">provider</code>,
+creating the series if it does not yet exist.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

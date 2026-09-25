@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Cipher block modes | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Cipher block modes | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="cipher-block-modes">Cipher block modes</h1>
+
+<p>This page walks through the classic block-cipher modes exposed via <a class="xref" href="../../api/Bodu.Security.Cryptography.CipherModeKind.html">CipherModeKind</a> — CBC, CTR, CFB, OFB, ECB, the no-expansion <strong>CTS</strong> variant, and the specialized <strong>XTS</strong> disk-encryption mode — shows a complete encrypt-and-decrypt round-trip for each, and calls out the IV rules and security trade-offs. The same enum also names the authenticated modes (<code>OCB</code>, <code>EAX</code>, <code>SIV</code>, and GCM / GCM-SIV via the transforms); those are covered in <a href="aead-modes.html">AEAD modes</a>.</p>
+<p>For the data-flow visualization, see the panels on the <a class="xref" href="../../api/Bodu.Security.Cryptography.CipherModeKind.html">CipherModeKind</a> API page. Each panel in that diagram corresponds to one section below.</p>
+<p><img src="../../images/diagrams/classic-modes.svg" alt="Classic block cipher modes — CBC, CFB, OFB, CTR, and ECB data flow"></p>
+<h2 id="cbc--the-default">CBC — the default</h2>
+<p><strong>Use for:</strong> general-purpose encryption of a whole message where you care about confidentiality only, and the IV is generated fresh per message.</p>
+<p><strong>IV:</strong> same length as the block, <strong>unpredictable</strong> (not just unique).</p>
+<p><strong>Padding:</strong> required for non-block-aligned plaintext. PKCS7 is the safe default.</p>
+<pre><code class="lang-csharp">using System.Security.Cryptography;
+using Bodu.Security.Cryptography;
+using Bodu.Security.Cryptography.Extensions;
+
+byte[] plaintext = System.Text.Encoding.UTF8.GetBytes(&quot;confidential payload&quot;);
+
+using var alg = new Threefish256
+{
+    BlockMode = CipherModeKind.CBC,
+    Padding   = PaddingMode.PKCS7,
+};
+alg.GenerateKey();
+alg.GenerateIV();
+alg.GenerateTweak();
+
+byte[] ciphertext = alg.Encrypt(plaintext);
+byte[] recovered  = alg.Decrypt(ciphertext);
+</code></pre>
+<p>The IV must travel with the ciphertext so the receiver can decrypt. Don't put it in a predictable field (a counter, a timestamp) — that breaks CBC's security argument. <code>GenerateIV()</code> pulls from the platform CSPRNG, which is fine.</p>
+<h2 id="ctr--parallel-seekable-stream-shaped">CTR — parallel, seekable, stream-shaped</h2>
+<p><strong>Use for:</strong> random-access scenarios (disk-like), high-throughput pipelines where you want to parallelize encryption per block, or when the plaintext length isn't known up front and you don't want padding.</p>
+<p><strong>IV (counter):</strong> same length as the block. <strong>Must be unique per message under a given key.</strong> Reuse is catastrophic.</p>
+<p><strong>Padding:</strong> not required — <code>PaddingMode.None</code> is valid, because CTR turns the block cipher into a stream cipher. The ciphertext is the same length as the plaintext.</p>
+<pre><code class="lang-csharp">using var alg = new Threefish256
+{
+    BlockMode = CipherModeKind.CTR,
+    Padding   = PaddingMode.None,   // CTR is a stream cipher
+};
+alg.GenerateKey();
+alg.GenerateIV();                    // used as the initial counter block
+alg.GenerateTweak();
+
+byte[] ciphertext = alg.Encrypt(plaintext);
+byte[] recovered  = alg.Decrypt(ciphertext);
+</code></pre>
+<p><strong>Design note.</strong> The counter wraps after 2^(block_size) encryptions. <code>CtrModeTransform</code> detects this and throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicexception">CryptographicException</a> rather than silently reusing keystream. In practice the block sizes on this library (64 to 1024 bits) are more than enough for any real workload, but this guard is your safety net.</p>
+<h2 id="cfb--self-synchronizing-stream-cipher">CFB — self-synchronizing stream cipher</h2>
+<p><strong>Use for:</strong> byte-streamed encryption where a small transmission error should self-heal within a block or two.</p>
+<p><strong>IV:</strong> same length as the block, unique per message. Unpredictability helps but is not strictly required.</p>
+<p><strong>Padding:</strong> not required if the plaintext is block-aligned, but PKCS7 works.</p>
+<pre><code class="lang-csharp">using var alg = new Threefish256
+{
+    BlockMode = CipherModeKind.CFB,
+    Padding   = PaddingMode.None,
+};
+alg.GenerateKey();
+alg.GenerateIV();
+alg.GenerateTweak();
+
+byte[] ciphertext = alg.Encrypt(plaintext);
+byte[] recovered  = alg.Decrypt(ciphertext);
+</code></pre>
+<p>Both directions use the cipher's <em>encryption</em> primitive — the decryptor never calls <code>Decrypt</code> on the underlying block cipher. That's a property of all CFB/OFB/CTR modes and matters if you've only implemented the encrypt path on a custom engine.</p>
+<h2 id="ofb--synchronous-stream-cipher">OFB — synchronous stream cipher</h2>
+<p><strong>Use for:</strong> stream encryption where bit-level error propagation must not happen (a single flipped bit in the ciphertext produces a single flipped bit in the plaintext — no cascade).</p>
+<p><strong>IV:</strong> same length as the block, <strong>unique per message</strong>. IV reuse under the same key is catastrophic because the keystream becomes identical.</p>
+<p><strong>Padding:</strong> not required.</p>
+<pre><code class="lang-csharp">using var alg = new Threefish256
+{
+    BlockMode = CipherModeKind.OFB,
+    Padding   = PaddingMode.None,
+};
+alg.GenerateKey();
+alg.GenerateIV();
+alg.GenerateTweak();
+
+byte[] ciphertext = alg.Encrypt(plaintext);
+byte[] recovered  = alg.Decrypt(ciphertext);
+</code></pre>
+<p>OFB is rarely the best choice today — CTR gives you the same stream-cipher behavior <em>plus</em> random access. Reach for OFB only when you have a specific interoperability requirement.</p>
+<h2 id="ecb--almost-never">ECB — almost never</h2>
+<p><strong>Use for:</strong> a primitive inside a higher-level construction (a custom AEAD, a MAC), and nothing else.</p>
+<p><strong>IV:</strong> none.</p>
+<p><strong>Padding:</strong> required for non-block-aligned plaintext; PKCS7.</p>
+<pre><code class="lang-csharp">using var alg = new Threefish256
+{
+    BlockMode = CipherModeKind.ECB,
+    Padding   = PaddingMode.PKCS7,
+};
+alg.GenerateKey();
+alg.GenerateTweak();
+// No IV is needed for ECB.
+
+byte[] ciphertext = alg.Encrypt(plaintext);
+byte[] recovered  = alg.Decrypt(ciphertext);
+</code></pre>
+<p>ECB encrypts every block independently. That means identical plaintext blocks encrypt to identical ciphertext blocks — an attacker can see the structure of your message without breaking the cipher. The classic <em>Tux the penguin</em> demonstration shows why this matters. Do not use ECB for real messages.</p>
+<h2 id="cts--ciphertext-stealing-no-expansion">CTS — ciphertext stealing, no expansion</h2>
+<p><strong>Use for:</strong> CBC-style chaining where the ciphertext must be <em>exactly</em> as long as the plaintext even when the final block is partial — for example fixed-width on-disk records.</p>
+<p><strong>IV:</strong> same length as the block, unpredictable (it is CBC underneath).</p>
+<p><strong>Padding:</strong> none — CTS <em>is</em> the no-expansion alternative to padding. It rearranges the final two ciphertext blocks so the output length matches the input.</p>
+<p>Like XTS below, CTS does <strong>not</strong> run through the <code>BlockMode</code> property of a <code>SymmetricAlgorithm</code> — <a class="xref" href="../../api/Bodu.Security.Cryptography.BlockCipherModeFactory.html">BlockCipherModeFactory</a> builds only the five classic modes and throws <code>NotSupportedException</code> for <code>CipherModeKind.CTS</code>. Construct a <a class="xref" href="../../api/Bodu.Security.Cryptography.CtsModeTransform.html">CtsModeTransform</a> directly over an <a class="xref" href="../../api/Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a>:</p>
+<pre><code class="lang-csharp">using System.Security.Cryptography;
+using Bodu.Security.Cryptography;
+
+byte[] key   = RandomNumberGenerator.GetBytes(32);
+byte[] tweak = RandomNumberGenerator.GetBytes(16);
+using IBlockCipher cipher = new Threefish256Cipher(key, tweak);
+
+byte[] iv = RandomNumberGenerator.GetBytes(cipher.BlockSize / 8);   // one block, unpredictable
+
+byte[] ciphertext = new byte[plaintext.Length];                     // same length as plaintext
+using (var cts = new CtsModeTransform(cipher, iv))
+    cts.Transform(plaintext, ciphertext, encrypt: true);
+
+byte[] recovered = new byte[ciphertext.Length];
+using (var cts = new CtsModeTransform(cipher, iv))
+    cts.Transform(ciphertext, recovered, encrypt: false);
+</code></pre>
+<p><code>CTS</code> mirrors the BCL <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.ciphermode">CipherMode</a>.<code>CTS</code> value, so it casts directly between the two enums. It is <em>not</em> an authenticated mode — pair it with a MAC if the ciphertext crosses a trust boundary.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p><strong>Which <code>CipherModeKind</code> values work where.</strong> <code>ECB</code>, <code>CBC</code>, <code>CFB</code>, <code>OFB</code>, and <code>CTR</code> are the only values accepted by <code>BlockMode</code> on the <code>SymmetricAlgorithm</code> facades (they are what <a class="xref" href="../../api/Bodu.Security.Cryptography.BlockCipherModeFactory.html">BlockCipherModeFactory</a> can build). <code>CTS</code> and <code>XTS</code> are available only as the direct <a class="xref" href="../../api/Bodu.Security.Cryptography.CtsModeTransform.html">CtsModeTransform</a> / <a class="xref" href="../../api/Bodu.Security.Cryptography.XtsModeTransform.html">XtsModeTransform</a> transforms, and <code>OCB</code>, <code>EAX</code>, and <code>SIV</code> name the AEAD transforms in the <a href="aead-modes.html">AEAD modes guide</a>. Setting <code>BlockMode</code> to any of those five throws <code>NotSupportedException</code>.</p>
+</div>
+<div class="NOTE">
+<h5>Note</h5>
+<p>CTS needs at least one full block of input. A plaintext shorter than the block size has nothing to steal from, so use CBC + PKCS7 (which expands) or a stream-shaped mode (CTR) for sub-block messages.</p>
+</div>
+<h2 id="xts--sector-level-disk-encryption">XTS — sector-level disk encryption</h2>
+<p><strong>Use for:</strong> encrypting fixed-size storage sectors — full-disk and file-container encryption. XTS is the IEEE 1619-2007 / NIST SP 800-38E standard for the random-access setting where the ciphertext cannot grow; BitLocker, FileVault, dm-crypt/LUKS, and VeraCrypt all use it.</p>
+<p><strong>Keys:</strong> two independent keys — <code>Key₁</code> for the data cipher, <code>Key₂</code> for the tweak cipher. Never share them or derive one from the other; doing so collapses XTS to a weaker single-key construction.</p>
+<p><strong>IV (tweak):</strong> one block wide, holding the sector number in little-endian order. Unlike a CBC IV it does not need to be unpredictable — it only has to identify the sector uniquely.</p>
+<p><strong>Padding:</strong> none. XTS operates on whole blocks, the on-disk sector size is fixed, and the ciphertext is exactly as long as the plaintext.</p>
+<p><img src="../../images/diagrams/xts-mode.svg" alt="XTS data flow — the tweak cipher encrypts the sector number, successive Galois-field multiplications derive a per-block tweak, and each block is XORed with the tweak before and after the data cipher"></p>
+<p>Unlike the five classic modes, XTS does not run through the <code>BlockMode</code> property of a <code>SymmetricAlgorithm</code>: it needs two keyed ciphers, so it is constructed directly as an <a class="xref" href="../../api/Bodu.Security.Cryptography.XtsModeTransform.html">XtsModeTransform</a> over a pair of <a class="xref" href="../../api/Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a> instances.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Security.Cryptography;
+using Bodu.Security.Cryptography;
+
+// One 512-byte disk sector to protect.
+byte[] sectorData = new byte[512];
+RandomNumberGenerator.Fill(sectorData);
+
+// XTS uses two independent keys — Key1 encrypts data, Key2 encrypts the tweak.
+using IBlockCipher dataCipher  = new AesBlockCipher(RandomNumberGenerator.GetBytes(16));
+using IBlockCipher tweakCipher = new AesBlockCipher(RandomNumberGenerator.GetBytes(16));
+
+// The tweak is the sector number, little-endian, padded to the block size.
+byte[] tweak = new byte[dataCipher.BlockSize / 8];
+BitConverter.GetBytes(42L).CopyTo(tweak, 0);
+
+using var xts = new XtsModeTransform(dataCipher, tweakCipher, tweak);
+
+byte[] ciphertext = new byte[sectorData.Length];
+xts.Transform(sectorData, ciphertext, encrypt: true);
+
+byte[] recovered = new byte[sectorData.Length];
+xts.Transform(ciphertext, recovered, encrypt: false);
+</code></pre>
+<p>Each <code>XtsModeTransform</code> is bound to a single sector number — construct a fresh transform per sector. The decrypt direction uses the data cipher's <em>decryption</em> primitive (unlike CFB, OFB, and CTR). XTS provides confidentiality only: it has <strong>no authentication</strong>, so an attacker who can rewrite sectors cannot read them but can still tamper block-by-block. For data crossing an untrusted channel, choose an <a href="aead-modes.html">AEAD mode</a> instead.</p>
+<h2 id="choosing-a-mode--quick-guide">Choosing a mode — quick guide</h2>
+<table>
+<thead>
+<tr>
+<th>If you need…</th>
+<th>Use</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A safe default for a single message with a random IV</td>
+<td><strong>CBC</strong></td>
+<td>Confidentiality with simple assumptions.</td>
+</tr>
+<tr>
+<td>Seekable, parallelisable, stream-shaped encryption</td>
+<td><strong>CTR</strong></td>
+<td>Keystream depends only on counter; blocks are independent.</td>
+</tr>
+<tr>
+<td>Byte-level streaming with self-healing on errors</td>
+<td><strong>CFB</strong></td>
+<td>Error propagates for one block then resynchronizes.</td>
+</tr>
+<tr>
+<td>Bit-exact error isolation on an unreliable channel</td>
+<td><strong>OFB</strong></td>
+<td>Keystream is plaintext-independent.</td>
+</tr>
+<tr>
+<td>CBC chaining with no ciphertext expansion on a partial final block</td>
+<td><strong>CTS</strong></td>
+<td>Steals ciphertext; output length equals input.</td>
+</tr>
+<tr>
+<td>Sector-addressable disk or file-container encryption</td>
+<td><strong>XTS</strong></td>
+<td>Per-sector tweak; no ciphertext expansion; two keys.</td>
+</tr>
+<tr>
+<td>A cipher primitive for something you're building</td>
+<td><strong>ECB</strong></td>
+<td>The lowest level; you must add your own chaining.</td>
+</tr>
+<tr>
+<td>Authenticated encryption (confidentiality <strong>and</strong> integrity)</td>
+<td><strong>GCM / OCB / EAX / SIV / GCM-SIV</strong></td>
+<td>See <a href="aead-modes.html">AEAD modes</a> — none of the modes above authenticate.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="which-direction-uses-the-decrypt-primitive">Which direction uses the decrypt primitive</h2>
+<p>A subtle but load-bearing property: the <em>stream-shaped</em> modes never call the underlying cipher's decrypt operation.</p>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Decryption calls the cipher's…</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ECB, CBC, CTS, XTS</td>
+<td><strong>decrypt</strong> primitive</td>
+</tr>
+<tr>
+<td>CFB, OFB, CTR</td>
+<td><strong>encrypt</strong> primitive (both directions)</td>
+</tr>
+</tbody>
+</table>
+<p>This matters if you wire a custom <a class="xref" href="../../api/Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a> and have only implemented the encrypt path — CFB / OFB / CTR will still round-trip, but ECB / CBC / CTS / XTS will not.</p>
+<div class="IMPORTANT">
+<h5>Important</h5>
+<p><strong>None of the modes on this page authenticate.</strong> CBC, CTR, CFB, OFB, CTS, and XTS all provide confidentiality only — an attacker who cannot read the plaintext can still flip ciphertext bits and corrupt the decrypted output undetected. CTR and OFB are especially malleable (a flipped ciphertext bit flips the same plaintext bit). When ciphertext crosses a trust boundary, either pair the mode with a MAC over the ciphertext (encrypt-then-MAC) or, preferably, use an <a href="aead-modes.html">AEAD mode</a>, which bundles both in one pass.</p>
+</div>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="padding.html">Padding</a> — which padding scheme to pair with which mode.</li>
+<li><a href="encryption-basics.html">Encryption basics</a> — Key/IV/Tweak lifecycle, disposal, and common pitfalls.</li>
+<li>Per-algorithm: <a href="threefish-256.html">Threefish-256</a> · <a href="skipjack.html">Skipjack</a> · <a href="blowfish.html">Blowfish</a>.</li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

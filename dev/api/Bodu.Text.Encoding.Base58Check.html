@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class Base58Check | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class Base58Check | BODU ">
+    
+    <meta name="description" content="Provides Base58Check encoding and decoding — a Base58 superset used by Bitcoin addresses, WIF private keys, and related protocols. The encoder appends a four-byte checksum derived from the leading bytes of SHA-256(SHA-256(payload)) so that mistyped or truncated input can be detected at decode time.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Text.Encoding.Base58Check">
+
+
+
+  <h1 id="Bodu_Text_Encoding_Base58Check" data-uid="Bodu.Text.Encoding.Base58Check" class="text-break">Class Base58Check</h1>
+  <div class="markdown level0 summary"><p>Provides Base58Check encoding and decoding — a Base58 superset used by Bitcoin addresses, WIF private keys, and
+related protocols. The encoder appends a four-byte checksum derived from the leading bytes of
+<code>SHA-256(SHA-256(payload))</code> so that mistyped or truncated input can be detected at decode time.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><span class="xref">Base58Check</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Encoding.html">Encoding</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Text.Encoding.dll</h6>
+  <h5 id="Bodu_Text_Encoding_Base58Check_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class Base58Check</code></pre>
+  </div>
+  <h5 id="Bodu_Text_Encoding_Base58Check_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+The encoded form is <code>Base58(payload || SHA-256(SHA-256(payload))[0..4])</code>. The decoded form recovers the
+original <code>payload</code> after verifying the checksum; if the checksum disagrees the decoder fails.
+</p>
+<p>
+Leading zero bytes in the payload are preserved by the underlying Base58 encoder as leading alphabet[0] characters
+(typically <code>1</code> in the Bitcoin/Flickr alphabet).
+</p>
+</div>
+  <h5 id="Bodu_Text_Encoding_Base58Check_examples"><strong>Examples</strong></h5>
+  <pre><code class="lang-csharp">// Build a Bitcoin P2PKH address: 0x00 version byte + 20-byte hash160.
+byte[] payload = new byte[21];
+payload[0] = 0x00;                                          // mainnet version
+hash160.CopyTo(payload.AsSpan(1));                          // 20-byte RIPEMD-160(SHA-256(pubkey))
+
+string address = Base58Check.Encode(payload);               // "1BvBMSEYstWetqTFn5Au4m4GFg7xJaNVN2" (example)
+
+// Decoder verifies the trailing checksum and strips it; throws on mismatch.
+byte[] decoded = Base58Check.Decode(address);               // 21 bytes — original version + hash160</code></pre>
+
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base58Check_Decode_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_Base58Variant_Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base58Check.Decode(System.ReadOnlySpan{System.Char},Bodu.Text.Encoding.Base58Variant,Bodu.Text.Encoding.BaseFormatStyles)">
+          <a class="xref" href="Bodu.Text.Encoding.Base58Check.Decode.html#Bodu_Text_Encoding_Base58Check_Decode_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_Base58Variant_Bodu_Text_Encoding_BaseFormatStyles_">Decode(ReadOnlySpan&lt;char&gt;, Base58Variant, BaseFormatStyles)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes a Base58Check encoded string back to the original payload, throwing if the trailing four-byte checksum
+does not match.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base58Check_Encode_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_Base58Variant_" data-uid="Bodu.Text.Encoding.Base58Check.Encode(System.ReadOnlySpan{System.Byte},Bodu.Text.Encoding.Base58Variant)">
+          <a class="xref" href="Bodu.Text.Encoding.Base58Check.Encode.html#Bodu_Text_Encoding_Base58Check_Encode_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_Base58Variant_">Encode(ReadOnlySpan&lt;byte&gt;, Base58Variant)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Encodes <code class="paramref">payload</code> using Base58Check — appends a four-byte SHA-256 squared checksum and Base58
+encodes the concatenation.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base58Check_GetMaxDecodedLength_System_Int32_" data-uid="Bodu.Text.Encoding.Base58Check.GetMaxDecodedLength(System.Int32)">
+          <a class="xref" href="Bodu.Text.Encoding.Base58Check.GetMaxDecodedLength.html#Bodu_Text_Encoding_Base58Check_GetMaxDecodedLength_System_Int32_">GetMaxDecodedLength(int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns an upper bound on the payload byte count that decoding <code class="paramref">charCount</code> characters can
+produce, after stripping the four-byte checksum suffix.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base58Check_GetMaxEncodedLength_System_Int32_" data-uid="Bodu.Text.Encoding.Base58Check.GetMaxEncodedLength(System.Int32)">
+          <a class="xref" href="Bodu.Text.Encoding.Base58Check.GetMaxEncodedLength.html#Bodu_Text_Encoding_Base58Check_GetMaxEncodedLength_System_Int32_">GetMaxEncodedLength(int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns an upper bound on the number of characters required to encode a <code class="paramref">payloadByteCount</code>
+-byte payload via Base58Check (payload + four checksum bytes).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base58Check_IsValid_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_Base58Variant_Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base58Check.IsValid(System.ReadOnlySpan{System.Char},Bodu.Text.Encoding.Base58Variant,Bodu.Text.Encoding.BaseFormatStyles)">
+          <a class="xref" href="Bodu.Text.Encoding.Base58Check.IsValid.html#Bodu_Text_Encoding_Base58Check_IsValid_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_Base58Variant_Bodu_Text_Encoding_BaseFormatStyles_">IsValid(ReadOnlySpan&lt;char&gt;, Base58Variant, BaseFormatStyles)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Indicates whether <code class="paramref">source</code> is a valid Base58Check input under the supplied variant — that is,
+every character is in the variant alphabet and the trailing four-byte checksum matches the decoded payload.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base58Check_TryDecode_System_ReadOnlySpan_System_Char__System_Span_System_Byte__System_Int32__Bodu_Text_Encoding_Base58Variant_Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base58Check.TryDecode(System.ReadOnlySpan{System.Char},System.Span{System.Byte},System.Int32@,Bodu.Text.Encoding.Base58Variant,Bodu.Text.Encoding.BaseFormatStyles)">
+          <a class="xref" href="Bodu.Text.Encoding.Base58Check.TryDecode.html#Bodu_Text_Encoding_Base58Check_TryDecode_System_ReadOnlySpan_System_Char__System_Span_System_Byte__System_Int32__Bodu_Text_Encoding_Base58Variant_Bodu_Text_Encoding_BaseFormatStyles_">TryDecode(ReadOnlySpan&lt;char&gt;, Span&lt;byte&gt;, out int, Base58Variant, BaseFormatStyles)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to decode a Base58Check encoded string into <code class="paramref">destination</code>, returning
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> when the checksum disagrees, the destination is too small, or the input is malformed.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Using Poly1305 | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Using Poly1305 | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="using-poly1305">Using Poly1305</h1>
+
+<p>Poly1305 is a one-time authenticator designed by Daniel J. Bernstein. Given a <strong>fresh 32-byte key</strong> and a message, it produces a 128-bit tag whose forgery probability — over the choice of key — is bounded by <code>(message_length / 16) · 2⁻¹⁰²</code>. That bound only holds while the key is used <strong>exactly once</strong>; reusing a Poly1305 key across two messages is a complete break.</p>
+<p>In practice Poly1305 is almost always used as the MAC half of an AEAD construction — most famously <strong>ChaCha20-Poly1305</strong> (RFC 8439), where the per-message Poly1305 key is derived by encrypting a block of zeros with ChaCha20 under a nonce.</p>
+<p>The type is <a class="xref" href="../../api/Bodu.Security.Cryptography.Poly1305.html">Poly1305</a>. It sits on Bodu's <a class="xref" href="../../api/Bodu.Security.Cryptography.KeyedBlockHashAlgorithm.html">KeyedBlockHashAlgorithm</a> — a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a> that adds a <code>Key</code> property — rather than the BCL <code>KeyedHashAlgorithm</code>.</p>
+<p><img src="../../images/diagrams/poly1305-accumulation.svg" alt="Poly1305 polynomial accumulation — per-block add-multiply-reduce recurrence and final tag"></p>
+<div class="IMPORTANT">
+<h5>Important</h5>
+<p>Poly1305 is a <strong>one-shot authenticator</strong>. <code>CanReuseTransform</code> is <code>false</code>, which is how the type signals at the API level that a key must not be used twice. Do not store a long-lived Poly1305 key — derive a fresh one per message.</p>
+</div>
+<h2 id="fixed-sizes-at-a-glance">Fixed sizes at a glance</h2>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Size</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Key</td>
+<td>256 bits (32 bytes — <code>Poly1305.KeySize</code>)</td>
+<td>Must be fresh per message. Low 16 bytes are clamped per RFC 8439.</td>
+</tr>
+<tr>
+<td>Tag</td>
+<td>128 bits (16 bytes)</td>
+<td>Fixed.</td>
+</tr>
+<tr>
+<td>Block</td>
+<td>16 bytes</td>
+<td>Fixed (the 130-bit arithmetic core).</td>
+</tr>
+</tbody>
+</table>
+<h2 id="pattern-1--one-shot-mac">Pattern 1 — one-shot MAC</h2>
+<p>The <code>Key</code> is <strong>mandatory</strong> and must be set before hashing — the constructor deliberately does <em>not</em> generate one. Computing a hash with no key assigned throws <code>CryptographicException</code> from <code>Initialize</code>, precisely so the type cannot tempt you into reusing an unsolicited random key across messages. Supply a key derived fresh per message (typically from the stream cipher you are pairing with):</p>
+<pre><code class="lang-csharp">using System.Text;
+using Bodu.Security.Cryptography;
+
+byte[] message = Encoding.UTF8.GetBytes(&quot;the quick brown fox&quot;);
+
+using var poly = new Poly1305 { Key = perMessageKey };   // 32 bytes, fresh per message
+byte[] tag = poly.ComputeHash(message);                  // 16 bytes
+</code></pre>
+<p><code>ComputeHash</code> produces one tag per key. <code>CanReuseTransform</code> is <code>false</code>, so the type signals at the API level that the key must not be reused; assigning a <em>new</em> <code>Key</code> clears the one-time guard for a new message under the new key. If you need to authenticate several messages, derive a fresh key for each (or use Poly1305 only as the MAC inside an AEAD layer).</p>
+<h2 id="pattern-2--the-chacha20-poly1305-construction">Pattern 2 — the ChaCha20-Poly1305 construction</h2>
+<p>RFC 8439 defines the now-ubiquitous AEAD pairing: derive the per-message Poly1305 key by encrypting a 32-byte block of zeros with ChaCha20 under the same nonce, then authenticate the AEAD layout (AAD ‖ ciphertext ‖ lengths) with Poly1305.</p>
+<pre><code class="lang-csharp">using System.Security.Cryptography;
+using Bodu.Security.Cryptography;
+
+// Fresh per-message inputs
+byte[] chachaKey = LoadSharedKey();    // 32 bytes, long-lived
+byte[] nonce     = GenerateNonce();    // 12 bytes, unique per (key, message)
+
+// 1. Derive the Poly1305 key from the first 32 bytes of the ChaCha20 keystream.
+byte[] polyKey = ChaCha20Keystream(chachaKey, nonce, counter: 0).AsSpan(0, 32).ToArray();
+
+// 2. Encrypt the plaintext with ChaCha20 (counter = 1).
+byte[] ciphertext = ChaCha20Encrypt(chachaKey, nonce, counter: 1, plaintext);
+
+// 3. Build the Poly1305 input per RFC 8439 §2.8:
+//     AAD ‖ pad16(AAD) ‖ ciphertext ‖ pad16(ciphertext) ‖ len(AAD)₆₄ ‖ len(ciphertext)₆₄
+byte[] input = BuildRfc8439Input(aad, ciphertext);
+
+using var poly = new Poly1305 { Key = polyKey };
+byte[] tag = poly.ComputeHash(input);                    // 16-byte authentication tag
+</code></pre>
+<p>The key point: <code>polyKey</code> is fresh per message — it's a function of <code>(chachaKey, nonce)</code>. If the nonce is unique under a given long-lived key, the Poly1305 key is unique too, and the one-time property holds.</p>
+<p>(<code>ChaCha20Keystream</code>, <code>ChaCha20Encrypt</code>, and <code>BuildRfc8439Input</code> are placeholders here — use whichever ChaCha20 implementation you already depend on; the BCL's <code>System.Security.Cryptography.ChaCha20Poly1305</code> gives you the whole AEAD in one step if you don't need to decompose the construction.)</p>
+<h2 id="pattern-3--verifying-in-constant-time">Pattern 3 — verifying in constant time</h2>
+<p>Compare a Poly1305 tag with <code>CryptographicOperations.FixedTimeEquals</code> or the <code>VerifyHash</code> helper from <code>Bodu.Security.Cryptography.Extensions</code>:</p>
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+using Bodu.Security.Cryptography.Extensions;
+
+using var poly = new Poly1305 { Key = perMessageKey };
+bool authentic = poly.VerifyHash(aeadInput, receivedTag);
+</code></pre>
+<p>A <code>SequenceEqual</code> comparison leaks timing information and is unsafe for MAC verification — an attacker who can measure verification time can recover the tag byte-by-byte.</p>
+<h2 id="what-poly1305-is-not">What Poly1305 is not</h2>
+<ul>
+<li><strong>Not a general-purpose MAC.</strong> A single key authenticates a single message. For a long-lived MAC key, use HMAC (<code>System.Security.Cryptography.HMACSHA256</code>) or KMAC.</li>
+<li><strong>Not a hash.</strong> Without a key, Poly1305 is trivially collidable. It is a <strong>keyed</strong> authenticator by construction.</li>
+<li><strong>Not a standalone AEAD.</strong> The authenticator alone provides integrity; pair it with a cipher (ChaCha20, or another stream-style primitive) to get confidentiality.</li>
+</ul>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="hashing.html">Hashing overview</a> — where Poly1305 sits alongside SipHash, Tiger, and the non-cryptographic families.</li>
+<li><a href="siphash.html">Using SipHash</a> — the keyed short-input hash; reusable key, not a one-shot.</li>
+<li><a href="aead-modes.html">AEAD modes guide</a> — AES-based authenticated encryption in this package.</li>
+<li><a class="xref" href="../../api/Bodu.Security.Cryptography.html">Bodu.Security.Cryptography namespace page</a>.</li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Bodu.Numerics.Serialization.Json — Introduction | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Bodu.Numerics.Serialization.Json — Introduction | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="bodunumericsserializationjson">Bodu.Numerics.Serialization.Json</h1>
+
+<p><img src="../../images/hero-numerics-json.svg" alt="Bodu.Numerics.Serialization.Json"></p>
+<p><strong>Bodu.Numerics.Serialization.Json</strong> is the <code>System.Text.Json</code> companion to <a href="../numerics/index.html"><code>Bodu.Numerics</code></a>. It ships the converters and converter factories that round-trip the numeric value types — <a class="xref" href="../../api/Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a>, <a class="xref" href="../../api/Bodu.Numerics.Interval-1.html">Interval&lt;T&gt;</a>, <a class="xref" href="../../api/Bodu.Numerics.DiscreteInterval-1.html">DiscreteInterval&lt;T&gt;</a>, <a class="xref" href="../../api/Bodu.Numerics.IntervalSet-1.html">IntervalSet&lt;T&gt;</a>, <a class="xref" href="../../api/Bodu.Numerics.BigDecimal.html">BigDecimal</a>, and <a class="xref" href="../../api/Bodu.Numerics.Complex-1.html">Complex&lt;T&gt;</a> — a single <a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.NumericsJsonPolicy.html">NumericsJsonPolicy</a> that selects one coherent wire shape for all of them, the one-call <code>AddNumericsJsonConverters</code> registration, and the <code>ToJson</code> / <code>FromJson</code> convenience helpers for fractions. Part of the <strong><a href="../topics/numerics-and-financial.html">Numerics &amp; Financial</a></strong> topic.</p>
+<p><code>Bodu.Numerics.Serialization.Json</code> is a <strong>Preview</strong> package. The core library is deliberately serialization-agnostic — its value types carry no <code>[JsonConverter]</code> attribute and take no dependency on <code>System.Text.Json</code> — so JSON support is opt-in, and a consumer of just <code>Fraction&lt;T&gt;</code> pays nothing for the serializer.</p>
+<h2 id="core-mental-model">Core mental model</h2>
+<p>One policy, six registrations, one options instance. Five of the six types are open generics, so what is registered for them is a <em>factory</em> that binds the concrete <code>T</code> per request:</p>
+<pre><code>JsonSerializerOptions
+  ▶ .AddNumericsJsonConverters(NumericsJsonPolicy.Strict | Lenient | Compact)
+      ├─ FractionJsonConverterFactory          → Fraction&lt;int&gt;, Fraction&lt;BigInteger&gt;, …
+      ├─ IntervalJsonConverterFactory          → Interval&lt;int&gt;, Interval&lt;double&gt;, …
+      ├─ DiscreteIntervalJsonConverterFactory  → DiscreteInterval&lt;int&gt;, …
+      ├─ IntervalSetJsonConverterFactory       → IntervalSet&lt;int&gt;, …
+      ├─ BigDecimalJsonConverter               → BigDecimal (non-generic; a single converter)
+      └─ ComplexJsonConverterFactory           → Complex&lt;double&gt;, Complex&lt;float&gt;, …
+  ▶ JsonSerializer.Serialize / Deserialize as normal
+</code></pre>
+<h2 id="the-shape-of-the-library">The shape of the library</h2>
+<p>Everything lives in the <code>Bodu.Numerics.Serialization.Json</code> namespace.</p>
+<h3 id="registration-and-helpers">Registration and helpers</h3>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.NumericsJsonSerializerOptionsExtensions.html">NumericsJsonSerializerOptionsExtensions</a></td>
+<td><code>AddNumericsJsonConverters(this JsonSerializerOptions options, NumericsJsonPolicy policy = Strict)</code> — adds the five factories and the <code>BigDecimal</code> converter and returns the same options instance for chaining.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.NumericsJsonPolicy.html">NumericsJsonPolicy</a></td>
+<td>The wire-shape selector: <code>Strict = 0</code>, <code>Lenient = 1</code>, <code>Compact = 2</code>.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.FractionJsonExtensions.html">FractionJsonExtensions</a></td>
+<td><code>value.ToJson(policy)</code> and <code>FractionJsonExtensions.FromJson&lt;T&gt;(json, policy)</code> — one-shot helpers that configure a fresh options instance per call (reflection-based; annotated for trimming and AOT).</td>
+</tr>
+</tbody>
+</table>
+<h3 id="converters-and-factories">Converters and factories</h3>
+<p>Each converter and factory has a parameterless constructor (defaulting to <code>Strict</code>) and a <code>(NumericsJsonPolicy policy)</code> constructor, so any one can also be added to <code>JsonSerializerOptions.Converters</code> by hand.</p>
+<table>
+<thead>
+<tr>
+<th>Registered type</th>
+<th>Converts</th>
+<th>Strict / Lenient shape</th>
+<th>Compact shape</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.FractionJsonConverterFactory.html">FractionJsonConverterFactory</a> → <a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.FractionJsonConverter-1.html">FractionJsonConverter&lt;T&gt;</a></td>
+<td><a class="xref" href="../../api/Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a></td>
+<td><code>{ &quot;numerator&quot;: 3, &quot;denominator&quot;: 4 }</code> — components as raw JSON numbers, so <code>BigInteger</code> round-trips exactly</td>
+<td><code>&quot;3/4&quot;</code></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.IntervalJsonConverterFactory.html">IntervalJsonConverterFactory</a> → <a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.IntervalJsonConverter-1.html">IntervalJsonConverter&lt;T&gt;</a></td>
+<td><a class="xref" href="../../api/Bodu.Numerics.Interval-1.html">Interval&lt;T&gt;</a></td>
+<td><code>{ &quot;lower&quot;, &quot;upper&quot;, &quot;lowerInclusive&quot;, &quot;upperInclusive&quot; }</code>; <code>{ &quot;empty&quot;: true }</code>; <code>lowerUnbounded</code> / <code>upperUnbounded</code> markers for infinite sides</td>
+<td>ISO 31-11 bracket string <code>&quot;[1, 5)&quot;</code>, <code>&quot;∅&quot;</code> when empty</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.DiscreteIntervalJsonConverterFactory.html">DiscreteIntervalJsonConverterFactory</a> → <a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.DiscreteIntervalJsonConverter-1.html">DiscreteIntervalJsonConverter&lt;T&gt;</a></td>
+<td><a class="xref" href="../../api/Bodu.Numerics.DiscreteInterval-1.html">DiscreteInterval&lt;T&gt;</a></td>
+<td>the <code>Interval&lt;T&gt;</code> shape over the canonical closed integer bounds</td>
+<td><code>&quot;[1, 5]&quot;</code></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.IntervalSetJsonConverterFactory.html">IntervalSetJsonConverterFactory</a> → <a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.IntervalSetJsonConverter-1.html">IntervalSetJsonConverter&lt;T&gt;</a></td>
+<td><a class="xref" href="../../api/Bodu.Numerics.IntervalSet-1.html">IntervalSet&lt;T&gt;</a></td>
+<td>a JSON <strong>array</strong> of <code>Interval&lt;T&gt;</code> pieces (<code>[]</code> when empty)</td>
+<td>an array of bracket strings</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.BigDecimalJsonConverter.html">BigDecimalJsonConverter</a></td>
+<td><a class="xref" href="../../api/Bodu.Numerics.BigDecimal.html">BigDecimal</a></td>
+<td><code>{ &quot;unscaledValue&quot;: 12340, &quot;scale&quot;: 3 }</code></td>
+<td>decimal string <code>&quot;12.340&quot;</code></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.ComplexJsonConverterFactory.html">ComplexJsonConverterFactory</a> → <a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.ComplexJsonConverter-1.html">ComplexJsonConverter&lt;T&gt;</a></td>
+<td><a class="xref" href="../../api/Bodu.Numerics.Complex-1.html">Complex&lt;T&gt;</a></td>
+<td><code>{ &quot;real&quot;: 3, &quot;imaginary&quot;: 4 }</code> — non-finite components as <code>&quot;NaN&quot;</code> / <code>&quot;Infinity&quot;</code> / <code>&quot;-Infinity&quot;</code></td>
+<td><code>&quot;&lt;3; 4&gt;&quot;</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="choosing-a-policy">Choosing a policy</h2>
+<table>
+<thead>
+<tr>
+<th>Policy</th>
+<th>Read behavior</th>
+<th>Use case</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Strict</code> <em>(default)</em></td>
+<td>Object (or array) forms only. Property names compare case-insensitively; duplicate properties are rejected; unknown properties are ignored.</td>
+<td>Canonical persistence and interchange.</td>
+</tr>
+<tr>
+<td><code>Lenient</code></td>
+<td>Everything <code>Strict</code> reads, plus a top-level string routed through the compact parser, <code>&quot;min&quot;</code> / <code>&quot;max&quot;</code> aliases for an interval's <code>&quot;lower&quot;</code> / <code>&quot;upper&quot;</code>, and missing inclusivity flags defaulted to closed. Writes exactly what <code>Strict</code> writes.</td>
+<td>Spreadsheet and external-feed ingest. Not a canonical storage shape.</td>
+</tr>
+<tr>
+<td><code>Compact</code></td>
+<td>The single-string forms, delegating to each type's <code>Parse</code> / <code>TryParse</code> under the invariant culture.</td>
+<td>Size-sensitive payloads and readable log lines.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="what-is-deliberately-not-covered">What is deliberately not covered</h2>
+<ul>
+<li><a class="xref" href="../../api/Bodu.Numerics.IntervalPair-1.html">IntervalPair&lt;T&gt;</a> and <a class="xref" href="../../api/Bodu.Numerics.DiscreteIntervalPair-1.html">DiscreteIntervalPair&lt;T&gt;</a> are transient operation results, not storage shapes; call <code>ToIntervalSet()</code> and serialize the resulting <a class="xref" href="../../api/Bodu.Numerics.IntervalSet-1.html">IntervalSet&lt;T&gt;</a>.</li>
+<li>The streaming statistics aggregates (<code>RunningStatistics&lt;T&gt;</code>, <code>RunningQuantile&lt;T&gt;</code>, <code>MovingSum&lt;T&gt;</code>, <code>MovingMinMax&lt;T&gt;</code>) are accumulators with internal state, not values; they have no converter.</li>
+<li>No source-generated <code>JsonSerializerContext</code> ships here: the converters are reflection-free at the value level and slot into a context you own — see <a href="../../guides/numerics/json-serialization.html#trimming-and-aot">Trimming and AOT</a>.</li>
+</ul>
+<h2 id="scenarios-this-library-covers">Scenarios this library covers</h2>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Reach for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Persist an exact rational without floating-point drift</td>
+<td><code>Fraction&lt;T&gt;</code> under <code>Strict</code> — components are raw JSON numbers, any <code>T</code> including <code>BigInteger</code></td>
+</tr>
+<tr>
+<td>Interchange with a system that cannot carry big JSON numbers</td>
+<td>quote the components — the reader accepts numeric strings for every component</td>
+</tr>
+<tr>
+<td>Store a range with independent endpoint inclusivity or an open side</td>
+<td><code>Interval&lt;T&gt;</code> under <code>Strict</code> — the inclusivity flags and unbounded markers are explicit</td>
+</tr>
+<tr>
+<td>Emit a readable <code>&quot;[1, 5)&quot;</code> in a log line or a query string</td>
+<td><code>Compact</code></td>
+</tr>
+<tr>
+<td>Ingest <code>&quot;min&quot;</code> / <code>&quot;max&quot;</code> keyed ranges from a feed</td>
+<td><code>Lenient</code></td>
+</tr>
+<tr>
+<td>Persist an arbitrary-precision decimal without narrowing to <code>double</code></td>
+<td><code>BigDecimal</code> — an exact <code>unscaledValue</code> / <code>scale</code> object, or the decimal string under <code>Compact</code></td>
+</tr>
+<tr>
+<td>Round-trip a <code>NaN</code> or infinite complex component</td>
+<td><code>Complex&lt;T&gt;</code> under <code>Strict</code> — non-finite components are strings, accepted either way on read</td>
+</tr>
+<tr>
+<td>Serialize the result of a set operation</td>
+<td><code>ToIntervalSet()</code> then <code>IntervalSet&lt;T&gt;</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="design-choices">Design choices</h2>
+<ul>
+<li><strong>Opt-in, not attribute-driven.</strong> The core types carry no <code>[JsonConverter]</code>; the wire shape is a per-options decision.</li>
+<li><strong>Factories bind <code>T</code>.</strong> Registering a factory rather than a closed converter means one registration covers every backing type; the closed converters exist for narrower manual registration.</li>
+<li><strong>Raw numbers, never <code>long</code> or <code>double</code>.</strong> Fraction components and <code>BigDecimal</code>'s unscaled value are written as raw JSON numbers and read as numbers or numeric strings, so no intermediate primitive truncates a <code>BigInteger</code>.</li>
+<li><strong><code>Compact</code> is a string on purpose.</strong> A bare JSON number would invite consumers to narrow to IEEE-754 <code>double</code>; the string forms delegate to each type's round-trippable text format instead.</li>
+<li><strong><code>Lenient</code> only relaxes reads.</strong> It writes the <code>Strict</code> shape, so an import pipeline never produces non-canonical output.</li>
+</ul>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="concepts.html">Core concepts</a></strong> — policy, factories vs closed converters, each type's wire shape, raw-number precision, trimming and AOT, failure modes.</li>
+<li><strong><a href="getting-started.html">Getting started</a></strong> — install + minimal samples for each policy and each type.</li>
+<li><strong><a href="../../guides/numerics/json-serialization.html">Numerics JSON serialization guide</a></strong> — the full wire-format reference and worked examples.</li>
+<li><strong><a href="../numerics/index.html">Bodu.Numerics introduction</a></strong> — the value types being serialized.</li>
+<li><strong><a href="../financial-serialization-json/index.html">Bodu.Financial.Serialization.Json</a></strong> — the sibling companion package for money and exchange rates, with the same policy model.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.html">Bodu.Numerics.Serialization.Json API reference</a></strong> — full type-by-type docs.</li>
+<li><strong><a href="../../samples/numerics.html">Runnable samples</a></strong> — the <code>JsonConverters</code> sample project.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

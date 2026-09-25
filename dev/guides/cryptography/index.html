@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Bodu.Security.Cryptography guides | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Bodu.Security.Cryptography guides | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="bodusecuritycryptography-guides">Bodu.Security.Cryptography guides</h1>
+
+<p>Recipe-style walk-throughs for <strong>Bodu.Security.Cryptography</strong>, organized by the type hierarchy of the library: foundations → standard ciphers → tweakable ciphers → stream ciphers → AEAD → cryptographic hashes → keyed hashes → ASCON.</p>
+<p>Part of the <strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography</a></strong> topic.</p>
+<p>If you have not yet installed the package or want the high-level shape of the library, start with the <a href="../../docs/cryptography/index.html">Bodu.Security.Cryptography introduction</a> and the <a href="../../docs/cryptography/getting-started.html">getting-started page</a>. Not sure which primitive to use? Start with <a href="choosing-a-primitive.html">Choosing a primitive</a> — decision tables for hashes, MACs, AEAD, KDFs, asymmetric algorithms, and block ciphers beside their BCL counterparts — or the introduction's <em>shape of the library</em> section, which maps the five families and explains how they differ.</p>
+<p>For the auto-generated API reference, see the <a class="xref" href="../../api/Bodu.Security.Cryptography.html">Bodu.Security.Cryptography namespace page</a>. For non-cryptographic checksums and fingerprints, see the <a href="../io-hashing/index.html">Bodu.IO.Hashing guides</a>.</p>
+<h2 id="namespace-map">Namespace map</h2>
+<table>
+<thead>
+<tr>
+<th>Namespace</th>
+<th>What lives here</th>
+<th>Guide section</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Bodu.Security.Cryptography</code></td>
+<td>All cryptographic primitives — block ciphers, mode transforms, padding strategies, hash algorithms, AEAD constructions, helpers.</td>
+<td>All sections below</td>
+</tr>
+<tr>
+<td><code>Bodu.Security.Cryptography.Extensions</code></td>
+<td>Ergonomic one-shot, async, and verify helpers over <code>SymmetricAlgorithm</code>, <code>TweakableSymmetricAlgorithm</code>, <code>IBlockCipher</code> + AEAD transforms, <code>HashAlgorithm</code>, and <code>ICryptoTransform</code>.</td>
+<td><a href="streaming-and-async.html">Streams and async</a>; the per-algorithm guides</td>
+</tr>
+</tbody>
+</table>
+<h2 id="choosing-and-combining">Choosing and combining</h2>
+<div class="bodu-cards">
+<div class="bodu-card">
+  <h3><a href="choosing-a-primitive.html">Choosing a primitive</a></h3>
+  <p>Decision tables — hashes, MACs, AEAD, KDFs, asymmetric algorithms, block ciphers — with sizes and defaults verified in source, and when the BCL is the better answer.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="bcl-interop.html">Interoperating with System.Security.Cryptography</a></h3>
+  <p><code>HashAlgorithm</code> one-shots and <code>TransformBlock</code>, <code>CryptoStream</code>, the AES-GCM wire-compatibility proof with <code>AesGcm</code>, PEM / PKCS#8 / SPKI for X25519 and Ed25519, <code>HashAlgorithmName</code>, and constant-time comparison.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="cipher-composition-reference.html">Modes, transforms, and factories</a></h3>
+  <p>The <code>CipherModeKind</code> support matrix — what <code>BlockMode</code> can build, what exists only as a direct transform, what is AEAD — plus <code>BlockCipherTransform</code>, <code>IBlockCipher</code>, the padding factories (block size in bits), and the dual padding properties.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="streaming-and-async.html">Streams and async</a></h3>
+  <p><code>Encrypt(Stream, Stream)</code> / <code>EncryptAsync</code>, <code>AppendDataAsync</code> / <code>VerifyHashAsync</code>, <code>MerkleTree.ComputeRootOfBlocksAsync</code> — buffer sizes, cancellation, and pooled-memory behaviour.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="value-types.html">Nonces, salts, tags, and secrets</a></h3>
+  <p><code>Nonce</code>, <code>Salt</code>, <code>SecretBytes</code>, <code>HashValue</code>, <code>AuthenticationTag</code>, <code>SignatureValue</code> — construction, constant-time equality, zeroization, and where each is accepted (detached AEAD, scrypt).</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="security-posture.html">Security guarantees and limitations</a></h3>
+  <p>Audit status, constant-time claims per primitive, zeroization on dispose, SIMD determinism and the <code>DisableSimd</code> switch, the exception contract, single-use rules, and thread safety.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="extending.html">Extending the library</a></h3>
+  <p>A custom <code>BlockHashAlgorithm</code>, a custom <code>IBlockCipher</code> behind <code>BlockCipherTransform</code>, the hash-algorithm factories, and the contract-test bases that prove your type against the built-in contract.</p>
+</div>
+</div>
+<h2 id="foundations">Foundations</h2>
+<div class="bodu-cards">
+<div class="bodu-card">
+  <h3><a href="encryption-basics.html">Encryption basics</a></h3>
+  <p>The mental model: <code>BlockMode</code> vs .NET's <code>Mode</code>, how Key / IV / Tweak / Padding combine, generating random key material, and disposing safely.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="cipher-modes.html">Cipher block modes</a></h3>
+  <p>ECB, CBC, CFB, OFB, CTR, CTS, and XTS — one worked round-trip per mode, with the IV rules, the encrypt-vs-decrypt-primitive table, and when each is appropriate.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="padding.html">Padding</a></h3>
+  <p>PKCS7, ANSI X.923, ISO 10126, ISO/IEC 7816-4, Zeros, None — how each one pads, when it round-trips cleanly, and the padding-oracle caveat.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="composing-primitives.html">Composing primitives</a></h3>
+  <p>The two patterns side by side — manual <code>IBlockCipher</code> + <code>BlockCipherModeFactory</code> + <code>PaddingFactory</code>, and the equivalent through the <code>SymmetricAlgorithm</code> wrappers.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="aes-family.html">AES-family block ciphers</a></h3>
+  <p>AES, Twofish, Camellia, Serpent-128 — the four 128-bit-block ciphers compared, with selection guidance and BCL-vs-Bodu trade-offs.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="hardware-acceleration.html">Hardware acceleration &amp; SIMD opt-out</a></h3>
+  <p>Which primitives ship an AVX-512 fast path (BLAKE2/3, Threefish, CubeHash), when it engages, and the <code>Bodu.Security.Cryptography.DisableSimd</code> switch to force the scalar path.</p>
+</div>
+</div>
+<h2 id="symmetric-ciphers--standard">Symmetric ciphers — Standard</h2>
+<table>
+<thead>
+<tr>
+<th>Cipher</th>
+<th>Block</th>
+<th>Key</th>
+<th>Guide</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Skipjack</code></td>
+<td>64 bits (8 B)</td>
+<td>80 bits (10 B)</td>
+<td><a href="skipjack.html">Using Skipjack</a></td>
+</tr>
+<tr>
+<td><code>Blowfish</code></td>
+<td>64 bits (8 B)</td>
+<td>32–448 bits, 8-bit steps</td>
+<td><a href="blowfish.html">Using Blowfish</a></td>
+</tr>
+<tr>
+<td><code>Camellia</code></td>
+<td>128 bits (16 B)</td>
+<td>128 / 192 / 256 bits</td>
+<td><a href="aes-family.html">AES-family block ciphers</a></td>
+</tr>
+<tr>
+<td><code>Twofish</code></td>
+<td>128 bits (16 B)</td>
+<td>128 / 192 / 256 bits</td>
+<td><a href="aes-family.html">AES-family block ciphers</a></td>
+</tr>
+<tr>
+<td><code>Serpent128</code></td>
+<td>128 bits (16 B)</td>
+<td>128 / 192 / 256 bits</td>
+<td><a href="serpent.html">Using Serpent</a> · <a href="aes-family.html">AES-family block ciphers</a></td>
+</tr>
+<tr>
+<td><code>AesBlockCipher</code></td>
+<td>128 bits (16 B)</td>
+<td>128 / 192 / 256 bits</td>
+<td><a href="aes-family.html">AES-family block ciphers</a> (raw <code>IBlockCipher</code> over the BCL <code>Aes</code>)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="symmetric-ciphers--tweakable">Symmetric ciphers — Tweakable</h2>
+<table>
+<thead>
+<tr>
+<th>Cipher</th>
+<th>Block</th>
+<th>Key</th>
+<th>Tweak</th>
+<th>Guide</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Threefish256</code></td>
+<td>256 bits (32 B)</td>
+<td>256 bits (32 B)</td>
+<td>128 bits (16 B)</td>
+<td><a href="threefish-256.html">Using Threefish-256</a></td>
+</tr>
+<tr>
+<td><code>Threefish512</code></td>
+<td>512 bits (64 B)</td>
+<td>512 bits (64 B)</td>
+<td>128 bits (16 B)</td>
+<td><a href="threefish-512.html">Using Threefish-512</a></td>
+</tr>
+<tr>
+<td><code>Threefish1024</code></td>
+<td>1024 bits (128 B)</td>
+<td>1024 bits (128 B)</td>
+<td>128 bits (16 B)</td>
+<td><a href="threefish-1024.html">Using Threefish-1024</a></td>
+</tr>
+<tr>
+<td><code>Serpent256</code> / <code>Serpent512</code> / <code>Serpent1024</code></td>
+<td>256 / 512 / 1024 bits</td>
+<td>matching key</td>
+<td>128 bits</td>
+<td><a href="serpent.html">Using Serpent</a> — non-standard, experimental wide-block constructions</td>
+</tr>
+</tbody>
+</table>
+<h2 id="symmetric-ciphers--stream">Symmetric ciphers — Stream</h2>
+<p>Raw, confidentiality-only XOR keystream ciphers — <strong>no authentication</strong>; pair with a MAC or prefer AEAD. See <a href="stream-ciphers.html">Using stream ciphers</a>.</p>
+<table>
+<thead>
+<tr>
+<th>Cipher</th>
+<th>Key</th>
+<th>Nonce / IV</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ChaCha20</code></td>
+<td>256 bits (32 B)</td>
+<td>96 bits (12 B)</td>
+<td>RFC 8439; the modern default.</td>
+</tr>
+<tr>
+<td><code>XChaCha20</code></td>
+<td>256 bits (32 B)</td>
+<td>192 bits (24 B)</td>
+<td>Extended nonce — safe to choose at random.</td>
+</tr>
+<tr>
+<td><code>Salsa20</code></td>
+<td>128 / 256 bits</td>
+<td>64 bits (8 B)</td>
+<td>eSTREAM; 64-bit nonce needs a counter.</td>
+</tr>
+<tr>
+<td><code>XSalsa20</code></td>
+<td>256 bits (32 B)</td>
+<td>192 bits (24 B)</td>
+<td>Extended-nonce Salsa20 (NaCl).</td>
+</tr>
+<tr>
+<td><code>Rabbit</code></td>
+<td>128 bits (16 B)</td>
+<td>64 bits (8 B)</td>
+<td>RFC 4503; evolving-state (no seekable counter).</td>
+</tr>
+<tr>
+<td><code>Hc128</code></td>
+<td>128 bits (16 B)</td>
+<td>128 bits (16 B)</td>
+<td>eSTREAM; expensive table-based setup.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="symmetric-ciphers--aead">Symmetric ciphers — AEAD</h2>
+<div class="bodu-cards">
+<div class="bodu-card">
+  <h3><a href="aead-modes.html">AEAD modes</a></h3>
+  <p>GCM, CCM, OCB3, EAX, SIV, GCM-SIV — authenticated encryption with associated data using <code>AesBlockCipher</code> + the mode transforms, via the one-shot extension methods.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="stream-aead.html">Authenticated stream ciphers</a></h3>
+  <p><code>XChaCha20Poly1305</code>, the NaCl secretbox <code>XSalsa20Poly1305</code> (with the libsodium layout converters), and <code>XSalsa20Poly1305Aead</code> over <code>Poly1305AeadTransform</code> / <code>IStreamAeadTransform</code>; single-use, in-place, and detached-tag patterns.</p>
+</div>
+</div>
+<h2 id="cryptographic-hashes">Cryptographic hashes</h2>
+<div class="bodu-cards">
+<div class="bodu-card">
+  <h3><a href="hashing.html">Hashing overview</a></h3>
+  <p>Cross-cutting overview of keyed hashes (SipHash, Poly1305), cryptographic digests (Tiger, CubeHash, Snefru), and Merkle trees.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="tiger.html">Using Tiger</a></h3>
+  <p>128 / 160 / 192-bit cryptographic digest optimized for 64-bit platforms; two padding variants (Tiger / Tiger2).</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="cubehash.html">Using CubeHash</a></h3>
+  <p>SHA-3 finalist with tunable rounds and block size.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="snefru.html">Using Snefru</a></h3>
+  <p>Snefru-128 / Snefru-256 — legacy cryptographic digest; interoperability use only.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="merkle-trees.html">Merkle trees and proofs</a></h3>
+  <p>The RFC 6962 tree over any inner <code>HashAlgorithm</code> — roots over entries, blocks, or a write-time accumulator; inclusion and consistency proofs; length-bound roots; parallel leaf hashing.</p>
+</div>
+</div>
+<p>The remaining digests have their own walk-throughs too — <a href="blake.html">BLAKE2 / BLAKE3</a>, <a href="skein.html">Skein</a>, <a href="whirlpool.html">Whirlpool</a>, and <a href="shake.html">SHAKE</a> — or consult the <a class="xref" href="../../api/Bodu.Security.Cryptography.html">API reference</a> directly.</p>
+<h2 id="keyed-hashes-mac">Keyed hashes (MAC)</h2>
+<div class="bodu-cards">
+<div class="bodu-card">
+  <h3><a href="siphash.html">Using SipHash</a></h3>
+  <p>SipHash-64 and SipHash-128 — keyed PRF designed for hash-flooding-resistant hash tables.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="poly1305.html">Using Poly1305</a></h3>
+  <p>One-time authenticator (RFC 8439); pair with ChaCha20 or AES-CTR.</p>
+</div>
+</div>
+<h2 id="ascon-family">ASCON family</h2>
+<div class="bodu-cards">
+<div class="bodu-card">
+  <h3><a href="ascon.html">ASCON overview</a></h3>
+  <p>All five NIST SP 800-232 types — Hash256, HashA256, XOF128, CXOF128, AEAD128 — with selection guidance.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="ascon-hashing.html">ASCON hashing</a></h3>
+  <p><code>AsconHash256</code> (12-round, max margin) and <code>AsconHashA256</code> (8-round, higher throughput).</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="ascon-xof.html">ASCON extendable output (XOF)</a></h3>
+  <p><code>AsconXof128</code> and <code>AsconCxof128</code> — squeeze any number of bytes; CXOF accepts a domain customization string.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="ascon-aead.html">ASCON authenticated encryption (AEAD)</a></h3>
+  <p><code>AsconAead128</code> — sponge-based AEAD with no separate block cipher dependency.</p>
+</div>
+</div>
+<h2 id="key-derivation">Key derivation</h2>
+<div class="bodu-cards">
+<div class="bodu-card">
+  <h3><a href="hkdf.html">Using HKDF</a></h3>
+  <p><code>Hkdf</code> (RFC 5869) — extract-and-expand key derivation for high-entropy inputs such as a shared secret or KEM output.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="argon2.html">Using Argon2</a></h3>
+  <p><code>Argon2id</code> / <code>Argon2i</code> / <code>Argon2d</code> (RFC 9106) — memory-hard password hashing and key derivation, with PHC encoded-hash <code>Hash</code> / <code>Verify</code>.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="scrypt.html">Using scrypt</a></h3>
+  <p><code>Scrypt</code> (RFC 7914) — the established memory-hard password KDF, with PHC encoded-hash <code>Hash</code> / <code>Verify</code>.</p>
+</div>
+</div>
+<h2 id="one-time-passwords">One-time passwords</h2>
+<div class="bodu-cards">
+<div class="bodu-card">
+  <h3><a href="one-time-passwords.html">Using HOTP and TOTP</a></h3>
+  <p><code>Hotp</code> (RFC 4226) and <code>Totp</code> (RFC 6238) — the counter- and time-based one-time-password codes used for two-factor authentication, with constant-time verification and clock-drift windows.</p>
+</div>
+</div>
+<h2 id="asymmetric-algorithms">Asymmetric algorithms</h2>
+<div class="bodu-cards">
+<div class="bodu-card">
+  <h3><a href="asymmetric-overview.html">Asymmetric algorithms overview</a></h3>
+  <p>The four families over <code>AsymmetricAlgorithm</code> — key agreement, signatures, and post-quantum KEM / signatures — with selection guidance and the shared key import / export shape.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="key-agreement-x25519.html">Key agreement with X25519</a></h3>
+  <p><code>X25519</code> (RFC 7748) — Diffie-Hellman over Curve25519 for deriving a shared secret between two parties.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="signatures-ed25519.html">Signatures with Ed25519</a></h3>
+  <p><code>Ed25519</code> (RFC 8032) — deterministic EdDSA signing and verification over Curve25519.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="ml-kem.html">ML-KEM post-quantum key encapsulation</a></h3>
+  <p><code>MLKem512</code> / <code>MLKem768</code> / <code>MLKem1024</code> (FIPS 203) — lattice-based key encapsulation resistant to quantum attack.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="ml-dsa.html">ML-DSA post-quantum signatures</a></h3>
+  <p><code>MLDsa44</code> / <code>MLDsa65</code> / <code>MLDsa87</code> (FIPS 204) — lattice-based digital signatures resistant to quantum attack.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="hpke.html">Hybrid public key encryption with HPKE</a></h3>
+  <p><code>Hpke</code> (RFC 9180) — encrypt to a public key by composing the X25519 KEM, HKDF, and an AEAD; single-shot and session APIs across all four modes.</p>
+</div>
+</div>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="../../docs/cryptography/index.html">Bodu.Security.Cryptography introduction</a> — namespaces, headline types, scenarios.</li>
+<li><a href="../../docs/cryptography/getting-started.html">Bodu.Security.Cryptography getting started</a> — install and minimal samples per subfamily.</li>
+<li><a href="../io-hashing/index.html">Bodu.IO.Hashing guides</a> — non-cryptographic checksums and fingerprints.</li>
+<li><a class="xref" href="../../api/Bodu.Security.Cryptography.html">Bodu.Security.Cryptography API reference</a> — full type-by-type docs.</li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> — the topic map across Bodu.IO.Hashing and Bodu.Security.Cryptography. The complete cryptography guide list is this page; the hashing one is <a href="../io-hashing/index.html">its index</a>.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Namespace Bodu.Text.Yaml.Document | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Namespace Bodu.Text.Yaml.Document | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Text.Yaml.Document">
+
+  <h1 id="Bodu_Text_Yaml_Document" data-uid="Bodu.Text.Yaml.Document" class="text-break">Namespace Bodu.Text.Yaml.Document</h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual">
+<p><img src="../images/hero-yaml.svg" alt="Bodu.Text.Yaml.Document"></p>
+<h2 id="purpose">Purpose</h2>
+<p><strong>Bodu.Text.Yaml.Document</strong> is the read-only document object model of <a class="xref" href="Bodu.Text.Yaml.html">Bodu.Text.Yaml</a>, shaped after <code>System.Text.Json</code>'s <code>JsonDocument</code> / <code>JsonElement</code>. A parse produces a disposable <a class="xref" href="Bodu.Text.Yaml.Document.YamlDocument.html">YamlDocument</a> over a resolved node store; every <a class="xref" href="Bodu.Text.Yaml.Document.YamlElement.html">YamlElement</a> is a lightweight <code>struct</code> cursor into it. It is also the home of multi-document stream parsing (<code>ParseAllDocuments</code>). Prefer it over the mutable <a class="xref" href="Bodu.Text.Yaml.Nodes.html">Bodu.Text.Yaml.Nodes</a> tier for inspection; a member typed <code>YamlElement</code> binds through the <a class="xref" href="Bodu.Text.Yaml.YamlSerializer.html">YamlSerializer</a>'s DOM bridge.</p>
+<h2 id="key-types">Key types</h2>
+<ul>
+<li><a class="xref" href="Bodu.Text.Yaml.Document.YamlDocument.html">YamlDocument</a> — the disposable owner: <code>Parse</code> (from <code>string</code> or <code>ReadOnlySpan&lt;byte&gt;</code>), <code>ParseAllDocuments</code> for <code>---</code> / <code>...</code> delimited streams, and <code>RootElement</code>.</li>
+<li><a class="xref" href="Bodu.Text.Yaml.Document.YamlElement.html">YamlElement</a> — the value cursor: <code>ValueKind</code>, <code>ScalarStyle</code> (the original <a class="xref" href="Bodu.Text.Yaml.YamlScalarStyle.html">YamlScalarStyle</a>), <code>GetString</code> / <code>GetInt64</code> / <code>GetDouble</code> / <code>GetBoolean</code>, <code>GetProperty</code> / <code>TryGetProperty</code>, an integer indexer, <code>GetSequenceLength</code>, <code>EnumerateSequence</code> / <code>EnumerateMapping</code>, and <code>WriteTo</code>.</li>
+<li><a class="xref" href="Bodu.Text.Yaml.Document.YamlElement.SequenceEnumerator.html">YamlElement.SequenceEnumerator</a> / <a class="xref" href="Bodu.Text.Yaml.Document.YamlElement.MappingEnumerator.html">YamlElement.MappingEnumerator</a> — the struct enumerators returned by <code>EnumerateSequence</code> / <code>EnumerateMapping</code>.</li>
+<li><a class="xref" href="Bodu.Text.Yaml.Document.YamlProperty.html">YamlProperty</a> — a <code>Name</code> / <code>Value</code> pair yielded by <code>EnumerateMapping</code>.</li>
+<li><a class="xref" href="Bodu.Text.Yaml.Document.YamlDocumentOptions.html">YamlDocumentOptions</a> — <code>SpecVersion</code>, <code>DuplicateKeyBehavior</code>, <code>MergeKeyBehavior</code>, and <code>MaxDepth</code>.</li>
+</ul>
+<h2 id="example">Example</h2>
+<pre><code class="lang-csharp">using Bodu.Text.Yaml.Document;
+
+using YamlDocument document = YamlDocument.Parse(&quot;host: localhost\nport: 8080\n&quot;);
+YamlElement root = document.RootElement;
+
+long port = root.GetProperty(&quot;port&quot;).GetInt64();
+foreach (YamlProperty property in root.EnumerateMapping())
+    Console.WriteLine($&quot;{property.Name}: {property.Value.ValueKind}&quot;);
+</code></pre>
+<h2 id="notes">Notes</h2>
+<ul>
+<li><strong>Aliases are transparent.</strong> An element reached through an alias resolves to its anchored target; the tree is guaranteed acyclic.</li>
+<li><strong>Multi-document streams.</strong> The single-document <code>Parse</code> reads the first document; <code>ParseAllDocuments</code> returns every document, each independently disposable.</li>
+<li><strong>See also:</strong> the <a href="../docs/serialization/yaml/index.html">Bodu.Text.Yaml introduction</a> and the <a href="../guides/serialization/yaml/using.html">Using YAML</a> guide (Pattern 5 — Inspect a document with the read-only DOM).</li>
+</ul>
+</div>
+  <div class="markdown level0 remarks"></div>
+    <h3 id="classes">
+Classes
+</h3>
+      <h4><a class="xref" href="Bodu.Text.Yaml.Document.YamlDocument.html">YamlDocument</a></h4>
+      <section><p>Represents a parsed, read-only YAML document as an immutable tree of <a class="xref" href="Bodu.Text.Yaml.Document.YamlElement.html">YamlElement</a> views over a flat,
+index-linked node store, in the manner of <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.json.jsondocument">JsonDocument</a>.</p>
+</section>
+    <h3 id="structs">
+Structs
+</h3>
+      <h4><a class="xref" href="Bodu.Text.Yaml.Document.YamlDocumentOptions.html">YamlDocumentOptions</a></h4>
+      <section><p>Provides options that configure how a <a class="xref" href="Bodu.Text.Yaml.Document.YamlDocument.html">YamlDocument</a> parses YAML source.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Yaml.Document.YamlElement.html">YamlElement</a></h4>
+      <section><p>Represents a single node within a <a class="xref" href="Bodu.Text.Yaml.Document.YamlDocument.html">YamlDocument</a> as a lightweight, read-only view, in the manner of
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.json.jsonelement">JsonElement</a>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Yaml.Document.YamlElement.MappingEnumerator.html">YamlElement.MappingEnumerator</a></h4>
+      <section><p>Provides forward-only enumeration over the key/value pairs of a mapping node.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Yaml.Document.YamlElement.SequenceEnumerator.html">YamlElement.SequenceEnumerator</a></h4>
+      <section><p>Provides forward-only enumeration over the elements of a sequence node.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Yaml.Document.YamlProperty.html">YamlProperty</a></h4>
+      <section><p>Represents a single key/value pair within a mapping node of a <a class="xref" href="Bodu.Text.Yaml.Document.YamlDocument.html">YamlDocument</a>.</p>
+</section>
+
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>ML-DSA post-quantum signatures | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="ML-DSA post-quantum signatures | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="ml-dsa-post-quantum-signatures">ML-DSA post-quantum signatures</h1>
+
+<p>ML-DSA is the module-lattice digital signature algorithm standardized by NIST <strong>FIPS 204</strong> — the post-quantum companion to a classic signature scheme. Its security rests on the Module-LWE and SelfTargetMSIS problems, believed hard even for a large-scale quantum computer. This guide is for developers signing data whose signatures must remain trustworthy against future quantum attack.</p>
+<p><strong>Bodu.Security.Cryptography</strong> ships the three FIPS 204 parameter sets as sealed types over the shared <a class="xref" href="../../api/Bodu.Security.Cryptography.MLDsa.html">MLDsa</a> base: <a class="xref" href="../../api/Bodu.Security.Cryptography.MLDsa44.html">MLDsa44</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.MLDsa65.html">MLDsa65</a>, and <a class="xref" href="../../api/Bodu.Security.Cryptography.MLDsa87.html">MLDsa87</a>. This is pure ML-DSA; the pre-hash variant HashML-DSA is out of scope.</p>
+<p>For a compact classic signature scheme, see <a href="signatures-ed25519.html">Ed25519</a>; for the post-quantum key-agreement counterpart, see <a href="ml-kem.html">ML-KEM</a>.</p>
+<h2 id="parameter-sets-and-sizes">Parameter sets and sizes</h2>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>NIST category</th>
+<th>Public key</th>
+<th>Private key</th>
+<th>Signature</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.MLDsa44.html">MLDsa44</a></td>
+<td>2</td>
+<td>1312 B</td>
+<td>2560 B</td>
+<td>2420 B</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.MLDsa65.html">MLDsa65</a></td>
+<td>3</td>
+<td>1952 B</td>
+<td>4032 B</td>
+<td>3309 B</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.MLDsa87.html">MLDsa87</a></td>
+<td>5</td>
+<td>2592 B</td>
+<td>4896 B</td>
+<td>4627 B</td>
+</tr>
+</tbody>
+</table>
+<p>The private seed ξ accepted by <code>ImportPrivateSeed</code> is always 32 bytes (<code>MLDsa.PrivateSeedSizeInBytes</code>); a signing context string is at most 255 bytes (<code>MLDsa.MaxContextSizeInBytes</code>). Each instance also reports its sizes at runtime through <code>PublicKeySizeInBytes</code>, <code>PrivateKeySizeInBytes</code>, and <code>SignatureSizeInBytes</code>.</p>
+<p><strong>ML-DSA-65</strong> is the most widely recommended general-purpose set. Pick ML-DSA-44 for the smallest signatures where category-2 security is acceptable, and ML-DSA-87 for the highest margin on the most sensitive material.</p>
+<h2 id="signing-and-verifying">Signing and verifying</h2>
+<p>Generate a key pair, sign with <a class="xref" href="../../api/Bodu.Security.Cryptography.MLDsa.SignData.html#Bodu_Security_Cryptography_MLDsa_SignData_System_ReadOnlySpan_System_Byte__">SignData(ReadOnlySpan&lt;byte&gt;)</a>, and verify with <a class="xref" href="../../api/Bodu.Security.Cryptography.MLDsa.VerifyData.html#Bodu_Security_Cryptography_MLDsa_VerifyData_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__">VerifyData(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Text;
+using Bodu.Security.Cryptography;
+
+byte[] message = Encoding.UTF8.GetBytes(&quot;release build 2.1.0&quot;);
+
+using var signer = MLDsa65.Create();
+signer.GenerateKey();
+
+byte[] signature = signer.SignData(message);   // 3309 bytes
+
+bool valid = signer.VerifyData(message, signature);   // true
+</code></pre>
+<p><code>SignData</code> and <code>VerifyData</code> each have a context-string overload (next section) and a span overload — <code>SignData(data, context, destination)</code> writes the signature into a caller-supplied buffer of exactly <code>SignatureSizeInBytes</code>. <code>HasPrivateKey</code> / <code>HasPublicKey</code> report which halves an instance holds, exactly as for <a href="signatures-ed25519.html">Ed25519</a>.</p>
+<h2 id="key-distribution">Key distribution</h2>
+<p>The signer keeps the private key (or the compact 32-byte seed) secret; the public key is distributed to every verifier. Importing the seed regenerates the full key pair; importing a public key onto an instance discards any private key it held, leaving a verify-only instance.</p>
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+
+using var signer = MLDsa65.Create();
+signer.GenerateKey();
+
+byte[] publicKey = signer.ExportPublicKey();    // 1952 bytes, distribute freely
+byte[] privateKey = signer.ExportPrivateKey();  // private, store in a vault
+
+// A verifier needs only the public key:
+using var verifier = MLDsa65.Create();
+verifier.ImportPublicKey(publicKey);
+bool ok = verifier.VerifyData(message, signature);
+</code></pre>
+<p><code>ImportPrivateKey</code> cross-checks the embedded public-key hash and throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> on a key whose secret vectors do not match.</p>
+<h2 id="context-strings">Context strings</h2>
+<p>ML-DSA signing accepts an optional <strong>context</strong> string of up to 255 bytes that domain-separates signatures across applications: a signature created with a context verifies <strong>only</strong> when the same context is supplied at verification. Use it to stop a signature minted for one purpose from being replayed in another.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Text;
+using Bodu.Security.Cryptography;
+
+byte[] message = Encoding.UTF8.GetBytes(&quot;release build 2.1.0&quot;);
+byte[] context = Encoding.UTF8.GetBytes(&quot;myapp:firmware-v1&quot;);
+
+using var signer = MLDsa65.Create();
+signer.GenerateKey();
+
+byte[] signature = signer.SignData(message, context);
+
+// Verifying with the matching context succeeds; a different (or empty) context fails.
+bool ok = signer.VerifyData(message, signature, context);          // true
+bool wrong = signer.VerifyData(message, signature);               // false (empty context)
+</code></pre>
+<p>A context longer than 255 bytes throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> at both sign and verify time.</p>
+<h2 id="deterministic-versus-hedged-signing">Deterministic versus hedged signing</h2>
+<p>By default ML-DSA signing is <strong>hedged</strong>: each signature mixes 32 fresh random bytes into the nonce derivation. This is the FIPS 204 default and protects against fault-injection and randomness-disclosure attacks. The same message signed twice under the same key therefore yields <strong>different</strong> signatures — both valid.</p>
+<p>Set <a class="xref" href="../../api/Bodu.Security.Cryptography.MLDsa.DeterministicSigning.html#Bodu_Security_Cryptography_MLDsa_DeterministicSigning">DeterministicSigning</a> to <code>true</code> to substitute the all-zero string, making signatures reproducible for a fixed key, message, and context. Both variants are standard and verify identically.</p>
+<pre><code class="lang-csharp">using var signer = MLDsa65.Create();
+signer.GenerateKey();
+signer.DeterministicSigning = true;   // reproducible output
+
+byte[] a = signer.SignData(message);
+byte[] b = signer.SignData(message);
+// a and b are byte-for-byte identical.
+</code></pre>
+<p>Prefer the default hedged mode unless you have a specific reason to need reproducible signatures (for example, deterministic test vectors).</p>
+<h2 id="verification-never-throws-on-a-bad-signature">Verification never throws on a bad signature</h2>
+<p><code>VerifyData</code> returns <code>false</code> for every invalid input — a wrong-length, malformed, or non-canonical signature, a tampered message, or a mismatched context. It throws only when the instance holds no public key (<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicexception">CryptographicException</a>), or when the context exceeds 255 bytes. Treat the boolean result as the sole signal and reject on <code>false</code> without branching on the reason.</p>
+<h2 id="see-also">See also</h2>
+<ul>
+<li><a href="asymmetric-overview.html">Asymmetric algorithms overview</a> — where ML-DSA sits in the family.</li>
+<li><a href="signatures-ed25519.html">Signatures with Ed25519</a> — the compact classic signature counterpart.</li>
+<li><a href="ml-kem.html">ML-KEM post-quantum key encapsulation</a> — the post-quantum key-agreement companion.</li>
+<li><a class="xref" href="../../api/Bodu.Security.Cryptography.MLDsa.html">MLDsa</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.MLDsa44.html">MLDsa44</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.MLDsa65.html">MLDsa65</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.MLDsa87.html">MLDsa87</a> — API reference.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

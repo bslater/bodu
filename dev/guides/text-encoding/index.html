@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Bodu.Text.Encoding — Guides | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Bodu.Text.Encoding — Guides | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="bodutextencoding--guides">Bodu.Text.Encoding — Guides</h1>
+
+<p>These guides cover the day-to-day use of each binary-to-text encoding the library ships. If you are new to the
+package, start with the <strong><a href="../../docs/text-encoding/index.html">Introduction</a></strong> and the
+<strong><a href="../../docs/text-encoding/concepts.html">Core concepts</a></strong> pages first — the guides below assume you know the
+vocabulary (alphabet, variant, terminal quantum, padding, decoration, OperationStatus).</p>
+<p>Part of the <strong><a href="../topics/text-and-serialization.html">Text &amp; Serialization</a></strong> topic.</p>
+<h2 id="how-the-library-works">How the library works</h2>
+<p><img src="../../images/diagrams/encoding-pipeline.svg" alt="Encode and decode pipeline — binary bytes to encoded text and back"></p>
+<p>Every encoding follows the same four-stage pipeline — radix conversion, variant transform, optional decoration,
+encoded output. The per-encoding guides drill into the stages that vary by family: the bit-stream packing for
+Base16 / Base32 / Base64, the big-integer arithmetic for Base58, and the 4-byte block packing for Base85.</p>
+<h2 id="at-a-glance">At a glance</h2>
+<table>
+<thead>
+<tr>
+<th>Family</th>
+<th>Expansion</th>
+<th>Variants</th>
+<th>Use cases</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><a href="base16.html">Base16</a></strong></td>
+<td>100 %</td>
+<td>lower / upper case</td>
+<td>Hex dumps, hash digests, low-level inspection</td>
+</tr>
+<tr>
+<td><strong><a href="base32.html">Base32</a></strong></td>
+<td>60 %</td>
+<td>Standard, HexExtended, Crockford, Z-Base-32</td>
+<td>TOTP secrets, NSEC3 DNS labels, human-spoken IDs</td>
+</tr>
+<tr>
+<td><strong><a href="base64.html">Base64</a></strong></td>
+<td>33 %</td>
+<td>Standard, URL-safe, MIME</td>
+<td>MIME / SMTP, JWT, certificates, generic binary-in-text</td>
+</tr>
+<tr>
+<td><strong><a href="base58.html">Base58</a></strong></td>
+<td>≈ 37 %</td>
+<td>Bitcoin/Flickr, Ripple</td>
+<td>Bitcoin addresses, IPFS CIDs, Solana, Stellar</td>
+</tr>
+<tr>
+<td><strong><a href="base85.html">Base85</a></strong></td>
+<td>25 %</td>
+<td>Ascii85 (Adobe), Z85 (ZeroMQ), GitCompact</td>
+<td>PDF / PostScript, ZeroMQ wire keys, Git binary patches</td>
+</tr>
+<tr>
+<td><strong><a href="base45.html">Base45</a></strong></td>
+<td>50 %</td>
+<td>RFC 9285</td>
+<td>QR-code payloads, EU Digital COVID Certificate</td>
+</tr>
+<tr>
+<td><strong><a href="base62.html">Base62</a></strong></td>
+<td>≈ 35 %</td>
+<td>GMP-style</td>
+<td>Short URLs, compact identifiers, slugs</td>
+</tr>
+<tr>
+<td><strong><a href="bech32.html">Bech32</a></strong></td>
+<td>data + checksum</td>
+<td>Bech32 (BIP 173), Bech32m (BIP 350)</td>
+<td>Bitcoin SegWit addresses, Lightning invoices</td>
+</tr>
+<tr>
+<td><strong><a href="binary-encodings-interface.html"><code>IBinaryEncoding</code> interface</a></strong></td>
+<td>—</td>
+<td>the flat-byte encodings above</td>
+<td>Runtime-selected encoding choice (config-driven serializers, plugins)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="escape-based-encodings">Escape-based encodings</h3>
+<p><code>QuotedPrintable</code> and <code>PercentEncoding</code> are not flat-byte radix encodings — they escape a <em>subset</em> of octets as <code>=HH</code>
+or <code>%HH</code> while leaving most printable ASCII literal, so their output length depends on the content. They are static
+types and intentionally <strong>not</strong> <code>IBinaryEncoding</code> members (their modes / options carry information the parameterless
+interface cannot express).</p>
+<table>
+<thead>
+<tr>
+<th>Encoding</th>
+<th>Escape form</th>
+<th>Modes / options</th>
+<th>Use cases</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><a href="quoted-printable.html">Quoted-Printable</a></strong></td>
+<td><code>=HH</code> (uppercase)</td>
+<td>Binary / Text mode; 76-column soft wrapping; strict-vs-relaxed decode</td>
+<td>MIME message bodies (RFC 2045 §6.7)</td>
+</tr>
+<tr>
+<td><strong><a href="percent-encoding.html">Percent-encoding</a></strong></td>
+<td><code>%HH</code> (uppercase)</td>
+<td>UriComponent / PathSegment / Query / FormUrlEncoded</td>
+<td>URI components, query strings, HTML form fields</td>
+</tr>
+</tbody>
+</table>
+<h2 id="choosing-between-encodings">Choosing between encodings</h2>
+<table>
+<thead>
+<tr>
+<th>Need</th>
+<th>Pick</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Compact ASCII transport, no special chars</td>
+<td>Base64 (URL-safe)</td>
+</tr>
+<tr>
+<td>Human-readable, spoken aloud</td>
+<td>Base32 Crockford or Z-Base-32</td>
+</tr>
+<tr>
+<td>Crypto key / TOTP secret display</td>
+<td>Base32 Standard</td>
+</tr>
+<tr>
+<td>Hex dump for debugging / forensics</td>
+<td>Base16 with <code>InsertSpacing | InsertLineBreaks</code></td>
+</tr>
+<tr>
+<td>Bitcoin / blockchain address (legacy)</td>
+<td>Base58 Bitcoin/Flickr</td>
+</tr>
+<tr>
+<td>Bitcoin SegWit / Lightning address</td>
+<td>Bech32 / Bech32m</td>
+</tr>
+<tr>
+<td>Checksum-protected address or key</td>
+<td>Base58Check</td>
+</tr>
+<tr>
+<td>Binary inside a QR code</td>
+<td>Base45</td>
+</tr>
+<tr>
+<td>Compact URL-safe identifier or slug</td>
+<td>Base62</td>
+</tr>
+<tr>
+<td>Embedded in PostScript / PDF</td>
+<td>Base85 Ascii85</td>
+</tr>
+<tr>
+<td>Shell-safe binary key transport</td>
+<td>Base85 Z85</td>
+</tr>
+<tr>
+<td>Git binary-patch payload alphabet</td>
+<td>Base85 GitCompact</td>
+</tr>
+<tr>
+<td>MIME message body (mostly-readable text)</td>
+<td>Quoted-Printable</td>
+</tr>
+<tr>
+<td>URI component / query / form field</td>
+<td>Percent-encoding</td>
+</tr>
+</tbody>
+</table>
+<h2 id="api-shape-recap">API shape recap</h2>
+<p>Every encoding family follows the same pattern. The bullet list below is the entire public surface — the per-family
+guides drill into the variant-specific options:</p>
+<ul>
+<li><strong>Encode</strong>: <code>Encode(byte[]/span)</code> returning <code>string</code>, <code>Encode(byte[], int, int)</code>, <code>Encode(span, span)</code> returning
+<code>int</code>, <code>TryEncode(span, span, out int)</code> returning <code>bool</code>.</li>
+<li><strong>Decode</strong>: <code>Decode(string/span)</code> returning <code>byte[]</code>, <code>Decode(char[], int, int)</code>,
+<code>TryDecode(span, span, out int)</code> returning <code>bool</code>.</li>
+<li><strong>BCL-style aliases</strong>: <code>ToBase{N}String(...)</code>, <code>FromBase{N}String(...)</code>, <code>TryToBase{N}String(...)</code>.</li>
+<li><strong>UTF-8 path</strong>: <code>EncodeToUtf8(span)</code> returning <code>byte[]</code>, <code>TryEncodeToUtf8(span, span, out int)</code>,
+<code>DecodeFromUtf8(span, span, out int, out int, …, isFinalBlock)</code> returning <code>OperationStatus</code>.</li>
+<li><strong>Streaming decode</strong>: <code>FromBase{N}String(span&lt;char&gt;/&lt;byte&gt;, span&lt;byte&gt;, out int, out int)</code> returning
+<code>OperationStatus</code>.</li>
+<li><strong>Sizing</strong>: <code>GetEncodedLength(int)</code>, <code>GetMaxEncodedLength(int)</code> (where exact requires the data),
+<code>GetMaxDecodedLength(int)</code>, <code>GetDecodedLength(span)</code>, <code>TryGetDecodedLength(span, out int)</code>.</li>
+<li><strong>Validation</strong>: <code>IsValid(span)</code>, <code>IsBase{N}Digit(char)</code>.</li>
+</ul>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="base16.html">Base16 guide</a></strong> — formatting decorations, prefix handling, hex dumps.</li>
+<li><strong><a href="base32.html">Base32 guide</a></strong> — variants and when to pick each; TOTP / Crockford use cases.</li>
+<li><strong><a href="base64.html">Base64 guide</a></strong> — Standard / URL-safe / MIME; line wrapping; JWT.</li>
+<li><strong><a href="base58.html">Base58 guide</a></strong> — leading zeros, big-integer encoding; Bitcoin/IPFS.</li>
+<li><strong><a href="base85.html">Base85 guide</a></strong> — Ascii85 vs Z85 vs Git; the <code>z</code> shortcut; partial-group rules; Git compact and padded modes.</li>
+<li><strong><a href="base45.html">Base45 guide</a></strong> — RFC 9285; the QR-code payload encoding; group packing and strictness.</li>
+<li><strong><a href="base62.html">Base62 guide</a></strong> — GMP-style compact identifiers; leading-zero preservation.</li>
+<li><strong><a href="bech32.html">Bech32 guide</a></strong> — Bech32 / Bech32m; HRP, separator, checksum; 5-bit vs 8-bit data.</li>
+<li><strong><a href="quoted-printable.html">Quoted-Printable guide</a></strong> — MIME body <code>=HH</code> encoding; binary vs text mode; soft wrapping; strict-vs-relaxed decode.</li>
+<li><strong><a href="percent-encoding.html">Percent-encoding guide</a></strong> — RFC 3986 / WHATWG <code>%HH</code> encoding; component modes; form mode; string helpers.</li>
+<li><strong><a href="binary-encodings-interface.html"><code>IBinaryEncoding</code> interface</a></strong> — runtime-selected encoding pattern.</li>
+<li><strong><a href="../../samples/text-encoding.html">Runnable samples</a></strong> — offline sample projects under <code>samples/Text.Encoding/</code>: the catalogue tour, checksummed schemes, the registry, and a custom Base36 codec with contract tests.</li>
+<li><strong><a href="encoding-helpers.html">Encoding helpers and BOM detection</a></strong> — <code>System.Text.Encoding</code> helpers: <code>string</code>↔<code>byte[]</code> conversion, preamble/BOM handling, UTF classification, fallbacks, and chunked transcoding.</li>
+<li><strong><a href="../topics/text-and-serialization.html">Text &amp; Serialization guides</a></strong> — the topic map across Bodu.Text.Encoding, Bodu.Text.Filtering, Bodu.Text.Formats, and the Bencode / TOML / YAML serializers, each with its own complete guide index.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

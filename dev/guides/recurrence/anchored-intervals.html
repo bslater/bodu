@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Anchored intervals | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Anchored intervals | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="anchored-intervals">Anchored intervals</h1>
+
+<p><a class="xref" href="../../api/Bodu.Globalization.Recurrence.AnchoredInterval.html">AnchoredInterval</a> models a schedule that repeats a fixed elapsed time after a caller-supplied instant: the occurrences are <code>anchor + k·interval</code> for <code>k ≥ 1</code>. It is the instant-aligned form — &quot;every four hours after the last completed run&quot;, &quot;ninety minutes after enrolment&quot; — as opposed to the calendar-aligned rule and cron forms. The interval is the whole value; the anchor is passed to every query and never stored.</p>
+<p>For the &quot;which form&quot; decision and the shared due-ness recipe, start at the <a href="index.html">recurrence overview</a>.</p>
+<h2 id="pattern-1--construct-from-a-timespan-or-parse-duration-text">Pattern 1 — construct from a <code>TimeSpan</code> or parse duration text</h2>
+<p>The constructor takes any positive <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.timespan">TimeSpan</a> that is a whole number of seconds. The textual form is the RFC 5545 §3.3.6 duration grammar:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Globalization.Recurrence;
+
+var fourHourly = new AnchoredInterval(TimeSpan.FromHours(4));      // renders &quot;PT4H&quot;
+var ninetyMin  = new AnchoredInterval(TimeSpan.FromMinutes(90));   // renders &quot;PT1H30M&quot;
+var weekly     = new AnchoredInterval(TimeSpan.FromDays(7));       // renders &quot;P1W&quot;
+
+AnchoredInterval parsed = AnchoredInterval.Parse(&quot;P1DT2H30M&quot;);
+TimeSpan span = parsed.Interval;                                    // 1.02:30:00
+
+bool same = AnchoredInterval.Parse(&quot;PT90M&quot;).Equals(ninetyMin);      // true — value equality on the TimeSpan
+bool alsoSame = AnchoredInterval.Parse(&quot;P1W&quot;).Equals(AnchoredInterval.Parse(&quot;P7D&quot;));   // true
+</code></pre>
+<p>A zero or negative <code>TimeSpan</code> throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a>; a value with sub-second ticks throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> (&quot;The interval must be a whole number of seconds; iCalendar durations carry no sub-second precision.&quot;), because the duration text could not round-trip it.</p>
+<h2 id="the-duration-grammar">The duration grammar</h2>
+<p>The parser accepts exactly the positive subset of RFC 5545 <code>dur-value</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Form</th>
+<th>Example</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>P&lt;n&gt;W</code></td>
+<td><code>P2W</code></td>
+<td>weeks — must appear <strong>alone</strong></td>
+</tr>
+<tr>
+<td><code>P&lt;n&gt;D</code></td>
+<td><code>P14D</code></td>
+<td>days</td>
+</tr>
+<tr>
+<td><code>PT&lt;n&gt;H[&lt;n&gt;M][&lt;n&gt;S]</code></td>
+<td><code>PT4H</code>, <code>PT1H30M</code>, <code>PT90M</code>, <code>PT45S</code></td>
+<td>time components, after the <code>T</code> designator</td>
+</tr>
+<tr>
+<td><code>P&lt;n&gt;DT…</code></td>
+<td><code>P1DT2H30M</code></td>
+<td>days then time</td>
+</tr>
+<tr>
+<td><code>+P…</code></td>
+<td><code>+PT1H</code></td>
+<td>an explicit plus sign is accepted</td>
+</tr>
+</tbody>
+</table>
+<p>Rules, each with the message <code>TryParse</code> reports:</p>
+<ul>
+<li>The text must start with <code>P</code> (&quot;An iCalendar duration must begin with the 'P' designator.&quot;), is case-insensitive (<code>pt4h</code> parses), and must contain at least one component (<code>P</code>, <code>PT</code>, and <code>P1DT</code> are rejected).</li>
+<li>Time units must follow <code>T</code>: <code>P1M</code> is rejected with &quot;The time units 'H', 'M', and 'S' must be preceded by the 'T' designator.&quot; — there is no months or years unit, and <code>P1Y</code> fails as an unknown unit (&quot;…the unit must be W, D, H, M, or S.&quot;).</li>
+<li>Components appear at most once, in order — weeks, or days then <code>T</code> then hours, minutes, seconds — so <code>PT4H1D</code> is rejected.</li>
+<li>Weeks cannot be combined: <code>P1W1D</code> fails with &quot;The weeks unit 'W' cannot be combined with any other duration component.&quot;</li>
+<li>Values are unsigned integers (<code>PT1.5H</code> is rejected) and the total must be positive: <code>-PT1H</code>, <code>PT0S</code>, and <code>P0D</code> fail with &quot;The duration must be greater than zero; signed and zero durations are not valid intervals.&quot;</li>
+</ul>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Globalization.Recurrence;
+
+if (!AnchoredInterval.TryParse(&quot;P1W1D&quot;, out AnchoredInterval? interval, out string? failureMessage))
+{
+    Console.WriteLine(failureMessage);
+    // &quot;The weeks unit 'W' cannot be combined with any other duration component.&quot;
+}
+
+// Boolean-only overloads, string and span:
+bool ok1 = AnchoredInterval.TryParse(&quot;PT4H&quot;, out AnchoredInterval? a);
+bool ok2 = AnchoredInterval.TryParse(&quot;PT4H&quot;.AsSpan(), provider: null, out AnchoredInterval? b);
+</code></pre>
+<h2 id="canonical-tostring-form">Canonical <code>ToString</code> form</h2>
+<p><code>ToString()</code> normalises rather than echoing the input: an interval that is an exact multiple of seven days renders in the weeks form, otherwise the days and time components render with zero components omitted. So <code>P14D</code> → <code>P2W</code>, <code>PT90M</code> → <code>PT1H30M</code>, <code>PT36H</code> → <code>P1DT12H</code>, and eight days → <code>P8D</code>. The canonical text re-parses to an equal value. Only the <code>&quot;G&quot;</code> / <code>null</code> specifier is defined on the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iformattable">IFormattable</a> overloads.</p>
+<h2 id="pattern-2--occurrences-and-the-anchor-boundary">Pattern 2 — occurrences and the anchor boundary</h2>
+<p>The anchor itself is <strong>never</strong> an occurrence. <code>GetNextOccurrence(anchor, after)</code> answers the first <code>anchor + k·interval</code> strictly after <code>after</code> (or equal, with <code>inclusive: true</code>); when <code>after</code> precedes the whole series, the first occurrence is returned. <code>GetPreviousOccurrence</code> answers <code>null</code> until the first occurrence has passed:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Globalization.Recurrence;
+
+AnchoredInterval sixHourly = AnchoredInterval.Parse(&quot;PT6H&quot;);
+var anchor = new DateTime(2026, 3, 8, 0, 0, 0);
+
+DateTime? next     = sixHourly.GetNextOccurrence(anchor, anchor);                       // 06:00 — anchor excluded
+DateTime? nextIncl = sixHourly.GetNextOccurrence(anchor, anchor, inclusive: true);      // 06:00 — still not the anchor
+DateTime? early    = sixHourly.GetNextOccurrence(anchor, anchor.AddDays(-3));           // 06:00 — the first occurrence
+
+DateTime? prevAtAnchor = sixHourly.GetPreviousOccurrence(anchor, anchor, inclusive: true);          // null
+DateTime? prevAtFirst  = sixHourly.GetPreviousOccurrence(anchor, anchor.AddHours(6));               // null (exclusive)
+DateTime? prevAtFirstI = sixHourly.GetPreviousOccurrence(anchor, anchor.AddHours(6), inclusive: true); // 06:00
+
+DateTime[] firstFour = sixHourly.GetOccurrences(anchor).Take(4).ToArray();
+// 2026-03-08 06:00, 12:00, 18:00, 2026-03-09 00:00
+
+DateTime[] window = sixHourly.GetOccurrences(anchor, from: anchor.AddHours(12), to: anchor.AddHours(24)).ToArray();
+// 12:00, 18:00, 2026-03-09 00:00 — inclusive at both ends
+</code></pre>
+<p>Every query is O(1) arithmetic — no scanning — and the unbounded enumeration ends at the last representable occurrence; <code>GetNextOccurrence</code> answers <code>null</code> once <code>anchor + (k+1)·interval</code> would exceed <code>DateTime.MaxValue</code>.</p>
+<h2 id="why-the-anchor-is-passed-per-query">Why the anchor is passed per query</h2>
+<p>The interval is <em>configuration</em> (&quot;every six hours&quot;); the anchor is <em>state</em> (&quot;the last completed run finished at 14:32&quot;). Keeping them apart means the same parsed interval serves every job, and the host — which already persists the last-run instant — is the only party that knows the anchor. It also fixes the due-ness rule: because the anchor is not an occurrence, a run that completed at <code>now</code> is not immediately due again, and &quot;is a run due?&quot; stays the one-line comparison every form shares:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Globalization.Recurrence;
+
+AnchoredInterval sixHourly = AnchoredInterval.Parse(&quot;PT6H&quot;);
+var lastCompleted = new DateTime(2026, 3, 8, 0, 0, 0);
+var now = new DateTime(2026, 3, 8, 5, 59, 0);
+
+bool due = lastCompleted &lt; sixHourly.GetPreviousOccurrence(anchor: lastCompleted, before: now, inclusive: true);   // false
+bool dueLater = lastCompleted &lt; sixHourly.GetPreviousOccurrence(lastCompleted, now.AddMinutes(1), inclusive: true); // true
+</code></pre>
+<p>Re-anchoring on each completion turns the interval into a <em>gap</em> schedule (six hours after the previous run finished); keeping a fixed anchor turns it into a <em>cadence</em> (every six hours from the original start, regardless of how long runs take). Both are host decisions the library does not make for you.</p>
+<h2 id="pattern-3--heartbeat-schedules">Pattern 3 — heartbeat schedules</h2>
+<p>A heartbeat anchored on the moment a service came up, evaluated with the host's clock:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Globalization.Recurrence;
+
+AnchoredInterval heartbeat = AnchoredInterval.Parse(&quot;PT30S&quot;);
+DateTimeOffset startedAt = new(2026, 3, 10, 14, 32, 0, TimeSpan.Zero);
+
+DateTimeOffset? NextBeat(DateTimeOffset now) =&gt;
+    heartbeat.GetNextOccurrence(startedAt, now);
+
+DateTimeOffset? first = NextBeat(startedAt);                    // 14:32:30 +00:00
+DateTimeOffset? later = NextBeat(startedAt.AddMinutes(10));     // 14:42:30 +00:00 — no drift, still on the :00/:30 grid
+</code></pre>
+<p>Because the answer is computed from the anchor, not from the previous beat, the grid never drifts even when the host wakes late.</p>
+<h2 id="pattern-4--retry-back-off-windows">Pattern 4 — retry back-off windows</h2>
+<p>Anchor on the failure instant. A fixed interval gives evenly spaced retries; for exponential back-off, parse one interval per attempt and anchor each on the previous attempt:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Globalization.Recurrence;
+
+var failedAt = new DateTime(2026, 3, 10, 14, 32, 0);
+
+// Fixed: three retries two minutes apart.
+DateTime[] fixedRetries = AnchoredInterval.Parse(&quot;PT2M&quot;).GetOccurrences(failedAt).Take(3).ToArray();
+// 14:34, 14:36, 14:38
+
+// Exponential: 1, 2, 4, 8 minutes — each step anchored on the previous attempt.
+string[] ladder = [&quot;PT1M&quot;, &quot;PT2M&quot;, &quot;PT4M&quot;, &quot;PT8M&quot;];
+var attempts = new List&lt;DateTime&gt;();
+DateTime anchor = failedAt;
+
+foreach (string step in ladder)
+{
+    DateTime attempt = AnchoredInterval.Parse(step).GetNextOccurrence(anchor, anchor)!.Value;
+    attempts.Add(attempt);
+    anchor = attempt;
+}
+// 14:33, 14:35, 14:39, 14:47
+</code></pre>
+<h2 id="pattern-5--aligning-to-an-anchor-across-daylight-saving">Pattern 5 — aligning to an anchor across daylight saving</h2>
+<p>An anchored interval is exact elapsed time, so it is immune to daylight-saving changes: <code>PT6H</code> is six hours whatever the local calendar does. The <code>DateTimeOffset</code> overloads compare the anchor and the query instant as absolute instants, so an anchor recorded in UTC composes correctly with a <code>now</code> in any offset, and each answer carries the offset of the instant you asked with:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Globalization.Recurrence;
+
+AnchoredInterval sixHourly = AnchoredInterval.Parse(&quot;PT6H&quot;);
+
+var anchorUtc = new DateTimeOffset(2026, 3, 8, 0, 0, 0, TimeSpan.Zero);                 // US spring-forward day
+var nowSydney = new DateTimeOffset(2026, 3, 8, 14, 0, 0, TimeSpan.FromHours(10));       // = 04:00 UTC
+
+DateTimeOffset? next = sixHourly.GetNextOccurrence(anchorUtc, nowSydney);
+// 2026-03-08 16:00 +10:00  — that is 06:00 UTC, the first occurrence after 04:00 UTC
+
+DateTimeOffset firstLocal = sixHourly.GetOccurrences(new DateTimeOffset(2026, 3, 8, 0, 0, 0, TimeSpan.FromHours(-5))).First();
+// 2026-03-08 06:00 -05:00 — enumeration keeps the anchor's offset
+</code></pre>
+<p>Contrast a cron or rule schedule, which names a <em>wall-clock</em> time and therefore needs the host to decide what &quot;02:00&quot; means on a transition day — see <a href="scheduling-host.html#pattern-4--daylight-saving-and-time-zones-at-the-boundary">Hosting schedules</a>.</p>
+<h2 id="api-summary">API summary</h2>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AnchoredInterval(TimeSpan)</code></td>
+<td>Construct from a positive whole-second span.</td>
+</tr>
+<tr>
+<td><code>Interval</code></td>
+<td>The spacing between occurrences.</td>
+</tr>
+<tr>
+<td><code>Parse(string)</code> / <code>Parse(string, IFormatProvider?)</code> / <code>Parse(ReadOnlySpan&lt;char&gt;, IFormatProvider?)</code></td>
+<td>Parse RFC 5545 duration text; <code>FormatException</code> names the defect.</td>
+</tr>
+<tr>
+<td><code>TryParse(string?, out result)</code> / <code>TryParse(string?, IFormatProvider?, out result)</code> / <code>TryParse(ReadOnlySpan&lt;char&gt;, IFormatProvider?, out result)</code></td>
+<td>Boolean parse.</td>
+</tr>
+<tr>
+<td><code>TryParse(string?, out result, out failureMessage)</code></td>
+<td>Boolean parse that names the defect.</td>
+</tr>
+<tr>
+<td><code>GetNextOccurrence(anchor, after, inclusive = false)</code></td>
+<td>First <code>anchor + k·interval</code> after <code>after</code>, or <code>null</code>; <code>DateTime</code> and <code>DateTimeOffset</code>.</td>
+</tr>
+<tr>
+<td><code>GetPreviousOccurrence(anchor, before, inclusive = false)</code></td>
+<td>Last occurrence before <code>before</code>, or <code>null</code> (never the anchor).</td>
+</tr>
+<tr>
+<td><code>GetOccurrences(anchor)</code> / <code>GetOccurrences(anchor, from, to)</code></td>
+<td>Lazy ascending enumeration.</td>
+</tr>
+<tr>
+<td><code>ToString()</code> / <code>ToString(string?)</code> / <code>ToString(string?, IFormatProvider?)</code></td>
+<td>Canonical duration text (<code>P2W</code>, <code>PT1H30M</code>, …).</td>
+</tr>
+<tr>
+<td><code>Equals</code> / <code>GetHashCode</code></td>
+<td>Value equality on <code>Interval</code>.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="cron.html">Cron expressions</a></strong> and <strong><a href="rrule.html">RFC 5545 recurrence rules</a></strong> — the calendar-aligned forms.</li>
+<li><strong><a href="scheduling-host.html">Hosting schedules</a></strong> — persisting the anchor as the last-run instant and driving all four forms from one loop.</li>
+<li><strong><a href="../../samples/recurrence.html">Runnable samples</a></strong> — <code>Bodu.Globalization.Recurrence.Samples.AnchoredIntervals</code>.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Globalization.Recurrence.html">Bodu.Globalization.Recurrence API reference</a></strong> — <code>AnchoredInterval</code>.</li>
+<li><strong><a href="../topics/globalization-and-calendars.html">Globalization &amp; Calendars guides</a></strong> — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

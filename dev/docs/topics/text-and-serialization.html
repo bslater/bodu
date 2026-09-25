@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Text &amp; Serialization — Overview | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Text &amp; Serialization — Overview | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="text--serialization">Text &amp; Serialization</h1>
+
+<p>The <strong>Text &amp; Serialization</strong> topic groups the packages that move data into and out of textual representations: binary-to-text codecs, structured document formats, and object serializers. The packages are siblings under the <code>Bodu.Text.*</code> prefix but do three deliberately different jobs — knowing which job you have is the entire selection problem, so this page leads with the distinction.</p>
+<h2 id="three-jobs-that-all-sound-like-text">Three jobs that all sound like &quot;text&quot;</h2>
+<table>
+<thead>
+<tr>
+<th>Job</th>
+<th>What it preserves</th>
+<th>Package(s)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Binary-to-text codec</strong> — bytes ⇄ printable text</td>
+<td>The exact byte sequence. No structure is added or interpreted; <code>Encode</code> then <code>Decode</code> returns the identical bytes.</td>
+<td><code>Bodu.Text.Encoding</code> — Base16, Base32, Base58, Base64, Base85, plus Base45, Base62, and Bech32 / Bech32m.</td>
+</tr>
+<tr>
+<td><strong>Document format</strong> — parse, edit, and write structured documents</td>
+<td>The document's structure and (where the format supports it) its trivia — comments, ordering, whitespace — for faithful round-trips.</td>
+<td><code>Bodu.Text.Formats</code> — Delimited (RFC 4180 CSV / TSV), DotEnv, INI; each with a typed value model and streaming readers / writers.</td>
+</tr>
+<tr>
+<td><strong>Object serializer</strong> — POCO ⇄ wire format</td>
+<td>Your object graph. Types, members, and collections are mapped to the format and bound back, <code>System.Text.Json</code>-style.</td>
+<td><code>Bodu.Text.Bencode</code> (BEP 3, binary), <code>Bodu.Text.Toml</code> (TOML v1.0.0 / v1.1.0, text), and <code>Bodu.Text.Yaml</code> (YAML 1.2 core schema, text) — a shared architecture and member shape.</td>
+</tr>
+<tr>
+<td><strong>Text filter</strong> — select values by pattern</td>
+<td>Nothing about the values themselves — it decides only which values pass, via include/exclude glob and regex patterns compiled into one matcher.</td>
+<td><code>Bodu.Text.Filtering</code> — AnyMatch sets or gitignore-style ordered rules, cost-tiered evaluation, built-in match telemetry.</td>
+</tr>
+</tbody>
+</table>
+<p>The boundaries are sharp. Base64 carries <em>any</em> bytes but knows nothing about what they mean; an <code>IniDocument</code> models sections and entries but does not map them onto your types; <code>TomlSerializer</code> maps your types but is not a general-purpose document editor (the DOMs cover that middle ground). When two of these jobs occur together — say, a Base64-encoded blob stored inside a TOML config — you simply compose two packages.</p>
+<h3 id="codecs-bodutextencoding">Codecs: Bodu.Text.Encoding</h3>
+<p><img src="../../images/diagrams/encoding-families.svg" alt="Encoding families — payload expansion at a glance"></p>
+<p>The codec package fills the gaps <code>System.Convert</code> and <code>System.Buffers.Text.Base64</code> leave open: the variants the BCL does not cover (base32hex, Crockford, z-base-32, Bitcoin / Flickr / Ripple Base58, Ascii85, Z85, Base45, Base62, Bech32 / Bech32m) and the practical surfaces around them — lenient parsing (<code>0x</code> prefix tolerance, whitespace stripping, missing-padding acceptance), formatting decoration (case, prefix, byte spacing, line breaks), sizing and validation helpers, and a unified <code>IBinaryEncoding</code> interface so the encoding can be selected at runtime from configuration.</p>
+<h3 id="filters-bodutextfiltering">Filters: Bodu.Text.Filtering</h3>
+<p>The filtering package selects values rather than transforming them: glob (wildcard, character-class, <code>{a,b}</code> alternation) and regex patterns compile once into an immutable <code>TextFilter</code> that classifies every pattern by evaluation cost and runs the cheapest strategies first. It speaks both established dialects — Ant / MSBuild-style include/exclude sets and gitignore-style last-match-wins ordered rules with <code>!</code> negation — parses raw lines with the gitignore file conventions, and reports what matched, what was vetoed, and by which pattern through built-in statistics and an optional per-decision observer.</p>
+<h3 id="document-formats-bodutextformats">Document formats: Bodu.Text.Formats</h3>
+<p>The line-format libraries decode and encode <strong>self-framing</strong> documents — formats whose structure is described inline by the bytes themselves. Each of the three families (Delimited, DotEnv, INI) is a standalone <code>System.Text.Json</code>-shaped library: a forward-only <code>Utf8*Reader</code> / <code>Utf8*Writer</code> token pair, a <code>*Serializer</code> for typed binding, a mutable node DOM, and a read-only document DOM, each raising its own typed <code>*FormatException</code> with the source position attached.</p>
+<h3 id="serializers-bodutextbencode-bodutexttoml-and-bodutextyaml">Serializers: Bodu.Text.Bencode, Bodu.Text.Toml, and Bodu.Text.Yaml</h3>
+<p>The serializers are three libraries shaped after <code>System.Text.Json</code>: Bencode and TOML are member-for-member twins with only the <code>Bencode</code> / <code>Toml</code> prefix changing, and YAML shares the same architecture with a surface tuned to its format. Each layers four tiers over its format — the <code>…Serializer</code> for object mapping, a mutable <code>…Node</code> DOM for editing without a model, a read-only <code>…Document</code> DOM for low-allocation inspection, and the <code>Utf8…Reader</code> / <code>Utf8…Writer</code> ref-struct pair for forward-only token processing. Converters, the attribute family, naming policies, and serialization callbacks customize the mapping; those attributes, policies, and callback interfaces live in the shared <code>Bodu.Text.Serialization</code> package (namespace <a class="xref" href="../../api/Bodu.Text.Serialization.html">Bodu.Text.Serialization</a>), which every serializer and line-format package references.</p>
+<p>One nearby surface is easy to confuse with all three: the <strong><code>Bodu.Text</code> namespace in <code>Bodu.Core</code></strong> provides <em>character</em>-encoding helpers over <code>System.Text.Encoding</code> — BOM detection, preamble handling, span-friendly transcoding and validation. It converts bytes to <em>characters</em>, not bytes to a printable <em>alphabet</em>, and it ships in <code>Bodu.Core</code>, not in any package on this page. See the <a href="../text/index.html">Bodu.Text introduction</a>.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>The packages compose but do not depend on one another. <code>Bodu.Text.Encoding</code> and <code>Bodu.Text.Filtering</code> depend only on <code>Bodu.Core</code>; the line formats and the serializers additionally reference the small shared <code>Bodu.Text.Serialization</code> package for their common attribute / naming-policy / callback vocabulary. Adopting one job never pulls in the machinery of the others.</p>
+</div>
+<h2 id="packages-in-this-topic">Packages in this topic</h2>
+<table>
+<thead>
+<tr>
+<th>Package</th>
+<th>Status</th>
+<th>What it provides</th>
+<th>Docs</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Bodu.Text.Encoding</code></td>
+<td>Stable</td>
+<td>Binary-to-text encodings with span / UTF-8 surfaces, <code>OperationStatus</code> streaming, formatting decorations, lenient parsing, and the runtime-pluggable <code>IBinaryEncoding</code> contract.</td>
+<td><a href="../text-encoding/index.html">Introduction</a></td>
+</tr>
+<tr>
+<td><code>Bodu.Text.Filtering</code></td>
+<td>Preview</td>
+<td>Include/exclude text filtering: glob and regex patterns compiled into a cost-tiered <code>TextFilter</code>, AnyMatch sets or gitignore-style ordered rules, gitignore-convention parsing, and built-in match telemetry.</td>
+<td><a href="../text-filtering/index.html">Introduction</a></td>
+</tr>
+<tr>
+<td><code>Bodu.Text.Formats</code></td>
+<td>Preview</td>
+<td>Self-framing document formats — Delimited (CSV / TSV), DotEnv, INI — each with a forward-only <code>Utf8*Reader</code> / <code>Utf8*Writer</code> pair, a <code>*Serializer</code>, and mutable / read-only DOMs.</td>
+<td><a href="../formats/index.html">Introduction</a></td>
+</tr>
+<tr>
+<td><code>Bodu.Text.Bencode</code></td>
+<td>Stable</td>
+<td>Bencode (BEP 3) serializer shaped after <code>System.Text.Json</code>: <code>BencodeSerializer</code>, mutable and read-only DOMs, and the <code>Utf8BencodeReader</code> / <code>Utf8BencodeWriter</code> ref-struct pair.</td>
+<td><a href="../serialization/index.html">Serializers introduction</a> · <a href="../serialization/bencode/index.html">Bencode</a></td>
+</tr>
+<tr>
+<td><code>Bodu.Text.Toml</code></td>
+<td>Stable</td>
+<td>TOML (v1.0.0 / v1.1.0) serializer with the same member-for-member shape: <code>TomlSerializer</code>, both DOMs, and <code>Utf8TomlReader</code> / <code>Utf8TomlWriter</code>.</td>
+<td><a href="../serialization/index.html">Serializers introduction</a> · <a href="../serialization/toml/index.html">TOML</a></td>
+</tr>
+<tr>
+<td><code>Bodu.Text.Yaml</code></td>
+<td>Preview</td>
+<td>YAML (1.2 core schema) serializer sharing the family architecture with a YAML-tuned surface: <code>YamlSerializer</code>, both DOMs, the <code>Utf8YamlReader</code> / <code>Utf8YamlWriter</code> pair, block and flow collections, anchors and aliases, and multi-document streams.</td>
+<td><a href="../serialization/index.html">Serializers introduction</a> · <a href="../serialization/yaml/index.html">YAML</a></td>
+</tr>
+</tbody>
+</table>
+<p>The authoritative dependency and status rows live in the <a href="../package-matrix.html">package matrix</a>. None of these packages depends on another package in this topic; the formats and serializers share only the <code>Bodu.Text.Serialization</code> vocabulary package.</p>
+<h3 id="namespace-orientation">Namespace orientation</h3>
+<p>The package names and root namespaces line up one-to-one, with the formats and serializers subdividing by concern:</p>
+<table>
+<thead>
+<tr>
+<th>Package</th>
+<th>Namespaces</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Bodu.Text.Encoding</code></td>
+<td><code>Bodu.Text.Encoding</code> — the per-encoding static classes, the option types, and the <code>IBinaryEncoding</code> registry.</td>
+</tr>
+<tr>
+<td><code>Bodu.Text.Filtering</code></td>
+<td><code>Bodu.Text.Filtering</code> — the <code>TextFilter</code> engine, the pattern model, options, results, and the telemetry types.</td>
+</tr>
+<tr>
+<td><code>Bodu.Text.Delimited</code> / <code>Bodu.Text.DotEnv</code> / <code>Bodu.Text.Ini</code></td>
+<td>The standalone line-format libraries (one package per format; <code>Bodu.Text.Formats</code> is the umbrella meta-package over the three).</td>
+</tr>
+<tr>
+<td><code>Bodu.Text.Bencode</code></td>
+<td><code>Bodu.Text.Bencode</code> plus <code>.Reader</code>, <code>.Writer</code>, <code>.Document</code>, <code>.Nodes</code>, and <code>.Serialization</code> — mirroring the <code>System.Text.Json</code> source layout.</td>
+</tr>
+<tr>
+<td><code>Bodu.Text.Toml</code></td>
+<td><code>Bodu.Text.Toml</code> with the same <code>.Reader</code> / <code>.Writer</code> / <code>.Document</code> / <code>.Nodes</code> / <code>.Serialization</code> subdivision.</td>
+</tr>
+<tr>
+<td><code>Bodu.Text.Yaml</code></td>
+<td><code>Bodu.Text.Yaml</code> with the same <code>.Reader</code> / <code>.Writer</code> / <code>.Document</code> / <code>.Nodes</code> / <code>.Serialization</code> subdivision.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="which-package-do-i-need">Which package do I need?</h2>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Reach for</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&quot;I have bytes and need printable text&quot; — hashes as hex, TOTP secrets, JWT segments, Bitcoin addresses, QR payloads</td>
+<td><code>Bodu.Text.Encoding</code></td>
+<td>Pick the family by expansion and alphabet — see the <a href="../text-encoding/index.html">choose-an-encoding table</a>.</td>
+</tr>
+<tr>
+<td>&quot;I select values by pattern&quot; — keep <code>error*</code> lines, drop <code>*debug*</code> noise, honor a gitignore-style rule file</td>
+<td><code>Bodu.Text.Filtering</code></td>
+<td>Compile once, filter bulk lists cheapest-pattern-first; <code>Evaluate</code> reports which pattern decided — see the <a href="../text-filtering/index.html">introduction</a>.</td>
+</tr>
+<tr>
+<td>&quot;I have a CSV / <code>.env</code> / INI file&quot; — parse it, walk a typed model, edit, round-trip</td>
+<td><code>Bodu.Text.Formats</code></td>
+<td>INI preserves comments and ordering on round-trip, DotEnv preserves ordering and the <code>export</code> flag; Delimited streams row by row.</td>
+</tr>
+<tr>
+<td>&quot;I map typed objects to a wire format&quot; — config records, torrent-style payloads</td>
+<td><code>Bodu.Text.Toml</code> / <code>Bodu.Text.Bencode</code> / <code>Bodu.Text.Yaml</code></td>
+<td><code>Serialize</code> / <code>Deserialize&lt;T&gt;</code> with converters, attributes, and naming policies; the three libraries share one architecture.</td>
+</tr>
+<tr>
+<td>&quot;I want to inspect or patch a TOML / Bencode / YAML document without a model&quot;</td>
+<td>The serializers' DOMs</td>
+<td>Mutable <code>…Node</code> tree to edit, read-only <code>…Document</code> to inspect with minimal allocation.</td>
+</tr>
+<tr>
+<td>&quot;I need canonical, byte-identical output&quot; — infohash-style hashing over the serialized form</td>
+<td><code>Bodu.Text.Bencode</code></td>
+<td>The spec mandates ascending bytewise dictionary-key order, and the serializer always emits it.</td>
+</tr>
+<tr>
+<td>&quot;Malformed input is expected; I don't want exceptions on the hot path&quot;</td>
+<td>The codecs and the line formats</td>
+<td><code>Try*</code> overloads and <code>IsValid</code> predicates on the codecs; on the line formats, the <code>*ReaderOptions</code> dialect policies (for example <code>DelimitedMalformedRecordBehavior.SkipRecord</code>) decide whether a bad record throws or is skipped.</td>
+</tr>
+<tr>
+<td>&quot;I need BOM detection or <code>System.Text.Encoding</code> helpers&quot;</td>
+<td>The <code>Bodu.Text</code> namespace in <code>Bodu.Core</code></td>
+<td>Character encodings, not binary-to-text codecs — see <a href="../text/index.html">Bodu.Text</a> and the <a href="core-foundations.html">Core Foundations topic</a>.</td>
+</tr>
+<tr>
+<td>&quot;I need EditorConfig-style configuration layering over INI&quot;</td>
+<td><code>Bodu.Text.Configuration</code></td>
+<td>Carries its own trivia-preserving INI model — see the <a href="configuration.html">Configuration topic</a>.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="install">Install</h2>
+<pre><code class="lang-bash">dotnet add package Bodu.Text.Encoding
+dotnet add package Bodu.Text.Filtering
+dotnet add package Bodu.Text.Formats
+dotnet add package Bodu.Text.Toml
+dotnet add package Bodu.Text.Bencode
+dotnet add package Bodu.Text.Yaml
+</code></pre>
+<h2 id="shared-design-traits">Shared design traits</h2>
+<p>However different the three jobs are, the packages share the suite's design grain, so moving between them costs little:</p>
+<ul>
+<li><strong>Span- and UTF-8-first.</strong> Every package exposes <code>ReadOnlySpan&lt;byte&gt;</code> / <code>ReadOnlySpan&lt;char&gt;</code> overloads alongside <code>string</code> and <code>byte[]</code>; the codecs add <code>OperationStatus</code>-returning streaming methods, and the serializers' readers and writers operate on UTF-8 directly.</li>
+<li><strong><code>Try*</code> alongside throwing entry points.</strong> Codecs (<code>TryDecode</code>, <code>TryGetDecodedLength</code>) and validation predicates let hot paths trade exceptions for <code>bool</code> results; the line formats express tolerance as reader-options policies (field-count, malformed-record, duplicate-key behaviours) rather than <code>Try*</code> overloads.</li>
+<li><strong>Options objects, not parameter sprawl.</strong> Behavior is configured on dedicated types — <code>BaseFormattingOptions</code> / <code>BaseFormatStyles</code> for the codecs, the per-format <code>*ReaderOptions</code> / <code>*WriterOptions</code> (plus <code>IniDocumentOptions</code>) and <code>*SerializerOptions</code> for the formats, and <code>BencodeSerializerOptions</code> / <code>TomlSerializerOptions</code> / <code>YamlSerializerOptions</code> for the serializers.</li>
+<li><strong>Typed failures.</strong> Malformed input surfaces as a precise, format-specific exception type rather than a bare <code>FormatException</code>, with the failure position where the format can supply one (TOML and YAML carry line, column, and offset).</li>
+<li><strong>Streaming where the format allows it.</strong> Delimited rows, the format readers and writers, and Delimited's <code>IAsyncEnumerable&lt;TRecord&gt;</code> serializer pair process input incrementally instead of demanding the whole document in memory; the serializers' <code>Stream</code> overloads (sync and async) are conveniences that buffer the document in full, with only the stream copy asynchronous.</li>
+</ul>
+<h2 id="a-taste-of-each-surface">A taste of each surface</h2>
+<pre><code class="lang-csharp">using Bodu.Text.Encoding;
+using Bodu.Text.Ini;
+using Bodu.Text.Toml;
+
+// 1. Codec — bytes to printable text and back:
+string hex   = Base16.Encode(hash);
+byte[] token = Base64.Decode(segment, Base64Variant.UrlSafe, BaseFormatStyles.AllowMissingPadding);
+
+// 2. Document format — parse, edit, round-trip with comments preserved:
+IniObject config = IniNode.Parse(utf8Source);
+config[&quot;database&quot;].AsObject()[&quot;port&quot;].AsValue().Value = &quot;5433&quot;;
+string updated = config.ToString();
+
+// 3. Serializer — POCO to wire format and back:
+string toml = TomlSerializer.Serialize(new AppSettings { Name = &quot;demo&quot;, Retries = 3 });
+AppSettings roundTripped = TomlSerializer.Deserialize&lt;AppSettings&gt;(toml);
+</code></pre>
+<h2 id="boundaries-with-neighboring-packages">Boundaries with neighboring packages</h2>
+<p>Three nearby surfaces sit just outside this topic, and each boundary is deliberate:</p>
+<ul>
+<li><strong><code>Bodu.Text</code> (in <code>Bodu.Core</code>)</strong> — character-encoding helpers over <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoding">Encoding</a>: BOM detection, preamble handling, span-friendly transcoding and validation. Bytes to <em>characters</em>, not bytes to a printable alphabet. See the <a href="../text/index.html">Bodu.Text introduction</a>.</li>
+<li><strong><code>Bodu.Text.Configuration</code></strong> — EditorConfig-style profile presets, glob-anchored sections, and target-path resolution over its <strong>own</strong> trivia-preserving INI model, independent of <code>Bodu.Text.Ini</code>. When you need INI parsing alone, use <code>Bodu.Text.Ini</code> directly; when you need configuration layering, move up a package. See the <a href="configuration.html">Configuration topic</a>.</li>
+<li><strong>Checksums and digests</strong> — the codecs print hashes; they do not compute them. Hashing lives in the <a href="hashing-and-cryptography.html">Hashing &amp; Cryptography topic</a>.</li>
+</ul>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="text-and-serialization-concepts.html">Topic concepts</a></strong> — codec vs. format vs. serializer, the tier model the serializers share, framing, canonical output, and strict vs. lenient parsing.</li>
+<li><strong><a href="../text-encoding/index.html">Bodu.Text.Encoding introduction</a></strong> — the encoding families, payload expansion, and the shared API shape; <a href="../text-encoding/getting-started.html">getting started</a> for minimal samples.</li>
+<li><strong><a href="../text-filtering/index.html">Bodu.Text.Filtering introduction</a></strong> — the filtering engine, the two evaluation modes, and the glob grammar; <a href="../text-filtering/getting-started.html">getting started</a> for minimal samples.</li>
+<li><strong><a href="../formats/index.html">Bodu.Text.Formats introduction</a></strong> — the three format families and their typed value models; <a href="../formats/getting-started.html">getting started</a> for minimal samples.</li>
+<li><strong><a href="../serialization/index.html">Bodu serializers introduction</a></strong> — the three libraries and the shared tier model, then the per-format intros for <a href="../serialization/bencode/index.html">Bencode</a>, <a href="../serialization/toml/index.html">TOML</a>, and <a href="../serialization/yaml/index.html">YAML</a>, each with its own getting-started.</li>
+<li><strong><a href="../../guides/topics/text-and-serialization.html">Text &amp; Serialization guides</a></strong> — the topic's guide landing page.</li>
+<li><strong><a href="../package-matrix.html">Package matrix</a></strong> — status, dependencies, and install commands for every package.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

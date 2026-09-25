@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Calendar data packs | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Calendar data packs | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="calendar-data-packs">Calendar data packs</h1>
+
+<p>Region-specific notable-date rules ship as separate <strong>companion data assemblies</strong> so national public-holiday data can be re-released independently of <code>Bodu.Globalization.Calendar</code>. The main library embeds only a minimal default rule (New Year's Day) plus the bundled common catalogues (global, religious, and categorical) that the regional packs import from.</p>
+<p>Each pack is a thin static facade: it loads a territory's embedded <code>region-&lt;cc&gt;.xml</code>, resolves its <code>&lt;Imports&gt;</code> against the bundled catalogues, validates, and hands back an immutable <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateResource.html">NotableDateResource</a> — or a <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateService.html">NotableDateService</a> pre-wired over it.</p>
+<h2 id="available-packs">Available packs</h2>
+<p>All five packs ship as <code>Bodu.Globalization.Calendar.&lt;Region&gt;</code> packages — <code>Bodu.Globalization.Calendar.Americas</code>, <code>.AsiaPacific</code>, <code>.Europe</code>, <code>.MiddleEast</code>, <code>.Africa</code> (note: no <code>.Data</code> infix in the package id). Their factory types all live in the <code>Bodu.Globalization.Calendar</code> namespace, and every pack exposes the same shape.</p>
+<table>
+<thead>
+<tr>
+<th>Package</th>
+<th>Type</th>
+<th>Territories</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Bodu.Globalization.Calendar.Americas</strong></td>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.AmericasCalendarData.html">AmericasCalendarData</a></td>
+<td>Argentina (<code>AR</code>), Brazil (<code>BR</code>), Canada (<code>CA</code>), Chile (<code>CL</code>), Colombia (<code>CO</code>), Mexico (<code>MX</code>), Peru (<code>PE</code>), United States (<code>US</code>)</td>
+</tr>
+<tr>
+<td><strong>Bodu.Globalization.Calendar.AsiaPacific</strong></td>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.AsiaPacificCalendarData.html">AsiaPacificCalendarData</a></td>
+<td>Australia (<code>AU</code>), China (<code>CN</code>), Hong Kong (<code>HK</code>), Indonesia (<code>ID</code>), India (<code>IN</code>), Japan (<code>JP</code>), South Korea (<code>KR</code>), Malaysia (<code>MY</code>), New Zealand (<code>NZ</code>), Philippines (<code>PH</code>), Singapore (<code>SG</code>), Thailand (<code>TH</code>), Taiwan (<code>TW</code>), Vietnam (<code>VN</code>)</td>
+</tr>
+<tr>
+<td><strong>Bodu.Globalization.Calendar.Europe</strong></td>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.EuropeCalendarData.html">EuropeCalendarData</a></td>
+<td>28 EU/EEA territories: <code>AT</code>, <code>BE</code>, <code>BG</code>, <code>CY</code>, <code>CZ</code>, <code>DE</code>, <code>DK</code>, <code>EE</code>, <code>ES</code>, <code>FI</code>, <code>FR</code>, <code>GB</code>, <code>GR</code>, <code>HR</code>, <code>HU</code>, <code>IE</code>, <code>IT</code>, <code>LT</code>, <code>LU</code>, <code>LV</code>, <code>MT</code>, <code>NL</code>, <code>PL</code>, <code>PT</code>, <code>RO</code>, <code>SE</code>, <code>SI</code>, <code>SK</code></td>
+</tr>
+<tr>
+<td><strong>Bodu.Globalization.Calendar.MiddleEast</strong></td>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.MiddleEastCalendarData.html">MiddleEastCalendarData</a></td>
+<td>United Arab Emirates (<code>AE</code>), Israel (<code>IL</code>), Jordan (<code>JO</code>), Qatar (<code>QA</code>), Saudi Arabia (<code>SA</code>), Turkey (<code>TR</code>)</td>
+</tr>
+<tr>
+<td><strong>Bodu.Globalization.Calendar.Africa</strong></td>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.AfricaCalendarData.html">AfricaCalendarData</a></td>
+<td>Egypt (<code>EG</code>), Ethiopia (<code>ET</code>), Ghana (<code>GH</code>), Kenya (<code>KE</code>), Morocco (<code>MA</code>), Nigeria (<code>NG</code>), South Africa (<code>ZA</code>)</td>
+</tr>
+</tbody>
+</table>
+<p>Each pack depends on <code>Bodu.Globalization.Calendar</code> and embeds only the <code>region-&lt;cc&gt;.xml</code> files for its territories. National rules are authored at the country level (<code>AU</code>, <code>US</code>, <code>GB</code>); state / province / region variants use the canonical ISO 3166-2 subdivision suffix (<code>AU-NSW</code>, <code>US-CA</code>, <code>GB-SCT</code>). See <a href="territories.html">Territories and regional composition</a> for the parsing, containment, and composition rules that govern how these codes interact at query time.</p>
+<h2 id="install">Install</h2>
+<pre><code class="lang-bash"># Reference the main library for the resolution pipeline:
+dotnet add package Bodu.Globalization.Calendar
+
+# Add one or more data packs depending on the regions you need:
+dotnet add package Bodu.Globalization.Calendar.Americas
+dotnet add package Bodu.Globalization.Calendar.AsiaPacific
+dotnet add package Bodu.Globalization.Calendar.Europe
+dotnet add package Bodu.Globalization.Calendar.MiddleEast
+dotnet add package Bodu.Globalization.Calendar.Africa
+</code></pre>
+<h2 id="the-pack-surface">The pack surface</h2>
+<p>Each <code>&lt;Region&gt;CalendarData</code> type is <code>static</code>, lives in the <code>Bodu.Globalization.Calendar</code> namespace (not a <code>.Data</code> sub-namespace), and exposes exactly three members:</p>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>static IReadOnlyList&lt;string&gt; SupportedCountries { get; }</code></td>
+<td>The ISO 3166-1 alpha-2 country codes the pack carries.</td>
+</tr>
+<tr>
+<td><code>static NotableDateResource LoadResource(string territory)</code></td>
+<td>Load the immutable resource for a country <strong>or one of its subdivisions</strong> (e.g. <code>&quot;US&quot;</code>, <code>&quot;CA-ON&quot;</code>, <code>&quot;AU-WA&quot;</code>, <code>&quot;GB-SCT&quot;</code>). Throws <code>ArgumentException</code> when the country is not in the pack.</td>
+</tr>
+<tr>
+<td><code>static NotableDateService CreateService(string territory)</code></td>
+<td>Equivalent to <code>new NotableDateService(LoadResource(territory))</code> — a ready-to-query service.</td>
+</tr>
+</tbody>
+</table>
+<p>A subdivision argument selects its country's resource; because the full territory string is honoured when you <em>query</em>, national and subdivision rules compose. Passing <code>&quot;AU-WA&quot;</code> to <code>LoadResource</code> loads Australia's resource, and querying <code>&quot;AU-WA&quot;</code> then returns the national <code>AU</code> rules plus the Western Australia (<code>AU-WA</code>) rules.</p>
+<p><code>SupportedCountries</code> lists only the country-level codes the pack ships; subdivisions are not enumerated. Probe it before loading to keep a query inside the pack's coverage:</p>
+<pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
+
+if (AmericasCalendarData.SupportedCountries.Contains(&quot;US&quot;))
+{
+    NotableDateResource us = AmericasCalendarData.LoadResource(&quot;US&quot;);
+}
+
+// Loading a country the pack does not carry throws ArgumentException:
+//   AmericasCalendarData.LoadResource(&quot;FR&quot;);   // → ArgumentException
+</code></pre>
+<p>Each embedded rule set is stored as a <code>region-&lt;cc&gt;.xml</code> document (<code>region-us.xml</code>, <code>region-ca.xml</code>, …); <code>LoadResource</code> resolves its <code>&lt;Imports&gt;</code> against the bundled common catalogues automatically, so you never wire a resolver by hand for a pack territory.</p>
+<h2 id="wire-one-pack-into-a-service">Wire one pack into a service</h2>
+<p>Use <code>CreateService</code> when you only need a single market — it does the load-and-import wiring for you:</p>
+<pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
+
+NotableDateService service = AmericasCalendarData.CreateService(&quot;US&quot;);
+
+// By-year resolution is the NotableDateServiceExtensions.Resolve extension:
+IReadOnlyList&lt;NotableDate&gt; y2026 = service.Resolve(2026, &quot;US&quot;);
+
+foreach (NotableDate date in y2026)
+    Console.WriteLine($&quot;{date.Date:d MMM yyyy}  {date.DisplayName}&quot;);
+</code></pre>
+<p>Query a single day or an arbitrary range with the instance overloads:</p>
+<pre><code class="lang-csharp">IReadOnlyList&lt;NotableDate&gt; july4 = service.Resolve(new DateOnly(2026, 7, 4), &quot;US&quot;);
+// → Independence Day, 4 July 2026
+</code></pre>
+<h2 id="compose-several-territories">Compose several territories</h2>
+<p>A <code>NotableDateService</code> is built over a single resource, so a service from one pack resolves every territory that pack carries. Create one service per pack and route the query to the matching service:</p>
+<pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
+
+NotableDateService us = AmericasCalendarData.CreateService(&quot;US&quot;);
+NotableDateService gb = EuropeCalendarData.CreateService(&quot;GB&quot;);
+NotableDateService au = AsiaPacificCalendarData.CreateService(&quot;AU&quot;);
+
+IReadOnlyList&lt;NotableDate&gt; independenceDay = us.Resolve(new DateOnly(2026, 7, 4),  &quot;US&quot;);
+IReadOnlyList&lt;NotableDate&gt; christmas       = gb.Resolve(new DateOnly(2026, 12, 25), &quot;GB&quot;);
+IReadOnlyList&lt;NotableDate&gt; australiaDay    = au.Resolve(new DateOnly(2026, 1, 26),  &quot;AU&quot;);
+</code></pre>
+<p>If you would rather expose all markets through one <code>INotableDateService</code>, author (or merge) the territories you need into a single document and load that resource — see <a href="rule-authoring.html">Authoring notable date rules</a>.</p>
+<h2 id="load-the-resource-only">Load the resource only</h2>
+<p>When you want the resource alone — to register it through dependency injection, or to compose a service with custom collaborators — call <code>LoadResource</code> instead of <code>CreateService</code>:</p>
+<pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
+
+NotableDateResource au = AsiaPacificCalendarData.LoadResource(&quot;AU-WA&quot;);
+
+// Hand it straight to a service with custom collaborators, or register it through DI.
+NotableDateService service = new NotableDateService(au);
+</code></pre>
+<h2 id="compose-a-pack-resource-with-dependency-injection">Compose a pack resource with dependency injection</h2>
+<p>The <code>Bodu.Globalization.Calendar.DependencyInjection</code> companion registers <a class="xref" href="../../api/Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a> as a singleton over a loaded resource. Pass the pack's <code>LoadResource(...)</code> result straight into <code>AddNotableDateService</code>:</p>
+<pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
+using Microsoft.Extensions.DependencyInjection;
+
+builder.Services.AddNotableDateService(AmericasCalendarData.LoadResource(&quot;US&quot;));
+
+// or a factory, e.g. when the territory is read from configuration:
+builder.Services.AddNotableDateService(sp =&gt;
+    AmericasCalendarData.LoadResource(sp.GetRequiredService&lt;IConfiguration&gt;()[&quot;Calendar:Territory&quot;]!));
+</code></pre>
+<p>See <a href="dependency-injection.html">Calendar dependency injection</a> for the registration overloads, the reloadable workflow, and lifetime semantics.</p>
+<h2 id="algorithm-backed-rules">Algorithm-backed rules</h2>
+<p>Several Asia-Pacific resources resolve through built-in date-calculation algorithms — Lunar New Year and Mid-Autumn Festival (Chinese lunisolar), Vesak and Asalha Puja (lunar), Qingming (solar term), and the Hindu festivals (lunisolar). These keys are part of the base library and are wired automatically by <code>LoadResource</code> / <code>CreateService</code>, so the packs resolve out of the box with no extra registration.</p>
+<p>To extend a pack resource with your own computed date, register a custom <a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithm.html">INotableDateAlgorithm</a> and load your own document that imports the pack concepts and references the new <code>&lt;Algorithm key=&quot;…&quot;&gt;</code>. See <a href="algorithms.html">Date calculation algorithms</a> and <a href="building-the-service.html">Building and extending the service</a>.</p>
+<h2 id="per-pack-reference">Per-pack reference</h2>
+<p>Every factory type lives in the <code>Bodu.Globalization.Calendar</code> namespace — the package and assembly keep the region suffix, but the namespace is flattened to the runtime's domain so a <code>using Bodu.Globalization.Calendar;</code> brings the factory and the service into scope together.</p>
+<h3 id="americas--americascalendardata-americas">Americas — <code>AmericasCalendarData</code> {#americas}</h3>
+<p><strong>Package:</strong> <code>Bodu.Globalization.Calendar.Americas</code>
+<strong>Namespace:</strong> <code>Bodu.Globalization.Calendar</code>
+<strong>Type:</strong> <a class="xref" href="../../api/Bodu.Globalization.Calendar.AmericasCalendarData.html">AmericasCalendarData</a></p>
+<p><code>SupportedCountries</code> = <code>AR</code>, <code>BR</code>, <code>CA</code>, <code>CL</code>, <code>CO</code>, <code>MX</code>, <code>PE</code>, <code>US</code>. National rules cover the federal calendar; subdivision rules (e.g. <code>US-CA</code> for California, <code>CA-ON</code> for Ontario) follow ISO 3166-2 conventions where present in the resource. All dates resolve through built-in strategies (<code>Fixed</code>, <code>DayOfWeekInMonth</code>, Easter via <code>Algorithm</code>), so no custom algorithm registration is required.</p>
+<h3 id="asia-pacific--asiapacificcalendardata-asia-pacific">Asia-Pacific — <code>AsiaPacificCalendarData</code> {#asia-pacific}</h3>
+<p><strong>Package:</strong> <code>Bodu.Globalization.Calendar.AsiaPacific</code>
+<strong>Namespace:</strong> <code>Bodu.Globalization.Calendar</code>
+<strong>Type:</strong> <a class="xref" href="../../api/Bodu.Globalization.Calendar.AsiaPacificCalendarData.html">AsiaPacificCalendarData</a></p>
+<p><code>SupportedCountries</code> = <code>AU</code>, <code>CN</code>, <code>HK</code>, <code>ID</code>, <code>IN</code>, <code>JP</code>, <code>KR</code>, <code>MY</code>, <code>NZ</code>, <code>PH</code>, <code>SG</code>, <code>TH</code>, <code>TW</code>, <code>VN</code>. Many of these resources delegate to the built-in lunar, solar-term, and Hindu-festival algorithms described above; those keys ship with the base library, so the pack resolves without additional setup.</p>
+<h3 id="europe--europecalendardata-europe">Europe — <code>EuropeCalendarData</code> {#europe}</h3>
+<p><strong>Package:</strong> <code>Bodu.Globalization.Calendar.Europe</code>
+<strong>Namespace:</strong> <code>Bodu.Globalization.Calendar</code>
+<strong>Type:</strong> <a class="xref" href="../../api/Bodu.Globalization.Calendar.EuropeCalendarData.html">EuropeCalendarData</a></p>
+<p><code>SupportedCountries</code> = the 28 EU/EEA territories listed above (<code>AT</code>, <code>BE</code>, <code>BG</code>, <code>CY</code>, <code>CZ</code>, <code>DE</code>, <code>DK</code>, <code>EE</code>, <code>ES</code>, <code>FI</code>, <code>FR</code>, <code>GB</code>, <code>GR</code>, <code>HR</code>, <code>HU</code>, <code>IE</code>, <code>IT</code>, <code>LT</code>, <code>LU</code>, <code>LV</code>, <code>MT</code>, <code>NL</code>, <code>PL</code>, <code>PT</code>, <code>RO</code>, <code>SE</code>, <code>SI</code>, <code>SK</code>). National rules typically cover the federal calendar plus the major regional variants (<code>GB-SCT</code>, <code>GB-NIR</code>, <code>DE-BY</code> for Bavaria, …). All dates resolve through built-in strategies (most commonly Gregorian Easter via <code>Algorithm</code>), so no custom algorithm registration is required.</p>
+<h3 id="middle-east--middleeastcalendardata-middle-east">Middle East — <code>MiddleEastCalendarData</code> {#middle-east}</h3>
+<p><strong>Package:</strong> <code>Bodu.Globalization.Calendar.MiddleEast</code>
+<strong>Namespace:</strong> <code>Bodu.Globalization.Calendar</code>
+<strong>Type:</strong> <a class="xref" href="../../api/Bodu.Globalization.Calendar.MiddleEastCalendarData.html">MiddleEastCalendarData</a></p>
+<p><code>SupportedCountries</code> = <code>AE</code>, <code>IL</code>, <code>JO</code>, <code>QA</code>, <code>SA</code>, <code>TR</code>. These resources lean on the non-Gregorian calendar systems and lunar projection: the Gulf states import the Saudi-aligned <code>global-islamic-umm-al-qura</code> catalogue, while Israel resolves the Hebrew-calendar festivals. Several rules carry a Sunday–Thursday (or Saturday–Thursday) working week and weekend-substitution adjustments — query with the matching <a class="xref" href="../../api/Bodu.WeekPattern.html">WeekPattern</a> preset when computing working days. See <a href="non-gregorian-calendars.html">Working with non-Gregorian calendars</a>.</p>
+<h3 id="africa--africacalendardata-africa">Africa — <code>AfricaCalendarData</code> {#africa}</h3>
+<p><strong>Package:</strong> <code>Bodu.Globalization.Calendar.Africa</code>
+<strong>Namespace:</strong> <code>Bodu.Globalization.Calendar</code>
+<strong>Type:</strong> <a class="xref" href="../../api/Bodu.Globalization.Calendar.AfricaCalendarData.html">AfricaCalendarData</a></p>
+<p><code>SupportedCountries</code> = <code>EG</code>, <code>ET</code>, <code>GH</code>, <code>KE</code>, <code>MA</code>, <code>NG</code>, <code>ZA</code>. Coverage mixes Gregorian civil holidays, Western and (for Ethiopia) Orthodox Christian dates via the Easter <code>Algorithm</code> keys, and Islamic dates imported from the tabular <code>global-islamic</code> catalogue. No custom registration is required.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="notable-dates.html">Using NotableDateService</a> — querying patterns, filters, range queries, and overrides.</li>
+<li><a href="territories.html">Territories and regional composition</a> — ISO 3166 codes, subdivision patterns, and the containment rules that drive composed queries.</li>
+<li><a href="dependency-injection.html">Calendar dependency injection</a> — registering a pack resource through <code>IServiceCollection</code>.</li>
+<li><a href="rule-authoring.html">Authoring notable date rules</a> — XML / JSON documents, imports, and overrides.</li>
+<li><a class="xref" href="../../api/Bodu.Globalization.Calendar.html">Bodu.Globalization.Calendar API reference</a> — full type reference.</li>
+<li><strong><a href="../topics/globalization-and-calendars.html">Globalization &amp; Calendars guides</a></strong> — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

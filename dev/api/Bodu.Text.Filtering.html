@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Namespace Bodu.Text.Filtering | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Namespace Bodu.Text.Filtering | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Text.Filtering">
+
+  <h1 id="Bodu_Text_Filtering" data-uid="Bodu.Text.Filtering" class="text-break">Namespace Bodu.Text.Filtering</h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual">
+<p><img src="../images/hero-text-filtering.svg" alt="Bodu.Text.Filtering"></p>
+<h2 id="purpose">Purpose</h2>
+<p><strong>Bodu.Text.Filtering</strong> filters lists of text values through include/exclude pattern sets — glob
+(wildcard) and regular-expression patterns compiled once into an immutable
+<a class="xref" href="Bodu.Text.Filtering.TextFilter.html">TextFilter</a> that classifies every pattern by evaluation cost and runs the
+cheapest strategies first. The design deliberately adopts the models users already know: Ant /
+MSBuild-style unordered include/exclude sets, gitignore-style ordered last-match-wins rules with
+<code>!</code> negation, and <code>globset</code>-style strategy extraction. Built-in telemetry reports what matched,
+what was vetoed, and by which pattern.</p>
+<p>Sibling text libraries cover adjacent jobs: <a class="xref" href="Bodu.Text.Encoding.html">Bodu.Text.Encoding</a> for binary-to-text codecs and
+<a class="xref" href="Bodu.Text.Configuration.html">Bodu.Text.Configuration</a> for configuration documents.</p>
+<h2 id="static-documentation">Static documentation</h2>
+<ul>
+<li><strong><a href="../docs/text-filtering/index.html">Bodu.Text.Filtering introduction</a></strong> — the mental model, evaluation modes, and type map.</li>
+<li><strong><a href="../docs/text-filtering/concepts.html">Bodu.Text.Filtering core concepts</a></strong> — vocabulary: actions, pattern kinds, modes, cost tiers, deciding patterns.</li>
+<li><strong><a href="../docs/text-filtering/getting-started.html">Bodu.Text.Filtering getting started</a></strong> — install and minimal samples.</li>
+<li><strong><a href="../guides/text-filtering/index.html">Bodu.Text.Filtering guides</a></strong> — pattern grammar, evaluation modes, and telemetry deep dives.</li>
+</ul>
+<h2 id="key-types">Key types</h2>
+<ul>
+<li><a class="xref" href="Bodu.Text.Filtering.TextFilter.html">TextFilter</a> — the compiled engine: <code>Build</code> / <code>Parse</code> factories, <code>IsMatch</code>, <code>Evaluate</code>, <code>Filter</code>, statistics, and the observer hook.</li>
+<li><a class="xref" href="Bodu.Text.Filtering.TextFilterBuilder.html">TextFilterBuilder</a> — fluent assembly (<code>AddInclude</code> / <code>AddExclude</code> / <code>AddParsed</code>) in the <code>Microsoft.Extensions.FileSystemGlobbing</code> style.</li>
+<li><a class="xref" href="Bodu.Text.Filtering.TextFilterPattern.html">TextFilterPattern</a> — one immutable rule: pattern text, include/exclude action, wildcard/regex kind, optional case override.</li>
+<li><a class="xref" href="Bodu.Text.Filtering.TextFilterOptions.html">TextFilterOptions</a> — evaluation mode, case default, regex match timeout, opt-in timing capture.</li>
+<li><a class="xref" href="Bodu.Text.Filtering.TextFilterEvaluationMode.html">TextFilterEvaluationMode</a> — <code>AnyMatch</code> sets (Ant / MSBuild) or <code>LastMatchWins</code> ordered rules (gitignore).</li>
+<li><a class="xref" href="Bodu.Text.Filtering.TextFilterResult.html">TextFilterResult</a> / <a class="xref" href="Bodu.Text.Filtering.TextFilterDecision.html">TextFilterDecision</a> — the outcome of one evaluation and the pattern that decided it.</li>
+<li><a class="xref" href="Bodu.Text.Filtering.TextFilterStatistics.html">TextFilterStatistics</a> / <a class="xref" href="Bodu.Text.Filtering.TextFilterPatternStatistics.html">TextFilterPatternStatistics</a> — the counters snapshot: decision buckets, per-pattern hit counts, regex timeouts, optional timing.</li>
+<li><a class="xref" href="Bodu.Text.Filtering.ITextFilterObserver.html">ITextFilterObserver</a> — the per-decision callback hook; a single null check when unattached.</li>
+</ul>
+<h2 id="example">Example</h2>
+<pre><code class="lang-csharp">using Bodu.Text.Filtering;
+
+var filter = TextFilter.Parse(new[]
+{
+    &quot;error*&quot;,        // include everything starting with &quot;error&quot;
+    &quot;warn*&quot;,         // ... or &quot;warn&quot;
+    &quot;!*debug*&quot;,      // but exclude anything containing &quot;debug&quot;
+});
+
+foreach (var line in filter.Filter(lines))
+    Console.WriteLine(line);
+
+var stats = filter.GetStatistics();   // evaluated / accepted / excluded, hits per pattern
+</code></pre>
+<h2 id="notes">Notes</h2>
+<ul>
+<li><strong>Whole-string matching.</strong> Globs match the entire value; use <code>*abc*</code> for contains-style matching. Comparison is ordinal, case-insensitive by default, and overridable per filter and per pattern.</li>
+<li><strong>Cost-tiered evaluation.</strong> At build time each glob is classified — literal, prefix, suffix, contains, general wildcard — and regexes compile preferring the linear-time <code>NonBacktracking</code> engine; groups evaluate cheapest-first, which cannot change the outcome because set matching is an order-independent OR.</li>
+<li><strong>Fail-safe regex timeouts.</strong> A timed-out include does not admit the value; a timed-out exclude still vetoes it — and the event is visible in the statistics and to the observer.</li>
+<li><strong>See also:</strong> the <a href="../docs/text-filtering/index.html">introduction</a> and the <a href="../guides/text-filtering/index.html">guides</a>.</li>
+</ul>
+</div>
+  <div class="markdown level0 remarks"></div>
+    <h3 id="classes">
+Classes
+</h3>
+      <h4><a class="xref" href="Bodu.Text.Filtering.TextFilter.html">TextFilter</a></h4>
+      <section><p>Represents an immutable, compiled include/exclude text filter that evaluates values against a set of wildcard and
+regular-expression patterns, running the cheapest pattern strategies first.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Filtering.TextFilterBuilder.html">TextFilterBuilder</a></h4>
+      <section><p>Provides a fluent builder for assembling the patterns of a <a class="xref" href="Bodu.Text.Filtering.TextFilter.html">TextFilter</a>, in the style of
+<code>Microsoft.Extensions.FileSystemGlobbing</code>'s <code>Matcher</code>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Filtering.TextFilterOptions.html">TextFilterOptions</a></h4>
+      <section><p>Provides configuration for building a <a class="xref" href="Bodu.Text.Filtering.TextFilter.html">TextFilter</a>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Filtering.TextFilterPattern.html">TextFilterPattern</a></h4>
+      <section><p>Represents one immutable filtering rule: a pattern, the action taken when it matches, the syntax the pattern is
+written in, and an optional case-sensitivity override.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Filtering.TextFilterPatternStatistics.html">TextFilterPatternStatistics</a></h4>
+      <section><p>Represents the accumulated statistics of one pattern within a <a class="xref" href="Bodu.Text.Filtering.TextFilterStatistics.html">TextFilterStatistics</a> snapshot.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Filtering.TextFilterStatistics.html">TextFilterStatistics</a></h4>
+      <section><p>Represents an immutable snapshot of a <a class="xref" href="Bodu.Text.Filtering.TextFilter.html">TextFilter</a>'s accumulated evaluation statistics, obtained via
+<a class="xref" href="Bodu.Text.Filtering.TextFilter.GetStatistics.html#Bodu_Text_Filtering_TextFilter_GetStatistics">GetStatistics()</a>.</p>
+</section>
+    <h3 id="structs">
+Structs
+</h3>
+      <h4><a class="xref" href="Bodu.Text.Filtering.TextFilterResult.html">TextFilterResult</a></h4>
+      <section><p>Represents the outcome of evaluating a single value against a <a class="xref" href="Bodu.Text.Filtering.TextFilter.html">TextFilter</a>: the decision reached and
+the pattern that decided it, if any.</p>
+</section>
+    <h3 id="interfaces">
+Interfaces
+</h3>
+      <h4><a class="xref" href="Bodu.Text.Filtering.ITextFilterObserver.html">ITextFilterObserver</a></h4>
+      <section><p>Receives a callback for every value a <a class="xref" href="Bodu.Text.Filtering.TextFilter.html">TextFilter</a> evaluates, carrying the decision reached and the
+pattern that decided it.</p>
+</section>
+    <h3 id="enums">
+Enums
+</h3>
+      <h4><a class="xref" href="Bodu.Text.Filtering.TextFilterAction.html">TextFilterAction</a></h4>
+      <section><p>Specifies whether a <a class="xref" href="Bodu.Text.Filtering.TextFilterPattern.html">TextFilterPattern</a> admits or rejects the values it matches.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Filtering.TextFilterDecision.html">TextFilterDecision</a></h4>
+      <section><p>Identifies the outcome of evaluating a value against a <a class="xref" href="Bodu.Text.Filtering.TextFilter.html">TextFilter</a>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Filtering.TextFilterEvaluationMode.html">TextFilterEvaluationMode</a></h4>
+      <section><p>Specifies how a <a class="xref" href="Bodu.Text.Filtering.TextFilter.html">TextFilter</a> combines its patterns when deciding whether a value is accepted.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Filtering.TextFilterPatternKind.html">TextFilterPatternKind</a></h4>
+      <section><p>Specifies the syntax used to interpret the text of a <a class="xref" href="Bodu.Text.Filtering.TextFilterPattern.html">TextFilterPattern</a>.</p>
+</section>
+
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

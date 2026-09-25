@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Serialization callbacks | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Serialization callbacks | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../../images/favicon.svg">
+      <link rel="stylesheet" href="../../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../../styles/docfx.css">
+      <link rel="stylesheet" href="../../../styles/main.css">
+      <meta property="docfx:navrel" content="../../../toc.html">
+      <meta property="docfx:tocrel" content="../../toc.html">
+    
+    <meta property="docfx:rel" content="../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../../index.html">
+                <img id="logo" class="svg" src="../../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="serialization-callbacks">Serialization callbacks</h1>
+
+<p>The YAML serializer lets a type participate in its own serialization lifecycle by implementing one or more callback interfaces. YAML exposes four hooks — <a class="xref" href="../../../api/Bodu.Text.Serialization.IOnSerializing.html">IOnSerializing</a>, <a class="xref" href="../../../api/Bodu.Text.Serialization.IOnSerialized.html">IOnSerialized</a>, <a class="xref" href="../../../api/Bodu.Text.Serialization.IOnDeserializing.html">IOnDeserializing</a>, and <a class="xref" href="../../../api/Bodu.Text.Serialization.IOnDeserialized.html">IOnDeserialized</a>. The serializer detects the interfaces on the value's type and invokes them at the matching point in the pipeline — no registration or attribute is required. The interfaces live in the shared <a class="xref" href="../../../api/Bodu.Text.Serialization.html">Bodu.Text.Serialization</a> package, so the sibling libraries (<a href="../toml/index.html">Bodu.Text.Toml</a>, <a href="../bencode/index.html">Bodu.Text.Bencode</a>) honor exactly the same four hooks.</p>
+<table>
+<thead>
+<tr>
+<th>Hook</th>
+<th>Runs</th>
+<th>Typical use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>OnSerializing</code></td>
+<td>After a non-null value is selected for writing, before its mapping is opened.</td>
+<td>Stamp or derive state that must appear in the output.</td>
+</tr>
+<tr>
+<td><code>OnSerialized</code></td>
+<td>After the value's mapping has been closed.</td>
+<td>Release or restore state; count or log completed writes.</td>
+</tr>
+<tr>
+<td><code>OnDeserializing</code></td>
+<td>After the instance is constructed, before any member is assigned.</td>
+<td>Establish defaults that survive omitted keys.</td>
+</tr>
+<tr>
+<td><code>OnDeserialized</code></td>
+<td>After every member and any extension data has been assigned.</td>
+<td>Validate or finalize the materialized object.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="pattern-1--apply-defaults-that-survive-omitted-keys">Pattern 1 — Apply defaults that survive omitted keys</h2>
+<p>Member initializers run at construction, but a key present in the input then overwrites them — there is no way to distinguish &quot;key absent&quot; from &quot;key set to the initializer value&quot; after the fact. <code>OnDeserializing</code> runs after construction and <em>before</em> member assignment, so a value it assigns persists exactly when the input omits the key:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">public sealed class ServerConfig : IOnDeserializing
+{
+    public int Port { get; set; }
+
+    void IOnDeserializing.OnDeserializing() =&gt;
+        Port = 8080;
+}
+</code></pre>
+<pre><code class="lang-csharp">YamlSerializer.Deserialize&lt;ServerConfig&gt;(&quot;{}&quot;)!.Port           // 8080 — key omitted, default survives
+YamlSerializer.Deserialize&lt;ServerConfig&gt;(&quot;Port: 9090&quot;)!.Port   // 9090 — key present, default overwritten
+</code></pre>
+<div class="NOTE">
+<h5>Note</h5>
+<p>An <em>empty</em> YAML stream has no document, so <code>YamlSerializer.Deserialize&lt;ServerConfig&gt;(&quot;&quot;)</code> returns <code>null</code> without constructing anything — no callback fires. The empty flow mapping <code>{}</code> is the YAML spelling of &quot;a document with every key omitted&quot;, which is why the sample uses it.</p>
+</div>
+<p>For a type built through a parameterized constructor the callback necessarily runs after the constructor has consumed its bound arguments — the instance does not exist any earlier.</p>
+<h2 id="pattern-2--validate-after-deserialization">Pattern 2 — Validate after deserialization</h2>
+<p><code>OnDeserialized</code> is the last step of deserialization for the instance, so it observes the fully materialized object — including required members, extension data, and populated collections. Throwing from it fails the deserialization, and the exception propagates as thrown:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">public sealed class ServerConfig : IOnDeserialized
+{
+    public int Port { get; set; }
+
+    void IOnDeserialized.OnDeserialized()
+    {
+        if (Port is &lt; 1 or &gt; 65535)
+            throw new InvalidOperationException(&quot;Port is out of range.&quot;);
+    }
+}
+</code></pre>
+<pre><code class="lang-csharp">YamlSerializer.Deserialize&lt;ServerConfig&gt;(&quot;Port: 70000&quot;);
+// → throws InvalidOperationException: Port is out of range.
+</code></pre>
+<p>This complements <code>[Required]</code> (which checks presence, not validity): the attribute rejects an absent key, the callback rejects a present-but-invalid value. Pattern 5 shows the idiomatic choice of exception type.</p>
+<h2 id="pattern-3--derive-state-before-serialization">Pattern 3 — Derive state before serialization</h2>
+<p><code>OnSerializing</code> runs before the value's mapping is opened, so any mutation it performs is reflected in the emitted output. Use it to stamp timestamps, recompute checksums, or normalize state at the moment of writing:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">public sealed class Snapshot : IOnSerializing
+{
+    public DateTime SavedAt { get; set; }
+
+    void IOnSerializing.OnSerializing() =&gt;
+        SavedAt = DateTime.UtcNow;
+}
+</code></pre>
+<pre><code class="lang-csharp">YamlSerializer.Serialize(new Snapshot());
+// SavedAt: 2026-09-09T06:20:12.9773368Z
+</code></pre>
+<h2 id="pattern-4--observe-a-completed-write">Pattern 4 — Observe a completed write</h2>
+<p><code>OnSerialized</code> runs after the value's mapping has been closed: it observes the completed write rather than influencing the output. Use it to restore state changed by <code>OnSerializing</code>, or to track writes:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">public sealed class Snapshot : IOnSerialized
+{
+    [Ignore]
+    public int WriteCount { get; private set; }
+
+    void IOnSerialized.OnSerialized() =&gt;
+        WriteCount++;
+}
+</code></pre>
+<pre><code class="lang-csharp">var snapshot = new Snapshot();
+YamlSerializer.Serialize(snapshot);
+YamlSerializer.Serialize(snapshot);
+// snapshot.WriteCount → 2
+</code></pre>
+<h2 id="pattern-5--end-to-end-a-self-describing-validated-manifest">Pattern 5 — End to end: a self-describing, validated manifest</h2>
+<p>The hooks combine naturally: <code>OnSerializing</code> keeps a computed member fresh at the moment of writing, and <code>OnDeserialized</code> rejects a document where the same invariant does not hold. Throw the format's serialization exception (<a class="xref" href="../../../api/Bodu.Text.Yaml.YamlSerializationException.html">YamlSerializationException</a>) so callers handle validation failures in the same catch clause as every other binding error:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Text.Serialization;
+using Bodu.Text.Yaml;
+
+public sealed class Manifest : IOnSerializing, IOnDeserialized
+{
+    public List&lt;string&gt; Files { get; set; } = [];
+
+    public int FileCount { get; set; }
+
+    void IOnSerializing.OnSerializing() =&gt;
+        FileCount = Files.Count;   // refreshed on every write — never stale
+
+    void IOnDeserialized.OnDeserialized()
+    {
+        if (FileCount != Files.Count)
+            throw new YamlSerializationException(&quot;FileCount does not match the number of entries in Files.&quot;);
+    }
+}
+</code></pre>
+<p>Serializing recomputes the count before the members are written:</p>
+<pre><code class="lang-csharp">string text = YamlSerializer.Serialize(new Manifest { Files = [&quot;a.txt&quot;, &quot;b.txt&quot;, &quot;c.txt&quot;] });
+// → Files:
+//     - a.txt
+//     - b.txt
+//     - c.txt
+//   FileCount: 3
+</code></pre>
+<p>Deserializing validates the fully materialized instance — a document whose count disagrees with its list fails, and a consistent one binds:</p>
+<pre><code class="lang-csharp">YamlSerializer.Deserialize&lt;Manifest&gt;(&quot;FileCount: 2&quot;);
+// → throws YamlSerializationException: FileCount does not match the number of entries in Files.
+
+Manifest ok = YamlSerializer.Deserialize&lt;Manifest&gt;(&quot;&quot;&quot;
+    Files: [x.txt]
+    FileCount: 1
+    &quot;&quot;&quot;)!;
+// ok.FileCount → 1
+</code></pre>
+<h2 id="invocation-order">Invocation order</h2>
+<p>Where each hook sits in the pipeline, relative to the converter work the serializer performs for the members:</p>
+<table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>Deserialization</th>
+<th>Serialization</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Member values are read from the composed document, each through its member converter.</td>
+<td>A non-null value is selected for writing; a derived instance in a base-typed member is redirected to its runtime type's converter first.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Required members are checked; the instance is constructed (parameterless or the bound parameterized constructor).</td>
+<td>The value is entered into the reference-cycle tracker.</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong><code>OnDeserializing</code></strong> fires — after construction, before any member is assigned.</td>
+<td><strong><code>OnSerializing</code></strong> fires.</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Settable members are assigned from the values read in phase 1.</td>
+<td>The mapping is opened.</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Extension data is populated.</td>
+<td>Members are written, each through its member converter; extension data follows.</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong><code>OnDeserialized</code></strong> fires on the fully materialized instance.</td>
+<td>The mapping is closed.</td>
+</tr>
+<tr>
+<td>7</td>
+<td></td>
+<td><strong><code>OnSerialized</code></strong> fires.</td>
+</tr>
+</tbody>
+</table>
+<p>Four consequences are worth noting.</p>
+<ul>
+<li><strong>The reader is buffered.</strong> <code>Utf8YamlReader</code> parses the whole stream into a composed tree — anchors, aliases, and merge keys resolved — before the first token is handed to a converter. A syntactically malformed document therefore raises <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlFormatException.html">YamlFormatException</a> before any converter or callback runs, and a callback never observes a partially parsed document. On read, the member <em>converters</em> also run before <code>OnDeserializing</code> (phase 1), so the hook cannot influence how values are parsed — only what happens to the instance before they are assigned.</li>
+<li><strong><code>OnSerializing</code> runs before the mapping is opened</strong>, so mutations it makes are always reflected in the output.</li>
+<li><strong><code>OnSerialized</code> is not in a <code>finally</code> block.</strong> The object converter fires it as the last statement of the successful write path. When a write fails part-way — a member converter throws, or the reference tracker detects a cycle (<code>YamlSerializationException</code>: <em>A reference cycle was detected while serializing an instance of type '…'; YAML cannot represent an object cycle.</em>) — <code>OnSerializing</code> has already fired but <code>OnSerialized</code> never does. Do not rely on the pair for resource cleanup; use it for state that only a completed write should update.</li>
+<li><strong>Runtime-type dispatch happens before the hooks.</strong> A <code>Circle</code> held in a <code>Shape</code>-typed member serializes through <code>Circle</code>'s object converter, so callbacks declared on the derived type fire — exactly as they would for a member declared as <code>Circle</code>.</li>
+</ul>
+<h2 id="interplay-with-custom-converters">Interplay with custom converters</h2>
+<p>The four hooks are invoked by the object-mapping converter — the catch-all that writes a plain class or struct as a mapping. A type claimed by a <em>custom</em> converter (via <code>[Converter]</code> or <code>options.Converters</code>) bypasses that path entirely: the serializer hands the value to your converter and never enters the member-mapping phase, so <strong>none of the callbacks fire for that type, even when it implements the interfaces</strong>. If a converter-handled type needs lifecycle behavior, perform it inside the converter's <code>Read</code> / <code>Write</code>.</p>
+<p>Member-level converters and callbacks compose, however: a callback-bearing type whose <em>members</em> use custom converters still fires all four hooks — the custom converters simply do the per-member reading and writing in phases 1 and 5 above.</p>
+<h2 id="scope-and-ordering">Scope and ordering</h2>
+<ul>
+<li>The callbacks apply to values written as mappings through the object mapping — the path a plain class or struct takes. A value claimed by a scalar converter has no member-writing phase and no callbacks.</li>
+<li>They fire for nested objects too, innermost completing first on write and on read. Serializing an <code>outer</code> node whose <code>Next</code> member holds an <code>inner</code> node runs <code>OnSerialized(inner)</code> before <code>OnSerialized(outer)</code>.</li>
+<li>Within one instance the order is always construct → <code>OnDeserializing</code> → member assignment → <code>OnDeserialized</code>, and <code>OnSerializing</code> → member writing → <code>OnSerialized</code>.</li>
+<li>The hooks pair naturally: state established in <code>OnSerializing</code> can be torn down in <code>OnSerialized</code> (on a successful write), and defaults set in <code>OnDeserializing</code> can be validated in <code>OnDeserialized</code>.</li>
+</ul>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="attributes.html">Mapping attributes</a> — <code>[Required]</code> and friends; declarative presence checks that the callbacks complement with value validation.</li>
+<li><a href="converters.html">Writing converters</a> — the customization seam that <em>replaces</em> the object mapping (and with it, the callbacks) for a type.</li>
+<li><a href="polymorphic-converters.html">Polymorphic converters</a> — the factory pattern for members declared as a base type or interface.</li>
+<li><a href="using.html">Using YAML</a> — the format walk-through, including the error-handling pattern that catches the exception thrown from <code>OnDeserialized</code>.</li>
+<li><a href="../../../docs/serialization/yaml/concepts.html">Core concepts</a> — where the callbacks sit in the family vocabulary; the shared <a href="../../../docs/serialization/core/concepts.html#callback-order">callback order</a> table.</li>
+<li>The sibling guides — <a href="../toml/callbacks.html">TOML callbacks</a> and <a href="../bencode/callbacks.html">Bencode callbacks</a> — for the same hooks against a token-strict format.</li>
+<li>API reference — <a class="xref" href="../../../api/Bodu.Text.Serialization.IOnSerializing.html">IOnSerializing</a>, <a class="xref" href="../../../api/Bodu.Text.Serialization.IOnSerialized.html">IOnSerialized</a>, <a class="xref" href="../../../api/Bodu.Text.Serialization.IOnDeserializing.html">IOnDeserializing</a>, <a class="xref" href="../../../api/Bodu.Text.Serialization.IOnDeserialized.html">IOnDeserialized</a>.</li>
+<li><a href="../index.html">Bodu serializer guides</a> and the <a href="../../topics/text-and-serialization.html">Text &amp; Serialization guides</a>.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../styles/main.js"></script>
+  </body>
+</html>

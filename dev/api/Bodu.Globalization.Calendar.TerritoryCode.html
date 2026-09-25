@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Struct TerritoryCode | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Struct TerritoryCode | BODU ">
+    
+    <meta name="description" content="Represents a validated territory code composed of an ISO 3166-1 alpha-2 country and an optional subdivision (for example AU or AU-NSW), with parent/child containment semantics matching the resolution engine.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Globalization.Calendar.TerritoryCode">
+
+
+
+  <h1 id="Bodu_Globalization_Calendar_TerritoryCode" data-uid="Bodu.Globalization.Calendar.TerritoryCode" class="text-break">Struct TerritoryCode</h1>
+  <div class="markdown level0 summary"><p>Represents a validated territory code composed of an ISO 3166-1 alpha-2 country and an optional subdivision (for
+example <code>AU</code> or <code>AU-NSW</code>), with parent/child containment semantics matching the resolution engine.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="implements">
+    <h5>Implements</h5>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="Bodu.Globalization.Calendar.TerritoryCode.html">TerritoryCode</a>&gt;</div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Globalization.html">Globalization</a>.<a class="xref" href="Bodu.Globalization.Calendar.html">Calendar</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Globalization.Calendar.dll</h6>
+  <h5 id="Bodu_Globalization_Calendar_TerritoryCode_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly struct TerritoryCode : IEquatable&lt;TerritoryCode&gt;</code></pre>
+  </div>
+  <h5 id="Bodu_Globalization_Calendar_TerritoryCode_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+The engine accepts territories as plain strings; this value type is an opt-in convenience that parses, normalizes,
+and decomposes a code, and interoperates with the string surface through an implicit conversion to its canonical
+form. A country-only code is a parent of every subdivision sharing its country: <code>AU</code> contains <code>AU-NSW</code>,
+mirroring how a subnational query matches a rule scoped to its parent territory.
+</p>
+<p>
+The default value is empty (<a class="xref" href="Bodu.Globalization.Calendar.TerritoryCode.IsEmpty.html#Bodu_Globalization_Calendar_TerritoryCode_IsEmpty">IsEmpty</a> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>); it parses no code, contains nothing,
+and renders as the empty string.
+</p>
+</div>
+  <h5 id="Bodu_Globalization_Calendar_TerritoryCode_examples"><strong>Examples</strong></h5>
+  <pre><code class="lang-csharp">TerritoryCode nsw = TerritoryCode.Parse("AU-NSW");
+TerritoryCode au = nsw.Parent;          // AU
+bool contains = au.Contains(nsw);        // true — a country contains its subdivisions
+
+// The implicit string conversion feeds the resolution surface directly.
+IReadOnlyList&lt;NotableDate&gt; dates = service.Resolve(2026, nsw);
+
+// Lenient parsing for untrusted input.
+if (TerritoryCode.TryParse(userInput, out TerritoryCode code))
+    dates = service.Resolve(2026, code);</code></pre>
+
+  <h3 id="properties">Properties
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_TerritoryCode_Country" data-uid="Bodu.Globalization.Calendar.TerritoryCode.Country">
+          <a class="xref" href="Bodu.Globalization.Calendar.TerritoryCode.Country.html#Bodu_Globalization_Calendar_TerritoryCode_Country">Country</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the country part of the code.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_TerritoryCode_IsEmpty" data-uid="Bodu.Globalization.Calendar.TerritoryCode.IsEmpty">
+          <a class="xref" href="Bodu.Globalization.Calendar.TerritoryCode.IsEmpty.html#Bodu_Globalization_Calendar_TerritoryCode_IsEmpty">IsEmpty</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a value indicating whether this is the default (empty) code.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_TerritoryCode_IsSubdivision" data-uid="Bodu.Globalization.Calendar.TerritoryCode.IsSubdivision">
+          <a class="xref" href="Bodu.Globalization.Calendar.TerritoryCode.IsSubdivision.html#Bodu_Globalization_Calendar_TerritoryCode_IsSubdivision">IsSubdivision</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a value indicating whether the code names a subdivision rather than a bare country.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_TerritoryCode_Parent" data-uid="Bodu.Globalization.Calendar.TerritoryCode.Parent">
+          <a class="xref" href="Bodu.Globalization.Calendar.TerritoryCode.Parent.html#Bodu_Globalization_Calendar_TerritoryCode_Parent">Parent</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the parent country code for a subdivision.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_TerritoryCode_Subdivision" data-uid="Bodu.Globalization.Calendar.TerritoryCode.Subdivision">
+          <a class="xref" href="Bodu.Globalization.Calendar.TerritoryCode.Subdivision.html#Bodu_Globalization_Calendar_TerritoryCode_Subdivision">Subdivision</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the subdivision part of the code.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_TerritoryCode_Contains_Bodu_Globalization_Calendar_TerritoryCode_" data-uid="Bodu.Globalization.Calendar.TerritoryCode.Contains(Bodu.Globalization.Calendar.TerritoryCode)">
+          <a class="xref" href="Bodu.Globalization.Calendar.TerritoryCode.Contains.html#Bodu_Globalization_Calendar_TerritoryCode_Contains_Bodu_Globalization_Calendar_TerritoryCode_">Contains(TerritoryCode)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether this code is, or is the parent of, the supplied code.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_TerritoryCode_Equals_Bodu_Globalization_Calendar_TerritoryCode_" data-uid="Bodu.Globalization.Calendar.TerritoryCode.Equals(Bodu.Globalization.Calendar.TerritoryCode)">
+          <a class="xref" href="Bodu.Globalization.Calendar.TerritoryCode.Equals.html#Bodu_Globalization_Calendar_TerritoryCode_Equals_Bodu_Globalization_Calendar_TerritoryCode_">Equals(TerritoryCode)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Indicates whether the current object is equal to another object of the same type.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_TerritoryCode_Equals_System_Object_" data-uid="Bodu.Globalization.Calendar.TerritoryCode.Equals(System.Object)">
+          <a class="xref" href="Bodu.Globalization.Calendar.TerritoryCode.Equals.html#Bodu_Globalization_Calendar_TerritoryCode_Equals_System_Object_">Equals(object?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Indicates whether this instance and a specified object are equal.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_TerritoryCode_GetHashCode" data-uid="Bodu.Globalization.Calendar.TerritoryCode.GetHashCode">
+          <a class="xref" href="Bodu.Globalization.Calendar.TerritoryCode.GetHashCode.html#Bodu_Globalization_Calendar_TerritoryCode_GetHashCode">GetHashCode()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the hash code for this instance.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_TerritoryCode_Parse_System_String_" data-uid="Bodu.Globalization.Calendar.TerritoryCode.Parse(System.String)">
+          <a class="xref" href="Bodu.Globalization.Calendar.TerritoryCode.Parse.html#Bodu_Globalization_Calendar_TerritoryCode_Parse_System_String_">Parse(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Parses a territory code, throwing when it is malformed.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_TerritoryCode_ParseList_System_String_" data-uid="Bodu.Globalization.Calendar.TerritoryCode.ParseList(System.String)">
+          <a class="xref" href="Bodu.Globalization.Calendar.TerritoryCode.ParseList.html#Bodu_Globalization_Calendar_TerritoryCode_ParseList_System_String_">ParseList(string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Parses a comma-separated list of territory codes.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_TerritoryCode_ToString" data-uid="Bodu.Globalization.Calendar.TerritoryCode.ToString">
+          <a class="xref" href="Bodu.Globalization.Calendar.TerritoryCode.ToString.html#Bodu_Globalization_Calendar_TerritoryCode_ToString">ToString()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the canonical string form of the code.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_TerritoryCode_TryParse_System_String_Bodu_Globalization_Calendar_TerritoryCode__" data-uid="Bodu.Globalization.Calendar.TerritoryCode.TryParse(System.String,Bodu.Globalization.Calendar.TerritoryCode@)">
+          <a class="xref" href="Bodu.Globalization.Calendar.TerritoryCode.TryParse.html#Bodu_Globalization_Calendar_TerritoryCode_TryParse_System_String_Bodu_Globalization_Calendar_TerritoryCode__">TryParse(string?, out TerritoryCode)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to parse a territory code without throwing.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="operators">Operators
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_TerritoryCode_op_Equality_Bodu_Globalization_Calendar_TerritoryCode_Bodu_Globalization_Calendar_TerritoryCode_" data-uid="Bodu.Globalization.Calendar.TerritoryCode.op_Equality(Bodu.Globalization.Calendar.TerritoryCode,Bodu.Globalization.Calendar.TerritoryCode)">
+          <a class="xref" href="Bodu.Globalization.Calendar.TerritoryCode.op_Equality.html#Bodu_Globalization_Calendar_TerritoryCode_op_Equality_Bodu_Globalization_Calendar_TerritoryCode_Bodu_Globalization_Calendar_TerritoryCode_">operator ==(TerritoryCode, TerritoryCode)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether two codes are equal.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_TerritoryCode_op_Explicit_System_String__Bodu_Globalization_Calendar_TerritoryCode" data-uid="Bodu.Globalization.Calendar.TerritoryCode.op_Explicit(System.String)~Bodu.Globalization.Calendar.TerritoryCode">
+          <a class="xref" href="Bodu.Globalization.Calendar.TerritoryCode.op_Explicit.html#Bodu_Globalization_Calendar_TerritoryCode_op_Explicit_System_String__Bodu_Globalization_Calendar_TerritoryCode">explicit operator TerritoryCode(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Converts a string to a <a class="xref" href="Bodu.Globalization.Calendar.TerritoryCode.html">TerritoryCode</a>, throwing when the string is not a valid code.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_TerritoryCode_op_Implicit_Bodu_Globalization_Calendar_TerritoryCode__System_String" data-uid="Bodu.Globalization.Calendar.TerritoryCode.op_Implicit(Bodu.Globalization.Calendar.TerritoryCode)~System.String">
+          <a class="xref" href="Bodu.Globalization.Calendar.TerritoryCode.op_Implicit.html#Bodu_Globalization_Calendar_TerritoryCode_op_Implicit_Bodu_Globalization_Calendar_TerritoryCode__System_String">implicit operator string(TerritoryCode)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Converts a <a class="xref" href="Bodu.Globalization.Calendar.TerritoryCode.html">TerritoryCode</a> to its canonical string form.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_TerritoryCode_op_Inequality_Bodu_Globalization_Calendar_TerritoryCode_Bodu_Globalization_Calendar_TerritoryCode_" data-uid="Bodu.Globalization.Calendar.TerritoryCode.op_Inequality(Bodu.Globalization.Calendar.TerritoryCode,Bodu.Globalization.Calendar.TerritoryCode)">
+          <a class="xref" href="Bodu.Globalization.Calendar.TerritoryCode.op_Inequality.html#Bodu_Globalization_Calendar_TerritoryCode_op_Inequality_Bodu_Globalization_Calendar_TerritoryCode_Bodu_Globalization_Calendar_TerritoryCode_">operator !=(TerritoryCode, TerritoryCode)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether two codes are not equal.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Clamp.html#Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.Clamp&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsBetween.html#Bodu_Extensions_ComparableExtensions_IsBetween__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsBetween&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThan.html#Bodu_Extensions_ComparableExtensions_IsGreaterThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThan.html#Bodu_Extensions_ComparableExtensions_IsLessThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsOutside.html#Bodu_Extensions_ComparableExtensions_IsOutside__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsOutside&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <h3 id="seealso">See Also</h3>
+  <div class="seealso">
+      <div><a class="xref" href="Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a></div>
+      <div><span><a href="../guides/calendar/territories.html">Territories and regional
+     composition (guide)</a></span></div>
+  </div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

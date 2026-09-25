@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Using Base45 | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Using Base45 | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="using-base45">Using Base45</h1>
+
+<p><code>Base45</code> implements the encoding defined by <a href="https://www.rfc-editor.org/rfc/rfc9285">RFC 9285</a> — the compact
+alphanumeric format designed to carry binary data inside a QR code's <strong>Alphanumeric mode</strong>. Its best-known deployment
+is the EU Digital COVID Certificate (the HCERT payload), but it suits any scenario where bytes must travel through a
+QR code's restricted 45-character symbol set with the smallest possible footprint.</p>
+<p>Unlike the bit-stream encodings, Base45 packs <strong>two input bytes into three output characters</strong> (a trailing single
+byte becomes two characters). A 16-bit group <code>n = a·256 + b</code> is written as three base-45 digits, least-significant
+first: <code>c = n % 45</code>, <code>d = (n / 45) % 45</code>, <code>e = n / 2025</code>.</p>
+<pre><code>input bytes        : 41 42          (&quot;AB&quot;)
+                     └── 0x4142 = 16706 ──┐
+                       16706 = 11 + 11·45 + 8·2025
+encoded text       : B  B  8        (c=11 → 'B', d=11 → 'B', e=8 → '8'; least-significant first)
+</code></pre>
+<p>The alphabet is 45 characters: the digits <code>0-9</code>, the upper-case letters <code>A-Z</code>, and the nine symbols
+<code>space $ % * + - . / :</code>.</p>
+<h2 id="quick-reference">Quick reference</h2>
+<pre><code class="lang-csharp">using Bodu.Text.Encoding;
+
+// RFC 9285 worked examples
+Base45.Encode(&quot;AB&quot;u8.ToArray());        // &quot;BB8&quot;
+Base45.Encode(&quot;Hello!!&quot;u8.ToArray());   // &quot;%69 VD92EX0&quot;
+Base45.Encode(&quot;base-45&quot;u8.ToArray());   // &quot;UJCLQE7W581&quot;
+
+byte[] back = Base45.Decode(&quot;%69 VD92EX0&quot;);   // &quot;Hello!!&quot;
+</code></pre>
+<h2 id="why-base45-for-qr-codes">Why Base45 for QR codes</h2>
+<p>A QR code in Alphanumeric mode stores 11 bits per two characters (5.5 bits/char) drawn from a fixed 45-symbol set.
+Encoding binary as Base64 forces the QR code into the far less dense Byte mode; Base45 keeps it in Alphanumeric mode,
+producing a meaningfully smaller symbol. The 50 % size overhead of Base45 itself is more than repaid by the denser QR
+encoding it unlocks.</p>
+<h2 id="space-is-a-data-character">Space is a data character</h2>
+<p>The space character is part of the Base45 alphabet, so it carries data — it is <strong>not</strong> ignorable whitespace. The
+<code>IgnoreWhitespace</code> style strips only tab, carriage return, and line feed; it never strips spaces:</p>
+<pre><code class="lang-csharp">Base45.Decode(&quot;%69 VD92EX0&quot;);                               // valid — the space is data
+Base45.Decode(&quot;%69 VD9\n2EX0&quot;, BaseFormatStyles.IgnoreWhitespace);  // newline stripped, then decoded
+</code></pre>
+<h2 id="strictness">Strictness</h2>
+<p>Base45 is <strong>strict</strong> per RFC 9285. The decoder rejects:</p>
+<ul>
+<li>characters outside the 45-symbol alphabet;</li>
+<li>a final group of a single character (1, 4, 7, … characters — only 2-character and 3-character terminal groups are legal);</li>
+<li>a three-character group whose value exceeds <code>0xFFFF</code> (would not fit in two bytes);</li>
+<li>a two-character group whose value exceeds <code>0xFF</code>.</li>
+</ul>
+<pre><code class="lang-csharp">Base45.Decode(&quot;GGW&quot;);   // FormatException — 0x10000, out of 16-bit range
+Base45.Decode(&quot;0&quot;);     // FormatException — illegal single-character terminal group
+</code></pre>
+<p><code>Decode</code> throws <code>FormatException</code> on any of these; <code>TryDecode</code> returns <code>false</code> instead.</p>
+<h2 id="span-path-and-sizing">Span path and sizing</h2>
+<p>Because Base45 packs in fixed groups, the encoded length is <strong>exact</strong>, not an upper bound:</p>
+<pre><code class="lang-csharp">int chars = Base45.GetEncodedLength(payload.Length);     // exact output length
+Span&lt;char&gt; destination = stackalloc char[chars];
+int written = Base45.Encode(payload, destination);
+
+int maxBytes = Base45.GetMaxDecodedLength(text.Length);  // decode upper bound
+</code></pre>
+<p>Base45 is <strong>not streamable</strong> — it has no <code>OperationStatus</code> path. Each call needs the entire input: pass the whole
+payload (encode) or the whole string (decode) as a single span.</p>
+<h2 id="validation">Validation</h2>
+<pre><code class="lang-csharp">Base45.IsValid(&quot;BB8&quot;);        // true
+Base45.IsValid(&quot;bb8&quot;);        // false — lower case is not in the alphabet
+Base45.IsBase45Digit(' ');    // true  — space is a data symbol
+Base45.IsBase45Digit('a');    // false
+</code></pre>
+<p><code>IsValid</code> returns <code>true</code> only for input the strict decoder would accept (subject to any <code>BaseFormatStyles</code> you pass).</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="base62.html">Base62 guide</a></strong> — compact identifiers without QR-specific constraints.</li>
+<li><strong><a href="base64.html">Base64 guide</a></strong> — when density matters less than ubiquity.</li>
+<li><strong><a href="binary-encodings-interface.html"><code>IBinaryEncoding</code> interface</a></strong> — Base45 is registered as <code>BinaryEncodings.Base45</code> for runtime selection.</li>
+<li><strong><a href="../topics/text-and-serialization.html">Text &amp; Serialization guides</a></strong> — every guide in this topic, across Bodu.Text.Encoding, Bodu.Text.Formats, and the Bencode / TOML serializers.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

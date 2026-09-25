@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Choosing a primitive | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Choosing a primitive | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="choosing-a-primitive">Choosing a primitive</h1>
+
+<p><code>Bodu.Security.Cryptography</code> ships several algorithms in every family the BCL already covers — hashes, MACs, AEAD, KDFs, signatures — plus families the BCL does not (tweakable and wide-block ciphers, post-quantum KEM/DSA, HPKE, extended-nonce AEAD). This page is the decision table: for each family it lists every Bodu type beside its BCL counterpart, with the sizes and defaults read from the source, and says when each one is the right call.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p><code>Bodu.Security.Cryptography</code> is not independently audited and offers best-effort, not guaranteed, side-channel resistance. Where the BCL implements the same algorithm (SHA-2, SHA-3, HMAC, AES-GCM, ChaCha20-Poly1305, HKDF, PBKDF2, ECDSA/ECDH/RSA), prefer the BCL: it is FIPS-validated on supporting platforms and backed by OS or hardware implementations. Reach for Bodu when you need an algorithm the BCL lacks, a construction the BCL cannot express (a tweak, a 24-byte nonce, a wide block), or a pure-managed implementation that behaves identically on every platform. See <a href="security-posture.html">Security guarantees and limitations</a>.</p>
+</div>
+<h2 id="hashes">Hashes</h2>
+<table>
+<thead>
+<tr>
+<th>Algorithm</th>
+<th>Type</th>
+<th>Output (bits)</th>
+<th>Keyed mode</th>
+<th>Fast path</th>
+<th>Standard</th>
+<th>Use it for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BLAKE2b</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.Blake2b.html">Blake2b</a></td>
+<td>128 / 160 / 192 / 224 / 256 / 384 / 512 — default <strong>512</strong></td>
+<td>Yes — <code>Key</code> of 1–64 bytes (RFC 7693 §2.8 MAC mode)</td>
+<td>AVX-512 (VL)</td>
+<td>RFC 7693</td>
+<td>The general-purpose fast digest on 64-bit hosts; keyed hashing without HMAC.</td>
+</tr>
+<tr>
+<td>BLAKE2s</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.Blake2s.html">Blake2s</a></td>
+<td>128 / 160 / 192 / 224 / 256 — default <strong>256</strong></td>
+<td>Yes — <code>Key</code> of 1–32 bytes</td>
+<td>AVX-512 (VL)</td>
+<td>RFC 7693</td>
+<td>Same as BLAKE2b on 32-bit or constrained hosts.</td>
+</tr>
+<tr>
+<td>BLAKE3</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.Blake3.html">Blake3</a></td>
+<td><strong>256</strong> (fixed)</td>
+<td>No — keyed and KDF modes are not exposed</td>
+<td>AVX-512 (VL)</td>
+<td>BLAKE3 specification (no RFC)</td>
+<td>Tree-parallel digest of large inputs; the fixed-output subset only.</td>
+</tr>
+<tr>
+<td>Skein-256 / 512 / 1024</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.Skein256.html">Skein256</a> / <a class="xref" href="../../api/Bodu.Security.Cryptography.Skein512.html">Skein512</a> / <a class="xref" href="../../api/Bodu.Security.Cryptography.Skein1024.html">Skein1024</a></td>
+<td>256: 128 / 160 / 224 / 256 · 512: 128 / 160 / 224 / 256 / 384 / 512 · 1024: 384 / 512 / 1024 — default = state width</td>
+<td>Yes — <code>Key</code> up to 8192 bits</td>
+<td>Through the Threefish kernels (AVX-512)</td>
+<td>SHA-3 finalist</td>
+<td>Skein's native keyed mode (a MAC without HMAC) and the Skein/Threefish family.</td>
+</tr>
+<tr>
+<td>Whirlpool</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.Whirlpool.html">Whirlpool</a></td>
+<td><strong>512</strong></td>
+<td>No</td>
+<td>—</td>
+<td>ISO/IEC 10118-3</td>
+<td>Interoperability with formats that mandate it; three historical <code>Version</code> variants.</td>
+</tr>
+<tr>
+<td>Tiger</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.Tiger.html">Tiger</a></td>
+<td>128 / 160 / 192 — default <strong>192</strong>; Tiger and Tiger2 <code>Variant</code></td>
+<td>No</td>
+<td>—</td>
+<td>Legacy (TTH, Direct Connect)</td>
+<td>Interoperability only, including Tiger-Tree hashes through <a class="xref" href="../../api/Bodu.Security.Cryptography.MerkleTree.html">MerkleTree</a> at <code>blockSize: 1024</code>.</td>
+</tr>
+<tr>
+<td>CubeHash</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.CubeHash.html">CubeHash</a></td>
+<td>224–512 — default <strong>512</strong>; tunable rounds and block size</td>
+<td>No</td>
+<td>AVX-512 (F)</td>
+<td>SHA-3 round 2</td>
+<td>Research and interoperability with CubeHash parameterizations.</td>
+</tr>
+<tr>
+<td>Snefru-128 / 256</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.Snefru128.html">Snefru128</a> / <a class="xref" href="../../api/Bodu.Security.Cryptography.Snefru256.html">Snefru256</a></td>
+<td>128 / 256</td>
+<td>No</td>
+<td>—</td>
+<td>Legacy</td>
+<td>Interoperability only.</td>
+</tr>
+<tr>
+<td>Ascon-Hash256 / HashA256</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.AsconHash256.html">AsconHash256</a> / <a class="xref" href="../../api/Bodu.Security.Cryptography.AsconHashA256.html">AsconHashA256</a></td>
+<td><strong>256</strong></td>
+<td>No</td>
+<td>—</td>
+<td>NIST SP 800-232</td>
+<td>Lightweight hashing that shares a permutation with Ascon-AEAD128.</td>
+</tr>
+<tr>
+<td>Ascon-XOF128 / CXOF128</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.AsconXof128.html">AsconXof128</a> / <a class="xref" href="../../api/Bodu.Security.Cryptography.AsconCxof128.html">AsconCxof128</a></td>
+<td>Any (<code>Absorb</code> / <code>Squeeze</code> / <code>GetHash(n)</code>)</td>
+<td>No (CXOF takes a customization string)</td>
+<td>—</td>
+<td>NIST SP 800-232</td>
+<td>Variable-length output from the Ascon family.</td>
+</tr>
+<tr>
+<td>SHAKE</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.Shake.html">Shake</a></td>
+<td>Any — default <code>Shake()</code> is 256 output bits at security level 128</td>
+<td>No</td>
+<td>—</td>
+<td>FIPS 202</td>
+<td>A managed SHAKE where the BCL's <code>Shake128</code> / <code>Shake256</code> are unavailable.</td>
+</tr>
+<tr>
+<td>SHA-256 / 384 / 512</td>
+<td><code>System.Security.Cryptography.SHA256</code> …</td>
+<td>256 / 384 / 512</td>
+<td>via <code>HMACSHA256</code> …</td>
+<td>SHA-NI / ARMv8 (platform)</td>
+<td>FIPS 180-4</td>
+<td><strong>The default choice</strong> for any hash the peer must also compute.</td>
+</tr>
+<tr>
+<td>SHA3-256 / 384 / 512</td>
+<td><code>System.Security.Cryptography.SHA3_256</code> …</td>
+<td>256 / 384 / 512</td>
+<td>via <code>HMACSHA3_256</code> …</td>
+<td>Platform (<code>IsSupported</code>)</td>
+<td>FIPS 202</td>
+<td>When SHA-3 is mandated and the platform supports it.</td>
+</tr>
+</tbody>
+</table>
+<p>Every Bodu hash derives from <code>System.Security.Cryptography.HashAlgorithm</code> (through <a class="xref" href="../../api/Bodu.Security.Cryptography.BlockHashAlgorithm.html">BlockHashAlgorithm</a> or one of its siblings), so <code>ComputeHash</code>, <code>TransformBlock</code> / <code>TransformFinalBlock</code>, <code>ComputeHashAsync(Stream)</code>, and <code>CryptoStream</code> all apply — see <a href="bcl-interop.html">Interoperating with System.Security.Cryptography</a>. The fast-path column comes from <a href="hardware-acceleration.html">Hardware acceleration and the SIMD opt-out</a>; every accelerated primitive produces bit-identical output on the scalar path.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Security.Cryptography;
+using Bodu.Security.Cryptography;
+
+byte[] message = &quot;abc&quot;u8.ToArray();
+
+using var blake2b = new Blake2b(256);      // 256-bit BLAKE2b
+using var blake3  = new Blake3();          // fixed 256-bit output
+using var skein   = new Skein512();        // default 512-bit output
+using var ascon   = new AsconHash256();
+using var sha256  = SHA256.Create();       // the BCL baseline
+
+Console.WriteLine(Convert.ToHexString(blake2b.ComputeHash(message)));  // BDDD813C…D52319
+Console.WriteLine(Convert.ToHexString(blake3.ComputeHash(message)));   // 6437B3AC…BD9D85
+Console.WriteLine(Convert.ToHexString(ascon.ComputeHash(message)));    // 45AA0343…0935CF
+Console.WriteLine(Convert.ToHexString(sha256.ComputeHash(message)));   // BA7816BF…F20015AD
+</code></pre>
+<h2 id="macs-and-keyed-hashes">MACs and keyed hashes</h2>
+<table>
+<thead>
+<tr>
+<th>Algorithm</th>
+<th>Type</th>
+<th>Key</th>
+<th>Tag</th>
+<th>Use it for</th>
+<th>Avoid it for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SipHash-2-4</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.SipHash64.html">SipHash64</a></td>
+<td>128 bits</td>
+<td>64 bits</td>
+<td>Hash-flooding-resistant hash tables, short-message PRFs, keyed fingerprints of untrusted keys.</td>
+<td>A general-purpose MAC on long messages or where a 64-bit tag is too short.</td>
+</tr>
+<tr>
+<td>SipHash-2-4-128</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.SipHash128.html">SipHash128</a></td>
+<td>128 bits</td>
+<td>128 bits</td>
+<td>Same as above with a full-width tag.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Poly1305</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.Poly1305.html">Poly1305</a></td>
+<td>256 bits, <strong>one-time</strong></td>
+<td>128 bits</td>
+<td>The authenticator inside an AEAD construction, with a per-message key derived from the cipher keystream.</td>
+<td>A reusable MAC — a second message under the same key throws <code>CryptographicException</code>; use the AEAD types below instead.</td>
+</tr>
+<tr>
+<td>BLAKE2b / BLAKE2s keyed</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.Blake2b.html">Blake2b</a> <code>Key</code></td>
+<td>1–64 / 1–32 bytes</td>
+<td>8–64 / 8–32 bytes</td>
+<td>A MAC without the HMAC double-hash, when both peers speak BLAKE2.</td>
+<td>Peers that only implement HMAC.</td>
+</tr>
+<tr>
+<td>Skein keyed</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.Skein512.html">Skein512</a> <code>Key</code></td>
+<td>up to 8192 bits</td>
+<td>per the variant</td>
+<td>Skein-native MAC.</td>
+<td>Peers that only implement HMAC.</td>
+</tr>
+<tr>
+<td>HMAC-SHA-2</td>
+<td><code>System.Security.Cryptography.HMACSHA256</code> …</td>
+<td>any</td>
+<td>256 / 384 / 512 bits</td>
+<td><strong>The default MAC</strong> — FIPS 198, universally implemented.</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Security.Cryptography;
+using Bodu.Security.Cryptography;
+
+byte[] key128 = Convert.FromHexString(&quot;000102030405060708090a0b0c0d0e0f&quot;);
+byte[] key256 = Convert.FromHexString(&quot;000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f&quot;);
+byte[] message = &quot;abc&quot;u8.ToArray();
+
+using var sip  = new SipHash64 { Key = key128 };
+using var b2   = new Blake2b(256) { Key = key256 };
+using var hmac = new HMACSHA256(key256);
+
+Console.WriteLine(Convert.ToHexString(sip.ComputeHash(message)));    // A50720AA53FABC5D
+Console.WriteLine(Convert.ToHexString(b2.ComputeHash(message)));     // D63A32D3…203F7F
+Console.WriteLine(Convert.ToHexString(hmac.ComputeHash(message)));   // F0133729…4E1E47
+</code></pre>
+<h2 id="authenticated-encryption-aead">Authenticated encryption (AEAD)</h2>
+<p>Every Bodu AEAD implements <a class="xref" href="../../api/Bodu.Security.Cryptography.IAeadTransform.html">IAeadTransform</a>, emits <code>ciphertext ‖ tag</code>, and is <strong>single-use per message</strong>: construct one instance per encryption or decryption. None of them streams — each is a single <code>Encrypt</code> / <code>Decrypt</code> call over the whole message, so chunk large payloads yourself with a distinct nonce per chunk.</p>
+<table>
+<thead>
+<tr>
+<th>Construction</th>
+<th>Type</th>
+<th>Key</th>
+<th>Nonce</th>
+<th>Nonce-misuse resistant</th>
+<th>Tag</th>
+<th>Associated data</th>
+<th>Wire-compatible with</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AES-GCM</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.GcmModeTransform.html">GcmModeTransform</a> over <a class="xref" href="../../api/Bodu.Security.Cryptography.AesBlockCipher.html">AesBlockCipher</a></td>
+<td>128 / 192 / 256</td>
+<td><strong>exactly 12 bytes</strong></td>
+<td>No — reuse is catastrophic</td>
+<td>128 bits</td>
+<td>Yes</td>
+<td><code>System.Security.Cryptography.AesGcm</code> (same bytes; see <a href="bcl-interop.html#pattern-5--aes-gcm-is-wire-compatible-with-aesgcm">BCL interop</a>)</td>
+</tr>
+<tr>
+<td>AES-GCM-SIV</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.GcmSivModeTransform.html">GcmSivModeTransform</a></td>
+<td>128 / 256</td>
+<td>12 bytes (first 12 of a 16-byte IV)</td>
+<td><strong>Yes</strong></td>
+<td>128 bits</td>
+<td>Yes</td>
+<td>RFC 8452</td>
+</tr>
+<tr>
+<td>AES-CCM</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.CcmModeTransform.html">CcmModeTransform</a></td>
+<td>128 / 192 / 256</td>
+<td>12 bytes (first 12 of a 16-byte IV)</td>
+<td>No</td>
+<td>128 bits</td>
+<td>Yes</td>
+<td>NIST SP 800-38C profile (12-byte nonce, 16-byte tag, messages &lt; 2²⁴ bytes)</td>
+</tr>
+<tr>
+<td>AES-OCB3</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.OcbModeTransform.html">OcbModeTransform</a></td>
+<td>128 / 192 / 256</td>
+<td>12 bytes (first 12 of a 16-byte IV)</td>
+<td>No</td>
+<td>64 / 96 / <strong>128</strong> bits (<code>tagSize</code>)</td>
+<td>Yes</td>
+<td>RFC 7253</td>
+</tr>
+<tr>
+<td>AES-EAX</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.EaxModeTransform.html">EaxModeTransform</a></td>
+<td>128 / 192 / 256</td>
+<td>16 bytes (= block size)</td>
+<td>No</td>
+<td>128 bits</td>
+<td>Yes</td>
+<td>EAX (FSE 2004)</td>
+</tr>
+<tr>
+<td>AES-SIV</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.SivModeTransform.html">SivModeTransform</a></td>
+<td>two independent AES keys</td>
+<td>none — the IV argument is ignored; deterministic</td>
+<td><strong>Yes</strong></td>
+<td>128 bits</td>
+<td>Yes</td>
+<td>RFC 5297</td>
+</tr>
+<tr>
+<td>Ascon-AEAD128</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.AsconAead128.html">AsconAead128</a></td>
+<td>128</td>
+<td>16 bytes</td>
+<td>No</td>
+<td>128 bits</td>
+<td>Yes</td>
+<td>NIST SP 800-232</td>
+</tr>
+<tr>
+<td>XChaCha20-Poly1305</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.XChaCha20Poly1305.html">XChaCha20Poly1305</a></td>
+<td>256</td>
+<td><strong>24 bytes</strong> — safe to draw at random</td>
+<td>No, but random nonces are collision-safe</td>
+<td>128 bits</td>
+<td>Yes</td>
+<td>libsodium <code>crypto_aead_xchacha20poly1305_ietf</code></td>
+</tr>
+<tr>
+<td>XSalsa20-Poly1305 (secretbox)</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.XSalsa20Poly1305.html">XSalsa20Poly1305</a></td>
+<td>256</td>
+<td>24 bytes</td>
+<td>No</td>
+<td>128 bits</td>
+<td><strong>No</strong> (throws)</td>
+<td>NaCl <code>crypto_secretbox</code> (tag order differs — converters provided)</td>
+</tr>
+<tr>
+<td>XSalsa20-Poly1305-AEAD</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.XSalsa20Poly1305Aead.html">XSalsa20Poly1305Aead</a></td>
+<td>256</td>
+<td>24 bytes</td>
+<td>No</td>
+<td>128 bits</td>
+<td>Yes</td>
+<td>Nothing — Bodu-defined</td>
+</tr>
+<tr>
+<td>AES-GCM (BCL)</td>
+<td><code>System.Security.Cryptography.AesGcm</code></td>
+<td>128 / 192 / 256</td>
+<td>12 bytes</td>
+<td>No</td>
+<td>96–128 bits</td>
+<td>Yes</td>
+<td>Bodu <code>GcmModeTransform</code></td>
+</tr>
+<tr>
+<td>ChaCha20-Poly1305 (BCL)</td>
+<td><code>System.Security.Cryptography.ChaCha20Poly1305</code></td>
+<td>256</td>
+<td>12 bytes</td>
+<td>No</td>
+<td>128 bits</td>
+<td>Yes</td>
+<td>RFC 8439 — <strong>not</strong> XChaCha20-Poly1305</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Which one?</strong> Use the BCL <code>AesGcm</code> when both peers can; use Bodu's <code>GcmModeTransform</code> when you need the same wire format on a platform where <code>AesGcm.IsSupported</code> is false or you want the <code>IBlockCipher</code> composition. If you cannot guarantee unique nonces, choose <strong>GCM-SIV</strong> (random-nonce tolerant with GCM-class performance) or <strong>SIV</strong> (fully deterministic; key wrapping). If you want to draw nonces at random from a counter-free source, choose <strong>XChaCha20-Poly1305</strong> — its 192-bit nonce is the reason the type exists. Choose Ascon for constrained peers speaking SP 800-232. Choose OCB, EAX, or CCM only when a protocol mandates them.</p>
+<div class="WARNING">
+<h5>Warning</h5>
+<p>Every AEAD in the table exposes a public span-based <code>Encrypt(plaintext, output)</code> instance method <em>and</em> an array-returning <code>Encrypt(plaintext, associatedData)</code> extension method. With two positional <code>byte[]</code> arguments C# binds the <strong>instance</strong> method — <code>aad</code> becomes the output buffer and the call returns an <code>int</code>. Always name the argument: <code>aead.Encrypt(plaintext, associatedData: aad)</code>. The single-argument form <code>aead.Encrypt(plaintext)</code> is unambiguous. The same applies to <code>Decrypt</code>.</p>
+</div>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+using Bodu.Security.Cryptography.Extensions;
+
+byte[] key     = Convert.FromHexString(&quot;808182838485868788898a8b8c8d8e8f909192939495969798999a9b9c9d9e9f&quot;);
+byte[] nonce24 = Convert.FromHexString(&quot;404142434445464748494a4b4c4d4e4f5051525354555657&quot;);
+byte[] nonce12 = Convert.FromHexString(&quot;404142434445464748494a4b4c4d4e4f&quot;);
+byte[] aad     = Convert.FromHexString(&quot;50515253c0c1c2c3c4c5c6c7&quot;);
+byte[] message = &quot;abc&quot;u8.ToArray();
+
+byte[] xchacha;
+using (var aead = new XChaCha20Poly1305(key, nonce24))
+    xchacha = aead.Encrypt(message, associatedData: aad);         // 906E10CF…B7481715AEE9EC9628E9BD
+
+byte[] gcm;
+using (var aes = new AesBlockCipher(key))
+    gcm = new GcmModeTransform(aes, nonce12.AsSpan(0, 12)).Encrypt(message, associatedData: aad);
+
+byte[] gcmSiv;
+using (var master = new AesBlockCipher(key))
+{
+    byte[] iv = new byte[16];
+    nonce12.AsSpan(0, 12).CopyTo(iv);
+    gcmSiv = new GcmSivModeTransform(master, static k =&gt; new AesBlockCipher(k), iv).Encrypt(message, associatedData: aad);
+}
+
+byte[] ascon;
+using (var aead = new AsconAead128(key.AsSpan(0, 16), nonce12.AsSpan(0, 16)))
+    ascon = aead.Encrypt(message, associatedData: aad);
+</code></pre>
+<h2 id="key-derivation">Key derivation</h2>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>Type</th>
+<th>Input entropy</th>
+<th>Standard</th>
+<th>Use it for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argon2id</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.Argon2id.html">Argon2id</a> (<code>Argon2Parameters { MemoryKiB, Iterations, Parallelism, TagLength = 32, Version = 0x13 }</code>)</td>
+<td><strong>Low</strong> (passwords)</td>
+<td>RFC 9106</td>
+<td><strong>The default password hash / password KDF.</strong> PHC-string <code>Hash</code> / <code>Verify</code>.</td>
+</tr>
+<tr>
+<td>Argon2i / Argon2d</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.Argon2i.html">Argon2i</a> / <a class="xref" href="../../api/Bodu.Security.Cryptography.Argon2d.html">Argon2d</a></td>
+<td>Low</td>
+<td>RFC 9106</td>
+<td>Argon2i when memory access must be data-independent; Argon2d when side channels are irrelevant (proof-of-work).</td>
+</tr>
+<tr>
+<td>scrypt</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.Scrypt.html">Scrypt</a> (<code>costN</code> power of two, <code>blockSizeR</code>, <code>parallelization</code>)</td>
+<td>Low</td>
+<td>RFC 7914</td>
+<td>Existing scrypt deployments; PHC-string <code>Hash</code> / <code>Verify</code>. Accepts <a class="xref" href="../../api/Bodu.Security.Cryptography.SecretBytes.html">SecretBytes</a> + <a class="xref" href="../../api/Bodu.Security.Cryptography.Salt.html">Salt</a>.</td>
+</tr>
+<tr>
+<td>HKDF</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.Hkdf.html">Hkdf</a> (SHA-1 / SHA-256 / SHA-384 / SHA-512)</td>
+<td><strong>High</strong> (DH secret, KEM output, master key)</td>
+<td>RFC 5869</td>
+<td>Stretching a strong secret into labelled keys. Interchangeable with the BCL <code>HKDF</code>; prefer the BCL.</td>
+</tr>
+<tr>
+<td>PBKDF2</td>
+<td><code>System.Security.Cryptography.Rfc2898DeriveBytes.Pbkdf2</code></td>
+<td>Low</td>
+<td>RFC 8018 / NIST SP 800-132</td>
+<td>When FIPS compliance mandates PBKDF2. Not memory-hard — prefer Argon2id otherwise.</td>
+</tr>
+</tbody>
+</table>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Security.Cryptography;
+using Bodu.Security.Cryptography;
+
+byte[] password = &quot;correct horse battery staple&quot;u8.ToArray();
+byte[] salt = Convert.FromHexString(&quot;000102030405060708090a0b0c0d0e0f&quot;);
+
+byte[] argon  = Argon2id.DeriveKey(password, salt, new Argon2Parameters { MemoryKiB = 64 * 1024, Iterations = 3, Parallelism = 4, TagLength = 32 });
+byte[] scrypt = Scrypt.DeriveKey(password, salt, costN: 1 &lt;&lt; 14, blockSizeR: 8, parallelization: 1, length: 32);
+byte[] hkdf   = Hkdf.DeriveKey(HashAlgorithmName.SHA256, inputKeyingMaterial: scrypt, outputLength: 32, salt: salt, info: &quot;traffic&quot;u8);
+byte[] pbkdf2 = Rfc2898DeriveBytes.Pbkdf2(password, salt, iterations: 600_000, HashAlgorithmName.SHA256, outputLength: 32);
+</code></pre>
+<h2 id="asymmetric-algorithms">Asymmetric algorithms</h2>
+<table>
+<thead>
+<tr>
+<th>Algorithm</th>
+<th>Type</th>
+<th>Sizes (bytes)</th>
+<th>Standard</th>
+<th>Key encodings</th>
+<th>BCL counterpart</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ed25519</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.Ed25519.html">Ed25519</a></td>
+<td>private 32 · public 32 · signature 64</td>
+<td>RFC 8032</td>
+<td>raw, PKCS#8, SPKI, PEM</td>
+<td>none — <code>ECDsa</code> on NIST curves is a different scheme</td>
+</tr>
+<tr>
+<td>X25519</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.X25519.html">X25519</a></td>
+<td>keys 32 · shared secret 32</td>
+<td>RFC 7748</td>
+<td>raw, PKCS#8, SPKI, PEM</td>
+<td>none — <code>System.Security.Cryptography.ECDiffieHellman</code> on NIST curves</td>
+</tr>
+<tr>
+<td>ML-KEM-512 / 768 / 1024</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.MLKem512.html">MLKem512</a> …</td>
+<td>ek 800 / 1184 / 1568 · dk 1632 / 2400 / 3168 · ct 768 / 1088 / 1568 · ss 32</td>
+<td>FIPS 203</td>
+<td>raw only (PKCS#8 / SPKI throw <code>NotSupportedException</code>)</td>
+<td>—</td>
+</tr>
+<tr>
+<td>ML-DSA-44 / 65 / 87</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.MLDsa44.html">MLDsa44</a> …</td>
+<td>pk 1312 / 1952 / 2592 · sk 2560 / 4032 / 4896 · sig 2420 / 3309 / 4627</td>
+<td>FIPS 204</td>
+<td>raw only; <code>DeterministicSigning</code> switch</td>
+<td>—</td>
+</tr>
+<tr>
+<td>HPKE</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.Hpke.html">Hpke</a> + <a class="xref" href="../../api/Bodu.Security.Cryptography.HpkeSuite.html">HpkeSuite</a></td>
+<td>suites: X25519 + HKDF-SHA256 + AES-128-GCM / AES-256-GCM / ChaCha20-Poly1305</td>
+<td>RFC 9180</td>
+<td>via the X25519 key</td>
+<td>—</td>
+</tr>
+<tr>
+<td>ECDSA / ECDH / RSA</td>
+<td><code>System.Security.Cryptography.ECDsa</code>, <code>System.Security.Cryptography.ECDiffieHellman</code>, <code>System.Security.Cryptography.RSA</code></td>
+<td>curve / modulus dependent</td>
+<td>FIPS 186-5, SP 800-56A, PKCS#1</td>
+<td>PKCS#8, SPKI, PEM, X.509</td>
+<td><strong>The default</strong> when certificates or NIST curves are required.</td>
+</tr>
+</tbody>
+</table>
+<p>Pick Ed25519 / X25519 for modern protocols that specify Curve25519 (SSH, Signal-style, HPKE); pick the BCL types when you need X.509 certificates or FIPS-approved curves; add ML-KEM / ML-DSA in a hybrid alongside a classical scheme when quantum resistance is a requirement. The <a href="asymmetric-overview.html">asymmetric overview</a> explains the shared <code>AsymmetricAlgorithm</code> base and the verify-or-fail discipline.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+
+using var signer = new Ed25519();
+signer.ImportPrivateKey(Convert.FromHexString(&quot;9d61b19deffd5a60ba844af492ec2cc44449c5697b326919703bac031cae7f60&quot;));
+byte[] signature = signer.SignData(ReadOnlySpan&lt;byte&gt;.Empty);     // RFC 8032 test 1: E5564300C360AC72…8E7A100B
+
+using var kem = new MLKem768();
+kem.GenerateKey();
+(byte[] ciphertext, byte[] sharedSecret) = kem.Encapsulate();      // 1088-byte ciphertext, 32-byte secret
+bool agreed = kem.Decapsulate(ciphertext).AsSpan().SequenceEqual(sharedSecret);   // true
+</code></pre>
+<h2 id="block-ciphers--when-to-use-one-at-all">Block ciphers — when to use one at all</h2>
+<p>A raw block cipher gives confidentiality only. For new designs, start from the AEAD table above; drop to a block cipher and a mode when a format, a protocol, or a tweak requirement forces it. All of the following compose with the same modes and padding through <a href="cipher-composition-reference.html">Modes, transforms, and factories</a>.</p>
+<table>
+<thead>
+<tr>
+<th>Cipher</th>
+<th>Type</th>
+<th>Block</th>
+<th>Key</th>
+<th>Tweak</th>
+<th>Standing</th>
+<th>Reach for it when</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AES</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.AesBlockCipher.html">AesBlockCipher</a> (over the BCL <code>Aes</code>)</td>
+<td>128</td>
+<td>128 / 192 / 256</td>
+<td>—</td>
+<td>FIPS 197; hardware accelerated</td>
+<td>Always the first choice for a 128-bit block; the only primitive the AEAD modes accept.</td>
+</tr>
+<tr>
+<td>Camellia</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.Camellia.html">Camellia</a> / <code>CamelliaBlockCipher</code></td>
+<td>128</td>
+<td>128 / 192 / 256</td>
+<td>—</td>
+<td>ISO/IEC 18033-3, RFC 3713</td>
+<td>A regulatory or interop requirement names Camellia.</td>
+</tr>
+<tr>
+<td>Twofish</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.Twofish.html">Twofish</a> / <code>TwofishBlockCipher</code></td>
+<td>128</td>
+<td>128 / 192 / 256</td>
+<td>—</td>
+<td>AES finalist</td>
+<td>Legacy volume formats and files that used Twofish.</td>
+</tr>
+<tr>
+<td>Serpent-128</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.Serpent128.html">Serpent128</a> / <code>Serpent128Cipher</code></td>
+<td>128</td>
+<td>128 / 192 / 256</td>
+<td>—</td>
+<td>AES finalist</td>
+<td>Same — see <a href="serpent.html">Using Serpent</a>.</td>
+</tr>
+<tr>
+<td>Threefish-256 / 512 / 1024</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.Threefish256.html">Threefish256</a> …</td>
+<td>256 / 512 / 1024</td>
+<td>= block</td>
+<td>128 bits</td>
+<td>Skein submission; AVX-512 path</td>
+<td>You want a native tweak (per-record separation, sector encryption) or a wide block.</td>
+</tr>
+<tr>
+<td>Serpent-256 / 512 / 1024</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.Serpent256.html">Serpent256</a> …</td>
+<td>256 / 512 / 1024</td>
+<td>= block</td>
+<td>128 bits</td>
+<td><strong>Bodu-only, experimental</strong></td>
+<td>Experiments only — no reference implementation to interoperate with.</td>
+</tr>
+<tr>
+<td>Blowfish</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.Blowfish.html">Blowfish</a></td>
+<td>64</td>
+<td>32–448 (8-bit steps)</td>
+<td>—</td>
+<td>Legacy</td>
+<td>Reading data produced by Blowfish-era tools. The 64-bit block caps a key at a few gigabytes of data.</td>
+</tr>
+<tr>
+<td>Skipjack</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.Skipjack.html">Skipjack</a></td>
+<td>64</td>
+<td>80</td>
+<td>—</td>
+<td>Withdrawn (NIST)</td>
+<td>Interoperability with legacy government-format data only.</td>
+</tr>
+</tbody>
+</table>
+<div class="WARNING">
+<h5>Warning</h5>
+<p>Camellia, Twofish, Serpent, Blowfish, Skipjack, Tiger, Whirlpool, and Snefru are table-driven: their control flow is constant-time but the S-box reads are data-dependent, and the source states they are <strong>not hardened</strong> against cache-timing attacks. The ARX designs (BLAKE2, BLAKE3, Threefish, ChaCha20, Salsa20) and the AES path (hardware) do not have that caveat. See <a href="security-posture.html#constant-time-claims-by-primitive">Security guarantees and limitations</a>.</p>
+</div>
+<h2 id="api-summary">API summary</h2>
+<table>
+<thead>
+<tr>
+<th>Family</th>
+<th>Bodu entry points</th>
+<th>BCL entry points</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Hash</td>
+<td><code>Blake2b</code>, <code>Blake2s</code>, <code>Blake3</code>, <code>Skein256/512/1024</code>, <code>Whirlpool</code>, <code>Tiger</code>, <code>CubeHash</code>, <code>Snefru128/256</code>, <code>AsconHash256</code>, <code>AsconHashA256</code>, <code>AsconXof128</code>, <code>AsconCxof128</code>, <code>Shake</code></td>
+<td><code>SHA256</code>, <code>SHA384</code>, <code>SHA512</code>, <code>SHA3_256/384/512</code>, <code>Shake128</code>, <code>Shake256</code></td>
+</tr>
+<tr>
+<td>MAC</td>
+<td><code>SipHash64</code>, <code>SipHash128</code>, <code>Poly1305</code>, keyed <code>Blake2b</code> / <code>Blake2s</code> / <code>Skein*</code></td>
+<td><code>HMACSHA256/384/512</code>, <code>HMACSHA3_*</code></td>
+</tr>
+<tr>
+<td>AEAD</td>
+<td><code>GcmModeTransform</code>, <code>GcmSivModeTransform</code>, <code>CcmModeTransform</code>, <code>OcbModeTransform</code>, <code>EaxModeTransform</code>, <code>SivModeTransform</code>, <code>AsconAead128</code>, <code>XChaCha20Poly1305</code>, <code>XSalsa20Poly1305</code>, <code>XSalsa20Poly1305Aead</code></td>
+<td><code>AesGcm</code>, <code>AesCcm</code>, <code>ChaCha20Poly1305</code></td>
+</tr>
+<tr>
+<td>KDF</td>
+<td><code>Argon2id/i/d</code>, <code>Scrypt</code>, <code>Hkdf</code></td>
+<td><code>HKDF</code>, <code>Rfc2898DeriveBytes.Pbkdf2</code></td>
+</tr>
+<tr>
+<td>Asymmetric</td>
+<td><code>Ed25519</code>, <code>X25519</code>, <code>MLKem512/768/1024</code>, <code>MLDsa44/65/87</code>, <code>Hpke</code></td>
+<td><code>System.Security.Cryptography.ECDsa</code>, <code>System.Security.Cryptography.ECDiffieHellman</code>, <code>System.Security.Cryptography.RSA</code></td>
+</tr>
+<tr>
+<td>Block cipher</td>
+<td><code>AesBlockCipher</code>, <code>Camellia</code>, <code>Twofish</code>, <code>Serpent128</code>, <code>Threefish256/512/1024</code>, <code>Serpent256/512/1024</code>, <code>Blowfish</code>, <code>Skipjack</code></td>
+<td><code>Aes</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="bcl-interop.html">Interoperating with System.Security.Cryptography</a> — the BCL surfaces every Bodu type plugs into, and the wire-compatibility proofs.</li>
+<li><a href="cipher-composition-reference.html">Modes, transforms, and factories</a> — the <code>CipherModeKind</code> support matrix.</li>
+<li><a href="security-posture.html">Security guarantees and limitations</a> — audit status, constant-time claims, and the exception contract.</li>
+<li><a href="../../docs/cryptography/index.html">Bodu.Security.Cryptography introduction</a> — the shape of the library.</li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

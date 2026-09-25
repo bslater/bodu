@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Bodu.Globalization.Calendar — Getting started | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Bodu.Globalization.Calendar — Getting started | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="boduglobalizationcalendar--getting-started">Bodu.Globalization.Calendar — Getting started</h1>
+
+<p>Unfamiliar with terms like <em>document</em>, <em>resource</em>, <em>rule</em>, <em>nominal date</em>, or <em>territory</em>? Read <a href="concepts.html">Core concepts</a> first.</p>
+<h2 id="install">Install</h2>
+<pre><code class="lang-bash">dotnet add package Bodu.Globalization.Calendar
+
+# Optional region-specific data packs (rules ship out-of-band on independent schedules):
+dotnet add package Bodu.Globalization.Calendar.Americas
+dotnet add package Bodu.Globalization.Calendar.Europe
+dotnet add package Bodu.Globalization.Calendar.AsiaPacific
+
+# Optional Microsoft.Extensions.DependencyInjection integration:
+dotnet add package Bodu.Globalization.Calendar.DependencyInjection
+
+# Optional trust-gated external algorithm plugins:
+dotnet add package Bodu.Globalization.Calendar.Plugins
+
+# Optional fluent C# document-authoring API:
+dotnet add package Bodu.Globalization.Calendar.Builder
+</code></pre>
+<p>See the <a href="../package-matrix.html">package matrix</a> for the full taxonomy and the <a href="index.html#calendar-package-family">Calendar package family diagram</a> for how the runtime and companions compose.</p>
+<p>Targets <code>net8.0</code>. The base package contains the resolution engine, the built-in algorithms, and a set of bundled common catalogues; the data packs contain region-specific rule sets.</p>
+<h2 id="minimal-samples">Minimal samples</h2>
+<h3 id="load-a-document-and-resolve">Load a document and resolve</h3>
+<p>A rule document is XML (or JSON) on the notable-date schema. Load it into an immutable resource, build a service, and resolve:</p>
+<pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
+
+const string xml = &quot;&quot;&quot;
+&lt;NotableDateResource xmlns=&quot;urn:bodu:globalization:calendar&quot; schemaVersion=&quot;1.0&quot; resourceId=&quot;demo&quot;&gt;
+  &lt;NotableDates&gt;
+    &lt;NotableDate id=&quot;new-years-day&quot; displayName=&quot;New Year's Day&quot; category=&quot;PublicHoliday&quot; defaultNonWorkingDay=&quot;true&quot;&gt;
+      &lt;Rules&gt;
+        &lt;Rule id=&quot;default&quot;&gt;&lt;Strategy&gt;&lt;Fixed month=&quot;January&quot; day=&quot;1&quot; /&gt;&lt;/Strategy&gt;&lt;/Rule&gt;
+      &lt;/Rules&gt;
+    &lt;/NotableDate&gt;
+  &lt;/NotableDates&gt;
+&lt;/NotableDateResource&gt;
+&quot;&quot;&quot;;
+
+NotableDateResource resource = NotableDateResourceLoader.Load(xml);   // parsed + validated; throws NotableDateValidationException on error
+NotableDateService  service  = new NotableDateService(resource);
+
+IReadOnlyList&lt;NotableDate&gt; jan = service.Resolve(new DateOnly(2026, 1, 1), &quot;US&quot;);
+Console.WriteLine(jan[0].DisplayName);                                // New Year's Day
+</code></pre>
+<p>A document that uses <code>&lt;Imports&gt;</code> must be loaded with a resolver so import names can be fetched — pass <code>CommonNotableDateResources.Resolver</code> to pull from the bundled catalogues:</p>
+<pre><code class="lang-csharp">NotableDateResource resource =
+    NotableDateResourceLoader.Load(xml, CommonNotableDateResources.Resolver);
+</code></pre>
+<h3 id="resolve-all-notable-dates-for-a-year-and-territory">Resolve all notable dates for a year and territory</h3>
+<p>The companion data packs do the load-and-import wiring for you:</p>
+<pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
+
+NotableDateService service = AsiaPacificCalendarData.CreateService(&quot;AU&quot;);
+
+// By-year resolution is an extension method (NotableDateServiceExtensions):
+IReadOnlyList&lt;NotableDate&gt; nsw2026 = service.Resolve(2026, &quot;AU-NSW&quot;);
+
+foreach (NotableDate d in nsw2026.Where(x =&gt; x.Category == NotableDateCategory.PublicHoliday))
+    Console.WriteLine($&quot;{d.Date:yyyy-MM-dd}  {d.DisplayName}&quot;);
+</code></pre>
+<p>Resolve a single day or an arbitrary range with the instance methods:</p>
+<pre><code class="lang-csharp">IReadOnlyList&lt;NotableDate&gt; onDay = service.Resolve(new DateOnly(2026, 1, 26), &quot;AU-NSW&quot;);
+IReadOnlyList&lt;NotableDate&gt; q1    = service.Resolve(
+    new DateRange(new DateOnly(2026, 1, 1), new DateOnly(2026, 3, 31)), &quot;AU-NSW&quot;);
+</code></pre>
+<h3 id="filter-by-category-and-date-range">Filter by category and date range</h3>
+<pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
+
+NotableDateFilter filter = NotableDateFilter
+    .ForAnyCategory(NotableDateCategory.PublicHoliday, NotableDateCategory.Cultural)
+    .And(NotableDateFilter.InDateRange(new DateOnly(2026, 1, 1), new DateOnly(2026, 6, 30)));
+
+IReadOnlyList&lt;NotableDate&gt; firstHalf = service.Resolve(2026, &quot;AU-NSW&quot;, filter);
+</code></pre>
+<p><code>NotableDateFilter</code> is built via static factory methods (<code>ForCategory</code>, <code>ForAnyCategory</code>, <code>WithName</code>, <code>WithId</code>, <code>WithTag</code>, <code>WithMinDuration</code>, <code>IsNonWorkingDay</code>, <code>WasAdjusted</code>, <code>InDateRange</code>, …) and combined with <code>And</code>, <code>Or</code>, <code>Not</code>, <code>AllOf</code>, <code>AnyOf</code>.</p>
+<h3 id="working-day-arithmetic-over-a-dateonly">Working-day arithmetic over a <code>DateOnly</code></h3>
+<pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
+using Bodu.Extensions;                       // NotableDateOnlyExtensions — not auto-imported
+
+DateOnly today = DateOnly.FromDateTime(DateTime.Today);
+
+bool     isHoliday = today.IsNotableDate(service, &quot;AU-NSW&quot;);
+bool     isOpen    = today.IsWorkingDay(service, &quot;AU-NSW&quot;);
+DateOnly nextOpen  = today.NextWorkingDay(service, &quot;AU-NSW&quot;);
+DateOnly inFive    = today.AddWorkingDays(5, service, &quot;AU-NSW&quot;);
+int      between   = today.WorkingDaysBetween(inFive, service, &quot;AU-NSW&quot;);
+</code></pre>
+<p>The same operations exist over <code>DateTime</code> and <code>DateTimeOffset</code> (<code>NotableDateTimeExtensions</code>, <code>NotableDateTimeOffsetExtensions</code>, also in <code>Bodu.Extensions</code>). Every method accepts an optional <code>Bodu.Core</code> <code>WeekPattern</code> to override the default Monday–Friday working week — e.g. <code>today.NextWorkingDay(service, &quot;AE&quot;, WeekPattern.SundayToThursday)</code>.</p>
+<h3 id="register-a-custom-algorithm">Register a custom algorithm</h3>
+<p>When a date is computed rather than fixed, implement <a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithm.html">INotableDateAlgorithm</a> and reference it from the rule by key:</p>
+<pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
+using Bodu.Globalization.Calendar.Algorithms;
+
+public sealed class PiDayAlgorithm : INotableDateAlgorithm
+{
+    public DateOnly? Calculate(int year) =&gt; new DateOnly(year, 3, 14);
+}
+
+var registry = new NotableDateAlgorithmRegistry().Register(&quot;pi-day&quot;, new PiDayAlgorithm());
+NotableDateResource resource = NotableDateResourceLoader.Load(xml, _ =&gt; null, registry);  // xml has &lt;Algorithm key=&quot;pi-day&quot; /&gt;
+NotableDateService  service  = new NotableDateService(
+    resource, new NotableDateServiceOptions { Algorithms = registry });
+</code></pre>
+<p>Custom collaborators — algorithm registry, collision resolver, adjustment / trigger handlers, and code-first providers — are supplied through <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateServiceOptions.html">NotableDateServiceOptions</a> (an object with <code>init</code>-only properties); there is no positional-collaborator constructor. The single-argument <code>new NotableDateService(resource)</code> covers the built-in path.</p>
+<p>Built-in keys (<code>western-easter</code>, <code>orthodox-easter</code>, <code>qingming</code>, <code>vesak</code>, <code>losar</code>, <code>matariki</code>, the Hindu-festival keys, …) need no registration. See <a href="../../guides/calendar/algorithms.html">Date calculation algorithms</a>.</p>
+<h3 id="swap-the-rule-set-at-runtime">Swap the rule set at runtime</h3>
+<p>A resource is immutable, so runtime change means loading a new resource and swapping it in:</p>
+<pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
+
+var provider = new MutableNotableDateResourceProvider(NotableDateResourceLoader.Load(initialXml));
+INotableDateService service = new ReloadableNotableDateService(provider);
+
+// later, when the rules change:
+provider.Reload(NotableDateResourceLoader.Load(updatedXml));   // the live service picks it up
+</code></pre>
+<h3 id="register-through-dependency-injection">Register through dependency injection</h3>
+<p>When the host is an ASP.NET Core application (or any <code>IServiceCollection</code>-based composition root), install <code>Bodu.Globalization.Calendar.DependencyInjection</code> and register the service:</p>
+<pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
+using Microsoft.Extensions.DependencyInjection;
+
+builder.Services.AddNotableDateService(AsiaPacificCalendarData.LoadResource(&quot;AU&quot;));
+// or a factory: builder.Services.AddNotableDateService(sp =&gt; AsiaPacificCalendarData.LoadResource(&quot;AU&quot;));
+// or reloadable:  builder.Services.AddReloadableNotableDateService(AsiaPacificCalendarData.LoadResource(&quot;AU&quot;));
+</code></pre>
+<p><code>INotableDateService</code> is registered as a singleton. See the <a href="../../guides/calendar/dependency-injection.html">Calendar dependency injection guide</a> for the reloadable workflow and lifetime semantics.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="index.html">Bodu.Globalization.Calendar introduction</a></strong> — mental model, headline types, scenarios.</li>
+<li><strong><a href="concepts.html">Core concepts</a></strong> — vocabulary used across the rest of the documentation.</li>
+<li><strong><a href="../../guides/calendar/index.html">Bodu.Globalization.Calendar guides</a></strong> — <code>NotableDateService</code> patterns, algorithms, rule authoring, working-day arithmetic, territories, data packs.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Globalization.Calendar.html">Bodu.Globalization.Calendar API reference</a></strong> — full type-by-type docs.</li>
+<li><strong><a href="../../guides/calendar/data-packs.html">Calendar data packs guide</a></strong> — composing <code>AmericasCalendarData</code> / <code>EuropeCalendarData</code> / <code>AsiaPacificCalendarData</code> resources.</li>
+<li><strong><a href="../../samples/calendar.html">Runnable samples</a></strong> — offline sample projects under <code>samples/Globalization.Calendar/</code> you can <code>dotnet run</code> and copy from.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

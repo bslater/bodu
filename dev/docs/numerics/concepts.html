@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Bodu.Numerics — Core concepts | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Bodu.Numerics — Core concepts | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="bodunumerics--core-concepts">Bodu.Numerics — Core concepts</h1>
+
+<p>This page is the vocabulary the rest of the documentation assumes. Read it once before the <a href="getting-started.html">getting-started samples</a> or the <a href="../../guides/numerics/index.html">guides</a>, and refer back whenever a term feels imprecise.</p>
+<p>For the high-level shape of the library and the type map, start with the <a href="index.html">introduction</a>. <code>Bodu.Numerics</code> is part of the <strong><a href="../topics/numerics-and-financial.html">Numerics &amp; Financial</a></strong> topic; the <a href="../topics/numerics-and-financial-concepts.html">topic concepts page</a> covers the vocabulary shared across both libraries.</p>
+<h2 id="canonical-form">Canonical form</h2>
+<p>Every <a class="xref" href="../../api/Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a> is held in <strong>canonical form</strong>: the GCD-reduced numerator and denominator share no common factor other than one, the denominator is strictly positive, and the sign rides on the numerator. The type maintains this invariant on every construction, factory, arithmetic, and conversion path, so no unreduced representation can leak out.</p>
+<p>Canonical form makes equality, comparison, and hashing structural. Two fractions are equal exactly when their canonical components match; equal fractions share a hash code; ordering uses a straight cross-multiplication. There is no separate &quot;reduced&quot; view to compute or compare against.</p>
+<h2 id="reduction-gcd-normalisation">Reduction (GCD normalisation)</h2>
+<p><strong>Reduction</strong> is the act of dividing both components by their greatest common divisor and flipping the sign onto the numerator when the supplied denominator is negative. It happens once on construction — <code>Fraction&lt;int&gt;.Create(2, 4)</code> and <code>Fraction&lt;int&gt;.Create(1, 2)</code> both leave the factory as <code>1/2</code> and are indistinguishable from that point on.</p>
+<p>A canonical result that does not fit in <code>T</code> — for example, when the supplied components are at the edge of <code>T.MinValue</code> — throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.overflowexception">OverflowException</a> from the factory. <code>Fraction&lt;T&gt;.TryCreate</code> reports the same condition through a <code>false</code> return without throwing.</p>
+<h2 id="biginteger-promotion"><code>BigInteger</code> promotion</h2>
+<p>Arithmetic on <a class="xref" href="../../api/Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a> <strong>promotes</strong> both operands to <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.biginteger">BigInteger</a>, evaluates the operation exactly, reduces the result to canonical form, and <strong>narrows</strong> back to <code>T</code>. Intermediate magnitudes can therefore exceed <code>T</code>'s range without truncation; only the final canonical components need to fit in <code>T</code>.</p>
+<p><code>Fraction&lt;BigInteger&gt;</code> eliminates the narrowing step. Pick it whenever a calculation chains several multiplications or divisions and the canonical magnitude might exceed a fixed-width range — long compound-interest schedules, exact percentage-of-percentage chains, and the <code>Money&lt;TCurrency&gt;.ToFraction()</code> precision escape hatch are the canonical examples.</p>
+<h2 id="overflow-on-narrow">Overflow on narrow</h2>
+<p>When the canonical result of an arithmetic operation does not fit in a fixed-width <code>T</code>, the narrowing step raises <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.overflowexception">OverflowException</a>. The promoted <code>BigInteger</code> computation is always exact — the exception flags that <em>the result cannot be stored</em>, not that the math was lossy.</p>
+<p>There is no silent wrap, no saturation, and no truncation; an overflow is always a thrown exception. Switching the backing type to <code>BigInteger</code> removes the failure mode entirely. The same exception covers unsigned-backing edge cases (a negative numerator on a <code>Fraction&lt;uint&gt;</code> triggers it).</p>
+<h2 id="ibinaryintegert-backing"><code>IBinaryInteger&lt;T&gt;</code> backing</h2>
+<p><a class="xref" href="../../api/Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a> is constrained as <code>where T : IBinaryInteger&lt;T&gt;</code> — the generic-math interface every binary-integer type implements. That covers the BCL signed types (<code>sbyte</code>, <code>short</code>, <code>int</code>, <code>long</code>, <code>Int128</code>), the unsigned types (<code>byte</code>, <code>ushort</code>, <code>uint</code>, <code>ulong</code>, <code>UInt128</code>), and <code>BigInteger</code>, plus any consumer-defined integer that implements the interface.</p>
+<p>The constraint is what unlocks <code>Fraction&lt;BigInteger&gt;</code> as a first-class backing — the same generic code path serves fixed-width and arbitrary-precision storage without bespoke overloads or specialisations.</p>
+<h2 id="inumbert--isignednumbert"><code>INumber&lt;T&gt;</code> / <code>ISignedNumber&lt;T&gt;</code></h2>
+<p><a class="xref" href="../../api/Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a> implements <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.inumber-1">INumber&lt;TSelf&gt;</a> and <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.isignednumber-1">ISignedNumber&lt;TSelf&gt;</a>, the same generic-math interfaces that .NET 8's <code>int</code>, <code>double</code>, and <code>BigInteger</code> implement. That makes <code>Fraction&lt;T&gt;</code> substitutable in any algorithm written against the abstractions — <code>Sum</code>, <code>Aggregate</code>, generic linear-algebra routines, statistical helpers — without bespoke wrappers.</p>
+<p><a class="xref" href="../../api/Bodu.Numerics.Interval-1.html">Interval&lt;T&gt;</a> uses the lighter <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.inumber-1">INumber&lt;TSelf&gt;</a> constraint on its endpoint type so non-integer endpoints (<code>double</code>, <code>decimal</code>, fixed-point types) are accepted.</p>
+<h2 id="inumber-classification-predicates"><code>INumber</code> classification predicates</h2>
+<p>Implementing <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.inumberbase-1">INumberBase&lt;TSelf&gt;</a> obliges <code>Fraction&lt;T&gt;</code> to answer the full battery of static classification predicates — and because a rational is always a finite real, most have constant answers:</p>
+<table>
+<thead>
+<tr>
+<th>Predicate</th>
+<th>Result for <code>Fraction&lt;T&gt;</code></th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>IsNaN</code>, <code>IsInfinity</code>, <code>IsPositiveInfinity</code>, <code>IsNegativeInfinity</code>, <code>IsSubnormal</code>, <code>IsComplexNumber</code>, <code>IsImaginaryNumber</code></td>
+<td>always <code>false</code></td>
+<td>A rational has no non-finite, subnormal, or complex states; division by zero throws rather than yielding a non-finite value.</td>
+</tr>
+<tr>
+<td><code>IsFinite</code>, <code>IsRealNumber</code></td>
+<td>always <code>true</code></td>
+<td>Every representable value is a finite real.</td>
+</tr>
+<tr>
+<td><code>IsNormal</code></td>
+<td><code>true</code> unless zero</td>
+<td>Mirrors the floating-point convention that zero is not &quot;normal&quot;.</td>
+</tr>
+<tr>
+<td><code>IsCanonical</code></td>
+<td>always <code>true</code></td>
+<td>The type maintains canonical form as an invariant.</td>
+</tr>
+<tr>
+<td><code>IsInteger</code>, <code>IsEvenInteger</code>, <code>IsOddInteger</code>, <code>IsZero</code>, <code>IsNegative</code>, <code>IsPositive</code></td>
+<td>value-dependent</td>
+<td>Computed from the canonical components.</td>
+</tr>
+<tr>
+<td><code>Radix</code></td>
+<td><code>2</code></td>
+<td>Inherited from the binary-integer backing component.</td>
+</tr>
+</tbody>
+</table>
+<p>The practical consequence is that an <code>INumber</code>-generic algorithm guarding on <code>TSelf.IsFinite(x)</code> or <code>TSelf.IsNaN(x)</code> behaves correctly over <code>Fraction&lt;T&gt;</code> without special-casing — the guards simply never trip the non-finite paths.</p>
+<h2 id="cross-type-conversion-createchecked--createsaturating--createtruncating">Cross-type conversion (<code>CreateChecked</code> / <code>CreateSaturating</code> / <code>CreateTruncating</code>)</h2>
+<p>The <code>INumberBase&lt;TSelf&gt;.TryConvertFrom*</code> / <code>TryConvertTo*</code> hooks let <code>Fraction&lt;T&gt;</code> participate in <code>TSelf.CreateChecked&lt;TOther&gt;(value)</code>-style generic conversions:</p>
+<ul>
+<li><strong>From another numeric type:</strong> integer and <code>decimal</code> sources convert <em>exactly</em>; any other finite source converts through its nearest <code>double</code> and then to the exact rational of that <code>double</code> (so <code>Create*&lt;Fraction&lt;int&gt;&gt;(0.1)</code> yields the rational of the IEEE-754 <code>double</code> <code>0.1</code>, not <code>1/10</code>). Non-finite sources fail the conversion. The <em>checked</em> path raises <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.overflowexception">OverflowException</a> when the result does not fit <code>T</code>; the <em>saturating</em> path clamps to <code>MinValue</code> / <code>MaxValue</code> instead; the <em>truncating</em> path shares the saturating clamp.</li>
+<li><strong>To another numeric type:</strong> an integer-valued fraction converts from its exact numerator; a non-integer fraction converts through <code>ToDecimal</code> (checked, for <code>decimal</code> targets) or <code>ToDouble</code> (otherwise). The checked / saturating / truncating distinction is forwarded to the destination type's own <code>Create*</code>.</li>
+</ul>
+<h2 id="mixed-number-formatting">Mixed-number formatting</h2>
+<p>A <strong>mixed number</strong> is the <code>whole + proper-fraction</code> form — <code>2 1/3</code> instead of the improper ratio <code>7/3</code>. <a class="xref" href="../../api/Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a>.<code>ToString(&quot;M&quot;)</code> produces this representation, with the sign on the whole part and the fractional part suppressed when zero. The improper-ratio form is the default (<code>G</code> specifier).</p>
+<p><code>Fraction&lt;T&gt;.Parse</code> accepts the same shape on the input side: <code>&quot;2 1/3&quot;</code> parses to <code>7/3</code>, with the sign applying to the entire whole + fraction result.</p>
+<h2 id="unicode-vulgar-fraction">Unicode vulgar fraction</h2>
+<p>A <strong>vulgar fraction</strong> is the single-codepoint glyph form — <code>½</code>, <code>⅗</code>, <code>¾</code>. The <code>&quot;U&quot;</code> format specifier emits these glyphs when one exists (18 numerator/denominator pairs are shipped, with denominator at most 16) and falls back to mixed-number form otherwise. The parser accepts the same glyphs (<code>&quot;⅗&quot;</code> parses to <code>3/5</code>, <code>&quot;2⅜&quot;</code> parses to <code>19/8</code>). See <a href="../../guides/numerics/formatting-and-parsing.html">Formatting and parsing <code>Fraction&lt;T&gt;</code></a> for the full glyph table.</p>
+<h2 id="continued-fraction-expansion">Continued fraction expansion</h2>
+<p>A <strong>continued fraction</strong> is the recursive representation <code>a0 + 1/(a1 + 1/(a2 + …))</code>, written compactly as the coefficient list <code>[a0; a1, a2, …]</code>. <code>Fraction&lt;T&gt;.ToContinuedFraction()</code> returns the coefficient array; <code>Fraction&lt;T&gt;.FromContinuedFraction(coeffs)</code> reconstructs the rational. The leading coefficient carries the sign; every following coefficient is strictly positive.</p>
+<p>The <strong>convergents</strong> of a continued fraction — the rationals produced by truncating the expansion at successive coefficients — form a sequence of progressively better rational approximations to the original value. This is the algorithmic core of <code>Approximate</code> and <code>LimitDenominator</code>.</p>
+<h2 id="best-rational-approximation">Best rational approximation</h2>
+<p><code>Fraction&lt;T&gt;.Approximate(value, maxDenominator)</code> returns the rational closest to <code>value</code> whose denominator does not exceed <code>maxDenominator</code>. &quot;Best&quot; is defined in the standard sense: no other rational with a smaller denominator and no other rational with the same denominator gets closer.</p>
+<p>The search walks the convergents of the continued-fraction expansion and selects between the last convergent and a final semiconvergent. Overloads accept <code>double</code>, <code>decimal</code>, and string input. <code>Fraction&lt;T&gt;.LimitDenominator(maxDenominator)</code> is the streaming variant that re-approximates an existing fraction within a tighter denominator bound.</p>
+<h2 id="range-as-a-first-class-value">Range as a first-class value</h2>
+<p>An <a class="xref" href="../../api/Bodu.Numerics.Interval-1.html">Interval&lt;T&gt;</a> is a <strong>range encoded as a single value</strong>: lower endpoint, upper endpoint, and the inclusivity of each side, packed into one immutable <code>readonly struct</code>. The point of having a dedicated type is that the range can be passed, stored, compared, and operated on without splitting it into separate <code>min</code> / <code>max</code> / <code>(bool, bool)</code> parameters whose meaning depends on convention.</p>
+<p>Reach for it whenever the range itself is the data:</p>
+<ul>
+<li>A scheduling window or time slot persisted in a database column.</li>
+<li>A validation predicate exposed by an API (<code>var valid = Interval&lt;int&gt;.Closed(0, 100);</code>).</li>
+<li>A reservation that needs to detect overlap with other reservations.</li>
+<li>A bucket whose membership semantics carry through a pipeline.</li>
+</ul>
+<p>When the range is <em>only</em> an immediate <code>for (int i = 0; i &lt; count; i++)</code> loop bound, a plain <code>int</code> pair or <code>System.Range</code> is enough and <code>Interval&lt;T&gt;</code> is overkill. The line is &quot;is the range a value other code receives&quot; — <code>Interval&lt;T&gt;</code> when yes, primitive pair when no.</p>
+<h2 id="comparison-with-systemrange-tuples-and-bool-bool-flags">Comparison with <code>System.Range</code>, tuples, and <code>(bool, bool)</code> flags</h2>
+<table>
+<thead>
+<tr>
+<th>Alternative</th>
+<th>Limitation</th>
+<th>When <code>Interval&lt;T&gt;</code> wins</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>System.Range</code></td>
+<td>Integer-only; always <code>[start, end)</code>; intended for slicing, not membership.</td>
+<td>Non-integer endpoints, mixed inclusivity, or set algebra.</td>
+</tr>
+<tr>
+<td><code>(T min, T max)</code> tuple</td>
+<td>Inclusivity is implicit — readers have to infer or check a comment.</td>
+<td>The contract is in the value; the four shapes are distinguishable.</td>
+</tr>
+<tr>
+<td><code>(T, T, bool, bool)</code> tuple</td>
+<td>Possible but loses the named API (<code>Contains</code>, <code>Intersect</code>, <code>TryUnion</code>) and structural equality on the <em>set</em>.</td>
+<td>All operations are methods on the type; equality compares sets, not field shapes.</td>
+</tr>
+<tr>
+<td><code>Predicate&lt;T&gt;</code></td>
+<td>Composable for membership but throws away the endpoints — no intersection, union, or persistence.</td>
+<td>The data form is preserved; predicates are easy to derive when needed.</td>
+</tr>
+</tbody>
+</table>
+<p><code>System.Range</code> and <code>Interval&lt;T&gt;</code> are not competitors — <code>Range</code> is the right tool for slicing <code>Span&lt;T&gt;</code> / arrays, while <code>Interval&lt;T&gt;</code> is the right tool when &quot;the range itself&quot; is a value.</p>
+<h2 id="numeric-backing-types">Numeric backing types</h2>
+<p>The type parameter is constrained as <code>where T : INumber&lt;T&gt;</code>, so any .NET generic-math number is a valid endpoint type: <code>int</code>, <code>long</code>, <code>Int128</code>, <code>double</code>, <code>float</code>, <code>decimal</code>, <code>BigInteger</code>, and consumer-defined numeric types built on the generic-math interfaces. The same set-algebra code runs over integer scheduling slots, decimal price bands, and arbitrary-magnitude <code>BigInteger</code> bounds without a per-type overload.</p>
+<p>Endpoints are stored at full <code>T</code> precision — no widening, no narrowing — and <code>Contains</code>, <code>Intersect</code>, <code>Overlaps</code>, and <code>TryUnion</code> use <code>T</code>'s native comparison operators.</p>
+<h2 id="endpoint-inclusivity">Endpoint inclusivity</h2>
+<p>An <a class="xref" href="../../api/Bodu.Numerics.Interval-1.html">Interval&lt;T&gt;</a> endpoint is either <strong>closed</strong> (included in the set — written with a square bracket: <code>[</code>, <code>]</code>) or <strong>open</strong> (excluded — written with a round bracket: <code>(</code>, <code>)</code>). Inclusivity is tracked independently on each side, so a single interval value expresses any of the four conventional shapes; the constructor takes a separate <code>lowerInclusive</code> / <code>upperInclusive</code> flag for each end.</p>
+<p><code>Contains(value)</code> honours inclusivity: a closed endpoint accepts the boundary value, an open endpoint rejects it.</p>
+<pre><code class="lang-csharp">var closed = Interval&lt;int&gt;.Closed(0, 10);       // [0, 10]
+var open   = Interval&lt;int&gt;.Open(0, 10);         // (0, 10)
+
+closed.Contains(0);    // True  — closed lower
+open.Contains(0);      // False — open lower
+closed.Contains(10);   // True  — closed upper
+open.Contains(10);     // False — open upper
+</code></pre>
+<h2 id="interval-kinds">Interval kinds</h2>
+<p>The four canonical shapes follow from independent inclusivity flags on each end:</p>
+<table>
+<thead>
+<tr>
+<th>Shape</th>
+<th>Notation</th>
+<th>Factory</th>
+<th>Typical use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Closed-closed</td>
+<td><code>[a, b]</code></td>
+<td><code>Interval&lt;T&gt;.Closed(a, b)</code></td>
+<td>A percentage <code>[0, 100]</code>, a die roll <code>[1, 6]</code>, any range whose boundary values are valid members.</td>
+</tr>
+<tr>
+<td>Open-open</td>
+<td><code>(a, b)</code></td>
+<td><code>Interval&lt;T&gt;.Open(a, b)</code></td>
+<td>Strict-inequality conditions: <code>0 &lt; rate &lt; 1</code>, &quot;strictly between&quot;.</td>
+</tr>
+<tr>
+<td>Closed-open</td>
+<td><code>[a, b)</code></td>
+<td><code>Interval&lt;T&gt;.ClosedOpen(a, b)</code></td>
+<td>Spans, slices, scheduling windows, bucket boundaries — see <a href="#half-open-by-convention">Half-open by convention</a>.</td>
+</tr>
+<tr>
+<td>Open-closed</td>
+<td><code>(a, b]</code></td>
+<td><code>Interval&lt;T&gt;.OpenClosed(a, b)</code></td>
+<td>Billing tiers, histogram bins owning their upper edge, &quot;strictly above X, up to Y&quot;.</td>
+</tr>
+</tbody>
+</table>
+<p>A <strong>degenerate</strong> interval is a closed-closed interval whose endpoints are equal — <code>[5, 5]</code> — and contains exactly one value. <code>Interval&lt;T&gt;.Singleton(value)</code> is the dedicated factory.</p>
+<h2 id="empty-interval">Empty interval</h2>
+<p>An interval is <strong>empty</strong> when its bounds admit no value — either <code>Lower &gt; Upper</code>, or <code>Lower == Upper</code> with at least one endpoint open. The type honours the mathematical fact that there is one empty set: every empty construction compares equal to <a class="xref" href="../../api/Bodu.Numerics.Interval-1.html">Interval&lt;T&gt;</a>.<code>Empty</code> and shares its hash code, regardless of the bounds it was constructed with.</p>
+<p>The default-constructed <code>Interval&lt;T&gt;</code> is empty — the all-zero representation <code>(0, 0, false, false)</code> satisfies the equal-bounds-both-open case. <code>IsEmpty</code> reports the predicate; equality with <code>Empty</code> is the same test.</p>
+<pre><code class="lang-csharp">var none      = Interval&lt;int&gt;.Empty;
+var inverted  = new Interval&lt;int&gt;(5, 1, true, true);     // Lower &gt; Upper
+var collapsed = new Interval&lt;int&gt;(0, 0, false, false);   // equal + open
+Interval&lt;int&gt; defaulted = default;
+
+none == inverted &amp;&amp; none == collapsed &amp;&amp; none == defaulted;  // True
+none.ToString();                                             // &quot;∅&quot;
+</code></pre>
+<p><code>Empty</code> acts as the identity in the set algebra: <code>Intersect</code> returns it whenever two operands share no values, and <code>TryUnion</code> returns the other operand unchanged when one side is empty.</p>
+<h2 id="membership">Membership</h2>
+<p><code>Interval&lt;T&gt;.Contains(T value)</code> reports whether <code>value</code> belongs to the interval. The lower test uses <code>&gt;=</code> when <code>LowerInclusive</code> and <code>&gt;</code> otherwise; the upper test mirrors it. An empty interval contains no value, including itself.</p>
+<p><code>Interval&lt;T&gt;.Contains(Interval&lt;T&gt; other)</code> tests subset containment — every value of <code>other</code> is also a value of this interval. The empty interval is a subset of every interval, so any interval contains the empty interval.</p>
+<pre><code class="lang-csharp">var outer = Interval&lt;int&gt;.Closed(0, 10);
+
+outer.Contains(5);                                    // True — value
+outer.Contains(Interval&lt;int&gt;.Closed(2, 8));           // True — strict subset
+outer.Contains(Interval&lt;int&gt;.Closed(2, 11));          // False — exceeds upper
+outer.Contains(Interval&lt;int&gt;.Empty);                  // True — ∅ ⊆ every set
+</code></pre>
+<h2 id="overlap-intersection-union-adjacency">Overlap, intersection, union, adjacency</h2>
+<p><code>Overlaps(other)</code> reports whether the two intervals share at least one value. Intervals that <em>touch</em> at a boundary without both including it — <code>[1, 5)</code> and <code>[5, 10]</code> — do not overlap.</p>
+<p><code>Intersect(other)</code> returns the interval of shared values; when the operands share none, the result is <code>Empty</code>. On endpoint ties, the <strong>stricter</strong> (open) inclusivity wins so the result is a true subset of both.</p>
+<p><code>TryUnion(other, out result)</code> succeeds when the union is itself a single contiguous interval — that is, when the operands either overlap or are <em>adjacent</em>. Two intervals are <strong>adjacent</strong> when one's upper endpoint equals the other's lower endpoint and at least one of those endpoints is inclusive. On endpoint ties in the union, the <strong>looser</strong> (closed) inclusivity wins. When the operands are disjoint with a true gap, <code>TryUnion</code> returns <code>false</code> rather than synthesising a two-piece union.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>The two tie-break rules are duals chosen to keep each operation total and exact. On an endpoint tie, <code>Intersect</code> keeps the <strong>stricter</strong> (open) side so the result is a genuine <em>subset</em> of both operands (<code>AND</code> of the inclusivity flags); <code>TryUnion</code> keeps the <strong>looser</strong> (closed) side so the result is a genuine <em>superset</em> of both (<code>OR</code> of the flags). This is why <code>[1, 5] ∩ (1, 5) = (1, 5)</code> while <code>[1, 5] ∪ (1, 5) = [1, 5]</code>.</p>
+</div>
+<pre><code class="lang-csharp">var a = Interval&lt;int&gt;.Closed(1, 5);
+var b = Interval&lt;int&gt;.Closed(3, 7);
+
+a.Overlaps(b);                          // True
+a.Intersect(b);                         // [3, 5] — shared values
+a.TryUnion(b, out var merged);          // merged = [1, 7], result = true
+
+// Adjacent half-open shapes union cleanly.
+Interval&lt;int&gt;.ClosedOpen(1, 5)
+    .TryUnion(Interval&lt;int&gt;.Closed(5, 10), out var span);   // span = [1, 10]
+
+// Disjoint operands cannot form a contiguous union.
+Interval&lt;int&gt;.Closed(1, 2)
+    .TryUnion(Interval&lt;int&gt;.Closed(5, 6), out _);           // returns false
+</code></pre>
+<h2 id="half-open-by-convention">Half-open by convention</h2>
+<p>The <strong>closed-open</strong> shape <code>[a, b)</code> is the most common in programming contexts: it matches <code>System.Range</code>, <code>Enumerable.Range</code>, slice iterators, and the inclusive-start / exclusive-end convention used in scheduling, time windows, and bucket ranges. <code>Interval&lt;T&gt;.ClosedOpen</code> and the non-generic <code>Interval.ClosedOpen</code> are the factories. Adjacent half-open intervals partition a span cleanly with no overlap and no gap, which is why the convention dominates.</p>
+<pre><code class="lang-csharp">// Quarter buckets that together cover [0, 365) with no overlap and no gap.
+var q1 = Interval&lt;int&gt;.ClosedOpen(0,   90);
+var q2 = Interval&lt;int&gt;.ClosedOpen(90,  181);
+var q3 = Interval&lt;int&gt;.ClosedOpen(181, 273);
+var q4 = Interval&lt;int&gt;.ClosedOpen(273, 365);
+</code></pre>
+<h2 id="unbounded-and-half-bounded-endpoints">Unbounded and half-bounded endpoints</h2>
+<p>A side of an <a class="xref" href="../../api/Bodu.Numerics.Interval-1.html">Interval&lt;T&gt;</a> may be <strong>unbounded</strong> — extending to <code>-∞</code> or <code>+∞</code> — rather than bounded by a concrete <code>T</code>. Boundedness is tracked as explicit endpoint metadata (spare flag bits), <em>not</em> as a floating-point infinity sentinel, so it works uniformly for <code>int</code>, <code>decimal</code>, and <code>BigInteger</code> endpoints. An unbounded side is always open (infinity is never a member) and never makes the interval empty.</p>
+<p>The factories are <code>Interval&lt;T&gt;.AtLeast(a)</code> = <code>[a, +∞)</code>, <code>GreaterThan(a)</code> = <code>(a, +∞)</code>, <code>AtMost(b)</code> = <code>(-∞, b]</code>, <code>LessThan(b)</code> = <code>(-∞, b)</code>, and <code>All</code> = <code>(-∞, +∞)</code>. <code>IsBounded</code> reports whether both sides are finite; <code>Length</code> throws for an unbounded interval because the extent is infinite.</p>
+<h2 id="difference-and-symmetric-difference">Difference and symmetric difference</h2>
+<p><code>Interval&lt;T&gt;.Difference(other)</code> is the set difference <code>this \ other</code> — the members of this interval not in <code>other</code>. Removing an interior slice leaves a <strong>left</strong> and a <strong>right</strong> remainder, so the result is zero, one, or two disjoint intervals, returned as an allocation-free <a class="xref" href="../../api/Bodu.Numerics.IntervalPair-1.html">IntervalPair&lt;T&gt;</a>. <code>SymmetricDifference(other)</code> returns the members in exactly one operand. The <code>&amp;</code> operator is <code>Intersect</code>; the <code>|</code> operator is the contiguous union (it throws when the operands are disjoint with a gap, since the result would not be a single interval).</p>
+<h2 id="disconnected-sets-intervalsett">Disconnected sets (<code>IntervalSet&lt;T&gt;</code>)</h2>
+<p><code>IntervalPair&lt;T&gt;</code> covers the at-most-two pieces of a <em>binary</em> operation. When a union or complement can produce arbitrarily many disjoint ranges, an <a class="xref" href="../../api/Bodu.Numerics.IntervalSet-1.html">IntervalSet&lt;T&gt;</a> models the result: a <strong>normalized</strong> collection of disjoint, non-adjacent intervals in ascending order. Overlapping and adjacent inputs coalesce on construction, so equal sets share a canonical form and set equality is piecewise equality. It offers N-ary <code>Union</code>, <code>Intersect</code>, <code>Except</code>, and <code>Complement</code> (taken over the whole line, so the double complement is the identity) over both an <code>Interval&lt;T&gt;</code> and another <code>IntervalSet&lt;T&gt;</code>.</p>
+<h2 id="continuous-versus-discrete-discreteintervalt">Continuous versus discrete (<code>DiscreteInterval&lt;T&gt;</code>)</h2>
+<p><code>Interval&lt;T&gt;</code> is a <strong>continuous</strong> interval over ordered coordinates: <code>Interval&lt;int&gt;.Open(1, 2)</code> is non-empty even though no <em>integer</em> lies strictly between 1 and 2. When the domain is the representable integers, use <a class="xref" href="../../api/Bodu.Numerics.DiscreteInterval-1.html">DiscreteInterval&lt;T&gt;</a> (constrained to <code>IBinaryInteger&lt;T&gt;</code>). It canonicalizes every shape to closed integer bounds, so <code>DiscreteInterval&lt;int&gt;.Open(1, 2)</code> <strong>is</strong> empty and successor-adjacent runs — <code>[1, 2]</code> and <code>[3, 4]</code> — union into <code>[1, 4]</code>. Its binary <code>Difference</code> / <code>SymmetricDifference</code> return a <a class="xref" href="../../api/Bodu.Numerics.DiscreteIntervalPair-1.html">DiscreteIntervalPair&lt;T&gt;</a>, and <code>ToInterval()</code> / <code>FromInterval(...)</code> convert to and from the continuous type.</p>
+<h2 id="complex-numbers-complext">Complex numbers (<code>Complex&lt;T&gt;</code>)</h2>
+<p><a class="xref" href="../../api/Bodu.Numerics.Complex-1.html">Complex&lt;T&gt;</a> is the fourth value type, and the one that is <em>not</em> exact: an immutable pair of <code>Real</code> / <code>Imaginary</code> components over any <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.ifloatingpointieee754-1">IFloatingPointIeee754&lt;TSelf&gt;</a> (<code>float</code>, <code>double</code>, <code>Half</code>, …). It generalizes <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.complex">Complex</a> — which is fixed to <code>double</code> — and deliberately reproduces its arithmetic rules (four-multiply product, Smith's division, <code>Reciprocal(Zero) == Zero</code>, NaN and infinity propagation) so that <code>Complex&lt;double&gt;</code> is a drop-in. Because complex numbers have no total order it implements <code>INumberBase&lt;Complex&lt;T&gt;&gt;</code> and <code>ISignedNumber&lt;Complex&lt;T&gt;&gt;</code> but <strong>not</strong> <code>INumber&lt;T&gt;</code>; <code>Magnitude</code>, <code>Phase</code>, and <code>Abs</code> return <code>T</code> rather than widening to <code>double</code>. The canonical text form is the BCL's <code>&lt;real; imaginary&gt;</code> — the <code>;</code> separator is fixed regardless of culture so a decimal comma cannot collide with it — and a bare real number is accepted on parse as a convenience. See <a href="../../guides/numerics/complex.html">Working with <code>Complex&lt;T&gt;</code></a>.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="index.html">Introduction</a></strong> — the high-level shape of the library.</li>
+<li><strong><a href="getting-started.html">Getting started</a></strong> — install + runnable minimal samples.</li>
+<li><strong><a href="../../guides/numerics/fraction.html">Working with <code>Fraction&lt;T&gt;</code></a></strong> — construction, arithmetic, parsing, formatting, continued fractions, rational approximation.</li>
+<li><strong><a href="../../guides/numerics/interval.html">Working with <code>Interval&lt;T&gt;</code></a></strong> — endpoint inclusivity, membership, intersection, union, adjacency.</li>
+<li><strong><a href="../../guides/numerics/interval-algebra.html">Interval algebra</a></strong> — unbounded endpoints, difference / symmetric difference, operators, and <code>IntervalSet&lt;T&gt;</code>.</li>
+<li><strong><a href="../../guides/numerics/discrete-intervals.html">Discrete integer intervals</a></strong> — the integer-domain <code>DiscreteInterval&lt;T&gt;</code>.</li>
+<li><strong><a href="../../guides/numerics/complex.html">Working with <code>Complex&lt;T&gt;</code></a></strong> — the generic complex number and its relationship to <code>System.Numerics.Complex</code>.</li>
+<li><strong><a href="../topics/numerics-and-financial.html">Numerics &amp; Financial topic overview</a></strong> — how this package and <code>Bodu.Financial</code> fit together.</li>
+<li><strong><a href="../topics/numerics-and-financial-concepts.html">Numerics &amp; Financial topic concepts</a></strong> — the vocabulary shared across both libraries.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Numerics.html">Bodu.Numerics API reference</a></strong> — full type-by-type docs.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

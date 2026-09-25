@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Namespace Bodu.Text.Bencode | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Namespace Bodu.Text.Bencode | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Text.Bencode">
+
+  <h1 id="Bodu_Text_Bencode" data-uid="Bodu.Text.Bencode" class="text-break">Namespace Bodu.Text.Bencode</h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual">
+<p><img src="../images/hero-bencode.svg" alt="Bodu.Text.Bencode"></p>
+<h2 id="purpose">Purpose</h2>
+<p><strong>Bodu.Text.Bencode</strong> is a <a href="https://www.bittorrent.org/beps/bep_0003.html">Bencode (BEP 3)</a> serializer for .NET 8. It maps plain CLR objects to and from Bencode — the BitTorrent metadata format — through a configurable converter model, over a low-level, forward-only token reader and writer, with both a mutable and a read-only document object model.</p>
+<p>The public surface layers four tiers: a static <a class="xref" href="Bodu.Text.Bencode.BencodeSerializer.html">BencodeSerializer</a> for object mapping, the <a class="xref" href="Bodu.Text.Bencode.Reader.Utf8BencodeReader.html">Utf8BencodeReader</a> / <a class="xref" href="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.html">Utf8BencodeWriter</a> <code>ref struct</code> pair for forward-only token processing, a mutable <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeNode.html">BencodeNode</a> DOM, and a read-only <a class="xref" href="Bodu.Text.Bencode.Document.BencodeDocument.html">BencodeDocument</a> DOM. The twin library <a class="xref" href="Bodu.Text.Toml.html">Bodu.Text.Toml</a> applies the identical shape to TOML.</p>
+<p>Output is always canonical Bencode: dictionary entries are emitted in ascending bytewise key order. For binary-to-text encodings (Base16 / Base32 / Base64 / Base58 / Base85) that operate on flat byte sequences without a structural grammar, see the companion <a class="xref" href="Bodu.Text.Encoding.html">Bodu.Text.Encoding</a> package.</p>
+<h2 id="static-documentation">Static documentation</h2>
+<ul>
+<li><strong><a href="../docs/serialization/index.html">Bodu serializers introduction</a></strong> — the three libraries, the shared tiers, and how to choose a format.</li>
+<li><strong><a href="../docs/serialization/bencode/concepts.html">Core concepts</a></strong> — the serializer, the converter model, the two DOMs, and the reader/writer seam.</li>
+<li><strong><a href="../docs/serialization/bencode/getting-started.html">Getting started</a></strong> — install and the first round trip.</li>
+<li><strong><a href="../guides/serialization/bencode/using.html">Using Bencode</a></strong> — type mapping, canonical ordering, the DOMs, and unsupported kinds.</li>
+<li><strong><a href="../guides/serialization/bencode/converters.html">Writing converters</a></strong> — custom shapes with <code>BencodeConverter&lt;T&gt;</code>.</li>
+</ul>
+<h2 id="key-types">Key types</h2>
+<p><strong>Serializer (<code>Bodu.Text.Bencode</code>)</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Text.Bencode.BencodeSerializer.html">BencodeSerializer</a> — static façade. <code>Serialize</code> to <code>byte[]</code> / <code>IBufferWriter&lt;byte&gt;</code> / <code>Stream</code> and <code>Deserialize&lt;T&gt;</code> from <code>ReadOnlySpan&lt;byte&gt;</code> / <code>byte[]</code> / <code>Stream</code>, sync and async.</li>
+<li><a class="xref" href="Bodu.Text.Bencode.BencodeSerializerOptions.html">BencodeSerializerOptions</a> — converters, naming policy, ignore conditions, depth, and <code>IncludeFields</code>; cached and frozen on first use.</li>
+<li><a class="xref" href="Bodu.Text.Bencode.BencodeSerializerDefaults.html">BencodeSerializerDefaults</a> — the <code>General</code> / <code>Web</code> preset selector.</li>
+<li><a class="xref" href="Bodu.Text.Serialization.NamingPolicy.html">NamingPolicy</a> — camel, snake, and kebab casing policies.</li>
+<li><a class="xref" href="Bodu.Text.Bencode.BencodeTokenType.html">BencodeTokenType</a>, <a class="xref" href="Bodu.Text.Bencode.BencodeValueKind.html">BencodeValueKind</a> — the token and value-kind enumerations.</li>
+<li><a class="xref" href="Bodu.Text.Bencode.BencodeFormatException.html">BencodeFormatException</a> — malformed bytes. <a class="xref" href="Bodu.Text.Bencode.BencodeSerializationException.html">BencodeSerializationException</a> — binding failures.</li>
+</ul>
+<p><strong>Low-level reader / writer</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Text.Bencode.Reader.Utf8BencodeReader.html">Utf8BencodeReader</a> (+ <a class="xref" href="Bodu.Text.Bencode.Reader.BencodeReaderOptions.html">BencodeReaderOptions</a>) — forward-only, allocation-free token reader; accepts only canonical BEP 3.</li>
+<li><a class="xref" href="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.html">Utf8BencodeWriter</a> (+ <a class="xref" href="Bodu.Text.Bencode.Writer.BencodeWriterOptions.html">BencodeWriterOptions</a>) — forward-only token writer; emits canonical Bencode.</li>
+</ul>
+<p><strong>Document object models</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeNode.html">BencodeNode</a> / <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeObject.html">BencodeObject</a> / <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeArray.html">BencodeArray</a> / <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeValue.html">BencodeValue</a> — the mutable, editable DOM (parsing tuned by <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeNodeOptions.html">BencodeNodeOptions</a>).</li>
+<li><a class="xref" href="Bodu.Text.Bencode.Document.BencodeDocument.html">BencodeDocument</a> / <a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.html">BencodeElement</a> / <a class="xref" href="Bodu.Text.Bencode.Document.BencodeProperty.html">BencodeProperty</a> — the read-only, low-allocation DOM.</li>
+</ul>
+<p><strong>Converters and attributes (<code>Bodu.Text.Bencode.Serialization</code>)</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Text.Bencode.Serialization.BencodeConverter-1.html">BencodeConverter&lt;T&gt;</a> / <a class="xref" href="Bodu.Text.Bencode.Serialization.BencodeConverterFactory.html">BencodeConverterFactory</a> — base types for custom per-type converters and converter families.</li>
+<li><a class="xref" href="Bodu.Text.Serialization.PropertyNameAttribute.html">PropertyNameAttribute</a>, <a class="xref" href="Bodu.Text.Serialization.IgnoreAttribute.html">IgnoreAttribute</a>, <a class="xref" href="Bodu.Text.Serialization.ConverterAttribute.html">ConverterAttribute</a>, and the rest of the attribute family (<code>PropertyOrder</code>, <code>Constructor</code>, <code>Required</code>, <code>Include</code>, <code>ExtensionData</code>, <code>NamingPolicy</code>, <code>UnmappedMemberHandling</code>, <code>ObjectCreationHandling</code>, <code>StringEnumMemberName</code>).</li>
+<li><a class="xref" href="Bodu.Text.Serialization.IOnSerializing.html">IOnSerializing</a>, <a class="xref" href="Bodu.Text.Serialization.IOnSerialized.html">IOnSerialized</a>, <a class="xref" href="Bodu.Text.Serialization.IOnDeserializing.html">IOnDeserializing</a>, <a class="xref" href="Bodu.Text.Serialization.IOnDeserialized.html">IOnDeserialized</a> — the serialization callbacks.</li>
+<li><a class="xref" href="Bodu.Text.Bencode.Serialization.BencodeStringEnumConverter.html">BencodeStringEnumConverter</a>, <a class="xref" href="Bodu.Text.Bencode.Serialization.BencodeNumberEnumConverter-1.html">BencodeNumberEnumConverter&lt;TEnum&gt;</a> — the built-in enum converters.</li>
+</ul>
+<h2 id="example">Example</h2>
+<pre><code class="lang-csharp">using Bodu.Text.Bencode;
+
+public sealed class TorrentInfo
+{
+    public string Name { get; set; } = &quot;&quot;;
+    public long Length { get; set; }
+}
+
+byte[] payload = BencodeSerializer.Serialize(new TorrentInfo { Name = &quot;ubuntu.iso&quot;, Length = 1024 });
+// d6:Lengthi1024e4:Name10:ubuntu.isoe   (dictionary keys in canonical order)
+
+TorrentInfo info = BencodeSerializer.Deserialize&lt;TorrentInfo&gt;(payload);
+
+// Edit a document without a model:
+using Bodu.Text.Bencode.Nodes;
+BencodeNode node = BencodeNode.Parse(payload)!;
+byte[] back = node.ToByteArray();
+</code></pre>
+<h2 id="notes">Notes</h2>
+<ul>
+<li><strong>Full serializer surface.</strong> The converter, attribute, callback, naming-policy, and enum-converter surfaces are all present.</li>
+<li><strong>Shared serialization core.</strong> The library references <a class="xref" href="Bodu.Text.Serialization.html">Bodu.Text.Serialization</a> for the attribute family, the naming policies, the ignore / creation / unmapped-member enums, and the serialization callback interfaces, and compiles that package's shared metadata resolver and converter engine under its own format symbol; the reader, writer, DOMs, and format converters are Bencode-specific. Its twin, <a class="xref" href="Bodu.Text.Toml.html">Bodu.Text.Toml</a>, mirrors it type for type for TOML; <a class="xref" href="Bodu.Text.Yaml.html">Bodu.Text.Yaml</a> shares the architecture with a YAML-tuned surface.</li>
+<li><strong>Canonical output.</strong> Bencode has exactly one canonical encoding for any value: integers use the shortest decimal representation with no padding and no <code>+</code> sign; dictionary keys are sorted by raw byte order; no whitespace is permitted. The serializer always produces canonical output, and the reader rejects every non-canonical input.</li>
+<li><strong>Value mapping.</strong> Strings, <code>byte[]</code>, and memory-of-byte map to byte strings, the integer family — spanning the full <code>long.MinValue</code> through <code>ulong.MaxValue</code> range, with the 128-bit types confined to the 64-bit surfaces — to <code>i…e</code>, and enums to member-name byte strings. Collections (arrays, lists, sets, queues, stacks, and the concurrent collections) map to lists, with a <code>Stack&lt;T&gt;</code> round-trip reversing the stack (the writer emits pop order). Dictionaries map to canonical dictionaries; keys may be strings, integers, enums, <code>Guid</code>, <code>bool</code>, or <code>char</code>, stringified on the wire. An <code>object</code>-typed member writes its runtime type and reads back as a <a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.html">BencodeElement</a>; the read-only DOM types participate directly. Types with no canonical Bencode form — Booleans, floating-point, and date-times — require a registered <a class="xref" href="Bodu.Text.Bencode.Serialization.BencodeConverter-1.html">BencodeConverter&lt;T&gt;</a>; a <code>null</code> member is omitted on write. Public fields participate via <code>IncludeFields</code> or <code>[Include]</code>. The full per-type list is in the <a href="../guides/serialization/bencode/builtin-converters.html">built-in converter catalog</a>.</li>
+<li><strong>Errors.</strong> Malformed bytes surface through <a class="xref" href="Bodu.Text.Bencode.BencodeFormatException.html">BencodeFormatException</a>; binding failures through <a class="xref" href="Bodu.Text.Bencode.BencodeSerializationException.html">BencodeSerializationException</a>.</li>
+<li><strong>See also:</strong> the <a href="../docs/serialization/index.html">introduction</a>, <a href="../docs/serialization/bencode/concepts.html">core concepts</a>, and <a href="../docs/serialization/bencode/getting-started.html">getting-started</a>; the <a href="../guides/serialization/bencode/using.html">Using Bencode</a> and <a href="../guides/serialization/bencode/converters.html">writing converters</a> guides; and the sibling <a class="xref" href="Bodu.Text.Toml.html">TOML</a> and <a class="xref" href="Bodu.Text.Yaml.html">YAML</a> libraries.</li>
+</ul>
+</div>
+  <div class="markdown level0 remarks"></div>
+    <h3 id="classes">
+Classes
+</h3>
+      <h4><a class="xref" href="Bodu.Text.Bencode.BencodeFormatException.html">BencodeFormatException</a></h4>
+      <section><p>Represents an error that occurs when bencoded data is malformed.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Bencode.BencodeSerializationException.html">BencodeSerializationException</a></h4>
+      <section><p>The exception thrown when a value cannot be bound to or from a Bencode document during serialization — for example a
+type mismatch, a missing required member, or a value Bencode cannot represent.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Bencode.BencodeSerializer.html">BencodeSerializer</a></h4>
+      <section><p>Provides static methods for serializing values to Bencode (BEP 3) bytes and deserializing Bencode bytes back into
+values, mapping plain CLR objects to and from the format through configurable converters.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Bencode.BencodeSerializerOptions.html">BencodeSerializerOptions</a></h4>
+      <section><p>Configures how values are serialized to and deserialized from Bencode: the converters to use, the property naming
+policy, the default ignore condition, and the maximum nesting depth.</p>
+</section>
+    <h3 id="enums">
+Enums
+</h3>
+      <h4><a class="xref" href="Bodu.Text.Bencode.BencodeSerializerDefaults.html">BencodeSerializerDefaults</a></h4>
+      <section><p>Specifies a base set of defaults applied when a <a class="xref" href="Bodu.Text.Bencode.BencodeSerializerOptions.html">BencodeSerializerOptions</a> instance is created for a
+particular usage scenario.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Bencode.BencodeTokenType.html">BencodeTokenType</a></h4>
+      <section><p>Identifies the kind of token a <a class="xref" href="Bodu.Text.Bencode.Reader.Utf8BencodeReader.html">Utf8BencodeReader</a> is positioned on.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Bencode.BencodeValueKind.html">BencodeValueKind</a></h4>
+      <section><p>Identifies the kind of value a Bencode element represents.</p>
+</section>
+
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

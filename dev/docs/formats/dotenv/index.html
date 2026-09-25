@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Bodu.Text.DotEnv — Introduction | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Bodu.Text.DotEnv — Introduction | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../../images/favicon.svg">
+      <link rel="stylesheet" href="../../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../../styles/docfx.css">
+      <link rel="stylesheet" href="../../../styles/main.css">
+      <meta property="docfx:navrel" content="../../../toc.html">
+      <meta property="docfx:tocrel" content="../../toc.html">
+    
+    <meta property="docfx:rel" content="../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../../index.html">
+                <img id="logo" class="svg" src="../../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+
+
+<p><img src="../../../images/hero-dotenv.svg" alt="Bodu.Text.DotEnv"></p>
+<h1 id="bodutextdotenv">Bodu.Text.DotEnv</h1>
+<p><strong>Bodu.Text.DotEnv</strong> reads and writes <code>.env</code> files — a flat object of <code>KEY=value</code> entries with optional <code>export</code> prefixes, single- and double-quoted values, and <code>#</code> comments — as a standalone <code>System.Text.Json</code>-shaped library: a forward-only <code>ref struct</code> reader/writer pair over UTF-8 bytes, a typed settings serializer, an <code>export</code>-flag-preserving mutable DOM, and a read-only document DOM. It is one of the three <a href="../index.html">Bodu line formats</a> and shares the <a href="../../serialization/core/index.html">Bodu.Text.Serialization</a> attribute, naming-policy, and callback vocabulary with every other Bodu serializer.</p>
+<p>Values are deliberately <strong>literal</strong> — no <code>${VAR}</code> interpolation happens at parse time — and the wire is string-only, so the serializer converts scalars with <code>InvariantCulture</code> at the binding layer. The <code>Web</code> preset applies the SCREAMING_SNAKE_CASE naming policy with case-insensitive matching, so conventional <code>APP_PORT</code>-style keys bind onto PascalCase members without a single <code>[PropertyName]</code>.</p>
+<p>Part of the <strong><a href="../../topics/text-and-serialization.html">Text &amp; Serialization</a></strong> topic.</p>
+<h2 id="install">Install</h2>
+<pre><code class="lang-shell">dotnet add package Bodu.Text.DotEnv
+</code></pre>
+<p>Targets <code>net8.0</code>. Depends on <code>Bodu.Text.Serialization</code> and <code>Bodu.Core</code>. Also available through the <code>Bodu.Text.Formats</code> umbrella package.</p>
+<h2 id="headline-types">Headline types</h2>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../../api/Bodu.Text.DotEnv.Reader.Utf8DotEnvReader.html">Utf8DotEnvReader</a> / <a class="xref" href="../../../api/Bodu.Text.DotEnv.Writer.Utf8DotEnvWriter.html">Utf8DotEnvWriter</a></td>
+<td>Forward-only, allocation-free token machines, configured by <a class="xref" href="../../../api/Bodu.Text.DotEnv.Reader.DotEnvReaderOptions.html">DotEnvReaderOptions</a> / <a class="xref" href="../../../api/Bodu.Text.DotEnv.Writer.DotEnvWriterOptions.html">DotEnvWriterOptions</a>.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../../api/Bodu.Text.DotEnv.DotEnvSerializer.html">DotEnvSerializer</a></td>
+<td>Settings POCO or <code>Dictionary&lt;string, string&gt;</code> ↔ text: <code>Serialize</code> / <code>Deserialize&lt;T&gt;</code> over strings, UTF-8 spans, buffer writers, and streams (with buffered async variants).</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../../api/Bodu.Text.DotEnv.DotEnvSerializerOptions.html">DotEnvSerializerOptions</a> / <a class="xref" href="../../../api/Bodu.Text.DotEnv.DotEnvSerializerDefaults.html">DotEnvSerializerDefaults</a></td>
+<td>Naming policy, case sensitivity, <code>IncludeFields</code>, <code>DefaultIgnoreCondition</code>, <code>WriteExportPrefix</code>; <code>General</code> / <code>Web</code> presets.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../../api/Bodu.Text.DotEnv.Nodes.DotEnvNode.html">DotEnvNode</a> / <a class="xref" href="../../../api/Bodu.Text.DotEnv.Nodes.DotEnvObject.html">DotEnvObject</a> / <a class="xref" href="../../../api/Bodu.Text.DotEnv.Nodes.DotEnvValue.html">DotEnvValue</a></td>
+<td>Mutable DOM that preserves each entry's <code>export</code> flag through a round trip.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../../api/Bodu.Text.DotEnv.Document.DotEnvDocument.html">DotEnvDocument</a> / <a class="xref" href="../../../api/Bodu.Text.DotEnv.Document.DotEnvElement.html">DotEnvElement</a> / <a class="xref" href="../../../api/Bodu.Text.DotEnv.Document.DotEnvProperty.html">DotEnvProperty</a></td>
+<td>Read-only, disposable document model.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../../api/Bodu.Text.DotEnv.DotEnvFormatException.html">DotEnvFormatException</a> / <a class="xref" href="../../../api/Bodu.Text.DotEnv.DotEnvSerializationException.html">DotEnvSerializationException</a></td>
+<td>Malformed input (unterminated quote, missing <code>=</code>, with position) vs a value that cannot bind.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="a-first-parse-and-bind">A first parse and bind</h2>
+<pre><code class="lang-csharp">using System.Text;
+using Bodu.Text.DotEnv;
+using Bodu.Text.DotEnv.Document;
+
+public sealed class Settings
+{
+    public string? AppEnv { get; set; }       // APP_ENV
+    public int AppPort { get; set; }          // APP_PORT
+    public string? DatabaseUrl { get; set; }  // DATABASE_URL
+}
+
+const string env = &quot;# service settings\nexport APP_ENV=production\nAPP_PORT=8080\nDATABASE_URL=\&quot;postgres://db.example.com/app\&quot;\n&quot;;
+
+using (DotEnvDocument doc = DotEnvDocument.Parse(Encoding.UTF8.GetBytes(env)))
+{
+    string url = doc.RootElement.GetProperty(&quot;DATABASE_URL&quot;).GetString();   // postgres://db.example.com/app
+}
+
+Settings settings = DotEnvSerializer.Deserialize&lt;Settings&gt;(env, new DotEnvSerializerOptions(DotEnvSerializerDefaults.Web));
+// settings.AppEnv → &quot;production&quot;, settings.AppPort → 8080
+</code></pre>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="../index.html">Line formats introduction</a></strong>, <strong><a href="../concepts.html">Core concepts</a></strong>, and <strong><a href="../getting-started.html">Getting started</a></strong> — the umbrella trio shared by all three formats.</li>
+<li><strong><a href="../../../guides/formats/dotenv.html">Using DotEnv</a></strong> — literal values, quoting rules, export prefixes, typed settings, the mutable DOM.</li>
+<li><strong><a href="../parser-policies.html">Parser policies</a></strong> — the <code>DisallowExportPrefix</code> / <code>DisallowInlineComments</code> knobs.</li>
+<li><strong><a href="../../../samples/formats.html">Runnable samples</a></strong> — the <code>ConfigFiles</code> sample project.</li>
+<li><strong>API reference</strong> — <a class="xref" href="../../../api/Bodu.Text.DotEnv.html">Bodu.Text.DotEnv</a>.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../styles/main.js"></script>
+  </body>
+</html>

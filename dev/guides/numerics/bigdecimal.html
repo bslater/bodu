@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Working with BigDecimal | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Working with BigDecimal | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="working-with-bigdecimal">Working with <code>BigDecimal</code></h1>
+
+<p><code>BigDecimal</code> is an immutable, value-equatable arbitrary-precision
+decimal number. Unlike <code>System.Decimal</code> — which is a fixed 128-bit
+type capped at 28–29 significant digits and an exponent range of
+10<sup>0</sup> to 10<sup>-28</sup> — <code>BigDecimal</code> grows to whatever
+precision a value requires. It stores an arbitrary-magnitude
+<code>BigInteger</code> <em>unscaled value</em> together with a non-negative <code>int</code>
+<em>scale</em>, so the represented number is:</p>
+<pre><code class="lang-text">value = unscaledValue × 10^-scale
+</code></pre>
+<p>For example <code>12.340</code> is <code>(unscaledValue: 12340, scale: 3)</code>. There is
+no <code>MinValue</code> or <code>MaxValue</code>: like <code>BigInteger</code>, the type is unbounded
+and arithmetic never overflows.</p>
+<p><code>BigDecimal</code> implements the full <code>INumber&lt;BigDecimal&gt;</code> /
+<code>ISignedNumber&lt;BigDecimal&gt;</code> generic-math surface, so it composes with
+<code>INumber&lt;T&gt;</code>-constrained algorithms without a bespoke wrapper.</p>
+<h2 id="when-to-reach-for-bigdecimal">When to reach for <code>BigDecimal</code></h2>
+<table>
+<thead>
+<tr>
+<th>Need</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Exact fractions such as <code>1/3</code>, continued fractions, rational approximation</td>
+<td><code>Fraction&lt;T&gt;</code></td>
+</tr>
+<tr>
+<td>Fixed-scale money within the <code>decimal</code> range (≤ 28 digits)</td>
+<td><code>System.Decimal</code></td>
+</tr>
+<tr>
+<td>Decimal values that exceed <code>decimal</code>'s precision or exponent range, or that must preserve trailing-zero <em>scale</em></td>
+<td><code>BigDecimal</code></td>
+</tr>
+</tbody>
+</table>
+<p><code>BigDecimal</code> preserves scale: <code>1.0</code>, <code>1.00</code>, and <code>1</code> are <strong>equal in
+value</strong> (they compare and hash equal) but retain their own scale for
+formatting until you normalize or rescale.</p>
+<h2 id="creating-values">Creating values</h2>
+<pre><code class="lang-csharp">using System.Numerics;
+using Bodu.Numerics;
+
+// From an unscaled value and scale directly.
+BigDecimal a = new BigDecimal(new BigInteger(12340), 3);  // 12.340
+
+// Implicit lifts from the exact integer and decimal types.
+BigDecimal fromInt     = 42;
+BigDecimal fromLong    = 9_000_000_000L;
+BigDecimal fromBigInt  = (BigInteger)1 &lt;&lt; 200;   // exact, far beyond decimal
+BigDecimal fromDecimal = 0.25m;                  // exact 0.25
+
+// Parsing accepts plain and scientific decimal text.
+BigDecimal parsed = BigDecimal.Parse(&quot;123456789012345678901234567890.123456789&quot;,
+    CultureInfo.InvariantCulture);
+BigDecimal sci    = BigDecimal.Parse(&quot;6.022e23&quot;, CultureInfo.InvariantCulture);
+
+// Named constants.
+BigDecimal zero = BigDecimal.Zero;
+BigDecimal one  = BigDecimal.One;
+BigDecimal ten  = BigDecimal.Ten;
+</code></pre>
+<p><code>double</code> does <strong>not</strong> lift implicitly, because the nearest <code>double</code>
+to a written decimal is rarely that decimal. Convert deliberately:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">BigDecimal exactBinary = (BigDecimal)0.1;              // the exact IEEE-754 value of 0.1d
+BigDecimal shortest    = BigDecimal.FromDouble(0.1);   // same value; explicit intent
+</code></pre>
+<h2 id="inspecting-a-value">Inspecting a value</h2>
+<pre><code class="lang-csharp">BigDecimal v = BigDecimal.Parse(&quot;12.340&quot;, CultureInfo.InvariantCulture);
+
+BigInteger unscaled = v.UnscaledValue;   // 12340
+int scale           = v.Scale;           // 3
+int precision       = v.Precision;       // 5  — total significant digits
+int sign            = v.Sign;            // 1  (-1, 0, or 1)
+
+bool isZero     = v.IsZero;
+bool isInteger  = v.IsInteger;           // false — has a fractional part
+bool isNegative = v.IsNegative;
+bool isPositive = v.IsPositive;
+
+// Deconstruct into (unscaledValue, scale).
+var (mantissa, s) = v;
+</code></pre>
+<h2 id="arithmetic">Arithmetic</h2>
+<p>Addition, subtraction, and multiplication are <strong>exact</strong> — the result
+carries whatever scale is needed to represent it with no loss:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">BigDecimal sum  = BigDecimal.Add(0.1m, 0.2m);         // 0.3 exactly
+BigDecimal diff = BigDecimal.Subtract(5m, 0.001m);    // 4.999
+BigDecimal prod = BigDecimal.Multiply(1.5m, 1.5m);    // 2.25
+
+BigDecimal neg  = BigDecimal.Negate(sum);
+BigDecimal abs  = BigDecimal.Abs(neg);
+BigDecimal pow  = BigDecimal.Pow(2m, 10);             // 1024
+
+// Operators mirror the named methods.
+BigDecimal total = (BigDecimal)0.1m + 0.2m - 0.05m;   // 0.25
+</code></pre>
+<h3 id="division-and-precision">Division and precision</h3>
+<p>Decimal division is not generally terminating (<code>1/3</code>), so <code>BigDecimal</code>
+cannot divide exactly and unboundedly at the same time. The contract:</p>
+<ul>
+<li>The <code>/</code> operator and the two-argument
+<code>Divide(BigDecimal, BigDecimal)</code> compute the quotient to a <strong>default
+working precision</strong> of 50 fractional digits, rounded half-to-even,
+then strip trailing zeros. This is enough for the common case while
+staying deterministic.</li>
+<li>For full control, use
+<code>Divide(BigDecimal dividend, BigDecimal divisor, int scale, MidpointRounding mode)</code>
+to fix the result scale and rounding mode explicitly.</li>
+</ul>
+<!-- compile -->
+<pre><code class="lang-csharp">BigDecimal third = BigDecimal.Divide(1m, 3m);                                   // 0.3333…（50 digits）
+BigDecimal cents = BigDecimal.Divide(10m, 3m, scale: 2, MidpointRounding.ToEven); // 3.33
+BigDecimal rem   = BigDecimal.Remainder(10m, 3m);                               // 1
+</code></pre>
+<h2 id="rounding-and-scale">Rounding and scale</h2>
+<pre><code class="lang-csharp">BigDecimal v = BigDecimal.Parse(&quot;2.455&quot;, CultureInfo.InvariantCulture);
+
+BigDecimal r2 = BigDecimal.Round(v, 2, MidpointRounding.ToEven);  // 2.46
+BigDecimal r0 = BigDecimal.Round(v);                              // 2  (default scale 0)
+
+BigDecimal floor    = BigDecimal.Floor(v);       // 2
+BigDecimal ceiling  = BigDecimal.Ceiling(v);     // 3
+BigDecimal truncate = BigDecimal.Truncate(v);    // 2  (toward zero)
+</code></pre>
+<h2 id="comparison-and-equality">Comparison and equality</h2>
+<p>Equality and ordering are by <strong>numeric value</strong>, so differing scales do
+not matter:</p>
+<pre><code class="lang-csharp">BigDecimal a = BigDecimal.Parse(&quot;1.0&quot;, CultureInfo.InvariantCulture);
+BigDecimal b = BigDecimal.Parse(&quot;1.00&quot;, CultureInfo.InvariantCulture);
+
+bool equal = a == b;                       // true
+bool sameMin = BigDecimal.Min(a, b) == a;  // true — the values are equal, so Min returns either
+
+// GetHashCode() is consistent with value equality: a and b hash equal.
+</code></pre>
+<h2 id="formatting-and-parsing">Formatting and parsing</h2>
+<p><code>BigDecimal</code> implements <code>IFormattable</code>, <code>ISpanFormattable</code>,
+<code>IUtf8SpanFormattable</code>, <code>IParsable</code>, <code>ISpanParsable</code>, and
+<code>IUtf8SpanParsable</code>. The <code>G</code> (general, plain culture-aware decimal)
+and <code>F</code> (fixed-point) standard specifiers are supported. As with the
+rest of the library, an <code>IFormatProvider</code> controls only the decimal
+separator and sign glyphs; the digit sequence is culture-invariant.</p>
+<pre><code class="lang-csharp">BigDecimal v = BigDecimal.Parse(&quot;1234.5&quot;, CultureInfo.InvariantCulture);
+
+string general = v.ToString();                               // &quot;1234.5&quot;
+string fixed2  = v.ToString(&quot;F2&quot;, CultureInfo.InvariantCulture); // &quot;1234.50&quot;
+
+// Span and UTF-8 surfaces avoid intermediate string allocation.
+Span&lt;char&gt; buffer = stackalloc char[32];
+v.TryFormat(buffer, out int written, &quot;G&quot;, CultureInfo.InvariantCulture);
+</code></pre>
+<h2 id="generic-math">Generic math</h2>
+<p>Because <code>BigDecimal</code> satisfies <code>INumber&lt;BigDecimal&gt;</code>, it flows through
+generic-math algorithms and the <code>CreateChecked</code> / <code>CreateTruncating</code>
+conversion factories. Those factories are static virtual members of
+<code>INumberBase&lt;TSelf&gt;</code>, so — as with <code>Fraction&lt;T&gt;</code> — they are reached
+through a constrained type parameter rather than called as
+<code>BigDecimal.CreateChecked(...)</code> on the concrete type:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">static T Sum&lt;T&gt;(params T[] values) where T : INumber&lt;T&gt;
+{
+    T acc = T.Zero;
+    foreach (T value in values)
+        acc += value;
+    return acc;
+}
+
+static T FromInt32&lt;T&gt;(int value) where T : INumber&lt;T&gt; =&gt;
+    T.CreateChecked(value);
+
+BigDecimal exact = Sum&lt;BigDecimal&gt;(0.1m, 0.2m, 0.3m);  // 0.6 exactly
+BigDecimal five  = FromInt32&lt;BigDecimal&gt;(5);           // T.CreateChecked via the constraint
+int back         = int.CreateTruncating(five);         // 5 — the BCL primitives expose the factories publicly
+</code></pre>
+<p>The classification predicates (<code>IsInteger</code>, <code>IsEvenInteger</code>,
+<code>IsNegative</code>, …) are exposed as static members of <code>INumberBase&lt;T&gt;</code> and
+are reached through a generic constraint, matching the BCL numeric
+types. <code>Radix</code> is <code>10</code>.</p>
+<h2 id="conversions">Conversions</h2>
+<table>
+<thead>
+<tr>
+<th>To</th>
+<th>How</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BigInteger</code></td>
+<td><code>(BigInteger)value</code> / <code>value.ToBigInteger()</code></td>
+<td>Truncates toward zero.</td>
+</tr>
+<tr>
+<td><code>decimal</code></td>
+<td><code>(decimal)value</code> / <code>value.ToDecimal()</code></td>
+<td>Throws <code>OverflowException</code> when the value exceeds <code>decimal</code>'s range; <code>value.TryToDecimal(out var d)</code> reports <code>false</code> instead of throwing.</td>
+</tr>
+<tr>
+<td><code>double</code></td>
+<td><code>(double)value</code> / <code>value.ToDouble()</code></td>
+<td>Nearest <code>double</code>; may lose precision, and saturates to <code>±Infinity</code> outside the finite range — <code>value.TryToDouble(out var d)</code> reports <code>false</code> in that case.</td>
+</tr>
+<tr>
+<td>from <code>double</code></td>
+<td><code>(BigDecimal)d</code> / <code>BigDecimal.FromDouble(d)</code></td>
+<td>Non-finite input throws.</td>
+</tr>
+<tr>
+<td>from <code>decimal</code></td>
+<td>implicit / <code>BigDecimal.FromDecimal(d)</code></td>
+<td>Exact.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="json-serialization">JSON serialization</h2>
+<p>Like the rest of <code>Bodu.Numerics</code>, the core type carries <strong>no</strong>
+<code>[JsonConverter]</code> attribute — JSON support ships in the companion
+<a href="json-serialization.html"><code>Bodu.Numerics.Serialization.Json</code></a> package.
+Register the converters with a single call and pick a wire shape:</p>
+<pre><code class="lang-csharp">using Bodu.Numerics.Serialization.Json;
+
+var options = new JsonSerializerOptions()
+    .AddNumericsJsonConverters(NumericsJsonPolicy.Strict);
+
+// Strict — canonical object form:
+//   { &quot;unscaledValue&quot;: 12340, &quot;scale&quot;: 3 }
+// Compact — the plain decimal string:
+//   &quot;12.340&quot;
+string json = JsonSerializer.Serialize(
+    BigDecimal.Parse(&quot;12.340&quot;, CultureInfo.InvariantCulture), options);
+</code></pre>
+<p>The Strict object shape writes the unscaled value as a raw JSON number,
+so an arbitrary-magnitude mantissa round-trips without precision loss.
+The Compact shape writes a string rather than a bare JSON number,
+because many JSON consumers silently narrow long numbers to IEEE-754
+<code>double</code>.</p>
+<h2 id="see-also">See also</h2>
+<ul>
+<li><a href="json-serialization.html">JSON serialization</a> — the <code>Strict</code>,
+<code>Lenient</code>, and <code>Compact</code> wire shapes and how to register them.</li>
+<li><a href="fraction.html">Working with <code>Fraction&lt;T&gt;</code></a> — the exact-rational type;
+reach for it when you need <code>1/3</code> exactly rather than to a fixed
+number of decimal places.</li>
+<li><a class="xref" href="../../api/Bodu.Numerics.BigDecimal.html"><code>BigDecimal</code> API reference</a></li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

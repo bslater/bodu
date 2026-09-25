@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Namespace Bodu.Financial.Currencies | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Namespace Bodu.Financial.Currencies | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Financial.Currencies">
+
+  <h1 id="Bodu_Financial_Currencies" data-uid="Bodu.Financial.Currencies" class="text-break">Namespace Bodu.Financial.Currencies</h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual">
+<p><img src="../images/hero-financial.svg" alt="Bodu.Financial"></p>
+<h2 id="purpose">Purpose</h2>
+<p><strong>Bodu.Financial.Currencies</strong> is the currency-metadata namespace of the <a href="../apidoc/Bodu.Financial.md"><code>Bodu.Financial</code></a> package. It hosts the runtime metadata and lookup surface — the <code>ICurrency</code> contract, the <code>CurrencyInfo</code> record, the <code>CurrencyRegistry</code> catalogue, and the <code>ICurrencyLookup</code> resolution seam — alongside the shipped catalogue of 184 ISO 4217 currency tag types used as the <code>TCurrency</code> parameter on <a class="xref" href="Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a>. Each currency is a sealed class with only static members — there is no instance to create, and the tag exists solely to carry the static metadata (<code>IsoCode</code>, <code>MinorUnits</code>, <code>CashRoundingIncrement</code>, and historic flags where applicable) that <code>Money&lt;TCurrency&gt;</code> needs.</p>
+<h2 id="static-documentation">Static documentation</h2>
+<ul>
+<li><strong><a href="../docs/financial/index.html">Bodu.Financial introduction</a></strong> — how the tag types fit into the broader monetary surface.</li>
+<li><strong><a href="../guides/financial/money.html">Working with <code>Money&lt;TCurrency&gt;</code></a></strong> — the <code>ICurrency</code> tag pattern in context, including units outside the shipped catalogue.</li>
+</ul>
+<h2 id="key-types">Key types</h2>
+<p><strong>Runtime metadata and lookup</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Financial.Currencies.ICurrency.html">ICurrency</a> — static-abstract interface with required <code>IsoCode</code> and <code>MinorUnits</code> plus optional <code>CashRoundingIncrement</code>, <code>IsHistoric</code>, <code>DemonetizedOn</code>, <code>SuccessorIsoCode</code>.</li>
+<li><a class="xref" href="Bodu.Financial.Currencies.CurrencyInfo.html">CurrencyInfo</a> — runtime metadata record carrying the same fields.</li>
+<li><a class="xref" href="Bodu.Financial.Currencies.CurrencyRegistry.html">CurrencyRegistry</a> — static, read-only catalogue over the shipped ISO 4217 currencies (active and historic).</li>
+<li><a class="xref" href="Bodu.Financial.Currencies.ICurrencyLookup.html">ICurrencyLookup</a>, <a class="xref" href="Bodu.Financial.Currencies.CurrencyLookupService.html">CurrencyLookupService</a> — the lookup contract and the implementation that resolves ISO codes to metadata (the service registered by <code>AddFinancialService</code>).</li>
+<li><a class="xref" href="Bodu.Financial.Currencies.CurrencyResolution.html">CurrencyResolution</a> — the seam for substituting or restricting the metadata used for the shipped currencies (a test double, an alternate data source).</li>
+<li><a class="xref" href="Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a> — the closed enum that identifies a currency on <a class="xref" href="Bodu.Financial.Money.html">Money</a> and the exchange types; one member per shipped ISO 4217 code, valued by its ISO numeric code.</li>
+<li><a class="xref" href="Bodu.Financial.Currencies.CurrencyCodeExtensions.html">CurrencyCodeExtensions</a> — catalogue helpers over <code>CurrencyCode</code>: <code>GetStatus</code>, <code>IsActive</code>, <code>IsHistoric</code>, resolving each member's lifecycle status from its declarative attribute (cached at type initialization).</li>
+<li><a class="xref" href="Bodu.Financial.Currencies.CurrencyStatusAttribute.html">CurrencyStatusAttribute</a> — the <code>[CurrencyStatus(...)]</code> annotation on each <code>CurrencyCode</code> member that is the declarative source of truth for a currency's lifecycle status.</li>
+</ul>
+<h2 id="catalogue-shape">Catalogue shape</h2>
+<p>Every shipped currency type follows the same shape:</p>
+<pre><code class="lang-csharp">public sealed class USD : ICurrency
+{
+    public static string IsoCode    =&gt; &quot;USD&quot;;
+    public static int    MinorUnits =&gt; 2;
+    private USD() { }
+}
+</code></pre>
+<p>Currencies with a cash-rounding convention declare the increment:</p>
+<pre><code class="lang-csharp">public sealed class CHF : ICurrency
+{
+    public static string  IsoCode               =&gt; &quot;CHF&quot;;
+    public static int     MinorUnits            =&gt; 2;
+    public static decimal CashRoundingIncrement =&gt; 0.05m;
+    private CHF() { }
+}
+</code></pre>
+<p>Historic (demonetised) currencies declare the withdrawal metadata:</p>
+<pre><code class="lang-csharp">public sealed class DEM : ICurrency
+{
+    public static string    IsoCode           =&gt; &quot;DEM&quot;;
+    public static int       MinorUnits        =&gt; 2;
+    public static bool      IsHistoric        =&gt; true;
+    public static DateOnly? DemonetizedOn     =&gt; new DateOnly(2002, 2, 28);
+    public static string?   SuccessorIsoCode  =&gt; &quot;EUR&quot;;
+    private DEM() { }
+}
+</code></pre>
+<h2 id="catalogue-contents">Catalogue contents</h2>
+<p>The shipped catalogue covers every active ISO 4217 currency plus a curated set of historic / demonetised currencies for legacy ledger processing.</p>
+<p><strong>Active currencies (155)</strong> — including all G20 currencies and every minor-unit category:</p>
+<ul>
+<li><code>MinorUnits = 0</code> — <code>JPY</code>, <code>KRW</code>, <code>CLP</code>, <code>ISK</code>, <code>VND</code>, <code>XAF</code>, <code>XOF</code>, <code>XPF</code>, <code>BIF</code>, <code>DJF</code>, <code>GNF</code>, <code>KMF</code>, <code>MGA</code>, <code>PYG</code>, <code>RWF</code>, <code>UGX</code>, <code>UYI</code>, <code>VUV</code>.</li>
+<li><code>MinorUnits = 2</code> — <code>USD</code>, <code>EUR</code>, <code>GBP</code>, <code>AUD</code>, <code>CAD</code>, <code>CHF</code>, <code>CNY</code>, <code>HKD</code>, <code>INR</code>, <code>MXN</code>, <code>NZD</code>, <code>SEK</code>, <code>SGD</code>, …</li>
+<li><code>MinorUnits = 3</code> — <code>BHD</code>, <code>IQD</code>, <code>JOD</code>, <code>KWD</code>, <code>LYD</code>, <code>OMR</code>, <code>TND</code>.</li>
+<li><code>MinorUnits = 4</code> — <code>CLF</code>, <code>UYW</code>.</li>
+</ul>
+<p><strong>Historic currencies (~30)</strong> — the twenty Euro-zone predecessors (<code>ATS</code>, <code>BEF</code>, <code>CYP</code>, <code>DEM</code>, <code>EEK</code>, <code>ESP</code>, <code>FIM</code>, <code>FRF</code>, <code>GRD</code>, <code>HRK</code>, <code>IEP</code>, <code>ITL</code>, <code>LTL</code>, <code>LUF</code>, <code>LVL</code>, <code>MTL</code>, <code>NLG</code>, <code>PTE</code>, <code>SIT</code>, <code>SKK</code>) plus other notable replacements (<code>AZM</code>, <code>GHC</code>, <code>MZM</code>, <code>ROL</code>, <code>SRG</code>, <code>TMM</code>, <code>VEB</code>, <code>VEF</code>, <code>ZWL</code>).</p>
+<p><strong>Cash rounding</strong> — <code>CHF</code>, <code>AUD</code>, <code>CAD</code>, <code>NZD</code>, <code>SEK</code>, <code>NOK</code>, <code>ISK</code> and a handful of others declare a non-zero <code>CashRoundingIncrement</code> for physical cash totals (5-rappen / 5-cent / 10-cent / whole-krone). See <a href="../guides/financial/money.html#cash-rounding">Cash rounding</a>.</p>
+<h2 id="a-unit-outside-the-shipped-catalogue">A unit outside the shipped catalogue</h2>
+<p>The shipped <a class="xref" href="Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a> catalogue is closed, so the runtime <a class="xref" href="Bodu.Financial.Money.html">Money</a> cannot hold a code it does not define. For a <em>generic</em> amount in a unit outside ISO 4217 — a commodity, a loyalty-point unit — implement <a class="xref" href="Bodu.Financial.Currencies.ICurrency.html">ICurrency</a> directly and use <code>Money&lt;TCurrency&gt;</code>; the tag carries its own precision and never consults the runtime catalogue (its <code>IsoCode</code> must still be three uppercase ASCII letters):</p>
+<pre><code class="lang-csharp">public sealed class XPT : ICurrency      // troy ounces of platinum, say
+{
+    public static string IsoCode    =&gt; &quot;XPT&quot;;
+    public static int    MinorUnits =&gt; 4;
+    private XPT() { }
+}
+
+Money&lt;XPT&gt; holding = new Money&lt;XPT&gt;(12.3456m);   // generic arithmetic only
+</code></pre>
+<p>Because <code>XPT</code> is not a <code>CurrencyCode</code> member, the value cannot bridge to the runtime-tagged <code>Money</code>. To substitute or restrict the metadata used for the <em>shipped</em> currencies — for a test, or an alternate data source — install a custom <code>ICurrencyLookup</code> through <a class="xref" href="Bodu.Financial.Currencies.CurrencyResolution.html">CurrencyResolution</a>.</p>
+<h2 id="notes">Notes</h2>
+<ul>
+<li><strong>Sealed + private constructor.</strong> Every tag type seals itself and hides its constructor, so the tag can only ever exist statically. <code>Money&lt;USD&gt;</code> is the only way to materialise a value tagged as USD.</li>
+<li><strong>Static-abstract metadata.</strong> All members are static via the <code>ICurrency</code> static-abstract pattern; consumers read them as <code>TCurrency.IsoCode</code> in generic code.</li>
+<li><strong>Optional members default sensibly.</strong> <code>CashRoundingIncrement</code>, <code>IsHistoric</code>, <code>DemonetizedOn</code>, <code>SuccessorIsoCode</code> have sensible defaults via <code>static virtual</code> so most currencies declare only <code>IsoCode</code> and <code>MinorUnits</code>.</li>
+<li><strong>ISO numeric codes.</strong> <a class="xref" href="Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a> is an enum whose members are the three-letter ISO 4217 alphabetic codes and whose values are the corresponding ISO 4217 numeric codes; both active and historic codes are members — each annotated with a <code>[CurrencyStatus]</code> attribute — alongside a <code>None</code> sentinel valued <code>0</code>.</li>
+<li><strong>See also:</strong> the <a class="xref" href="Bodu.Financial.html"><code>Bodu.Financial</code> reference</a>, the <a href="../guides/financial/money.html"><code>Money&lt;TCurrency&gt;</code> guide</a>, <a class="xref" href="Bodu.Financial.Currencies.CurrencyRegistry.html"><code>CurrencyRegistry</code></a>.</li>
+</ul>
+</div>
+  <div class="markdown level0 remarks"></div>
+    <h3 id="classes">
+Classes
+</h3>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.AED.html">AED</a></h4>
+      <section><p>Identifies AED (United Arab Emirates Dirham) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.AFN.html">AFN</a></h4>
+      <section><p>Identifies AFN (Afghani) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.ALL.html">ALL</a></h4>
+      <section><p>Identifies ALL (Lek) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.AMD.html">AMD</a></h4>
+      <section><p>Identifies AMD (Armenian Dram) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.ANG.html">ANG</a></h4>
+      <section><p>Identifies ANG (Netherlands Antillean Guilder) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.AOA.html">AOA</a></h4>
+      <section><p>Identifies AOA (Kwanza) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.ARS.html">ARS</a></h4>
+      <section><p>Identifies ARS (Argentine Peso) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.ATS.html">ATS</a></h4>
+      <section><p>Identifies ATS (Austrian Schilling) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.AUD.html">AUD</a></h4>
+      <section><p>Identifies AUD (Australian Dollar) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.AWG.html">AWG</a></h4>
+      <section><p>Identifies AWG (Aruban Florin) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.AZM.html">AZM</a></h4>
+      <section><p>Identifies AZM (Old Azerbaijan Manat) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.AZN.html">AZN</a></h4>
+      <section><p>Identifies AZN (Azerbaijan Manat) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.BAM.html">BAM</a></h4>
+      <section><p>Identifies BAM (Convertible Mark) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.BBD.html">BBD</a></h4>
+      <section><p>Identifies BBD (Barbados Dollar) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.BDT.html">BDT</a></h4>
+      <section><p>Identifies BDT (Taka) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.BEF.html">BEF</a></h4>
+      <section><p>Identifies BEF (Belgian Franc) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.BGN.html">BGN</a></h4>
+      <section><p>Identifies BGN (Bulgarian Lev) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.BHD.html">BHD</a></h4>
+      <section><p>Identifies BHD (Bahraini Dinar) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.BIF.html">BIF</a></h4>
+      <section><p>Identifies BIF (Burundi Franc) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.BMD.html">BMD</a></h4>
+      <section><p>Identifies BMD (Bermudian Dollar) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.BND.html">BND</a></h4>
+      <section><p>Identifies BND (Brunei Dollar) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.BOB.html">BOB</a></h4>
+      <section><p>Identifies BOB (Boliviano) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.BRL.html">BRL</a></h4>
+      <section><p>Identifies BRL (Brazilian Real) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.BSD.html">BSD</a></h4>
+      <section><p>Identifies BSD (Bahamian Dollar) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.BTN.html">BTN</a></h4>
+      <section><p>Identifies BTN (Ngultrum) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.BWP.html">BWP</a></h4>
+      <section><p>Identifies BWP (Pula) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.BYN.html">BYN</a></h4>
+      <section><p>Identifies BYN (Belarusian Ruble) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.BZD.html">BZD</a></h4>
+      <section><p>Identifies BZD (Belize Dollar) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.CAD.html">CAD</a></h4>
+      <section><p>Identifies CAD (Canadian Dollar) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.CDF.html">CDF</a></h4>
+      <section><p>Identifies CDF (Congolese Franc) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.CHF.html">CHF</a></h4>
+      <section><p>Identifies CHF (Swiss Franc) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.CLP.html">CLP</a></h4>
+      <section><p>Identifies CLP (Chilean Peso) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.CNY.html">CNY</a></h4>
+      <section><p>Identifies CNY (Yuan Renminbi) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.COP.html">COP</a></h4>
+      <section><p>Identifies COP (Colombian Peso) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.CRC.html">CRC</a></h4>
+      <section><p>Identifies CRC (Costa Rican Colon) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.CUP.html">CUP</a></h4>
+      <section><p>Identifies CUP (Cuban Peso) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.CVE.html">CVE</a></h4>
+      <section><p>Identifies CVE (Cabo Verde Escudo) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.CYP.html">CYP</a></h4>
+      <section><p>Identifies CYP (Cypriot Pound) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.CZK.html">CZK</a></h4>
+      <section><p>Identifies CZK (Czech Koruna) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.CurrencyCodeExtensions.html">CurrencyCodeExtensions</a></h4>
+      <section><p>Provides lifecycle-status queries over <a class="xref" href="Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a> members.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.CurrencyInfo.html">CurrencyInfo</a></h4>
+      <section><p>Carries the runtime metadata of a currency: ISO 4217 code, minor-unit precision, cash-rounding increment, and
+historicity / successor information.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.CurrencyLookupService.html">CurrencyLookupService</a></h4>
+      <section><p>Default <a class="xref" href="Bodu.Financial.Currencies.ICurrencyLookup.html">ICurrencyLookup</a> backed by <a class="xref" href="Bodu.Financial.Currencies.CurrencyRegistry.html">CurrencyRegistry</a>. Reverse indexes for numeric code,
+symbol, and region are built lazily from a snapshot of the registry taken on first use.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.CurrencyRegistry.html">CurrencyRegistry</a></h4>
+      <section><p>Read-only catalogue of <a class="xref" href="Bodu.Financial.Currencies.CurrencyInfo.html">CurrencyInfo</a> entries keyed by ISO 4217 alphabetic code. Supports lookup by
+code and enumeration of every shipped currency.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.CurrencyResolution.html">CurrencyResolution</a></h4>
+      <section><p>Supplies the ambient <a class="xref" href="Bodu.Financial.Currencies.ICurrencyLookup.html">ICurrencyLookup</a> that the runtime-tagged <a class="xref" href="Bodu.Financial.Money.html">Money</a> and
+<a class="xref" href="Bodu.Financial.CalculatedMoney.html">CalculatedMoney</a> consult when they resolve a currency by ISO code. The seam lets a host or test
+substitute a custom currency catalogue without threading a lookup dependency through every value-type construction,
+while leaving the default behaviour identical to a direct <a class="xref" href="Bodu.Financial.Currencies.CurrencyRegistry.html">CurrencyRegistry</a> lookup.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.CurrencyStatusAttribute.html">CurrencyStatusAttribute</a></h4>
+      <section><p>Associates a <a class="xref" href="Bodu.Financial.Currencies.CurrencyStatus.html">CurrencyStatus</a> with a <a class="xref" href="Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a> enum member.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.DEM.html">DEM</a></h4>
+      <section><p>Identifies DEM (Deutsche Mark) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.DJF.html">DJF</a></h4>
+      <section><p>Identifies DJF (Djibouti Franc) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.DKK.html">DKK</a></h4>
+      <section><p>Identifies DKK (Danish Krone) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.DOP.html">DOP</a></h4>
+      <section><p>Identifies DOP (Dominican Peso) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.DZD.html">DZD</a></h4>
+      <section><p>Identifies DZD (Algerian Dinar) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.EEK.html">EEK</a></h4>
+      <section><p>Identifies EEK (Estonian Kroon) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.EGP.html">EGP</a></h4>
+      <section><p>Identifies EGP (Egyptian Pound) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.ERN.html">ERN</a></h4>
+      <section><p>Identifies ERN (Nakfa) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.ESP.html">ESP</a></h4>
+      <section><p>Identifies ESP (Spanish Peseta) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.ETB.html">ETB</a></h4>
+      <section><p>Identifies ETB (Ethiopian Birr) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.EUR.html">EUR</a></h4>
+      <section><p>Identifies EUR (Euro) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.FIM.html">FIM</a></h4>
+      <section><p>Identifies FIM (Finnish Markka) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.FJD.html">FJD</a></h4>
+      <section><p>Identifies FJD (Fiji Dollar) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.FKP.html">FKP</a></h4>
+      <section><p>Identifies FKP (Falkland Islands Pound) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.FRF.html">FRF</a></h4>
+      <section><p>Identifies FRF (French Franc) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.GBP.html">GBP</a></h4>
+      <section><p>Identifies GBP (Pound Sterling) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.GEL.html">GEL</a></h4>
+      <section><p>Identifies GEL (Lari) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.GHC.html">GHC</a></h4>
+      <section><p>Identifies GHC (Old Ghana Cedi) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.GHS.html">GHS</a></h4>
+      <section><p>Identifies GHS (Ghana Cedi) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.GIP.html">GIP</a></h4>
+      <section><p>Identifies GIP (Gibraltar Pound) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.GMD.html">GMD</a></h4>
+      <section><p>Identifies GMD (Dalasi) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.GNF.html">GNF</a></h4>
+      <section><p>Identifies GNF (Guinean Franc) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.GRD.html">GRD</a></h4>
+      <section><p>Identifies GRD (Greek Drachma) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.GTQ.html">GTQ</a></h4>
+      <section><p>Identifies GTQ (Quetzal) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.GYD.html">GYD</a></h4>
+      <section><p>Identifies GYD (Guyana Dollar) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.HKD.html">HKD</a></h4>
+      <section><p>Identifies HKD (Hong Kong Dollar) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.HNL.html">HNL</a></h4>
+      <section><p>Identifies HNL (Lempira) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.HRK.html">HRK</a></h4>
+      <section><p>Identifies HRK (Croatian Kuna) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.HTG.html">HTG</a></h4>
+      <section><p>Identifies HTG (Gourde) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.HUF.html">HUF</a></h4>
+      <section><p>Identifies HUF (Forint) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.IDR.html">IDR</a></h4>
+      <section><p>Identifies IDR (Rupiah) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.IEP.html">IEP</a></h4>
+      <section><p>Identifies IEP (Irish Pound) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.ILS.html">ILS</a></h4>
+      <section><p>Identifies ILS (New Israeli Sheqel) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.INR.html">INR</a></h4>
+      <section><p>Identifies INR (Indian Rupee) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.IQD.html">IQD</a></h4>
+      <section><p>Identifies IQD (Iraqi Dinar) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.IRR.html">IRR</a></h4>
+      <section><p>Identifies IRR (Iranian Rial) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.ISK.html">ISK</a></h4>
+      <section><p>Identifies ISK (Iceland Krona) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.ITL.html">ITL</a></h4>
+      <section><p>Identifies ITL (Italian Lira) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.JMD.html">JMD</a></h4>
+      <section><p>Identifies JMD (Jamaican Dollar) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.JOD.html">JOD</a></h4>
+      <section><p>Identifies JOD (Jordanian Dinar) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.JPY.html">JPY</a></h4>
+      <section><p>Identifies JPY (Yen) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.KES.html">KES</a></h4>
+      <section><p>Identifies KES (Kenyan Shilling) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.KGS.html">KGS</a></h4>
+      <section><p>Identifies KGS (Som) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.KHR.html">KHR</a></h4>
+      <section><p>Identifies KHR (Riel) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.KMF.html">KMF</a></h4>
+      <section><p>Identifies KMF (Comorian Franc) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.KPW.html">KPW</a></h4>
+      <section><p>Identifies KPW (North Korean Won) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.KRW.html">KRW</a></h4>
+      <section><p>Identifies KRW (Won) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.KWD.html">KWD</a></h4>
+      <section><p>Identifies KWD (Kuwaiti Dinar) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.KYD.html">KYD</a></h4>
+      <section><p>Identifies KYD (Cayman Islands Dollar) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.KZT.html">KZT</a></h4>
+      <section><p>Identifies KZT (Tenge) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.LAK.html">LAK</a></h4>
+      <section><p>Identifies LAK (Lao Kip) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.LBP.html">LBP</a></h4>
+      <section><p>Identifies LBP (Lebanese Pound) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.LKR.html">LKR</a></h4>
+      <section><p>Identifies LKR (Sri Lanka Rupee) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.LRD.html">LRD</a></h4>
+      <section><p>Identifies LRD (Liberian Dollar) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.LSL.html">LSL</a></h4>
+      <section><p>Identifies LSL (Loti) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.LTL.html">LTL</a></h4>
+      <section><p>Identifies LTL (Lithuanian Litas) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.LUF.html">LUF</a></h4>
+      <section><p>Identifies LUF (Luxembourg Franc) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.LVL.html">LVL</a></h4>
+      <section><p>Identifies LVL (Latvian Lats) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.LYD.html">LYD</a></h4>
+      <section><p>Identifies LYD (Libyan Dinar) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.MAD.html">MAD</a></h4>
+      <section><p>Identifies MAD (Moroccan Dirham) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.MDL.html">MDL</a></h4>
+      <section><p>Identifies MDL (Moldovan Leu) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.MGA.html">MGA</a></h4>
+      <section><p>Identifies MGA (Malagasy Ariary) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.MKD.html">MKD</a></h4>
+      <section><p>Identifies MKD (Denar) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.MMK.html">MMK</a></h4>
+      <section><p>Identifies MMK (Kyat) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.MNT.html">MNT</a></h4>
+      <section><p>Identifies MNT (Tugrik) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.MOP.html">MOP</a></h4>
+      <section><p>Identifies MOP (Pataca) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.MRU.html">MRU</a></h4>
+      <section><p>Identifies MRU (Ouguiya) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.MTL.html">MTL</a></h4>
+      <section><p>Identifies MTL (Maltese Lira) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.MUR.html">MUR</a></h4>
+      <section><p>Identifies MUR (Mauritius Rupee) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.MVR.html">MVR</a></h4>
+      <section><p>Identifies MVR (Rufiyaa) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.MWK.html">MWK</a></h4>
+      <section><p>Identifies MWK (Malawi Kwacha) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.MXN.html">MXN</a></h4>
+      <section><p>Identifies MXN (Mexican Peso) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.MYR.html">MYR</a></h4>
+      <section><p>Identifies MYR (Malaysian Ringgit) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.MZM.html">MZM</a></h4>
+      <section><p>Identifies MZM (Old Mozambican Metical) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.MZN.html">MZN</a></h4>
+      <section><p>Identifies MZN (Mozambique Metical) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.NAD.html">NAD</a></h4>
+      <section><p>Identifies NAD (Namibia Dollar) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.NGN.html">NGN</a></h4>
+      <section><p>Identifies NGN (Naira) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.NIO.html">NIO</a></h4>
+      <section><p>Identifies NIO (Cordoba Oro) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.NLG.html">NLG</a></h4>
+      <section><p>Identifies NLG (Netherlands Guilder) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.NOK.html">NOK</a></h4>
+      <section><p>Identifies NOK (Norwegian Krone) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.NPR.html">NPR</a></h4>
+      <section><p>Identifies NPR (Nepalese Rupee) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.NZD.html">NZD</a></h4>
+      <section><p>Identifies NZD (New Zealand Dollar) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.OMR.html">OMR</a></h4>
+      <section><p>Identifies OMR (Rial Omani) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.PAB.html">PAB</a></h4>
+      <section><p>Identifies PAB (Balboa) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.PEN.html">PEN</a></h4>
+      <section><p>Identifies PEN (Sol) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.PGK.html">PGK</a></h4>
+      <section><p>Identifies PGK (Kina) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.PHP.html">PHP</a></h4>
+      <section><p>Identifies PHP (Philippine Peso) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.PKR.html">PKR</a></h4>
+      <section><p>Identifies PKR (Pakistan Rupee) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.PLN.html">PLN</a></h4>
+      <section><p>Identifies PLN (Zloty) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.PTE.html">PTE</a></h4>
+      <section><p>Identifies PTE (Portuguese Escudo) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.PYG.html">PYG</a></h4>
+      <section><p>Identifies PYG (Guarani) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.QAR.html">QAR</a></h4>
+      <section><p>Identifies QAR (Qatari Rial) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.ROL.html">ROL</a></h4>
+      <section><p>Identifies ROL (Old Romanian Leu) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.RON.html">RON</a></h4>
+      <section><p>Identifies RON (Romanian Leu) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.RSD.html">RSD</a></h4>
+      <section><p>Identifies RSD (Serbian Dinar) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.RUB.html">RUB</a></h4>
+      <section><p>Identifies RUB (Russian Ruble) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.RWF.html">RWF</a></h4>
+      <section><p>Identifies RWF (Rwanda Franc) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.SAR.html">SAR</a></h4>
+      <section><p>Identifies SAR (Saudi Riyal) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.SBD.html">SBD</a></h4>
+      <section><p>Identifies SBD (Solomon Islands Dollar) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.SCR.html">SCR</a></h4>
+      <section><p>Identifies SCR (Seychelles Rupee) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.SDG.html">SDG</a></h4>
+      <section><p>Identifies SDG (Sudanese Pound) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.SEK.html">SEK</a></h4>
+      <section><p>Identifies SEK (Swedish Krona) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.SGD.html">SGD</a></h4>
+      <section><p>Identifies SGD (Singapore Dollar) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.SHP.html">SHP</a></h4>
+      <section><p>Identifies SHP (Saint Helena Pound) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.SIT.html">SIT</a></h4>
+      <section><p>Identifies SIT (Slovenian Tolar) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.SKK.html">SKK</a></h4>
+      <section><p>Identifies SKK (Slovak Koruna) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.SLE.html">SLE</a></h4>
+      <section><p>Identifies SLE (Leone) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.SOS.html">SOS</a></h4>
+      <section><p>Identifies SOS (Somali Shilling) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.SRD.html">SRD</a></h4>
+      <section><p>Identifies SRD (Surinam Dollar) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.SRG.html">SRG</a></h4>
+      <section><p>Identifies SRG (Suriname Guilder) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.SSP.html">SSP</a></h4>
+      <section><p>Identifies SSP (South Sudanese Pound) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.STN.html">STN</a></h4>
+      <section><p>Identifies STN (Dobra) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.SVC.html">SVC</a></h4>
+      <section><p>Identifies SVC (El Salvador Colon) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.SYP.html">SYP</a></h4>
+      <section><p>Identifies SYP (Syrian Pound) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.SZL.html">SZL</a></h4>
+      <section><p>Identifies SZL (Lilangeni) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.THB.html">THB</a></h4>
+      <section><p>Identifies THB (Baht) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.TJS.html">TJS</a></h4>
+      <section><p>Identifies TJS (Somoni) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.TMM.html">TMM</a></h4>
+      <section><p>Identifies TMM (Old Turkmenistan Manat) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.TMT.html">TMT</a></h4>
+      <section><p>Identifies TMT (Turkmenistan New Manat) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.TND.html">TND</a></h4>
+      <section><p>Identifies TND (Tunisian Dinar) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.TOP.html">TOP</a></h4>
+      <section><p>Identifies TOP (Pa’anga) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.TRY.html">TRY</a></h4>
+      <section><p>Identifies TRY (Turkish Lira) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.TTD.html">TTD</a></h4>
+      <section><p>Identifies TTD (Trinidad and Tobago Dollar) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.TWD.html">TWD</a></h4>
+      <section><p>Identifies TWD (New Taiwan Dollar) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.TZS.html">TZS</a></h4>
+      <section><p>Identifies TZS (Tanzanian Shilling) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.UAH.html">UAH</a></h4>
+      <section><p>Identifies UAH (Hryvnia) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.UGX.html">UGX</a></h4>
+      <section><p>Identifies UGX (Uganda Shilling) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.USD.html">USD</a></h4>
+      <section><p>Identifies USD (US Dollar) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.UYU.html">UYU</a></h4>
+      <section><p>Identifies UYU (Peso Uruguayo) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.UZS.html">UZS</a></h4>
+      <section><p>Identifies UZS (Uzbekistan Sum) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.VEB.html">VEB</a></h4>
+      <section><p>Identifies VEB (Venezuelan Bolívar) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.VEF.html">VEF</a></h4>
+      <section><p>Identifies VEF (Venezuelan Bolívar Fuerte) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.VES.html">VES</a></h4>
+      <section><p>Identifies VES (Bolivar Soberano) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.VND.html">VND</a></h4>
+      <section><p>Identifies VND (Dong) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.VUV.html">VUV</a></h4>
+      <section><p>Identifies VUV (Vatu) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.WST.html">WST</a></h4>
+      <section><p>Identifies WST (Tala) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.XAF.html">XAF</a></h4>
+      <section><p>Identifies XAF (CFA Franc BEAC) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.XCD.html">XCD</a></h4>
+      <section><p>Identifies XCD (East Caribbean Dollar) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.XOF.html">XOF</a></h4>
+      <section><p>Identifies XOF (CFA Franc BCEAO) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.XPF.html">XPF</a></h4>
+      <section><p>Identifies XPF (CFP Franc) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.YER.html">YER</a></h4>
+      <section><p>Identifies YER (Yemeni Rial) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.ZAR.html">ZAR</a></h4>
+      <section><p>Identifies ZAR (Rand) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.ZMW.html">ZMW</a></h4>
+      <section><p>Identifies ZMW (Zambian Kwacha) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.ZWG.html">ZWG</a></h4>
+      <section><p>Identifies ZWG (Zimbabwe Gold) at the type-system level.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.ZWL.html">ZWL</a></h4>
+      <section><p>Identifies ZWL (Zimbabwe Dollar) at the type-system level.</p>
+</section>
+    <h3 id="interfaces">
+Interfaces
+</h3>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.ICurrency.html">ICurrency</a></h4>
+      <section><p>Identifies a currency at the type-system level, supplying the ISO 4217 code, minor-unit precision, and optional
+cash-rounding and historicity metadata used by <a class="xref" href="Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.ICurrencyLookup.html">ICurrencyLookup</a></h4>
+      <section><p>Resolves <a class="xref" href="Bodu.Financial.Currencies.CurrencyInfo.html">CurrencyInfo</a> metadata by ISO code, numeric code, symbol, region, or culture, providing
+NodaMoney-style lookup ergonomics over the runtime currency catalogue without moving currency identity into culture.</p>
+</section>
+    <h3 id="enums">
+Enums
+</h3>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a></h4>
+      <section><p>Source-generated enumeration of the ISO 4217 currencies shipped with Bodu.Financial.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Currencies.CurrencyStatus.html">CurrencyStatus</a></h4>
+      <section><p>Describes the ISO 4217 lifecycle status of a <a class="xref" href="Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a> member.</p>
+</section>
+
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Using Base85 (Ascii85, Z85, and Git) | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Using Base85 (Ascii85, Z85, and Git) | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="using-base85-ascii85-z85-and-git">Using Base85 (Ascii85, Z85, and Git)</h1>
+
+<p><code>Base85</code> packs four input bytes into a 32-bit unsigned integer, then divides by 85 four times to emit five output
+characters. The payload expansion is <strong>25 %</strong> — the smallest of any encoding the library ships, but at the cost
+of a denser alphabet that includes ASCII punctuation.</p>
+<pre><code>input bytes  : 4D 61 6E 20                 (ASCII &quot;Man &quot;, 4 bytes)
+              ┌── 32-bit unsigned big-endian = 0x4D616E20 ──┐
+              │ 1298230816 / 85⁴ = 24 r 45,415,816          │
+              │ 45,415,816 / 85³ = 73 r 584,691             │
+              │ 584,691     / 85² = 80 r 6,691              │
+              │ 6,691       / 85  = 78 r 61                 │
+              │ 61                                          │
+              └── digits 24, 73, 80, 78, 61                 ┘
+encoded text : 9jqo^                       (Ascii85; alphabet '!' (33) + digit)
+              k_kxi                         (Z85; different alphabet ordering)
+</code></pre>
+<h2 id="quick-reference">Quick reference</h2>
+<pre><code class="lang-csharp">using Bodu.Text.Encoding;
+
+byte[] data = { 0xDE, 0xAD, 0xBE, 0xEF, 0xCA, 0xFE, 0xBA, 0xBE };
+
+// Adobe Ascii85 (default)
+string a = Base85.Encode(data);
+// 8 bytes → 10 characters
+
+// ZeroMQ Z85
+string z = Base85.Encode(data, Base85Variant.Z85);
+// 8 bytes → 10 characters (different alphabet)
+
+// Decode
+byte[] back = Base85.Decode(a);
+</code></pre>
+<h2 id="variant-comparison">Variant comparison</h2>
+<table>
+<thead>
+<tr>
+<th>Variant</th>
+<th>Alphabet</th>
+<th><code>z</code> shortcut</th>
+<th>Partial groups</th>
+<th>Input alignment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Ascii85</code> (Adobe Tech Note 5045)</td>
+<td><code>!</code> (33) through <code>u</code> (117) — 85 contiguous ASCII characters</td>
+<td>Yes — <code>z</code> represents 4 zero bytes</td>
+<td><strong>Yes</strong> — 1, 2, or 3-byte tails permitted</td>
+<td>Any length</td>
+</tr>
+<tr>
+<td><code>Z85</code> (RFC 32 — ZeroMQ)</td>
+<td><code>0-9 a-z A-Z .-:+=^!/*?&amp;&lt;&gt;()[]{}@%$#</code> — shell-safe, no quote or backslash</td>
+<td>No</td>
+<td><strong>No</strong></td>
+<td><strong>Multiple of 4 bytes</strong></td>
+</tr>
+<tr>
+<td><code>GitCompact</code> (Git <code>base85.c</code>)</td>
+<td><code>0-9 A-Z a-z !#$%&amp;()*+-;&lt;=&gt;?@^_</code> <code>`</code> <code>{|}~</code> — Git binary-patch alphabet</td>
+<td>No</td>
+<td><strong>Yes</strong> — compact 1, 2, or 3-byte tails</td>
+<td>Any length</td>
+</tr>
+</tbody>
+</table>
+<h3 id="when-to-pick-each">When to pick each</h3>
+<table>
+<thead>
+<tr>
+<th>Variant</th>
+<th>Reach for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Ascii85</code></td>
+<td>PDF / PostScript embedded binary, Adobe Tech Note 5045-compatible streams, dense Base85 with shortcut</td>
+</tr>
+<tr>
+<td><code>Z85</code></td>
+<td>ZeroMQ wire keys, shell-pasted binary keys (alphabet avoids quote / backslash / semicolon)</td>
+</tr>
+<tr>
+<td><code>GitCompact</code></td>
+<td>The Git binary-patch Base85 alphabet — round-trip-safe compact output, or the exact padded line primitive</td>
+</tr>
+</tbody>
+</table>
+<h2 id="the-z-shortcut-ascii85-only">The <code>z</code> shortcut (Ascii85 only)</h2>
+<p>Adobe Ascii85 reserves the character <code>z</code> (ASCII 122 — <em>outside</em> the <code>!</code>–<code>u</code> alphabet) as a shortcut for four
+consecutive zero bytes. The encoder emits it automatically:</p>
+<pre><code class="lang-csharp">byte[] zeros = new byte[8];
+string encoded = Base85.Encode(zeros);   // &quot;zz&quot; — two shortcuts, not 10 chars
+
+byte[] back = Base85.Decode(&quot;zz&quot;);        // 8 zero bytes
+</code></pre>
+<p>The shortcut is only valid at a <strong>group boundary</strong>. The decoder rejects <code>z</code> mid-group:</p>
+<pre><code class="lang-csharp">Base85.Decode(&quot;9jz&quot;);                     // FormatException — z after partial group
+</code></pre>
+<p>Z85 has no shortcut — all-zero input emits five <code>0</code> characters per group.</p>
+<h2 id="partial-groups-ascii85-only">Partial groups (Ascii85 only)</h2>
+<p>Ascii85 allows trailing partial groups of 1, 2, or 3 bytes. The encoder pads the trailing bytes with zeros to fill
+a 4-byte group, encodes the full group, then emits <strong>(1 + remaining)</strong> characters from the result:</p>
+<table>
+<thead>
+<tr>
+<th>Trailing bytes</th>
+<th>Encoded characters</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>2</td>
+</tr>
+<tr>
+<td>2</td>
+<td>3</td>
+</tr>
+<tr>
+<td>3</td>
+<td>4</td>
+</tr>
+<tr>
+<td>4 (full group)</td>
+<td>5</td>
+</tr>
+</tbody>
+</table>
+<p>The decoder reverses this: a trailing partial group of 2, 3, or 4 characters is padded with the maximum digit
+value (<code>u</code>) to fill 5 characters, decoded, then truncated to <strong>(input - 1)</strong> bytes.</p>
+<pre><code class="lang-csharp">Base85.Encode(new byte[] { 0x00 });          // &quot;!!&quot;  (1 byte → 2 chars)
+Base85.Encode(new byte[] { 0x00, 0x00 });    // &quot;!!!&quot; (2 bytes → 3 chars)
+Base85.Encode(new byte[] { 0x00, 0x00, 0x00 }); // &quot;!!!!&quot; (3 bytes → 4 chars)
+</code></pre>
+<p>A single trailing character (or six characters — full group plus one) is rejected:</p>
+<pre><code class="lang-csharp">Base85.Decode(&quot;9&quot;);                          // FormatException — single trailing char invalid
+Base85.Decode(&quot;uuuuuu&quot;);                     // FormatException — full group + 1 invalid
+</code></pre>
+<h2 id="z85-alignment-requirement">Z85 alignment requirement</h2>
+<p>Z85 enforces input alignment per RFC 32: encoder input length <strong>must</strong> be a multiple of four bytes, decoder input
+length must be a multiple of five characters. Non-aligned input throws <code>ArgumentException</code> on encode and
+<code>FormatException</code> on decode.</p>
+<pre><code class="lang-csharp">Base85.Encode(new byte[5], Base85Variant.Z85);  // ArgumentException — 5 is not a multiple of 4
+Base85.Decode(&quot;HelloW&quot;, Base85Variant.Z85);     // FormatException — 6 is not a multiple of 5
+</code></pre>
+<h2 id="z85-shell-safe-alphabet">Z85 shell-safe alphabet</h2>
+<p>Z85's defining feature is its alphabet choice — it avoids characters that shells, JSON, or quoted strings would
+need to escape:</p>
+<pre><code>0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.-:+=^!/*?&amp;&lt;&gt;()[]{}@%$#
+</code></pre>
+<p>Notice the absence of <code>&quot;</code>, <code>'</code>, <code>\</code>, <code>;</code>, <code>|</code>, <code>`</code> — exactly the characters that would require escaping in
+shell commands or in JSON / XML string literals. This makes Z85 a popular choice for binary keys that need to be
+pasted into shell sessions or embedded directly in configuration files.</p>
+<h2 id="git-base85">Git Base85</h2>
+<p><code>Base85Variant.GitCompact</code> adds the alphabet Git uses for binary patch payloads (<code>base85.c</code>). It shares the Ascii85 partial-group
+behaviour but uses Git's alphabet, and it has <strong>no</strong> <code>z</code> shortcut and <strong>no</strong> Adobe <code>&lt;~</code>/<code>~&gt;</code> delimiters — those
+characters (<code>&lt;</code>, <code>=</code>, <code>&gt;</code>, <code>~</code>) are ordinary Git digits.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p><code>Base85Variant.GitCompact</code> implements the Git Base85 <strong>alphabet</strong> only. It does not parse Git binary patches — literal/delta
+sections, zlib payloads, line-length prefixes, and patch application are out of scope.</p>
+</div>
+<h3 id="compact-mode-default-round-trip-safe">Compact mode (default, round-trip safe)</h3>
+<p><code>Base85.Encode(..., Base85Variant.GitCompact)</code> emits a <strong>compact, self-delimiting</strong> tail following Python's
+<code>base64.b85encode(..., pad=False)</code>: a final remainder of 1, 2, or 3 bytes becomes 2, 3, or 4 characters. This makes
+<code>Decode(Encode(bytes, GitCompact), GitCompact) == bytes</code> for any byte length, so the variant is registered as an
+<a href="binary-encodings-interface.html"><code>IBinaryEncoding</code></a> (<code>base85-git</code> / <code>git-base85</code> / <code>b85</code>).</p>
+<pre><code class="lang-csharp">Base85.Encode(new byte[] { 0x00, 0x00, 0x00, 0x00 }, Base85Variant.GitCompact); // &quot;00000&quot; (no shortcut)
+Base85.Encode(new byte[] { 0xFF, 0xFF, 0xFF, 0xFF }, Base85Variant.GitCompact); // &quot;|NsC0&quot;
+Base85.Encode(&quot;hello&quot;u8, Base85Variant.GitCompact);                              // &quot;Xk~0{Zv&quot; (5 bytes → 7 chars)
+</code></pre>
+<p>An encoded length of <code>len % 5 == 1</code> is invalid (a single trailing character cannot represent a byte), exactly as
+Ascii85.</p>
+<h3 id="padded-mode-exact-git-line-primitive">Padded mode (exact Git line primitive)</h3>
+<p>Git's binary-patch line format is <strong>not</strong> self-delimiting: it always emits five characters per group and carries the
+decoded byte count in the line prefix. The <code>EncodeGitPadded</code> / <code>DecodeGitPadded</code> helpers expose that primitive — the
+caller supplies the decoded length on decode. They are <strong>not</strong> registered as <code>IBinaryEncoding</code>, because the interface
+cannot carry that length.</p>
+<pre><code class="lang-csharp">string padded = Base85.EncodeGitPadded(new byte[] { 0x01 });             // &quot;0RR91&quot; (1 byte → 5 chars)
+byte[] back   = Base85.DecodeGitPadded(padded, decodedLength: 1);        // { 0x01 }
+</code></pre>
+<h2 id="lenient-parsing">Lenient parsing</h2>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BaseFormatStyles.IgnoreWhitespace</code></td>
+<td>Strip ASCII space / tab / CR / LF anywhere</td>
+</tr>
+<tr>
+<td><code>BaseFormatStyles.AllowPrefix</code></td>
+<td>No-op for Base85</td>
+</tr>
+<tr>
+<td><code>BaseFormatStyles.AllowMissingPadding</code></td>
+<td>No-op for Base85 (no padding character)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="span-path">Span path</h2>
+<pre><code class="lang-csharp">int maxChars = Base85.GetMaxEncodedLength(data.Length);
+char[] buffer = new char[maxChars];
+
+int written = Base85.Encode(data, buffer);
+ReadOnlySpan&lt;char&gt; result = buffer.AsSpan(0, written);
+</code></pre>
+<p><code>GetMaxEncodedLength(int)</code> is an upper bound because the Ascii85 <code>z</code> shortcut compresses a four-zero group to one
+character, so the <em>actual</em> Ascii85 output can be shorter than the worst case. When you need the exact length, pass
+the data span to the <code>GetEncodedLength(ReadOnlySpan&lt;byte&gt;, …)</code> overload, which scans for <code>z</code>-eligible groups:</p>
+<pre><code class="lang-csharp">Base85.GetMaxEncodedLength(8, Base85Variant.Ascii85);                 // worst case (no shortcuts)
+Base85.GetEncodedLength(new byte[8], Base85Variant.Ascii85);          // exact — counts the two 'z' shortcuts
+Base85.GetEncodedLength(data, Base85Variant.Z85);                     // exact — Z85 has no shortcut, so equals the bound
+</code></pre>
+<p>Like Base58, Base85 is not streamable: the <code>EncodeToUtf8</code> / <code>DecodeFromUtf8</code> overloads exist for API consistency
+with the other encodings but treat the input as a single block.</p>
+<h2 id="encoding-a-guid">Encoding a GUID</h2>
+<p><code>Base85</code> encodes a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.guid">Guid</a> directly. A 16-byte value is a whole number of 4-byte groups, so Ascii85
+emits 20 characters with no partial-group tail:</p>
+<pre><code class="lang-csharp">Guid id = Guid.NewGuid();
+
+string token = Base85.Encode(id);                       // 20 Ascii85 characters
+Guid back    = Base85.DecodeGuid(token);                // FormatException unless it decodes to 16 bytes
+bool ok      = Base85.TryDecodeGuid(token, out Guid parsed);
+</code></pre>
+<p>The bytes use the GUID's native mixed-endian layout (matching <code>Guid.TryWriteBytes</code>). A GUID whose bytes happen to
+contain a four-zero group encodes with a <code>z</code> shortcut, so the token can be shorter than 20 characters and still
+round-trips exactly.</p>
+<h2 id="validation-and-sizing">Validation and sizing</h2>
+<pre><code class="lang-csharp">Base85.IsValid(&quot;9jqo^&quot;);                              // true (Ascii85)
+Base85.IsValid(&quot;9jqov&quot;);                              // false ('v' is ASCII 118, above 'u')
+Base85.IsValid(&quot;z&quot;);                                  // true (z shortcut)
+Base85.IsBase85Digit('!');                            // true
+Base85.IsBase85Digit('z');                            // false (z is the shortcut, not a digit)
+
+Base85.GetEncodedLength(4, Base85Variant.Ascii85);     // 5 (no shortcut path)
+Base85.GetEncodedLength(4, Base85Variant.Z85);         // 5
+Base85.GetMaxDecodedLength(5);                         // 4
+</code></pre>
+<h2 id="common-patterns">Common patterns</h2>
+<h3 id="embedded-binary-in-a-config-file">Embedded binary in a config file</h3>
+<pre><code class="lang-csharp">byte[] secret = Convert.FromBase64String(env);
+string z85Key = Base85.Encode(secret, Base85Variant.Z85);
+// z85Key can be pasted into JSON, YAML, or a shell variable without escaping
+</code></pre>
+<h3 id="postscript--pdf-ascii85-stream">PostScript / PDF Ascii85 stream</h3>
+<pre><code class="lang-csharp">string Stream(ReadOnlySpan&lt;byte&gt; binary) =&gt; &quot;&lt;~&quot; + Base85.Encode(binary) + &quot;~&gt;&quot;;
+// PostScript convention: &lt;~…~&gt; delimits an Ascii85 region
+</code></pre>
+<p>(The library does not add or strip the <code>&lt;~</code>/<code>~&gt;</code> delimiters automatically — they are a PostScript convention, not
+part of the encoding itself.)</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="base58.html">Base58 guide</a></strong> — when the use case is blockchain or human-typed identifiers.</li>
+<li><strong><a href="base64.html">Base64 guide</a></strong> — when familiarity beats density.</li>
+<li><strong><a href="binary-encodings-interface.html"><code>IBinaryEncoding</code> interface</a></strong> — runtime-selected encoding choice.</li>
+<li><strong><a href="../topics/text-and-serialization.html">Text &amp; Serialization guides</a></strong> — every guide in this topic, across Bodu.Text.Encoding, Bodu.Text.Formats, and the Bencode / TOML serializers.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

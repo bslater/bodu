@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Namespace Bodu.Text.Toml.Writer | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Namespace Bodu.Text.Toml.Writer | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Text.Toml.Writer">
+
+  <h1 id="Bodu_Text_Toml_Writer" data-uid="Bodu.Text.Toml.Writer" class="text-break">Namespace Bodu.Text.Toml.Writer</h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual">
+<p><img src="../images/hero-toml.svg" alt="Bodu.Text.Toml.Writer"></p>
+<h2 id="purpose">Purpose</h2>
+<p><strong>Bodu.Text.Toml.Writer</strong> is the emitting counterpart of <a class="xref" href="Bodu.Text.Toml.Reader.html">Bodu.Text.Toml.Reader</a> in <a class="xref" href="Bodu.Text.Toml.html">Bodu.Text.Toml</a>: a token writer that produces normalized, block-style TOML into an <code>IBufferWriter&lt;byte&gt;</code> or a <code>Stream</code>. The <a class="xref" href="Bodu.Text.Toml.TomlSerializer.html">TomlSerializer</a> and both DOMs (<code>WriteTo</code>) emit through it, and a custom <a class="xref" href="Bodu.Text.Toml.Serialization.TomlConverter-1.html">TomlConverter&lt;T&gt;</a> writes its value through it.</p>
+<h2 id="key-types">Key types</h2>
+<ul>
+<li><a class="xref" href="Bodu.Text.Toml.Writer.Utf8TomlWriter.html">Utf8TomlWriter</a> — the <code>ref struct</code> writer: <code>WriteStartTable</code> / <code>WriteEndTable</code>, <code>WriteStartArray</code> / <code>WriteEndArray</code>, <code>WritePropertyName</code>, the scalar writers (<code>WriteString</code>, <code>WriteInteger</code>, <code>WriteFloat</code>, <code>WriteBoolean</code>, <code>WriteOffsetDateTime</code>, <code>WriteLocalDateTime</code>, <code>WriteLocalDate</code>, <code>WriteLocalTime</code>) and their name-plus-value conveniences, plus <code>Flush</code> / <code>Reset</code> / <code>Dispose</code> for the stream constructors.</li>
+<li><a class="xref" href="Bodu.Text.Toml.Writer.TomlWriterOptions.html">TomlWriterOptions</a> — <code>SpecVersion</code> and <code>MaxDepth</code>.</li>
+</ul>
+<h2 id="example">Example</h2>
+<pre><code class="lang-csharp">using System.Buffers;
+using Bodu.Text.Toml.Writer;
+
+var buffer = new ArrayBufferWriter&lt;byte&gt;();
+var writer = new Utf8TomlWriter(buffer);
+
+writer.WriteStartTable();               // the required root table
+writer.WriteString(&quot;name&quot;, &quot;app&quot;);
+writer.WriteStartTable(&quot;server&quot;);       // emitted as a [server] block
+writer.WriteString(&quot;host&quot;, &quot;localhost&quot;);
+writer.WriteInteger(&quot;port&quot;, 8080);
+writer.WriteEndTable();
+writer.WriteEndTable();                 // closing the root emits the document
+</code></pre>
+<h2 id="notes">Notes</h2>
+<ul>
+<li><strong>Not progressive.</strong> TOML layout is a whole-document property, so the writer buffers a value tree and serializes it when the root table closes: scalars and arrays first as <code>key = value</code> lines, then sub-tables as <code>[dotted.path]</code> blocks, arrays of tables as <code>[[path]]</code> runs, and tables inside arrays as inline <code>{ … }</code>.</li>
+<li><strong>Version-neutral output.</strong> The emitted text is valid under both v1.0.0 and v1.1.0 regardless of <code>SpecVersion</code>.</li>
+<li><strong>See also:</strong> the <a href="../docs/serialization/toml/index.html">Bodu.Text.Toml introduction</a> and the <a href="../guides/serialization/toml/using.html">Using TOML</a> guide (Pattern 9 — Process tokens by hand).</li>
+</ul>
+</div>
+  <div class="markdown level0 remarks"></div>
+    <h3 id="structs">
+Structs
+</h3>
+      <h4><a class="xref" href="Bodu.Text.Toml.Writer.TomlWriterOptions.html">TomlWriterOptions</a></h4>
+      <section><p>Defines the customizations applied when creating a <a class="xref" href="Bodu.Text.Toml.Writer.Utf8TomlWriter.html">Utf8TomlWriter</a>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Toml.Writer.Utf8TomlWriter.html">Utf8TomlWriter</a></h4>
+      <section><p>Provides an append-only writer that emits normalized TOML bytes to an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.ibufferwriter-1">IBufferWriter&lt;T&gt;</a>. Because
+TOML's surface layout is a whole-document property, the writer is not progressive: it buffers every value into an
+in-memory tree and serializes it when the root table is closed.</p>
+</section>
+
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

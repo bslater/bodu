@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Namespace Bodu.Collections.Generic.Trees | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Namespace Bodu.Collections.Generic.Trees | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Collections.Generic.Trees">
+
+  <h1 id="Bodu_Collections_Generic_Trees" data-uid="Bodu.Collections.Generic.Trees" class="text-break">Namespace Bodu.Collections.Generic.Trees</h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual">
+<p><img src="../images/hero-collections.svg" alt="Bodu.Collections.Generic.Trees"></p>
+<h2 id="purpose">Purpose</h2>
+<p><strong>Bodu.Collections.Generic.Trees</strong> provides the tree-shaped collections of the <code>Bodu.Collections</code> package (which depends on <code>Bodu.Core</code>). Its headline types are the prefix trees (tries): <a class="xref" href="Bodu.Collections.Generic.Trees.Trie.html">Trie</a> stores a set of string keys, and <a class="xref" href="Bodu.Collections.Generic.Trees.Trie-1.html">Trie&lt;TValue&gt;</a> maps string keys to values. Both keep keys as paths of characters, so membership and prefix queries cost time proportional to the length of the key rather than to the number of stored keys — the natural fit for autocomplete, routing tables, and dictionary lookups where a prefix narrows the search.</p>
+<p>The tries have two sibling families. <a class="xref" href="Bodu.Collections.Generic.Trees.RadixTrie.html">RadixTrie</a> and <a class="xref" href="Bodu.Collections.Generic.Trees.RadixTrie-1.html">RadixTrie&lt;TValue&gt;</a> mirror the trie surfaces member-for-member over path-compressed string edges — the better fit for long keys with sparse branching (URLs, paths, identifiers). <a class="xref" href="Bodu.Collections.Generic.Trees.AhoCorasickAutomaton.html">AhoCorasickAutomaton</a> and <a class="xref" href="Bodu.Collections.Generic.Trees.AhoCorasickAutomaton-1.html">AhoCorasickAutomaton&lt;TValue&gt;</a> invert the question: built once from a pattern set, they report every occurrence of every pattern in a searched text in a single O(text + matches) pass.</p>
+<p>Alongside the tries, <a class="xref" href="Bodu.Collections.Generic.Trees.Tree-1.html">Tree&lt;T&gt;</a> is a mutable n-ary tree node: each instance is both a value-carrying node and the root of the subtree formed by its descendants, with iterative (stack-safe) pre-order, post-order, and level-order traversals.</p>
+<h2 id="static-documentation">Static documentation</h2>
+<ul>
+<li><strong><a href="../docs/collections/index.html">Introduction</a></strong> — where the tree collections sit in the wider collection catalogue.</li>
+<li><strong><a href="../guides/core/trie.html">Tries and text search</a></strong> — building a string set or string-keyed map, prefix queries, removal, enumeration, the radix-trie variants, and Aho-Corasick multi-pattern matching.</li>
+</ul>
+<h2 id="key-types">Key types</h2>
+<ul>
+<li><a class="xref" href="Bodu.Collections.Generic.Trees.Trie.html">Trie</a> — a set of string keys. <code>Add</code> / <code>Contains</code> / <code>Remove</code>, the prefix members <code>StartsWith</code> and <code>KeysWithPrefix</code>, <code>Count</code>, <code>Clear</code>, a <code>Comparer</code>, and a fail-fast struct <code>GetEnumerator</code>. <code>Contains</code> and <code>StartsWith</code> also accept a <code>ReadOnlySpan&lt;char&gt;</code>.</li>
+<li><a class="xref" href="Bodu.Collections.Generic.Trees.Trie-1.html">Trie&lt;TValue&gt;</a> — a string-keyed map. <code>Add</code> / <code>TryAdd</code> / <code>Set</code> and the <code>this[string]</code> indexer, <code>ContainsKey</code>, <code>TryGetValue</code>, <code>Remove</code>, the prefix members <code>StartsWith</code>, <code>KeysWithPrefix</code>, and <code>ItemsWithPrefix</code>, <code>Count</code>, <code>Clear</code>, and a fail-fast struct <code>GetEnumerator</code> over <code>KeyValuePair&lt;string, TValue&gt;</code>. Span overloads exist for <code>Add</code>, <code>ContainsKey</code>, <code>TryGetValue</code>, and <code>StartsWith</code>.</li>
+<li><a class="xref" href="Bodu.Collections.Generic.Trees.RadixTrie.html">RadixTrie</a> / <a class="xref" href="Bodu.Collections.Generic.Trees.RadixTrie-1.html">RadixTrie&lt;TValue&gt;</a> — path-compressed (PATRICIA-style) siblings of the two tries with the identical member-for-member public surface, so consumers can swap types without code changes. Edges carry string labels that split on insert and re-fuse on remove.</li>
+<li><a class="xref" href="Bodu.Collections.Generic.Trees.AhoCorasickAutomaton.html">AhoCorasickAutomaton</a> / <a class="xref" href="Bodu.Collections.Generic.Trees.AhoCorasickAutomaton-1.html">AhoCorasickAutomaton&lt;TValue&gt;</a> — immutable multi-pattern matchers created via <code>Build</code>. <code>EnumerateMatches(string)</code> lazily yields every (overlapping, nested) occurrence as <a class="xref" href="Bodu.Collections.Generic.Trees.AhoCorasickMatch.html">AhoCorasickMatch</a> / <a class="xref" href="Bodu.Collections.Generic.Trees.AhoCorasickMatch-1.html">AhoCorasickMatch&lt;TValue&gt;</a> records in ascending (end index, pattern length) order; the span-based <code>CountMatches</code> / <code>HasMatch</code> are eager conveniences, and <code>Patterns</code> / <code>ContainsPattern</code> expose the built set.</li>
+<li><a class="xref" href="Bodu.Collections.Generic.Trees.Tree-1.html">Tree&lt;T&gt;</a> — a mutable n-ary tree node. <code>Value</code>, <code>Parent</code>, <code>Children</code>, <code>ChildCount</code>, <code>IsRoot</code>, <code>IsLeaf</code>, <code>Depth</code>, <code>Height</code>; structural mutation through <code>AddChild</code>, <code>RemoveChild</code>, <code>Remove</code>, and <code>Clear</code>; and the traversals <code>PreOrder</code>, <code>PostOrder</code>, <code>LevelOrder</code>, <code>Descendants</code>, <code>Ancestors</code>, <code>Leaves</code>, and <code>Root</code>.</li>
+</ul>
+<h2 id="example">Example</h2>
+<pre><code class="lang-csharp">using Bodu.Collections.Generic.Trees;
+
+var words = new Trie();
+words.Add(&quot;car&quot;);
+words.Add(&quot;card&quot;);
+words.Add(&quot;dog&quot;);
+
+bool hasCard = words.Contains(&quot;card&quot;);        // true
+bool anyCar  = words.StartsWith(&quot;car&quot;);        // true
+
+foreach (string key in words.KeysWithPrefix(&quot;car&quot;))
+{
+    // &quot;car&quot;, &quot;card&quot; (order unspecified)
+}
+</code></pre>
+<pre><code class="lang-csharp">using Bodu.Collections.Generic.Trees;
+
+// String-keyed map with prefix queries (autocomplete-style).
+var map = new Trie&lt;int&gt;();
+map.Add(&quot;apple&quot;, 1);
+map.Add(&quot;apply&quot;, 2);
+
+if (map.TryGetValue(&quot;apple&quot;, out int value))
+{
+    // value == 1
+}
+
+foreach (KeyValuePair&lt;string, int&gt; item in map.ItemsWithPrefix(&quot;app&quot;))
+{
+    // (&quot;apple&quot;, 1), (&quot;apply&quot;, 2) — order unspecified
+}
+</code></pre>
+<h2 id="notes">Notes</h2>
+<ul>
+<li><strong>Prefix cost is key-length, not key-count.</strong> A trie answers <code>Contains</code> / <code>ContainsKey</code>, <code>StartsWith</code>, and the prefix enumerations in time proportional to the length of the supplied string, independent of how many keys are stored.</li>
+<li><strong>Character comparison is configurable.</strong> The four trie collections accept an <code>IEqualityComparer&lt;char&gt;</code> at construction — pass <code>null</code> for the ordinal default, or a case-insensitive comparer to fold case while matching. The empty string is a valid key. The Aho-Corasick automatons are ordinal-only: normalize patterns and text up front for folded matching.</li>
+<li><strong>The automatons are immutable once built.</strong> Their failure and output links are global invariants of the complete pattern set; to change the set, call <code>Build</code> again. The unkeyed automaton deduplicates repeated patterns, while the keyed automaton throws on a duplicate pattern key.</li>
+<li><strong>Enumeration order is unspecified.</strong> <code>GetEnumerator</code>, <code>KeysWithPrefix</code>, and <code>ItemsWithPrefix</code> make no ordering guarantee in this version. The struct enumerator is fail-fast: mutating the trie after the enumerator is created throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a> on the next <code>MoveNext</code> or <code>Reset</code>.</li>
+<li><strong>Not thread-safe for concurrent mutation.</strong> Guard external synchronization if a tree or trie is shared across threads while one of them mutates it.</li>
+<li><strong><code>Tree&lt;T&gt;</code> traversals are stack-safe.</strong> <code>PreOrder</code>, <code>PostOrder</code>, and <code>LevelOrder</code> are evaluated iteratively, so arbitrarily deep trees are walked without risking a stack overflow.</li>
+</ul>
+</div>
+  <div class="markdown level0 remarks"></div>
+    <h3 id="classes">
+Classes
+</h3>
+      <h4><a class="xref" href="Bodu.Collections.Generic.Trees.AhoCorasickAutomaton.html">AhoCorasickAutomaton</a></h4>
+      <section><p>Represents an immutable Aho-Corasick automaton that locates every occurrence of every pattern in a pattern set in a
+single pass over the searched text.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Collections.Generic.Trees.AhoCorasickAutomaton-1.html">AhoCorasickAutomaton&lt;TValue&gt;</a></h4>
+      <section><p>Represents an immutable Aho-Corasick automaton that locates every occurrence of every pattern in a keyed pattern set
+in a single pass over the searched text, reporting the value associated with each matched pattern.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Collections.Generic.Trees.RadixTrie.html">RadixTrie</a></h4>
+      <section><p>Represents a path-compressed prefix tree (radix trie) of string keys and supports efficient prefix queries.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Collections.Generic.Trees.RadixTrie-1.html">RadixTrie&lt;TValue&gt;</a></h4>
+      <section><p>Represents a path-compressed prefix tree (radix trie) that maps string keys to values and supports efficient prefix
+queries.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Collections.Generic.Trees.Tree-1.html">Tree&lt;T&gt;</a></h4>
+      <section><p>Represents a node in a mutable n-ary tree. Each instance is simultaneously a node carrying a value and the root of
+the subtree formed by its descendants.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Collections.Generic.Trees.Trie.html">Trie</a></h4>
+      <section><p>Represents a prefix tree (trie) of string keys and supports efficient prefix queries.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Collections.Generic.Trees.Trie-1.html">Trie&lt;TValue&gt;</a></h4>
+      <section><p>Represents a prefix tree (trie) that maps string keys to values and supports efficient prefix queries.</p>
+</section>
+    <h3 id="structs">
+Structs
+</h3>
+      <h4><a class="xref" href="Bodu.Collections.Generic.Trees.AhoCorasickMatch.html">AhoCorasickMatch</a></h4>
+      <section><p>Represents a single pattern occurrence reported by <a class="xref" href="Bodu.Collections.Generic.Trees.AhoCorasickAutomaton.EnumerateMatches.html#Bodu_Collections_Generic_Trees_AhoCorasickAutomaton_EnumerateMatches_System_String_">EnumerateMatches(string)</a>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Collections.Generic.Trees.AhoCorasickMatch-1.html">AhoCorasickMatch&lt;TValue&gt;</a></h4>
+      <section><p>Represents a single pattern occurrence reported by
+<a class="xref" href="Bodu.Collections.Generic.Trees.AhoCorasickAutomaton-1.EnumerateMatches.html#Bodu_Collections_Generic_Trees_AhoCorasickAutomaton_1_EnumerateMatches_System_String_">EnumerateMatches(string)</a>, carrying the value associated with the matched
+pattern.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Collections.Generic.Trees.RadixTrie.Enumerator.html">RadixTrie.Enumerator</a></h4>
+      <section><p>Enumerates the keys of a <a class="xref" href="Bodu.Collections.Generic.Trees.RadixTrie.html">RadixTrie</a> by walking the node graph lazily, without materializing the
+collection.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Collections.Generic.Trees.RadixTrie-1.Enumerator.html">RadixTrie&lt;TValue&gt;.Enumerator</a></h4>
+      <section><p>Enumerates the key/value pairs of a <a class="xref" href="Bodu.Collections.Generic.Trees.RadixTrie-1.html">RadixTrie&lt;TValue&gt;</a> by walking the node graph lazily, without
+materializing the collection.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Collections.Generic.Trees.Trie.Enumerator.html">Trie.Enumerator</a></h4>
+      <section><p>Enumerates the keys of a <a class="xref" href="Bodu.Collections.Generic.Trees.Trie.html">Trie</a> by walking the node graph lazily, without materializing the
+collection.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Collections.Generic.Trees.Trie-1.Enumerator.html">Trie&lt;TValue&gt;.Enumerator</a></h4>
+      <section><p>Enumerates the key/value pairs of a <a class="xref" href="Bodu.Collections.Generic.Trees.Trie-1.html">Trie&lt;TValue&gt;</a> by walking the node graph lazily, without
+materializing the collection.</p>
+</section>
+
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

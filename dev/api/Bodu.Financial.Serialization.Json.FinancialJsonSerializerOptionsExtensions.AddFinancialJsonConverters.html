@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Method AddFinancialJsonConverters | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Method AddFinancialJsonConverters | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Financial.Serialization.Json.FinancialJsonSerializerOptionsExtensions.AddFinancialJsonConverters*">
+
+
+
+<h1 id="Bodu_Financial_Serialization_Json_FinancialJsonSerializerOptionsExtensions_AddFinancialJsonConverters_" data-uid="Bodu.Financial.Serialization.Json.FinancialJsonSerializerOptionsExtensions.AddFinancialJsonConverters*">Method AddFinancialJsonConverters</h1>
+<div class="markdown level0 summary"></div>
+<div class="markdown level0 conceptual"></div>
+
+<a id="Bodu_Financial_Serialization_Json_FinancialJsonSerializerOptionsExtensions_AddFinancialJsonConverters_" data-uid="Bodu.Financial.Serialization.Json.FinancialJsonSerializerOptionsExtensions.AddFinancialJsonConverters*"></a>
+<h4 id="Bodu_Financial_Serialization_Json_FinancialJsonSerializerOptionsExtensions_AddFinancialJsonConverters_System_Text_Json_JsonSerializerOptions_Bodu_Financial_Serialization_Json_FinancialJsonPolicy_" data-uid="Bodu.Financial.Serialization.Json.FinancialJsonSerializerOptionsExtensions.AddFinancialJsonConverters(System.Text.Json.JsonSerializerOptions,Bodu.Financial.Serialization.Json.FinancialJsonPolicy)">AddFinancialJsonConverters(JsonSerializerOptions, FinancialJsonPolicy)</h4>
+<div class="markdown level1 summary"><p>Adds the <a class="xref" href="Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a>, <a class="xref" href="Bodu.Financial.Money.html">Money</a>,
+<a class="xref" href="Bodu.Financial.CalculatedMoney.html">CalculatedMoney</a>, <a class="xref" href="Bodu.Financial.MoneyBag.html">MoneyBag</a>,
+<a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.html">ExchangeRate</a>, and
+<a class="xref" href="Bodu.Financial.ExchangeRates.CurrencyPair.html">CurrencyPair</a> JSON converters to <code class="paramref">options</code>,
+configured for the supplied <code class="paramref">policy</code>.</p>
+</div>
+<div class="markdown level1 conceptual"></div>
+<h5 class="declaration">Declaration</h5>
+<div class="codewrapper">
+  <pre><code class="lang-csharp hljs">public static JsonSerializerOptions AddFinancialJsonConverters(this JsonSerializerOptions options, FinancialJsonPolicy policy = FinancialJsonPolicy.Strict)</code></pre>
+</div>
+<h5 class="parameters">Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.json.jsonserializeroptions">JsonSerializerOptions</a></td>
+      <td><span class="parametername">options</span></td>
+      <td><p>The serializer options to extend.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="Bodu.Financial.Serialization.Json.FinancialJsonPolicy.html">FinancialJsonPolicy</a></td>
+      <td><span class="parametername">policy</span></td>
+      <td><p>The serialization policy applied to every registered converter. Defaults to
+<a class="xref" href="Bodu.Financial.Serialization.Json.FinancialJsonPolicy.html#Bodu_Financial_Serialization_Json_FinancialJsonPolicy_Strict">Strict</a>.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="returns">Returns</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.json.jsonserializeroptions">JsonSerializerOptions</a></td>
+      <td><p>The same <code class="paramref">options</code> instance, so calls can be chained inline.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 id="Bodu_Financial_Serialization_Json_FinancialJsonSerializerOptionsExtensions_AddFinancialJsonConverters_System_Text_Json_JsonSerializerOptions_Bodu_Financial_Serialization_Json_FinancialJsonPolicy__remarks">Remarks</h5>
+<div class="markdown level1 remarks"><p>
+The core <code>Bodu.Financial</code> types carry no <code>[JsonConverter]</code> attribute — the library is
+serialization-agnostic — so this call is required for <a class="xref" href="Bodu.Financial.Money.html">Money</a>,
+<a class="xref" href="Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a>, <a class="xref" href="Bodu.Financial.MoneyBag.html">MoneyBag</a>,
+<a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.html">ExchangeRate</a>, and
+<a class="xref" href="Bodu.Financial.ExchangeRates.CurrencyPair.html">CurrencyPair</a> to round-trip through their canonical shapes.
+</p>
+<p>
+Use the <a class="xref" href="Bodu.Financial.Serialization.Json.FinancialJsonPolicy.html#Bodu_Financial_Serialization_Json_FinancialJsonPolicy_Strict">Strict</a> policy for ledger / persistence data, the
+<a class="xref" href="Bodu.Financial.Serialization.Json.FinancialJsonPolicy.html#Bodu_Financial_Serialization_Json_FinancialJsonPolicy_Lenient">Lenient</a> policy for import workflows, and the
+<a class="xref" href="Bodu.Financial.Serialization.Json.FinancialJsonPolicy.html#Bodu_Financial_Serialization_Json_FinancialJsonPolicy_Compact">Compact</a> policy for the compact <code>"19.99 USD"</code> string form.
+</p>
+<p>
+All three policies preserve monetary precision on round-trip: a <a class="xref" href="Bodu.Financial.Money.html">Money</a> carrying an
+explicit minor-unit scale (a unit price) persists that scale — via a <code>scale</code> property in the object shapes
+and via the printed fractional digits in the compact form — and a <a class="xref" href="Bodu.Financial.CalculatedMoney.html">CalculatedMoney</a>
+serializes its full unrounded amount verbatim.
+</p>
+</div>
+<h5 class="exceptions">Exceptions</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Condition</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></td>
+      <td><p><code class="paramref">options</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></td>
+      <td><p><code class="paramref">policy</code> is not a defined <a class="xref" href="Bodu.Financial.Serialization.Json.FinancialJsonPolicy.html">FinancialJsonPolicy</a> value.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></td>
+      <td><p><code class="paramref">options</code> has already been used for serialization or deserialization, in which case
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.json.jsonserializeroptions.converters">Converters</a> is read-only. Configure options before first use.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

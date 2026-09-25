@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Extending RingBackedCollection&lt;T&gt; | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Extending RingBackedCollection&lt;T&gt; | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="extending-ringbackedcollectiont">Extending <code>RingBackedCollection&lt;T&gt;</code></h1>
+
+<p><a class="xref" href="../../api/Bodu.Collections.Generic.RingBackedCollection-1.html">RingBackedCollection&lt;T&gt;</a> is the abstract base that <a href="circular-buffer.html"><code>CircularBuffer&lt;T&gt;</code></a> and <a href="deque.html"><code>Deque&lt;T&gt;</code></a> share. It owns the mechanics every ring-buffer-backed collection needs — a contiguous backing array, head and tail indices that wrap modulo <code>Capacity</code>, a live <code>Count</code>, a structural-version counter, and a fail-fast <code>struct</code> enumerator — and leaves the <em>policy</em> (what happens when the ring is full or empty, which end is written) to the derived type. If you need a bounded ring with semantics neither built-in type offers — a sliding-window sampler, a fixed-size undo stack with peek-from-either-end, a most-recent-N log — derive from it rather than re-implementing the wrap arithmetic.</p>
+<h2 id="what-the-base-owns">What the base owns</h2>
+<p><strong>Public, read-only surface (inherited as-is):</strong> <code>Capacity</code>, <code>Count</code>, <code>IsEmpty</code>, <code>IsFull</code>, the head-relative indexer <code>this[int]</code>, <code>Contains(T)</code>, <code>CopyTo(T[], int)</code>, <code>ToArray()</code>, <code>Clear()</code>, <code>TrimExcess()</code>, and <code>GetEnumerator()</code> returning the shared <code>Enumerator</code> struct. The base also implements <code>IEnumerable&lt;T&gt;</code>, <code>IReadOnlyCollection&lt;T&gt;</code>, and the non-generic <code>ICollection</code> (<code>IsSynchronized</code> is always <code>false</code>; <code>SyncRoot</code> is provided for callers that lock externally).</p>
+<p><strong>Protected primitives (for the derived type):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Primitive</th>
+<th>Effect</th>
+<th>Precondition the caller must guarantee</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AddTail(T item)</code></td>
+<td>Writes at the tail and advances it.</td>
+<td><code>Count &lt; Capacity</code></td>
+</tr>
+<tr>
+<td><code>AddHead(T item)</code></td>
+<td>Writes at the slot before the head and retreats the head.</td>
+<td><code>Count &lt; Capacity</code></td>
+</tr>
+<tr>
+<td><code>RemoveHead()</code></td>
+<td>Returns and clears the head element, advances the head.</td>
+<td><code>Count &gt; 0</code></td>
+</tr>
+<tr>
+<td><code>RemoveTail()</code></td>
+<td>Returns and clears the tail element, retreats the tail.</td>
+<td><code>Count &gt; 0</code></td>
+</tr>
+<tr>
+<td><code>PeekHead()</code> / <code>PeekTail()</code></td>
+<td>Reads without removing.</td>
+<td><code>Count &gt; 0</code></td>
+</tr>
+<tr>
+<td><code>OverwriteTail(T item)</code></td>
+<td>Writes at the slot the tail points to (which is the head when full) and advances <strong>both</strong> head and tail; <code>Count</code> is unchanged. The eviction primitive.</td>
+<td><code>Count == Capacity</code></td>
+</tr>
+<tr>
+<td><code>Resize(int newCapacity)</code></td>
+<td>Replaces the backing array, copying the live region to index 0.</td>
+<td><code>newCapacity &gt;= Count</code> and <code>&gt;= 1</code></td>
+</tr>
+<tr>
+<td><code>RingBackedCollection(int capacity)</code> / <code>RingBackedCollection(IEnumerable&lt;T&gt;, int capacity)</code></td>
+<td>Constructors; <code>capacity &lt; 1</code> throws <code>ArgumentOutOfRangeException</code>.</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<div class="IMPORTANT">
+<h5>Important</h5>
+<p>The protected mutators perform <strong>no</strong> capacity or emptiness validation — that is what keeps the built-in types' hot paths branch-free. The derived type owns the contract: test <code>IsFull</code> / <code>IsEmpty</code> (or <code>Count</code>) before calling, and throw or evict according to its own policy. Calling a primitive outside its precondition corrupts the ring.</p>
+</div>
+<h2 id="the-version-counter-and-the-fail-fast-contract">The version counter and the fail-fast contract</h2>
+<p>Every primitive that changes the structure — <code>AddTail</code>, <code>AddHead</code>, <code>RemoveHead</code>, <code>RemoveTail</code>, <code>OverwriteTail</code>, <code>Resize</code>, and the public <code>Clear()</code> / <code>TrimExcess()</code> — bumps a private version counter. The base <code>Enumerator</code> captures the version when it is created and compares it on every <code>MoveNext</code>; a mismatch throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a>. Because the counter lives in the base and is bumped <em>inside</em> the primitives, a derived type gets fail-fast enumeration for free — there is nothing to call and nothing to forget. <code>PeekHead</code> / <code>PeekTail</code> and the read-only public members do not bump it.</p>
+<p>The base additionally latches an <em>evicting</em> flag around eviction-event dispatch in <code>CircularBuffer&lt;T&gt;</code> and <code>Deque&lt;T&gt;</code>, so a handler that tries to mutate the collection mid-eviction gets a deterministic <code>InvalidOperationException</code> instead of a corrupted ring; that machinery is internal to those two types and is not part of the protected surface.</p>
+<h2 id="worked-example--a-fixed-capacity-sliding-window-sampler">Worked example — a fixed-capacity sliding-window sampler</h2>
+<p>The type below keeps the most recent <code>size</code> samples: a push into a full window overwrites the oldest sample, and the statistics run over whatever is held. Everything policy-related — what &quot;full&quot; means, which end evicts — is in the derived type; everything mechanical is inherited.</p>
+<pre><code class="lang-csharp">using Bodu.Collections.Generic;
+
+/// &lt;summary&gt;
+/// A fixed-capacity sliding window over the most recent samples: pushing into a full window
+/// overwrites the oldest sample, and the statistics are computed over whatever is held.
+/// &lt;/summary&gt;
+public sealed class SlidingWindow : RingBackedCollection&lt;double&gt;
+{
+    public SlidingWindow(int size)
+        : base(size)
+    {
+    }
+
+    /// &lt;summary&gt;Records a sample, discarding the oldest when the window is full.&lt;/summary&gt;
+    public void Push(double sample)
+    {
+        // The protected primitives do no bounds checks: the derived type owns the contract.
+        if (IsFull)
+            OverwriteTail(sample);      // overwrite the oldest slot and slide head+tail forward; Count unchanged
+        else
+            AddTail(sample);            // append; requires Count &lt; Capacity
+    }
+
+    /// &lt;summary&gt;Gets the most recently pushed sample.&lt;/summary&gt;
+    public double Latest =&gt; IsEmpty ? throw new InvalidOperationException(&quot;The window is empty.&quot;) : PeekTail();
+
+    /// &lt;summary&gt;Gets the oldest sample still inside the window.&lt;/summary&gt;
+    public double Oldest =&gt; IsEmpty ? throw new InvalidOperationException(&quot;The window is empty.&quot;) : PeekHead();
+
+    /// &lt;summary&gt;Removes and returns the oldest sample.&lt;/summary&gt;
+    public bool TryDropOldest(out double sample)
+    {
+        if (IsEmpty)
+        {
+            sample = default;
+            return false;
+        }
+
+        sample = RemoveHead();
+        return true;
+    }
+
+    /// &lt;summary&gt;Gets the arithmetic mean of the held samples.&lt;/summary&gt;
+    public double Average()
+    {
+        if (IsEmpty) return double.NaN;
+
+        double sum = 0;
+        foreach (double sample in this)      // the base struct enumerator, head-to-tail
+            sum += sample;
+        return sum / Count;
+    }
+
+    /// &lt;summary&gt;Widens the window, keeping every held sample.&lt;/summary&gt;
+    public void Grow(int newSize)
+    {
+        ArgumentOutOfRangeException.ThrowIfLessThan(newSize, Count);
+        if (newSize != Capacity) Resize(newSize);
+    }
+}
+</code></pre>
+<p>Using it:</p>
+<pre><code class="lang-csharp">using Bodu.Collections.Generic;
+
+var window = new SlidingWindow(3);
+window.Push(10);
+window.Push(20);
+window.Push(30);
+window.Push(40);                                       // full: overwrites 10
+
+double[] held = window.ToArray();                      // 20, 30, 40 — head-to-tail logical order
+double mean   = window.Average();                      // 30
+double oldest = window.Oldest, latest = window.Latest; // 20, 40
+double first  = window[0], last = window[2];           // 20, 40 — the indexer is head-relative
+bool full     = window.IsFull;                         // true (3/3)
+bool has30    = window.Contains(30);                   // true
+
+window.Grow(5);
+window.Push(50);                                       // 20, 30, 40, 50; Capacity == 5
+
+bool dropped  = window.TryDropOldest(out double gone); // true, gone == 20
+
+// Fail-fast: the base enumerator carries the structural version.
+try
+{
+    foreach (double sample in window)
+        window.Push(sample + 1);
+}
+catch (InvalidOperationException)
+{
+    Console.WriteLine(&quot;enumerator invalidated by Push&quot;);
+}
+
+window.TrimExcess();                                   // Capacity shrinks to Count (4)
+window.Clear();                                        // IsEmpty == true; Average() == NaN
+
+System.Collections.ICollection asCollection = window;
+bool synchronized = asCollection.IsSynchronized;       // false — never thread-safe
+</code></pre>
+<p>Points worth noticing in the example:</p>
+<ul>
+<li><code>Push</code> is the <em>only</em> place that decides between <code>AddTail</code> and <code>OverwriteTail</code>; the base never evicts on its own.</li>
+<li><code>Average()</code> enumerates through <code>this</code> — the inherited struct enumerator — and therefore participates in the fail-fast contract automatically.</li>
+<li><code>Grow</code> guards <code>Resize</code>'s precondition (<code>newCapacity &gt;= Count</code>) itself, because <code>Resize</code> will not.</li>
+<li><code>TrimExcess()</code> and <code>Clear()</code> come from the base and already bump the version.</li>
+</ul>
+<h2 id="design-guidance">Design guidance</h2>
+<ul>
+<li><strong>Validate at the policy boundary, not in the primitives.</strong> Put the <code>IsFull</code> / <code>IsEmpty</code> test in your public method and let the primitive assume it; that mirrors how <code>CircularBuffer&lt;T&gt;.Enqueue</code> and <code>Deque&lt;T&gt;.AddLast</code> are written.</li>
+<li><strong>Expose <code>Try*</code> alongside throwing members</strong> when a full or empty ring is an expected state rather than a bug (the non-throwing drop-oldest method in the example above).</li>
+<li><strong>Do not cache <code>Capacity</code></strong> across a <code>Resize</code> or <code>TrimExcess</code>; read the property.</li>
+<li><strong>Thread safety is yours to add.</strong> The base is single-threaded by design (<code>IsSynchronized == false</code>). For a lock-free multi-producer ring use <a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer-1.html">ConcurrentCircularBuffer&lt;T&gt;</a> instead of deriving — see <a href="concurrent-collections.html">Concurrent collections</a>.</li>
+<li><strong>Prefer the built-in types when they fit.</strong> <code>CircularBuffer&lt;T&gt;</code> with <code>AllowOverwrite = true</code> already <em>is</em> a sliding window over the most recent N items, and <code>Deque&lt;T&gt;</code> with <code>DequeOverflowPolicy.EvictOpposite</code> covers eviction from either end; derive only when the surface or the policy genuinely differs.</li>
+</ul>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="circular-buffer.html">Circular buffer</a> — the single-ended FIFO built on this base.</li>
+<li><a href="deque.html">Deque</a> — the double-ended queue built on this base.</li>
+<li><a href="concurrent-collections.html">Concurrent collections</a> — the lock-free ring that does <em>not</em> share this base.</li>
+<li><a href="thread-safety.html">Thread-safety contracts across Core Foundations</a> — the one-table view of what is and is not safe.</li>
+<li><a class="xref" href="../../api/Bodu.Collections.Generic.html"><code>Bodu.Collections.Generic</code> API reference</a> — full namespace overview.</li>
+<li><strong><a href="../topics/core-foundations.html">Core Foundations guides</a></strong> — every guide in this topic.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

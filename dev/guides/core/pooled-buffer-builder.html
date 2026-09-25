@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Pooled buffer builder | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Pooled buffer builder | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="pooled-buffer-builder">Pooled buffer builder</h1>
+
+<p><code>PooledBufferBuilder&lt;T&gt;</code> is the zero-allocation way to assemble a <code>byte</code> or <code>char</code> span (or any other element type) without paying for repeated array resizing or for <code>List&lt;T&gt;</code>'s amortised-double growth. It rents arrays from <code>ArrayPool&lt;T&gt;.Shared</code>, accumulates elements with automatic growth, and returns the rented array to the pool on disposal.</p>
+<p>The type implements <code>IBufferWriter&lt;T&gt;</code> and <code>IMemoryOwner&lt;T&gt;</code>, so it composes with span-based APIs that already speak those interfaces — <code>Utf8Json</code> writers, <code>System.Text.Json.Utf8JsonWriter</code>, <code>MessagePackWriter</code>, the BCL <code>JsonWriter</code> API, and consumer code that targets <code>IBufferWriter&lt;T&gt;</code> directly.</p>
+<h2 id="construction">Construction</h2>
+<pre><code class="lang-csharp">using Bodu.Buffers;
+
+using var builder = new PooledBufferBuilder&lt;byte&gt;();                     // default 256-element initial capacity
+using var sized   = new PooledBufferBuilder&lt;byte&gt;(initialCapacity: 4096); // pre-sized
+</code></pre>
+<p>The initial capacity is a hint — <code>ArrayPool&lt;T&gt;.Shared</code> rounds up to a pool-bucket size, so <code>Capacity</code> may exceed the value you passed. The constructor rejects non-positive capacities.</p>
+<p>Always use the <code>using</code> pattern. <code>Dispose()</code> returns the rented array to the pool; failing to dispose leaks the rental and (worse) prevents the pool from reclaiming the buffer, which can lead to unbounded pool growth in long-running services.</p>
+<h2 id="appending-elements">Appending elements</h2>
+<pre><code class="lang-csharp">builder.Append((byte)0xDE);                                  // single element
+builder.AppendRange(stackalloc byte[] { 0xAD, 0xBE, 0xEF }); // span
+builder.AppendRange(new byte[] { 0xCA, 0xFE });              // array
+builder.AppendRange(ReadOnlyMemory&lt;byte&gt;.Empty);             // memory
+builder.AppendRange(someEnumerable);                          // fast-path if ICollection&lt;T&gt;
+builder.AddMany((byte)0x00, count: 16);                      // fill region with repeated value
+</code></pre>
+<p><code>AppendRange(IEnumerable&lt;T&gt;)</code> checks for <code>ICollection&lt;T&gt;</code> and takes the fast <code>CopyTo</code> path when available; otherwise it iterates and appends element-by-element. <code>AddMany</code> is the right primitive for filling a region with a known fill byte (zero-padding before encryption, padding before a hash final block).</p>
+<h2 id="direct-span-access">Direct span access</h2>
+<p>For consumers that want to write into the buffer directly — and avoid the second copy that <code>AppendRange</code> would impose — the <code>IBufferWriter&lt;T&gt;</code> surface is available:</p>
+<pre><code class="lang-csharp">Span&lt;byte&gt; destination = builder.GetSpan(sizeHint: 64);     // grows if needed
+int actuallyWritten = WriteIntoSpan(destination);
+builder.Advance(actuallyWritten);                            // bump the written count
+</code></pre>
+<p><code>GetMemory</code> returns a <code>Memory&lt;T&gt;</code>, <code>GetSpan</code> a <code>Span&lt;T&gt;</code>. Both grow the rented array if the requested hint exceeds available capacity. <code>Advance(count)</code> validates <code>count ≤ free capacity</code> and throws on overshoot.</p>
+<p>This is the right pattern when composing with <code>Utf8JsonWriter</code> or any other writer that accepts an <code>IBufferWriter&lt;T&gt;</code>:</p>
+<pre><code class="lang-csharp">using var builder = new PooledBufferBuilder&lt;byte&gt;();
+using (Utf8JsonWriter w = new(builder))
+{
+    w.WriteStartObject();
+    w.WriteString(&quot;name&quot;, &quot;value&quot;);
+    w.WriteEndObject();
+}
+
+ReadOnlySpan&lt;byte&gt; json = builder.WrittenSpan;
+</code></pre>
+<h2 id="reading-the-result">Reading the result</h2>
+<pre><code class="lang-csharp">builder.WrittenCount;             // current accumulated count
+builder.WrittenSpan;              // ReadOnlySpan&lt;T&gt; over [0, WrittenCount)
+builder.WrittenMemory;            // ReadOnlyMemory&lt;T&gt; over [0, WrittenCount)
+builder.Capacity;                 // rented array length
+builder.FreeCapacity;             // Capacity − WrittenCount
+builder.IsEmpty;                  // WrittenCount == 0
+
+// Copy to caller buffer.
+byte[] hash = new byte[builder.WrittenCount];
+builder.CopyTo(hash);
+if (builder.TryCopyTo(otherSpan)) { … }
+
+// Convert to a stable array and release the rental in one call.
+byte[] result = builder.ToArrayAndDispose();
+</code></pre>
+<p><code>ToArrayAndDispose()</code> is the right primitive for the common &quot;build, snapshot, free&quot; pattern — it copies the written region into a fresh array and disposes the builder in one method, eliminating a second <code>using</code> block.</p>
+<h2 id="sorting-in-place">Sorting in place</h2>
+<pre><code class="lang-csharp">builder.Sort();                                              // default comparer
+builder.Sort(Comparer&lt;byte&gt;.Default);                        // explicit comparer
+builder.Sort((a, b) =&gt; b.CompareTo(a));                      // delegate
+</code></pre>
+<p>Sort operates over the written region in place.</p>
+<h2 id="disposal-and-reset">Disposal and Reset</h2>
+<pre><code class="lang-csharp">builder.Reset();                                              // clear the accumulated data; keep the rented buffer
+builder.Dispose();                                             // return the rented buffer to the pool
+</code></pre>
+<p><code>Reset()</code> zeroes the reference slots (when <code>T</code> contains references) so the old contents do not pin objects; the rented array is <strong>not</strong> returned, so a subsequent <code>AppendRange</code> can fill it without a fresh rental. Use <code>Reset</code> when the builder is the body of a per-request loop and the same instance is reused across requests.</p>
+<p><code>Dispose()</code> releases the rental. After disposal, every property and method throws <code>ObjectDisposedException</code>. Builders are not reusable after disposal — construct a new instance instead.</p>
+<h2 id="pre-sizing">Pre-sizing</h2>
+<pre><code class="lang-csharp">builder.EnsureCapacity(64 * 1024);   // pre-allocate ahead of a known-size payload
+</code></pre>
+<p>When the final size is known up front, <code>EnsureCapacity</code> avoids the amortised growth steps. The pool may still round up to a larger bucket.</p>
+<h2 id="dangerous-direct-access">Dangerous direct access</h2>
+<pre><code class="lang-csharp">ArraySegment&lt;byte&gt; alias = builder.DangerousGetArray();
+ReadOnlySpan&lt;byte&gt; aliasSpan = alias.AsSpan();
+</code></pre>
+<p><code>DangerousGetArray</code> exposes the underlying rented array as an <code>ArraySegment&lt;T&gt;</code>. The returned segment must not be retained beyond the builder's lifetime — once <code>Dispose</code> runs, the array is returned to the pool and may be handed to another tenant, who can mutate it under you.</p>
+<p>The pattern is useful when handing the buffer to a low-level API that already accepts <code>ArraySegment&lt;T&gt;</code> and that finishes its work synchronously inside the <code>using</code> block. Outside that pattern, prefer <code>WrittenSpan</code> / <code>WrittenMemory</code>.</p>
+<h2 id="worked-example--pooled-csv-encoding">Worked example — pooled CSV encoding</h2>
+<pre><code class="lang-csharp">using Bodu.Buffers;
+
+byte[] EncodeRecord(IEnumerable&lt;string&gt; fields)
+{
+    using var builder = new PooledBufferBuilder&lt;byte&gt;(initialCapacity: 256);
+
+    bool first = true;
+    foreach (string field in fields)
+    {
+        if (!first) builder.Append((byte)',');
+        first = false;
+
+        ReadOnlySpan&lt;byte&gt; utf8 = Encoding.UTF8.GetBytes(field);
+        builder.AppendRange(utf8);
+    }
+
+    builder.Append((byte)'\r');
+    builder.Append((byte)'\n');
+    return builder.ToArrayAndDispose();
+}
+</code></pre>
+<p>The function allocates exactly one array — the final result. Every intermediate step uses the pool.</p>
+<h2 id="when-not-to-use-pooledbufferbuilder">When <em>not</em> to use <code>PooledBufferBuilder</code></h2>
+<ul>
+<li><strong>One-shot allocations of known size.</strong> Just <code>new byte[n]</code> is simpler and clearer; the pool overhead is not worth it for a single call.</li>
+<li><strong>Long-lived buffers that escape the calling scope.</strong> The pool is a per-process resource — holding a rental open for the lifetime of the process defeats the point. Reach for <code>ToArrayAndDispose()</code> to snapshot and release.</li>
+<li><strong><code>Span&lt;T&gt;</code>-only callers with a known upper bound.</strong> If the upper bound fits on the stack, <code>stackalloc</code> is faster and lifetime-clean.</li>
+<li><strong>Multi-threaded writes.</strong> The builder is not thread-safe. One writer per builder; coordinate at a higher level.</li>
+</ul>
+<h2 id="see-also">See also</h2>
+<ul>
+<li><a class="xref" href="../../api/Bodu.Buffers.PooledBufferBuilder-1.html"><code>PooledBufferBuilder&lt;T&gt;</code> API reference</a></li>
+<li><a class="xref" href="../../api/Bodu.Buffers.html"><code>Bodu.Buffers</code> namespace landing</a></li>
+<li><a class="xref" href="../../api/Bodu.Collections.Generic.SegmentedBuffer-1.html"><code>Bodu.Collections.Generic.SegmentedBuffer&lt;T&gt;</code></a> — for streaming scenarios where the total length is unknown and the result is consumed in segments.</li>
+<li><strong><a href="../topics/core-foundations.html">Core Foundations guides</a></strong> — every guide in this topic.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

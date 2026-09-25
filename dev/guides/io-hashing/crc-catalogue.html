@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>CRC catalogue | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="CRC catalogue | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="crc-catalogue">CRC catalogue</h1>
+
+<p>The <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a> type (in the <strong>Bodu.IO.Hashing</strong> package) exposes a broad catalogue of named CRC parameter sets that can be passed to <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Crc.html">Crc</a> for CRC computation. The catalogue is mechanically derived from the <strong>CRC RevEng</strong> project.</p>
+<p>For walk-through usage of the CRC engine, see <a href="crc.html">Using CRC</a>.</p>
+<h2 id="attribution">Attribution</h2>
+<p>The CRC parameter sets in this catalogue are sourced from <strong>Greg Cook's CRC RevEng Catalogue of parameterized CRC algorithms</strong> at <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm">https://reveng.sourceforge.io/crc-catalogue/all.htm</a>.</p>
+<p>The catalogue is distributed as part of the CRC RevEng project at <a href="https://reveng.sourceforge.io/">https://reveng.sourceforge.io/</a>. Please consult the upstream page for the authoritative parameter definitions, alias history, and license terms that apply to the underlying data.</p>
+<ul>
+<li><strong>Catalogue last fetched (UTC):</strong> 2026-04-20T08:57:51Z</li>
+<li><strong>This page regenerated (UTC):</strong> 2026-04-20T22:24:42Z</li>
+<li><strong>Entries in source:</strong> 113</li>
+</ul>
+<h2 id="accessing-standards">Accessing standards</h2>
+<p>The catalogue is a <strong>lazy-materialized data table</strong>. Loading <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a> allocates only the packed spec rows and the per-entry cache slots — individual <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a> instances are constructed on first access and then memoized, so a process that uses only a handful of standards pays for only a handful of allocations.</p>
+<p>Three entry points:</p>
+<pre><code class="lang-csharp">// 1. Strongly-typed common standards — most convenient for the usual suspects.
+var crc = new Crc(CrcStandard.CRC32_ISOHDLC);
+var crc = new Crc(CrcStandard.CRC32_ISCSI);          // iSCSI / Castagnoli
+var crc = new Crc(CrcStandard.CRC16_MODBUS);
+
+// 2. By enum — covers every canonical catalogue entry (112 in total).
+var crc = new Crc(CrcStandard.Get(CrcStandards.CRC8_SAEJ1850));
+
+// 3. By name — resolves canonical names AND published aliases.
+var crc1 = new Crc(CrcStandard.FromName(&quot;CRC-32/ISO-HDLC&quot;));
+var crc2 = new Crc(CrcStandard.FromName(&quot;PKZIP&quot;));   // same instance as crc1
+
+// Iterate every catalogue standard
+foreach (CrcStandard std in CrcStandard.All) { ... }
+</code></pre>
+<p><code>FromName</code> is ordinal and case-sensitive. <code>TryFromName</code> returns <code>false</code> rather than throwing when a name is unknown.</p>
+<h2 id="support-policy">Support policy</h2>
+<p><code>CrcStandard</code> represents all scalar parameters as <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint64">ulong</a>, so the library can materialize any CRC of width 1–64 bits. Entries whose width exceeds 64 bits are listed below for completeness but are <strong>not</strong> exposed by <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.CrcStandards.html">CrcStandards</a> and cannot be constructed through <code>CrcStandard</code>.</p>
+<p>Aliases share a single catalogue instance with their canonical standard. <code>CrcStandard.FromName</code> resolves both canonical and alias names, so <code>FromName(&quot;CRC-32&quot;)</code> and <code>FromName(&quot;CRC-32/ISO-HDLC&quot;)</code> return the same instance.</p>
+<h2 id="common-standards-strongly-typed">Common standards (strongly-typed)</h2>
+<p>These are exposed as <code>public static CrcStandard</code> properties on <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a> for convenience — the underlying cache is still shared with the enum-based lookup.</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th style="text-align: right;">Width</th>
+<th>Property</th>
+<th>Aliases</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CRC-8/MAXIM-DOW</td>
+<td style="text-align: right;">8</td>
+<td><code>CrcStandard.CRC8_MAXIMDOW</code></td>
+<td><code>CRC-8/MAXIM</code>, <code>DOW-CRC</code></td>
+</tr>
+<tr>
+<td>CRC-8/SMBUS</td>
+<td style="text-align: right;">8</td>
+<td><code>CrcStandard.CRC8_SMBUS</code></td>
+<td><code>CRC-8</code></td>
+</tr>
+<tr>
+<td>CRC-16/ARC</td>
+<td style="text-align: right;">16</td>
+<td><code>CrcStandard.CRC16_ARC</code></td>
+<td><code>ARC</code>, <code>CRC-16</code>, <code>CRC-16/LHA</code>, <code>CRC-IBM</code></td>
+</tr>
+<tr>
+<td>CRC-16/IBM-3740</td>
+<td style="text-align: right;">16</td>
+<td><code>CrcStandard.CRC16_IBM3740</code></td>
+<td><code>CRC-16/AUTOSAR</code>, <code>CRC-16/CCITT-FALSE</code></td>
+</tr>
+<tr>
+<td>CRC-16/KERMIT</td>
+<td style="text-align: right;">16</td>
+<td><code>CrcStandard.CRC16_KERMIT</code></td>
+<td><code>CRC-16/BLUETOOTH</code>, <code>CRC-16/CCITT</code>, <code>CRC-16/CCITT-TRUE</code>, <code>CRC-16/V-41-LSB</code>, <code>CRC-CCITT</code>, <code>KERMIT</code></td>
+</tr>
+<tr>
+<td>CRC-16/MODBUS</td>
+<td style="text-align: right;">16</td>
+<td><code>CrcStandard.CRC16_MODBUS</code></td>
+<td><code>MODBUS</code></td>
+</tr>
+<tr>
+<td>CRC-16/XMODEM</td>
+<td style="text-align: right;">16</td>
+<td><code>CrcStandard.CRC16_XMODEM</code></td>
+<td><code>CRC-16/ACORN</code>, <code>CRC-16/LTE</code>, <code>CRC-16/V-41-MSB</code>, <code>XMODEM</code>, <code>ZMODEM</code></td>
+</tr>
+<tr>
+<td>CRC-32/BZIP2</td>
+<td style="text-align: right;">32</td>
+<td><code>CrcStandard.CRC32_BZIP2</code></td>
+<td><code>CRC-32/AAL5</code>, <code>CRC-32/DECT-B</code>, <code>B-CRC-32</code></td>
+</tr>
+<tr>
+<td>CRC-32/ISCSI</td>
+<td style="text-align: right;">32</td>
+<td><code>CrcStandard.CRC32_ISCSI</code></td>
+<td><code>CRC-32/BASE91-C</code>, <code>CRC-32/CASTAGNOLI</code>, <code>CRC-32/INTERLAKEN</code>, <code>CRC-32C</code>, <code>CRC-32/NVME</code></td>
+</tr>
+<tr>
+<td>CRC-32/ISO-HDLC</td>
+<td style="text-align: right;">32</td>
+<td><code>CrcStandard.CRC32_ISOHDLC</code></td>
+<td><code>CRC-32</code>, <code>CRC-32/ADCCP</code>, <code>CRC-32/V-42</code>, <code>CRC-32/XZ</code>, <code>PKZIP</code></td>
+</tr>
+<tr>
+<td>CRC-64/ECMA-182</td>
+<td style="text-align: right;">64</td>
+<td><code>CrcStandard.CRC64_ECMA182</code></td>
+<td><code>CRC-64</code></td>
+</tr>
+<tr>
+<td>CRC-64/XZ</td>
+<td style="text-align: right;">64</td>
+<td><code>CrcStandard.CRC64_XZ</code></td>
+<td><code>CRC-64/GO-ECMA</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="full-catalogue">Full catalogue</h2>
+<p>Access the following via <code>CrcStandard.Get(CrcStandards.X)</code> or <code>CrcStandard.FromName(&quot;name&quot;)</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th style="text-align: right;">Width</th>
+<th>Class</th>
+<th>Enum</th>
+<th>Aliases</th>
+<th>RevEng</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CRC-3/GSM</td>
+<td style="text-align: right;">3</td>
+<td>academic</td>
+<td><code>CrcStandards.CRC3_GSM</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-3-gsm">spec</a></td>
+</tr>
+<tr>
+<td>CRC-3/ROHC</td>
+<td style="text-align: right;">3</td>
+<td>academic</td>
+<td><code>CrcStandards.CRC3_ROHC</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-3-rohc">spec</a></td>
+</tr>
+<tr>
+<td>CRC-4/G-704</td>
+<td style="text-align: right;">4</td>
+<td>academic</td>
+<td><code>CrcStandards.CRC4_G704</code></td>
+<td><code>CRC-4/ITU</code></td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-4-g-704">spec</a></td>
+</tr>
+<tr>
+<td>CRC-4/INTERLAKEN</td>
+<td style="text-align: right;">4</td>
+<td>academic</td>
+<td><code>CrcStandards.CRC4_INTERLAKEN</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-4-interlaken">spec</a></td>
+</tr>
+<tr>
+<td>CRC-5/EPC-C1G2</td>
+<td style="text-align: right;">5</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC5_EPCC1G2</code></td>
+<td><code>CRC-5/EPC</code></td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-5-epc-c1g2">spec</a></td>
+</tr>
+<tr>
+<td>CRC-5/G-704</td>
+<td style="text-align: right;">5</td>
+<td>academic</td>
+<td><code>CrcStandards.CRC5_G704</code></td>
+<td><code>CRC-5/ITU</code></td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-5-g-704">spec</a></td>
+</tr>
+<tr>
+<td>CRC-5/USB</td>
+<td style="text-align: right;">5</td>
+<td>confirmed</td>
+<td><code>CrcStandards.CRC5_USB</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-5-usb">spec</a></td>
+</tr>
+<tr>
+<td>CRC-6/CDMA2000-A</td>
+<td style="text-align: right;">6</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC6_CDMA2000A</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-6-cdma2000-a">spec</a></td>
+</tr>
+<tr>
+<td>CRC-6/CDMA2000-B</td>
+<td style="text-align: right;">6</td>
+<td>academic</td>
+<td><code>CrcStandards.CRC6_CDMA2000B</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-6-cdma2000-b">spec</a></td>
+</tr>
+<tr>
+<td>CRC-6/DARC</td>
+<td style="text-align: right;">6</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC6_DARC</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-6-darc">spec</a></td>
+</tr>
+<tr>
+<td>CRC-6/G-704</td>
+<td style="text-align: right;">6</td>
+<td>academic</td>
+<td><code>CrcStandards.CRC6_G704</code></td>
+<td><code>CRC-6/ITU</code></td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-6-g-704">spec</a></td>
+</tr>
+<tr>
+<td>CRC-6/GSM</td>
+<td style="text-align: right;">6</td>
+<td>academic</td>
+<td><code>CrcStandards.CRC6_GSM</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-6-gsm">spec</a></td>
+</tr>
+<tr>
+<td>CRC-7/MMC</td>
+<td style="text-align: right;">7</td>
+<td>academic</td>
+<td><code>CrcStandards.CRC7_MMC</code></td>
+<td><code>CRC-7</code></td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-7-mmc">spec</a></td>
+</tr>
+<tr>
+<td>CRC-7/ROHC</td>
+<td style="text-align: right;">7</td>
+<td>academic</td>
+<td><code>CrcStandards.CRC7_ROHC</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-7-rohc">spec</a></td>
+</tr>
+<tr>
+<td>CRC-7/UMTS</td>
+<td style="text-align: right;">7</td>
+<td>academic</td>
+<td><code>CrcStandards.CRC7_UMTS</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-7-umts">spec</a></td>
+</tr>
+<tr>
+<td>CRC-8/AUTOSAR</td>
+<td style="text-align: right;">8</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC8_AUTOSAR</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-autosar">spec</a></td>
+</tr>
+<tr>
+<td>CRC-8/BLUETOOTH</td>
+<td style="text-align: right;">8</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC8_BLUETOOTH</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-bluetooth">spec</a></td>
+</tr>
+<tr>
+<td>CRC-8/CDMA2000</td>
+<td style="text-align: right;">8</td>
+<td>academic</td>
+<td><code>CrcStandards.CRC8_CDMA2000</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-cdma2000">spec</a></td>
+</tr>
+<tr>
+<td>CRC-8/DARC</td>
+<td style="text-align: right;">8</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC8_DARC</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-darc">spec</a></td>
+</tr>
+<tr>
+<td>CRC-8/DVB-S2</td>
+<td style="text-align: right;">8</td>
+<td>academic</td>
+<td><code>CrcStandards.CRC8_DVBS2</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-dvb-s2">spec</a></td>
+</tr>
+<tr>
+<td>CRC-8/GSM-A</td>
+<td style="text-align: right;">8</td>
+<td>academic</td>
+<td><code>CrcStandards.CRC8_GSMA</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-gsm-a">spec</a></td>
+</tr>
+<tr>
+<td>CRC-8/GSM-B</td>
+<td style="text-align: right;">8</td>
+<td>academic</td>
+<td><code>CrcStandards.CRC8_GSMB</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-gsm-b">spec</a></td>
+</tr>
+<tr>
+<td>CRC-8/HITAG</td>
+<td style="text-align: right;">8</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC8_HITAG</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-hitag">spec</a></td>
+</tr>
+<tr>
+<td>CRC-8/I-432-1</td>
+<td style="text-align: right;">8</td>
+<td>academic</td>
+<td><code>CrcStandards.CRC8_I4321</code></td>
+<td><code>CRC-8/ITU</code></td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-i-432-1">spec</a></td>
+</tr>
+<tr>
+<td>CRC-8/I-CODE</td>
+<td style="text-align: right;">8</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC8_ICODE</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-i-code">spec</a></td>
+</tr>
+<tr>
+<td>CRC-8/LTE</td>
+<td style="text-align: right;">8</td>
+<td>academic</td>
+<td><code>CrcStandards.CRC8_LTE</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-lte">spec</a></td>
+</tr>
+<tr>
+<td><strong>CRC-8/MAXIM-DOW</strong></td>
+<td style="text-align: right;">8</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC8_MAXIMDOW</code></td>
+<td><code>CRC-8/MAXIM</code>, <code>DOW-CRC</code></td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-maxim-dow">spec</a></td>
+</tr>
+<tr>
+<td>CRC-8/MIFARE-MAD</td>
+<td style="text-align: right;">8</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC8_MIFAREMAD</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-mifare-mad">spec</a></td>
+</tr>
+<tr>
+<td>CRC-8/NRSC-5</td>
+<td style="text-align: right;">8</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC8_NRSC5</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-nrsc-5">spec</a></td>
+</tr>
+<tr>
+<td>CRC-8/OPENSAFETY</td>
+<td style="text-align: right;">8</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC8_OPENSAFETY</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-opensafety">spec</a></td>
+</tr>
+<tr>
+<td>CRC-8/ROHC</td>
+<td style="text-align: right;">8</td>
+<td>academic</td>
+<td><code>CrcStandards.CRC8_ROHC</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-rohc">spec</a></td>
+</tr>
+<tr>
+<td>CRC-8/SAE-J1850</td>
+<td style="text-align: right;">8</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC8_SAEJ1850</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-sae-j1850">spec</a></td>
+</tr>
+<tr>
+<td><strong>CRC-8/SMBUS</strong></td>
+<td style="text-align: right;">8</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC8_SMBUS</code></td>
+<td><code>CRC-8</code></td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-smbus">spec</a></td>
+</tr>
+<tr>
+<td>CRC-8/TECH-3250</td>
+<td style="text-align: right;">8</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC8_TECH3250</code></td>
+<td><code>CRC-8/AES</code>, <code>CRC-8/EBU</code></td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-tech-3250">spec</a></td>
+</tr>
+<tr>
+<td>CRC-8/WCDMA</td>
+<td style="text-align: right;">8</td>
+<td>third-party</td>
+<td><code>CrcStandards.CRC8_WCDMA</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-wcdma">spec</a></td>
+</tr>
+<tr>
+<td>CRC-10/ATM</td>
+<td style="text-align: right;">10</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC10_ATM</code></td>
+<td><code>CRC-10</code>, <code>CRC-10/I-610</code></td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-10-atm">spec</a></td>
+</tr>
+<tr>
+<td>CRC-10/CDMA2000</td>
+<td style="text-align: right;">10</td>
+<td>academic</td>
+<td><code>CrcStandards.CRC10_CDMA2000</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-10-cdma2000">spec</a></td>
+</tr>
+<tr>
+<td>CRC-10/GSM</td>
+<td style="text-align: right;">10</td>
+<td>academic</td>
+<td><code>CrcStandards.CRC10_GSM</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-10-gsm">spec</a></td>
+</tr>
+<tr>
+<td>CRC-11/FLEXRAY</td>
+<td style="text-align: right;">11</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC11_FLEXRAY</code></td>
+<td><code>CRC-11</code></td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-11-flexray">spec</a></td>
+</tr>
+<tr>
+<td>CRC-11/UMTS</td>
+<td style="text-align: right;">11</td>
+<td>academic</td>
+<td><code>CrcStandards.CRC11_UMTS</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-11-umts">spec</a></td>
+</tr>
+<tr>
+<td>CRC-12/CDMA2000</td>
+<td style="text-align: right;">12</td>
+<td>academic</td>
+<td><code>CrcStandards.CRC12_CDMA2000</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-12-cdma2000">spec</a></td>
+</tr>
+<tr>
+<td>CRC-12/DECT</td>
+<td style="text-align: right;">12</td>
+<td>academic</td>
+<td><code>CrcStandards.CRC12_DECT</code></td>
+<td><code>X-CRC-12</code></td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-12-dect">spec</a></td>
+</tr>
+<tr>
+<td>CRC-12/GSM</td>
+<td style="text-align: right;">12</td>
+<td>academic</td>
+<td><code>CrcStandards.CRC12_GSM</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-12-gsm">spec</a></td>
+</tr>
+<tr>
+<td>CRC-12/UMTS</td>
+<td style="text-align: right;">12</td>
+<td>academic</td>
+<td><code>CrcStandards.CRC12_UMTS</code></td>
+<td><code>CRC-12/3GPP</code></td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-12-umts">spec</a></td>
+</tr>
+<tr>
+<td>CRC-13/BBC</td>
+<td style="text-align: right;">13</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC13_BBC</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-13-bbc">spec</a></td>
+</tr>
+<tr>
+<td>CRC-14/DARC</td>
+<td style="text-align: right;">14</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC14_DARC</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-14-darc">spec</a></td>
+</tr>
+<tr>
+<td>CRC-14/GSM</td>
+<td style="text-align: right;">14</td>
+<td>academic</td>
+<td><code>CrcStandards.CRC14_GSM</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-14-gsm">spec</a></td>
+</tr>
+<tr>
+<td>CRC-15/CAN</td>
+<td style="text-align: right;">15</td>
+<td>academic</td>
+<td><code>CrcStandards.CRC15_CAN</code></td>
+<td><code>CRC-15</code></td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-15-can">spec</a></td>
+</tr>
+<tr>
+<td>CRC-15/MPT1327</td>
+<td style="text-align: right;">15</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC15_MPT1327</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-15-mpt1327">spec</a></td>
+</tr>
+<tr>
+<td><strong>CRC-16/ARC</strong></td>
+<td style="text-align: right;">16</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC16_ARC</code></td>
+<td><code>ARC</code>, <code>CRC-16</code>, <code>CRC-16/LHA</code>, <code>CRC-IBM</code></td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-arc">spec</a></td>
+</tr>
+<tr>
+<td>CRC-16/CDMA2000</td>
+<td style="text-align: right;">16</td>
+<td>academic</td>
+<td><code>CrcStandards.CRC16_CDMA2000</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-cdma2000">spec</a></td>
+</tr>
+<tr>
+<td>CRC-16/CMS</td>
+<td style="text-align: right;">16</td>
+<td>third-party</td>
+<td><code>CrcStandards.CRC16_CMS</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-cms">spec</a></td>
+</tr>
+<tr>
+<td>CRC-16/DDS-110</td>
+<td style="text-align: right;">16</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC16_DDS110</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-dds-110">spec</a></td>
+</tr>
+<tr>
+<td>CRC-16/DECT-R</td>
+<td style="text-align: right;">16</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC16_DECTR</code></td>
+<td><code>R-CRC-16</code></td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-dect-r">spec</a></td>
+</tr>
+<tr>
+<td>CRC-16/DECT-X</td>
+<td style="text-align: right;">16</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC16_DECTX</code></td>
+<td><code>X-CRC-16</code></td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-dect-x">spec</a></td>
+</tr>
+<tr>
+<td>CRC-16/DNP</td>
+<td style="text-align: right;">16</td>
+<td>confirmed</td>
+<td><code>CrcStandards.CRC16_DNP</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-dnp">spec</a></td>
+</tr>
+<tr>
+<td>CRC-16/EN-13757</td>
+<td style="text-align: right;">16</td>
+<td>confirmed</td>
+<td><code>CrcStandards.CRC16_EN13757</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-en-13757">spec</a></td>
+</tr>
+<tr>
+<td>CRC-16/GENIBUS</td>
+<td style="text-align: right;">16</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC16_GENIBUS</code></td>
+<td><code>CRC-16/DARC</code>, <code>CRC-16/EPC</code>, <code>CRC-16/EPC-C1G2</code>, <code>CRC-16/I-CODE</code></td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-genibus">spec</a></td>
+</tr>
+<tr>
+<td>CRC-16/GSM</td>
+<td style="text-align: right;">16</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC16_GSM</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-gsm">spec</a></td>
+</tr>
+<tr>
+<td><strong>CRC-16/IBM-3740</strong></td>
+<td style="text-align: right;">16</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC16_IBM3740</code></td>
+<td><code>CRC-16/AUTOSAR</code>, <code>CRC-16/CCITT-FALSE</code></td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-ibm-3740">spec</a></td>
+</tr>
+<tr>
+<td>CRC-16/IBM-SDLC</td>
+<td style="text-align: right;">16</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC16_IBMSDLC</code></td>
+<td><code>CRC-16/ISO-HDLC</code>, <code>CRC-16/ISO-IEC-14443-3-B</code>, <code>CRC-16/X-25</code>, <code>CRC-B</code>, <code>X-25</code></td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-ibm-sdlc">spec</a></td>
+</tr>
+<tr>
+<td>CRC-16/ISO-IEC-14443-3-A</td>
+<td style="text-align: right;">16</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC16_ISOIEC144433A</code></td>
+<td><code>CRC-A</code></td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-iso-iec-14443-3-a">spec</a></td>
+</tr>
+<tr>
+<td><strong>CRC-16/KERMIT</strong></td>
+<td style="text-align: right;">16</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC16_KERMIT</code></td>
+<td><code>CRC-16/BLUETOOTH</code>, <code>CRC-16/CCITT</code>, <code>CRC-16/CCITT-TRUE</code>, <code>CRC-16/V-41-LSB</code>, <code>CRC-CCITT</code>, <code>KERMIT</code></td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-kermit">spec</a></td>
+</tr>
+<tr>
+<td>CRC-16/LJ1200</td>
+<td style="text-align: right;">16</td>
+<td>third-party</td>
+<td><code>CrcStandards.CRC16_LJ1200</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-lj1200">spec</a></td>
+</tr>
+<tr>
+<td>CRC-16/M17</td>
+<td style="text-align: right;">16</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC16_M17</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-m17">spec</a></td>
+</tr>
+<tr>
+<td>CRC-16/MAXIM-DOW</td>
+<td style="text-align: right;">16</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC16_MAXIMDOW</code></td>
+<td><code>CRC-16/MAXIM</code></td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-maxim-dow">spec</a></td>
+</tr>
+<tr>
+<td>CRC-16/MCRF4XX</td>
+<td style="text-align: right;">16</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC16_MCRF4XX</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-mcrf4xx">spec</a></td>
+</tr>
+<tr>
+<td><strong>CRC-16/MODBUS</strong></td>
+<td style="text-align: right;">16</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC16_MODBUS</code></td>
+<td><code>MODBUS</code></td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-modbus">spec</a></td>
+</tr>
+<tr>
+<td>CRC-16/NRSC-5</td>
+<td style="text-align: right;">16</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC16_NRSC5</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-nrsc-5">spec</a></td>
+</tr>
+<tr>
+<td>CRC-16/OPENSAFETY-A</td>
+<td style="text-align: right;">16</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC16_OPENSAFETYA</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-opensafety-a">spec</a></td>
+</tr>
+<tr>
+<td>CRC-16/OPENSAFETY-B</td>
+<td style="text-align: right;">16</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC16_OPENSAFETYB</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-opensafety-b">spec</a></td>
+</tr>
+<tr>
+<td>CRC-16/PROFIBUS</td>
+<td style="text-align: right;">16</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC16_PROFIBUS</code></td>
+<td><code>CRC-16/IEC-61158-2</code></td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-profibus">spec</a></td>
+</tr>
+<tr>
+<td>CRC-16/RIELLO</td>
+<td style="text-align: right;">16</td>
+<td>third-party</td>
+<td><code>CrcStandards.CRC16_RIELLO</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-riello">spec</a></td>
+</tr>
+<tr>
+<td>CRC-16/SPI-FUJITSU</td>
+<td style="text-align: right;">16</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC16_SPIFUJITSU</code></td>
+<td><code>CRC-16/AUG-CCITT</code></td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-spi-fujitsu">spec</a></td>
+</tr>
+<tr>
+<td>CRC-16/T10-DIF</td>
+<td style="text-align: right;">16</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC16_T10DIF</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-t10-dif">spec</a></td>
+</tr>
+<tr>
+<td>CRC-16/TELEDISK</td>
+<td style="text-align: right;">16</td>
+<td>confirmed</td>
+<td><code>CrcStandards.CRC16_TELEDISK</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-teledisk">spec</a></td>
+</tr>
+<tr>
+<td>CRC-16/TMS37157</td>
+<td style="text-align: right;">16</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC16_TMS37157</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-tms37157">spec</a></td>
+</tr>
+<tr>
+<td>CRC-16/UMTS</td>
+<td style="text-align: right;">16</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC16_UMTS</code></td>
+<td><code>CRC-16/BUYPASS</code>, <code>CRC-16/VERIFONE</code></td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-umts">spec</a></td>
+</tr>
+<tr>
+<td>CRC-16/USB</td>
+<td style="text-align: right;">16</td>
+<td>confirmed</td>
+<td><code>CrcStandards.CRC16_USB</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-usb">spec</a></td>
+</tr>
+<tr>
+<td><strong>CRC-16/XMODEM</strong></td>
+<td style="text-align: right;">16</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC16_XMODEM</code></td>
+<td><code>CRC-16/ACORN</code>, <code>CRC-16/LTE</code>, <code>CRC-16/V-41-MSB</code>, <code>XMODEM</code>, <code>ZMODEM</code></td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-xmodem">spec</a></td>
+</tr>
+<tr>
+<td>CRC-17/CAN-FD</td>
+<td style="text-align: right;">17</td>
+<td>academic</td>
+<td><code>CrcStandards.CRC17_CANFD</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-17-can-fd">spec</a></td>
+</tr>
+<tr>
+<td>CRC-21/CAN-FD</td>
+<td style="text-align: right;">21</td>
+<td>academic</td>
+<td><code>CrcStandards.CRC21_CANFD</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-21-can-fd">spec</a></td>
+</tr>
+<tr>
+<td>CRC-24/BLE</td>
+<td style="text-align: right;">24</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC24_BLE</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-24-ble">spec</a></td>
+</tr>
+<tr>
+<td>CRC-24/FLEXRAY-A</td>
+<td style="text-align: right;">24</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC24_FLEXRAYA</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-24-flexray-a">spec</a></td>
+</tr>
+<tr>
+<td>CRC-24/FLEXRAY-B</td>
+<td style="text-align: right;">24</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC24_FLEXRAYB</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-24-flexray-b">spec</a></td>
+</tr>
+<tr>
+<td>CRC-24/INTERLAKEN</td>
+<td style="text-align: right;">24</td>
+<td>academic</td>
+<td><code>CrcStandards.CRC24_INTERLAKEN</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-24-interlaken">spec</a></td>
+</tr>
+<tr>
+<td>CRC-24/LTE-A</td>
+<td style="text-align: right;">24</td>
+<td>academic</td>
+<td><code>CrcStandards.CRC24_LTEA</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-24-lte-a">spec</a></td>
+</tr>
+<tr>
+<td>CRC-24/LTE-B</td>
+<td style="text-align: right;">24</td>
+<td>academic</td>
+<td><code>CrcStandards.CRC24_LTEB</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-24-lte-b">spec</a></td>
+</tr>
+<tr>
+<td>CRC-24/OPENPGP</td>
+<td style="text-align: right;">24</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC24_OPENPGP</code></td>
+<td><code>CRC-24</code></td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-24-openpgp">spec</a></td>
+</tr>
+<tr>
+<td>CRC-24/OS-9</td>
+<td style="text-align: right;">24</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC24_OS9</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-24-os-9">spec</a></td>
+</tr>
+<tr>
+<td>CRC-30/CDMA</td>
+<td style="text-align: right;">30</td>
+<td>academic</td>
+<td><code>CrcStandards.CRC30_CDMA</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-30-cdma">spec</a></td>
+</tr>
+<tr>
+<td>CRC-31/PHILIPS</td>
+<td style="text-align: right;">31</td>
+<td>confirmed</td>
+<td><code>CrcStandards.CRC31_PHILIPS</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-31-philips">spec</a></td>
+</tr>
+<tr>
+<td>CRC-32/AIXM</td>
+<td style="text-align: right;">32</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC32_AIXM</code></td>
+<td><code>CRC-32Q</code></td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-aixm">spec</a></td>
+</tr>
+<tr>
+<td>CRC-32/AUTOSAR</td>
+<td style="text-align: right;">32</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC32_AUTOSAR</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-autosar">spec</a></td>
+</tr>
+<tr>
+<td>CRC-32/BASE91-D</td>
+<td style="text-align: right;">32</td>
+<td>confirmed</td>
+<td><code>CrcStandards.CRC32_BASE91D</code></td>
+<td><code>CRC-32D</code></td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-base91-d">spec</a></td>
+</tr>
+<tr>
+<td><strong>CRC-32/BZIP2</strong></td>
+<td style="text-align: right;">32</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC32_BZIP2</code></td>
+<td><code>CRC-32/AAL5</code>, <code>CRC-32/DECT-B</code>, <code>B-CRC-32</code></td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-bzip2">spec</a></td>
+</tr>
+<tr>
+<td>CRC-32/CD-ROM-EDC</td>
+<td style="text-align: right;">32</td>
+<td>academic</td>
+<td><code>CrcStandards.CRC32_CDROMEDC</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-cd-rom-edc">spec</a></td>
+</tr>
+<tr>
+<td>CRC-32/CKSUM</td>
+<td style="text-align: right;">32</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC32_CKSUM</code></td>
+<td><code>CKSUM</code>, <code>CRC-32/POSIX</code></td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-cksum">spec</a></td>
+</tr>
+<tr>
+<td><strong>CRC-32/ISCSI</strong></td>
+<td style="text-align: right;">32</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC32_ISCSI</code></td>
+<td><code>CRC-32/BASE91-C</code>, <code>CRC-32/CASTAGNOLI</code>, <code>CRC-32/INTERLAKEN</code>, <code>CRC-32C</code>, <code>CRC-32/NVME</code></td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-iscsi">spec</a></td>
+</tr>
+<tr>
+<td><strong>CRC-32/ISO-HDLC</strong></td>
+<td style="text-align: right;">32</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC32_ISOHDLC</code></td>
+<td><code>CRC-32</code>, <code>CRC-32/ADCCP</code>, <code>CRC-32/V-42</code>, <code>CRC-32/XZ</code>, <code>PKZIP</code></td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-iso-hdlc">spec</a></td>
+</tr>
+<tr>
+<td>CRC-32/JAMCRC</td>
+<td style="text-align: right;">32</td>
+<td>confirmed</td>
+<td><code>CrcStandards.CRC32_JAMCRC</code></td>
+<td><code>JAMCRC</code></td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-jamcrc">spec</a></td>
+</tr>
+<tr>
+<td>CRC-32/MEF</td>
+<td style="text-align: right;">32</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC32_MEF</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-mef">spec</a></td>
+</tr>
+<tr>
+<td>CRC-32/MPEG-2</td>
+<td style="text-align: right;">32</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC32_MPEG2</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-mpeg-2">spec</a></td>
+</tr>
+<tr>
+<td>CRC-32/XFER</td>
+<td style="text-align: right;">32</td>
+<td>confirmed</td>
+<td><code>CrcStandards.CRC32_XFER</code></td>
+<td><code>XFER</code></td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-xfer">spec</a></td>
+</tr>
+<tr>
+<td>CRC-40/GSM</td>
+<td style="text-align: right;">40</td>
+<td>academic</td>
+<td><code>CrcStandards.CRC40_GSM</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-40-gsm">spec</a></td>
+</tr>
+<tr>
+<td><strong>CRC-64/ECMA-182</strong></td>
+<td style="text-align: right;">64</td>
+<td>academic</td>
+<td><code>CrcStandards.CRC64_ECMA182</code></td>
+<td><code>CRC-64</code></td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-64-ecma-182">spec</a></td>
+</tr>
+<tr>
+<td>CRC-64/GO-ISO</td>
+<td style="text-align: right;">64</td>
+<td>confirmed</td>
+<td><code>CrcStandards.CRC64_GOISO</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-64-go-iso">spec</a></td>
+</tr>
+<tr>
+<td>CRC-64/MS</td>
+<td style="text-align: right;">64</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC64_MS</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-64-ms">spec</a></td>
+</tr>
+<tr>
+<td>CRC-64/NVME</td>
+<td style="text-align: right;">64</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC64_NVME</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-64-nvme">spec</a></td>
+</tr>
+<tr>
+<td>CRC-64/REDIS</td>
+<td style="text-align: right;">64</td>
+<td>academic</td>
+<td><code>CrcStandards.CRC64_REDIS</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-64-redis">spec</a></td>
+</tr>
+<tr>
+<td>CRC-64/WE</td>
+<td style="text-align: right;">64</td>
+<td>confirmed</td>
+<td><code>CrcStandards.CRC64_WE</code></td>
+<td>—</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-64-we">spec</a></td>
+</tr>
+<tr>
+<td><strong>CRC-64/XZ</strong></td>
+<td style="text-align: right;">64</td>
+<td>attested</td>
+<td><code>CrcStandards.CRC64_XZ</code></td>
+<td><code>CRC-64/GO-ECMA</code></td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-64-xz">spec</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="not-supported-width-exceeds-64-bits">Not supported (width exceeds 64 bits)</h2>
+<p>The following standards are listed in the source catalogue but are <strong>not</strong> exposed by <code>CrcStandard</code> because their width exceeds the 64-bit scalar representation used by this library.</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th style="text-align: right;">Width</th>
+<th>Class</th>
+<th>RevEng</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CRC-82/DARC</td>
+<td style="text-align: right;">82</td>
+<td>attested</td>
+<td><a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-82-darc">spec</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="regeneration">Regeneration</h2>
+<p>This page and the generated C# sources are produced by the scripts in <code>tools/</code>. To refresh the data from upstream:</p>
+<pre><code class="lang-pwsh">pwsh ./tools/Fetch-CrcSpecs.ps1
+pwsh ./tools/Generate-CrcCatalog.ps1        # regenerates CrcStandards.cs and CrcStandard.Catalog.cs
+pwsh ./tools/Generate-CrcCatalogTests.ps1   # regenerates CrcTests.Catalog.cs
+pwsh ./tools/Generate-CrcDocs.ps1           # regenerates this page
+</code></pre>
+<h2 id="see-also">See also</h2>
+<ul>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
+<li><strong><a href="index.html">Bodu.IO.Hashing guides overview</a></strong> — every guide in this library.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

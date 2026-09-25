@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Segmented buffer | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Segmented buffer | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="segmented-buffer">Segmented buffer</h1>
+
+<p><a class="xref" href="../../api/Bodu.Collections.Generic.SegmentedBuffer-1.html">SegmentedBuffer&lt;T&gt;</a> is an append-only collection whose backing store grows in fixed-size <strong>segments</strong> instead of one contiguous array. When a <code>List&lt;T&gt;</code> fills up it allocates a new array of double the size and copies every existing element across; <code>SegmentedBuffer&lt;T&gt;</code> instead allocates one more segment and leaves the existing elements where they are. That avoids the array-doubling copy and the large-object-heap pressure that comes with very large contiguous buffers, while still offering O(1) indexed access.</p>
+<p>Reach for it when you are accumulating a stream of unknown length — caching enumerator results, buffering streamed data, or logging events without knowing the upper bound — and the per-doubling copy of <code>List&lt;T&gt;</code> would be costly.</p>
+<h2 id="pattern-1--append-a-stream-of-unknown-length">Pattern 1 — append a stream of unknown length</h2>
+<pre><code class="lang-csharp">using Bodu.Collections.Generic;
+
+var buffer = new SegmentedBuffer&lt;int&gt;();   // default segment size (512 elements)
+
+foreach (int value in ReadFromNetwork())
+    buffer.Add(value);
+
+Console.WriteLine(buffer.Count);   // total elements appended
+</code></pre>
+<h2 id="pattern-2--choose-a-segment-size">Pattern 2 — choose a segment size</h2>
+<p>The segment size is the number of elements per chunk. Pick a larger size for fewer, bigger allocations or a smaller size to bound the per-segment footprint:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">// 512 elements per segment.
+var buffer = new SegmentedBuffer&lt;byte&gt;(segmentSize: 512);
+</code></pre>
+<p>The constructor throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a> when <code>segmentSize</code> is less than 1.</p>
+<h2 id="pattern-3--o1-indexed-access">Pattern 3 — O(1) indexed access</h2>
+<p>Even though storage is segmented, element access is O(1): the buffer maps a flat index onto <code>(segment, offset)</code> arithmetically. The indexer supports both read and write of any already-populated position:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">var buffer = new SegmentedBuffer&lt;string&gt;(segmentSize: 4);
+buffer.Add(&quot;a&quot;);
+buffer.Add(&quot;b&quot;);
+
+string first = buffer[0];   // → &quot;a&quot;
+buffer[1] = &quot;B&quot;;            // overwrite in place
+</code></pre>
+<p>Indexing outside <code>[0, Count)</code> throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a> — the indexer never extends the buffer; use <code>Add</code> to append.</p>
+<h2 id="pattern-4--enumerate-in-order">Pattern 4 — enumerate in order</h2>
+<pre><code class="lang-csharp">var buffer = new SegmentedBuffer&lt;int&gt;();
+for (int i = 0; i &lt; 1000; i++) buffer.Add(i);
+
+foreach (int value in buffer)
+    Process(value);   // yields elements in insertion order
+</code></pre>
+<p>The enumerator is fail-fast: modifying the buffer after enumeration begins — by <code>Add</code> or by assignment through the indexer — throws <code>InvalidOperationException</code> on the next iteration step.</p>
+<h2 id="worked-example--buffer-a-stream-once-read-it-many-times">Worked example — buffer a stream once, read it many times</h2>
+<p>A common shape: data arrives in chunks of unpredictable size, and the consumer needs both random access and a second full pass — without re-reading the source. Buffering into a <code>SegmentedBuffer&lt;T&gt;</code> pays no resize-copy as the total grows:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Collections.Generic;
+
+// Chunks arriving from a reader; total length unknown up front.
+int[][] chunks =
+{
+    new[] { 3, 1, 4 },
+    new[] { 1, 5, 9, 2 },
+    new[] { 6, 5, 3 },
+};
+
+var samples = new SegmentedBuffer&lt;int&gt;(segmentSize: 4);
+
+foreach (int[] chunk in chunks)
+    foreach (int value in chunk)
+        samples.Add(value);
+
+// Storage is now three segments: [3,1,4,1] [5,9,2,6] [5,3,_,_]
+Console.WriteLine(samples.Count);    // → 10
+
+// Random access without a copy.
+Console.WriteLine(samples[0]);       // → 3
+Console.WriteLine(samples[4]);       // → 5  — first element of the second segment
+Console.WriteLine(samples[9]);       // → 3
+
+// Second full pass over the buffered data.
+int sum = 0;
+foreach (int value in samples) sum += value;
+Console.WriteLine(sum);              // → 39
+</code></pre>
+<p>Ten appends into a <code>segmentSize: 4</code> buffer triggered exactly three segment allocations and zero element copies; the same sequence in an unsized <code>List&lt;int&gt;</code> would have re-copied the contents at each capacity doubling.</p>
+<h2 id="complexity">Complexity</h2>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Cost</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Add(T)</code></td>
+<td>Amortized O(1)</td>
+<td>Allocates one new segment every <code>segmentSize</code> appends; never copies existing elements.</td>
+</tr>
+<tr>
+<td><code>this[int]</code> get / set</td>
+<td>O(1)</td>
+<td>One division and one modulo map the flat index to <code>(segment, offset)</code>.</td>
+</tr>
+<tr>
+<td><code>Count</code></td>
+<td>O(1)</td>
+<td>Maintained incrementally.</td>
+</tr>
+<tr>
+<td>Enumeration</td>
+<td>O(n)</td>
+<td>Walks segments sequentially, in insertion order.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="how-it-compares">How it compares</h2>
+<p><strong>Versus <code>List&lt;T&gt;</code>.</strong> A <code>List&lt;T&gt;</code> keeps one contiguous array, so growth past capacity costs an O(n) copy, and element arrays beyond ~85 KB land on the large object heap. <code>SegmentedBuffer&lt;T&gt;</code> allocates fixed-size segments and copies nothing on growth. <code>List&lt;T&gt;</code> remains the better choice when the final length is known up front (a pre-sized list never re-copies either), or when you need search, removal, insertion, sorting, or a contiguous <code>Span&lt;T&gt;</code> view — <code>SegmentedBuffer&lt;T&gt;</code> deliberately offers none of those.</p>
+<p><strong>Versus <a class="xref" href="../../api/Bodu.Buffers.PooledBufferBuilder-1.html">PooledBufferBuilder&lt;T&gt;</a>.</strong> The <a href="pooled-buffer-builder.html">pooled buffer builder</a> rents its storage from <code>ArrayPool&lt;T&gt;.Shared</code>, implements <code>IBufferWriter&lt;T&gt;</code>, and ends with a single contiguous result (<code>WrittenSpan</code>, <code>ToArrayAndDispose()</code>) — the right tool when a downstream API needs a <code>ReadOnlySpan&lt;T&gt;</code> or a <code>byte[]</code>, at the cost of mandatory disposal. <code>SegmentedBuffer&lt;T&gt;</code> never materializes a contiguous view and needs no disposal; prefer it when consumers only index into and enumerate the buffered data.</p>
+<p><strong>Versus <code>MemoryStream</code>.</strong> For bytes that downstream code consumes as a <code>Stream</code>, <code>MemoryStream</code> is the natural fit. It is, however, a single doubling array underneath, with the same copy and large-object-heap characteristics as <code>List&lt;byte&gt;</code> — buffering large byte streams that are only indexed or enumerated is cheaper in a <code>SegmentedBuffer&lt;byte&gt;</code>.</p>
+<h2 id="when-not-to-use-it">When <em>not</em> to use it</h2>
+<ul>
+<li>If you know the final length up front, a pre-sized <code>List&lt;T&gt;</code> or array is simpler and equally fast.</li>
+<li>If you need removal, insertion at arbitrary positions, search, or set semantics, choose a different type — <code>SegmentedBuffer&lt;T&gt;</code> only appends and overwrites by index.</li>
+<li>For <code>ArrayPool&lt;T&gt;</code>-backed building of a single contiguous result (for example, to hand a <code>byte[]</code> to an API), prefer <a class="xref" href="../../api/Bodu.Buffers.PooledBufferBuilder-1.html">PooledBufferBuilder&lt;T&gt;</a>.</li>
+<li>For concurrent producers, add external synchronization — the type is not thread-safe, and the fail-fast enumerator throws if elements are added while it is iterating.</li>
+</ul>
+<h2 id="api-summary">API summary</h2>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SegmentedBuffer()</code></td>
+<td>Creates a buffer with the default segment size (512).</td>
+</tr>
+<tr>
+<td><code>SegmentedBuffer(int segmentSize)</code></td>
+<td>Creates a buffer with the given elements-per-segment.</td>
+</tr>
+<tr>
+<td><code>Add(T)</code></td>
+<td>Appends an element, allocating a new segment when the current one fills.</td>
+</tr>
+<tr>
+<td><code>this[int]</code></td>
+<td>O(1) read / write of an element at an existing index.</td>
+</tr>
+<tr>
+<td><code>Count</code></td>
+<td>The number of elements appended.</td>
+</tr>
+<tr>
+<td><code>GetEnumerator()</code></td>
+<td>Enumerates elements in insertion order. Fail-fast: throws <code>InvalidOperationException</code> if the buffer is modified during enumeration.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="see-also">See also</h2>
+<ul>
+<li><a href="pooled-buffer-builder.html">Pooled buffer builder</a> — <code>ArrayPool&lt;T&gt;</code>-backed building of a single contiguous result.</li>
+<li><a href="choosing-a-collection.html">Choosing a collection</a> — the full decision guide.</li>
+<li><a href="../topics/core-foundations.html">Core Foundations guides</a> — every guide in this topic.</li>
+<li><a href="../../docs/topics/core-foundations.html">Core Foundations topic overview</a> — package map and install command.</li>
+<li><a href="../../docs/collections/index.html">Bodu.Collections introduction</a> — namespaces, headline types, scenarios.</li>
+<li><a class="xref" href="../../api/Bodu.Collections.Generic.SegmentedBuffer-1.html"><code>SegmentedBuffer&lt;T&gt;</code> API reference</a></li>
+<li><a class="xref" href="../../api/Bodu.Buffers.PooledBufferBuilder-1.html"><code>PooledBufferBuilder&lt;T&gt;</code> API reference</a></li>
+<li><a class="xref" href="../../api/Bodu.Collections.Generic.html"><code>Bodu.Collections.Generic</code> namespace landing</a></li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

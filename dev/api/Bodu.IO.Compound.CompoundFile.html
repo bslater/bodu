@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class CompoundFile | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class CompoundFile | BODU ">
+    
+    <meta name="description" content="Represents an OLE2 / Compound File Binary (CFB) container opened over a path or stream, exposing its storage hierarchy, the metadata of every entry, and the byte payload of each named stream for reading or editing.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.IO.Compound.CompoundFile">
+
+
+
+  <h1 id="Bodu_IO_Compound_CompoundFile" data-uid="Bodu.IO.Compound.CompoundFile" class="text-break">Class CompoundFile</h1>
+  <div class="markdown level0 summary"><p>Represents an OLE2 / Compound File Binary (CFB) container opened over a path or stream, exposing its storage
+hierarchy, the metadata of every entry, and the byte payload of each named stream for reading or editing.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><span class="xref">CompoundFile</span></div>
+  </div>
+  <div class="implements">
+    <h5>Implements</h5>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.IO.html">IO</a>.<a class="xref" href="Bodu.IO.Compound.html">Compound</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.IO.Compound.dll</h6>
+  <h5 id="Bodu_IO_Compound_CompoundFile_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class CompoundFile : IDisposable</code></pre>
+  </div>
+  <h5 id="Bodu_IO_Compound_CompoundFile_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+<img src="../images/diagrams/io-compound-structure.svg" alt="A compound file is a structured-storage envelope: one physical file that begins with the OLE2 signature D0 CF 11 E0 and holds a header, allocation tables (FAT and mini-FAT), a directory, and sectors. CompoundFile.Open parses that container and exposes a logical hierarchy. Navigation starts at RootStorage and descends through nested CompoundStorage containers to CompoundStream leaves; a CompoundStorage is the managed counterpart of the COM IStorage interface and a CompoundStream is the counterpart of IStream.">
+</p>
+<p>
+A compound file is a structured-storage envelope — effectively a small file system embedded in a single file — used
+by legacy Microsoft Office formats (<code>.xls</code>, <code>.doc</code>, <code>.ppt</code>, <code>.msg</code>) and other technologies. This
+type is the managed counterpart of the COM <code>StgOpenStorage</code> entry point: navigation begins at
+<a class="xref" href="Bodu.IO.Compound.CompoundFile.RootStorage.html#Bodu_IO_Compound_CompoundFile_RootStorage">RootStorage</a> and descends through nested <a class="xref" href="Bodu.IO.Compound.CompoundStorage.html">CompoundStorage</a> objects to the
+<a class="xref" href="Bodu.IO.Compound.CompoundStream.html">CompoundStream</a> leaves.
+</p>
+<p>
+By default a read-only file buffers the entire source into memory when opened, so access after opening never touches
+the original source and the read-only instance is safe to share across threads. Opening read-only with
+<code>buffered: false</code> instead reads sectors on demand from a seekable stream — bounding memory for large files — in
+which case the stream must stay open for the instance's lifetime and reads are serialized rather than parallel.
+</p>
+<p>
+Opening with <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.fileaccess#system-io-fileaccess-read">Read</a> yields a read-only file.
+<a class="xref" href="Bodu.IO.Compound.CompoundFile.Create.html#Bodu_IO_Compound_CompoundFile_Create_System_IO_Stream_System_Boolean_Bodu_IO_Compound_Builders_CompoundBuildOptions_">Create(Stream, bool, CompoundBuildOptions)</a> (or a creating
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.filemode">FileMode</a>) starts a new writable file, and <code>Open</code> with <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.fileaccess#system-io-fileaccess-readwrite">ReadWrite</a> loads
+an existing file for editing. Edits are staged in memory and written to the destination only by
+<a class="xref" href="Bodu.IO.Compound.CompoundFile.Commit.html#Bodu_IO_Compound_CompoundFile_Commit">Commit()</a> (which rewrites the whole container); <a class="xref" href="Bodu.IO.Compound.CompoundFile.Revert.html#Bodu_IO_Compound_CompoundFile_Revert">Revert()</a> discards them. Mutating an
+existing file requires read access — write-only access is supported only for creating modes.
+</p>
+</div>
+  <h5 id="Bodu_IO_Compound_CompoundFile_examples"><strong>Examples</strong></h5>
+  <p>The following example opens a compound file, walks its top-level entries, and reads one named stream. The instance
+is disposed by the <code>using</code> declaration, which also closes the source stream unless <code>leaveOpen</code> is set.</p>
+<pre><code class="lang-csharp">using Bodu.IO.Compound;
+
+using CompoundFile file = CompoundFile.Open(File.OpenRead("book.xls"));
+foreach (CompoundEntryInfo info in file.RootStorage.EnumerateEntries())
+    Console.WriteLine($"{info.EntryType}: {info.Name} ({info.Length} bytes)");
+
+if (file.RootStorage.TryOpenStream("Workbook", out CompoundStream? workbook))
+{
+    using (workbook)
+        // ... read the BIFF records from the workbook stream ...
+}</code></pre>
+
+  <h3 id="properties">Properties
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundFile_Access" data-uid="Bodu.IO.Compound.CompoundFile.Access">
+          <a class="xref" href="Bodu.IO.Compound.CompoundFile.Access.html#Bodu_IO_Compound_CompoundFile_Access">Access</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the access level the compound file was opened with.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundFile_CanRead" data-uid="Bodu.IO.Compound.CompoundFile.CanRead">
+          <a class="xref" href="Bodu.IO.Compound.CompoundFile.CanRead.html#Bodu_IO_Compound_CompoundFile_CanRead">CanRead</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a value indicating whether the compound file can be read.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundFile_CanWrite" data-uid="Bodu.IO.Compound.CompoundFile.CanWrite">
+          <a class="xref" href="Bodu.IO.Compound.CompoundFile.CanWrite.html#Bodu_IO_Compound_CompoundFile_CanWrite">CanWrite</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a value indicating whether the compound file can be written.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundFile_IsDirty" data-uid="Bodu.IO.Compound.CompoundFile.IsDirty">
+          <a class="xref" href="Bodu.IO.Compound.CompoundFile.IsDirty.html#Bodu_IO_Compound_CompoundFile_IsDirty">IsDirty</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a value indicating whether the file has staged edits that have not been committed.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundFile_RootStorage" data-uid="Bodu.IO.Compound.CompoundFile.RootStorage">
+          <a class="xref" href="Bodu.IO.Compound.CompoundFile.RootStorage.html#Bodu_IO_Compound_CompoundFile_RootStorage">RootStorage</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the root storage that anchors the compound file's directory hierarchy.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundFile_Commit" data-uid="Bodu.IO.Compound.CompoundFile.Commit">
+          <a class="xref" href="Bodu.IO.Compound.CompoundFile.Commit.html#Bodu_IO_Compound_CompoundFile_Commit">Commit()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes the staged contents of a writable file to its destination, clearing the dirty state.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundFile_CommitAsync_System_Threading_CancellationToken_" data-uid="Bodu.IO.Compound.CompoundFile.CommitAsync(System.Threading.CancellationToken)">
+          <a class="xref" href="Bodu.IO.Compound.CompoundFile.CommitAsync.html#Bodu_IO_Compound_CompoundFile_CommitAsync_System_Threading_CancellationToken_">CommitAsync(CancellationToken)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Asynchronously writes the staged contents of a writable file to its destination, clearing the dirty state.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundFile_Create_System_IO_Stream_System_Boolean_Bodu_IO_Compound_Builders_CompoundBuildOptions_" data-uid="Bodu.IO.Compound.CompoundFile.Create(System.IO.Stream,System.Boolean,Bodu.IO.Compound.Builders.CompoundBuildOptions)">
+          <a class="xref" href="Bodu.IO.Compound.CompoundFile.Create.html#Bodu_IO_Compound_CompoundFile_Create_System_IO_Stream_System_Boolean_Bodu_IO_Compound_Builders_CompoundBuildOptions_">Create(Stream, bool, CompoundBuildOptions)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates a new, empty writable compound file whose staged contents are written to the supplied destination by
+<a class="xref" href="Bodu.IO.Compound.CompoundFile.Commit.html#Bodu_IO_Compound_CompoundFile_Commit">Commit()</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundFile_Create_System_String_Bodu_IO_Compound_Builders_CompoundBuildOptions_" data-uid="Bodu.IO.Compound.CompoundFile.Create(System.String,Bodu.IO.Compound.Builders.CompoundBuildOptions)">
+          <a class="xref" href="Bodu.IO.Compound.CompoundFile.Create.html#Bodu_IO_Compound_CompoundFile_Create_System_String_Bodu_IO_Compound_Builders_CompoundBuildOptions_">Create(string, CompoundBuildOptions)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates a new, empty writable compound file whose staged contents are written to the file at the specified path
+by <a class="xref" href="Bodu.IO.Compound.CompoundFile.Commit.html#Bodu_IO_Compound_CompoundFile_Commit">Commit()</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundFile_Dispose" data-uid="Bodu.IO.Compound.CompoundFile.Dispose">
+          <a class="xref" href="Bodu.IO.Compound.CompoundFile.Dispose.html#Bodu_IO_Compound_CompoundFile_Dispose">Dispose()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundFile_Flush" data-uid="Bodu.IO.Compound.CompoundFile.Flush">
+          <a class="xref" href="Bodu.IO.Compound.CompoundFile.Flush.html#Bodu_IO_Compound_CompoundFile_Flush">Flush()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes the staged contents of a writable file to its destination, clearing the dirty state.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundFile_FlushAsync_System_Threading_CancellationToken_" data-uid="Bodu.IO.Compound.CompoundFile.FlushAsync(System.Threading.CancellationToken)">
+          <a class="xref" href="Bodu.IO.Compound.CompoundFile.FlushAsync.html#Bodu_IO_Compound_CompoundFile_FlushAsync_System_Threading_CancellationToken_">FlushAsync(CancellationToken)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Asynchronously writes the staged contents of a writable file to its destination, clearing the dirty state.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundFile_IsCompoundFile_System_IO_Stream_" data-uid="Bodu.IO.Compound.CompoundFile.IsCompoundFile(System.IO.Stream)">
+          <a class="xref" href="Bodu.IO.Compound.CompoundFile.IsCompoundFile.html#Bodu_IO_Compound_CompoundFile_IsCompoundFile_System_IO_Stream_">IsCompoundFile(Stream)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether the supplied stream begins with the compound-file (OLE2) signature without parsing the file.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundFile_IsCompoundFile_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.IO.Compound.CompoundFile.IsCompoundFile(System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.IO.Compound.CompoundFile.IsCompoundFile.html#Bodu_IO_Compound_CompoundFile_IsCompoundFile_System_ReadOnlySpan_System_Byte__">IsCompoundFile(ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether the supplied bytes begin with the compound-file (OLE2) signature.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundFile_Open_System_IO_Stream_Bodu_IO_Compound_CompoundFileOptions_System_Boolean_" data-uid="Bodu.IO.Compound.CompoundFile.Open(System.IO.Stream,Bodu.IO.Compound.CompoundFileOptions,System.Boolean)">
+          <a class="xref" href="Bodu.IO.Compound.CompoundFile.Open.html#Bodu_IO_Compound_CompoundFile_Open_System_IO_Stream_Bodu_IO_Compound_CompoundFileOptions_System_Boolean_">Open(Stream, CompoundFileOptions, bool)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Opens an existing compound file over the supplied stream for read-only access using the supplied options.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundFile_Open_System_IO_Stream_System_Boolean_System_Boolean_" data-uid="Bodu.IO.Compound.CompoundFile.Open(System.IO.Stream,System.Boolean,System.Boolean)">
+          <a class="xref" href="Bodu.IO.Compound.CompoundFile.Open.html#Bodu_IO_Compound_CompoundFile_Open_System_IO_Stream_System_Boolean_System_Boolean_">Open(Stream, bool, bool)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Opens an existing compound file over the supplied stream for read-only access, buffering its content into memory
+by default.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundFile_Open_System_IO_Stream_System_IO_FileMode_System_IO_FileAccess_System_Boolean_System_Boolean_" data-uid="Bodu.IO.Compound.CompoundFile.Open(System.IO.Stream,System.IO.FileMode,System.IO.FileAccess,System.Boolean,System.Boolean)">
+          <a class="xref" href="Bodu.IO.Compound.CompoundFile.Open.html#Bodu_IO_Compound_CompoundFile_Open_System_IO_Stream_System_IO_FileMode_System_IO_FileAccess_System_Boolean_System_Boolean_">Open(Stream, FileMode, FileAccess, bool, bool)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Opens a compound file over the supplied stream with BCL-style <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.filemode">FileMode</a> and
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.fileaccess">FileAccess</a> semantics, mirroring <code>System.IO.Packaging.Package.Open</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundFile_Open_System_String_System_IO_FileMode_System_IO_FileAccess_System_IO_FileShare_" data-uid="Bodu.IO.Compound.CompoundFile.Open(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare)">
+          <a class="xref" href="Bodu.IO.Compound.CompoundFile.Open.html#Bodu_IO_Compound_CompoundFile_Open_System_String_System_IO_FileMode_System_IO_FileAccess_System_IO_FileShare_">Open(string, FileMode, FileAccess, FileShare)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Opens the compound file at the specified path with BCL-style <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.filemode">FileMode</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.fileaccess">FileAccess</a>,
+and <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.fileshare">FileShare</a> semantics, mirroring <code>System.IO.Packaging.Package.Open</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundFile_OpenRead_System_String_" data-uid="Bodu.IO.Compound.CompoundFile.OpenRead(System.String)">
+          <a class="xref" href="Bodu.IO.Compound.CompoundFile.OpenRead.html#Bodu_IO_Compound_CompoundFile_OpenRead_System_String_">OpenRead(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Opens an existing compound file at the specified path for read-only access, buffering its content into memory.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundFile_OpenRead_System_String_Bodu_IO_Compound_CompoundFileOptions_" data-uid="Bodu.IO.Compound.CompoundFile.OpenRead(System.String,Bodu.IO.Compound.CompoundFileOptions)">
+          <a class="xref" href="Bodu.IO.Compound.CompoundFile.OpenRead.html#Bodu_IO_Compound_CompoundFile_OpenRead_System_String_Bodu_IO_Compound_CompoundFileOptions_">OpenRead(string, CompoundFileOptions)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Opens an existing compound file at the specified path for read-only access using the supplied options.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundFile_Revert" data-uid="Bodu.IO.Compound.CompoundFile.Revert">
+          <a class="xref" href="Bodu.IO.Compound.CompoundFile.Revert.html#Bodu_IO_Compound_CompoundFile_Revert">Revert()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Discards all staged edits since the file was opened.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundFile_SetDocumentSummaryInformation_Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_" data-uid="Bodu.IO.Compound.CompoundFile.SetDocumentSummaryInformation(Bodu.IO.Compound.PropertySets.DocumentSummaryInformation)">
+          <a class="xref" href="Bodu.IO.Compound.CompoundFile.SetDocumentSummaryInformation.html#Bodu_IO_Compound_CompoundFile_SetDocumentSummaryInformation_Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_">SetDocumentSummaryInformation(DocumentSummaryInformation)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes the standard document-summary-information property set into the root storage, creating or replacing the
+stream.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundFile_SetSummaryInformation_Bodu_IO_Compound_PropertySets_SummaryInformation_" data-uid="Bodu.IO.Compound.CompoundFile.SetSummaryInformation(Bodu.IO.Compound.PropertySets.SummaryInformation)">
+          <a class="xref" href="Bodu.IO.Compound.CompoundFile.SetSummaryInformation.html#Bodu_IO_Compound_CompoundFile_SetSummaryInformation_Bodu_IO_Compound_PropertySets_SummaryInformation_">SetSummaryInformation(SummaryInformation)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes the standard summary-information property set into the root storage, creating or replacing the stream.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundFile_TryGetDocumentSummaryInformation_Bodu_IO_Compound_PropertySets_DocumentSummaryInformation__" data-uid="Bodu.IO.Compound.CompoundFile.TryGetDocumentSummaryInformation(Bodu.IO.Compound.PropertySets.DocumentSummaryInformation@)">
+          <a class="xref" href="Bodu.IO.Compound.CompoundFile.TryGetDocumentSummaryInformation.html#Bodu_IO_Compound_CompoundFile_TryGetDocumentSummaryInformation_Bodu_IO_Compound_PropertySets_DocumentSummaryInformation__">TryGetDocumentSummaryInformation(out DocumentSummaryInformation)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to read the document-summary-information property set from the root storage.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundFile_TryGetSummaryInformation_Bodu_IO_Compound_PropertySets_SummaryInformation__" data-uid="Bodu.IO.Compound.CompoundFile.TryGetSummaryInformation(Bodu.IO.Compound.PropertySets.SummaryInformation@)">
+          <a class="xref" href="Bodu.IO.Compound.CompoundFile.TryGetSummaryInformation.html#Bodu_IO_Compound_CompoundFile_TryGetSummaryInformation_Bodu_IO_Compound_PropertySets_SummaryInformation__">TryGetSummaryInformation(out SummaryInformation)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to read the standard summary-information property set from the root storage.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

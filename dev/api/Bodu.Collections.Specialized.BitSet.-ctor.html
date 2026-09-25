@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Constructor BitSet | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Constructor BitSet | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Collections.Specialized.BitSet.#ctor*">
+
+
+
+<h1 id="Bodu_Collections_Specialized_BitSet__ctor_" data-uid="Bodu.Collections.Specialized.BitSet.#ctor*">Constructor BitSet</h1>
+<div class="markdown level0 summary"></div>
+<div class="markdown level0 conceptual"></div>
+
+<a id="Bodu_Collections_Specialized_BitSet__ctor_" data-uid="Bodu.Collections.Specialized.BitSet.#ctor*"></a>
+<h4 id="Bodu_Collections_Specialized_BitSet__ctor" data-uid="Bodu.Collections.Specialized.BitSet.#ctor">BitSet()</h4>
+<div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Specialized.BitSet.html">BitSet</a> class with all bits clear and a small default capacity.</p>
+</div>
+<div class="markdown level1 conceptual"></div>
+<h5 class="declaration">Declaration</h5>
+<div class="codewrapper">
+  <pre><code class="lang-csharp hljs">public BitSet()</code></pre>
+</div>
+<a id="Bodu_Collections_Specialized_BitSet__ctor_" data-uid="Bodu.Collections.Specialized.BitSet.#ctor*"></a>
+<h4 id="Bodu_Collections_Specialized_BitSet__ctor_System_Int32_" data-uid="Bodu.Collections.Specialized.BitSet.#ctor(System.Int32)">BitSet(int)</h4>
+<div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Specialized.BitSet.html">BitSet</a> class with all bits clear and storage pre-allocated for
+at least the specified number of bits.</p>
+</div>
+<div class="markdown level1 conceptual"></div>
+<h5 class="declaration">Declaration</h5>
+<div class="codewrapper">
+  <pre><code class="lang-csharp hljs">public BitSet(int initialCapacityBits)</code></pre>
+</div>
+<h5 class="parameters">Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></td>
+      <td><span class="parametername">initialCapacityBits</span></td>
+      <td><p>The number of bits the set can address before its first growth. A value of 0 allocates no storage.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 id="Bodu_Collections_Specialized_BitSet__ctor_System_Int32__remarks">Remarks</h5>
+<div class="markdown level1 remarks"><p>The requested capacity is rounded up to a whole number of 64-bit words, so <a class="xref" href="Bodu.Collections.Specialized.BitSet.Capacity.html#Bodu_Collections_Specialized_BitSet_Capacity">Capacity</a> may exceed
+<code class="paramref">initialCapacityBits</code>. The capacity is a pre-allocation hint only — the set still grows
+automatically when a bit beyond it is set or flipped.</p>
+</div>
+<h5 class="exceptions">Exceptions</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Condition</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></td>
+      <td><p><code class="paramref">initialCapacityBits</code> &lt; 0, or <code class="paramref">initialCapacityBits</code> &gt;
+<a class="xref" href="Bodu.Collections.Specialized.BitSet.MaxBitCount.html">MaxBitCount</a>.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<a id="Bodu_Collections_Specialized_BitSet__ctor_" data-uid="Bodu.Collections.Specialized.BitSet.#ctor*"></a>
+<h4 id="Bodu_Collections_Specialized_BitSet__ctor_Bodu_Collections_Specialized_BitSet_" data-uid="Bodu.Collections.Specialized.BitSet.#ctor(Bodu.Collections.Specialized.BitSet)">BitSet(BitSet)</h4>
+<div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Specialized.BitSet.html">BitSet</a> class containing the same set bits as the specified
+source set.</p>
+</div>
+<div class="markdown level1 conceptual"></div>
+<h5 class="declaration">Declaration</h5>
+<div class="codewrapper">
+  <pre><code class="lang-csharp hljs">public BitSet(BitSet source)</code></pre>
+</div>
+<h5 class="parameters">Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="Bodu.Collections.Specialized.BitSet.html">BitSet</a></td>
+      <td><span class="parametername">source</span></td>
+      <td><p>The set whose bits are copied. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 id="Bodu_Collections_Specialized_BitSet__ctor_Bodu_Collections_Specialized_BitSet__remarks">Remarks</h5>
+<div class="markdown level1 remarks"><p>The copy shares no storage with <code class="paramref">source</code> — subsequent mutations of either instance do not
+affect the other. The copy's <a class="xref" href="Bodu.Collections.Specialized.BitSet.Capacity.html#Bodu_Collections_Specialized_BitSet_Capacity">Capacity</a> matches the source's capacity at the time of the copy.</p>
+</div>
+<h5 class="exceptions">Exceptions</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Condition</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></td>
+      <td><p><code class="paramref">source</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

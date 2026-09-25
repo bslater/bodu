@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Namespace Bodu.IO.Pst | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Namespace Bodu.IO.Pst | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.IO.Pst">
+
+  <h1 id="Bodu_IO_Pst" data-uid="Bodu.IO.Pst" class="text-break">Namespace Bodu.IO.Pst</h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual">
+<p><img src="../images/hero-io-pst.svg" alt="Bodu.IO.Pst"></p>
+<h2 id="purpose">Purpose</h2>
+<p><strong>Bodu.IO.Pst</strong> is a low-level, read-only container reader for the Outlook personal-folders format (PST / MS-PST, Unicode and ANSI formats). It reads the node database (NDB) — the header, the node and block B-trees, block data with the format's permute and cyclic content encodings decoded and checksums verified, multi-block data trees, and per-node subnode trees — and the LTP layer over it: heap-on-node, BTree-on-heap, and per-node property-context and table-context views with wire-typed values. It carries no MAPI semantics and no write support: interpreting a property as a subject or a sender is the job of the <code>Bodu.Formats.Outlook.Pst</code> mail-store reader layered on top, which shares the <a class="xref" href="Bodu.Formats.Outlook.html">Bodu.Formats.Outlook</a> MAPI value model with the <code>.msg</code> reader.</p>
+<p>A PST file is a node-oriented database in a single file. <a class="xref" href="Bodu.IO.Pst.PstFile.html">PstFile</a> opens it as a disposable session; every object — folders, messages, tables, internal maps — is a <a class="xref" href="Bodu.IO.Pst.PstNode.html">PstNode</a> addressed by a 32-bit <a class="xref" href="Bodu.IO.Pst.PstNodeId.html">PstNodeId</a> whose five low bits carry its <a class="xref" href="Bodu.IO.Pst.PstNodeType.html">PstNodeType</a>. Payloads assemble transparently from multi-block data trees, stream through a decoded-block LRU cache, and a node's private subnode tree carries its children (a message's recipient and attachment tables, for example).</p>
+<h2 id="static-documentation">Static documentation</h2>
+<ul>
+<li><strong><a href="../docs/io-pst/index.html">Introduction</a></strong> — the headline types, the layering beneath the mail-store reader, and the scenarios the library covers.</li>
+<li><strong><a href="../docs/io-pst/concepts.html">Core concepts</a></strong> — node database, NID/BID, data and subnode trees, heap-on-node, property and table contexts, validation levels.</li>
+<li><strong><a href="../docs/io-pst/getting-started.html">Getting started</a></strong> — install and minimal samples for opening, enumerating, and reading.</li>
+<li><strong><a href="../docs/topics/binary-formats.html">Binary Formats &amp; I/O topic overview</a></strong> — where the container sits beneath the format readers.</li>
+</ul>
+<h2 id="key-types">Key types</h2>
+<p><strong>Session and nodes</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.IO.Pst.PstFile.html">PstFile</a> — the disposable read session. Factories <code>OpenRead</code> (path / <code>Stream</code>) and <code>Open(Stream, options, leaveOpen)</code>, the cheap <code>IsPstFile</code> probe; <code>Format</code> / <code>CryptMethod</code>, the node directory via <code>EnumerateNodes</code>, and lookup via <code>GetNode</code> / <code>TryGetNode</code>.</li>
+<li><a class="xref" href="Bodu.IO.Pst.PstNode.html">PstNode</a> — one node. <code>ReadAllBytes</code> (buffered), <code>OpenDataStream</code> (a seekable read-only stream keeping one leaf block resident, bound to the session — it throws once the session is disposed), <code>DataLength</code> (priced without payload reads); <code>EnumerateSubnodes</code> / <code>TryGetSubnode</code>; and the LTP views <code>ReadPropertyContext</code> / <code>ReadTableContext</code>.</li>
+<li><a class="xref" href="Bodu.IO.Pst.PstNodeId.html">PstNodeId</a> / <a class="xref" href="Bodu.IO.Pst.PstNodeType.html">PstNodeType</a> — the 32-bit identifier (five type bits + 27-bit index) with the well-known anchors <code>MessageStore</code> (<code>0x21</code>), <code>NameToIdMap</code> (<code>0x61</code>), and <code>RootFolder</code> (<code>0x122</code>).</li>
+<li><a class="xref" href="Bodu.IO.Pst.PstNodeInfo.html">PstNodeInfo</a> — an immutable directory snapshot: identifier, parent, payload length, and whether subnodes are present.</li>
+</ul>
+<p><strong>LTP views</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.IO.Pst.PstPropertyContext.html">PstPropertyContext</a> — the node's property bag: a tag-ordered collection of <a class="xref" href="Bodu.IO.Pst.PstPropertyValue.html">PstPropertyValue</a> entries (16-bit property identifier, raw wire type, payload resolved on access, typed accessors) with <code>TryGetValue</code> / <code>GetValue</code>, plus the streaming pair <code>TryGetValueLength</code> / <code>TryOpenValueStream</code> that prices or reads a value without materializing it.</li>
+<li><a class="xref" href="Bodu.IO.Pst.PstTableContext.html">PstTableContext</a> — the node's table: <a class="xref" href="Bodu.IO.Pst.PstTableColumn.html">PstTableColumn</a> metadata, <code>RowCount</code>, streaming <code>EnumerateRows</code> (one matrix block resident at a time), and keyed <code>TryGetRow</code>. <a class="xref" href="Bodu.IO.Pst.PstTableRow.html">PstTableRow</a> exposes <code>RowId</code>, <code>TryGetCell</code>, <code>EnumerateCells</code>, and the streaming pair <code>TryGetCellLength</code> / <code>TryOpenCellStream</code>.</li>
+</ul>
+<p><strong>Options and formats</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.IO.Pst.PstFileOptions.html">PstFileOptions</a> — <code>ValidationLevel</code> (<a class="xref" href="Bodu.IO.Pst.PstValidationLevel.html">PstValidationLevel</a>: <code>Compatible</code> / <code>Strict</code> / <code>Minimal</code>) and the decoded-block LRU <code>BlockCacheSize</code> (default 256 entries; <code>0</code> disables).</li>
+<li><a class="xref" href="Bodu.IO.Pst.PstFileFormat.html">PstFileFormat</a> / <a class="xref" href="Bodu.IO.Pst.PstCryptMethod.html">PstCryptMethod</a> — the header's declared variant (both <code>Unicode</code> and <code>Ansi</code> are read; the OST variant is rejected) and content encoding.</li>
+</ul>
+<p><strong>Errors</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.IO.Pst.PstFileException.html">PstFileException</a> (base, with a <a class="xref" href="Bodu.IO.Pst.PstFileError.html">PstFileError</a> category), <a class="xref" href="Bodu.IO.Pst.PstFileFormatException.html">PstFileFormatException</a> (malformed content at the active validation level), <a class="xref" href="Bodu.IO.Pst.PstUnsupportedFormatException.html">PstUnsupportedFormatException</a> (recognized but unsupported variant — the 4 KiB-page OST), <a class="xref" href="Bodu.IO.Pst.PstNodeNotFoundException.html">PstNodeNotFoundException</a> (a <code>GetNode</code> miss).</li>
+</ul>
+<h2 id="example">Example</h2>
+<pre><code class="lang-csharp">using Bodu.IO.Pst;
+
+using PstFile file = PstFile.OpenRead(&quot;archive.pst&quot;);
+
+// The store object's raw property bag.
+PstNode store = file.GetNode(PstNodeId.MessageStore);
+foreach (PstPropertyValue value in store.ReadPropertyContext())
+    Console.WriteLine($&quot;0x{value.PropertyId:X4} (wire 0x{value.WireType:X4}): {value.RawData.Length} bytes&quot;);
+
+// The root folder's hierarchy table: each row identifier is a child folder's node identifier.
+var hierarchyId = new PstNodeId(PstNodeType.HierarchyTable, PstNodeId.RootFolder.Index);
+if (file.TryGetNode(hierarchyId, out PstNode? table))
+{
+    foreach (PstTableRow row in table.ReadTableContext().EnumerateRows())
+        Console.WriteLine($&quot;child folder 0x{row.RowId:X8}&quot;);
+}
+</code></pre>
+</div>
+  <div class="markdown level0 remarks"></div>
+    <h3 id="classes">
+Classes
+</h3>
+      <h4><a class="xref" href="Bodu.IO.Pst.PstFile.html">PstFile</a></h4>
+      <section><p>Provides a disposable, read-only session over a PST file's node database (Unicode or ANSI format): the header facts,
+the node directory, and per-node data and subnode access.</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Pst.PstFileException.html">PstFileException</a></h4>
+      <section><p>Represents an error raised while reading a PST file. Serves as the base of the library's exception hierarchy.</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Pst.PstFileFormatException.html">PstFileFormatException</a></h4>
+      <section><p>Represents an error raised when a PST file's structure is malformed or fails validation.</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Pst.PstFileOptions.html">PstFileOptions</a></h4>
+      <section><p>Controls how a <a class="xref" href="Bodu.IO.Pst.PstFile.html">PstFile</a> is opened and validated.</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Pst.PstNode.html">PstNode</a></h4>
+      <section><p>Represents one node of the node database: raw access to its data payload and its subnode tree.</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Pst.PstNodeInfo.html">PstNodeInfo</a></h4>
+      <section><p>Provides an immutable snapshot of a node's directory facts: its identifier, its parent, the size of its data
+payload, and whether it carries a subnode tree.</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Pst.PstNodeNotFoundException.html">PstNodeNotFoundException</a></h4>
+      <section><p>Represents a lookup for a node that does not exist in the file.</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Pst.PstPropertyContext.html">PstPropertyContext</a></h4>
+      <section><p>Represents a node's property context (<code>PC</code>): the LTP property bag of 16-bit property identifiers with
+wire-typed values, in the manner the exploration plan sketches — format-agnostic, with no MAPI semantics.</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Pst.PstTableContext.html">PstTableContext</a></h4>
+      <section><p>Represents a node's table context (<code>TC</code>): the LTP table of typed columns over identifier-keyed rows, with
+forward-only row enumeration and keyed row lookup — format-agnostic, with no MAPI semantics.</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Pst.PstTableRow.html">PstTableRow</a></h4>
+      <section><p>Represents one row of a table context: the row identifier and cell access by column property identifier.</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Pst.PstUnsupportedFormatException.html">PstUnsupportedFormatException</a></h4>
+      <section><p>Represents an error raised when a PST file is recognized but uses a format variant or content encoding the library
+does not read (the 4 KiB-page OST variant or Windows Information Protection encryption).</p>
+</section>
+    <h3 id="structs">
+Structs
+</h3>
+      <h4><a class="xref" href="Bodu.IO.Pst.PstNodeId.html">PstNodeId</a></h4>
+      <section><p>Represents a 32-bit node identifier: five type bits in the low positions and a 27-bit index above them (MS-PST
+§2.2.2.1).</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Pst.PstPropertyValue.html">PstPropertyValue</a></h4>
+      <section><p>Represents one property value of a property context or table-context row: the 16-bit property identifier, the raw
+wire type code, and the resolved little-endian payload with typed accessors over it.</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Pst.PstTableColumn.html">PstTableColumn</a></h4>
+      <section><p>Represents one column of a table context: its 16-bit property identifier, its raw wire type code, and its cell width
+within a row.</p>
+</section>
+    <h3 id="enums">
+Enums
+</h3>
+      <h4><a class="xref" href="Bodu.IO.Pst.PstCryptMethod.html">PstCryptMethod</a></h4>
+      <section><p>Identifies how a file's external block data is encoded (the header's <code>bCryptMethod</code> values).</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Pst.PstFileError.html">PstFileError</a></h4>
+      <section><p>Categorizes the failure a <a class="xref" href="Bodu.IO.Pst.PstFileException.html">PstFileException</a> reports, so callers can distinguish a missing object from
+structural corruption without parsing messages.</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Pst.PstFileFormat.html">PstFileFormat</a></h4>
+      <section><p>Identifies the on-disk PST format variant, discriminated by the header's <code>wVer</code> field.</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Pst.PstNodeType.html">PstNodeType</a></h4>
+      <section><p>Identifies the kind of object a node holds — the five type bits of a <a class="xref" href="Bodu.IO.Pst.PstNodeId.html">PstNodeId</a> (the <code>NID_TYPE_*</code>
+values of MS-PST §2.2.2.1).</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Pst.PstValidationLevel.html">PstValidationLevel</a></h4>
+      <section><p>Specifies how strictly a file's structures and checksums are validated while reading.</p>
+</section>
+
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

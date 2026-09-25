@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Merkle trees and proofs | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Merkle trees and proofs | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="merkle-trees-and-proofs">Merkle trees and proofs</h1>
+
+<p><a class="xref" href="../../api/Bodu.Security.Cryptography.MerkleTree.html">MerkleTree</a> implements the Merkle tree of <a href="https://www.rfc-editor.org/rfc/rfc6962#section-2.1">RFC 6962</a>: the Merkle Tree Hash over a list of entries or over fixed-size blocks of a byte stream, inclusion (audit) proofs, consistency proofs, and length-bound roots. It is the type to reach for when a root has to interoperate with a transparency log, an artifact attestation, or anything else built to the standard, and it is the only Bodu type that produces proofs.</p>
+<p>The hash is yours to choose. The tree takes a <code>Func&lt;HashAlgorithm&gt;</code> factory, so the BCL digests and every Bodu digest work alike, and nothing assumes a 32-byte output. One type covers every workload: a default instance hashes leaves on the calling thread; an instance created with <code>maxDegreeOfParallelism: -1</code> hashes them on every core and folds them in order into the same tree; and <a class="xref" href="../../api/Bodu.Security.Cryptography.MerkleBlockAccumulator.html">MerkleBlockAccumulator</a> builds the tree from bytes as a writer produces them, so the root costs no second pass.</p>
+<pre><code class="lang-bash">dotnet add package Bodu.Security.Cryptography
+</code></pre>
+<p><img src="../../images/diagrams/rfc6962-merkle-tree.svg" alt="RFC 6962 Merkle tree over seven leaves — the split at the largest power of two strictly below n, and the lone subtree root promoted unchanged"></p>
+<h2 id="the-construction-precisely">The construction, precisely</h2>
+<p>RFC 6962 §2.1 defines the Merkle Tree Hash over a list <code>D[n]</code>:</p>
+<pre><code class="lang-text">MTH({})       = H()                                     the hash of zero bytes
+MTH({d(0)})   = H(0x00 || d(0))                          a leaf, not a bare digest
+MTH(D[n])     = H(0x01 || MTH(D[0:k]) || MTH(D[k:n]))    for n &gt; 1
+</code></pre>
+<p>with <code>k</code> the largest power of two <strong>strictly</strong> below <em>n</em>. Two details are where plausible-looking implementations diverge, and both matter because a divergent root simply does not verify anywhere else:</p>
+<ul>
+<li><strong>Three leaves split 2 + 1</strong>, not 1 + 2 and not a rounded half. For <code>n = 8</code>, <code>k = 4</code> — the case where &quot;strictly below&quot; and &quot;at or below&quot; disagree, and where getting it wrong produces a tree one level too deep.</li>
+<li><strong>A subtree with one leaf contributes its leaf hash unchanged.</strong> It is not re-hashed as a one-child node.</li>
+</ul>
+<p>Every root the tree computes is folded level by level with exactly that promotion rule, which visits the nodes of the recursive definition in the same order — so a root streamed from a file, a root over a list of entries, and a root accumulated from a writer's chunks are all the same root. The tree is binary by definition; the default <code>fanOut</code> of two is RFC 6962, and <a href="#a-wider-fan-out-the-non-rfc-mode">anything wider</a> is an explicit mode of the package's own. An empty tree's root is <code>H()</code> rather than an exception: a log that has published nothing still has a head to sign.</p>
+<h2 id="a-root-and-a-proof-over-a-list-of-entries">A root and a proof over a list of entries</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Security.Cryptography;
+using Bodu.Security.Cryptography;
+
+var tree = new MerkleTree(SHA256.Create);   // immutable; safe to share across threads
+
+ReadOnlyMemory&lt;byte&gt;[] entries = [new byte[0], new byte[] { 0x00 }, new byte[] { 0x10 }];
+
+byte[]   root = tree.ComputeRoot(entries);
+byte[][] path = tree.AuthenticationPath(entries, leafIndex: 2);
+
+bool ok = tree.VerifyInclusion(
+    root, treeSize: entries.Length, leafIndex: 2,
+    entry: entries[2].Span,
+    path: path.Select(step =&gt; (ReadOnlyMemory&lt;byte&gt;)step).ToArray());
+</code></pre>
+<p>The instance keeps no digest state between calls and is deliberately <strong>not</strong> <code>IDisposable</code> — it creates and disposes a <code>HashAlgorithm</code> inside each call, so there is nothing on the tree itself to dispose and a <code>using</code> would imply a lifetime it does not have.</p>
+<p><code>ComputeRootOfLeafHashes</code>, <code>AuthenticationPath(IReadOnlyList&lt;byte[]&gt;, long)</code>, and <code>VerifyInclusionOfLeafHash</code> are the counterparts for callers that already hold leaf hashes — from a cache, a previous pass, or a <a class="xref" href="../../api/Bodu.Security.Cryptography.MerkleBlockComputation.html">MerkleBlockComputation</a>.</p>
+<h2 id="block-mode-over-a-stream">Block mode over a stream</h2>
+<p>For a byte stream, block mode cuts the input into fixed-size leaves and returns the root <strong>and</strong> the leaf hashes a path needs from the same pass, so a large object is never read twice:</p>
+<pre><code class="lang-csharp">MerkleBlockComputation computation = tree.ComputeBlocked(stream, blockSize: 1024 * 1024);
+
+byte[]   root      = computation.Root;
+long     length    = computation.InputLength;
+byte[][] blockPath = tree.AuthenticationPath(computation.LeafHashes, blockIndex);
+</code></pre>
+<p><img src="../../images/diagrams/merkle-tree.svg" alt="Merkle tree construction over blocks — a short tail hashed at its actual length, and the lone seventh leaf promoted"></p>
+<p>Two conventions differ from padding-based schemes, and both are deliberate:</p>
+<ul>
+<li>a <strong>zero-length input has no blocks at all</strong>, not one empty block, so its root is <code>H()</code>;</li>
+<li>a <strong>final short block is hashed at its actual length</strong>, never zero-padded — padding would let a shorter input collide with a zero-extended longer one.</li>
+</ul>
+<p>The same computation is available over a <code>ReadOnlyMemory&lt;byte&gt;</code>, a <code>ReadOnlySpan&lt;byte&gt;</code> or a <code>byte[]</code> already in memory, and asynchronously over a stream with <code>ComputeBlockedAsync</code>, which awaits its reads. The static <code>MerkleTree.BlockCount</code>, <code>MerkleTree.BlockOffset</code> and <code>MerkleTree.BlockLength</code> members expose the same arithmetic in 64-bit form, so blocks of a multi-gigabyte object can be addressed without overflow, and the computation answers the same questions for its own input.</p>
+<h3 id="root-only-in-logarithmic-memory">Root only, in logarithmic memory</h3>
+<p><code>ComputeRootOfBlocks</code> folds the tree as it reads rather than retaining every leaf:</p>
+<pre><code class="lang-csharp">byte[] root = tree.ComputeRootOfBlocks(stream, blockSize: 1024 * 1024);
+</code></pre>
+<p>Each leaf is folded the moment it arrives: a level holds at most one pending node, and when a second lands the pair is hashed and the parent carried up. Every pending node is therefore a perfect subtree, one per set bit of the leaf count so far, and at the end a lone node is promoted unchanged — never re-hashed — which is what reproduces RFC 6962's shape without ever having held the whole tree. Peak memory is <code>O(blockSize + log n · HashLength)</code> whatever the input size. <code>ComputeRootOfBlocksAsync</code> is the awaiting twin, and in-memory overloads take a memory, a span or an array.</p>
+<p>The trade is that no path can be produced afterwards without a second pass. <code>ComputeBlocked</code> retains every leaf hash for that reason, at <code>leafCount × HashLength</code> bytes — 16 KiB for a 512 MiB object at one-mebibyte blocks, which is usually the better deal if a proof is ever wanted.</p>
+<h3 id="streaming-from-the-writer">Streaming from the writer</h3>
+<p>A writer that streams bytes to storage usually feeds them to an incremental digest as it goes. The accumulator gives the Merkle root the same shape: <code>Append</code> takes bytes in whatever sizes they arrive, re-blocks them into leaves internally, and folds each completed leaf at once, so the tree costs no second pass over the input and the root is identical whatever the chunking.</p>
+<pre><code class="lang-csharp">using MerkleBlockAccumulator merkle = tree.CreateBlockAccumulator(blockSize: 1 &lt;&lt; 20);
+using IncrementalHash digest = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
+
+while (TryReadChunk(out ReadOnlySpan&lt;byte&gt; chunk))   // any sizes, any number of calls
+{
+    digest.AppendData(chunk);   // the flat digest the index already carries
+    merkle.Append(chunk);       // the Merkle root, from the same bytes, in the same pass
+}
+
+byte[] flatDigest = digest.GetHashAndReset();
+byte[] boundRoot  = merkle.FinishBound();   // H(0x02 || u64_be(length) || MTH) — the shape to publish
+</code></pre>
+<p><code>Finish()</code> returns the plain root, <code>FinishBound()</code> the <a href="#trust-the-size-or-bind-it">length-bound</a> one, and — when the accumulator was created with <code>retainLeafHashes: true</code> — <code>FinishComputation()</code> returns the same <a class="xref" href="../../api/Bodu.Security.Cryptography.MerkleBlockComputation.html">MerkleBlockComputation</a> that <code>ComputeBlocked</code> would have, so authentication paths can be built later. Memory is one block plus a logarithmic number of hashes unless leaf hashes are retained. Stop appending before any trailer the commitment must not cover; <code>Reset()</code> starts the next input on the same algorithm and buffer.</p>
+<h2 id="hashing-leaves-in-parallel">Hashing leaves in parallel</h2>
+<p>Leaf hashing is where a block-mode computation spends essentially all of its time — one hash over <code>blockSize</code> bytes per leaf, against a handful of digest-sized node hashes — so it is the only part worth spreading across cores. An instance created with a <code>maxDegreeOfParallelism</code> other than one hashes leaves in batches, one algorithm per worker obtained from the factory, and folds them in order on the calling thread. The tree shape is untouched, so the root is bit-identical to a sequential instance's for every input and every proof verifies across the two; switching is a performance question and never a compatibility one.</p>
+<pre><code class="lang-csharp">var parallel = new MerkleTree(SHA256.Create, maxDegreeOfParallelism: -1);   // -1: the processor count
+
+// Bytes already in memory — this is the one that scales.
+MerkleBlockComputation computation = parallel.ComputeBlocked(buffer.AsMemory(), blockSize: 1024 * 1024);
+
+// From a stream, when the object is too large to hold.
+byte[] root = await parallel.ComputeRootOfBlocksAsync(stream, blockSize: 1024 * 1024);
+
+// Entry mode: worthwhile when the entries are individually large.
+byte[] entryRoot = parallel.ComputeRoot(entries);
+</code></pre>
+<p>Prefer the <code>ReadOnlyMemory&lt;byte&gt;</code> overload where you can. A stream must be read sequentially, so the stream paths copy each block on the calling thread before any worker can touch it, which caps the gain; the in-memory overload slices <em>and</em> hashes each block inside its own worker. (A span cannot be captured by workers, so on a parallel instance the span overloads copy into a pooled buffer first.)</p>
+<p>How much you gain depends on the source and on how many cores you have. Measured on a 4-core Intel Xeon 2.80GHz under .NET 10, over 64 MiB at one-mebibyte blocks:</p>
+<table>
+<thead>
+<tr>
+<th>Leaf hash</th>
+<th>Stream overload</th>
+<th>In-memory overload</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SHA-256</td>
+<td>2.6×</td>
+<td>3.4×</td>
+</tr>
+<tr>
+<td>SHA-512</td>
+<td>2.3×</td>
+<td>3.2×</td>
+</tr>
+<tr>
+<td>Tiger</td>
+<td>2.6×</td>
+<td>3.3×</td>
+</tr>
+<tr>
+<td>BLAKE2b</td>
+<td>2.2×</td>
+<td>3.1×</td>
+</tr>
+</tbody>
+</table>
+<p>Two things hold across all four. The in-memory overload lands close to the core count, because every block is sliced <em>and</em> hashed inside its own worker. The stream overload lands consistently lower, because the read is serial — the copy happens on the calling thread no matter how many workers are waiting — and that ceiling is what the gap between the two columns measures.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>These come from the benchmark in <code>Bodu.Security.Cryptography/bench</code>, so they can be re-measured rather than taken on trust:</p>
+<pre><code class="lang-bash">dotnet run --project Bodu.Security.Cryptography/bench/Bodu.Security.Cryptography.Benchmarks.csproj -c Release -- --filter '*MerkleParallel*'
+</code></pre>
+<p>Speedup tracks core count, so on other hardware the numbers move together; the <em>ordering</em> of the two columns is the part that should hold. Note that the leaf hash barely matters here — a slow managed digest and a hardware-accelerated SHA-256 parallelize about equally well, because what is being spread across threads is the same per-block work either way.</p>
+</div>
+<p>The factory must return a fresh <code>HashAlgorithm</code> on every call, as <code>SHA256.Create</code> does; a factory that hands back one shared instance cannot serve a parallel instance at all. A leaf algorithm that faults inside a worker surfaces its exception as itself, never wrapped in an <code>AggregateException</code>, and cancellation always surfaces as <code>OperationCanceledException</code>.</p>
+<h2 id="capturing-diagnostics">Capturing diagnostics</h2>
+<p>Every root computation, and the accumulator, accepts an optional <a class="xref" href="../../api/Bodu.Security.Cryptography.MerkleTreeDiagnostics.html">MerkleTreeDiagnostics</a> that records every node the tree built — level, index, hash, and the ordered child hashes it was produced from. It is useful when you want to visualise a tree or cross-check an implementation against a known-good one:</p>
+<pre><code class="lang-csharp">var diagnostics = new MerkleTreeDiagnostics();
+byte[] root = tree.ComputeRootOfBlocks(stream, blockSize: 4096, diagnostics);
+
+for (int level = 0; level &lt; diagnostics.GetLevelCount(); level++)
+    Console.WriteLine($&quot;level {level}: {diagnostics.GetLevel(level).Count} nodes&quot;);
+
+diagnostics.WriteTo(Console.Out);                                   // one line per node
+bool valid = diagnostics.Validate(SHA256.Create, out var errors);   // re-derive every parent from its children
+</code></pre>
+<p>Pass nothing and the fold does no book-keeping. A promoted node is recorded once, at the level that produced it — it never appears as a one-child node above — and on a parallel instance the fold still reports on the calling thread, in order, so the trace reads the same whichever instance produced it. Recording retains one entry per node, so the logarithmic memory bound does not hold while a recorder is supplied.</p>
+<h2 id="a-wider-fan-out-the-non-rfc-mode">A wider fan-out: the non-RFC mode</h2>
+<p>RFC 6962 has no k-ary form. <code>MerkleTree</code> nonetheless accepts a <code>fanOut</code> above two, hashing that many children into each parent with the same rule for the leftovers — a partial group is hashed, a lone node is promoted — because a shallower tree with wider nodes is a sound commitment in its own right and some existing formats use one. It is an explicit mode: the roots interoperate with nothing outside the package, and on such an instance the authentication-path, consistency-proof and verify members throw <code>NotSupportedException</code>, since an RFC 6962 proof has no meaning over a tree the standard does not define. <code>BindRoot</code>, <code>HashLeaf</code> and <code>HashNode</code> still work, as do every root computation and the accumulator.</p>
+<pre><code class="lang-csharp">var quaternary = new MerkleTree(SHA256.Create, fanOut: 4);   // shallower, wider nodes, not RFC 6962
+byte[] root = quaternary.ComputeRootOfBlocks(stream, blockSize: 8192);
+</code></pre>
+<h3 id="interoperating-with-a-tiger-tree-hash">Interoperating with a Tiger Tree Hash</h3>
+<p>The Tiger Tree Hash (THEX / TTH) used by content-addressed file sharing is Tiger over 1024-byte leaves with <code>0x00</code> prepended to each leaf and <code>0x01</code> to each internal node, pairing left to right and carrying a lone node up unchanged — the same rules as RFC 6962. Over a non-empty input, then, the default instance is the whole recipe:</p>
+<pre><code class="lang-csharp">var tiger = new MerkleTree(() =&gt; new Tiger());
+byte[] tigerTreeRoot = tiger.ComputeRootOfBlocks(stream, blockSize: 1024);   // 24-byte root
+</code></pre>
+<p>The one input on which the two conventions part ways is the empty one: TTH hashes a single empty leaf, whereas RFC 6962 returns <code>H()</code>, the hash of zero bytes. Special-case a zero-length input if you need the TTH value for it.</p>
+<h2 id="why-the-prefixes-are-there">Why the prefixes are there</h2>
+<p>Leaves are <code>H(0x00 ‖ entry)</code>, internal nodes <code>H(0x01 ‖ left ‖ right)</code>, and bound roots <code>H(0x02 ‖ uint64_be(value) ‖ root)</code>. The prefixes are not decoration — they are what makes the construction sound, and two classic attacks are the reason:</p>
+<ul>
+<li><strong>The second-preimage attack.</strong> Without a prefix, leaf and node hashes are drawn from the same space, so an attacker can present an internal node's two concatenated child hashes as the contents of a single leaf. The <code>0x00</code> / <code>0x01</code> split makes the two domains disjoint, so no leaf preimage can collide with a node preimage.</li>
+<li><strong>CVE-2012-2459</strong>, Bitcoin's duplicate-last-leaf rule. A tree that pads an odd level by hashing the last node with <em>itself</em> lets two different transaction lists produce the same root. RFC 6962's promote-unchanged rule has no padding step, so the construction is immune by shape — and the duplicated-leaf forgery is pinned as an explicit negative in the test suite rather than merely assumed impossible.</li>
+</ul>
+<p><code>HashLeaf</code>, <code>HashNode</code>, and <code>BindRoot</code> expose the three primitives directly for callers composing a custom shape or caching subtrees, and <code>HashLength</code> reports the digest width the supplied factory produces.</p>
+<h2 id="trust-the-size-or-bind-it">Trust the size, or bind it</h2>
+<div class="WARNING">
+<h5>Warning</h5>
+<p><code>VerifyInclusion</code>'s <code>treeSize</code> is <strong>trusted input</strong>. A four-entry tree's path for entry 0 has exactly the length a three-entry tree's first path wants and walks to the same head, so verification accepts both. If you take the size from the party you are examining, they can understate it — exempting their last entries from ever being challenged — and every check still passes.</p>
+</div>
+<p>That is RFC 6962 behaving as specified, not a defect. When the size comes from an untrusted party, publish a <strong>length-bound</strong> root and verify against that instead:</p>
+<pre><code class="lang-csharp">byte[] published = tree.BindRoot(computation.Root, computation.InputLength);   // or accumulator.FinishBound()
+
+bool ok = tree.VerifyBlockInclusion(
+    published, computation.InputLength, blockSize, blockIndex, block, blockPath);
+</code></pre>
+<p><code>VerifyBlockInclusion</code> derives the tree size from the bound length and block size, so there is no size left to misstate, and it requires the block to be exactly the length its position demands. <code>VerifyInclusionBound</code> is the entry-mode equivalent.</p>
+<table>
+<thead>
+<tr>
+<th>Verifier</th>
+<th>Size comes from</th>
+<th>Use when</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>VerifyInclusion</code> / <code>VerifyInclusionOfLeafHash</code></td>
+<td>the caller</td>
+<td>the size is already trusted — you published it yourself</td>
+</tr>
+<tr>
+<td><code>VerifyInclusionBound</code></td>
+<td>the bound root</td>
+<td>entry mode, size supplied by an untrusted party</td>
+</tr>
+<tr>
+<td><code>VerifyBlockInclusion</code></td>
+<td>the bound length ÷ block size</td>
+<td>block mode, size supplied by an untrusted party</td>
+</tr>
+</tbody>
+</table>
+<p>The <code>0x02</code> prefix keeps a bound root out of both other domains, so it can never be mistaken for a leaf or a node. This is the possession-check shape: the block's <strong>bytes</strong> are the proof. A party that cached the authentication path but discarded the block can still produce the path and still cannot answer, which is the difference between this challenge and a digest the party could have computed once on receipt.</p>
+<h2 id="consistency-proofs">Consistency proofs</h2>
+<p>For an append-only log, a consistency proof shows that an earlier published tree is a prefix of a later one:</p>
+<pre><code class="lang-csharp">byte[][] proof = tree.ConsistencyProof(entries, firstSize: 3);
+
+bool ok = tree.VerifyConsistency(
+    firstRoot, firstSize: 3, secondRoot, secondSize: entries.Length,
+    proof.Select(step =&gt; (ReadOnlyMemory&lt;byte&gt;)step).ToArray());
+</code></pre>
+<p>Both sizes and both roots are inputs and the proof must reconstruct both, so the size ambiguity above has no analogue here. Three cases are decided without walking the proof: a later size below the earlier one is rejected outright, equal sizes require identical roots <em>and</em> an empty proof, and a first size of zero requires an empty proof because every tree extends the empty tree.</p>
+<p><code>ConsistencyProofOfLeafHashes</code> is the leaf-hash counterpart.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>RFC 6962's inclusion walk and consistency walk terminate on different conditions (<code>sn = 0</code> versus <code>fn = 0</code>). That asymmetry is the standard's own; both are implemented verbatim rather than harmonised, because harmonising them would produce proofs that other implementations reject.</p>
+</div>
+<h2 id="verification-never-throws">Verification never throws</h2>
+<p>All verification entry points are <strong>total</strong>: they return <code>false</code> for malformed input — a leaf index at or past the tree size, a zero tree size, a path longer or shorter than the position demands, an element of the wrong width, a root of the wrong width — and only a <code>null</code> path or proof array throws. A verifier sits directly behind untrusted input, and an exception where a <code>false</code> belongs is a denial of service. (The one exception is configuration, not input: on a non-binary instance the verifiers throw <code>NotSupportedException</code> before looking at their arguments.)</p>
+<p>The suite behind that claim is a systematic mutation matrix rather than a fixed list of cases: shifted and flipped indices and sizes, wrong, empty, and swapped roots, each root injected as a proof step at either end, and every step bit-flipped, removed, duplicated, and mis-sized — plus seeded malformed-input sweeps asserting only that verification never throws.</p>
+<h2 id="path-lengths-are-not-uniform">Path lengths are not uniform</h2>
+<p>In a seven-leaf tree, leaves 0–5 carry three path steps but leaf 6 carries two, because the right subtree of three leaves is shallower on that side. An implementation — or a wire format — that assumes a fixed depth for a given tree size gets this wrong. <code>AuthenticationPath</code> returns exactly the steps the position needs, and the verifiers reject a path of any other length.</p>
+<h2 id="when-to-use-which">When to use which</h2>
+<table>
+<thead>
+<tr>
+<th>You have</th>
+<th>You want</th>
+<th>Call</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>a list of records</td>
+<td>the root</td>
+<td><code>ComputeRoot</code></td>
+</tr>
+<tr>
+<td>a list of records</td>
+<td>the root and a proof for one</td>
+<td><code>ComputeRoot</code> + <code>AuthenticationPath</code></td>
+</tr>
+<tr>
+<td>a stream</td>
+<td>the root only, minimal memory</td>
+<td><code>ComputeRootOfBlocks</code> / <code>ComputeRootOfBlocksAsync</code></td>
+</tr>
+<tr>
+<td>a stream</td>
+<td>the root and proofs for chunks</td>
+<td><code>ComputeBlocked</code> / <code>ComputeBlockedAsync</code></td>
+</tr>
+<tr>
+<td>bytes as a writer produces them</td>
+<td>the root from the same pass</td>
+<td><code>CreateBlockAccumulator</code> → <code>Append</code> … <code>FinishBound</code></td>
+</tr>
+<tr>
+<td>an in-memory buffer and spare cores</td>
+<td>the root and proofs, faster</td>
+<td><code>new MerkleTree(f, maxDegreeOfParallelism: -1).ComputeBlocked(memory, …)</code></td>
+</tr>
+<tr>
+<td>an append-only log</td>
+<td>to prove nothing was rewritten</td>
+<td><code>ConsistencyProof</code> + <code>VerifyConsistency</code></td>
+</tr>
+<tr>
+<td>an untrusted counterparty's size</td>
+<td>a proof they cannot dodge</td>
+<td><code>BindRoot</code> + <code>VerifyInclusionBound</code> / <code>VerifyBlockInclusion</code></td>
+</tr>
+<tr>
+<td>leaf hashes already computed</td>
+<td>the root or a proof</td>
+<td>the <code>…OfLeafHashes</code> overloads</td>
+</tr>
+<tr>
+<td>a shallower, non-standard tree</td>
+<td>a commitment nobody else must verify</td>
+<td><code>new MerkleTree(f, fanOut: 4)</code></td>
+</tr>
+</tbody>
+</table>
+<p>For a single end-to-end digest where partial verification is not a requirement, a plain <code>SHA256</code> is simpler and does not need a tree at all.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="../../docs/cryptography/index.html">Bodu.Security.Cryptography introduction</a></strong> · <strong><a href="../../docs/cryptography/concepts.html#merkle-tree">core concepts</a></strong> · <strong><a href="../../docs/cryptography/getting-started.html">getting started</a></strong> — the package these types ship in.</li>
+<li><strong><a href="hashing.html">Hashing overview</a></strong> — where tree hashing sits alongside the other families.</li>
+<li><strong><a href="tiger.html">Using Tiger</a></strong> — a common leaf-hash choice for content-addressed systems.</li>
+<li><a class="xref" href="../../api/Bodu.Security.Cryptography.MerkleTree.html">MerkleTree</a> · <a class="xref" href="../../api/Bodu.Security.Cryptography.MerkleBlockAccumulator.html">MerkleBlockAccumulator</a> · <a class="xref" href="../../api/Bodu.Security.Cryptography.MerkleBlockComputation.html">MerkleBlockComputation</a> · <a class="xref" href="../../api/Bodu.Security.Cryptography.MerkleTreeDiagnostics.html">MerkleTreeDiagnostics</a>.</li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> — every guide in this topic.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

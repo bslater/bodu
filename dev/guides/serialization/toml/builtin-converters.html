@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Built-in converter catalog | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Built-in converter catalog | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../../images/favicon.svg">
+      <link rel="stylesheet" href="../../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../../styles/docfx.css">
+      <link rel="stylesheet" href="../../../styles/main.css">
+      <meta property="docfx:navrel" content="../../../toc.html">
+      <meta property="docfx:tocrel" content="../../toc.html">
+    
+    <meta property="docfx:rel" content="../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../../index.html">
+                <img id="logo" class="svg" src="../../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="built-in-converter-catalog">Built-in converter catalog</h1>
+
+<p>Every type that <a class="xref" href="../../../api/Bodu.Text.Toml.TomlSerializer.html">TomlSerializer</a> handles without a user converter is served by a <strong>built-in converter</strong> — internally an ordinary <a class="xref" href="../../../api/Bodu.Text.Toml.Serialization.TomlConverter-1.html">TomlConverter&lt;T&gt;</a>. This page catalogs that set — which .NET types are provisioned, how each is represented on the wire, and what the read path accepts. Resolution order and the rules for overriding a built-in with your own converter are covered in <a href="converters.html">Writing converters</a>. The sibling libraries (<a href="../bencode/index.html">Bodu.Text.Bencode</a>, <a href="../yaml/index.html">Bodu.Text.Yaml</a>) ship their own catalog over the same machinery.</p>
+<p>The design is: exact-type scalar converters first, factories for open type families (nullables, enums, dictionaries, collections, plain objects) last, with the document object model bridges ahead of everything so a DOM value is never claimed by a structural factory. The full ordering, top to bottom, is:</p>
+<ol>
+<li>the <strong>DOM bridges</strong> — <code>TomlNode</code>, <code>TomlElement</code>, <code>TomlDocument</code> — so a DOM value always flows through its own bridge rather than the dictionary or object factory;</li>
+<li>the <strong>exact-type scalar converters</strong> (<code>string</code>, <code>bool</code>, <code>char</code>, <code>Guid</code>, <code>Uri</code>, <code>Version</code>, <code>TimeSpan</code>, <code>double</code>, <code>float</code>, <code>Half</code>, <code>decimal</code>, and the four date-time types), so a scalar is never captured by the object factory;</li>
+<li>the <strong>byte-array and memory-of-byte converters</strong>, ahead of the collection factory so binary data maps by its dedicated converter rather than as a sequence of integers;</li>
+<li>the <strong>integer</strong>, <strong>enum</strong>, and <strong>nullable</strong> factories;</li>
+<li>the <strong>dictionary factory</strong> ahead of the <strong>collection factory</strong>, so a string-keyed dictionary becomes a table rather than a collection;</li>
+<li>the <strong><code>object</code> converter</strong>, so an <code>object</code>-typed member dispatches on its runtime type instead of mapping to an empty table;</li>
+<li>the <strong>object factory</strong> last, as the catch-all that writes a plain class or struct as a table.</li>
+</ol>
+<p>A user converter, or a converter named by a <code>[Converter]</code> attribute, is consulted ahead of this entire list — see <a href="converters.html">Writing converters</a> for the precedence ladder.</p>
+<h2 id="scalars">Scalars</h2>
+<table>
+<thead>
+<tr>
+<th>.NET type</th>
+<th>TOML representation (write)</th>
+<th>Read accepts</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>string</code></td>
+<td>string</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td><code>bool</code></td>
+<td>boolean</td>
+<td>boolean</td>
+<td></td>
+</tr>
+<tr>
+<td><code>char</code></td>
+<td>single-character string</td>
+<td>single-character string</td>
+<td>Multi-character strings are rejected.</td>
+</tr>
+<tr>
+<td><code>Guid</code></td>
+<td>string, canonical 36-character <code>D</code> format</td>
+<td><code>D</code>-format string</td>
+<td></td>
+</tr>
+<tr>
+<td><code>Uri</code></td>
+<td>string, the original URI text</td>
+<td>string</td>
+<td>Relative and absolute URIs round-trip.</td>
+</tr>
+<tr>
+<td><code>Version</code></td>
+<td>string, the component form (<code>&quot;1.2.3.4&quot;</code>)</td>
+<td>version string</td>
+<td>Leading/trailing whitespace is rejected.</td>
+</tr>
+<tr>
+<td><code>TimeSpan</code></td>
+<td>string, invariant constant format (<code>&quot;1.02:03:04.5670000&quot;</code>)</td>
+<td><code>&quot;c&quot;</code>-format string</td>
+<td>The round-trippable constant format.</td>
+</tr>
+<tr>
+<td><code>double</code></td>
+<td>float (including <code>inf</code> / <code>-inf</code> / <code>nan</code>)</td>
+<td>float</td>
+<td></td>
+</tr>
+<tr>
+<td><code>float</code></td>
+<td>float</td>
+<td>float</td>
+<td>Widens to binary64 on write; narrows on read.</td>
+</tr>
+<tr>
+<td><code>Half</code></td>
+<td>float</td>
+<td>float</td>
+<td>Exact widening on write; <strong>saturating</strong> IEEE 754 narrow on read — an out-of-range finite float reads back as ±infinity.</td>
+</tr>
+<tr>
+<td><code>decimal</code></td>
+<td>float <strong>or</strong> invariant string, per <a class="xref" href="../../../api/Bodu.Text.Toml.TomlDecimalHandling.html">TomlDecimalHandling</a></td>
+<td>float, integer, <strong>or</strong> string</td>
+<td><code>Float</code> (default) is native but lossy beyond binary64; <code>String</code> round-trips all 28 digits. Read accepts all three forms regardless of the setting.</td>
+</tr>
+<tr>
+<td><code>sbyte</code> <code>byte</code> <code>short</code> <code>ushort</code> <code>int</code> <code>uint</code> <code>long</code> <code>ulong</code> <code>nint</code> <code>nuint</code></td>
+<td>integer</td>
+<td>integer</td>
+<td>Checked conversions; a value outside the target type or TOML's signed 64-bit range is a serialization error.</td>
+</tr>
+<tr>
+<td><code>Int128</code> / <code>UInt128</code></td>
+<td>integer</td>
+<td>integer</td>
+<td>Confined by checked conversion to the signed 64-bit range TOML stores; larger values throw on write.</td>
+</tr>
+<tr>
+<td><code>DateTimeOffset</code></td>
+<td>offset date-time</td>
+<td>offset date-time</td>
+<td></td>
+</tr>
+<tr>
+<td><code>DateTime</code></td>
+<td>local date-time (<code>Unspecified</code>) or offset date-time (<code>Utc</code> / <code>Local</code>)</td>
+<td>matching kind</td>
+<td>Kind-aware on write.</td>
+</tr>
+<tr>
+<td><code>DateOnly</code></td>
+<td>local date</td>
+<td>local date</td>
+<td></td>
+</tr>
+<tr>
+<td><code>TimeOnly</code></td>
+<td>local time</td>
+<td>local time</td>
+<td></td>
+</tr>
+<tr>
+<td><code>enum</code> (any)</td>
+<td>string, the member name</td>
+<td>string (case-insensitive) or integer</td>
+<td>Per-member names via <code>[StringEnumMemberName]</code>; see the enum converters below.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="binary-data">Binary data</h2>
+<table>
+<thead>
+<tr>
+<th>.NET type</th>
+<th>TOML representation (write)</th>
+<th>Read accepts</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>byte[]</code></td>
+<td>integer array <strong>or</strong> Base64 string, per <a class="xref" href="../../../api/Bodu.Text.Toml.TomlByteArrayHandling.html">TomlByteArrayHandling</a></td>
+<td>either form</td>
+<td>Default is the integer array.</td>
+</tr>
+<tr>
+<td><code>Memory&lt;byte&gt;</code> / <code>ReadOnlyMemory&lt;byte&gt;</code></td>
+<td>same as <code>byte[]</code></td>
+<td>either form</td>
+<td>Shares the byte-array logic and setting.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="structural-and-document-model-types">Structural and document-model types</h2>
+<table>
+<thead>
+<tr>
+<th>.NET type</th>
+<th>TOML representation</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Nullable&lt;T&gt;</code></td>
+<td>underlying type's form</td>
+<td>TOML has no null; a null member is omitted before any converter runs.</td>
+</tr>
+<tr>
+<td>arrays, <code>List&lt;T&gt;</code>, list interfaces, concrete <code>ICollection&lt;T&gt;</code>, <code>Queue&lt;T&gt;</code> / <code>Stack&lt;T&gt;</code> / <code>ConcurrentQueue&lt;T&gt;</code> / <code>ConcurrentStack&lt;T&gt;</code> / <code>ConcurrentBag&lt;T&gt;</code></td>
+<td>array</td>
+<td>A <code>Stack&lt;T&gt;</code> round-trip reverses: the writer emits pop order.</td>
+</tr>
+<tr>
+<td>dictionaries with <code>string</code>, integer, <code>enum</code>, <code>Guid</code>, <code>bool</code>, or <code>char</code> keys</td>
+<td>table</td>
+<td>Non-string keys are written in invariant text. The newer scalars (<code>Version</code>, <code>TimeSpan</code>, <code>decimal</code>, <code>Half</code>, 128-bit integers) are deliberately not key types.</td>
+</tr>
+<tr>
+<td>plain classes and structs</td>
+<td>table</td>
+<td>The catch-all object converter, consulted last.</td>
+</tr>
+<tr>
+<td><code>object</code>-typed members</td>
+<td>runtime type's form on write; <a class="xref" href="../../../api/Bodu.Text.Toml.Document.TomlElement.html">TomlElement</a> on read</td>
+<td>A bare <code>new object()</code> writes an empty table; null members are omitted.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../../api/Bodu.Text.Toml.Nodes.TomlNode.html">TomlNode</a> (and <code>TomlObject</code> / <code>TomlArray</code> / <code>TomlValue</code>)</td>
+<td>the node's own kind</td>
+<td>Mutable DOM bridge.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../../api/Bodu.Text.Toml.Document.TomlElement.html">TomlElement</a></td>
+<td>the element's own kind</td>
+<td>Read produces an element backed by an internal, garbage-collected document — no disposal needed.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../../api/Bodu.Text.Toml.Document.TomlDocument.html">TomlDocument</a></td>
+<td>the document's root</td>
+<td>A deserialized document is <strong>caller-owned</strong>: dispose it when finished.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="public-enum-converters">Public enum converters</h2>
+<p>Registered on the options or referenced from a <code>[Converter(...)]</code> attribute:</p>
+<ul>
+<li><a class="xref" href="../../../api/Bodu.Text.Toml.Serialization.TomlStringEnumConverter.html">TomlStringEnumConverter</a> / <code>TomlStringEnumConverter&lt;TEnum&gt;</code> — member-name strings with an optional naming policy and integer-on-read flag.</li>
+<li><code>TomlNumberEnumConverter&lt;TEnum&gt;</code> — the underlying numeric value as a TOML integer.</li>
+</ul>
+<h2 id="representation-decisions-at-a-glance">Representation decisions at a glance</h2>
+<p>TOML's native scalar kinds — string, integer, float, boolean, and the four date-time forms — cover nearly every common BCL type without a choice to make. Two types carry a representation selector on the options:</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Selector</th>
+<th>Forms</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>decimal</code></td>
+<td><a class="xref" href="../../../api/Bodu.Text.Toml.TomlDecimalHandling.html">TomlDecimalHandling</a></td>
+<td>native float (default, binary64-bounded) or a lossless invariant string</td>
+</tr>
+<tr>
+<td><code>byte[]</code> / memory-of-byte</td>
+<td><a class="xref" href="../../../api/Bodu.Text.Toml.TomlByteArrayHandling.html">TomlByteArrayHandling</a></td>
+<td>integer array (default) or a Base64 string</td>
+</tr>
+</tbody>
+</table>
+<p>The document root must map to a table, so a top-level scalar or array throws. The <code>object</code> / element / document bridges let a DOM value flow through the serializer untouched.</p>
+<h2 id="see-also">See also</h2>
+<ul>
+<li><a href="converters.html">Writing converters</a> — overriding a built-in, factories, and resolution order.</li>
+<li><a href="using.html">Using TOML</a> — the format walk-through the tables above back up.</li>
+<li><a href="attributes.html">Mapping attributes</a> — the declarative layer over the converters.</li>
+<li><a href="../../../docs/serialization/toml/concepts.html">Core concepts</a> — the value-mapping summary in the family vocabulary.</li>
+<li><a href="../../topics/text-and-serialization.html">Text &amp; Serialization guides</a> and the <a href="../../../docs/topics/text-and-serialization.html">topic overview</a>.</li>
+<li>API reference — <a class="xref" href="../../../api/Bodu.Text.Toml.Serialization.TomlConverter-1.html">TomlConverter&lt;T&gt;</a>, <a class="xref" href="../../../api/Bodu.Text.Toml.TomlByteArrayHandling.html">TomlByteArrayHandling</a>, <a class="xref" href="../../../api/Bodu.Text.Toml.TomlDecimalHandling.html">TomlDecimalHandling</a>.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../styles/main.js"></script>
+  </body>
+</html>

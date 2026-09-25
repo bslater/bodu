@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Using TOML | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Using TOML | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../../images/favicon.svg">
+      <link rel="stylesheet" href="../../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../../styles/docfx.css">
+      <link rel="stylesheet" href="../../../styles/main.css">
+      <meta property="docfx:navrel" content="../../../toc.html">
+      <meta property="docfx:tocrel" content="../../toc.html">
+    
+    <meta property="docfx:rel" content="../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../../index.html">
+                <img id="logo" class="svg" src="../../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="using-toml">Using TOML</h1>
+
+<p><a class="xref" href="../../../api/Bodu.Text.Toml.TomlSerializer.html">TomlSerializer</a> maps your types to and from <a href="https://toml.io/">TOML</a> (v1.0.0 / v1.1.0). Behavior is configured through <a class="xref" href="../../../api/Bodu.Text.Toml.TomlSerializerOptions.html">TomlSerializerOptions</a>; when you do not want a POCO, the same documents are served by the mutable <a class="xref" href="../../../api/Bodu.Text.Toml.Nodes.TomlNode.html">TomlNode</a> DOM and the read-only <a class="xref" href="../../../api/Bodu.Text.Toml.Document.TomlDocument.html">TomlDocument</a> DOM. The document root must map to a table, so the type you serialize at the root maps to an object — a top-level scalar or array throws.</p>
+<h2 id="pattern-1--round-trip-a-configuration-type">Pattern 1 — Round-trip a configuration type</h2>
+<pre><code class="lang-csharp">using Bodu.Text.Toml;
+
+string text = TomlSerializer.Serialize(config);
+ServerConfig back = TomlSerializer.Deserialize&lt;ServerConfig&gt;(text);
+</code></pre>
+<p><code>Serialize</code> also writes to an <code>IBufferWriter&lt;byte&gt;</code> (UTF-8) or a <code>Stream</code> (with <code>SerializeAsync</code>); <code>Deserialize</code> reads a <code>string</code>, a <code>ReadOnlySpan&lt;byte&gt;</code> (UTF-8), or a <code>Stream</code> (with <code>DeserializeAsync</code>). Output is canonical TOML in document order, so <code>[PropertyOrder]</code> is honored. See <a href="#pattern-8--streams-and-async">Pattern 8</a> for the stream surface.</p>
+<h2 id="pattern-2--know-the-type-mapping">Pattern 2 — Know the type mapping</h2>
+<table>
+<thead>
+<tr>
+<th>.NET</th>
+<th>TOML</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>string</code> / <code>char</code> / <code>Guid</code> / <code>Uri</code> / <code>Version</code></td>
+<td>string</td>
+</tr>
+<tr>
+<td><code>TimeSpan</code></td>
+<td>string (invariant <code>&quot;c&quot;</code> format)</td>
+</tr>
+<tr>
+<td>integer types (incl. <code>Int128</code> / <code>UInt128</code> within the i64 range)</td>
+<td>integer</td>
+</tr>
+<tr>
+<td><code>double</code> / <code>float</code> / <code>Half</code></td>
+<td>float (incl. <code>inf</code> / <code>nan</code>)</td>
+</tr>
+<tr>
+<td><code>decimal</code></td>
+<td>float, or lossless string via <code>DecimalHandling</code></td>
+</tr>
+<tr>
+<td><code>bool</code></td>
+<td>boolean</td>
+</tr>
+<tr>
+<td><code>DateTimeOffset</code></td>
+<td>offset date-time</td>
+</tr>
+<tr>
+<td><code>DateTime</code> (<code>Unspecified</code>)</td>
+<td>local date-time</td>
+</tr>
+<tr>
+<td><code>DateOnly</code> / <code>TimeOnly</code></td>
+<td>local date / local time</td>
+</tr>
+<tr>
+<td><code>enum</code></td>
+<td>string (member name)</td>
+</tr>
+<tr>
+<td><code>byte[]</code> / <code>Memory&lt;byte&gt;</code> / <code>ReadOnlyMemory&lt;byte&gt;</code></td>
+<td>integer array, or Base64 string via <code>ByteArrayHandling</code></td>
+</tr>
+<tr>
+<td>arrays, lists, sets, queues, stacks, concurrent collections</td>
+<td>array</td>
+</tr>
+<tr>
+<td>objects, dictionaries</td>
+<td>table</td>
+</tr>
+<tr>
+<td><code>object</code> members</td>
+<td>runtime type on write, <code>TomlElement</code> on read</td>
+</tr>
+<tr>
+<td><code>TomlNode</code> / <code>TomlElement</code> / <code>TomlDocument</code></td>
+<td>the value's own kind</td>
+</tr>
+</tbody>
+</table>
+<p>TOML has no null: a null member is omitted by default. Dictionary keys may be strings, any integer type, an <code>enum</code>, a <code>Guid</code>, a <code>bool</code>, or a <code>char</code> — non-string keys are written as table keys in their invariant text (quoted when they fall outside the bare-key grammar) and parsed back on read, and a supported-key dictionary is valid at the document root. A <code>Stack&lt;T&gt;</code> round-trip reverses the stack: the writer emits pop order and the reader pushes in document order. The full per-type catalog, including each converter's read tolerances, is in the <a href="builtin-converters.html">built-in converter catalog</a>.</p>
+<p>Choose the <code>byte[]</code> form with <a class="xref" href="../../../api/Bodu.Text.Toml.TomlByteArrayHandling.html">TomlByteArrayHandling</a> and the <code>decimal</code> form with <a class="xref" href="../../../api/Bodu.Text.Toml.TomlDecimalHandling.html">TomlDecimalHandling</a> on the options:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">var options = new TomlSerializerOptions
+{
+    ByteArrayHandling = TomlByteArrayHandling.Base64String,
+    DecimalHandling = TomlDecimalHandling.String,   // lossless; default Float is native but binary64-bounded
+};
+</code></pre>
+<h2 id="pattern-3--worked-example-nested-tables-and-arrays-of-tables">Pattern 3 — Worked example: nested tables and arrays of tables</h2>
+<p>A nested object becomes a <code>[table]</code>; a collection of objects becomes an <code>[[array of tables]]</code>. The full configuration shape round-trips through one model:</p>
+<pre><code class="lang-csharp">using Bodu.Text.Toml;
+
+public sealed class AppConfig
+{
+    public string? Title { get; set; }
+    public ServerConfig? Server { get; set; }
+    public List&lt;EndpointConfig&gt;? Endpoints { get; set; }
+}
+
+public sealed class ServerConfig
+{
+    public string? Host { get; set; }
+    public int Port { get; set; }
+}
+
+public sealed class EndpointConfig
+{
+    public string? Path { get; set; }
+    public bool AllowAnonymous { get; set; }
+}
+
+var config = new AppConfig
+{
+    Title = &quot;demo&quot;,
+    Server = new ServerConfig { Host = &quot;localhost&quot;, Port = 8080 },
+    Endpoints =
+    [
+        new EndpointConfig { Path = &quot;/health&quot;, AllowAnonymous = true },
+        new EndpointConfig { Path = &quot;/admin&quot;, AllowAnonymous = false },
+    ],
+};
+
+string text = TomlSerializer.Serialize(config);
+</code></pre>
+<p>The emitted document is the TOML a person would write — top-level keys first, then each table:</p>
+<pre><code class="lang-toml">Title = &quot;demo&quot;
+
+[Server]
+Host = &quot;localhost&quot;
+Port = 8080
+
+[[Endpoints]]
+Path = &quot;/health&quot;
+AllowAnonymous = true
+
+[[Endpoints]]
+Path = &quot;/admin&quot;
+AllowAnonymous = false
+</code></pre>
+<p>Deserializing the same text restores the full graph:</p>
+<pre><code class="lang-csharp">AppConfig back = TomlSerializer.Deserialize&lt;AppConfig&gt;(text);
+// back.Endpoints[1].Path → &quot;/admin&quot;
+</code></pre>
+<p>To emit lowercase keys (<code>title</code>, <code>[server]</code>, …) apply a naming policy (<a href="#pattern-4--rename-members">Pattern 4</a>); to reorder the lines, use <code>[PropertyOrder]</code> (<a href="attributes.html">Mapping attributes</a>).</p>
+<h2 id="pattern-4--rename-members">Pattern 4 — Rename members</h2>
+<pre><code class="lang-csharp">var options = new TomlSerializerOptions
+{
+    PropertyNamingPolicy = NamingPolicy.SnakeCaseLower,
+};
+</code></pre>
+<p>Naming policies cover <code>CamelCase</code>, <code>SnakeCaseLower</code> / <code>SnakeCaseUpper</code>, and <code>KebabCaseLower</code> / <code>KebabCaseUpper</code>. Pin a single member's name with <code>[PropertyName(&quot;…&quot;)]</code>, which always wins over the policy. Start from a scenario preset by constructing the options from <a class="xref" href="../../../api/Bodu.Text.Toml.TomlSerializerDefaults.html">TomlSerializerDefaults</a> (for example <code>TomlSerializerDefaults.Web</code>, which also turns on case-insensitive matching).</p>
+<p>On <em>read</em>, key matching is case-sensitive by default; set <code>PropertyNameCaseInsensitive = true</code> (or use the <code>Web</code> preset) to bind a key to a member regardless of case. The setting governs matching only — it does not change the name a member is <em>written</em> under.</p>
+<p>Properties are mapped by default; public fields join in when <code>IncludeFields</code> is set on the options, or individually with <code>[Include]</code> on the field. Fields follow the same naming-policy, ordering, ignore, required, and converter rules as properties — including <code>[PropertyOrder]</code>, which reorders the emitted lines. The full attribute family is catalogued in <a href="attributes.html">Mapping attributes</a>.</p>
+<h2 id="pattern-5--select-the-spec-version">Pattern 5 — Select the spec version</h2>
+<pre><code class="lang-csharp">var options = new TomlSerializerOptions { SpecVersion = TomlSpecVersion.V1_1 };
+var doc = TomlSerializer.Deserialize&lt;MyDoc&gt;(text, options);
+</code></pre>
+<p>The default is strict <strong>v1.0.0</strong>. Opting in to <strong>v1.1.0</strong> additionally accepts the <code>\e</code> and <code>\xHH</code> escapes, time values without seconds, and multi-line and trailing-comma inline tables. The writer always emits output valid under both versions.</p>
+<h2 id="pattern-6--edit-a-document-with-the-mutable-dom">Pattern 6 — Edit a document with the mutable DOM</h2>
+<p>When you do not want a POCO, parse to <a class="xref" href="../../../api/Bodu.Text.Toml.Nodes.TomlNode.html">TomlNode</a> — index into the tree, mutate values, and write the document back:</p>
+<pre><code class="lang-csharp">using Bodu.Text.Toml.Nodes;
+
+TomlNode node = TomlNode.Parse(utf8Toml)!;   // the UTF-8 bytes of the document in Pattern 3
+node[&quot;Server&quot;]![&quot;Port&quot;] = 9090;
+
+byte[] back = node.ToUtf8Bytes();
+</code></pre>
+<p>The re-emitted document keeps the same canonical layout with only the value changed:</p>
+<pre><code class="lang-toml">[Server]
+Host = &quot;localhost&quot;
+Port = 9090
+</code></pre>
+<p><code>Parse</code> takes UTF-8 bytes (<code>ReadOnlySpan&lt;byte&gt;</code>); for a <code>string</code> in hand, convert with <code>Encoding.UTF8.GetBytes(text)</code> first.</p>
+<p>A <a class="xref" href="../../../api/Bodu.Text.Toml.Nodes.TomlNode.html">TomlNode</a> reads and writes through several conveniences: implicit conversions build a value node from a <code>string</code>, <code>long</code>, <code>int</code>, <code>double</code>, <code>bool</code>, or any of the four date-time types; explicit conversions (<code>(int)node</code>, <code>(string)node</code>, …) and the generic <code>node.GetValue&lt;T&gt;()</code> pull a scalar back out; and <code>AsObject()</code> / <code>AsArray()</code> / <code>AsValue()</code> narrow to the concrete node type. <code>TomlObject</code> is an ordered string-keyed map (<code>Add</code>, <code>Remove</code>, <code>TryGetValue</code>, <code>ContainsKey</code>) and <code>TomlArray</code> an ordered list (<code>Add</code>, <code>Insert</code>, <code>RemoveAt</code>, <code>IndexOf</code>); both preserve insertion order on write. <code>DeepClone()</code> copies a subtree and <code>TomlNode.DeepEquals(a, b)</code> compares two by structure.</p>
+<pre><code class="lang-csharp">using Bodu.Text.Toml.Nodes;
+
+var server = new TomlObject
+{
+    [&quot;host&quot;] = &quot;localhost&quot;,   // implicit string → TomlValue
+    [&quot;port&quot;] = 8080,          // implicit long → TomlValue
+};
+var root = new TomlObject { [&quot;server&quot;] = server };
+
+int port = root[&quot;server&quot;]![&quot;port&quot;]!.GetValue&lt;int&gt;();   // 8080
+byte[] bytes = root.ToUtf8Bytes();
+</code></pre>
+<h2 id="pattern-7--inspect-a-document-with-the-read-only-dom">Pattern 7 — Inspect a document with the read-only DOM</h2>
+<p>The read-only counterpart is a low-allocation view walked through <code>RootElement</code>:</p>
+<pre><code class="lang-csharp">using Bodu.Text.Toml.Document;
+
+using TomlDocument doc = TomlDocument.Parse(utf8Toml);
+TomlElement port = doc.RootElement.GetProperty(&quot;Server&quot;).GetProperty(&quot;Port&quot;);
+// port.GetInt64() → 8080
+</code></pre>
+<p><code>TomlDocument.Parse</code> accepts a <code>string</code> as well as UTF-8 bytes. A document you parse (or deserialize as a member) is caller-owned — dispose it (the <code>using</code> above) when finished. Typed access goes through <code>GetString</code> / <code>GetInt64</code> / <code>GetDouble</code> / <code>GetBoolean</code> / <code>GetDateTimeOffset</code> / <code>GetDateTime</code> / <code>GetDateOnly</code> / <code>GetTimeOnly</code> on <a class="xref" href="../../../api/Bodu.Text.Toml.Document.TomlElement.html">TomlElement</a>, each of which throws if the element's <code>ValueKind</code> does not match. Walk structure with <code>GetProperty</code> / <code>TryGetProperty</code>, the integer indexer and <code>GetArrayLength</code> for arrays, and the allocation-light <code>EnumerateObject()</code> / <code>EnumerateArray()</code> enumerators:</p>
+<pre><code class="lang-csharp">using Bodu.Text.Toml.Document;
+
+using TomlDocument doc = TomlDocument.Parse(utf8Toml);
+
+foreach (TomlProperty property in doc.RootElement.EnumerateObject())
+{
+    Console.WriteLine($&quot;{property.Name} → {property.Value.ValueKind}&quot;);
+}
+</code></pre>
+<p>Branch on <a class="xref" href="../../../api/Bodu.Text.Toml.TomlValueKind.html">TomlValueKind</a> (<code>String</code>, <code>Integer</code>, <code>Float</code>, <code>Boolean</code>, the four date-time kinds, <code>Array</code>, <code>Table</code>) before calling a typed getter when the shape is not known ahead of time.</p>
+<h2 id="pattern-8--streams-and-async">Pattern 8 — Streams and async</h2>
+<p>Both directions work over a <code>Stream</code>, synchronously on read and asynchronously in both directions, so a configuration file never has to materialize as a <code>string</code> first:</p>
+<pre><code class="lang-csharp">await using FileStream output = File.Create(&quot;app.toml&quot;);
+await TomlSerializer.SerializeAsync(output, config, cancellationToken: ct);
+</code></pre>
+<pre><code class="lang-csharp">await using FileStream input = File.OpenRead(&quot;app.toml&quot;);
+AppConfig config = await TomlSerializer.DeserializeAsync&lt;AppConfig&gt;(input, cancellationToken: ct);
+</code></pre>
+<p>The synchronous <code>Deserialize&lt;T&gt;(Stream, …)</code> overload has the same shape without the token. Both async members accept an optional <code>TomlSerializerOptions</code> before the <code>CancellationToken</code>. Stream content is UTF-8.</p>
+<h2 id="pattern-9--process-tokens-by-hand">Pattern 9 — Process tokens by hand</h2>
+<p>For full control with no allocations, drive the reader/writer ref-struct machines directly. There are two readers, and which one you reach for depends on whether you care about the document's <em>surface syntax</em> or only its <em>logical shape</em>.</p>
+<p>The <strong>source-order</strong> <a class="xref" href="../../../api/Bodu.Text.Toml.Reader.Utf8TomlReader.html">Utf8TomlReader</a> lexes the document as written — headers, dotted-key segments, inline tables, and comments all surface as their own tokens. Each <code>Read()</code> advances one token; the typed getters decode the current value, and <code>LineNumber</code> / <code>ColumnNumber</code> / <code>BytesConsumed</code> track position as byte-true offsets:</p>
+<pre><code class="lang-csharp">using Bodu.Text.Toml;
+using Bodu.Text.Toml.Reader;
+
+var reader = new Utf8TomlReader(&quot;port = 8080 # listen\n&quot;u8);
+
+while (reader.Read())
+{
+    switch (reader.TokenType)
+    {
+        case TomlTokenType.Key:     Console.Write($&quot;{reader.GetString()} = &quot;); break;
+        case TomlTokenType.Integer: Console.WriteLine(reader.GetInt64()); break;
+        case TomlTokenType.Comment: Console.WriteLine($&quot;// {reader.GetComment()}&quot;); break;
+    }
+}
+</code></pre>
+<p>The <strong>normalized</strong> <a class="xref" href="../../../api/Bodu.Text.Toml.Reader.TomlDocumentReader.html">TomlDocumentReader</a> — the cursor a <a href="converters.html">converter</a> receives — collapses every way of spelling a table onto a uniform <code>StartTable</code> / <code>PropertyName</code> / value / <code>EndTable</code> stream, so one read loop handles inline and header-defined tables alike. <code>Skip()</code> steps over a whole value, including nested tables and arrays:</p>
+<pre><code class="lang-csharp">using Bodu.Text.Toml;
+using Bodu.Text.Toml.Reader;
+
+var reader = new TomlDocumentReader(&quot;&quot;&quot;
+    [server]
+    host = &quot;localhost&quot;
+    port = 8080
+    &quot;&quot;&quot;u8);
+
+while (reader.Read())
+{
+    if (reader.TokenType == TomlTokenType.PropertyName &amp;&amp; reader.GetString() == &quot;port&quot;)
+    {
+        reader.Read();                       // advance onto the value
+        Console.WriteLine(reader.GetInt64()); // 8080
+    }
+}
+</code></pre>
+<p>To emit tokens, drive the <a class="xref" href="../../../api/Bodu.Text.Toml.Writer.Utf8TomlWriter.html">Utf8TomlWriter</a> over an <code>IBufferWriter&lt;byte&gt;</code> or a <code>Stream</code>. Write a structural skeleton with <code>WriteStartTable</code> / <code>WritePropertyName</code> / a typed <code>Write*</code> per value, and <code>Flush</code> (or <code>Dispose</code>) when streaming:</p>
+<pre><code class="lang-csharp">using Bodu.Text.Toml.Writer;
+
+var buffer = new ArrayBufferWriter&lt;byte&gt;();
+var writer = new Utf8TomlWriter(buffer);
+
+writer.WriteStartTable(&quot;server&quot;);
+writer.WriteString(&quot;host&quot;, &quot;localhost&quot;);
+writer.WriteInteger(&quot;port&quot;, 8080);
+writer.WriteEndTable();
+// buffer.WrittenSpan now holds the UTF-8 bytes of:
+//   [server]
+//   host = &quot;localhost&quot;
+//   port = 8080
+</code></pre>
+<div class="TIP">
+<h5>Tip</h5>
+<p>The <code>Utf8TomlReader</code> also parses <strong>incrementally</strong>: construct it with <code>isFinalBlock: false</code> and a <a class="xref" href="../../../api/Bodu.Text.Toml.Reader.TomlReaderState.html">TomlReaderState</a>, and when <code>Read()</code> returns <code>false</code> mid-token it rewinds wholly so you can resume over the next block carrying <code>CurrentState</code>. Use it to tokenize a document that arrives in chunks without buffering the whole thing first.</p>
+</div>
+<h2 id="error-handling">Error handling</h2>
+<p>Two exception types separate &quot;the text is not TOML&quot; from &quot;the TOML does not fit your type&quot;:</p>
+<ul>
+<li><a class="xref" href="../../../api/Bodu.Text.Toml.TomlFormatException.html">TomlFormatException</a> — malformed input. Because TOML files are edited by hand, the exception carries the position: <code>LineNumber</code>, <code>ColumnNumber</code>, and byte <code>Offset</code>.</li>
+<li><a class="xref" href="../../../api/Bodu.Text.Toml.TomlSerializationException.html">TomlSerializationException</a> — the document parsed, but a value cannot bind: a kind mismatch, a missing required member, or a value the format cannot represent on write. It exposes the same <code>LineNumber</code> / <code>ColumnNumber</code> / <code>Offset</code> position where known, plus a <code>Path</code> naming the member that failed.</li>
+</ul>
+<pre><code class="lang-csharp">try
+{
+    AppConfig config = TomlSerializer.Deserialize&lt;AppConfig&gt;(text);
+}
+catch (TomlFormatException ex)
+{
+    // Not valid TOML, e.g. an unterminated string:
+    // &quot;The string is not terminated.&quot; at line 1, column 14.
+    log.Warn($&quot;Parse error at {ex.LineNumber}:{ex.ColumnNumber}: {ex.Message}&quot;);
+}
+catch (TomlSerializationException ex)
+{
+    // Valid TOML that does not match the model,
+    // e.g. &quot;Expected a string but found 'Integer'.&quot;
+    log.Warn($&quot;Document does not bind: {ex.Message}&quot;);
+}
+</code></pre>
+<p><code>TryParse</code>-style members do not exist on the serializer; wrap <code>Deserialize</code> as above when reading untrusted input.</p>
+<h2 id="see-also">See also</h2>
+<ul>
+<li><a href="attributes.html">Mapping attributes</a>, <a href="converters.html">Writing converters</a>, <a href="callbacks.html">Serialization callbacks</a>, <a href="builtin-converters.html">Built-in converter catalog</a> — the customization guides.</li>
+<li><a href="../../../docs/serialization/toml/index.html">Bodu.Text.Toml introduction</a> — what is specific to the TOML format, including the value model and spec versions.</li>
+<li><a href="../../../docs/serialization/index.html">Bodu serializers introduction</a> and <a href="../../../docs/serialization/toml/concepts.html">core concepts</a> — the family shape and the TOML vocabulary.</li>
+<li><a href="../../topics/text-and-serialization.html">Text &amp; Serialization guides</a> and the <a href="../../../docs/topics/text-and-serialization.html">topic overview</a>.</li>
+<li>API reference — <a class="xref" href="../../../api/Bodu.Text.Toml.TomlSerializer.html">TomlSerializer</a>, <a class="xref" href="../../../api/Bodu.Text.Toml.TomlSerializerOptions.html">TomlSerializerOptions</a>, <a class="xref" href="../../../api/Bodu.Text.Toml.Nodes.TomlNode.html">TomlNode</a>, <a class="xref" href="../../../api/Bodu.Text.Toml.Document.TomlDocument.html">TomlDocument</a>.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../styles/main.js"></script>
+  </body>
+</html>

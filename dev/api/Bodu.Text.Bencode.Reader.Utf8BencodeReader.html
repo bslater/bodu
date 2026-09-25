@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Struct Utf8BencodeReader | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Struct Utf8BencodeReader | BODU ">
+    
+    <meta name="description" content="Provides a high-performance, forward-only, allocation-light reader for Bencode (BEP 3) bytes. The reader is a ref struct, so it lives on the stack and cannot be boxed or captured; pass it by ref to thread it through a converter.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Text.Bencode.Reader.Utf8BencodeReader">
+
+
+
+  <h1 id="Bodu_Text_Bencode_Reader_Utf8BencodeReader" data-uid="Bodu.Text.Bencode.Reader.Utf8BencodeReader" class="text-break">Struct Utf8BencodeReader</h1>
+  <div class="markdown level0 summary"><p>Provides a high-performance, forward-only, allocation-light reader for Bencode (BEP 3) bytes. The reader is a
+<code>ref struct</code>, so it lives on the stack and cannot be boxed or captured; pass it by
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/ref">ref</a> to thread it through a converter.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetype.equals">ValueType.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetype.gethashcode">ValueType.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetype.tostring">ValueType.ToString()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Bencode.html">Bencode</a>.<a class="xref" href="Bodu.Text.Bencode.Reader.html">Reader</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Text.Bencode.dll</h6>
+  <h5 id="Bodu_Text_Bencode_Reader_Utf8BencodeReader_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ref struct Utf8BencodeReader</code></pre>
+  </div>
+  <h5 id="Bodu_Text_Bencode_Reader_Utf8BencodeReader_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+A call to <a class="xref" href="Bodu.Text.Bencode.Reader.Utf8BencodeReader.Read.html#Bodu_Text_Bencode_Reader_Utf8BencodeReader_Read">Read()</a> advances to the next token and reports it through <a class="xref" href="Bodu.Text.Bencode.Reader.Utf8BencodeReader.TokenType.html#Bodu_Text_Bencode_Reader_Utf8BencodeReader_TokenType">TokenType</a>. Integer
+and byte-string values are decoded on demand through <a class="xref" href="Bodu.Text.Bencode.Reader.Utf8BencodeReader.GetInt64.html#Bodu_Text_Bencode_Reader_Utf8BencodeReader_GetInt64">GetInt64()</a>, <a class="xref" href="Bodu.Text.Bencode.Reader.Utf8BencodeReader.GetUInt64.html#Bodu_Text_Bencode_Reader_Utf8BencodeReader_GetUInt64">GetUInt64()</a>,
+<a class="xref" href="Bodu.Text.Bencode.Reader.Utf8BencodeReader.ValueSpan.html#Bodu_Text_Bencode_Reader_Utf8BencodeReader_ValueSpan">ValueSpan</a>, and <a class="xref" href="Bodu.Text.Bencode.Reader.Utf8BencodeReader.GetString.html#Bodu_Text_Bencode_Reader_Utf8BencodeReader_GetString">GetString()</a>. Integer tokens span the union of the signed and unsigned
+64-bit ranges [<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64.minvalue">MinValue</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint64.maxvalue">MaxValue</a> ]; values above
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64.maxvalue">MaxValue</a> are readable only through <a class="xref" href="Bodu.Text.Bencode.Reader.Utf8BencodeReader.GetUInt64.html#Bodu_Text_Bencode_Reader_Utf8BencodeReader_GetUInt64">GetUInt64()</a>. The reader enforces the canonical
+Bencode grammar — integers without leading zeros or negative zero, byte-string lengths without leading zeros,
+dictionary keys that are byte strings in strictly ascending bytewise order, balanced containers, and a single root
+value with no trailing bytes — raising <a class="xref" href="Bodu.Text.Bencode.BencodeFormatException.html">BencodeFormatException</a> on any departure from that canonical
+form.
+</p>
+<p>
+Real-world documents produced by older encoders occasionally carry unsorted or duplicate dictionary keys. The opt-in
+<a class="xref" href="Bodu.Text.Bencode.Reader.BencodeReaderOptions.AllowUnsortedKeys.html#Bodu_Text_Bencode_Reader_BencodeReaderOptions_AllowUnsortedKeys">AllowUnsortedKeys</a> and <a class="xref" href="Bodu.Text.Bencode.Reader.BencodeReaderOptions.AllowDuplicateKeys.html#Bodu_Text_Bencode_Reader_BencodeReaderOptions_AllowDuplicateKeys">AllowDuplicateKeys</a>
+options relax those two rules independently; every other grammar rule remains enforced.
+</p>
+<example>
+<pre><code class="lang-csharp">// Read "d3:cowi42ee" -&gt; dictionary { "cow": 42 }.
+ReadOnlySpan&lt;byte&gt; bytes = "d3:cowi42ee"u8;
+var reader = new Utf8BencodeReader(bytes);
+
+while (reader.Read())
+{
+    switch (reader.TokenType)
+    {
+        case BencodeTokenType.PropertyName:
+            Console.Write($"{reader.GetString()} = ");
+            break;
+        case BencodeTokenType.Integer:
+            Console.WriteLine(reader.GetInt64());
+            break;
+    }
+}</code></pre>
+</example>
+</div>
+  <h3 id="constructors">Constructors
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Text_Bencode_Reader_Utf8BencodeReader__ctor_System_ReadOnlySpan_System_Byte__Bodu_Text_Bencode_Reader_BencodeReaderOptions_" data-uid="Bodu.Text.Bencode.Reader.Utf8BencodeReader.#ctor(System.ReadOnlySpan{System.Byte},Bodu.Text.Bencode.Reader.BencodeReaderOptions)">
+          <a class="xref" href="Bodu.Text.Bencode.Reader.Utf8BencodeReader.-ctor.html#Bodu_Text_Bencode_Reader_Utf8BencodeReader__ctor_System_ReadOnlySpan_System_Byte__Bodu_Text_Bencode_Reader_BencodeReaderOptions_">Utf8BencodeReader(ReadOnlySpan&lt;byte&gt;, BencodeReaderOptions)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Text.Bencode.Reader.Utf8BencodeReader.html">Utf8BencodeReader</a> struct over the supplied bytes using the
+supplied options.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Reader_Utf8BencodeReader__ctor_System_ReadOnlySpan_System_Byte__System_Int32_" data-uid="Bodu.Text.Bencode.Reader.Utf8BencodeReader.#ctor(System.ReadOnlySpan{System.Byte},System.Int32)">
+          <a class="xref" href="Bodu.Text.Bencode.Reader.Utf8BencodeReader.-ctor.html#Bodu_Text_Bencode_Reader_Utf8BencodeReader__ctor_System_ReadOnlySpan_System_Byte__System_Int32_">Utf8BencodeReader(ReadOnlySpan&lt;byte&gt;, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Text.Bencode.Reader.Utf8BencodeReader.html">Utf8BencodeReader</a> struct over the supplied bytes.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Text_Bencode_Reader_Utf8BencodeReader_BytesConsumed" data-uid="Bodu.Text.Bencode.Reader.Utf8BencodeReader.BytesConsumed">
+          <a class="xref" href="Bodu.Text.Bencode.Reader.Utf8BencodeReader.BytesConsumed.html#Bodu_Text_Bencode_Reader_Utf8BencodeReader_BytesConsumed">BytesConsumed</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the number of bytes consumed so far.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Reader_Utf8BencodeReader_CurrentDepth" data-uid="Bodu.Text.Bencode.Reader.Utf8BencodeReader.CurrentDepth">
+          <a class="xref" href="Bodu.Text.Bencode.Reader.Utf8BencodeReader.CurrentDepth.html#Bodu_Text_Bencode_Reader_Utf8BencodeReader_CurrentDepth">CurrentDepth</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the current container nesting depth.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Reader_Utf8BencodeReader_TokenStartIndex" data-uid="Bodu.Text.Bencode.Reader.Utf8BencodeReader.TokenStartIndex">
+          <a class="xref" href="Bodu.Text.Bencode.Reader.Utf8BencodeReader.TokenStartIndex.html#Bodu_Text_Bencode_Reader_Utf8BencodeReader_TokenStartIndex">TokenStartIndex</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the byte offset within the source where the current token begins. For a byte string or property name the
+offset addresses the length prefix, not the content.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Reader_Utf8BencodeReader_TokenType" data-uid="Bodu.Text.Bencode.Reader.Utf8BencodeReader.TokenType">
+          <a class="xref" href="Bodu.Text.Bencode.Reader.Utf8BencodeReader.TokenType.html#Bodu_Text_Bencode_Reader_Utf8BencodeReader_TokenType">TokenType</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the kind of the current token.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Reader_Utf8BencodeReader_ValueSpan" data-uid="Bodu.Text.Bencode.Reader.Utf8BencodeReader.ValueSpan">
+          <a class="xref" href="Bodu.Text.Bencode.Reader.Utf8BencodeReader.ValueSpan.html#Bodu_Text_Bencode_Reader_Utf8BencodeReader_ValueSpan">ValueSpan</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the raw content bytes of the current byte-string or property-name token.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Text_Bencode_Reader_Utf8BencodeReader_CopyString_System_Span_System_Byte__" data-uid="Bodu.Text.Bencode.Reader.Utf8BencodeReader.CopyString(System.Span{System.Byte})">
+          <a class="xref" href="Bodu.Text.Bencode.Reader.Utf8BencodeReader.CopyString.html#Bodu_Text_Bencode_Reader_Utf8BencodeReader_CopyString_System_Span_System_Byte__">CopyString(Span&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Copies the current byte-string or property-name token's raw content into the supplied destination.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Reader_Utf8BencodeReader_CopyString_System_Span_System_Char__" data-uid="Bodu.Text.Bencode.Reader.Utf8BencodeReader.CopyString(System.Span{System.Char})">
+          <a class="xref" href="Bodu.Text.Bencode.Reader.Utf8BencodeReader.CopyString.html#Bodu_Text_Bencode_Reader_Utf8BencodeReader_CopyString_System_Span_System_Char__">CopyString(Span&lt;char&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes the current byte-string or property-name token's content as UTF-8 text into the supplied destination.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Reader_Utf8BencodeReader_GetBytes" data-uid="Bodu.Text.Bencode.Reader.Utf8BencodeReader.GetBytes">
+          <a class="xref" href="Bodu.Text.Bencode.Reader.Utf8BencodeReader.GetBytes.html#Bodu_Text_Bencode_Reader_Utf8BencodeReader_GetBytes">GetBytes()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Copies the current byte-string or property-name token's content to a new array.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Reader_Utf8BencodeReader_GetInt32" data-uid="Bodu.Text.Bencode.Reader.Utf8BencodeReader.GetInt32">
+          <a class="xref" href="Bodu.Text.Bencode.Reader.Utf8BencodeReader.GetInt32.html#Bodu_Text_Bencode_Reader_Utf8BencodeReader_GetInt32">GetInt32()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads the current integer token as a 32-bit signed integer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Reader_Utf8BencodeReader_GetInt64" data-uid="Bodu.Text.Bencode.Reader.Utf8BencodeReader.GetInt64">
+          <a class="xref" href="Bodu.Text.Bencode.Reader.Utf8BencodeReader.GetInt64.html#Bodu_Text_Bencode_Reader_Utf8BencodeReader_GetInt64">GetInt64()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads the current integer token as a 64-bit signed integer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Reader_Utf8BencodeReader_GetString" data-uid="Bodu.Text.Bencode.Reader.Utf8BencodeReader.GetString">
+          <a class="xref" href="Bodu.Text.Bencode.Reader.Utf8BencodeReader.GetString.html#Bodu_Text_Bencode_Reader_Utf8BencodeReader_GetString">GetString()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes the current byte-string or property-name token as UTF-8 text.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Reader_Utf8BencodeReader_GetUInt64" data-uid="Bodu.Text.Bencode.Reader.Utf8BencodeReader.GetUInt64">
+          <a class="xref" href="Bodu.Text.Bencode.Reader.Utf8BencodeReader.GetUInt64.html#Bodu_Text_Bencode_Reader_Utf8BencodeReader_GetUInt64">GetUInt64()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads the current integer token as a 64-bit unsigned integer, accepting any value in [0,
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint64.maxvalue">MaxValue</a> ].</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Reader_Utf8BencodeReader_Read" data-uid="Bodu.Text.Bencode.Reader.Utf8BencodeReader.Read">
+          <a class="xref" href="Bodu.Text.Bencode.Reader.Utf8BencodeReader.Read.html#Bodu_Text_Bencode_Reader_Utf8BencodeReader_Read">Read()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Advances the reader to the next token.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Reader_Utf8BencodeReader_Skip" data-uid="Bodu.Text.Bencode.Reader.Utf8BencodeReader.Skip">
+          <a class="xref" href="Bodu.Text.Bencode.Reader.Utf8BencodeReader.Skip.html#Bodu_Text_Bencode_Reader_Utf8BencodeReader_Skip">Skip()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Skips the current value, including the entire subtree when the reader is on a container start. On a property
+name the reader first advances to the property's value and then skips it.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Reader_Utf8BencodeReader_TryGetInt32_System_Int32__" data-uid="Bodu.Text.Bencode.Reader.Utf8BencodeReader.TryGetInt32(System.Int32@)">
+          <a class="xref" href="Bodu.Text.Bencode.Reader.Utf8BencodeReader.TryGetInt32.html#Bodu_Text_Bencode_Reader_Utf8BencodeReader_TryGetInt32_System_Int32__">TryGetInt32(out int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to read the current integer token as a 32-bit signed integer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Reader_Utf8BencodeReader_TryGetInt64_System_Int64__" data-uid="Bodu.Text.Bencode.Reader.Utf8BencodeReader.TryGetInt64(System.Int64@)">
+          <a class="xref" href="Bodu.Text.Bencode.Reader.Utf8BencodeReader.TryGetInt64.html#Bodu_Text_Bencode_Reader_Utf8BencodeReader_TryGetInt64_System_Int64__">TryGetInt64(out long)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to read the current integer token as a 64-bit signed integer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Reader_Utf8BencodeReader_TryGetUInt64_System_UInt64__" data-uid="Bodu.Text.Bencode.Reader.Utf8BencodeReader.TryGetUInt64(System.UInt64@)">
+          <a class="xref" href="Bodu.Text.Bencode.Reader.Utf8BencodeReader.TryGetUInt64.html#Bodu_Text_Bencode_Reader_Utf8BencodeReader_TryGetUInt64_System_UInt64__">TryGetUInt64(out ulong)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to read the current integer token as a 64-bit unsigned integer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Reader_Utf8BencodeReader_TrySkip" data-uid="Bodu.Text.Bencode.Reader.Utf8BencodeReader.TrySkip">
+          <a class="xref" href="Bodu.Text.Bencode.Reader.Utf8BencodeReader.TrySkip.html#Bodu_Text_Bencode_Reader_Utf8BencodeReader_TrySkip">TrySkip()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to skip the current value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Reader_Utf8BencodeReader_ValueTextEquals_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Bencode.Reader.Utf8BencodeReader.ValueTextEquals(System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.Text.Bencode.Reader.Utf8BencodeReader.ValueTextEquals.html#Bodu_Text_Bencode_Reader_Utf8BencodeReader_ValueTextEquals_System_ReadOnlySpan_System_Byte__">ValueTextEquals(ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Compares the current byte-string or property-name token's content to the supplied UTF-8 bytes without
+allocating.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Reader_Utf8BencodeReader_ValueTextEquals_System_ReadOnlySpan_System_Char__" data-uid="Bodu.Text.Bencode.Reader.Utf8BencodeReader.ValueTextEquals(System.ReadOnlySpan{System.Char})">
+          <a class="xref" href="Bodu.Text.Bencode.Reader.Utf8BencodeReader.ValueTextEquals.html#Bodu_Text_Bencode_Reader_Utf8BencodeReader_ValueTextEquals_System_ReadOnlySpan_System_Char__">ValueTextEquals(ReadOnlySpan&lt;char&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Compares the current byte-string or property-name token's content to the UTF-8 encoding of the supplied
+characters.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Reader_Utf8BencodeReader_ValueTextEquals_System_String_" data-uid="Bodu.Text.Bencode.Reader.Utf8BencodeReader.ValueTextEquals(System.String)">
+          <a class="xref" href="Bodu.Text.Bencode.Reader.Utf8BencodeReader.ValueTextEquals.html#Bodu_Text_Bencode_Reader_Utf8BencodeReader_ValueTextEquals_System_String_">ValueTextEquals(string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Compares the current byte-string or property-name token's content to the UTF-8 encoding of the supplied string.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

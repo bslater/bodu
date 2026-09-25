@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Bodu.Financial.ExchangeRates — Getting started | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Bodu.Financial.ExchangeRates — Getting started | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="bodufinancialexchangerates--getting-started">Bodu.Financial.ExchangeRates — Getting started</h1>
+
+<p>Unfamiliar with terms like <em>warm-then-lookup</em>, <em>bulk vs pair provider</em>, <em>history availability</em>, <em>payload cache</em>, or <em>single-flight</em>? Read <a href="concepts.html">Core concepts</a> first.</p>
+<h2 id="install">Install</h2>
+<p>The infrastructure package is a dependency of every feed package, so in practice you install a feed and get the infrastructure transitively. Reference it directly only when you write your own provider:</p>
+<pre><code class="lang-bash">dotnet add package Bodu.Financial.ExchangeRates
+dotnet add package Bodu.Financial.ExchangeRates.Ecb
+</code></pre>
+<p>Targets <code>net8.0</code>. <code>Bodu.Financial.ExchangeRates</code> depends on <code>Bodu.Financial</code>, <code>Bodu.Core</code>, and <code>Microsoft.Extensions.Logging.Abstractions</code>. A feed package such as <code>Bodu.Financial.ExchangeRates.Ecb</code> additionally references <code>Bodu.Financial.DependencyInjection</code> and <code>Bodu.Financial.ExchangeRates.DependencyInjection</code> (for its <code>AddEcbExchangeRates</code> registration) plus the <code>Microsoft.Extensions</code> configuration, options, HTTP, and <code>Http.Resilience</code> packages at the .NET 8.0 LTS line.</p>
+<h2 id="minimal-samples">Minimal samples</h2>
+<h3 id="construct-a-provider-and-look-up-a-rate">Construct a provider and look up a rate</h3>
+<p>The options-only constructor builds and owns its <code>HttpClient</code>; dispose the provider to release it. Warm the store, then resolve synchronously:</p>
+<pre><code class="lang-csharp">using Bodu.Financial.ExchangeRates;
+
+using var ecb = new EcbRateProvider(new EcbRateProviderOptions());
+
+await ecb.LoadRangeAsync(new DateOnly(2024, 1, 1), new DateOnly(2024, 3, 31));
+
+RateLookupResult usd = ecb.GetRate(&quot;EUR&quot;, &quot;USD&quot;, new DateOnly(2024, 1, 3));
+Console.WriteLine($&quot;{usd.Rate.Rate} from {usd.Rate.Provider} on {usd.Rate.Date}&quot;);
+
+// The reverse direction resolves through inverse fallback.
+RateLookupResult eur = ecb.GetRate(&quot;USD&quot;, &quot;EUR&quot;, new DateOnly(2024, 1, 3));
+Console.WriteLine(eur.Rate.IsInverted);   // True
+</code></pre>
+<p><code>AllowSynchronousNetworkAccess</code> is <code>false</code> by default, so a synchronous lookup for a date outside the warmed window reports a miss (<code>TryGetRate</code> returns <code>false</code>; <code>GetRate</code> throws <code>KeyNotFoundException</code>) rather than downloading.</p>
+<h3 id="let-the-asynchronous-surface-warm-on-demand">Let the asynchronous surface warm on demand</h3>
+<p>The asynchronous getters fetch whatever is missing before resolving, so no explicit warm-up is required:</p>
+<pre><code class="lang-csharp">using Bodu.Financial.ExchangeRates;
+
+using var yahoo = new YahooRateProvider(new YahooRateProviderOptions());
+
+RateLookupResult aud = await yahoo.GetRateAsync(
+    &quot;AUD&quot;, &quot;USD&quot;,
+    new DateOnly(2024, 6, 14),
+    RateLookupOptions.PreviousWithin(7));
+</code></pre>
+<p>A single-date lookup on a pair provider fetches the window <code>[date − DefaultLookback, date]</code> (seven days by default), which is why <code>PreviousWithin(7)</code> has observations to fall back to when the requested date is a weekend.</p>
+<h3 id="read-a-range">Read a range</h3>
+<pre><code class="lang-csharp">RateRangeResult window = await ecb.GetRatesAsync(
+    &quot;EUR&quot;, &quot;GBP&quot;,
+    new DateOnly(2024, 1, 1), new DateOnly(2024, 1, 31));
+
+Console.WriteLine($&quot;{window.Count} observations, {window.FirstObservedDate}–{window.LastObservedDate}&quot;);
+
+foreach (ExchangeRate rate in window)
+    Console.WriteLine($&quot;{rate.Date:yyyy-MM-dd} {rate.Rate}&quot;);
+
+if (window.IsEmpty)
+    Console.WriteLine(&quot;no observations in the requested window&quot;);
+</code></pre>
+<p>The result records the requested window (<code>RequestedStartDate</code> / <code>RequestedEndDate</code>) separately from the observed span, and is itself an <code>IReadOnlyList&lt;ExchangeRate&gt;</code>.</p>
+<h3 id="warm-a-pair-uniformly-whatever-the-feed">Warm a pair uniformly, whatever the feed</h3>
+<p>Every provider implements <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.IPairRateLoader.html">IPairRateLoader</a>, so cache-warming code need not know whether the feed fetches by pair, era, feed, or range:</p>
+<pre><code class="lang-csharp">IPairRateLoader loader = ecb;
+await loader.LoadPairAsync(&quot;EUR&quot;, &quot;JPY&quot;, new DateOnly(2024, 1, 1), new DateOnly(2024, 1, 31));
+
+foreach (CurrencyPair pair in loader.GetLoadedPairs())
+    Console.WriteLine($&quot;{pair.From}/{pair.To}&quot;);
+</code></pre>
+<p>On a single-base feed the pair must involve the base currency (EUR for the ECB provider); a cross pair is rejected with <code>RateSeriesNotFoundException</code> before any download.</p>
+<h3 id="register-through-dependency-injection">Register through dependency injection</h3>
+<p>Each feed package ships its own <code>Add&lt;Source&gt;ExchangeRates</code> extension in the <code>Bodu.Financial.ExchangeRates</code> namespace. The <code>IFinancialServiceBuilder</code> overload composes with <code>AddFinancialService</code> (from <code>Bodu.Financial</code>); the <code>IServiceCollection</code> overload does both in one call:</p>
+<pre><code class="lang-csharp">using Bodu.Financial;
+using Bodu.Financial.ExchangeRates;
+using Microsoft.Extensions.DependencyInjection;
+
+// Composed on the financial builder — binds the Financial:Ecb section when configuration is supplied.
+builder.Services
+    .AddFinancialService(builder.Configuration)
+    .AddEcbExchangeRates(builder.Configuration);
+
+// Or the one-call form, which registers the core financial services too.
+builder.Services.AddEcbExchangeRates(builder.Configuration);
+</code></pre>
+<p>The provider is registered as a singleton, backed by a named <code>HttpClient</code> fitted with the standard Polly resilience handler, and resolvable as <code>EcbRateProvider</code>, <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.IDatedRateProvider.html">IDatedRateProvider</a>, and <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.IRateProvider.html">IRateProvider</a>:</p>
+<pre><code class="lang-csharp">IDatedRateProvider rates = app.Services.GetRequiredService&lt;IDatedRateProvider&gt;();
+RateLookupResult result = await rates.GetRateAsync(&quot;EUR&quot;, &quot;USD&quot;, new DateOnly(2024, 1, 3));
+</code></pre>
+<p>The matching <code>appsettings.json</code> section — every key below binds to <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.EcbRateProviderOptions.html">EcbRateProviderOptions</a> and its nested <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.EcbEndpointOptions.html">EcbEndpointOptions</a>, shown at their defaults:</p>
+<pre><code class="lang-json">{
+  &quot;Financial&quot;: {
+    &quot;Ecb&quot;: {
+      &quot;Endpoint&quot;: {
+        &quot;BaseUrl&quot;: &quot;https://www.ecb.europa.eu/stats/eurofxref/&quot;,
+        &quot;HttpTimeout&quot;: &quot;00:00:30&quot;,
+        &quot;UserAgent&quot;: &quot;Bodu.Financial.ExchangeRates.Ecb&quot;
+      },
+      &quot;AllowSynchronousNetworkAccess&quot;: false,
+      &quot;EnableDiskCache&quot;: true,
+      &quot;CacheDirectory&quot;: null,
+      &quot;RefreshInterval&quot;: &quot;12:00:00&quot;,
+      &quot;CurrencyAliases&quot;: {},
+      &quot;DownloadStartingLogLevel&quot;: &quot;Debug&quot;,
+      &quot;DownloadCompletedLogLevel&quot;: &quot;Information&quot;,
+      &quot;DownloadFailedLogLevel&quot;: &quot;Warning&quot;,
+      &quot;ObservationIngestedLogLevel&quot;: &quot;Information&quot;,
+      &quot;SynchronousNetworkFetchLogLevel&quot;: &quot;Warning&quot;
+    }
+  }
+}
+</code></pre>
+<p>The one member that does not bind from configuration is <code>Feeds</code> — an <code>IReadOnlyList&lt;EcbRateFeed&gt;</code> whose elements carry a constructor, defaulting to <code>EcbRateFeed.Default</code> (the 90-day feed, then the full history). Set it through the <code>configure</code> callback, which runs after binding:</p>
+<pre><code class="lang-csharp">builder.Services
+    .AddFinancialService(builder.Configuration)
+    .AddEcbExchangeRates(
+        builder.Configuration,
+        sectionName: &quot;Financial:Ecb&quot;,
+        configure: options =&gt; options.Feeds = new[] { EcbRateFeed.Full },
+        configureResilience: resilience =&gt; resilience.Retry.MaxRetryAttempts = 5);
+</code></pre>
+<p>Options are validated at startup (<code>ValidateOnStart</code>), so a null <code>BaseUrl</code> or a non-positive <code>RefreshInterval</code> fails the host before the first request.</p>
+<h3 id="supply-an-api-key-for-a-pair-provider">Supply an API key for a pair provider</h3>
+<p>Fixer, exchangerate.host, and FRED require a key on their options. <code>FixerRateProviderOptions</code> derives from <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.WebRateProviderOptions.html">WebRateProviderOptions</a>, so it validates the shared members and rejects a blank <code>ApiKey</code>. In code:</p>
+<pre><code class="lang-csharp">using Bodu.Financial.ExchangeRates;
+
+using var fixer = new FixerRateProvider(new FixerRateProviderOptions { ApiKey = &quot;…&quot; });
+
+await fixer.LoadPairAsync(&quot;EUR&quot;, &quot;USD&quot;, new DateOnly(2024, 1, 1), new DateOnly(2024, 1, 31));
+RateLookupResult usd = fixer.GetRate(&quot;EUR&quot;, &quot;USD&quot;, new DateOnly(2024, 1, 3));
+</code></pre>
+<p>Through DI, keep the key out of source and bind it from configuration (user secrets, environment variables, or a vault-backed provider all feed the same section). Every key below binds; the shared <code>WebRateProviderOptions</code> members are shown at their defaults and the Fixer-specific ones follow:</p>
+<pre><code class="lang-json">{
+  &quot;Financial&quot;: {
+    &quot;Fixer&quot;: {
+      &quot;BaseAddress&quot;: &quot;https://data.fixer.io/api/&quot;,
+      &quot;HttpTimeout&quot;: &quot;00:00:30&quot;,
+      &quot;MaxResponseContentBufferSize&quot;: 67108864,
+      &quot;UserAgent&quot;: &quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36&quot;,
+      &quot;AllowSynchronousNetworkAccess&quot;: false,
+      &quot;DefaultLookback&quot;: &quot;7.00:00:00&quot;,
+      &quot;CurrencyAliases&quot;: {},
+      &quot;DownloadStartingLogLevel&quot;: &quot;Debug&quot;,
+      &quot;DownloadCompletedLogLevel&quot;: &quot;Information&quot;,
+      &quot;DownloadFailedLogLevel&quot;: &quot;Warning&quot;,
+      &quot;ObservationIngestedLogLevel&quot;: &quot;Information&quot;,
+      &quot;SynchronousNetworkFetchLogLevel&quot;: &quot;Warning&quot;,
+      &quot;ApiKey&quot;: &quot;&lt;from user secrets&gt;&quot;,
+      &quot;TimeSeriesPath&quot;: &quot;timeseries&quot;,
+      &quot;HistoricalPath&quot;: &quot;{date}&quot;
+    }
+  }
+}
+</code></pre>
+<pre><code class="lang-csharp">builder.Services
+    .AddFinancialService(builder.Configuration)
+    .AddFixerExchangeRates(builder.Configuration);          // section Financial:Fixer
+</code></pre>
+<p><code>HistoryAvailability</code> is the one <code>WebRateProviderOptions</code> member that is not configuration-bindable (it is a record struct with factory members); Fixer's options preset it to <code>RateHistoryAvailability.Since(1999-01-01)</code>, and a <code>configure</code> callback can override it. The <code>configure</code> callback is also the place to inject a key resolved at runtime:</p>
+<pre><code class="lang-csharp">builder.Services
+    .AddFinancialService()
+    .AddFixerExchangeRates(configure: options =&gt; options.ApiKey = keyVault.GetSecret(&quot;fixer-access-key&quot;));
+</code></pre>
+<p>The same shape applies to <code>AddExchangeRateHostExchangeRates</code> (<code>Financial:ExchangeRateHost</code>, <code>ApiKey</code> sent as <code>access_key</code>) and <code>AddFredExchangeRates</code> (<code>Financial:Fred</code>, <code>ApiKey</code> sent as <code>api_key</code>, plus the <code>SeriesMap</code> from pair to FRED series identifier).</p>
+<h3 id="control-the-payload-cache">Control the payload cache</h3>
+<p>The bulk providers (ECB, BoE, RBA, IMF) keep a best-effort on-disk cache of the raw files they download so immutable history is not re-fetched across process restarts. It is controlled by three options members; the ECB names are shown, the others match apart from RBA's <code>CurrentEraRefreshInterval</code> and <code>EnableDiskCache</code> default of <code>false</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Default</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>EnableDiskCache</code></td>
+<td><code>true</code> (ECB, BoE, IMF); <code>false</code> (RBA)</td>
+<td><code>false</code> substitutes the no-op <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.NullByteCache-1.html">NullByteCache&lt;TKey&gt;</a> — nothing is written or read.</td>
+</tr>
+<tr>
+<td><code>CacheDirectory</code></td>
+<td><code>null</code></td>
+<td>The folder that holds one file per download unit. <code>null</code> or blank resolves to a provider-named folder under the system temporary path — <code>bodu-ecb</code>, <code>bodu-boe</code>, <code>bodu-rba</code>, <code>bodu-imf</code> beneath <code>Path.GetTempPath()</code>.</td>
+</tr>
+<tr>
+<td><code>RefreshInterval</code></td>
+<td>12 hours</td>
+<td>A cached file older than this is re-downloaded, so a feed that gains a new observation is refreshed.</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-csharp">var options = new EcbRateProviderOptions
+{
+    CacheDirectory = &quot;/var/cache/myapp/ecb&quot;,     // explicit, shared location
+    RefreshInterval = TimeSpan.FromHours(6),
+};
+
+// Or disable it entirely (in-memory coverage still avoids duplicate downloads within a process).
+var uncached = new EcbRateProviderOptions { EnableDiskCache = false };
+</code></pre>
+<p>Pair providers (Yahoo, OFX, XE, OANDA, Fixer, exchangerate.host, FRED) have no payload cache; to persist their rates across restarts, put a <a href="../../guides/financial/exchange-rate-caching.html">rate cache</a> in front of them.</p>
+<h3 id="ask-how-far-back-a-feed-goes">Ask how far back a feed goes</h3>
+<pre><code class="lang-csharp">using var oanda = new OandaRateProvider(new OandaRateProviderOptions());
+
+RateHistoryAvailability history = oanda.HistoryAvailability;
+DateOnly today = DateOnly.FromDateTime(DateTime.UtcNow);
+DateOnly? earliest = history.GetEarliestAvailable(today);   // roughly today − 180 days
+
+if (history.IsAvailable(new DateOnly(2019, 1, 1), today))
+{
+    // safe to request
+}
+</code></pre>
+<h3 id="export-what-has-been-fetched">Export what has been fetched</h3>
+<pre><code class="lang-csharp">using Bodu.Financial.ExchangeRates;
+
+FixedDatedRateProvider offline = ecb.GetLoadedSnapshot();   // immutable, network-free, disposal-independent
+RateBook book = ecb.GetLoadedBook();                         // the same data as a composable book
+</code></pre>
+<p>Hand the snapshot to code that must never touch the network, or serialize the book's observations with the <a href="../financial-serialization-json/index.html">financial JSON converters</a>.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="concepts.html">Core concepts</a></strong> — vocabulary refresher.</li>
+<li><strong><a href="index.html">Introduction</a></strong> — the provider family and the &quot;which provider&quot; table.</li>
+<li><strong><a href="../../guides/financial/exchange-rate-providers.html">Built-in exchange-rate providers</a></strong> — every feed's warm-up methods and options in detail.</li>
+<li><strong><a href="../../guides/financial/exchange-rate-caching.html">Caching and aggregating exchange rates</a></strong> — a read-through rate cache and multi-source aggregation in front of these providers.</li>
+<li><strong><a href="../../guides/financial/dependency-injection.html">Financial dependency injection</a></strong> — <code>AddFinancialService</code>, the fluent builder, and swapping in a test double.</li>
+<li><strong><a href="../../guides/financial/testing-providers.html">Testing your own provider</a></strong> — the contract-test bases and the offline stub handler.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.html">Bodu.Financial.ExchangeRates API reference</a></strong> — full type-by-type docs.</li>
+<li><strong><a href="../../samples/financial.html">Runnable samples</a></strong> — <code>LiveRates</code> (opt-in network), <code>CachedRates</code>, <code>AggregatedRates</code>, and <code>CustomProvider</code>.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

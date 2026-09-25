@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Working with non-Gregorian calendars | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Working with non-Gregorian calendars | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="working-with-non-gregorian-calendars">Working with non-Gregorian calendars</h1>
+
+<p><code>Bodu.Globalization.Calendar</code> resolves notable dates expressed in non-Gregorian calendars, not only the Gregorian calendar. A <code>&lt;Fixed&gt;</code> rule can be authored in the Islamic (Hijri), Saudi-aligned Umm al-Qura, Hebrew, Persian (Solar Hijri), or Chinese lunisolar calendar by setting the enclosing <code>&lt;Applicability calendar=&quot;...&quot;&gt;</code>, and the resolver projects the authored (month, day) onto the correct Gregorian date for the requested year.</p>
+<p>This article describes how the resolver handles non-Gregorian <code>&lt;Fixed&gt;</code> rules, when the <code>sweepCalendarYears</code> and <code>skipLeapMonth</code> attributes are required, how a short Hijri month can fall twice in one Gregorian year, and how computed lunisolar festivals (Vesak, Diwali, Losar, …) are authored with <code>&lt;Algorithm&gt;</code> keys instead.</p>
+<p>For the schema vocabulary, see <a href="rule-authoring.html">Authoring notable date rules</a> and <a href="rule-reference.html">NotableDateRule and adjustment-policy reference</a>. For the end-to-end pipeline, see <a href="resolution-pipeline.html">The resolution pipeline</a>.</p>
+<hr>
+<h2 id="the-calendarsystem-enum">The <code>CalendarSystem</code> enum</h2>
+<p>The <code>calendar</code> attribute on <code>&lt;Applicability&gt;</code> is a <a class="xref" href="../../api/Bodu.Globalization.Calendar.CalendarSystem.html">CalendarSystem</a> value. It defaults to <code>Gregorian</code>, so an absent <code>calendar</code> (or an absent <code>&lt;Applicability&gt;</code> entirely) is a Gregorian rule.</p>
+<table>
+<thead>
+<tr>
+<th><code>CalendarSystem</code></th>
+<th><code>calendar</code> value</th>
+<th>Year start</th>
+<th>Drift per Gregorian year</th>
+<th>Months vary?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Gregorian</code></td>
+<td><code>Gregorian</code></td>
+<td>1 January</td>
+<td>n/a</td>
+<td>No (only February).</td>
+</tr>
+<tr>
+<td><code>Hijri</code></td>
+<td><code>Hijri</code></td>
+<td>1 Muharram</td>
+<td>~11 days earlier</td>
+<td>Yes (lunar months alternate 29/30 days; year is 354–355 days).</td>
+</tr>
+<tr>
+<td><code>UmmAlQura</code></td>
+<td><code>UmmAlQura</code></td>
+<td>1 Muharram</td>
+<td>~11 days earlier</td>
+<td>Yes (Saudi observation tables determine each month's start).</td>
+</tr>
+<tr>
+<td><code>Hebrew</code></td>
+<td><code>Hebrew</code></td>
+<td>1 Tishri (Sep/Oct)</td>
+<td>varies — 12 or 13 months per year</td>
+<td>Yes (Adar I appears only in leap years; later months renumber).</td>
+</tr>
+<tr>
+<td><code>Persian</code></td>
+<td><code>Persian</code></td>
+<td>1 Farvardin (~20 March)</td>
+<td>none (anchored to the vernal equinox)</td>
+<td>Slightly (Esfand is 29 or 30 days).</td>
+</tr>
+<tr>
+<td><code>ChineseLunisolar</code></td>
+<td><code>ChineseLunisolar</code></td>
+<td>varies (lunar new year, late Jan – mid Feb)</td>
+<td>varies — 12 or 13 months per year</td>
+<td>Yes (intercalary leap months keep lunar months aligned to seasons).</td>
+</tr>
+</tbody>
+</table>
+<p>A service reports the calendar systems any of its rules use through <a class="xref" href="../../api/Bodu.Globalization.Calendar.INotableDateService.GetSupportedCalendars.html#Bodu_Globalization_Calendar_INotableDateService_GetSupportedCalendars">GetSupportedCalendars()</a>:</p>
+<pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
+
+IReadOnlyList&lt;CalendarSystem&gt; calendars = service.GetSupportedCalendars();
+// e.g. [Gregorian, Hijri, Hebrew] for a resource that mixes Gregorian and lunar fixed dates.
+</code></pre>
+<hr>
+<h2 id="why-non-gregorian-calendars-are-different">Why non-Gregorian calendars are different</h2>
+<p>The Gregorian calendar's year numbering, month numbering, and month lengths are constants. Non-Gregorian calendars violate at least one of those assumptions, with two consequences for a fixed (month, day) rule:</p>
+<ol>
+<li><p><strong>The calendar year number does not match the Gregorian year number.</strong> Hijri year 1445 AH overlaps Gregorian 2023 <em>and</em> 2024; Hebrew year 5784 overlaps Gregorian 2023 <em>and</em> 2024; Persian year 1402 is roughly Gregorian 2023 but offset by ~621 from the Gregorian year number.</p>
+</li>
+<li><p><strong>A calendar month can appear in two different Gregorian years</strong>, depending on which calendar year the calendar's new-year date fell in. Conversely, a single Gregorian year can contain <em>two</em> instances of the same Hijri month — this happens roughly every 33 years because the Hijri year is shorter than the Gregorian year.</p>
+</li>
+</ol>
+<p>The resolver handles both consequences through the <strong>calendar-year sweep</strong>, enabled by the <code>sweepCalendarYears</code> attribute on <code>&lt;Fixed&gt;</code>.</p>
+<hr>
+<h2 id="the-sweepcalendaryears-attribute">The <code>sweepCalendarYears</code> attribute</h2>
+<p>For a non-Gregorian <code>&lt;Fixed&gt;</code> rule, set <code>sweepCalendarYears=&quot;true&quot;</code>. Without the sweep, the requested Gregorian year number would be interpreted directly as a calendar year number in the target calendar — projecting Hijri / Umm al-Qura / Hebrew / Persian rules to an era thousands of years away. The sweep is required for every supported non-Gregorian calendar <strong>except</strong> Chinese lunisolar (which uses <code>skipLeapMonth</code> — see below).</p>
+<pre><code class="lang-xml">&lt;!-- Islamic New Year — 1 Muharram in the (tabular) Hijri calendar. --&gt;
+&lt;NotableDate id=&quot;islamic-new-year&quot; displayName=&quot;Islamic New Year&quot; category=&quot;Religious&quot; defaultNonWorkingDay=&quot;true&quot;&gt;
+  &lt;Rules&gt;
+    &lt;Rule id=&quot;sa&quot;&gt;
+      &lt;Applicability calendar=&quot;Hijri&quot; /&gt;
+      &lt;Strategy&gt;&lt;Fixed month=&quot;1&quot; day=&quot;1&quot; sweepCalendarYears=&quot;true&quot; /&gt;&lt;/Strategy&gt;
+    &lt;/Rule&gt;
+  &lt;/Rules&gt;
+&lt;/NotableDate&gt;
+</code></pre>
+<h3 id="how-the-sweep-resolves-a-date">How the sweep resolves a date</h3>
+<p>To project an authored rule for, say, &quot;1 Ramadan&quot; into the Gregorian date for a requested year, the resolver:</p>
+<ol>
+<li><strong>Finds the lower-bound calendar year</strong> — the calendar year containing 1 January of the requested Gregorian year. For 1 January 2024 this is 1445 AH (Hijri / Umm al-Qura), 5784 (Hebrew), or 1402 (Persian).</li>
+<li><strong>Iterates two candidate calendar years</strong> — the lower-bound year and the next. One covers the calendar year that started in the previous Gregorian year and is still active; the other covers the calendar year that starts during the requested Gregorian year.</li>
+<li><strong>Resolves the target month for each candidate.</strong> Hebrew month <em>names</em> (see below) are mapped through a leap-year-aware lookup; a name that does not exist in the candidate year (Adar II in a non-leap year) skips that candidate.</li>
+<li><strong>Converts (calendar-year, month, day) to a Gregorian date</strong>, skipping a candidate whose day exceeds the month's length (e.g. day 30 in a 29-day Hijri month).</li>
+<li><strong>Matches the Gregorian year.</strong> A candidate is accepted only when its result lands in the requested Gregorian year. When <em>both</em> candidates land in the requested year — possible only for fast-drifting lunar calendars such as Hijri / Umm al-Qura — the chronologically <strong>earlier</strong> one is returned.</li>
+<li><strong>Returns no occurrence</strong> when neither candidate matches — the holiday's Gregorian projection skipped the year entirely.</li>
+</ol>
+<h3 id="a-short-hijri-month-falling-twice-in-a-gregorian-year">A short Hijri month falling twice in a Gregorian year</h3>
+<p>Because the Hijri year is ~11 days shorter than the Gregorian year, an early-in-the-Hijri-year date drifts earlier each Gregorian year, and roughly every 33 years a single Gregorian year contains the date <em>twice</em> — once near the start of January and once near the end of December. The sweep surfaces both: when both candidate Hijri years project into the requested Gregorian year, the engine emits each occurrence. For consumers that want only the first, the by-year resolution returns them in date order, and a range query (<code>service.Resolve(new DateRange(a, b), territory)</code>) includes whichever occurrences intersect the window.</p>
+<p>The public <a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.FixedDateStrategy.html">FixedDateStrategy</a> exposes this twice-in-a-year behaviour through <code>CalculateAll</code>, alongside the single-date <code>Calculate</code> used for the common case.</p>
+<hr>
+<h2 id="worked-example-islamic-new-year-in-2024-hijri">Worked example: Islamic New Year in 2024 (Hijri)</h2>
+<p>Resource: <code>calendars.xml</code>, concept <code>islamic-new-year</code> (1 Muharram, <code>calendar=&quot;Hijri&quot;</code>, <code>sweepCalendarYears=&quot;true&quot;</code>).</p>
+<ol>
+<li>The calendar year containing 1 January 2024 is <strong>1445 AH</strong>.</li>
+<li>Candidate calendar years are <strong>1445</strong> and <strong>1446</strong>.</li>
+<li>Try Hijri year <strong>1446</strong>, month 1 (Muharram), day 1 → projects into 2024 — match.</li>
+</ol>
+<p>The same concept authored against <code>calendar=&quot;UmmAlQura&quot;</code> can land one day later than the tabular <code>Hijri</code> result, because the Umm al-Qura table is updated from Saudi lunar-observation data. That one-day divergence is exactly why both Islamic calendar systems are offered — see <a href="#choosing-between-the-islamic-calendars">Choosing between the Islamic calendars</a>.</p>
+<h2 id="worked-example-passover-in-2024-hebrew-month-name">Worked example: Passover in 2024 (Hebrew, month name)</h2>
+<p>Resource: <code>calendars.xml</code>, concept <code>passover</code> (15 Nisan, <code>calendar=&quot;Hebrew&quot;</code>, <code>sweepCalendarYears=&quot;true&quot;</code>).</p>
+<ol>
+<li>The Hebrew year containing 1 January 2024 is <strong>5784</strong> (a leap year, 13 months).</li>
+<li>Candidate calendar years are <strong>5784</strong> and <strong>5785</strong>.</li>
+<li>The month name <strong>Nisan</strong> resolves to the correct numeric month in each candidate. <code>5784</code> projects 15 Nisan into Gregorian <strong>2024</strong> (late April) — match.</li>
+</ol>
+<p>Hebrew rules are authored with a stable month <em>name</em> (<code>Tishri</code>, <code>Kislev</code>, <code>Nisan</code>, <code>LastAdar</code>, …) rather than a numeric index, because the Hebrew calendar renumbers its months between leap and non-leap years. The resolver maps the name to the correct numeric month for each candidate year automatically.</p>
+<table>
+<thead>
+<tr>
+<th>Month name</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Tishri</code></td>
+<td>New year (Rosh Hashanah).</td>
+</tr>
+<tr>
+<td><code>Kislev</code></td>
+<td>Hanukkah anchor.</td>
+</tr>
+<tr>
+<td><code>AdarI</code>, <code>AdarII</code></td>
+<td>Exist only in leap years; skip the candidate in a non-leap year.</td>
+</tr>
+<tr>
+<td><code>LastAdar</code></td>
+<td>Always resolves (Adar in a non-leap year, Adar II in a leap year) — preferred for Purim and other &quot;final Adar&quot; observances.</td>
+</tr>
+<tr>
+<td><code>Nisan</code></td>
+<td>Passover anchor.</td>
+</tr>
+<tr>
+<td><code>Sivan</code></td>
+<td>Shavuot.</td>
+</tr>
+<tr>
+<td><code>Elul</code></td>
+<td>Final Hebrew month.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="worked-example-nowruz-in-2024-persian">Worked example: Nowruz in 2024 (Persian)</h2>
+<p>Resource: <code>calendars.xml</code>, concept <code>nowruz</code> (1 Farvardin, <code>calendar=&quot;Persian&quot;</code>, <code>sweepCalendarYears=&quot;true&quot;</code>).</p>
+<ol>
+<li>The Persian year containing 1 January 2024 is <strong>1402</strong> (which began 21 March 2023).</li>
+<li>Candidate calendar years are <strong>1402</strong> and <strong>1403</strong>.</li>
+<li><code>1402</code> projects 1 Farvardin to <strong>2023-03-21</strong> (wrong Gregorian year — skip); <code>1403</code> projects to <strong>2024-03-20</strong> — match.</li>
+</ol>
+<p>Persian's sweep almost always picks the second candidate, because 1 Farvardin falls in March of the requested Gregorian year.</p>
+<hr>
+<h2 id="chinese-lunisolar--skipleapmonth-instead-of-the-sweep">Chinese lunisolar — <code>skipLeapMonth</code> instead of the sweep</h2>
+<p>The Chinese lunisolar calendar is the one supported non-Gregorian calendar that does <strong>not</strong> use <code>sweepCalendarYears</code>. Its year numbering aligns with the Gregorian year (the lunar new year falls in late January or mid February), so the calendar year is the same Gregorian year the caller requested.</p>
+<p>Instead, the resolver handles the <strong>intercalary leap month</strong> that appears in roughly seven of every nineteen lunar years. Conventional ordinal &quot;lunar months&quot; — &quot;the eighth lunar month&quot; for the Mid-Autumn Festival — refer to a fixed point in the seasonal year, but the underlying calendar numbers months consecutively (1, 2, …, 13 in a leap year), inserting the leap month between conventional months. Setting <code>skipLeapMonth=&quot;true&quot;</code> tells the resolver to advance the conventional ordinal month past any leap month that precedes it.</p>
+<pre><code class="lang-xml">&lt;!-- Mid-Autumn Festival — conventional 15th day of the 8th lunar month. --&gt;
+&lt;NotableDate id=&quot;mid-autumn&quot; displayName=&quot;Mid-Autumn Festival&quot; category=&quot;PublicHoliday&quot; defaultNonWorkingDay=&quot;true&quot;&gt;
+  &lt;Rules&gt;
+    &lt;Rule id=&quot;cn&quot;&gt;
+      &lt;Applicability calendar=&quot;ChineseLunisolar&quot; /&gt;
+      &lt;Strategy&gt;&lt;Fixed month=&quot;8&quot; day=&quot;15&quot; skipLeapMonth=&quot;true&quot; /&gt;&lt;/Strategy&gt;
+    &lt;/Rule&gt;
+  &lt;/Rules&gt;
+&lt;/NotableDate&gt;
+</code></pre>
+<p>Chinese New Year (the 1st day of the 1st lunar month) needs neither attribute, because nothing precedes month 1:</p>
+<pre><code class="lang-xml">&lt;NotableDate id=&quot;chinese-new-year&quot; displayName=&quot;Chinese New Year&quot; category=&quot;PublicHoliday&quot; defaultNonWorkingDay=&quot;true&quot;&gt;
+  &lt;Rules&gt;
+    &lt;Rule id=&quot;cn&quot;&gt;
+      &lt;Applicability calendar=&quot;ChineseLunisolar&quot; /&gt;
+      &lt;Strategy&gt;&lt;Fixed month=&quot;1&quot; day=&quot;1&quot; /&gt;&lt;/Strategy&gt;
+    &lt;/Rule&gt;
+  &lt;/Rules&gt;
+&lt;/NotableDate&gt;
+</code></pre>
+<hr>
+<h2 id="lunisolar-festivals-via-algorithm">Lunisolar festivals via <code>&lt;Algorithm&gt;</code></h2>
+<p>Many lunisolar festivals are <em>not</em> a fixed (month, day) in any single calendar system — their date is computed from lunar phases or solar terms. These are authored with an <code>&lt;Algorithm key=&quot;...&quot;&gt;</code> strategy in the Gregorian frame, not a non-Gregorian <code>&lt;Fixed&gt;</code> rule. The engine's bundled lunar-phase and solar-term calculators back the keys; the shipping region packs reference the same keys.</p>
+<pre><code class="lang-xml">&lt;!-- Vesak (Buddha Purnima) — Theravada full-moon day; computed. --&gt;
+&lt;NotableDate id=&quot;vesak&quot; displayName=&quot;Vesak&quot; category=&quot;Religious&quot; defaultNonWorkingDay=&quot;false&quot;&gt;
+  &lt;Rules&gt;
+    &lt;Rule id=&quot;default&quot;&gt;&lt;Strategy&gt;&lt;Algorithm key=&quot;vesak&quot; /&gt;&lt;/Strategy&gt;&lt;/Rule&gt;
+  &lt;/Rules&gt;
+&lt;/NotableDate&gt;
+</code></pre>
+<p>Built-in festival keys include:</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Festival</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>vesak</code></td>
+<td>Vesak (Buddha's birthday) — Theravada full-moon observance.</td>
+</tr>
+<tr>
+<td><code>asalha-puja</code></td>
+<td>Asalha Puja (Dhamma Day) — full moon of the eighth lunar month.</td>
+</tr>
+<tr>
+<td><code>losar</code></td>
+<td>Losar — Tibetan lunisolar new year.</td>
+</tr>
+<tr>
+<td><code>qingming</code></td>
+<td>Qingming (Tomb-Sweeping Day) — solar term 15° after the March equinox.</td>
+</tr>
+<tr>
+<td><code>diwali</code></td>
+<td>Diwali (Deepavali).</td>
+</tr>
+<tr>
+<td><code>holi</code></td>
+<td>Holi.</td>
+</tr>
+<tr>
+<td><code>ram-navami</code>, <code>janmashtami</code>, <code>ganesh-chaturthi</code>, <code>navaratri</code>, <code>dussehra</code>, <code>karva-chauth</code>, <code>vasant-panchami</code>, <code>maha-shivaratri</code>, <code>raksha-bandhan</code></td>
+<td>Hindu festivals computed against the Hindu lunisolar panchanga.</td>
+</tr>
+<tr>
+<td><code>maun-agiyaras</code></td>
+<td>Jain observance computed against the same panchanga.</td>
+</tr>
+</tbody>
+</table>
+<p>See <a href="algorithms.html">Date calculation algorithms</a> for the complete key catalogue and for writing a custom <a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithm.html">INotableDateAlgorithm</a>.</p>
+<hr>
+<h2 id="choosing-between-the-islamic-calendars">Choosing between the Islamic calendars</h2>
+<p>Two calendar systems exist for Islamic dates because no single tabular calendar reproduces every official Eid date:</p>
+<table>
+<thead>
+<tr>
+<th><code>calendar</code> value</th>
+<th>Algorithm</th>
+<th>When to use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Hijri</code></td>
+<td>Tabular, fixed 30-year arithmetic cycle</td>
+<td>Portable / deterministic Islamic dates; non-Saudi jurisdictions that publish dates aligned to tabular Hijri; cross-platform date comparison.</td>
+</tr>
+<tr>
+<td><code>UmmAlQura</code></td>
+<td>Tabular, updated from Saudi-government lunar observation</td>
+<td>Saudi Arabia, the Gulf states, and any jurisdiction whose public-holiday calendar tracks the Saudi Royal Court announcements.</td>
+</tr>
+</tbody>
+</table>
+<p>The two can produce Gregorian dates differing by zero or one day for the same Hijri date. The base package ships both as separate common catalogues — <code>global-islamic</code> (tabular) and <code>global-islamic-umm-al-qura</code> (Saudi-aligned) — so a region pack imports whichever it tracks. For jurisdictions whose announced civil date occasionally diverges from <em>both</em> tabular calendars (a physical-sighting override), ship a custom <code>&lt;Algorithm&gt;</code> that consults an authoritative annual source and reference it instead of the tabular <code>&lt;Fixed&gt;</code> rule.</p>
+<hr>
+<h2 id="multi-day-events-that-span-the-gregorian-year-boundary">Multi-day events that span the Gregorian year boundary</h2>
+<p>Several non-Gregorian observances are multi-day (Ramadan 30 days, Hanukkah 8 days, Sukkot 7 days, Nowruz up to 13 days). A span can straddle the Gregorian year boundary — a Hanukkah occurrence anchored on 25 Kislev can begin on 26 December and end on 2 January.</p>
+<p>A range query includes any occurrence whose span intersects the window, governed by the resource's <a class="xref" href="../../api/Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy.html">ObservedDateRangePolicy</a>:</p>
+<pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
+
+IReadOnlyList&lt;NotableDate&gt; earlyJanuary = service.Resolve(
+    new DateRange(new DateOnly(2025, 1, 1), new DateOnly(2025, 1, 7)), &quot;IL&quot;);
+// includes the December-anchored Hanukkah occurrence that overlaps into January 2025.
+</code></pre>
+<p>To keep only the occurrence whose actual date falls inside a given year, filter on the occurrence's <code>ActualDate</code>:</p>
+<pre><code class="lang-csharp">NotableDate? inYear = service.Resolve(2025, &quot;IL&quot;)
+    .FirstOrDefault(d =&gt; d.DisplayName == &quot;Hanukkah&quot; &amp;&amp; d.ActualDate?.Year == 2025);
+</code></pre>
+<hr>
+<h2 id="authoring-checklist">Authoring checklist</h2>
+<p>When authoring a <code>&lt;Fixed&gt;</code> rule against a non-Gregorian calendar:</p>
+<ul>
+<li>[ ] Set <code>&lt;Applicability calendar=&quot;...&quot;&gt;</code> to the target <a class="xref" href="../../api/Bodu.Globalization.Calendar.CalendarSystem.html">CalendarSystem</a> (<code>Hijri</code>, <code>UmmAlQura</code>, <code>Hebrew</code>, <code>Persian</code>, or <code>ChineseLunisolar</code>).</li>
+<li>[ ] For Hijri / Umm al-Qura / Hebrew / Persian, set <code>sweepCalendarYears=&quot;true&quot;</code> on <code>&lt;Fixed&gt;</code>.</li>
+<li>[ ] For Chinese lunisolar, set <code>skipLeapMonth=&quot;true&quot;</code> on <code>&lt;Fixed&gt;</code> for any ordinal month after the first; Chinese New Year needs neither attribute.</li>
+<li>[ ] For Hebrew, author the month with its stable <em>name</em> (<code>Nisan</code>, <code>Kislev</code>, <code>LastAdar</code>, …) rather than a numeric index.</li>
+<li>[ ] For a festival that is computed (lunar phase / solar term) rather than a fixed (month, day), use an <code>&lt;Algorithm key=&quot;...&quot;&gt;</code> strategy in the Gregorian frame instead.</li>
+<li>[ ] Verify expected dates against an authoritative source, and add a regression test row asserting the projected Gregorian date for at least one year.</li>
+</ul>
+<hr>
+<h2 id="limitations-and-edge-cases">Limitations and edge cases</h2>
+<ul>
+<li><strong>Supported date range.</strong> Each calendar system has a supported range; a query for a Gregorian year outside it produces no occurrence rather than throwing.</li>
+<li><strong>Tabular versus observation.</strong> Every shipped non-Gregorian resource uses a <em>tabular</em> calendar. When a civil authority announces a date by physical observation that diverges from the tabular calculation, no tabular calendar reproduces the announced date for those years — pair the tabular rule with an <code>&lt;Algorithm&gt;</code>-keyed override for the affected years.</li>
+<li><strong>Saudi-aligned dates.</strong> Use <code>calendar=&quot;UmmAlQura&quot;</code> for Saudi-aligned dates rather than attempting to adjust the tabular <code>Hijri</code> calendar.</li>
+</ul>
+<hr>
+<h2 id="see-also">See also</h2>
+<ul>
+<li><a href="rule-authoring.html">Authoring notable date rules</a> — the <code>&lt;Fixed&gt;</code> element and the <code>sweepCalendarYears</code> / <code>skipLeapMonth</code> attributes.</li>
+<li><a href="rule-reference.html">NotableDateRule and adjustment-policy reference</a> — the per-element field reference, including <code>&lt;Applicability calendar=&quot;...&quot;&gt;</code>.</li>
+<li><a href="algorithms.html">Date calculation algorithms</a> — the <code>&lt;Algorithm&gt;</code> keys for computed lunisolar festivals.</li>
+<li><a href="resolution-pipeline.html">The resolution pipeline</a> — territory scoping, adjustment chains, and the optional filter gate.</li>
+<li><strong><a href="../topics/globalization-and-calendars.html">Globalization &amp; Calendars guides</a></strong> — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

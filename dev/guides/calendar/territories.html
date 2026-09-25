@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Territories and regional composition | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Territories and regional composition | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="territories-and-regional-composition">Territories and regional composition</h1>
+
+<p><a class="xref" href="../../api/Bodu.Globalization.Calendar.TerritoryCode.html">TerritoryCode</a> is the strongly-typed scope used by rules, adjustments, and queries. It wraps an ISO 3166-1 alpha-2 country code with an optional ISO 3166-2 subdivision (<code>AU</code>, <code>AU-NSW</code>, <code>GB-SCT</code>, <code>US-CA</code>) and exposes containment semantics that let national and regional rules compose naturally.</p>
+<p>For the conceptual overview, see <a href="../../docs/calendar/concepts.html">Core concepts</a>. Territory arguments to the service, the by-year extension, and the working-day extensions are always plain <code>string</code> values (<code>&quot;AU&quot;</code>, <code>&quot;AU-NSW&quot;</code>); <code>TerritoryCode</code> is the value type that parses, normalizes, and reasons about those strings.</p>
+<h2 id="anatomy">Anatomy</h2>
+<p>A <code>TerritoryCode</code> carries two pieces of information:</p>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Country</code></td>
+<td>The ISO 3166-1 alpha-2 country code (<code>AU</code>, <code>GB</code>, <code>US</code>). Always upper-case in canonical form; the empty string for the default value.</td>
+</tr>
+<tr>
+<td><code>Subdivision</code></td>
+<td>The optional ISO 3166-2 subdivision suffix (<code>NSW</code>, <code>SCT</code>, <code>CA</code>). <code>null</code> when the territory refers to the whole country.</td>
+</tr>
+<tr>
+<td><code>IsSubdivision</code></td>
+<td><code>true</code> when <code>Subdivision</code> is non-null — the code names a subdivision rather than a whole country.</td>
+</tr>
+<tr>
+<td><code>IsEmpty</code></td>
+<td><code>true</code> for the default <code>TerritoryCode</code> (the <code>default(TerritoryCode)</code> value, with an empty <code>Country</code>).</td>
+</tr>
+<tr>
+<td><code>Parent</code></td>
+<td>The containing country-level <code>TerritoryCode</code> for a subdivision (e.g. <code>AU-NSW</code> → <code>AU</code>); the value itself for a country-level code; the default value when this code is empty.</td>
+</tr>
+</tbody>
+</table>
+<p>The canonical string form is <code>Country</code> for a country-level code and <code>Country-Subdivision</code> (with a hyphen) for a subdivision-level code. <code>TerritoryCode</code> converts <strong>implicitly</strong> to <code>string</code> (so a value flows straight into a service call) and <strong>explicitly</strong> from <code>string</code> (the explicit cast <code>(TerritoryCode)&quot;AU&quot;</code> throws on a malformed code, matching <code>Parse</code>):</p>
+<pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
+
+TerritoryCode auNsw = TerritoryCode.Parse(&quot;AU-NSW&quot;);
+string code = auNsw;                 // implicit → &quot;AU-NSW&quot;
+TerritoryCode au = auNsw.Parent;     // → AU
+bool isSub = auNsw.IsSubdivision;    // → true
+
+TerritoryCode gb = (TerritoryCode)&quot;GB-SCT&quot;;   // explicit cast — throws on a malformed code
+</code></pre>
+<p><code>TerritoryCode</code> is a value type with full <code>==</code> / <code>!=</code> equality, so two codes parsed from <code>&quot;AU-NSW&quot;</code> and <code>&quot;  au-nsw &quot;</code> compare equal.</p>
+<h2 id="parsing">Parsing</h2>
+<p><code>TerritoryCode</code> provides both throwing and non-throwing parsers, plus a list parser for comma-separated input:</p>
+<pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
+
+// Throwing parse — use when the input is trusted authored data.
+TerritoryCode au    = TerritoryCode.Parse(&quot;AU&quot;);
+TerritoryCode auNsw = TerritoryCode.Parse(&quot;AU-NSW&quot;);
+
+// Try-parse — use for user input or external data.
+if (TerritoryCode.TryParse(userInput, out TerritoryCode territory))
+{
+    // territory is canonical here.
+}
+
+// Comma-separated list — convenient for multi-territory query parameters.
+IReadOnlyList&lt;TerritoryCode&gt; territories =
+    TerritoryCode.ParseList(&quot;AU-NSW, AU-VIC, NZ&quot;);
+</code></pre>
+<p>The library normalizes whitespace and casing during parsing, so <code>&quot;  au-nsw  &quot;</code> and <code>&quot;AU-NSW&quot;</code> parse to the same value.</p>
+<p>Because the service and extensions accept plain strings, you rarely need to parse explicitly — pass <code>&quot;AU-NSW&quot;</code> directly. Parse when you want to inspect a code's <code>Country</code>, <code>Subdivision</code>, or <code>Parent</code>, or to validate untrusted input before querying.</p>
+<h2 id="containment">Containment</h2>
+<p><img src="../../images/diagrams/calendar-territory-containment.svg" alt="TerritoryCode containment hierarchy"></p>
+<p><code>TerritoryCode.Contains(other)</code> returns <code>true</code> when <code>other</code> is within the scope of the current territory:</p>
+<table>
+<thead>
+<tr>
+<th>Receiver</th>
+<th>Argument</th>
+<th><code>Contains</code> returns</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AU</code></td>
+<td><code>AU</code></td>
+<td><code>true</code></td>
+</tr>
+<tr>
+<td><code>AU</code></td>
+<td><code>AU-NSW</code></td>
+<td><code>true</code></td>
+</tr>
+<tr>
+<td><code>AU</code></td>
+<td><code>AU-VIC</code></td>
+<td><code>true</code></td>
+</tr>
+<tr>
+<td><code>AU</code></td>
+<td><code>NZ</code></td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td><code>AU-NSW</code></td>
+<td><code>AU</code></td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td><code>AU-NSW</code></td>
+<td><code>AU-NSW</code></td>
+<td><code>true</code></td>
+</tr>
+<tr>
+<td><code>AU-NSW</code></td>
+<td><code>AU-VIC</code></td>
+<td><code>false</code></td>
+</tr>
+</tbody>
+</table>
+<p>The rule is simple: a country contains itself and every subdivision; a subdivision contains only itself.</p>
+<p>This is the same containment relation that <code>NotableDateService</code> applies during resolution: a rule authored at <code>AU</code> resolves for queries at <code>AU</code> and at any <code>AU-XX</code>, and an adjustment scoped to <code>AU-NT</code> only fires for <code>AU-NT</code> queries.</p>
+<pre><code class="lang-csharp">TerritoryCode au    = TerritoryCode.Parse(&quot;AU&quot;);
+TerritoryCode auNsw = TerritoryCode.Parse(&quot;AU-NSW&quot;);
+
+bool a = au.Contains(auNsw);    // true  — AU ⊇ AU-NSW
+bool b = auNsw.Contains(au);    // false — a subdivision does not contain its country
+</code></pre>
+<h2 id="authoring-territory-scope-in-a-document">Authoring territory scope in a document</h2>
+<p>A rule narrows its applicability by listing <code>&lt;Territory code=&quot;…&quot;&gt;</code> elements inside its <code>&lt;Applicability&gt;</code>. A rule with no <code>&lt;Territory&gt;</code> is globally applicable. Use the country code to cover a whole country, or a subdivision code to cover one region:</p>
+<pre><code class="lang-xml">&lt;!-- National holiday — applies to every Australian subdivision. --&gt;
+&lt;NotableDate id=&quot;australia-day&quot; displayName=&quot;Australia Day&quot; category=&quot;PublicHoliday&quot; defaultNonWorkingDay=&quot;true&quot;&gt;
+  &lt;Rules&gt;
+    &lt;Rule id=&quot;default&quot;&gt;
+      &lt;Applicability&gt;
+        &lt;Territory code=&quot;AU&quot; /&gt;
+      &lt;/Applicability&gt;
+      &lt;Strategy&gt;&lt;Fixed month=&quot;January&quot; day=&quot;26&quot; /&gt;&lt;/Strategy&gt;
+    &lt;/Rule&gt;
+  &lt;/Rules&gt;
+&lt;/NotableDate&gt;
+
+&lt;!-- Regional public holiday — applies only to Victoria. --&gt;
+&lt;NotableDate id=&quot;melbourne-cup-day&quot; displayName=&quot;Melbourne Cup Day&quot; category=&quot;PublicHoliday&quot; defaultNonWorkingDay=&quot;true&quot;&gt;
+  &lt;Rules&gt;
+    &lt;Rule id=&quot;default&quot;&gt;
+      &lt;Applicability&gt;
+        &lt;Territory code=&quot;AU-VIC&quot; /&gt;
+      &lt;/Applicability&gt;
+      &lt;Strategy&gt;&lt;DayOfWeekInMonth month=&quot;11&quot; dayOfWeek=&quot;Tuesday&quot; weekOrdinal=&quot;First&quot; /&gt;&lt;/Strategy&gt;
+    &lt;/Rule&gt;
+  &lt;/Rules&gt;
+&lt;/NotableDate&gt;
+</code></pre>
+<p>Multiple <code>&lt;Territory&gt;</code> elements union: list <code>AU-NSW</code> and <code>AU-ACT</code> to scope a single rule to both, without covering all of <code>AU</code>. See <a href="rule-authoring.html">Authoring notable date rules</a> for the full applicability vocabulary.</p>
+<h2 id="re-scoping-an-imported-concept">Re-scoping an imported concept</h2>
+<p>When you import a shared concept from a bundled catalogue, you can re-scope it to your territory with the <code>territory</code> attribute on a <code>&lt;Use&gt;</code> directive. This keeps the imported strategy and display name but limits its applicability for your document:</p>
+<pre><code class="lang-xml">&lt;Imports&gt;
+  &lt;Import resource=&quot;global-core&quot;&gt;
+    &lt;!-- Pull in New Year's Day but apply it only to the United States. --&gt;
+    &lt;Use notableDateRef=&quot;new-years-day&quot; territory=&quot;US&quot; /&gt;
+  &lt;/Import&gt;
+&lt;/Imports&gt;
+</code></pre>
+<p>An <code>&lt;Import&gt;</code> with no <code>&lt;Use&gt;</code> imports every concept it defines; a local concept of the same id wins over an imported one. See <a href="rule-authoring.html">Authoring notable date rules</a> for imports and overrides in full.</p>
+<h2 id="querying-composition">Querying composition</h2>
+<p>A query passes a single territory string, and the service returns every occurrence whose scope <strong>contains</strong> that code (plus globally-scoped rules). For Australia:</p>
+<pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
+
+NotableDateService service = AsiaPacificCalendarData.CreateService(&quot;AU&quot;);
+
+// AU national rules + NSW-specific rules + globals.
+IReadOnlyList&lt;NotableDate&gt; nsw = service.Resolve(2026, &quot;AU-NSW&quot;);
+
+// AU national rules + VIC-specific rules (including Melbourne Cup) + globals.
+IReadOnlyList&lt;NotableDate&gt; vic = service.Resolve(2026, &quot;AU-VIC&quot;);
+</code></pre>
+<p>By-year resolution (<code>service.Resolve(year, territory)</code>) is the extension method <code>NotableDateServiceExtensions.Resolve</code>; the single-day and range overloads (<code>service.Resolve(DateOnly, territory)</code>, <code>service.Resolve(DateRange, territory)</code>) are on <a class="xref" href="../../api/Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a> itself. All take the territory as a plain string.</p>
+<p>The same containment applies to adjustments: an adjustment scoped to <code>AU</code> fires for any <code>AU-XX</code> query, while an <code>AU-NT</code> adjustment only fires for NT-specific queries. See <a href="adjustment-rules.html">Observance adjustment rules</a>.</p>
+<h2 id="discovering-what-a-service-covers">Discovering what a service covers</h2>
+<p><code>GetSupportedTerritories()</code> enumerates the territory codes the loaded resource scopes rules to. It is the natural input for a UI picker or a deployment sanity-check:</p>
+<pre><code class="lang-csharp">IReadOnlyList&lt;string&gt; territories = service.GetSupportedTerritories();
+
+foreach (string code in territories)
+    Console.WriteLine($&quot;{code}: {service.Resolve(2026, code).Count} dates in 2026&quot;);
+</code></pre>
+<p>The companion <code>GetSupportedCalendars()</code> returns the <a class="xref" href="../../api/Bodu.Globalization.Calendar.CalendarSystem.html">CalendarSystem</a> values the resource uses (Gregorian, Hijri, Hebrew, …).</p>
+<h2 id="avoiding-duplicate-regional-rules">Avoiding duplicate regional rules</h2>
+<p>The containment relation is the right way to model &quot;national rule + a few regional variations&quot;:</p>
+<ul>
+<li>Author the national rule <strong>once</strong> at the country level (<code>&lt;Territory code=&quot;AU&quot; /&gt;</code>).</li>
+<li>For each subdivision that genuinely differs, author a separate concept or rule scoped to that subdivision (<code>&lt;Territory code=&quot;AU-NT&quot; /&gt;</code>), or suppress the national rule for that subdivision with a <code>&lt;RemoveRule&gt;</code> override and add the variant.</li>
+</ul>
+<p>Listing the same rule under every subdivision of one country produces duplicate occurrences and is rarely correct — scope it to the country instead. When you need a rule at several subdivisions but not the whole country (e.g. an extra holiday in some AU states only), author one rule per state, each scoped to its subdivision. The <a href="holiday-patterns.html">holiday patterns guide</a> shows worked examples for both shapes.</p>
+<h2 id="data-pack-conventions">Data-pack conventions</h2>
+<p>The official <code>Bodu.Globalization.Calendar.&lt;Region&gt;</code> companion packages follow the conventions above:</p>
+<ul>
+<li>National rules are authored at the country level (<code>AU</code>, <code>US</code>, <code>GB</code>).</li>
+<li>State / province / region variants use the canonical ISO 3166-2 subdivision suffix (<code>AU-NSW</code>, <code>US-CA</code>, <code>GB-SCT</code>).</li>
+<li>Cross-country composition (e.g. <em>EU bank holidays</em>) is <strong>not</strong> modelled via territory code — each country ships its own rule set under its own ISO code. Cross-cutting groupings belong in tags.</li>
+</ul>
+<p>See <a href="data-packs.html">Calendar data packs</a> for the per-pack helpers.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="../../docs/calendar/concepts.html">Core concepts</a></strong> — the vocabulary at a glance.</li>
+<li><strong><a href="notable-dates.html">Using NotableDateService</a></strong> — how containment shapes query results.</li>
+<li><strong><a href="rule-authoring.html">Authoring notable date rules</a></strong> — full authoring workflow with worked examples.</li>
+<li><strong><a href="data-packs.html">Calendar data packs</a></strong> — region-specific bundled rule sets.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Globalization.Calendar.html">Bodu.Globalization.Calendar API reference</a></strong> — generated API surface.</li>
+<li><strong><a href="../topics/globalization-and-calendars.html">Globalization &amp; Calendars guides</a></strong> — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Classic string hashes | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Classic string hashes | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="classic-string-hashes">Classic string hashes</h1>
+
+<p>A collection of the classic &quot;one-liner&quot; hash functions that appear in textbooks, compilers, and early web servers. They all produce a 32-bit or 64-bit output, none of them takes a key, and their public API is identical — configure any optional seed, call <code>Append</code> to feed data, and call <code>GetCurrentHash</code> to read the digest.</p>
+<p><strong>None of these are cryptographic.</strong> They are in the package for interoperability with legacy systems, for teaching purposes, and for use inside a trust boundary where collision-DoS is not a concern. For anything adversary-facing, use <a class="xref" href="../../api/Bodu.Security.Cryptography.SipHash64.html">SipHash64</a>; see the <a href="../cryptography/hashing.html">cryptography hashing guide</a>.</p>
+<h2 id="the-family-at-a-glance">The family at a glance</h2>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Width</th>
+<th>Seed / configuration</th>
+<th>Origin</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.Bernstein.html">Bernstein</a></td>
+<td>32 bits</td>
+<td><code>InitialValue</code> (default <code>5381</code>), <code>UseModifiedAlgorithm</code> (xor vs add)</td>
+<td>Daniel J. Bernstein's &quot;djb2&quot;, posted to <code>comp.lang.c</code>.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.BKDR.html">BKDR</a></td>
+<td>32 bits</td>
+<td><code>Seed</code> — one of a published set of odd multipliers</td>
+<td>Kernighan &amp; Ritchie, <em>The C Programming Language</em>.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.SDBM.html">SDBM</a></td>
+<td>32 bits</td>
+<td>None</td>
+<td>The SDBM public-domain database.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.JSHash.html">JSHash</a></td>
+<td>32 bits</td>
+<td>None (seed <code>0x4E67C6A7</code>)</td>
+<td>Justin Sobel's JavaScript-origin hash.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.Elf64.html">Elf64</a></td>
+<td>64 bits</td>
+<td><code>Seed</code> (default <code>0</code>)</td>
+<td>The ELF symbol-table hash, widened to 64 bits.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.ApHash.html">ApHash</a></td>
+<td>32 bits</td>
+<td>None (seed <code>0xAAAAAAAA</code>)</td>
+<td>Arash Partow's hash.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.Pjw32.html">Pjw32</a></td>
+<td>32 bits</td>
+<td>None</td>
+<td>Peter Weinberger's PJW hash (AT&amp;T compiler).</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.SuperFastHash.html">SuperFastHash</a></td>
+<td>32 bits</td>
+<td>None</td>
+<td>Paul Hsieh's SuperFastHash; tuned for short keys.</td>
+</tr>
+</tbody>
+</table>
+<p>All eight derive from <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.hashing.noncryptographichashalgorithm">NonCryptographicHashAlgorithm</a>.</p>
+<h2 id="pattern-1--a-default-configured-hash">Pattern 1 — a default-configured hash</h2>
+<p>Every type has a parameterless constructor that uses the historically canonical parameters for that function:</p>
+<pre><code class="lang-csharp">using System.Text;
+using Bodu.IO.Hashing;
+
+byte[] data = Encoding.UTF8.GetBytes(&quot;the quick brown fox&quot;);
+
+var hash = new Bernstein();             // djb2 — seed 5381, XOR form
+hash.Append(data);
+byte[] digest = hash.GetCurrentHash();
+uint h = BitConverter.ToUInt32(digest);
+</code></pre>
+<p>Swap <code>Bernstein</code> for any of the others — the API is the same.</p>
+<h2 id="pattern-2--bernstein-djb2-add-vs-xor">Pattern 2 — Bernstein (djb2), add vs XOR</h2>
+<p>Bernstein's original posting used addition (<code>h = h * 33 + c</code>). The XOR form (<code>h = h * 33 ^ c</code>) distributes slightly better on ASCII input and is what most later ports use. <code>Bernstein</code> exposes both through <code>UseModifiedAlgorithm</code>.</p>
+<pre><code class="lang-csharp">using Bodu.IO.Hashing;
+
+// Original: h = (h * 33) + c
+var original = new Bernstein(Bernstein.DefaultInitialValue, useModifiedAlgorithm: false);
+
+// &quot;djb2a&quot;:  h = (h * 33) ^ c — the common modern variant
+var modified = new Bernstein(Bernstein.DefaultInitialValue, useModifiedAlgorithm: true);
+
+// Or set the properties before the first Append
+var alt = new Bernstein { InitialValue = 0, UseModifiedAlgorithm = true };
+</code></pre>
+<p>Both properties are only settable <strong>before</strong> the first <code>Append</code> — changing them mid-stream would invalidate the running state, so the setters throw once input has been fed.</p>
+<h2 id="pattern-3--bkdrs-published-multiplier-set">Pattern 3 — BKDR's published multiplier set</h2>
+<p>BKDR is a family: the multiplier is a repeating-digit odd number from the published set (<code>31</code>, <code>131</code>, <code>1313</code>, <code>13131</code>, <code>131313</code>, <code>1313131</code>, <code>13131313</code>, <code>131313131</code>, <code>1313131313</code>). The default is <code>BKDR.DefaultSeed</code> (<code>131</code>):</p>
+<pre><code class="lang-csharp">using Bodu.IO.Hashing;
+
+var bkdr = new BKDR(seed: 1313);         // must be one of the published values
+bkdr.Append(Encoding.UTF8.GetBytes(&quot;example&quot;));
+byte[] digest = bkdr.GetCurrentHash();
+</code></pre>
+<p>Passing a value outside the published set throws — the seed is a property of the published &quot;standard BKDR family&quot;, not an arbitrary multiplier.</p>
+<h2 id="pattern-4--elf64-with-a-custom-seed">Pattern 4 — Elf64 with a custom seed</h2>
+<p><code>Elf64</code> widens the classic ELF symbol-table hash to 64 bits and exposes a seed so you can salt it for separate hash-table lanes:</p>
+<pre><code class="lang-csharp">using Bodu.IO.Hashing;
+
+var elf = new Elf64(seed: 0xDEADBEEFUL);
+elf.Append(Encoding.UTF8.GetBytes(&quot;/usr/bin/ls&quot;));
+byte[] digest = elf.GetCurrentHash();
+</code></pre>
+<p>The seed is <strong>not a key</strong> — it does not provide adversarial resistance. It only re-origins the accumulator so two parallel tables get independent distributions.</p>
+<h2 id="pattern-5--append--getcurrenthash--reset">Pattern 5 — <code>Append</code> / <code>GetCurrentHash</code> / <code>Reset</code></h2>
+<p>Every type in this family behaves identically under the <code>NonCryptographicHashAlgorithm</code> contract:</p>
+<pre><code class="lang-csharp">using Bodu.IO.Hashing;
+
+var hash = new SDBM();
+
+hash.Append(header);
+hash.Append(body);
+byte[] partial = hash.GetCurrentHash();    // snapshot, non-destructive
+hash.Append(trailer);
+byte[] full = hash.GetCurrentHash();
+
+hash.Reset();                              // back to the configured seed / initial state
+</code></pre>
+<h2 id="picking-a-function">Picking a function</h2>
+<ul>
+<li><strong>Hashing identifiers inside a compiler or symbol table?</strong> <code>Pjw32</code> or <code>Elf64</code> — these are the functions you'll meet in the original source.</li>
+<li><strong>Quick hash-table function in throwaway code?</strong> <code>Bernstein</code> with <code>UseModifiedAlgorithm = true</code> is simple, well-known, and distributes reasonably.</li>
+<li><strong>Hashing many short keys?</strong> <code>SuperFastHash</code> is tuned for short inputs — but it buffers its input, so avoid it for very large streams (use a block-based fingerprint instead).</li>
+<li><strong>Hashing user-controlled input?</strong> None of these — reach for <a class="xref" href="../../api/Bodu.Security.Cryptography.SipHash64.html">SipHash64</a>.</li>
+<li><strong>Reproducing a known published digest from another tool?</strong> Match on algorithm, width, seed, and (for Bernstein) the add-vs-XOR variant.</li>
+</ul>
+<p>For general-purpose fingerprinting where quality and speed both matter, <strong><code>CityHash64</code></strong> and <strong><code>Fnv1a64</code></strong> outperform everything in this family — see the <a href="cityhash.html">CityHash</a> and <a href="fnv.html">FNV</a> guides.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="fnv.html">Using FNV</a>, <a href="cityhash.html">Using CityHash</a> — modern non-cryptographic hashes with better distribution.</li>
+<li><a href="pearson.html">Using Pearson</a> — table-driven classic hash with configurable output width.</li>
+<li><a href="../cryptography/hashing.html">Cryptography hashing guide</a> — when a classic hash is not enough.</li>
+<li><a class="xref" href="../../api/Bodu.IO.Hashing.html">Bodu.IO.Hashing namespace page</a> — key types and design notes.</li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

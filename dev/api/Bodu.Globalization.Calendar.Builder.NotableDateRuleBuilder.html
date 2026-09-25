@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class NotableDateRuleBuilder | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class NotableDateRuleBuilder | BODU ">
+    
+    <meta name="description" content="Provides a fluent surface for authoring a single rule: its selection scalars, applicability scope, exactly one calculation strategy, rule-specific tags, and the adjustment policies applied to its occurrences.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder">
+
+
+
+  <h1 id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder" class="text-break">Class NotableDateRuleBuilder</h1>
+  <div class="markdown level0 summary"><p>Provides a fluent surface for authoring a single rule: its selection scalars, applicability scope, exactly one
+calculation strategy, rule-specific tags, and the adjustment policies applied to its occurrences.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><span class="xref">NotableDateRuleBuilder</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Globalization.html">Globalization</a>.<a class="xref" href="Bodu.Globalization.Calendar.html">Calendar</a>.<a class="xref" href="Bodu.Globalization.Calendar.Builder.html">Builder</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Globalization.Calendar.Builder.dll</h6>
+  <h5 id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class NotableDateRuleBuilder</code></pre>
+  </div>
+  <h5 id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+A rule must declare exactly one calculation strategy — for example <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.Fixed.html#Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_Fixed_System_Int32_System_Int32_System_Boolean_System_Boolean_">Fixed(int, int, bool, bool)</a>,
+<a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.DayOfWeekInMonth.html#Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_DayOfWeekInMonth_System_Int32_System_DayOfWeek_Bodu_Extensions_WeekOrdinal_">DayOfWeekInMonth(int, DayOfWeek, WeekOrdinal)</a>,
+<a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.WeekdayNearDate.html#Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_WeekdayNearDate_System_Int32_System_Int32_System_DayOfWeek_Bodu_Globalization_Calendar_WeekdayProximity_">WeekdayNearDate(int, int, DayOfWeek, WeekdayProximity)</a>,
+<a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.OffsetFromRule.html#Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_OffsetFromRule_System_String_System_Int32_System_String_">OffsetFromRule(string, int, string?)</a>, or <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.Algorithm.html#Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_Algorithm_System_String_">Algorithm(string)</a>. Scope the rule to a
+calendar, territories, or a year window with the <code>For…</code> / <code>…Year(s)</code> members, and attach reusable
+adjustment policies with <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.WithAdjustment.html#Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_WithAdjustment_System_String_">WithAdjustment(string)</a>. Configure the builder inside
+<a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDefinitionBuilder.AddRule.html#Bodu_Globalization_Calendar_Builder_NotableDateDefinitionBuilder_AddRule_System_String_System_Action_Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder__">AddRule(string, Action&lt;NotableDateRuleBuilder&gt;)</a>.
+</p>
+</div>
+  <h5 id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_examples"><strong>Examples</strong></h5>
+  <pre><code class="lang-csharp">// U.S. Thanksgiving: the fourth Thursday of November, scoped to the United States.
+definition.AddRule("us", r =&gt; r
+    .ForTerritory("US")
+    .DayOfWeekInMonth(11, DayOfWeek.Thursday, WeekOrdinal.Fourth)
+    .AsNonWorking());</code></pre>
+
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_AddTag_System_String_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.AddTag(System.String)">
+          <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.AddTag.html#Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_AddTag_System_String_">AddTag(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Adds a single tag to the rule.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_Algorithm_System_String_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.Algorithm(System.String)">
+          <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.Algorithm.html#Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_Algorithm_System_String_">Algorithm(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Configures the rule with an algorithm strategy that resolves its date from a named built-in or custom algorithm.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_AnchorYear_System_Int32_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.AnchorYear(System.Int32)">
+          <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.AnchorYear.html#Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_AnchorYear_System_Int32_">AnchorYear(int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Sets the anchor year used by interval recurrence.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_AsNonWorking_System_Boolean_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.AsNonWorking(System.Boolean)">
+          <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.AsNonWorking.html#Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_AsNonWorking_System_Boolean_">AsNonWorking(bool)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Sets whether occurrences of the rule are non-working days.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_DailyInterval_System_DateOnly_System_Int32_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.DailyInterval(System.DateOnly,System.Int32)">
+          <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.DailyInterval.html#Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_DailyInterval_System_DateOnly_System_Int32_">DailyInterval(DateOnly, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Configures the rule with a daily-interval recurrence.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_DayOfWeekInMonth_System_Int32_System_DayOfWeek_Bodu_Extensions_WeekOrdinal_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.DayOfWeekInMonth(System.Int32,System.DayOfWeek,Bodu.Extensions.WeekOrdinal)">
+          <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.DayOfWeekInMonth.html#Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_DayOfWeekInMonth_System_Int32_System_DayOfWeek_Bodu_Extensions_WeekOrdinal_">DayOfWeekInMonth(int, DayOfWeek, WeekOrdinal)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Configures the rule with a day-of-week-in-month strategy.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_DayOfYear_System_Int32_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.DayOfYear(System.Int32)">
+          <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.DayOfYear.html#Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_DayOfYear_System_Int32_">DayOfYear(int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Configures the rule with a day-of-year strategy.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_EveryYears_System_Int32_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.EveryYears(System.Int32)">
+          <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.EveryYears.html#Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_EveryYears_System_Int32_">EveryYears(int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Sets the recurrence interval in years for the rule's applicability.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_ExceptYears_System_Int32___" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.ExceptYears(System.Int32[])">
+          <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.ExceptYears.html#Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_ExceptYears_System_Int32___">ExceptYears(params int[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Replaces the rule's exception year list with the supplied years.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_Fixed_System_Int32_System_Int32_System_Boolean_System_Boolean_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.Fixed(System.Int32,System.Int32,System.Boolean,System.Boolean)">
+          <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.Fixed.html#Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_Fixed_System_Int32_System_Int32_System_Boolean_System_Boolean_">Fixed(int, int, bool, bool)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Configures the rule with a fixed day-of-month strategy using a numeric month.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_Fixed_System_String_System_Int32_System_Boolean_System_Boolean_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.Fixed(System.String,System.Int32,System.Boolean,System.Boolean)">
+          <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.Fixed.html#Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_Fixed_System_String_System_Int32_System_Boolean_System_Boolean_">Fixed(string, int, bool, bool)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Configures the rule with a fixed day-of-month strategy using a month name or numeric month token.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_ForCalendar_Bodu_Globalization_Calendar_CalendarSystem_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.ForCalendar(Bodu.Globalization.Calendar.CalendarSystem)">
+          <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.ForCalendar.html#Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_ForCalendar_Bodu_Globalization_Calendar_CalendarSystem_">ForCalendar(CalendarSystem)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Sets the calendar system of the rule's applicability.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_ForTerritories_System_String___" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.ForTerritories(System.String[])">
+          <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.ForTerritories.html#Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_ForTerritories_System_String___">ForTerritories(params string[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Replaces the rule's territory scope with the supplied collection of territory codes.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_ForTerritory_System_String_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.ForTerritory(System.String)">
+          <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.ForTerritory.html#Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_ForTerritory_System_String_">ForTerritory(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Adds a single territory code to the rule's applicability.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_FromYear_System_Int32_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.FromYear(System.Int32)">
+          <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.FromYear.html#Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_FromYear_System_Int32_">FromYear(int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Sets the inclusive lower year bound of the rule's applicability.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_IsoWeekDate_System_Int32_System_DayOfWeek_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.IsoWeekDate(System.Int32,System.DayOfWeek)">
+          <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.IsoWeekDate.html#Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_IsoWeekDate_System_Int32_System_DayOfWeek_">IsoWeekDate(int, DayOfWeek)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Configures the rule with an ISO-week-date strategy.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_MonthlyDay_System_Int32_System_Int32_System_Nullable_System_DateOnly__Bodu_Globalization_Calendar_Algorithms_InvalidDayOfMonthBehavior_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.MonthlyDay(System.Int32,System.Int32,System.Nullable{System.DateOnly},Bodu.Globalization.Calendar.Algorithms.InvalidDayOfMonthBehavior)">
+          <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.MonthlyDay.html#Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_MonthlyDay_System_Int32_System_Int32_System_Nullable_System_DateOnly__Bodu_Globalization_Calendar_Algorithms_InvalidDayOfMonthBehavior_">MonthlyDay(int, int, DateOnly?, InvalidDayOfMonthBehavior)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Configures the rule with a monthly day-of-month recurrence.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_MonthlyWeekday_System_DayOfWeek_Bodu_Extensions_WeekOrdinal_System_Int32_System_Nullable_System_DateOnly__" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.MonthlyWeekday(System.DayOfWeek,Bodu.Extensions.WeekOrdinal,System.Int32,System.Nullable{System.DateOnly})">
+          <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.MonthlyWeekday.html#Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_MonthlyWeekday_System_DayOfWeek_Bodu_Extensions_WeekOrdinal_System_Int32_System_Nullable_System_DateOnly__">MonthlyWeekday(DayOfWeek, WeekOrdinal, int, DateOnly?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Configures the rule with a monthly ordinal-weekday recurrence.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_NthWeekdayFromRule_System_String_System_DayOfWeek_System_Int32_System_Int32_System_String_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.NthWeekdayFromRule(System.String,System.DayOfWeek,System.Int32,System.Int32,System.String)">
+          <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.NthWeekdayFromRule.html#Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_NthWeekdayFromRule_System_String_System_DayOfWeek_System_Int32_System_Int32_System_String_">NthWeekdayFromRule(string, DayOfWeek, int, int, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Configures the rule with an nth-weekday-from-rule strategy.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_OffsetFromRule_System_String_System_Int32_System_String_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.OffsetFromRule(System.String,System.Int32,System.String)">
+          <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.OffsetFromRule.html#Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_OffsetFromRule_System_String_System_Int32_System_String_">OffsetFromRule(string, int, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Configures the rule with an offset-from-rule strategy that derives its date from another rule's occurrence.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_OnlyYears_System_Int32___" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.OnlyYears(System.Int32[])">
+          <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.OnlyYears.html#Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_OnlyYears_System_Int32___">OnlyYears(params int[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Replaces the rule's exclusive year list with the supplied years.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_OrdinalDayOfMonth_System_Int32_System_Int32_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.OrdinalDayOfMonth(System.Int32,System.Int32)">
+          <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.OrdinalDayOfMonth.html#Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_OrdinalDayOfMonth_System_Int32_System_Int32_">OrdinalDayOfMonth(int, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Configures the rule with an ordinal-day-of-month strategy.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_RelativeWeekdayInMonth_System_Int32_System_DayOfWeek_Bodu_Extensions_WeekOrdinal_System_DayOfWeek_Bodu_Globalization_Calendar_WeekdayProximity_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.RelativeWeekdayInMonth(System.Int32,System.DayOfWeek,Bodu.Extensions.WeekOrdinal,System.DayOfWeek,Bodu.Globalization.Calendar.WeekdayProximity)">
+          <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.RelativeWeekdayInMonth.html#Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_RelativeWeekdayInMonth_System_Int32_System_DayOfWeek_Bodu_Extensions_WeekOrdinal_System_DayOfWeek_Bodu_Globalization_Calendar_WeekdayProximity_">RelativeWeekdayInMonth(int, DayOfWeek, WeekOrdinal, DayOfWeek, WeekdayProximity)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Configures the rule with a relative-weekday-in-month strategy.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_ToYear_System_Int32_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.ToYear(System.Int32)">
+          <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.ToYear.html#Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_ToYear_System_Int32_">ToYear(int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Sets the inclusive upper year bound of the rule's applicability.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_UntilDate_System_Action_Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder__Bodu_Globalization_Calendar_DateBoundary_Bodu_Globalization_Calendar_DateBoundary_Bodu_Globalization_Calendar_EndDateSelection_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.UntilDate(System.Action{Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder},Bodu.Globalization.Calendar.DateBoundary,Bodu.Globalization.Calendar.DateBoundary,Bodu.Globalization.Calendar.EndDateSelection)">
+          <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.UntilDate.html#Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_UntilDate_System_Action_Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder__Bodu_Globalization_Calendar_DateBoundary_Bodu_Globalization_Calendar_DateBoundary_Bodu_Globalization_Calendar_EndDateSelection_">UntilDate(Action&lt;NotableDateRuleBuilder&gt;, DateBoundary, DateBoundary, EndDateSelection)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Configures the rule with a calculated end-date duration whose end anchor is produced by a second strategy.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_WeekdayNearDate_System_Int32_System_Int32_System_DayOfWeek_Bodu_Globalization_Calendar_WeekdayProximity_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.WeekdayNearDate(System.Int32,System.Int32,System.DayOfWeek,Bodu.Globalization.Calendar.WeekdayProximity)">
+          <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.WeekdayNearDate.html#Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_WeekdayNearDate_System_Int32_System_Int32_System_DayOfWeek_Bodu_Globalization_Calendar_WeekdayProximity_">WeekdayNearDate(int, int, DayOfWeek, WeekdayProximity)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Configures the rule with a weekday-near-date strategy.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_WeekdayNearRule_System_String_System_DayOfWeek_Bodu_Globalization_Calendar_WeekdayProximity_System_Int32_System_String_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.WeekdayNearRule(System.String,System.DayOfWeek,Bodu.Globalization.Calendar.WeekdayProximity,System.Int32,System.String)">
+          <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.WeekdayNearRule.html#Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_WeekdayNearRule_System_String_System_DayOfWeek_Bodu_Globalization_Calendar_WeekdayProximity_System_Int32_System_String_">WeekdayNearRule(string, DayOfWeek, WeekdayProximity, int, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Configures the rule with a weekday-near-rule strategy that seeks a weekday relative to another rule's
+occurrence.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_Weekly_System_Collections_Generic_IEnumerable_System_DayOfWeek__System_Int32_System_Nullable_System_DateOnly__" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.Weekly(System.Collections.Generic.IEnumerable{System.DayOfWeek},System.Int32,System.Nullable{System.DateOnly})">
+          <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.Weekly.html#Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_Weekly_System_Collections_Generic_IEnumerable_System_DayOfWeek__System_Int32_System_Nullable_System_DateOnly__">Weekly(IEnumerable&lt;DayOfWeek&gt;, int, DateOnly?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Configures the rule with a weekly recurrence on the supplied weekdays.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_WithAdjustment_System_String_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.WithAdjustment(System.String)">
+          <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.WithAdjustment.html#Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_WithAdjustment_System_String_">WithAdjustment(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Adds a single adjustment policy reference to the rule.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_WithAdjustments_System_String___" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.WithAdjustments(System.String[])">
+          <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.WithAdjustments.html#Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_WithAdjustments_System_String___">WithAdjustments(params string[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Replaces the rule's adjustment policy references with the supplied collection.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_WithCategory_Bodu_Globalization_Calendar_NotableDateCategory_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.WithCategory(Bodu.Globalization.Calendar.NotableDateCategory)">
+          <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.WithCategory.html#Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_WithCategory_Bodu_Globalization_Calendar_NotableDateCategory_">WithCategory(NotableDateCategory)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Sets the category override of the rule.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_WithComment_System_String_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.WithComment(System.String)">
+          <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.WithComment.html#Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_WithComment_System_String_">WithComment(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Sets the authoring comment of the rule.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_WithDurationDays_System_Int32_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.WithDurationDays(System.Int32)">
+          <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.WithDurationDays.html#Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_WithDurationDays_System_Int32_">WithDurationDays(int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Sets the duration override of the rule.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_WithPriority_System_Int32_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.WithPriority(System.Int32)">
+          <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.WithPriority.html#Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_WithPriority_System_Int32_">WithPriority(int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Sets the selection priority of the rule.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_WithTags_System_String___" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.WithTags(System.String[])">
+          <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.WithTags.html#Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_WithTags_System_String___">WithTags(params string[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Replaces the rule's tags with the supplied collection.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_WorkingDayInMonth_System_Int32_System_Int32_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.WorkingDayInMonth(System.Int32,System.Int32)">
+          <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.WorkingDayInMonth.html#Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_WorkingDayInMonth_System_Int32_System_Int32_">WorkingDayInMonth(int, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Configures the rule with a working-day-in-month strategy.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_WorkingDayOffsetFromRule_System_String_System_Int32_System_Int32_System_String_" data-uid="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.WorkingDayOffsetFromRule(System.String,System.Int32,System.Int32,System.String)">
+          <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.WorkingDayOffsetFromRule.html#Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_WorkingDayOffsetFromRule_System_String_System_Int32_System_Int32_System_String_">WorkingDayOffsetFromRule(string, int, int, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Configures the rule with a working-day-offset-from-rule strategy.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <h3 id="seealso">See Also</h3>
+  <div class="seealso">
+      <div><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDefinitionBuilder.html">NotableDateDefinitionBuilder</a></div>
+      <div><a class="xref" href="Bodu.Globalization.Calendar.Builder.AdjustmentPolicyBuilder.html">AdjustmentPolicyBuilder</a></div>
+      <div><span><a href="../guides/calendar/rule-authoring.html">Authoring notable date rules (guide)</a></span></div>
+      <div><span><a href="../guides/calendar/rule-reference.html">NotableDateRule and adjustment-policy reference (guide)</a></span></div>
+  </div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

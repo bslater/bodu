@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Enum YamlSpecVersion | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Enum YamlSpecVersion | BODU ">
+    
+    <meta name="description" content="Identifies the version of the YAML specification whose implicit type resolution the reader applies. The version controls how unquoted (plain) scalars are interpreted as booleans, null, and numbers.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Text.Yaml.YamlSpecVersion">
+
+
+
+
+  <h1 id="Bodu_Text_Yaml_YamlSpecVersion" data-uid="Bodu.Text.Yaml.YamlSpecVersion" class="text-break">Enum YamlSpecVersion</h1>
+  <div class="markdown level0 summary"><p>Identifies the version of the YAML specification whose implicit type resolution the reader applies. The version
+controls how unquoted (plain) scalars are interpreted as booleans, null, and numbers.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Yaml.html">Yaml</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Text.Yaml.dll</h6>
+  <h5 id="Bodu_Text_Yaml_YamlSpecVersion_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public enum YamlSpecVersion</code></pre>
+  </div>
+  <h5 id="Bodu_Text_Yaml_YamlSpecVersion_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+The default is <a class="xref" href="Bodu.Text.Yaml.YamlSpecVersion.html#Bodu_Text_Yaml_YamlSpecVersion_V1_2">V1_2</a>, whose core schema resolves only <code>true</code>/<code>false</code> as booleans and
+<code>null</code>/<code>~</code>/the empty scalar as null. This avoids the well-known "Norway problem" in which YAML 1.1
+silently converts unquoted tokens such as <code>no</code>, <code>yes</code>, <code>on</code>, and <code>off</code> to booleans.
+</p>
+<p>
+Selecting <a class="xref" href="Bodu.Text.Yaml.YamlSpecVersion.html#Bodu_Text_Yaml_YamlSpecVersion_V1_1">V1_1</a> opts in to the broader YAML 1.1 implicit typing rules, including the additional
+boolean spellings (<code>yes</code>/<code>no</code>, <code>on</code>/<code>off</code>, <code>y</code>/<code>n</code>), leading-zero octal integers (<code>0NNN</code>),
+binary integers (<code>0bNNN</code>), and underscore digit grouping. The base-60 ("sexagesimal") numeric form of the
+historical 1.1 schema is deliberately not resolved under either version: a colon-separated plain scalar such as
+<code>22:22</code> remains a string, avoiding the well-known footgun in which time-, port-, or address-like values were
+silently reinterpreted as large numbers. The version affects only how plain scalars are typed; structural parsing of
+anchors, aliases, tags, and collections is identical for both versions.
+</p>
+</div>
+  <h3 id="fields">Fields
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    <thead>
+    </thead></thead><tbody>
+      <tr>
+        <td id="Bodu_Text_Yaml_YamlSpecVersion_V1_2">V1_2</td>
+        <td><p>The YAML 1.2 core schema. Only <code>true</code> and <code>false</code> resolve to booleans, and an explicit tag is required
+to type tokens such as <code>yes</code> or <code>off</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Yaml_YamlSpecVersion_V1_1">V1_1</td>
+        <td><p>The YAML 1.1 schema. Additionally resolves <code>yes</code>/<code>no</code>, <code>on</code>/<code>off</code>, and <code>y</code>/<code>n</code> as
+booleans, and accepts leading-zero octal integers, binary integers, and underscore digit grouping. Base-60
+(&quot;sexagesimal&quot;) numbers are deliberately not resolved; a colon-separated scalar such as <code>22:22</code> stays a
+string.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Bodu.Extensions.BufferConverter.CopyTo.html#Bodu_Extensions_BufferConverter_CopyTo__1___0_System_Byte___System_Int32_">BufferConverter.CopyTo&lt;YamlSpecVersion&gt;(YamlSpecVersion, byte[], int)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;YamlSpecVersion&gt;(YamlSpecVersion, YamlSpecVersion, IComparer&lt;YamlSpecVersion&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;YamlSpecVersion&gt;(YamlSpecVersion, YamlSpecVersion, IComparer&lt;YamlSpecVersion&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Clamp.html#Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.Clamp&lt;YamlSpecVersion&gt;(YamlSpecVersion, YamlSpecVersion?, YamlSpecVersion?, IComparer&lt;YamlSpecVersion&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsBetween.html#Bodu_Extensions_ComparableExtensions_IsBetween__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsBetween&lt;YamlSpecVersion&gt;(YamlSpecVersion, YamlSpecVersion?, YamlSpecVersion?, IComparer&lt;YamlSpecVersion&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;YamlSpecVersion&gt;(YamlSpecVersion, YamlSpecVersion, IComparer&lt;YamlSpecVersion&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThanOrEqual&lt;YamlSpecVersion&gt;(YamlSpecVersion, YamlSpecVersion?, IComparer&lt;YamlSpecVersion&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThan.html#Bodu_Extensions_ComparableExtensions_IsGreaterThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThan&lt;YamlSpecVersion&gt;(YamlSpecVersion, YamlSpecVersion?, IComparer&lt;YamlSpecVersion&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThanOrEqual&lt;YamlSpecVersion&gt;(YamlSpecVersion, YamlSpecVersion?, IComparer&lt;YamlSpecVersion&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThan.html#Bodu_Extensions_ComparableExtensions_IsLessThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThan&lt;YamlSpecVersion&gt;(YamlSpecVersion, YamlSpecVersion?, IComparer&lt;YamlSpecVersion&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsOutside.html#Bodu_Extensions_ComparableExtensions_IsOutside__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsOutside&lt;YamlSpecVersion&gt;(YamlSpecVersion, YamlSpecVersion?, YamlSpecVersion?, IComparer&lt;YamlSpecVersion&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;YamlSpecVersion&gt;(YamlSpecVersion, YamlSpecVersion, IComparer&lt;YamlSpecVersion&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;YamlSpecVersion&gt;(YamlSpecVersion, YamlSpecVersion, IComparer&lt;YamlSpecVersion&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.EnumExtensions.ClearFlag.html#Bodu_Extensions_EnumExtensions_ClearFlag__1___0___0_">EnumExtensions.ClearFlag&lt;YamlSpecVersion&gt;(YamlSpecVersion, YamlSpecVersion)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.EnumExtensions.GetDescription.html#Bodu_Extensions_EnumExtensions_GetDescription__1___0_">EnumExtensions.GetDescription&lt;YamlSpecVersion&gt;(YamlSpecVersion)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.EnumExtensions.GetDisplayName.html#Bodu_Extensions_EnumExtensions_GetDisplayName__1___0_">EnumExtensions.GetDisplayName&lt;YamlSpecVersion&gt;(YamlSpecVersion)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.EnumExtensions.HasAllFlags.html#Bodu_Extensions_EnumExtensions_HasAllFlags__1___0___0_">EnumExtensions.HasAllFlags&lt;YamlSpecVersion&gt;(YamlSpecVersion, YamlSpecVersion)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.EnumExtensions.HasAnyFlag.html#Bodu_Extensions_EnumExtensions_HasAnyFlag__1___0___0_">EnumExtensions.HasAnyFlag&lt;YamlSpecVersion&gt;(YamlSpecVersion, YamlSpecVersion)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.EnumExtensions.SetFlag.html#Bodu_Extensions_EnumExtensions_SetFlag__1___0___0_">EnumExtensions.SetFlag&lt;YamlSpecVersion&gt;(YamlSpecVersion, YamlSpecVersion)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.EnumExtensions.ToggleFlag.html#Bodu_Extensions_EnumExtensions_ToggleFlag__1___0___0_">EnumExtensions.ToggleFlag&lt;YamlSpecVersion&gt;(YamlSpecVersion, YamlSpecVersion)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.EnumExtensions.TryGetDescription.html#Bodu_Extensions_EnumExtensions_TryGetDescription__1___0_System_String__">EnumExtensions.TryGetDescription&lt;YamlSpecVersion&gt;(YamlSpecVersion, out string)</a>
+  </div>
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

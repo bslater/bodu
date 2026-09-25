@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Using SipHash | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Using SipHash | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="using-siphash">Using SipHash</h1>
+
+<p>SipHash is a family of <strong>keyed</strong> pseudo-random functions designed by Aumasson and Bernstein for one specific job: defeating hash-flooding attacks on hash tables. It takes a 128-bit secret key and a message of any length, and produces a fixed-size digest that is prohibitively expensive to collide without knowledge of the key.</p>
+<p>Unlike a one-time authenticator such as <a class="xref" href="../../api/Bodu.Security.Cryptography.Poly1305.html">Poly1305</a>, SipHash is a <strong>reusable PRF</strong>: a single key authenticates an unbounded number of messages, and <code>CanReuseTransform</code> is <code>true</code>. That is the property that makes it a drop-in keyed hash for routing, sharding, and DoS-resistant hash tables.</p>
+<p><img src="../../images/diagrams/siphash-round.svg" alt="SipHash SipRound — the add-rotate-XOR network over the four 64-bit state words"></p>
+<p><strong>Bodu.Security.Cryptography</strong> ships two widths:</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Output</th>
+<th>Parameterization (default)</th>
+<th>When to reach for it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.SipHash64.html">SipHash64</a></td>
+<td>64 bits</td>
+<td>SipHash-2-4</td>
+<td>The standard choice — hash-table keys, sharding, short fingerprints.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.SipHash128.html">SipHash128</a></td>
+<td>128 bits</td>
+<td>SipHash-2-4</td>
+<td>Longer output for content-addressing or de-duplication where 64 bits is uncomfortable.</td>
+</tr>
+</tbody>
+</table>
+<p>Both derive from a shared <a class="xref" href="../../api/Bodu.Security.Cryptography.SipHash.html">SipHash</a> base, which sits on Bodu's <a class="xref" href="../../api/Bodu.Security.Cryptography.KeyedBlockHashAlgorithm.html">KeyedBlockHashAlgorithm</a> — itself a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a> that adds a <code>Key</code> property (this package does not route through the BCL <code>KeyedHashAlgorithm</code>). The key is exactly <strong>16 bytes</strong> (the <code>SipHash.KeySize</code> constant, 128 bits) — shorter or longer keys are rejected at configuration time.</p>
+<h2 id="fixed-sizes-at-a-glance">Fixed sizes at a glance</h2>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Size</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Key</code></td>
+<td>128 bits (16 bytes)</td>
+<td>Fixed; <code>SipHash.KeySize</code> is the length in <em>bits</em> (128). Generate once, store in your process / vault.</td>
+</tr>
+<tr>
+<td>Output (<code>SipHash64</code>)</td>
+<td>64 bits (8 bytes)</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Output (<code>SipHash128</code>)</td>
+<td>128 bits (16 bytes)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>CompressionRounds</code></td>
+<td><code>&gt;= 2</code> (default 2)</td>
+<td>Inner rounds per 8-byte block.</td>
+</tr>
+<tr>
+<td><code>FinalizationRounds</code></td>
+<td><code>&gt;= 4</code> (default 4)</td>
+<td>Rounds applied once at the end.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="pattern-1--one-shot-keyed-hash">Pattern 1 — one-shot keyed hash</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Security.Cryptography;
+using System.Text;
+using Bodu.Security.Cryptography;
+
+// 128-bit key — generated once, stored in your process / vault.
+// SipHash64.KeySize is the key length in *bits* (128), so divide by 8 for the byte count.
+byte[] key = new byte[SipHash64.KeySize / 8];   // 16 bytes
+RandomNumberGenerator.Fill(key);
+
+byte[] message = Encoding.UTF8.GetBytes(&quot;the quick brown fox&quot;);
+
+using var sip = new SipHash64 { Key = key };
+byte[] digest = sip.ComputeHash(message);           // 8 bytes
+ulong  fingerprint = BitConverter.ToUInt64(digest);
+</code></pre>
+<p>Swap <code>SipHash64</code> for <code>SipHash128</code> when you need 128 bits of output; everything else stays the same.</p>
+<h2 id="pattern-2--the-streaming-computehash--transformblock-lifecycle">Pattern 2 — the streaming <code>ComputeHash</code> / <code>TransformBlock</code> lifecycle</h2>
+<p>SipHash inherits the standard BCL <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a> contract, so all the usual streaming affordances apply:</p>
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+
+using var sip = new SipHash128 { Key = key };
+
+using var stream = File.OpenRead(&quot;message.bin&quot;);
+byte[] digest = sip.ComputeHash(stream);
+</code></pre>
+<p>You can also drive it block-by-block with <code>TransformBlock</code> / <code>TransformFinalBlock</code>, or — simplest of all — with <code>ComputeHash(ReadOnlySpan&lt;byte&gt;)</code> from the BCL span overload.</p>
+<h2 id="pattern-3--adjusting-the-round-count">Pattern 3 — adjusting the round count</h2>
+<p>SipHash's two round parameters are the speed / margin trade-off: more rounds, more conservative margin, slower throughput. The defaults (<code>CompressionRounds = 2</code>, <code>FinalizationRounds = 4</code>) give you the published <strong>SipHash-2-4</strong>, which is what every standard library and protocol uses.</p>
+<pre><code class="lang-csharp">// SipHash-4-8 — extra margin at roughly half the speed.
+using var sip = new SipHash64
+{
+    Key                 = key,
+    CompressionRounds   = 4,
+    FinalizationRounds  = 8,
+};
+</code></pre>
+<p>Both rounds must be set <strong>before</strong> the first <code>TransformBlock</code> / <code>ComputeHash</code> — the setters throw once hashing has started, since changing the schedule mid-stream would invalidate state. The reported <code>AlgorithmName</code> includes the parameterization (e.g. <code>&quot;SipHash-4-8-128&quot;</code>), which is useful in logs and interop headers.</p>
+<pre><code class="lang-csharp">using var sip = new SipHash128 { Key = key, CompressionRounds = 4, FinalizationRounds = 8 };
+Console.WriteLine(sip.AlgorithmName);   // &quot;SipHash-4-8-128&quot;
+</code></pre>
+<h2 id="pattern-4--bucketing-or-sharding">Pattern 4 — bucketing or sharding</h2>
+<p>A common use is to pick a bucket or shard from a user-controlled key. The key into SipHash must be <strong>fixed process-wide</strong> (so results are stable) and <strong>secret</strong> (so an attacker cannot pre-compute colliding inputs):</p>
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+
+byte[] ShardKey()
+{
+    // Load once from a vault at startup. Do NOT regenerate per request.
+    return LoadSecretFromVault(name: &quot;sharding-key-v1&quot;);
+}
+
+int ShardFor(ReadOnlySpan&lt;byte&gt; routeKey, int shardCount)
+{
+    using var sip = new SipHash64 { Key = ShardKey() };
+    byte[] digest = sip.ComputeHash(routeKey.ToArray());
+    ulong h = BitConverter.ToUInt64(digest);
+    return (int)(h % (ulong)shardCount);
+}
+</code></pre>
+<p>This is the canonical &quot;use SipHash, not a non-cryptographic hash&quot; case. An attacker who wants to overload a specific shard would have to invert SipHash without the key — which is what the algorithm is designed to prevent.</p>
+<h2 id="pattern-5--verifying-in-constant-time">Pattern 5 — verifying in constant time</h2>
+<p>When you compare a computed digest against a trusted one (e.g. a MAC check), <strong>do not use <code>SequenceEqual</code></strong> — timing differences leak information. Use the BCL's fixed-time comparison, or the <code>VerifyHash</code> helper from <code>Bodu.Security.Cryptography.Extensions</code>:</p>
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+using Bodu.Security.Cryptography.Extensions;
+
+using var sip = new SipHash64 { Key = key };
+bool ok = sip.VerifyHash(message, expectedDigest);
+</code></pre>
+<p>See the <a href="hashing.html#pattern-4--verifying-a-hash">hashing overview</a> for the general pattern.</p>
+<h2 id="what-siphash-is-not">What SipHash is not</h2>
+<ul>
+<li><strong>Not a MAC for long messages.</strong> SipHash was built specifically for short inputs; if you need a MAC over files or network frames, reach for HMAC-SHA-256 (<code>System.Security.Cryptography.HMACSHA256</code>) or <a class="xref" href="../../api/Bodu.Security.Cryptography.Poly1305.html">Poly1305</a>.</li>
+<li><strong>Not a cryptographic hash.</strong> SipHash is a PRF — it resists collision and preimage only while the key stays secret. For a keyless collision-resistant digest, use SHA-256 or <a class="xref" href="../../api/Bodu.Security.Cryptography.Tiger.html">Tiger</a>.</li>
+<li><strong>Not deterministic across keys.</strong> Two instances with different keys produce unrelated outputs for the same input. That is the point.</li>
+</ul>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="hashing.html">Hashing overview</a> — how SipHash fits alongside cryptographic digests and non-cryptographic fingerprints.</li>
+<li><a href="tiger.html">Using Tiger</a> — a keyless cryptographic digest when you don't have a secret to carry around.</li>
+<li><a href="poly1305.html">Using Poly1305</a> — one-time authenticator that pairs with a stream cipher (the classic Poly1305/ChaCha20 AEAD construction).</li>
+<li><a href="../io-hashing/index.html">Bodu.IO.Hashing — FNV, CityHash, Adler</a> — the non-keyed, non-adversarial alternatives for trusted inputs.</li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

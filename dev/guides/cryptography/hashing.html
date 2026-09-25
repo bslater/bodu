@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Using hashes and checksums | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Using hashes and checksums | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="using-hashes-and-checksums">Using hashes and checksums</h1>
+
+<p><strong>Bodu.Security.Cryptography</strong> ships the library's keyed hashes (SipHash), one-time authenticators (Poly1305), cryptographic digests (Tiger, Snefru, CubeHash, Whirlpool, BLAKE2 / BLAKE3, Skein, ASCON-HASH256, ASCON-HASHA256), the XOFs (SHAKE, ASCON-XOF128 / CXOF128), and Merkle-tree hashing. The digests, MACs, and SHAKE plug into the standard <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a> contract; the ASCON XOFs expose an absorb / squeeze sponge surface, and the Merkle tree hashes are factory-constructed one-shot <code>ComputeHash</code> types over any inner <code>HashAlgorithm</code>.</p>
+<p>This page is the cross-cutting overview — what guarantee a cryptographic hash actually makes, how the structural shapes (digest / XOF / tree) differ, which to choose for which job, and how to verify a digest safely. For the full per-algorithm walk-throughs, see:</p>
+<ul>
+<li><a href="siphash.html">Using SipHash</a> — keyed short-input PRF.</li>
+<li><a href="poly1305.html">Using Poly1305</a> — one-time authenticator.</li>
+<li><a href="tiger.html">Using Tiger</a> — 128 / 160 / 192-bit cryptographic digest.</li>
+<li><a href="cubehash.html">Using CubeHash</a> — SHA-3 submission with tunable rounds and block size.</li>
+<li><a href="snefru.html">Using Snefru</a> — legacy 128 / 256-bit digest (interop only).</li>
+<li><a href="whirlpool.html">Using Whirlpool</a> — 512-bit ISO/IEC 10118-3 digest.</li>
+<li><a href="blake.html">Using BLAKE2 and BLAKE3</a> — BLAKE2b / BLAKE2s (keyed, configurable width) and the tree-structured BLAKE3.</li>
+<li><a href="skein.html">Using Skein</a> — Threefish-based UBI digests with a MAC mode.</li>
+<li><a href="shake.html">Using SHAKE</a> — Keccak extendable-output function (FIPS 202).</li>
+<li><a href="ascon.html">Using ASCON-HASH256 and ASCON-HASHA256</a> — NIST SP 800-232 sponge digests; two variants trading margin for throughput.</li>
+<li><a href="merkle-trees.html">Merkle trees and proofs</a> — the RFC 6962 tree over any inner <code>HashAlgorithm</code>: roots over entries, blocks, or a write-time accumulator; inclusion and consistency proofs; length-bound roots.</li>
+</ul>
+<blockquote>
+<p><strong>Looking for CRC, Fletcher, Adler, FNV, CityHash, Pearson, Bernstein, BKDR, SDBM, JSHash, Elf64, ApHash, or Pjw32?</strong> Those non-cryptographic families live in the companion <a class="xref" href="../../api/Bodu.IO.Hashing.html">Bodu.IO.Hashing</a> package, built on <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.hashing.noncryptographichashalgorithm">NonCryptographicHashAlgorithm</a>. See the <a href="../io-hashing/index.html">Bodu.IO.Hashing guides</a>.</p>
+</blockquote>
+<h2 id="what-a-cryptographic-hash-guarantees">What a cryptographic hash guarantees</h2>
+<p>A cryptographic hash is a <strong>one-way</strong> function: cheap to compute forwards, computationally infeasible to invert. Three named resistance properties define the contract, and the security level of each is bounded by the digest width:</p>
+<ul>
+<li><strong>Pre-image resistance</strong> — given a digest <code>h</code>, no efficient way to find any input <code>m</code> with <code>hash(m) = h</code>. Costs ≈ 2ⁿ for an n-bit digest.</li>
+<li><strong>Second-pre-image resistance</strong> — given an input <code>m₁</code>, no efficient way to find a <em>different</em> <code>m₂</code> with the same digest. Costs ≈ 2ⁿ.</li>
+<li><strong>Collision resistance</strong> — no efficient way to find <em>any</em> pair <code>m₁ ≠ m₂</code> with the same digest. Costs ≈ 2^(n/2) by the birthday bound — so a 256-bit digest gives only 128-bit collision resistance, and truncating a digest halves the collision exponent with it.</li>
+</ul>
+<p>This is the line between this package and the non-cryptographic <a class="xref" href="../../api/Bodu.IO.Hashing.html">Bodu.IO.Hashing</a> fingerprints: those carry <strong>no adversary model</strong> and fail every property above against an attacker who can choose the input. A cryptographic digest provides <strong>integrity only when the digest itself reaches the verifier over an authenticated channel</strong> — on its own it is not authentication. For integrity <em>and</em> authenticity against an active attacker, reach for a keyed hash / MAC (below) or an AEAD mode.</p>
+<h2 id="the-three-structural-shapes">The three structural shapes</h2>
+<p>The cryptographic hashes here share the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a> base but differ in what they produce:</p>
+<table>
+<thead>
+<tr>
+<th>Shape</th>
+<th>Output</th>
+<th>Types</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Plain digest</strong></td>
+<td>Fixed width chosen at construction</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.Tiger.html">Tiger</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.Whirlpool.html">Whirlpool</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.CubeHash.html">CubeHash</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.Snefru128.html">Snefru128</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.Blake2b.html">Blake2b</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.Skein512.html">Skein512</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.AsconHash256.html">AsconHash256</a></td>
+<td>Content addressing, signature inputs, fingerprints.</td>
+</tr>
+<tr>
+<td><strong>Extendable output (XOF)</strong></td>
+<td>Any requested length</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.Shake.html">Shake</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.AsconXof128.html">AsconXof128</a></td>
+<td>Squeeze arbitrary-length key material or deterministic randomness from a seed.</td>
+</tr>
+<tr>
+<td><strong>Tree</strong></td>
+<td>Root digest over hashed leaves</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.MerkleTree.html">MerkleTree</a></td>
+<td>Verifiable per-chunk inclusion proofs; partial re-verification.</td>
+</tr>
+</tbody>
+</table>
+<p>Two families on this page take a <strong>secret key</strong> in addition to the message and produce an authentication tag — and they split on a critical axis:</p>
+<table>
+<thead>
+<tr>
+<th>Subtype</th>
+<th>Type</th>
+<th>Key reuse</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Reusable PRF</strong></td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.SipHash64.html">SipHash64</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.SipHash128.html">SipHash128</a></td>
+<td>One key authenticates <strong>many</strong> messages.</td>
+</tr>
+<tr>
+<td><strong>One-time authenticator</strong></td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.Poly1305.html">Poly1305</a></td>
+<td>The key authenticates <strong>exactly one</strong> message — reuse is a complete break.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="the-hashalgorithm-lifecycle">The HashAlgorithm lifecycle</h2>
+<p>Every cryptographic hash here is a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a>, so the BCL contract applies unchanged:</p>
+<ul>
+<li><strong>One-shot</strong> — <code>ComputeHash(byte[])</code>, <code>ComputeHash(ReadOnlySpan&lt;byte&gt;)</code>, or <code>ComputeHash(Stream)</code>. The instance is auto-reinitialised afterwards, so the same instance can hash the next message.</li>
+<li><strong>Streaming</strong> — <code>TransformBlock(...)</code> repeatedly, then <code>TransformFinalBlock(...)</code>; read the digest from the <code>Hash</code> property. Call <code>Initialize()</code> to reset between messages.</li>
+<li><code>CanReuseTransform</code> reports whether the instance survives a finalisation — <code>true</code> for the digests and for SipHash, <strong><code>false</code> for <code>Poly1305</code></strong> (its way of refusing key reuse at the API level).</li>
+</ul>
+<p>The <a class="xref" href="../../api/Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html">HashAlgorithmExtensions</a> helpers add <code>AppendData</code>, <code>VerifyHash</code>, and <code>TryVerifyHash</code> (and their async overloads) on top of that base.</p>
+<h2 id="pick-the-right-tool">Pick the right tool</h2>
+<table>
+<thead>
+<tr>
+<th>If you need…</th>
+<th>Use</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A fast non-cryptographic fingerprint for hash tables, bucketing, caches</td>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Adler32.html">Adler32</a>, <a class="xref" href="../../api/Bodu.IO.Hashing.Fnv1a32.html">Fnv1a32</a>, <a class="xref" href="../../api/Bodu.IO.Hashing.Fnv1a64.html">Fnv1a64</a>, <a class="xref" href="../../api/Bodu.IO.Hashing.CityHash64.html">CityHash64</a></td>
+<td>Cheap, well-spread, <strong>not</strong> cryptographic.</td>
+</tr>
+<tr>
+<td>A hash-table key or short fingerprint, resistant to collision-DoS</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.SipHash64.html">SipHash64</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.SipHash128.html">SipHash128</a></td>
+<td>Keyed, collision-resistant for short inputs.</td>
+</tr>
+<tr>
+<td>A cryptographic digest for signatures, fingerprints, or content addressing</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.Tiger.html">Tiger</a>, or <code>System.Security.Cryptography.SHA256</code> (BCL)</td>
+<td>Collision-resistant against active attackers.</td>
+</tr>
+<tr>
+<td>A NIST-standardized 256-bit digest with a small state footprint (SP 800-232)</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.AsconHash256.html">AsconHash256</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.AsconHashA256.html">AsconHashA256</a></td>
+<td>Two variants: max margin (<code>ASCON-HASH256</code>) or higher throughput (<code>ASCON-HASHA256</code>).</td>
+</tr>
+<tr>
+<td>A rolling integrity check over a long stream with partial re-verification</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.MerkleTree.html">MerkleTree</a></td>
+<td>Per-block inclusion proofs without rehashing the whole input.</td>
+</tr>
+<tr>
+<td>An on-the-wire CRC (zlib, PNG, Modbus, iSCSI, …) or a Fletcher checksum</td>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Crc.html">Crc</a>, <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Fletcher32.html">Fletcher32</a></td>
+<td>Non-cryptographic, <code>System.IO.Hashing</code> contract — see the <a href="../io-hashing/index.html">Bodu.IO.Hashing guides</a>.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="pattern-1--a-classic-non-cryptographic-fingerprint">Pattern 1 — a classic non-cryptographic fingerprint</h2>
+<p>Adler, FNV, and CityHash all derive from <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.hashing.noncryptographichashalgorithm">NonCryptographicHashAlgorithm</a> (via <strong>Bodu.IO.Hashing</strong>), so they drop into any API that accepts a standard .NET non-cryptographic hash.</p>
+<pre><code class="lang-csharp">using System.Text;
+using Bodu.IO.Hashing;
+
+byte[] data = Encoding.UTF8.GetBytes(&quot;the quick brown fox&quot;);
+
+var fnv = new Fnv1a64();
+fnv.Append(data);
+byte[] digest = fnv.GetCurrentHash();
+string hex    = Convert.ToHexString(digest);   // 8-byte value, 16 hex characters
+</code></pre>
+<p>The same shape works for <code>Adler32</code>, <code>Adler64</code>, <code>Fletcher16</code>, <code>Fletcher32</code>, <code>Fletcher64</code>, <code>Fnv1a32</code>, <code>Fnv1a64</code>, <code>CityHash32</code>, <code>CityHash64</code>, <code>Crc</code>, and the classic string hashes (<code>Bernstein</code>, <code>BKDR</code>, <code>SDBM</code>, <code>JSHash</code>, <code>Elf64</code>, <code>ApHash</code>, <code>Pjw32</code>, <code>Pearson</code>). They all derive from <code>NonCryptographicHashAlgorithm</code>, so any API that accepts that base accepts them.</p>
+<p><strong>What they're not.</strong> These are non-cryptographic — they are error-detection and distribution tools, not authentication tools. An attacker who can freely modify a message can trivially forge the digest. Pair them with a signature or a MAC if you need integrity against an adversary.</p>
+<h2 id="pattern-2--a-keyed-hash-siphash">Pattern 2 — a keyed hash (SipHash)</h2>
+<p>SipHash was designed to keep hash tables safe from collision-DoS attacks. It is a <strong>reusable PRF</strong> — one secret key authenticates many messages, and even an adversary who knows the algorithm cannot produce collisions efficiently without the key.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Security.Cryptography;
+using Bodu.Security.Cryptography;
+
+// 128-bit key (SipHash64.KeySize == 128) — generated once, stored in your process / vault.
+byte[] key = new byte[SipHash64.KeySize / 8];   // 16 bytes
+RandomNumberGenerator.Fill(key);
+
+byte[] message = &quot;the quick brown fox&quot;u8.ToArray();
+
+using var sip = new SipHash64 { Key = key };
+byte[] digest = sip.ComputeHash(message);
+ulong slotHash = BitConverter.ToUInt64(digest);
+
+// Use the output as a stable 64-bit hash for routing / bucketing.
+</code></pre>
+<p>The key is exactly 16 bytes; a shorter or longer key is rejected at configuration time. <code>SipHash128</code> gives you a 128-bit output for use cases that care about longer collision resistance. Both types expose <code>CompressionRounds</code> (default 2) and <code>FinalizationRounds</code> (default 4) if you need to trade speed for margin — the defaults are the standard <strong>SipHash-2-4</strong> parameterization. See <a href="siphash.html">Using SipHash</a>.</p>
+<blockquote>
+<p><strong>PRF vs one-time authenticator.</strong> SipHash is safe to reuse under one key. <a class="xref" href="../../api/Bodu.Security.Cryptography.Poly1305.html">Poly1305</a> is <em>not</em> — its forgery bound holds only while the 32-byte key is used exactly once, which is why its <code>CanReuseTransform</code> is <code>false</code>. See <a href="poly1305.html">Using Poly1305</a>.</p>
+</blockquote>
+<h2 id="pattern-3--a-cryptographic-digest">Pattern 3 — a cryptographic digest</h2>
+<p><a class="xref" href="../../api/Bodu.Security.Cryptography.Tiger.html">Tiger</a> is a classic 192-bit cryptographic hash optimized for 64-bit platforms. Use it for interoperability with existing Tiger-based systems, or when you want a digest in the same family as SHA-2 without pulling in a second dependency.</p>
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+
+using var tiger = new Tiger();     // 192-bit default; set HashSize for 128/160
+byte[] digest = tiger.ComputeHash(data);
+</code></pre>
+<p>For brand-new work, prefer the BCL's <code>System.Security.Cryptography.SHA256</code> or <code>System.Security.Cryptography.SHA512</code> — they are hardware-accelerated on most modern CPUs. The package also ships <a class="xref" href="../../api/Bodu.Security.Cryptography.Whirlpool.html">Whirlpool</a> (512-bit, ISO/IEC 10118-3), <a class="xref" href="../../api/Bodu.Security.Cryptography.CubeHash.html">CubeHash</a> (tunable), <a class="xref" href="../../api/Bodu.Security.Cryptography.Skein512.html">Skein512</a> (Threefish-based, with a built-in MAC mode), and <a class="xref" href="../../api/Bodu.Security.Cryptography.Blake2b.html">Blake2b</a> / <a class="xref" href="../../api/Bodu.Security.Cryptography.Blake3.html">Blake3</a>.</p>
+<div class="WARNING">
+<h5>Warning</h5>
+<p><a class="xref" href="../../api/Bodu.Security.Cryptography.Snefru128.html">Snefru128</a> / <a class="xref" href="../../api/Bodu.Security.Cryptography.Snefru256.html">Snefru256</a> are <strong>cryptographically broken</strong> — practical collisions are known. They ship for interoperability and research only; never use them to protect real data. See <a href="snefru.html">Using Snefru</a>.</p>
+</div>
+<h2 id="pattern-3b--an-extendable-output-function-xof">Pattern 3b — an extendable-output function (XOF)</h2>
+<p>When you need <em>more</em> output than a fixed digest supplies — arbitrary-length key material, deterministic randomness from a seed — reach for a XOF instead of a plain digest. <a class="xref" href="../../api/Bodu.Security.Cryptography.Shake.html">Shake</a> squeezes any positive multiple of 8 bits at a chosen 128- or 256-bit security level:</p>
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+
+// SHAKE256, squeezing 1024 bits (128 bytes) from the seed.
+using var shake = new Shake(outputBits: 1024, securityLevel: 256);
+byte[] output = shake.ComputeHash(seed);   // 128 bytes
+</code></pre>
+<p>Unlike a Merkle–Damgård digest, a sponge XOF is immune to length extension and truncating its output is safe down to the security target. See <a href="shake.html">Using SHAKE</a>.</p>
+<h2 id="pattern-4--verifying-a-hash">Pattern 4 — verifying a hash</h2>
+<p>Computing a hash is half the job; comparing it in constant time is the other half. The <code>HashAlgorithmExtensions</code> class (in <code>Bodu.Security.Cryptography.Extensions</code>) provides a <code>VerifyHash</code> helper that does the comparison with <code>CryptographicOperations.FixedTimeEquals</code>:</p>
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+using Bodu.Security.Cryptography.Extensions;
+
+byte[] expected = LoadExpectedDigestForFile(&quot;report.pdf&quot;);
+
+using var hash = new Tiger();
+bool match = hash.VerifyHash(new ReadOnlySpan&lt;byte&gt;(fileBytes), expected);
+</code></pre>
+<p>A direct <code>SequenceEqual</code> comparison leaks timing information to an observer and is unsafe for authentication decisions.</p>
+<h2 id="pattern-5--streaming-hash-over-a-file">Pattern 5 — streaming hash over a file</h2>
+<p>For non-cryptographic streaming, <code>NonCryptographicHashAlgorithm.Append(Stream)</code> (or <code>AppendAsync</code>) consumes the stream without loading it into memory:</p>
+<pre><code class="lang-csharp">using System.IO.Hashing;
+using Bodu.IO.Hashing;
+
+var hash = new Fnv1a64();
+using (var stream = File.OpenRead(&quot;archive.bin&quot;))
+    hash.Append(stream);
+
+byte[] fingerprint = hash.GetCurrentHash();
+</code></pre>
+<p>For a cryptographic digest the <code>HashAlgorithm</code> base exposes <code>ComputeHash(Stream)</code>:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Security.Cryptography;
+using Bodu.Security.Cryptography;
+
+using var tiger = new Tiger();
+using var stream = File.OpenRead(&quot;archive.bin&quot;);
+byte[] digest = tiger.ComputeHash(stream);
+</code></pre>
+<p>For a larger file where you want partial verifiability — &quot;the first megabyte's digest is X; the second megabyte's digest is Y&quot; — use a Merkle tree instead (next section).</p>
+<h2 id="pattern-6--merkle-trees">Pattern 6 — Merkle trees</h2>
+<p><a class="xref" href="../../api/Bodu.Security.Cryptography.MerkleTree.html">MerkleTree</a> lets you compute a single root digest over a stream by hashing it in fixed-size blocks and folding the leaves into RFC 6962's Merkle Tree Hash. The root is the one any RFC 6962 implementation computes over the same blocks, so an inclusion proof from the same type can later prove the integrity of an individual chunk without rehashing the whole stream.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Security.Cryptography;
+using Bodu.Security.Cryptography;
+
+var merkle = new MerkleTree(SHA256.Create);      // immutable; share it across threads
+
+using var stream = File.OpenRead(&quot;archive.bin&quot;);
+byte[] root = merkle.ComputeRootOfBlocks(stream, blockSize: 4096);
+</code></pre>
+<p>Each leaf is a SHA-256 of <code>0x00</code> and a 4 KiB block; each internal node is a SHA-256 of <code>0x01</code> and two concatenated child hashes; a lone node is promoted unchanged. The root changes if any byte of the input changes.</p>
+<p>For large inputs where leaf hashing dominates, construct the tree with <code>maxDegreeOfParallelism: -1</code> to hash leaves on several cores and fold them in order into the same tree; to build the root from the same write calls that feed a flat digest, use <code>CreateBlockAccumulator</code> — see <a href="merkle-trees.html">Merkle trees and proofs</a>.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="encryption-basics.html">Encryption basics</a> — symmetric encryption in this library.</li>
+<li><a href="cipher-modes.html">Cipher block modes</a> — ECB / CBC / CFB / OFB / CTR with worked examples.</li>
+<li><a href="../io-hashing/index.html">Bodu.IO.Hashing guides</a> — CRC, Fletcher, Adler, FNV, CityHash, and the classic string hashes on <code>System.IO.Hashing.NonCryptographicHashAlgorithm</code>.</li>
+<li><a class="xref" href="../../api/Bodu.Security.Cryptography.MerkleTree.html">MerkleTree</a> · <a class="xref" href="../../api/Bodu.Security.Cryptography.MerkleBlockAccumulator.html">MerkleBlockAccumulator</a>.</li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

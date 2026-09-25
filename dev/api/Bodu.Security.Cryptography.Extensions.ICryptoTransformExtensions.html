@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class ICryptoTransformExtensions | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class ICryptoTransformExtensions | BODU ">
+    
+    <meta name="description" content="Extends  with one-shot, span/memory-aware, stream-to-stream, and async transform helpers — sized buffers, finalization, and stream pumping rolled into single calls.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions">
+
+
+
+  <h1 id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions" data-uid="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions" class="text-break">Class ICryptoTransformExtensions</h1>
+  <div class="markdown level0 summary"><p>Extends <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.icryptotransform">ICryptoTransform</a> with one-shot, span/memory-aware, stream-to-stream, and async transform
+helpers — sized buffers, finalization, and stream pumping rolled into single calls.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><span class="xref">ICryptoTransformExtensions</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Security.html">Security</a>.<a class="xref" href="Bodu.Security.Cryptography.html">Cryptography</a>.<a class="xref" href="Bodu.Security.Cryptography.Extensions.html">Extensions</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Security.Cryptography.dll</h6>
+  <h5 id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class ICryptoTransformExtensions</code></pre>
+  </div>
+  <h5 id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.icryptotransform">ICryptoTransform</a> is the contract that every block-cipher encryptor or decryptor implements, but its
+raw API forces callers to size output buffers, allocate result arrays, distinguish intermediate
+<code>TransformBlock</code> calls from the final <code>TransformFinalBlock</code>, and reset the transform between messages.
+This class wraps those operations behind two verb-led names — <code>Transform</code> for whole-input processing and
+<code>TransformFinalBlock</code> for finalization — that hide the buffering arithmetic and give the caller back a
+correctly sized result.
+</p>
+<p>
+The API surface clusters into four groups:
+</p>
+<ul><li><span class="term">One-shot in-memory</span>
+<code>Transform</code> overloads that accept a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a> array, an array slice (<code>offset</code>/<code>count</code>), a
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan&lt;T&gt;</a>, or a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlymemory-1">ReadOnlyMemory&lt;T&gt;</a> and return a freshly allocated
+output array. Use these when the entire input fits in memory.
+</li><li><span class="term">Caller-supplied buffers</span>
+<code>Transform(input, destination)</code> overloads for span and memory destinations — for hot paths that want to reuse a
+pre-allocated output buffer and have <code>destination</code> written in place. The return value is the number of bytes
+written.
+</li><li><span class="term">Stream pumping</span>
+<code>Transform(sourceStream, targetStream, bufferSize)</code> and the awaitable <code>TransformAsync</code> overloads, for
+cases where the input is a stream that should not be fully buffered. The extension drives the read/transform/write
+loop with a tunable buffer.
+</li><li><span class="term">Finalization</span>
+<code>TransformFinalBlock</code> overloads that mirror the same input shapes (no-arg, byte array, slice, span, memory) for
+emitting the final, padded block.
+</li></ul>
+<p>
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.icryptotransform">ICryptoTransform</a> instances are stateful and single-use within a message — once
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.icryptotransform.transformfinalblock">TransformFinalBlock(byte[], int, int)</a> has run, the transform should be disposed and
+a fresh one created for the next message. None of these helpers dispose the transform or the supplied streams; the
+caller owns the lifetime. Methods that allocate a result array always return exactly the number of bytes produced.
+Async overloads honor <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a> at every read boundary.
+</p>
+<example>
+<pre><code class="lang-csharp">using System.Security.Cryptography;
+using Bodu.Security.Cryptography.Extensions;
+
+using Aes aes = Aes.Create();
+aes.Key = key;
+aes.IV = iv;
+
+// 1. One-shot encrypt of a span into a new byte[].
+using ICryptoTransform encryptor = aes.CreateEncryptor();
+byte[] ciphertext = encryptor.Transform(plaintext.AsSpan());
+
+// 2. Stream-encrypt a large file end to end with a 64 KiB buffer.
+using FileStream src = File.OpenRead("plain.bin");
+using FileStream dst = File.Create("cipher.bin");
+using ICryptoTransform e2 = aes.CreateEncryptor();
+int written = e2.Transform(src, dst, bufferSize: 64 * 1024);
+
+// 3. Cancellable async stream transform, e.g. when piping HTTP content.
+using ICryptoTransform e3 = aes.CreateEncryptor();
+await e3.TransformAsync(networkStream, output, bufferSize: 16 * 1024, cancellationToken);</code></pre>
+</example>
+</div>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_Byte___" data-uid="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.Transform(System.Security.Cryptography.ICryptoTransform,System.Byte[])">
+          <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.Transform.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_Byte___">Transform(ICryptoTransform, byte[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Transforms the entire input byte array using the specified cryptographic transform.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_Byte___System_Int32_System_Int32_" data-uid="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.Transform(System.Security.Cryptography.ICryptoTransform,System.Byte[],System.Int32,System.Int32)">
+          <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.Transform.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_Byte___System_Int32_System_Int32_">Transform(ICryptoTransform, byte[], int, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Transforms a portion of the specified byte array using the given cryptographic transform.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_IO_Stream_System_IO_Stream_System_Int32_" data-uid="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.Transform(System.Security.Cryptography.ICryptoTransform,System.IO.Stream,System.IO.Stream,System.Int32)">
+          <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.Transform.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_IO_Stream_System_IO_Stream_System_Int32_">Transform(ICryptoTransform, Stream, Stream, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Applies the cryptographic transform to data read from <code class="paramref">sourceStream</code> and writes the result to
+<code class="paramref">targetStream</code> using the specified buffer size.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_ReadOnlyMemory_System_Byte__" data-uid="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.Transform(System.Security.Cryptography.ICryptoTransform,System.ReadOnlyMemory{System.Byte})">
+          <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.Transform.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_ReadOnlyMemory_System_Byte__">Transform(ICryptoTransform, ReadOnlyMemory&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Transforms a memory region using the specified cryptographic transform.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_ReadOnlyMemory_System_Byte__System_Memory_System_Byte__" data-uid="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.Transform(System.Security.Cryptography.ICryptoTransform,System.ReadOnlyMemory{System.Byte},System.Memory{System.Byte})">
+          <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.Transform.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_ReadOnlyMemory_System_Byte__System_Memory_System_Byte__">Transform(ICryptoTransform, ReadOnlyMemory&lt;byte&gt;, Memory&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Transforms the input memory region and writes the result into the destination memory region.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.Transform(System.Security.Cryptography.ICryptoTransform,System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.Transform.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_ReadOnlySpan_System_Byte__">Transform(ICryptoTransform, ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Transforms a span of bytes using the specified cryptographic transform.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__" data-uid="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.Transform(System.Security.Cryptography.ICryptoTransform,System.ReadOnlySpan{System.Byte},System.Span{System.Byte})">
+          <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.Transform.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">Transform(ICryptoTransform, ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Transforms the input span and writes the result into the specified destination span.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformAsync_System_Security_Cryptography_ICryptoTransform_System_IO_Stream_System_IO_Stream_System_Int32_System_Threading_CancellationToken_" data-uid="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.TransformAsync(System.Security.Cryptography.ICryptoTransform,System.IO.Stream,System.IO.Stream,System.Int32,System.Threading.CancellationToken)">
+          <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.TransformAsync.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformAsync_System_Security_Cryptography_ICryptoTransform_System_IO_Stream_System_IO_Stream_System_Int32_System_Threading_CancellationToken_">TransformAsync(ICryptoTransform, Stream, Stream, int, CancellationToken)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Asynchronously applies a cryptographic transformation to data read from a source stream and writes the
+transformed output to a target stream.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformAsync_System_Security_Cryptography_ICryptoTransform_System_ReadOnlyMemory_System_Byte__System_Memory_System_Byte__System_Threading_CancellationToken_" data-uid="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.TransformAsync(System.Security.Cryptography.ICryptoTransform,System.ReadOnlyMemory{System.Byte},System.Memory{System.Byte},System.Threading.CancellationToken)">
+          <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.TransformAsync.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformAsync_System_Security_Cryptography_ICryptoTransform_System_ReadOnlyMemory_System_Byte__System_Memory_System_Byte__System_Threading_CancellationToken_">TransformAsync(ICryptoTransform, ReadOnlyMemory&lt;byte&gt;, Memory&lt;byte&gt;, CancellationToken)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Asynchronously applies a cryptographic transformation to a memory region and writes the transformed result into
+a destination memory region.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformBlock_System_Security_Cryptography_ICryptoTransform_System_Byte___" data-uid="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.TransformBlock(System.Security.Cryptography.ICryptoTransform,System.Byte[])">
+          <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.TransformBlock.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformBlock_System_Security_Cryptography_ICryptoTransform_System_Byte___">TransformBlock(ICryptoTransform, byte[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Applies the transform to the entire input buffer, writing the result back into the same array.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_System_Security_Cryptography_ICryptoTransform_" data-uid="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.TransformFinalBlock(System.Security.Cryptography.ICryptoTransform)">
+          <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.TransformFinalBlock.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_System_Security_Cryptography_ICryptoTransform_">TransformFinalBlock(ICryptoTransform)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Finalizes the transformation without processing any additional input data.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_System_Security_Cryptography_ICryptoTransform_System_Byte___" data-uid="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.TransformFinalBlock(System.Security.Cryptography.ICryptoTransform,System.Byte[])">
+          <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.TransformFinalBlock.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_System_Security_Cryptography_ICryptoTransform_System_Byte___">TransformFinalBlock(ICryptoTransform, byte[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Finalizes the transformation of the entire specified byte array.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_System_Security_Cryptography_ICryptoTransform_System_Byte___System_Int32_" data-uid="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.TransformFinalBlock(System.Security.Cryptography.ICryptoTransform,System.Byte[],System.Int32)">
+          <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.TransformFinalBlock.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_System_Security_Cryptography_ICryptoTransform_System_Byte___System_Int32_">TransformFinalBlock(ICryptoTransform, byte[], int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Finalizes the transformation of the specified byte array beginning at the given offset.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_System_Security_Cryptography_ICryptoTransform_System_ReadOnlyMemory_System_Byte__" data-uid="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.TransformFinalBlock(System.Security.Cryptography.ICryptoTransform,System.ReadOnlyMemory{System.Byte})">
+          <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.TransformFinalBlock.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_System_Security_Cryptography_ICryptoTransform_System_ReadOnlyMemory_System_Byte__">TransformFinalBlock(ICryptoTransform, ReadOnlyMemory&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Finalizes the transformation of the specified memory region.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_System_Security_Cryptography_ICryptoTransform_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.TransformFinalBlock(System.Security.Cryptography.ICryptoTransform,System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.TransformFinalBlock.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_System_Security_Cryptography_ICryptoTransform_System_ReadOnlySpan_System_Byte__">TransformFinalBlock(ICryptoTransform, ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Finalizes the transformation of the specified input span.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

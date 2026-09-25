@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Namespace Bodu.Financial.Extensions | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Namespace Bodu.Financial.Extensions | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Financial.Extensions">
+
+  <h1 id="Bodu_Financial_Extensions" data-uid="Bodu.Financial.Extensions" class="text-break">Namespace Bodu.Financial.Extensions</h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual">
+<p><img src="../images/hero-financial.svg" alt="Bodu.Financial"></p>
+<h1 id="bodufinancialextensions">Bodu.Financial.Extensions</h1>
+<h2 id="purpose">Purpose</h2>
+<p><strong>Bodu.Financial.Extensions</strong> is the extension-member namespace of the core <a href="../apidoc/Bodu.Financial.md"><code>Bodu.Financial</code></a> package. It carries the derived helpers that are deliberately kept off the value types themselves — sign and magnitude tests, clamping and comparison, compact <code>&quot;$1.2K&quot;</code> formatting, dated-provider conversion, audit conveniences on a lookup result, and the materializers that turn observations into an immutable book or a fixed provider — so that <a class="xref" href="Bodu.Financial.Money.html">Money</a>, <a class="xref" href="Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a>, and <a class="xref" href="Bodu.Financial.ExchangeRates.RateLookupResult.html">RateLookupResult</a> stay focused on construction, arithmetic, equality, and formatting.</p>
+<p>Every member is a thin projection over the public surface of the type it extends and carries no state of its own. Add <code>using Bodu.Financial.Extensions;</code> to bring them into scope.</p>
+<p>When the library is compiled with a tool-chain that supports C# 14 extension members (the .NET 10 SDK the repository pins), the instance helpers are exposed as extension <strong>properties</strong> — <code>money.IsZero</code>, <code>result.IsExactDate</code> — and otherwise as classic extension <strong>methods</strong> — <code>money.IsZero()</code>, <code>result.IsExactDate()</code>. Both spellings appear in the guides; the property form is the one the shipped packages expose. The comparison helpers <code>Min</code>, <code>Max</code>, and <code>Clamp</code> take two or more operands and are therefore ordinary static methods (<code>MoneyOfTCurrencyExtensions.Clamp(value, min, max)</code>) under either tool-chain.</p>
+<h2 id="static-documentation">Static documentation</h2>
+<ul>
+<li><strong><a href="../guides/financial/money.html">Working with <code>Money&lt;TCurrency&gt;</code></a></strong> — the value types these helpers extend, including <a href="../guides/financial/money.html#compact-formatting">compact formatting</a>.</li>
+<li><strong><a href="../guides/financial/exchange-rates.html">Working with exchange rates</a></strong> — dated lookups, provenance, and the <a href="../guides/financial/exchange-rates.html#audit-grade-conversion-through-moneytcurrency">audit-grade conversion</a> these extensions provide.</li>
+<li><strong><a href="../guides/financial/exchange-rate-lookups.html">Exchange-rate lookups on a known dataset</a></strong> — reading the resolution metadata the <code>RateLookupResult</code> helpers summarize.</li>
+<li><strong><a href="../guides/financial/exchange-rate-providers.html#snapshotting-and-exporting-rates">Built-in exchange-rate providers</a></strong> — snapshotting a provider's book with <code>ToBook</code> / <code>ToFixedProvider</code> / <code>ToFixedProviderAsync</code>.</li>
+</ul>
+<h2 id="key-types">Key types</h2>
+<p><strong>Sign and magnitude</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Financial.Extensions.MoneyExtensions.html">MoneyExtensions</a> — for the runtime-tagged <a class="xref" href="Bodu.Financial.Money.html">Money</a>: <code>Abs</code>, <code>Sign</code> (<code>-1</code> / <code>0</code> / <code>1</code>), <code>IsZero</code>, <code>IsPositive</code>, <code>IsNegative</code>.</li>
+<li><a class="xref" href="Bodu.Financial.Extensions.MoneyOfTCurrencyExtensions.html">MoneyOfTCurrencyExtensions</a> — the same five members for <a class="xref" href="Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a>, plus the static comparison helpers <code>Min(left, right)</code>, <code>Max(left, right)</code>, and <code>Clamp(value, min, max)</code> (throws <code>ArgumentException</code> when <code>min &gt; max</code>). Being generic over <code>TCurrency</code>, they only ever compare amounts in the same currency.</li>
+</ul>
+<p><strong>Formatting</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Financial.Extensions.MoneyCompactFormattingExtensions.html">MoneyCompactFormattingExtensions</a> — <code>ToCompactString(format = &quot;C&quot;, provider = null, precision = 1)</code> for both money types: scales by thousands, millions, billions, or trillions and appends <code>K</code> / <code>M</code> / <code>B</code> / <code>T</code> to the numeric portion, honoring the format specifier's currency placement per culture (<code>&quot;$1.2K&quot;</code>, <code>&quot;1,2K €&quot;</code>). The round-trip <code>R</code> specifier is rejected with <code>FormatException</code> because compact output cannot round-trip.</li>
+</ul>
+<p><strong>Conversion through a dated provider</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Financial.Extensions.MoneyOfTCurrencyExchangeRateExtensions.html">MoneyOfTCurrencyExchangeRateExtensions</a> — <code>ConvertTo&lt;TSource, TTarget&gt;(provider, date, options, rounding)</code> returns the converted <a class="xref" href="Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a>; <code>ConvertToWithRate&lt;TSource, TTarget&gt;(…)</code> returns a <a class="xref" href="Bodu.Financial.MoneyConversionResult-2.html">MoneyConversionResult&lt;TSource, TTarget&gt;</a> carrying <code>SourceAmount</code>, <code>TargetAmount</code>, and the full <code>ExchangeRate</code> lookup result for the audit trail.</li>
+<li><a class="xref" href="Bodu.Financial.Extensions.MoneyExchangeRateExtensions.html">MoneyExchangeRateExtensions</a> — the runtime-tagged counterparts on <a class="xref" href="Bodu.Financial.Money.html">Money</a>: <code>ConvertTo(provider, targetIsoCode, date, …)</code> and <code>ConvertTo&lt;TTarget&gt;(provider, date, …)</code> return the converted amount; <code>ConvertToWithRate(provider, targetIsoCode, date, …)</code> returns a <code>(Money Target, RateLookupResult Rate)</code> tuple.</li>
+</ul>
+<p>All four resolve the rate with <code>IDatedRateProvider.GetRate(from, to, date, options)</code>, so a miss surfaces as <code>KeyNotFoundException</code>, and round the product at the destination currency's precision with the supplied <code>MidpointRounding</code> (banker's rounding by default).</p>
+<p><strong>Lookup-result audit</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Financial.Extensions.RateLookupResultExtensions.html">RateLookupResultExtensions</a> — derived views over <a class="xref" href="Bodu.Financial.ExchangeRates.RateLookupResult.html">RateLookupResult</a>: <code>ResolvedDate</code> (the observed date, <code>Rate.Date</code>), <code>SignedOffsetDays</code> (negative when the observation predates the request, positive when it post-dates it, zero on an exact match), <code>IsExactDate</code>, <code>IsPreviousDate</code>, and <code>IsFutureDate</code>.</li>
+</ul>
+<p><strong>Materializing books and providers</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Financial.Extensions.ExchangeRateEnumerableExtensions.html">ExchangeRateEnumerableExtensions</a> — <code>ToBook()</code> on any <code>IEnumerable&lt;ExchangeRate&gt;</code>: one series per <code>(pair, provider)</code>, upsert semantics for duplicate dates, inverse-resolved rows stored under their natively quoted direction, and each series' <code>FetchedAtUtc</code> set to the latest instant seen — so aggregated or multi-source range results round-trip without error.</li>
+<li><a class="xref" href="Bodu.Financial.Extensions.RateBookExtensions.html">RateBookExtensions</a> — <code>ToFixedProvider()</code> wraps a <a class="xref" href="Bodu.Financial.ExchangeRates.RateBook.html">RateBook</a> in a <a class="xref" href="Bodu.Financial.ExchangeRates.FixedDatedRateProvider.html">FixedDatedRateProvider</a> (throws when a pair has two providers); <code>ToFixedProvider(providerPriority)</code> resolves that ambiguity with an ordered provider list.</li>
+<li><a class="xref" href="Bodu.Financial.Extensions.DatedRateProviderExtensions.html">DatedRateProviderExtensions</a> — <code>ToFixedProviderAsync(pairs, startDate, endDate, cancellationToken)</code> fetches each distinct pair's window through <code>GetRatesAsync</code> (sequentially — the web providers already coalesce) and materializes an immutable, source-independent <a class="xref" href="Bodu.Financial.ExchangeRates.FixedDatedRateProvider.html">FixedDatedRateProvider</a>.</li>
+</ul>
+<h2 id="example">Example</h2>
+<pre><code class="lang-csharp">using Bodu.Financial;
+using Bodu.Financial.Currencies;
+using Bodu.Financial.ExchangeRates;
+using Bodu.Financial.Extensions;
+
+Money&lt;USD&gt; balance = new Money&lt;USD&gt;(-1_250_000m);
+
+bool overdrawn = balance.IsNegative;                       // true  (IsNegative() under the method form)
+Money&lt;USD&gt; magnitude = balance.Abs;                        // USD 1,250,000.00
+string compact = magnitude.ToCompactString();              // &quot;$1.3M&quot; in en-US
+
+Money&lt;USD&gt; fee = MoneyOfTCurrencyExtensions.Clamp(
+    new Money&lt;USD&gt;(3.25m),
+    new Money&lt;USD&gt;(1m),
+    new Money&lt;USD&gt;(2.50m));                                // USD 2.50 — clamped to the upper bound
+
+// Audit-grade conversion through a dated provider.
+IDatedRateProvider provider = new FixedDatedRateProvider(new[]
+{
+    new ExchangeRate(CurrencyCode.USD, CurrencyCode.EUR, new DateOnly(2024, 6, 14), 0.93m, &quot;Test&quot;),
+});
+
+MoneyConversionResult&lt;USD, EUR&gt; converted = new Money&lt;USD&gt;(100m).ConvertToWithRate&lt;USD, EUR&gt;(
+    provider,
+    new DateOnly(2024, 6, 16),
+    RateLookupOptions.PreviousWithin(7));
+
+Console.WriteLine(converted.TargetAmount);                 // EUR 93.00
+Console.WriteLine(converted.ExchangeRate.SignedOffsetDays); // -2 — the Friday observation served a Sunday request
+Console.WriteLine(converted.ExchangeRate.IsExactDate);      // False
+
+// Freeze a range of observations into an offline provider.
+RateRangeResult window = provider.GetRates(&quot;USD&quot;, &quot;EUR&quot;, new DateOnly(2024, 6, 1), new DateOnly(2024, 6, 30));
+FixedDatedRateProvider offline = window.ToBook().ToFixedProvider();
+</code></pre>
+<h2 id="notes">Notes</h2>
+<ul>
+<li><strong>Extension properties vs methods.</strong> Under the C# 14 tool-chain the instance helpers are properties (<code>money.IsZero</code>); under an older tool-chain they are methods (<code>money.IsZero()</code>). The static <code>Min</code> / <code>Max</code> / <code>Clamp</code> helpers are called through the class name in both cases.</li>
+<li><strong>Same-currency only.</strong> <code>Min</code>, <code>Max</code>, and <code>Clamp</code> are generic over one <code>TCurrency</code>, so mixing currencies is a compile error, not a runtime check; the runtime-tagged <a class="xref" href="Bodu.Financial.Money.html">Money</a> has no comparison helpers because a cross-currency comparison has no meaningful answer.</li>
+<li><strong>Conversion rounds once.</strong> Each <code>ConvertTo</code> multiplies the source amount by the resolved rate and rounds once at the destination precision; the unrounded rate is available on the returned lookup result when an audit needs it.</li>
+<li><strong><code>ToBook</code> keeps multiple providers apart.</strong> Unlike the <code>FixedDatedRateProvider(IEnumerable&lt;ExchangeRate&gt;)</code> constructor, which requires one provider per pair, <code>ToBook()</code> accepts rates for the same pair from several providers and keeps them as separate series; choose which wins with <code>ToFixedProvider(providerPriority)</code>.</li>
+<li><strong>See also:</strong> the <a class="xref" href="Bodu.Financial.html"><code>Bodu.Financial</code> reference</a> and the <a class="xref" href="Bodu.Financial.ExchangeRates.html"><code>Bodu.Financial.ExchangeRates</code> reference</a>.</li>
+</ul>
+</div>
+  <div class="markdown level0 remarks"></div>
+    <h3 id="classes">
+Classes
+</h3>
+      <h4><a class="xref" href="Bodu.Financial.Extensions.DatedRateProviderExtensions.html">DatedRateProviderExtensions</a></h4>
+      <section><p>Provides extension methods that materialize the historical rates any <a class="xref" href="Bodu.Financial.ExchangeRates.IDatedRateProvider.html">IDatedRateProvider</a> serves into
+immutable, offline-queryable snapshots.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Extensions.ExchangeRateEnumerableExtensions.html">ExchangeRateEnumerableExtensions</a></h4>
+      <section><p>Provides extension methods that materialize sequences of <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.html">ExchangeRate</a> observations into the immutable
+<a class="xref" href="Bodu.Financial.ExchangeRates.RateBook.html">RateBook</a> store.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Extensions.MoneyCompactFormattingExtensions.html">MoneyCompactFormattingExtensions</a></h4>
+      <section><p>Provides compact-notation formatting (<code>&quot;$1.2K&quot;</code>, <code>&quot;€1.5M&quot;</code>, <code>&quot;USD 2.3B&quot;</code>) for
+<a class="xref" href="Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a> and <a class="xref" href="Bodu.Financial.Money.html">Money</a> values, on top of the standard format-specifier vocabulary.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Extensions.MoneyExchangeRateExtensions.html">MoneyExchangeRateExtensions</a></h4>
+      <section><p>Provides extension methods that resolve a dated exchange rate from an <a class="xref" href="Bodu.Financial.ExchangeRates.IDatedRateProvider.html">IDatedRateProvider</a> and apply it
+to a <a class="xref" href="Bodu.Financial.Money.html">Money</a> — the runtime-tagged counterpart of <a class="xref" href="Bodu.Financial.Extensions.MoneyOfTCurrencyExchangeRateExtensions.html">MoneyOfTCurrencyExchangeRateExtensions</a>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Extensions.MoneyExtensions.html">MoneyExtensions</a></h4>
+      <section><p>Provides sign, magnitude, and related convenience members for the runtime-tagged <a class="xref" href="Bodu.Financial.Money.html">Money</a> type, keeping
+those derived helpers off the core value type while preserving familiar property-style access.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Extensions.MoneyOfTCurrencyExchangeRateExtensions.html">MoneyOfTCurrencyExchangeRateExtensions</a></h4>
+      <section><p>Provides extension methods that resolve a dated exchange rate from an <a class="xref" href="Bodu.Financial.ExchangeRates.IDatedRateProvider.html">IDatedRateProvider</a> and apply it
+to a <a class="xref" href="Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a> value.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Extensions.MoneyOfTCurrencyExtensions.html">MoneyOfTCurrencyExtensions</a></h4>
+      <section><p>Provides sign, magnitude, and comparison convenience members for the strongly-typed <a class="xref" href="Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a>
+type, keeping those derived helpers off the core value type while preserving familiar property-style access.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Extensions.RateBookExtensions.html">RateBookExtensions</a></h4>
+      <section><p>Provides extension methods that wrap an immutable <a class="xref" href="Bodu.Financial.ExchangeRates.RateBook.html">RateBook</a> in ready-to-query provider facades.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Extensions.RateLookupResultExtensions.html">RateLookupResultExtensions</a></h4>
+      <section><p>Provides audit-convenience members for <a class="xref" href="Bodu.Financial.ExchangeRates.RateLookupResult.html">RateLookupResult</a> that describe how the resolved rate relates
+to the requested date, keeping those derived helpers off the core result type.</p>
+</section>
+
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

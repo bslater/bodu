@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Method ChunkBy | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Method ChunkBy | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ChunkBy*">
+
+
+
+<h1 id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ChunkBy_" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ChunkBy*">Method ChunkBy</h1>
+<div class="markdown level0 summary"></div>
+<div class="markdown level0 conceptual"></div>
+
+<a id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ChunkBy_" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ChunkBy*"></a>
+<h4 id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ChunkBy__2_System_Collections_Generic_IEnumerable___0__System_Func___0___1__" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ChunkBy``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">ChunkBy&lt;TSource, TKey&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TKey&gt;)</h4>
+<div class="markdown level1 summary"><p>Groups <em>adjacent</em> elements of the source sequence that share the same key, starting a new group whenever
+the key changes, using the default equality comparer.</p>
+</div>
+<div class="markdown level1 conceptual"></div>
+<h5 class="declaration">Declaration</h5>
+<div class="codewrapper">
+  <pre><code class="lang-csharp hljs">public static IEnumerable&lt;(TKey Key, IReadOnlyList&lt;TSource&gt; Items)&gt; ChunkBy&lt;TSource, TKey&gt;(this IEnumerable&lt;TSource&gt; source, Func&lt;TSource, TKey&gt; keySelector)</code></pre>
+</div>
+<h5 class="parameters">Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;TSource&gt;</td>
+      <td><span class="parametername">source</span></td>
+      <td><p>The source sequence to group.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;TSource, TKey&gt;</td>
+      <td><span class="parametername">keySelector</span></td>
+      <td><p>A function that produces the grouping key for each element.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="returns">Returns</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;(TKey <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetuple---1,system.collections.generic.ireadonlylist---0--.key">Key</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;TSource&gt; <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetuple---1,system.collections.generic.ireadonlylist---0--.items">Items</a>)&gt;</td>
+      <td><p>A sequence of <code>(Key, Items)</code> tuples where <code>Items</code> is a stable snapshot of a maximal run of adjacent
+elements sharing <code>Key</code>. The result is empty when <code class="paramref">source</code> is empty.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="typeParameters">Type Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span class="parametername">TSource</span></td>
+      <td><p>The type of elements in the source sequence.</p>
+</td>
+    </tr>
+    <tr>
+      <td><span class="parametername">TKey</span></td>
+      <td><p>The type of the key produced for each element.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ChunkBy__2_System_Collections_Generic_IEnumerable___0__System_Func___0___1___remarks">Remarks</h5>
+<div class="markdown level1 remarks"><p>This method uses deferred execution and enumerates the source exactly once. Keys are compared with
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.equalitycomparer-1.default">Default</a>.</p>
+</div>
+<h5 id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ChunkBy__2_System_Collections_Generic_IEnumerable___0__System_Func___0___1___examples">Examples</h5>
+<pre><code class="lang-csharp">// Group adjacent runs by key; a repeated key separated by another key starts a new group.
+foreach (var (key, items) in new[] { 1, 1, 2, 1 }.ChunkBy(x =&gt; x))
+    Console.WriteLine($"{key}: [{string.Join(", ", items)}]");
+// =&gt; 1: [1, 1]
+// =&gt; 2: [2]
+// =&gt; 1: [1]</code></pre>
+
+<h5 class="exceptions">Exceptions</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Condition</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></td>
+      <td><p>Thrown when <code class="paramref">source</code> or <code class="paramref">keySelector</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<a id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ChunkBy_" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ChunkBy*"></a>
+<h4 id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ChunkBy__2_System_Collections_Generic_IEnumerable___0__System_Func___0___1__System_Collections_Generic_IEqualityComparer___1__" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ChunkBy``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Collections.Generic.IEqualityComparer{``1})">ChunkBy&lt;TSource, TKey&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TKey&gt;, IEqualityComparer&lt;TKey&gt;?)</h4>
+<div class="markdown level1 summary"><p>Groups <em>adjacent</em> elements of the source sequence that share the same key, starting a new group whenever
+the key changes, using the specified equality comparer.</p>
+</div>
+<div class="markdown level1 conceptual"></div>
+<h5 class="declaration">Declaration</h5>
+<div class="codewrapper">
+  <pre><code class="lang-csharp hljs">public static IEnumerable&lt;(TKey Key, IReadOnlyList&lt;TSource&gt; Items)&gt; ChunkBy&lt;TSource, TKey&gt;(this IEnumerable&lt;TSource&gt; source, Func&lt;TSource, TKey&gt; keySelector, IEqualityComparer&lt;TKey&gt;? comparer)</code></pre>
+</div>
+<h5 class="parameters">Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;TSource&gt;</td>
+      <td><span class="parametername">source</span></td>
+      <td><p>The source sequence to group.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;TSource, TKey&gt;</td>
+      <td><span class="parametername">keySelector</span></td>
+      <td><p>A function that produces the grouping key for each element.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iequalitycomparer-1">IEqualityComparer</a>&lt;TKey&gt;</td>
+      <td><span class="parametername">comparer</span></td>
+      <td><p>The comparer used to decide whether adjacent keys are equal, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to use
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.equalitycomparer-1.default">Default</a>.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="returns">Returns</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;(TKey <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetuple---1,system.collections.generic.ireadonlylist---0--.key">Key</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;TSource&gt; <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetuple---1,system.collections.generic.ireadonlylist---0--.items">Items</a>)&gt;</td>
+      <td><p>A sequence of <code>(Key, Items)</code> tuples where <code>Items</code> is a stable snapshot of a maximal run of adjacent
+elements sharing <code>Key</code>. The result is empty when <code class="paramref">source</code> is empty.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="typeParameters">Type Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span class="parametername">TSource</span></td>
+      <td><p>The type of elements in the source sequence.</p>
+</td>
+    </tr>
+    <tr>
+      <td><span class="parametername">TKey</span></td>
+      <td><p>The type of the key produced for each element.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ChunkBy__2_System_Collections_Generic_IEnumerable___0__System_Func___0___1__System_Collections_Generic_IEqualityComparer___1___remarks">Remarks</h5>
+<div class="markdown level1 remarks"><p>
+This method uses deferred execution and enumerates the source exactly once in a single forward pass, buffering
+only the current group. <code class="paramref">keySelector</code> is invoked exactly once per source element, and each
+yielded group is a stable snapshot that is not modified when the enumerator advances.
+</p>
+<p>
+This method differs from
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.linq.enumerable.groupby#system-linq-enumerable-groupby-2(system-collections-generic-ienumerable((-0))-system-func((-0-1)))">GroupBy&lt;TSource, TKey&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TKey&gt;)</a>:
+<code>GroupBy</code> gathers all elements sharing a key across the whole sequence, whereas this method uses adjacent
+equality only, so the same key value separated by a different key produces separate groups.
+</p>
+<p>
+When bounded over an infinite source, a group whose key never changes never yields; combine with
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.linq.enumerable.take#system-linq-enumerable-take-1(system-collections-generic-ienumerable((-0))-system-int32)">Take&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, int)</a> only when keys are known to
+change.
+</p>
+</div>
+<h5 class="exceptions">Exceptions</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Condition</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></td>
+      <td><p>Thrown when <code class="paramref">source</code> or <code class="paramref">keySelector</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

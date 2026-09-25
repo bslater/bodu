@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class StringExtensions | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class StringExtensions | BODU ">
+    
+    <meta name="description" content="Provides ergonomic, allocation-aware extension methods on  that fill gaps in the BCL — positive-form null/empty predicates, fluent fallbacks, whitespace and line-ending normalisation, affix management, substring windowing, case conversion, identifier sanitisation, and generic parsing.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Extensions.StringExtensions">
+
+
+
+  <h1 id="Bodu_Extensions_StringExtensions" data-uid="Bodu.Extensions.StringExtensions" class="text-break">Class StringExtensions</h1>
+  <div class="markdown level0 summary"><p>Provides ergonomic, allocation-aware extension methods on <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a> that fill gaps in the BCL —
+positive-form null/empty predicates, fluent fallbacks, whitespace and line-ending normalisation, affix management,
+substring windowing, case conversion, identifier sanitisation, and generic parsing.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><span class="xref">StringExtensions</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Extensions.html">Extensions</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Core.dll</h6>
+  <h5 id="Bodu_Extensions_StringExtensions_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class StringExtensions</code></pre>
+  </div>
+  <h5 id="Bodu_Extensions_StringExtensions_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+Members are split across partial files following the repository convention (see <code>CLAUDE.md</code>): one partial file
+per method, named <code>StringExtensions.&lt;MethodName&gt;.cs</code>. Tests follow the same pattern under
+<code>test/Extensions/StringExtensionsTests.&lt;MethodName&gt;.cs</code>.
+</p>
+<p>
+Methods that conceptually deserve a place but are already short, idiomatic, or covered by the BCL are intentionally
+omitted (for example <code>IsNullOrEmpty</code>, <code>Left</code> / <code>Right</code>, <code>Mid</code>, <code>ToLowerInvariant</code>). The
+accompanying design document records the rationale per method.
+</p>
+<p>
+Casing methods use <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.cultureinfo.invariantculture">InvariantCulture</a> by default so output is
+deterministic across machines; cultural variants are not provided to discourage accidental
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.cultureinfo.currentculture">CurrentCulture</a> coupling. Comparison helpers default to
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.stringcomparison#system-stringcomparison-ordinal">Ordinal</a> for the same reason.
+</p>
+</div>
+  <h5 id="Bodu_Extensions_StringExtensions_examples"><strong>Examples</strong></h5>
+  <pre><code class="lang-csharp">// Sanitise then truncate user input for a log line.
+string? raw = request?.Title;
+string display = raw.TrimToNull()?.CollapseWhitespace().Truncate(80, "…") ?? "(untitled)";
+
+// Build a slug for a URL.
+string slug = "Hello, World! — café".ToSlug();   // "hello-world-cafe"
+
+// Round-trip identifiers between conventions.
+string pascal = "user_account_id".ToPascalCase(); // "UserAccountId"
+string snake  = "UserAccountId".ToSnakeCase();    // "user_account_id"</code></pre>
+
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_After_System_String_System_String_System_StringComparison_" data-uid="Bodu.Extensions.StringExtensions.After(System.String,System.String,System.StringComparison)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.After.html#Bodu_Extensions_StringExtensions_After_System_String_System_String_System_StringComparison_">After(string, string, StringComparison)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the substring of <code class="paramref">value</code> following the first occurrence of <code class="paramref">marker</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_AfterLast_System_String_System_String_System_StringComparison_" data-uid="Bodu.Extensions.StringExtensions.AfterLast(System.String,System.String,System.StringComparison)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.AfterLast.html#Bodu_Extensions_StringExtensions_AfterLast_System_String_System_String_System_StringComparison_">AfterLast(string, string, StringComparison)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the substring of <code class="paramref">value</code> following the last occurrence of <code class="paramref">marker</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_Before_System_String_System_String_System_StringComparison_" data-uid="Bodu.Extensions.StringExtensions.Before(System.String,System.String,System.StringComparison)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.Before.html#Bodu_Extensions_StringExtensions_Before_System_String_System_String_System_StringComparison_">Before(string, string, StringComparison)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the substring of <code class="paramref">value</code> preceding the first occurrence of <code class="paramref">marker</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_BeforeLast_System_String_System_String_System_StringComparison_" data-uid="Bodu.Extensions.StringExtensions.BeforeLast(System.String,System.String,System.StringComparison)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.BeforeLast.html#Bodu_Extensions_StringExtensions_BeforeLast_System_String_System_String_System_StringComparison_">BeforeLast(string, string, StringComparison)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the substring of <code class="paramref">value</code> preceding the last occurrence of <code class="paramref">marker</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_Between_System_String_System_String_System_String_System_StringComparison_" data-uid="Bodu.Extensions.StringExtensions.Between(System.String,System.String,System.String,System.StringComparison)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.Between.html#Bodu_Extensions_StringExtensions_Between_System_String_System_String_System_String_System_StringComparison_">Between(string, string, string, StringComparison)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the substring of <code class="paramref">value</code> between the first occurrence of <code class="paramref">start</code> and
+the next occurrence of <code class="paramref">end</code> after it.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_Brace_System_String_" data-uid="Bodu.Extensions.StringExtensions.Brace(System.String)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.Brace.html#Bodu_Extensions_StringExtensions_Brace_System_String_">Brace(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns <code class="paramref">value</code> wrapped in curly-brace characters (<code>{…}</code>).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_Bracket_System_String_" data-uid="Bodu.Extensions.StringExtensions.Bracket(System.String)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.Bracket.html#Bodu_Extensions_StringExtensions_Bracket_System_String_">Bracket(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns <code class="paramref">value</code> wrapped in square-bracket characters (<code>[…]</code>).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_CollapseWhitespace_System_String_" data-uid="Bodu.Extensions.StringExtensions.CollapseWhitespace(System.String)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.CollapseWhitespace.html#Bodu_Extensions_StringExtensions_CollapseWhitespace_System_String_">CollapseWhitespace(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns <code class="paramref">value</code> with every run of one or more white-space characters collapsed to a single
+space character (U+0020).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_ContainsOrdinalIgnoreCase_System_String_System_String_" data-uid="Bodu.Extensions.StringExtensions.ContainsOrdinalIgnoreCase(System.String,System.String)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.ContainsOrdinalIgnoreCase.html#Bodu_Extensions_StringExtensions_ContainsOrdinalIgnoreCase_System_String_System_String_">ContainsOrdinalIgnoreCase(string, string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a value indicating whether <code class="paramref">value</code> contains <code class="paramref">valueToFind</code> under
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.stringcomparison#system-stringcomparison-ordinalignorecase">OrdinalIgnoreCase</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_DefaultIfNullOrEmpty_System_String_System_String_" data-uid="Bodu.Extensions.StringExtensions.DefaultIfNullOrEmpty(System.String,System.String)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.DefaultIfNullOrEmpty.html#Bodu_Extensions_StringExtensions_DefaultIfNullOrEmpty_System_String_System_String_">DefaultIfNullOrEmpty(string?, string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns <code class="paramref">defaultValue</code> when <code class="paramref">value</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> or empty;
+otherwise returns <code class="paramref">value</code> unchanged.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_DefaultIfNullOrWhiteSpace_System_String_System_String_" data-uid="Bodu.Extensions.StringExtensions.DefaultIfNullOrWhiteSpace(System.String,System.String)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.DefaultIfNullOrWhiteSpace.html#Bodu_Extensions_StringExtensions_DefaultIfNullOrWhiteSpace_System_String_System_String_">DefaultIfNullOrWhiteSpace(string?, string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns <code class="paramref">defaultValue</code> when <code class="paramref">value</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, empty, or
+white-space-only; otherwise returns <code class="paramref">value</code> unchanged.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_EndsWithOrdinal_System_String_System_String_" data-uid="Bodu.Extensions.StringExtensions.EndsWithOrdinal(System.String,System.String)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.EndsWithOrdinal.html#Bodu_Extensions_StringExtensions_EndsWithOrdinal_System_String_System_String_">EndsWithOrdinal(string, string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a value indicating whether <code class="paramref">value</code> ends with <code class="paramref">valueToFind</code> under
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.stringcomparison#system-stringcomparison-ordinal">Ordinal</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_EndsWithOrdinalIgnoreCase_System_String_System_String_" data-uid="Bodu.Extensions.StringExtensions.EndsWithOrdinalIgnoreCase(System.String,System.String)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.EndsWithOrdinalIgnoreCase.html#Bodu_Extensions_StringExtensions_EndsWithOrdinalIgnoreCase_System_String_System_String_">EndsWithOrdinalIgnoreCase(string, string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a value indicating whether <code class="paramref">value</code> ends with <code class="paramref">valueToFind</code> under
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.stringcomparison#system-stringcomparison-ordinalignorecase">OrdinalIgnoreCase</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_EnsureEndsWith_System_String_System_String_System_StringComparison_" data-uid="Bodu.Extensions.StringExtensions.EnsureEndsWith(System.String,System.String,System.StringComparison)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.EnsureEndsWith.html#Bodu_Extensions_StringExtensions_EnsureEndsWith_System_String_System_String_System_StringComparison_">EnsureEndsWith(string, string, StringComparison)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns <code class="paramref">value</code> guaranteed to end with <code class="paramref">suffix</code>, appending the suffix only
+when it is not already present.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_EnsureStartsWith_System_String_System_String_System_StringComparison_" data-uid="Bodu.Extensions.StringExtensions.EnsureStartsWith(System.String,System.String,System.StringComparison)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.EnsureStartsWith.html#Bodu_Extensions_StringExtensions_EnsureStartsWith_System_String_System_String_System_StringComparison_">EnsureStartsWith(string, string, StringComparison)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns <code class="paramref">value</code> guaranteed to begin with <code class="paramref">prefix</code>, prepending the prefix
+only when it is not already present.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_EnsureTrailingNewLine_System_String_System_String_" data-uid="Bodu.Extensions.StringExtensions.EnsureTrailingNewLine(System.String,System.String)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.EnsureTrailingNewLine.html#Bodu_Extensions_StringExtensions_EnsureTrailingNewLine_System_String_System_String_">EnsureTrailingNewLine(string, string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns <code class="paramref">value</code> guaranteed to end with <code class="paramref">newline</code>, appending the terminator
+only when it is not already present.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_EqualsOrdinalIgnoreCase_System_String_System_String_" data-uid="Bodu.Extensions.StringExtensions.EqualsOrdinalIgnoreCase(System.String,System.String)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.EqualsOrdinalIgnoreCase.html#Bodu_Extensions_StringExtensions_EqualsOrdinalIgnoreCase_System_String_System_String_">EqualsOrdinalIgnoreCase(string?, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a value indicating whether <code class="paramref">value</code> equals <code class="paramref">other</code> under
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.stringcomparison#system-stringcomparison-ordinalignorecase">OrdinalIgnoreCase</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_FromBase64ToString_System_String_System_Text_Encoding_" data-uid="Bodu.Extensions.StringExtensions.FromBase64ToString(System.String,System.Text.Encoding)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.FromBase64ToString.html#Bodu_Extensions_StringExtensions_FromBase64ToString_System_String_System_Text_Encoding_">FromBase64ToString(string, Encoding?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes the Base64-encoded <code class="paramref">value</code> back into a string using <code class="paramref">encoding</code> (or
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoding.utf8">UTF8</a> when <code class="paramref">encoding</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>) to interpret the
+decoded bytes.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_HasText_System_String_" data-uid="Bodu.Extensions.StringExtensions.HasText(System.String)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.HasText.html#Bodu_Extensions_StringExtensions_HasText_System_String_">HasText(string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a value indicating whether <code class="paramref">value</code> is non-<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, non-empty, and
+contains at least one character that is not white space.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_Indent_System_String_System_Int32_System_Char_" data-uid="Bodu.Extensions.StringExtensions.Indent(System.String,System.Int32,System.Char)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.Indent.html#Bodu_Extensions_StringExtensions_Indent_System_String_System_Int32_System_Char_">Indent(string, int, char)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns <code class="paramref">value</code> with <code class="paramref">count</code> copies of <code class="paramref">indentChar</code>
+prepended to every line.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_IsOneOf_System_String_System_Collections_Generic_IEqualityComparer_System_String__System_String___" data-uid="Bodu.Extensions.StringExtensions.IsOneOf(System.String,System.Collections.Generic.IEqualityComparer{System.String},System.String[])">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.IsOneOf.html#Bodu_Extensions_StringExtensions_IsOneOf_System_String_System_Collections_Generic_IEqualityComparer_System_String__System_String___">IsOneOf(string, IEqualityComparer&lt;string&gt;, params string[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a value indicating whether <code class="paramref">value</code> equals any element of <code class="paramref">values</code>
+under the rule supplied by <code class="paramref">comparer</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_IsOneOf_System_String_System_String___" data-uid="Bodu.Extensions.StringExtensions.IsOneOf(System.String,System.String[])">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.IsOneOf.html#Bodu_Extensions_StringExtensions_IsOneOf_System_String_System_String___">IsOneOf(string, params string[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a value indicating whether <code class="paramref">value</code> equals any element of <code class="paramref">values</code>
+under ordinal comparison.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_IsValidIdentifier_System_String_" data-uid="Bodu.Extensions.StringExtensions.IsValidIdentifier(System.String)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.IsValidIdentifier.html#Bodu_Extensions_StringExtensions_IsValidIdentifier_System_String_">IsValidIdentifier(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a value indicating whether <code class="paramref">value</code> is a syntactically valid C# identifier (a letter or
+underscore followed by zero or more letters, digits, underscores, or connector punctuation).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_KeepDigits_System_String_" data-uid="Bodu.Extensions.StringExtensions.KeepDigits(System.String)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.KeepDigits.html#Bodu_Extensions_StringExtensions_KeepDigits_System_String_">KeepDigits(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns <code class="paramref">value</code> filtered down to its Unicode digit characters.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_KeepLetters_System_String_" data-uid="Bodu.Extensions.StringExtensions.KeepLetters(System.String)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.KeepLetters.html#Bodu_Extensions_StringExtensions_KeepLetters_System_String_">KeepLetters(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns <code class="paramref">value</code> filtered down to its Unicode letter characters.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_KeepLettersAndDigits_System_String_" data-uid="Bodu.Extensions.StringExtensions.KeepLettersAndDigits(System.String)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.KeepLettersAndDigits.html#Bodu_Extensions_StringExtensions_KeepLettersAndDigits_System_String_">KeepLettersAndDigits(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns <code class="paramref">value</code> filtered down to its Unicode letter and digit characters.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_KeepWhere_System_String_System_Func_System_Char_System_Boolean__" data-uid="Bodu.Extensions.StringExtensions.KeepWhere(System.String,System.Func{System.Char,System.Boolean})">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.KeepWhere.html#Bodu_Extensions_StringExtensions_KeepWhere_System_String_System_Func_System_Char_System_Boolean__">KeepWhere(string, Func&lt;char, bool&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns <code class="paramref">value</code> filtered down to the characters for which <code class="paramref">predicate</code>
+returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_NormalizeLineEndings_System_String_System_String_" data-uid="Bodu.Extensions.StringExtensions.NormalizeLineEndings(System.String,System.String)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.NormalizeLineEndings.html#Bodu_Extensions_StringExtensions_NormalizeLineEndings_System_String_System_String_">NormalizeLineEndings(string, string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns <code class="paramref">value</code> with every CRLF (<code>\r\n</code>), CR (<code>\r</code>), and LF (<code>\n</code>) sequence
+replaced by <code class="paramref">newline</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_NullIfEmpty_System_String_" data-uid="Bodu.Extensions.StringExtensions.NullIfEmpty(System.String)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.NullIfEmpty.html#Bodu_Extensions_StringExtensions_NullIfEmpty_System_String_">NullIfEmpty(string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when <code class="paramref">value</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> or the empty string;
+otherwise returns <code class="paramref">value</code> unchanged.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_NullIfWhiteSpace_System_String_" data-uid="Bodu.Extensions.StringExtensions.NullIfWhiteSpace(System.String)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.NullIfWhiteSpace.html#Bodu_Extensions_StringExtensions_NullIfWhiteSpace_System_String_">NullIfWhiteSpace(string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when <code class="paramref">value</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, empty, or consists
+solely of white-space characters; otherwise returns <code class="paramref">value</code> unchanged.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_Outdent_System_String_System_Int32_System_Char_" data-uid="Bodu.Extensions.StringExtensions.Outdent(System.String,System.Int32,System.Char)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.Outdent.html#Bodu_Extensions_StringExtensions_Outdent_System_String_System_Int32_System_Char_">Outdent(string, int, char)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns <code class="paramref">value</code> with up to <code class="paramref">count</code> leading occurrences of
+<code class="paramref">indentChar</code> stripped from each line.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_Parenthesize_System_String_" data-uid="Bodu.Extensions.StringExtensions.Parenthesize(System.String)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.Parenthesize.html#Bodu_Extensions_StringExtensions_Parenthesize_System_String_">Parenthesize(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns <code class="paramref">value</code> wrapped in round-bracket characters (<code>(…)</code>).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_ParseSpan__1_System_String_" data-uid="Bodu.Extensions.StringExtensions.ParseSpan``1(System.String)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.ParseSpan.html#Bodu_Extensions_StringExtensions_ParseSpan__1_System_String_">ParseSpan&lt;T&gt;(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Parses <code class="paramref">value</code> into the requested <code class="typeparamref">T</code> using the
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.ispanparsable-1">ISpanParsable&lt;TSelf&gt;</a> contract and <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.cultureinfo.invariantculture">InvariantCulture</a>, routing through the
+underlying character span to avoid intermediate string allocation.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_Parse__1_System_String_" data-uid="Bodu.Extensions.StringExtensions.Parse``1(System.String)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.Parse.html#Bodu_Extensions_StringExtensions_Parse__1_System_String_">Parse&lt;T&gt;(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Parses <code class="paramref">value</code> into the requested <code class="typeparamref">T</code> using the
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iparsable-1">IParsable&lt;TSelf&gt;</a> contract and <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.cultureinfo.invariantculture">InvariantCulture</a> as the format provider.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_PrefixLines_System_String_System_String_" data-uid="Bodu.Extensions.StringExtensions.PrefixLines(System.String,System.String)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.PrefixLines.html#Bodu_Extensions_StringExtensions_PrefixLines_System_String_System_String_">PrefixLines(string, string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns <code class="paramref">value</code> with <code class="paramref">prefix</code> prepended to every line.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_Quote_System_String_" data-uid="Bodu.Extensions.StringExtensions.Quote(System.String)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.Quote.html#Bodu_Extensions_StringExtensions_Quote_System_String_">Quote(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns <code class="paramref">value</code> wrapped in straight double-quote characters (<code>&quot;…&quot;</code>).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_Remove_System_String_System_String_System_StringComparison_" data-uid="Bodu.Extensions.StringExtensions.Remove(System.String,System.String,System.StringComparison)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.Remove.html#Bodu_Extensions_StringExtensions_Remove_System_String_System_String_System_StringComparison_">Remove(string, string, StringComparison)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns <code class="paramref">value</code> with every occurrence of <code class="paramref">valueToRemove</code> removed.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_RemoveControlCharacters_System_String_" data-uid="Bodu.Extensions.StringExtensions.RemoveControlCharacters(System.String)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.RemoveControlCharacters.html#Bodu_Extensions_StringExtensions_RemoveControlCharacters_System_String_">RemoveControlCharacters(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns <code class="paramref">value</code> with every Unicode control character removed.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_RemoveDiacritics_System_String_" data-uid="Bodu.Extensions.StringExtensions.RemoveDiacritics(System.String)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.RemoveDiacritics.html#Bodu_Extensions_StringExtensions_RemoveDiacritics_System_String_">RemoveDiacritics(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns <code class="paramref">value</code> with combining diacritic marks removed, normalising accented Latin characters
+to their unaccented base form.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_RemoveDigits_System_String_" data-uid="Bodu.Extensions.StringExtensions.RemoveDigits(System.String)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.RemoveDigits.html#Bodu_Extensions_StringExtensions_RemoveDigits_System_String_">RemoveDigits(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns <code class="paramref">value</code> with every Unicode digit character removed.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_RemoveLineEndings_System_String_" data-uid="Bodu.Extensions.StringExtensions.RemoveLineEndings(System.String)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.RemoveLineEndings.html#Bodu_Extensions_StringExtensions_RemoveLineEndings_System_String_">RemoveLineEndings(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns <code class="paramref">value</code> with every carriage-return (<code>\r</code>) and line-feed (<code>\n</code>) character
+removed.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_RemoveMany_System_String_System_String___" data-uid="Bodu.Extensions.StringExtensions.RemoveMany(System.String,System.String[])">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.RemoveMany.html#Bodu_Extensions_StringExtensions_RemoveMany_System_String_System_String___">RemoveMany(string, params string[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns <code class="paramref">value</code> with every occurrence of each entry in <code class="paramref">valuesToRemove</code>
+removed under ordinal comparison, applied sequentially in array order.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_RemovePrefix_System_String_System_String_System_StringComparison_" data-uid="Bodu.Extensions.StringExtensions.RemovePrefix(System.String,System.String,System.StringComparison)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.RemovePrefix.html#Bodu_Extensions_StringExtensions_RemovePrefix_System_String_System_String_System_StringComparison_">RemovePrefix(string, string, StringComparison)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns <code class="paramref">value</code> with a single leading occurrence of <code class="paramref">prefix</code> removed when
+present.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_RemovePunctuation_System_String_" data-uid="Bodu.Extensions.StringExtensions.RemovePunctuation(System.String)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.RemovePunctuation.html#Bodu_Extensions_StringExtensions_RemovePunctuation_System_String_">RemovePunctuation(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns <code class="paramref">value</code> with every Unicode punctuation character removed.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_RemoveSuffix_System_String_System_String_System_StringComparison_" data-uid="Bodu.Extensions.StringExtensions.RemoveSuffix(System.String,System.String,System.StringComparison)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.RemoveSuffix.html#Bodu_Extensions_StringExtensions_RemoveSuffix_System_String_System_String_System_StringComparison_">RemoveSuffix(string, string, StringComparison)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns <code class="paramref">value</code> with a single trailing occurrence of <code class="paramref">suffix</code> removed when
+present.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_RemoveTrailingNewLine_System_String_" data-uid="Bodu.Extensions.StringExtensions.RemoveTrailingNewLine(System.String)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.RemoveTrailingNewLine.html#Bodu_Extensions_StringExtensions_RemoveTrailingNewLine_System_String_">RemoveTrailingNewLine(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns <code class="paramref">value</code> with a single trailing line ending removed when present.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_RemoveWhere_System_String_System_Func_System_Char_System_Boolean__" data-uid="Bodu.Extensions.StringExtensions.RemoveWhere(System.String,System.Func{System.Char,System.Boolean})">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.RemoveWhere.html#Bodu_Extensions_StringExtensions_RemoveWhere_System_String_System_Func_System_Char_System_Boolean__">RemoveWhere(string, Func&lt;char, bool&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns <code class="paramref">value</code> with every character for which <code class="paramref">predicate</code> returns
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> removed.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_RemoveWhitespace_System_String_" data-uid="Bodu.Extensions.StringExtensions.RemoveWhitespace(System.String)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.RemoveWhitespace.html#Bodu_Extensions_StringExtensions_RemoveWhitespace_System_String_">RemoveWhitespace(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns <code class="paramref">value</code> with every white-space character removed.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_ReplaceMany_System_String_System_Collections_Generic_IReadOnlyDictionary_System_String_System_String__" data-uid="Bodu.Extensions.StringExtensions.ReplaceMany(System.String,System.Collections.Generic.IReadOnlyDictionary{System.String,System.String})">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.ReplaceMany.html#Bodu_Extensions_StringExtensions_ReplaceMany_System_String_System_Collections_Generic_IReadOnlyDictionary_System_String_System_String__">ReplaceMany(string, IReadOnlyDictionary&lt;string, string&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns <code class="paramref">value</code> with every key from <code class="paramref">replacements</code> replaced by its
+associated value, applied sequentially in dictionary enumeration order under ordinal comparison.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_ReplaceOrdinalIgnoreCase_System_String_System_String_System_String_" data-uid="Bodu.Extensions.StringExtensions.ReplaceOrdinalIgnoreCase(System.String,System.String,System.String)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.ReplaceOrdinalIgnoreCase.html#Bodu_Extensions_StringExtensions_ReplaceOrdinalIgnoreCase_System_String_System_String_System_String_">ReplaceOrdinalIgnoreCase(string, string, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns <code class="paramref">value</code> with every occurrence of <code class="paramref">oldValue</code> replaced by
+<code class="paramref">newValue</code> using case-insensitive ordinal comparison.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_SingleQuote_System_String_" data-uid="Bodu.Extensions.StringExtensions.SingleQuote(System.String)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.SingleQuote.html#Bodu_Extensions_StringExtensions_SingleQuote_System_String_">SingleQuote(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns <code class="paramref">value</code> wrapped in straight single-quote characters (<code>'…'</code>).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_SliceSafe_System_String_System_Int32_" data-uid="Bodu.Extensions.StringExtensions.SliceSafe(System.String,System.Int32)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.SliceSafe.html#Bodu_Extensions_StringExtensions_SliceSafe_System_String_System_Int32_">SliceSafe(string, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the substring of <code class="paramref">value</code> starting at <code class="paramref">startIndex</code>, clamping
+out-of-range indices instead of throwing.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_SliceSafe_System_String_System_Int32_System_Int32_" data-uid="Bodu.Extensions.StringExtensions.SliceSafe(System.String,System.Int32,System.Int32)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.SliceSafe.html#Bodu_Extensions_StringExtensions_SliceSafe_System_String_System_Int32_System_Int32_">SliceSafe(string, int, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a substring of <code class="paramref">value</code> starting at <code class="paramref">startIndex</code> with the requested
+<code class="paramref">length</code>, clamping out-of-range arguments instead of throwing.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_SplitLines_System_String_System_Boolean_" data-uid="Bodu.Extensions.StringExtensions.SplitLines(System.String,System.Boolean)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.SplitLines.html#Bodu_Extensions_StringExtensions_SplitLines_System_String_System_Boolean_">SplitLines(string, bool)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a sequence of lines from <code class="paramref">value</code>, splitting on every CRLF, CR, or LF boundary.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_StartsWithOrdinal_System_String_System_String_" data-uid="Bodu.Extensions.StringExtensions.StartsWithOrdinal(System.String,System.String)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.StartsWithOrdinal.html#Bodu_Extensions_StringExtensions_StartsWithOrdinal_System_String_System_String_">StartsWithOrdinal(string, string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a value indicating whether <code class="paramref">value</code> begins with <code class="paramref">valueToFind</code> under
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.stringcomparison#system-stringcomparison-ordinal">Ordinal</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_StartsWithOrdinalIgnoreCase_System_String_System_String_" data-uid="Bodu.Extensions.StringExtensions.StartsWithOrdinalIgnoreCase(System.String,System.String)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.StartsWithOrdinalIgnoreCase.html#Bodu_Extensions_StringExtensions_StartsWithOrdinalIgnoreCase_System_String_System_String_">StartsWithOrdinalIgnoreCase(string, string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a value indicating whether <code class="paramref">value</code> begins with <code class="paramref">valueToFind</code> under
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.stringcomparison#system-stringcomparison-ordinalignorecase">OrdinalIgnoreCase</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_ToBase64_System_String_System_Text_Encoding_" data-uid="Bodu.Extensions.StringExtensions.ToBase64(System.String,System.Text.Encoding)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.ToBase64.html#Bodu_Extensions_StringExtensions_ToBase64_System_String_System_Text_Encoding_">ToBase64(string, Encoding?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the Base64-encoded representation of <code class="paramref">value</code> after encoding it with
+<code class="paramref">encoding</code> (or <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoding.utf8">UTF8</a> when <code class="paramref">encoding</code> is
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_ToCamelCase_System_String_" data-uid="Bodu.Extensions.StringExtensions.ToCamelCase(System.String)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.ToCamelCase.html#Bodu_Extensions_StringExtensions_ToCamelCase_System_String_">ToCamelCase(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Converts <code class="paramref">value</code> to <code>camelCase</code>: the first word is lower-cased and each subsequent word
+has its first character upper-cased, with separators removed.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_ToCamelCase_System_String_Bodu_Extensions_WordCasingOptions_" data-uid="Bodu.Extensions.StringExtensions.ToCamelCase(System.String,Bodu.Extensions.WordCasingOptions)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.ToCamelCase.html#Bodu_Extensions_StringExtensions_ToCamelCase_System_String_Bodu_Extensions_WordCasingOptions_">ToCamelCase(string, WordCasingOptions)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Converts <code class="paramref">value</code> to <code>camelCase</code> under the supplied <code class="paramref">options</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_ToConstantCase_System_String_" data-uid="Bodu.Extensions.StringExtensions.ToConstantCase(System.String)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.ToConstantCase.html#Bodu_Extensions_StringExtensions_ToConstantCase_System_String_">ToConstantCase(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Converts <code class="paramref">value</code> to <code>CONSTANT_CASE</code>: upper-cased words joined by underscores.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_ToConstantCase_System_String_Bodu_Extensions_WordCasingOptions_" data-uid="Bodu.Extensions.StringExtensions.ToConstantCase(System.String,Bodu.Extensions.WordCasingOptions)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.ToConstantCase.html#Bodu_Extensions_StringExtensions_ToConstantCase_System_String_Bodu_Extensions_WordCasingOptions_">ToConstantCase(string, WordCasingOptions)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Converts <code class="paramref">value</code> to <code>CONSTANT_CASE</code> under the supplied <code class="paramref">options</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_ToDotCase_System_String_" data-uid="Bodu.Extensions.StringExtensions.ToDotCase(System.String)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.ToDotCase.html#Bodu_Extensions_StringExtensions_ToDotCase_System_String_">ToDotCase(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Converts <code class="paramref">value</code> to <code>dot.case</code>: lower-cased words joined by periods.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_ToDotCase_System_String_Bodu_Extensions_WordCasingOptions_" data-uid="Bodu.Extensions.StringExtensions.ToDotCase(System.String,Bodu.Extensions.WordCasingOptions)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.ToDotCase.html#Bodu_Extensions_StringExtensions_ToDotCase_System_String_Bodu_Extensions_WordCasingOptions_">ToDotCase(string, WordCasingOptions)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Converts <code class="paramref">value</code> to <code>dot.case</code> under the supplied <code class="paramref">options</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_ToIdentifier_System_String_" data-uid="Bodu.Extensions.StringExtensions.ToIdentifier(System.String)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.ToIdentifier.html#Bodu_Extensions_StringExtensions_ToIdentifier_System_String_">ToIdentifier(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Converts <code class="paramref">value</code> into a syntactically valid C# identifier by removing characters that are not
+permitted in identifiers and preserving the original casing of the remaining characters.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_ToIdentifier_System_String_Bodu_Extensions_IdentifierCase_" data-uid="Bodu.Extensions.StringExtensions.ToIdentifier(System.String,Bodu.Extensions.IdentifierCase)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.ToIdentifier.html#Bodu_Extensions_StringExtensions_ToIdentifier_System_String_Bodu_Extensions_IdentifierCase_">ToIdentifier(string, IdentifierCase)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Converts <code class="paramref">value</code> into a syntactically valid C# identifier and reshapes the detected words to
+<code class="paramref">identifierCase</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_ToKebabCase_System_String_" data-uid="Bodu.Extensions.StringExtensions.ToKebabCase(System.String)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.ToKebabCase.html#Bodu_Extensions_StringExtensions_ToKebabCase_System_String_">ToKebabCase(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Converts <code class="paramref">value</code> to <code>kebab-case</code>: lower-cased words joined by hyphens.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_ToKebabCase_System_String_Bodu_Extensions_WordCasingOptions_" data-uid="Bodu.Extensions.StringExtensions.ToKebabCase(System.String,Bodu.Extensions.WordCasingOptions)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.ToKebabCase.html#Bodu_Extensions_StringExtensions_ToKebabCase_System_String_Bodu_Extensions_WordCasingOptions_">ToKebabCase(string, WordCasingOptions)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Converts <code class="paramref">value</code> to <code>kebab-case</code> under the supplied <code class="paramref">options</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_ToPascalCase_System_String_" data-uid="Bodu.Extensions.StringExtensions.ToPascalCase(System.String)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.ToPascalCase.html#Bodu_Extensions_StringExtensions_ToPascalCase_System_String_">ToPascalCase(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Converts <code class="paramref">value</code> to <code>PascalCase</code>: every word has its first character upper-cased and the
+remaining characters lower-cased, with separators removed.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_ToPascalCase_System_String_Bodu_Extensions_WordCasingOptions_" data-uid="Bodu.Extensions.StringExtensions.ToPascalCase(System.String,Bodu.Extensions.WordCasingOptions)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.ToPascalCase.html#Bodu_Extensions_StringExtensions_ToPascalCase_System_String_Bodu_Extensions_WordCasingOptions_">ToPascalCase(string, WordCasingOptions)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Converts <code class="paramref">value</code> to <code>PascalCase</code> under the supplied <code class="paramref">options</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_ToSafeFileName_System_String_" data-uid="Bodu.Extensions.StringExtensions.ToSafeFileName(System.String)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.ToSafeFileName.html#Bodu_Extensions_StringExtensions_ToSafeFileName_System_String_">ToSafeFileName(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns <code class="paramref">value</code> with every character that <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.path.getinvalidfilenamechars">GetInvalidFileNameChars()</a> reports
+as invalid for a file name replaced by an underscore.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_ToSafePathSegment_System_String_" data-uid="Bodu.Extensions.StringExtensions.ToSafePathSegment(System.String)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.ToSafePathSegment.html#Bodu_Extensions_StringExtensions_ToSafePathSegment_System_String_">ToSafePathSegment(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns <code class="paramref">value</code> with every character that <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.path.getinvalidfilenamechars">GetInvalidFileNameChars()</a> reports
+as invalid for a single path segment (plus the platform path separators) replaced by an underscore.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_ToSentenceCase_System_String_" data-uid="Bodu.Extensions.StringExtensions.ToSentenceCase(System.String)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.ToSentenceCase.html#Bodu_Extensions_StringExtensions_ToSentenceCase_System_String_">ToSentenceCase(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns <code class="paramref">value</code> with the first letter of every sentence capitalised and every other letter
+lower-cased, using <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.cultureinfo.invariantculture">InvariantCulture</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_ToSentenceCase_System_String_Bodu_Extensions_SentenceCaseOptions_" data-uid="Bodu.Extensions.StringExtensions.ToSentenceCase(System.String,Bodu.Extensions.SentenceCaseOptions)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.ToSentenceCase.html#Bodu_Extensions_StringExtensions_ToSentenceCase_System_String_Bodu_Extensions_SentenceCaseOptions_">ToSentenceCase(string, SentenceCaseOptions)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns <code class="paramref">value</code> in sentence case under the supplied <code class="paramref">options</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_ToSentenceCase_System_String_Bodu_Extensions_WordCasingOptions_" data-uid="Bodu.Extensions.StringExtensions.ToSentenceCase(System.String,Bodu.Extensions.WordCasingOptions)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.ToSentenceCase.html#Bodu_Extensions_StringExtensions_ToSentenceCase_System_String_Bodu_Extensions_WordCasingOptions_">ToSentenceCase(string, WordCasingOptions)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns <code class="paramref">value</code> in sentence case under the supplied <code class="paramref">options</code>, applying
+acronym-aware tokenisation, mixed-case-word preservation, and culture-sensitive casing.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_ToSlug_System_String_" data-uid="Bodu.Extensions.StringExtensions.ToSlug(System.String)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.ToSlug.html#Bodu_Extensions_StringExtensions_ToSlug_System_String_">ToSlug(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Converts <code class="paramref">value</code> to a URL-friendly slug: lower-cased words joined by hyphens with diacritics
+normalised and punctuation removed.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_ToSlug_System_String_Bodu_Extensions_SlugOptions_" data-uid="Bodu.Extensions.StringExtensions.ToSlug(System.String,Bodu.Extensions.SlugOptions)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.ToSlug.html#Bodu_Extensions_StringExtensions_ToSlug_System_String_Bodu_Extensions_SlugOptions_">ToSlug(string, SlugOptions)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Converts <code class="paramref">value</code> to a URL-friendly slug under the supplied <code class="paramref">options</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_ToSnakeCase_System_String_" data-uid="Bodu.Extensions.StringExtensions.ToSnakeCase(System.String)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.ToSnakeCase.html#Bodu_Extensions_StringExtensions_ToSnakeCase_System_String_">ToSnakeCase(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Converts <code class="paramref">value</code> to <code>snake_case</code>: lower-cased words joined by underscores.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_ToSnakeCase_System_String_Bodu_Extensions_WordCasingOptions_" data-uid="Bodu.Extensions.StringExtensions.ToSnakeCase(System.String,Bodu.Extensions.WordCasingOptions)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.ToSnakeCase.html#Bodu_Extensions_StringExtensions_ToSnakeCase_System_String_Bodu_Extensions_WordCasingOptions_">ToSnakeCase(string, WordCasingOptions)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Converts <code class="paramref">value</code> to <code>snake_case</code> under the supplied <code class="paramref">options</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_ToTitleCase_System_String_" data-uid="Bodu.Extensions.StringExtensions.ToTitleCase(System.String)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.ToTitleCase.html#Bodu_Extensions_StringExtensions_ToTitleCase_System_String_">ToTitleCase(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns <code class="paramref">value</code> with the first character of every word capitalised and the rest lower-cased,
+using <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.cultureinfo.invariantculture">InvariantCulture</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_ToTitleCase_System_String_Bodu_Extensions_TitleCaseOptions_" data-uid="Bodu.Extensions.StringExtensions.ToTitleCase(System.String,Bodu.Extensions.TitleCaseOptions)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.ToTitleCase.html#Bodu_Extensions_StringExtensions_ToTitleCase_System_String_Bodu_Extensions_TitleCaseOptions_">ToTitleCase(string, TitleCaseOptions)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns <code class="paramref">value</code> in title case under the supplied <code class="paramref">options</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_ToTitleCase_System_String_Bodu_Extensions_WordCasingOptions_" data-uid="Bodu.Extensions.StringExtensions.ToTitleCase(System.String,Bodu.Extensions.WordCasingOptions)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.ToTitleCase.html#Bodu_Extensions_StringExtensions_ToTitleCase_System_String_Bodu_Extensions_WordCasingOptions_">ToTitleCase(string, WordCasingOptions)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns <code class="paramref">value</code> in title case under the supplied <code class="paramref">options</code>, applying
+acronym-aware tokenisation, mixed-case-word preservation, and culture-sensitive casing.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_ToTrainCase_System_String_" data-uid="Bodu.Extensions.StringExtensions.ToTrainCase(System.String)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.ToTrainCase.html#Bodu_Extensions_StringExtensions_ToTrainCase_System_String_">ToTrainCase(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Converts <code class="paramref">value</code> to <code>Train-Case</code>: each word has its first character upper-cased and the
+rest lower-cased, joined by hyphens.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_ToTrainCase_System_String_Bodu_Extensions_WordCasingOptions_" data-uid="Bodu.Extensions.StringExtensions.ToTrainCase(System.String,Bodu.Extensions.WordCasingOptions)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.ToTrainCase.html#Bodu_Extensions_StringExtensions_ToTrainCase_System_String_Bodu_Extensions_WordCasingOptions_">ToTrainCase(string, WordCasingOptions)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Converts <code class="paramref">value</code> to <code>Train-Case</code> under the supplied <code class="paramref">options</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_TrimOrEmpty_System_String_" data-uid="Bodu.Extensions.StringExtensions.TrimOrEmpty(System.String)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.TrimOrEmpty.html#Bodu_Extensions_StringExtensions_TrimOrEmpty_System_String_">TrimOrEmpty(string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the trimmed form of <code class="paramref">value</code>, or <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string.empty">Empty</a> when
+<code class="paramref">value</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_TrimToNull_System_String_" data-uid="Bodu.Extensions.StringExtensions.TrimToNull(System.String)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.TrimToNull.html#Bodu_Extensions_StringExtensions_TrimToNull_System_String_">TrimToNull(string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the trimmed form of <code class="paramref">value</code>, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when <code class="paramref">value</code>
+is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> or the trimmed result is empty.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_Truncate_System_String_System_Int32_" data-uid="Bodu.Extensions.StringExtensions.Truncate(System.String,System.Int32)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.Truncate.html#Bodu_Extensions_StringExtensions_Truncate_System_String_System_Int32_">Truncate(string, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns <code class="paramref">value</code> truncated to at most <code class="paramref">maxLength</code> characters.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_Truncate_System_String_System_Int32_System_String_" data-uid="Bodu.Extensions.StringExtensions.Truncate(System.String,System.Int32,System.String)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.Truncate.html#Bodu_Extensions_StringExtensions_Truncate_System_String_System_Int32_System_String_">Truncate(string, int, string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns <code class="paramref">value</code> truncated to at most <code class="paramref">maxLength</code> characters, appending
+<code class="paramref">ellipsis</code> to indicate truncation.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_TruncateMiddle_System_String_System_Int32_System_String_" data-uid="Bodu.Extensions.StringExtensions.TruncateMiddle(System.String,System.Int32,System.String)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.TruncateMiddle.html#Bodu_Extensions_StringExtensions_TruncateMiddle_System_String_System_Int32_System_String_">TruncateMiddle(string, int, string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns <code class="paramref">value</code> truncated to at most <code class="paramref">maxLength</code> characters by keeping the
+beginning and end intact and inserting <code class="paramref">separator</code> in the middle.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_TryParseSpan__1_System_String___0__" data-uid="Bodu.Extensions.StringExtensions.TryParseSpan``1(System.String,``0@)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.TryParseSpan.html#Bodu_Extensions_StringExtensions_TryParseSpan__1_System_String___0__">TryParseSpan&lt;T&gt;(string, out T)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to parse <code class="paramref">value</code> into the requested <code class="typeparamref">T</code> using the
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.ispanparsable-1">ISpanParsable&lt;TSelf&gt;</a> contract and <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.cultureinfo.invariantculture">InvariantCulture</a>, routing through the
+underlying character span.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_TryParse__1_System_String___0__" data-uid="Bodu.Extensions.StringExtensions.TryParse``1(System.String,``0@)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.TryParse.html#Bodu_Extensions_StringExtensions_TryParse__1_System_String___0__">TryParse&lt;T&gt;(string, out T)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to parse <code class="paramref">value</code> into the requested <code class="typeparamref">T</code> using the
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iparsable-1">IParsable&lt;TSelf&gt;</a> contract and <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.cultureinfo.invariantculture">InvariantCulture</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_UnprefixLines_System_String_System_String_" data-uid="Bodu.Extensions.StringExtensions.UnprefixLines(System.String,System.String)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.UnprefixLines.html#Bodu_Extensions_StringExtensions_UnprefixLines_System_String_System_String_">UnprefixLines(string, string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns <code class="paramref">value</code> with one occurrence of <code class="paramref">prefix</code> removed from the start of
+every line that begins with it.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_Unwrap_System_String_System_String_System_String_System_StringComparison_" data-uid="Bodu.Extensions.StringExtensions.Unwrap(System.String,System.String,System.String,System.StringComparison)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.Unwrap.html#Bodu_Extensions_StringExtensions_Unwrap_System_String_System_String_System_String_System_StringComparison_">Unwrap(string, string, string, StringComparison)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns <code class="paramref">value</code> with <code class="paramref">prefix</code> and <code class="paramref">suffix</code> removed if both
+are present at their respective ends.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_StringExtensions_Wrap_System_String_System_String_System_String_" data-uid="Bodu.Extensions.StringExtensions.Wrap(System.String,System.String,System.String)">
+          <a class="xref" href="Bodu.Extensions.StringExtensions.Wrap.html#Bodu_Extensions_StringExtensions_Wrap_System_String_System_String_System_String_">Wrap(string, string, string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns <code class="paramref">value</code> with <code class="paramref">prefix</code> prepended and <code class="paramref">suffix</code>
+appended.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

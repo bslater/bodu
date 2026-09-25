@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Bodu.Financial — Getting started | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Bodu.Financial — Getting started | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="bodufinancial--getting-started">Bodu.Financial — Getting started</h1>
+
+<h2 id="install">Install</h2>
+<pre><code class="lang-bash">dotnet add package Bodu.Financial
+</code></pre>
+<p>Targets <code>net8.0</code>. References <code>Bodu.Numerics</code> (for the <code>Fraction&lt;BigInteger&gt;</code> precision escape hatch) and <code>Bodu.Core</code> (for shared argument validation).</p>
+<h2 id="minimal-samples">Minimal samples</h2>
+<h3 id="typed-monetary-arithmetic-moneytcurrency">Typed monetary arithmetic (<code>Money&lt;TCurrency&gt;</code>)</h3>
+<pre><code class="lang-csharp">using Bodu.Financial;
+using Bodu.Financial.Currencies;
+
+Money&lt;USD&gt; dinner = new Money&lt;USD&gt;(54.30m);
+Money&lt;USD&gt; tip    = dinner * 0.18m;
+Money&lt;USD&gt; total  = dinner + tip;       // OK — same currency
+
+Money&lt;JPY&gt; sushi = new Money&lt;JPY&gt;(2500m);
+var oops = dinner + sushi;              // Compile error — cannot add USD to JPY
+</code></pre>
+<p>Construction rounds to the currency's minor-unit precision using banker's rounding:</p>
+<ul>
+<li><code>MinorUnits = 0</code> — <code>JPY</code>, <code>KRW</code>, <code>CLP</code>, <code>ISK</code>, <code>VND</code>, <code>XAF</code>, <code>XOF</code>, …</li>
+<li><code>MinorUnits = 2</code> — <code>USD</code>, <code>EUR</code>, <code>GBP</code>, <code>AUD</code>, <code>CAD</code>, <code>CHF</code>, and most others.</li>
+<li><code>MinorUnits = 3</code> — <code>BHD</code>, <code>IQD</code>, <code>JOD</code>, <code>KWD</code>, <code>LYD</code>, <code>OMR</code>, <code>TND</code>.</li>
+</ul>
+<h3 id="cross-currency-conversion">Cross-currency conversion</h3>
+<pre><code class="lang-csharp">Money&lt;USD&gt; usd = new Money&lt;USD&gt;(100m);
+Money&lt;JPY&gt; jpy = usd.Convert&lt;JPY&gt;(155.5m);   // 15,550 JPY (0 dp)
+Money&lt;EUR&gt; eur = usd.Convert&lt;EUR&gt;(0.93m);    // 93.00 EUR (2 dp)
+</code></pre>
+<p>No implicit conversion — the rate must be supplied. Rounding is applied to the destination currency's minor-unit precision.</p>
+<h3 id="fair-allocation">Fair allocation</h3>
+<pre><code class="lang-csharp">Money&lt;USD&gt;[] shares = new Money&lt;USD&gt;(0.10m).Allocate(3);
+// [0.04, 0.03, 0.03]  — sums to exactly 0.10
+
+decimal[] ratios = { 1m, 1m, 2m };
+Money&lt;USD&gt;[] split = new Money&lt;USD&gt;(100m).Allocate(ratios);
+// [25.00, 25.00, 50.00]
+</code></pre>
+<p>The residual minor units are distributed one per share from the start of the array, so the sum equals the original exactly.</p>
+<h3 id="exact-intermediate-arithmetic-via-fractionbiginteger">Exact intermediate arithmetic via <code>Fraction&lt;BigInteger&gt;</code></h3>
+<pre><code class="lang-csharp">using System.Numerics;
+using Bodu.Financial;
+using Bodu.Financial.Currencies;
+using Bodu.Numerics;
+
+Money&lt;USD&gt; principal = new Money&lt;USD&gt;(1000m);
+Fraction&lt;BigInteger&gt; growth = Fraction&lt;BigInteger&gt;.One
+    + Fraction&lt;BigInteger&gt;.Create(5, 1200);   // 5% / 12 months
+
+Fraction&lt;BigInteger&gt; exact = principal.ToFraction();
+for (int i = 0; i &lt; 360; i++) exact *= growth;   // 30-year amortization, no drift
+
+Money&lt;USD&gt; balance = Money&lt;USD&gt;.FromFraction(exact);   // one rounding event
+</code></pre>
+<p>Single-step variant: <code>principal.MultiplyExact(growth)</code>.</p>
+<h3 id="deferred-rounding-with-calculatedmoney">Deferred rounding with <code>CalculatedMoney</code></h3>
+<p>When you only need to defer rounding across a chain of <code>decimal</code> steps
+— not full rational exactness — <code>Money&lt;T&gt;.ToCalculated()</code> returns a
+runtime-tagged <a class="xref" href="../../api/Bodu.Financial.CalculatedMoney.html">CalculatedMoney</a> that carries the
+full <code>decimal</code> precision through arithmetic and rounds once, at the
+settlement boundary:</p>
+<pre><code class="lang-csharp">CalculatedMoney running = new Money&lt;USD&gt;(100m).ToCalculated();
+running = running * 1.05m / 3m;              // no rounding yet
+Money settled = running.RoundToMoney();      // single rounding event → Money
+</code></pre>
+<h3 id="integer-minor-unit-storage">Integer minor-unit storage</h3>
+<p><code>Money&lt;T&gt;.ToMinorUnits()</code> and <code>FromMinorUnits(long)</code> bridge to the
+integer-cent representation ledgers and wire formats use:</p>
+<pre><code class="lang-csharp">long cents = new Money&lt;USD&gt;(19.99m).ToMinorUnits();    // 1999
+Money&lt;USD&gt; back = Money&lt;USD&gt;.FromMinorUnits(1999);     // USD 19.99
+</code></pre>
+<h3 id="runtime-tagged-amounts-money">Runtime-tagged amounts (<code>Money</code>)</h3>
+<pre><code class="lang-csharp">// `options` is a JsonSerializerOptions with the financial converters registered — see the JSON section below.
+Money invoice = JsonSerializer.Deserialize&lt;Money&gt;(payload, options)!;
+// invoice could be &quot;USD 19.99&quot;, &quot;EUR 19.99&quot;, or &quot;JPY 200&quot; — same code path.
+
+Money total = invoice + new Money(5m, invoice.Code);   // Code is the CurrencyCode enum
+
+Money&lt;USD&gt; typed = invoice.As&lt;USD&gt;();        // throws if mismatch
+bool ok = invoice.TryAs(out Money&lt;USD&gt; r);   // safe variant
+</code></pre>
+<h3 id="mixed-currency-portfolios-moneybag">Mixed-currency portfolios (<code>MoneyBag</code>)</h3>
+<pre><code class="lang-csharp">MoneyBag wallet = MoneyBag.Empty
+    .Add(new Money&lt;USD&gt;(100m))
+    .Add(new Money&lt;EUR&gt;(50m))
+    .Add(new Money&lt;JPY&gt;(10_000m));
+
+wallet.GetBalance&lt;USD&gt;();              // Money&lt;USD&gt;? 100.00
+wallet.GetBalance(CurrencyCode.EUR);   // Money? — EUR 50.00
+wallet.Count;                          // 3
+</code></pre>
+<p>Convert the bag to a single target currency via an <code>IRateProvider</code>:</p>
+<pre><code class="lang-csharp">var rates = new Dictionary&lt;(string From, string To), decimal&gt;
+{
+    { (&quot;EUR&quot;, &quot;USD&quot;), 1.10m },
+    { (&quot;JPY&quot;, &quot;USD&quot;), 0.0067m },
+};
+FixedRateTable table = new(rates);
+
+Money&lt;USD&gt; totalInUsd = wallet.ConvertTo&lt;USD&gt;(table);
+// 100 + 50×1.10 + 10000×0.0067 = $222.00
+</code></pre>
+<h3 id="dated-fx-lookup-with-audit-metadata">Dated FX lookup with audit metadata</h3>
+<pre><code class="lang-csharp">using Bodu.Financial.ExchangeRates;
+using Bodu.Financial.Extensions;   // IsExactDate / ResolvedDate extension members
+
+IDatedRateProvider provider = …;
+RateLookupResult lookup = provider.GetRate(
+    &quot;USD&quot;, &quot;EUR&quot;,
+    new DateOnly(2024, 6, 15),
+    RateLookupOptions.NearestWithin(7));
+
+Console.WriteLine($&quot;Used {lookup.Rate.Date} from {lookup.Rate.Provider}&quot;);
+Console.WriteLine($&quot;Offset: {lookup.OffsetDays} day(s), exact: {lookup.IsExactDate()}&quot;);
+</code></pre>
+<p>The lookup result is a <code>readonly record struct</code> carrying the resolved
+<code>Rate</code> (an <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.ExchangeRate.html">ExchangeRate</a>), the <code>RequestedDate</code>, the
+<code>Resolution</code> policy that fired, the absolute <code>OffsetDays</code>, and the
+<code>Provenance</code>. <code>IsExactDate</code>, <code>ResolvedDate</code>, <code>SignedOffsetDays</code>,
+<code>IsPreviousDate</code>, and <code>IsFutureDate</code> are extension members in
+<a class="xref" href="../../api/Bodu.Financial.Extensions.html">Bodu.Financial.Extensions</a> rather than properties on the record.</p>
+<h3 id="cash-rounding">Cash rounding</h3>
+<pre><code class="lang-csharp">new Money&lt;CHF&gt;(12.34m).RoundToCash();    // CHF 12.35
+new Money&lt;NZD&gt;(5.07m).RoundToCash();     // NZD 5.10
+new Money&lt;USD&gt;(19.99m).RoundToCash();    // USD 19.99 — no-op, no cash increment
+</code></pre>
+<p>The currency's <code>CashRoundingIncrement</code> (e.g. <code>0.05m</code> for CHF) drives the snap. Electronic transactions retain full minor-unit precision; use <code>RoundToCash()</code> only at the point a total becomes a cash payment.</p>
+<h3 id="json">JSON</h3>
+<p>JSON support ships in the companion <code>Bodu.Financial.Serialization.Json</code> package (<code>dotnet add package Bodu.Financial.Serialization.Json</code>); the core types carry no <code>[JsonConverter]</code> attribute, so register the converters before serializing. The default <code>Strict</code> policy emits the canonical object shape:</p>
+<pre><code class="lang-json">{ &quot;amount&quot;: 19.99, &quot;currency&quot;: &quot;USD&quot; }
+</code></pre>
+<pre><code class="lang-csharp">using Bodu.Financial.Serialization.Json;
+
+var options = new JsonSerializerOptions().AddFinancialJsonConverters();
+</code></pre>
+<p>For lenient parsing or the compact string form (<code>&quot;19.99 USD&quot;</code>), pass an explicit policy — for example <code>options.AddFinancialJsonConverters(FinancialJsonPolicy.Compact)</code>.</p>
+<h3 id="a-unit-outside-the-shipped-catalogue">A unit outside the shipped catalogue</h3>
+<p>The runtime <code>Money</code> is closed to the shipped <code>CurrencyCode</code> set. For a
+generic amount in a unit outside ISO 4217, declare your own <code>ICurrency</code>
+tag (its <code>IsoCode</code> must be three uppercase ASCII letters) and use
+<code>Money&lt;TCurrency&gt;</code>; it carries its own precision and stays in the
+generic world — it cannot bridge to the runtime <code>Money</code>.</p>
+<pre><code class="lang-csharp">public sealed class XPT : ICurrency      // troy ounces of platinum, say
+{
+    public static string IsoCode   =&gt; &quot;XPT&quot;;
+    public static int    MinorUnits =&gt; 4;
+    private XPT() { }
+}
+
+Money&lt;XPT&gt; holding = new Money&lt;XPT&gt;(12.3456m);
+</code></pre>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="index.html">Bodu.Financial introduction</a></strong> — namespaces, headline types, scenarios.</li>
+<li><strong><a href="../../guides/financial/money.html">Working with <code>Money&lt;TCurrency&gt;</code></a></strong> — the full reference for typed money, including formatting/parsing, locale-aware output, cash rounding, historic-currency metadata, <code>Money</code> interop, and <code>MoneyBag</code> portfolios.</li>
+<li><strong><a href="../numerics/getting-started.html">Bodu.Numerics getting started</a></strong> — for the <code>Fraction&lt;BigInteger&gt;</code> precision escape hatch used by <code>Money&lt;T&gt;.ToFraction()</code>.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Financial.html">Bodu.Financial API reference</a></strong> — full type-by-type docs.</li>
+<li><strong><a href="../../samples/financial.html">Runnable samples</a></strong> — offline sample projects under <code>samples/Financial/</code> you can <code>dotnet run</code> and copy from.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

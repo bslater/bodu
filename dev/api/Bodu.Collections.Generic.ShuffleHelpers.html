@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class ShuffleHelpers | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class ShuffleHelpers | BODU ">
+    
+    <meta name="description" content="Provides in-place and yield-based Fisher–Yates randomization over arrays, spans, memory regions, and arbitrary  sources.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Collections.Generic.ShuffleHelpers">
+
+
+
+  <h1 id="Bodu_Collections_Generic_ShuffleHelpers" data-uid="Bodu.Collections.Generic.ShuffleHelpers" class="text-break">Class ShuffleHelpers</h1>
+  <div class="markdown level0 summary"><p>Provides in-place and yield-based Fisher–Yates randomization over arrays, spans, memory regions, and arbitrary
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable&lt;T&gt;</a> sources.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><span class="xref">ShuffleHelpers</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Collections.html">Collections</a>.<a class="xref" href="Bodu.Collections.Generic.html">Generic</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Core.dll</h6>
+  <h5 id="Bodu_Collections_Generic_ShuffleHelpers_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class ShuffleHelpers</code></pre>
+  </div>
+  <h5 id="Bodu_Collections_Generic_ShuffleHelpers_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+The helpers implement the canonical Fisher–Yates (Knuth) shuffle: each position from the end of the live region down
+to index 1 swaps with a uniformly chosen earlier position. The resulting permutation is uniform when the supplied
+<a class="xref" href="Bodu.IRandomGenerator.html">IRandomGenerator</a> produces uniform draws over <code>[0, exclusiveMax)</code>.
+</p>
+<p>
+Two surface shapes are exposed. <code>Shuffle</code> mutates the supplied buffer in place and runs in O(n) time with no
+extra allocation. <code>ShuffleAndYield</code> produces a deferred sequence of the shuffled elements; the <code>count</code>
+overloads short-circuit after the first <code>count</code> draws and are equivalent to a partial Fisher–Yates — useful for
+sampling-without-replacement when only a prefix of the shuffle is needed.
+</p>
+<p>
+Randomness quality is delegated entirely to the caller-supplied <a class="xref" href="Bodu.IRandomGenerator.html">IRandomGenerator</a>. For deterministic
+shuffles in tests pass a seeded generator (such as <a class="xref" href="Bodu.XorShiftRandom.html">XorShiftRandom</a> with a fixed seed); for production
+shuffling pass any non-cryptographic generator. None of these helpers are suitable for use in cryptographic
+permutations, key shuffling, or any context where an attacker can observe outputs and recover state.
+</p>
+</div>
+  <h5 id="Bodu_Collections_Generic_ShuffleHelpers_examples"><strong>Examples</strong></h5>
+  <pre><code class="lang-csharp">// Deterministic shuffle of an array — useful for tests and reproducible demos.
+var deck = Enumerable.Range(1, 52).ToArray();
+IRandomGenerator rng = new XorShiftRandom(seed: 42);
+ShuffleHelpers.Shuffle(deck, rng);
+
+// Sample five cards without replacement using the yield-based overload.
+foreach (int card in ShuffleHelpers.ShuffleAndYield(deck, rng, count: 5))
+    Console.WriteLine(card);</code></pre>
+
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Collections_Generic_ShuffleHelpers_ShuffleAndYield__1_System_Collections_Generic_IEnumerable___0__Bodu_IRandomGenerator_" data-uid="Bodu.Collections.Generic.ShuffleHelpers.ShuffleAndYield``1(System.Collections.Generic.IEnumerable{``0},Bodu.IRandomGenerator)">
+          <a class="xref" href="Bodu.Collections.Generic.ShuffleHelpers.ShuffleAndYield.html#Bodu_Collections_Generic_ShuffleHelpers_ShuffleAndYield__1_System_Collections_Generic_IEnumerable___0__Bodu_IRandomGenerator_">ShuffleAndYield&lt;T&gt;(IEnumerable&lt;T&gt;, IRandomGenerator)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Lazily yields a fully shuffled sequence from the given source.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_ShuffleHelpers_ShuffleAndYield__1_System_Collections_Generic_IEnumerable___0__Bodu_IRandomGenerator_System_Int32_" data-uid="Bodu.Collections.Generic.ShuffleHelpers.ShuffleAndYield``1(System.Collections.Generic.IEnumerable{``0},Bodu.IRandomGenerator,System.Int32)">
+          <a class="xref" href="Bodu.Collections.Generic.ShuffleHelpers.ShuffleAndYield.html#Bodu_Collections_Generic_ShuffleHelpers_ShuffleAndYield__1_System_Collections_Generic_IEnumerable___0__Bodu_IRandomGenerator_System_Int32_">ShuffleAndYield&lt;T&gt;(IEnumerable&lt;T&gt;, IRandomGenerator, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Lazily yields a randomized subset of an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable&lt;T&gt;</a> using a partial Fisher–Yates shuffle.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_ShuffleHelpers_ShuffleAndYield__1_System_Memory___0__Bodu_IRandomGenerator_" data-uid="Bodu.Collections.Generic.ShuffleHelpers.ShuffleAndYield``1(System.Memory{``0},Bodu.IRandomGenerator)">
+          <a class="xref" href="Bodu.Collections.Generic.ShuffleHelpers.ShuffleAndYield.html#Bodu_Collections_Generic_ShuffleHelpers_ShuffleAndYield__1_System_Memory___0__Bodu_IRandomGenerator_">ShuffleAndYield&lt;T&gt;(Memory&lt;T&gt;, IRandomGenerator)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Yields a fully shuffled copy of the memory block.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_ShuffleHelpers_ShuffleAndYield__1_System_Memory___0__Bodu_IRandomGenerator_System_Int32_" data-uid="Bodu.Collections.Generic.ShuffleHelpers.ShuffleAndYield``1(System.Memory{``0},Bodu.IRandomGenerator,System.Int32)">
+          <a class="xref" href="Bodu.Collections.Generic.ShuffleHelpers.ShuffleAndYield.html#Bodu_Collections_Generic_ShuffleHelpers_ShuffleAndYield__1_System_Memory___0__Bodu_IRandomGenerator_System_Int32_">ShuffleAndYield&lt;T&gt;(Memory&lt;T&gt;, IRandomGenerator, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Yields a randomized subset of a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.memory-1">Memory&lt;T&gt;</a> block using a copied buffer and array shuffle.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_ShuffleHelpers_ShuffleAndYield__1_System_ReadOnlySpan___0__Bodu_IRandomGenerator_" data-uid="Bodu.Collections.Generic.ShuffleHelpers.ShuffleAndYield``1(System.ReadOnlySpan{``0},Bodu.IRandomGenerator)">
+          <a class="xref" href="Bodu.Collections.Generic.ShuffleHelpers.ShuffleAndYield.html#Bodu_Collections_Generic_ShuffleHelpers_ShuffleAndYield__1_System_ReadOnlySpan___0__Bodu_IRandomGenerator_">ShuffleAndYield&lt;T&gt;(ReadOnlySpan&lt;T&gt;, IRandomGenerator)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Yields a fully shuffled copy of the span.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_ShuffleHelpers_ShuffleAndYield__1_System_ReadOnlySpan___0__Bodu_IRandomGenerator_System_Int32_" data-uid="Bodu.Collections.Generic.ShuffleHelpers.ShuffleAndYield``1(System.ReadOnlySpan{``0},Bodu.IRandomGenerator,System.Int32)">
+          <a class="xref" href="Bodu.Collections.Generic.ShuffleHelpers.ShuffleAndYield.html#Bodu_Collections_Generic_ShuffleHelpers_ShuffleAndYield__1_System_ReadOnlySpan___0__Bodu_IRandomGenerator_System_Int32_">ShuffleAndYield&lt;T&gt;(ReadOnlySpan&lt;T&gt;, IRandomGenerator, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Yields a randomized subset of a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan&lt;T&gt;</a> using a copied buffer and array shuffle.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_ShuffleHelpers_ShuffleAndYield__1___0___Bodu_IRandomGenerator_" data-uid="Bodu.Collections.Generic.ShuffleHelpers.ShuffleAndYield``1(``0[],Bodu.IRandomGenerator)">
+          <a class="xref" href="Bodu.Collections.Generic.ShuffleHelpers.ShuffleAndYield.html#Bodu_Collections_Generic_ShuffleHelpers_ShuffleAndYield__1___0___Bodu_IRandomGenerator_">ShuffleAndYield&lt;T&gt;(T[], IRandomGenerator)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Yields a fully shuffled copy of the array.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_ShuffleHelpers_ShuffleAndYield__1___0___Bodu_IRandomGenerator_System_Int32_" data-uid="Bodu.Collections.Generic.ShuffleHelpers.ShuffleAndYield``1(``0[],Bodu.IRandomGenerator,System.Int32)">
+          <a class="xref" href="Bodu.Collections.Generic.ShuffleHelpers.ShuffleAndYield.html#Bodu_Collections_Generic_ShuffleHelpers_ShuffleAndYield__1___0___Bodu_IRandomGenerator_System_Int32_">ShuffleAndYield&lt;T&gt;(T[], IRandomGenerator, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Yields a randomized subset of the specified array by copying and shuffling it using a partial Fisher–Yates
+algorithm.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_ShuffleHelpers_Shuffle__1_System_Memory___0__Bodu_IRandomGenerator_" data-uid="Bodu.Collections.Generic.ShuffleHelpers.Shuffle``1(System.Memory{``0},Bodu.IRandomGenerator)">
+          <a class="xref" href="Bodu.Collections.Generic.ShuffleHelpers.Shuffle.html#Bodu_Collections_Generic_ShuffleHelpers_Shuffle__1_System_Memory___0__Bodu_IRandomGenerator_">Shuffle&lt;T&gt;(Memory&lt;T&gt;, IRandomGenerator)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Performs an in-place Fisher–Yates shuffle over a memory region.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_ShuffleHelpers_Shuffle__1_System_Span___0__Bodu_IRandomGenerator_" data-uid="Bodu.Collections.Generic.ShuffleHelpers.Shuffle``1(System.Span{``0},Bodu.IRandomGenerator)">
+          <a class="xref" href="Bodu.Collections.Generic.ShuffleHelpers.Shuffle.html#Bodu_Collections_Generic_ShuffleHelpers_Shuffle__1_System_Span___0__Bodu_IRandomGenerator_">Shuffle&lt;T&gt;(Span&lt;T&gt;, IRandomGenerator)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Performs an in-place Fisher–Yates shuffle over a span of elements.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_ShuffleHelpers_Shuffle__1___0___Bodu_IRandomGenerator_" data-uid="Bodu.Collections.Generic.ShuffleHelpers.Shuffle``1(``0[],Bodu.IRandomGenerator)">
+          <a class="xref" href="Bodu.Collections.Generic.ShuffleHelpers.Shuffle.html#Bodu_Collections_Generic_ShuffleHelpers_Shuffle__1___0___Bodu_IRandomGenerator_">Shuffle&lt;T&gt;(T[], IRandomGenerator)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Performs an in-place Fisher–Yates shuffle over the provided array.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

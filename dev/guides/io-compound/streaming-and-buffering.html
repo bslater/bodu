@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Buffered vs streaming access | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Buffered vs streaming access | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="buffered-vs-streaming-access">Buffered vs streaming access</h1>
+
+<p><a class="xref" href="../../api/Bodu.IO.Compound.CompoundFile.html">CompoundFile</a> can hold a file two ways, chosen by the <code>buffered</code> flag on <code>CompoundFile.Open</code>. The choice affects memory, the source stream's lifetime, and the behaviour of the <a class="xref" href="../../api/Bodu.IO.Compound.CompoundStream.html">CompoundStream</a> cursor you open over a stream's bytes. This guide explains both modes and when to pick each.</p>
+<p><img src="../../images/diagrams/io-compound-stream-access.svg" alt="CompoundStorage.OpenStream returns a read-only seekable CompoundStream. Under a buffered file the payload is materialized into an in-memory byte array at open time; under a streaming file the cursor walks the stream's sector chain on demand, reading only the bytes within the current sector and advancing."></p>
+<h2 id="the-two-modes">The two modes</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.IO.Compound;
+
+// Buffered (default): the whole file is read into memory at open time.
+using CompoundFile buffered = CompoundFile.Open(File.OpenRead(&quot;book.xls&quot;));
+
+// Streaming: sectors are read on demand from the seekable source.
+using FileStream source = File.OpenRead(&quot;large.msg&quot;);
+using CompoundFile streaming = CompoundFile.Open(source, buffered: false);
+</code></pre>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Buffered (default)</th>
+<th>Streaming (<code>buffered: false</code>)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Source after open</td>
+<td>Can be closed immediately.</td>
+<td>Must stay open and unmodified for the file's lifetime.</td>
+</tr>
+<tr>
+<td>Memory</td>
+<td>Whole file resident.</td>
+<td>Bounded — one sector at a time for large streams.</td>
+</tr>
+<tr>
+<td>Source requirement</td>
+<td>Any readable stream.</td>
+<td>Must be seekable (<code>ArgumentException</code> otherwise).</td>
+</tr>
+<tr>
+<td>Concurrency</td>
+<td>Read-only and safe to share across threads.</td>
+<td>Reads are serialized against the shared source position — concurrent, but not parallel.</td>
+</tr>
+</tbody>
+</table>
+<p>The default suits the common case — a few-kilobyte <code>.xls</code> or <code>.msg</code> — where reading it all up front is simplest and lets you drop the file handle right away. Reach for streaming when the file is large enough that holding it whole is undesirable and you can keep the source open.</p>
+<h2 id="letting-the-reader-decide--the-auto-strategy">Letting the reader decide — the Auto strategy</h2>
+<p>The <code>buffered</code> flag is the two-value shorthand; the full control is <a class="xref" href="../../api/Bodu.IO.Compound.CompoundReadStrategy.html">CompoundReadStrategy</a> on <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFileOptions.html">CompoundFileOptions</a>, which adds a third option that picks per source size:</p>
+<pre><code class="lang-csharp">using Bodu.IO.Compound;
+
+var options = new CompoundFileOptions
+{
+    ReadStrategy = CompoundReadStrategy.Auto,
+    MaxBufferedBytes = 32L * 1024 * 1024,   // buffer at/under 32 MiB, stream above it
+};
+
+using FileStream source = File.OpenRead(path);
+using CompoundFile file = CompoundFile.Open(source, options, leaveOpen: true);
+</code></pre>
+<p><a class="xref" href="../../api/Bodu.IO.Compound.CompoundReadStrategy.html#Bodu_IO_Compound_CompoundReadStrategy_Auto">Auto</a> compares a seekable source's length against <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFileOptions.MaxBufferedBytes.html#Bodu_IO_Compound_CompoundFileOptions_MaxBufferedBytes">MaxBufferedBytes</a> (64 MiB by default): small files are buffered, large ones streamed. A non-seekable source can only be buffered, so <code>Auto</code> and <code>Buffered</code> both read it whole, while <code>Streaming</code> over a non-seekable source throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a>.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Even under a streaming file, a stream whose size is below the <strong>mini-stream cutoff</strong> (typically 4096 bytes) is materialised whole rather than walked sector by sector — its bytes live in the in-memory mini-stream that the reader builds at open time. Streaming bounds memory for the <em>large</em> streams; the small ones are already resident.</p>
+</div>
+<h2 id="the-compoundstream-cursor">The CompoundStream cursor</h2>
+<p><code>CompoundStorage.OpenStream</code> returns a <code>CompoundStream</code>, a standard read-only, seekable <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a> — <code>CanRead</code> and <code>CanSeek</code> are <code>true</code>, <code>CanWrite</code> is <code>false</code>. Because it is a <code>Stream</code>, it composes with the BCL surfaces that consume one:</p>
+<pre><code class="lang-csharp">using CompoundStream stream = file.RootStorage.OpenStream(&quot;Workbook&quot;);
+
+// Hand it to any Stream consumer.
+using var reader = new StreamReader(stream, Encoding.Unicode);
+string text = reader.ReadToEnd();
+
+// Or seek and read primitives directly.
+stream.Seek(0, SeekOrigin.Begin);
+Span&lt;byte&gt; header = stackalloc byte[8];
+stream.ReadExactly(header);
+</code></pre>
+<p>Under a buffered file the cursor's payload was materialized into a <code>byte[]</code> at open time, and <code>Read</code> / <code>Seek</code> work over that array. Under a streaming file the same cursor instead walks the stream's sector chain in the source: each <code>Read</code> locates the sector for the current <code>Position</code>, copies only the bytes within that sector, and advances — so the full payload is never resident. The two behave identically from the caller's side; only the memory profile differs.</p>
+<p><code>Write</code> and <code>SetLength</code> throw <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a> on this read-only cursor — the one returned by <code>OpenStream(name)</code>. On a <em>writable</em> file, <code>OpenStream(name, FileMode, FileAccess)</code> (and <code>CreateStream</code>) instead return a read-write cursor whose <code>CanWrite</code> is <code>true</code>; see <a href="authoring-compound-files.html">Authoring compound files</a>. Seeking past the end is allowed (the <code>Stream</code> contract); the next <code>Read</code> returns zero. The cursor's <a class="xref" href="../../api/Bodu.IO.Compound.CompoundStream.Stat.html#Bodu_IO_Compound_CompoundStream_Stat">Stat</a> property exposes the entry's <a class="xref" href="../../api/Bodu.IO.Compound.CompoundEntryInfo.html">CompoundEntryInfo</a> metadata snapshot, and <code>Length</code> reports the declared payload size.</p>
+<blockquote>
+<p>A single cursor is not safe for concurrent use — its <code>Position</code> advances as you read. Open one cursor per reader.</p>
+</blockquote>
+<h2 id="asmemory-vs-chunked-read">AsMemory vs chunked Read</h2>
+<pre><code class="lang-csharp">using CompoundStream stream = file.RootStorage.OpenStream(&quot;Workbook&quot;);
+
+// Whole-payload view — convenient for small streams.
+ReadOnlyMemory&lt;byte&gt; all = stream.AsMemory();
+ushort magic = BinaryPrimitives.ReadUInt16LittleEndian(all.Span);
+</code></pre>
+<p><code>AsMemory</code> returns a read-only view over the entire payload. For a buffered stream this is a view over the already-materialized bytes with no copy; for a streaming stream it reads the whole chain into memory on request. It does not depend on or advance <code>Position</code>. <code>ReadAllBytes</code> is the copying sibling — it returns a fresh <code>byte[]</code> of the whole payload, mirroring <code>File.ReadAllBytes</code>.</p>
+<p>Prefer chunked <code>Read</code> over <code>AsMemory</code> for large streaming payloads — <code>AsMemory</code> defeats the point of streaming by pulling the whole thing into memory:</p>
+<pre><code class="lang-csharp">using CompoundStream stream = file.RootStorage.OpenStream(&quot;LargeBlob&quot;);
+
+byte[] buffer = ArrayPool&lt;byte&gt;.Shared.Rent(64 * 1024);
+try
+{
+    int read;
+    while ((read = stream.Read(buffer, 0, buffer.Length)) &gt; 0)
+        sink.Write(buffer.AsSpan(0, read));
+}
+finally
+{
+    ArrayPool&lt;byte&gt;.Shared.Return(buffer);
+}
+</code></pre>
+<h2 id="large-payloads-on-the-write-side">Large payloads on the write side</h2>
+<p>A <em>writable</em> cursor (from <code>CreateStream</code> or a write-access <code>OpenStream</code> on a writable file) buffers its whole payload in memory until it flushes into the staging tree, and it caps that buffer at <code>int.MaxValue</code> bytes — growing past the cap throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a> rather than exhausting memory by surprise.</p>
+<p>For payloads that should not (or cannot) be buffered, author through a deferred stream source instead: <code>CompoundStorageBuilder.AddStream(name, openRead, length)</code> or <code>AddStreamFromFile</code>. Deferred sources declare their length up front, are opened only during serialization, and are copied to the destination through a fixed-size pooled buffer — so the container can carry payloads far larger than memory. See <a href="authoring-compound-files.html">Authoring compound files</a> for the deferred patterns.</p>
+<p>Independent of the cursor cap, MS-CFB itself limits any single stream in a version-3 (512-byte-sector) file to 2 GB; larger streams require a version-4 file (<code>CompoundBuildOptions.Version = CompoundFileVersion.V4</code>).</p>
+<h2 id="asynchronous-io">Asynchronous I/O</h2>
+<p>Two paths do real asynchronous I/O, matched to where the work is actually a device operation rather than a memory copy:</p>
+<ul>
+<li><strong><code>CompoundFile.CommitAsync</code> / <code>FlushAsync</code></strong> write the container to the destination — and copy any deferred stream sources — with <code>WriteAsync</code> / <code>ReadAsync</code>. They share the exact layout computation the synchronous <code>Commit</code> uses, so the bytes are identical; cancellation is observed before any write and again between chunks. A cancellation or failure mid-write leaves the destination partially written and the file dirty (the same surface a synchronous fault presents) — commit again, or <code>Revert</code>.</li>
+<li><strong><code>CompoundStream.ReadAsync</code></strong> is truly asynchronous only for a <em>streaming</em>-mode cursor, which reads its sectors on demand from the underlying source. A buffered cursor (the default) and a writable cursor read from memory, so their <code>ReadAsync</code> completes synchronously — awaiting them is correct but adds no I/O concurrency.</li>
+</ul>
+<p>There is no <code>OpenAsync</code>: opening a buffered file is a single contiguous read the caller can do themselves (open a <code>MemoryStream</code> and pass it), and opening a streaming file does no bulk I/O up front.</p>
+<h2 id="lifetime-checklist">Lifetime checklist</h2>
+<ul>
+<li>Dispose the <code>CompoundFile</code> when finished; it releases the source according to the <code>leaveOpen</code> contract.</li>
+<li>Under streaming, keep the source stream open and do not seek or write it yourself until the <code>CompoundFile</code> is disposed.</li>
+<li>Dispose each <code>CompoundStream</code> cursor when done with it.</li>
+<li>Reading from a <code>CompoundStream</code> after its owning <code>CompoundFile</code> is disposed throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a>.</li>
+</ul>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="reading-compound-files.html">Reading compound files</a> — opening, navigating, and the <code>Open</code> vs <code>ReadAllBytes</code> choice.</li>
+<li><a href="property-sets.html">Reading property sets</a> — the metadata streams.</li>
+<li><a class="xref" href="../../api/Bodu.IO.Compound.html">Bodu.IO.Compound API reference</a>.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

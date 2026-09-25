@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class Base58 | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class Base58 | BODU ">
+    
+    <meta name="description" content="Provides Base58 encoding and decoding of binary data using the Bitcoin/Flickr or Ripple alphabets.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Text.Encoding.Base58">
+
+
+
+  <h1 id="Bodu_Text_Encoding_Base58" data-uid="Bodu.Text.Encoding.Base58" class="text-break">Class Base58</h1>
+  <div class="markdown level0 summary"><p>Provides Base58 encoding and decoding of binary data using the Bitcoin/Flickr or Ripple alphabets.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><span class="xref">Base58</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Encoding.html">Encoding</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Text.Encoding.dll</h6>
+  <h5 id="Bodu_Text_Encoding_Base58_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class Base58</code></pre>
+  </div>
+  <h5 id="Bodu_Text_Encoding_Base58_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+Base58 is a non-power-of-two radix (radix 58) used by Bitcoin addresses, IPFS CIDs, Solana, and similar protocols.
+Because the radix is not a power of two, encoding is performed using big-integer arithmetic rather than the
+bit-stream technique used by Base16, Base32, and Base64.
+</p>
+<p>
+Leading zero bytes in the input are encoded as leading alphabet[0] characters (typically <code>1</code> in the
+Bitcoin/Flickr alphabet) so that the byte-level and character-level forms preserve a meaningful prefix.
+</p>
+<p>
+Base58 has no padding character and no standard decorations. The <a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html#Bodu_Text_Encoding_BaseFormattingOptions_UpperCase">UpperCase</a>,
+<a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html#Bodu_Text_Encoding_BaseFormattingOptions_IncludePrefix">IncludePrefix</a>, <a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html#Bodu_Text_Encoding_BaseFormattingOptions_InsertSpacing">InsertSpacing</a>,
+<a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html#Bodu_Text_Encoding_BaseFormattingOptions_InsertLineBreaks">InsertLineBreaks</a>, and <a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html#Bodu_Text_Encoding_BaseFormattingOptions_OmitPadding">OmitPadding</a> flags
+are no-ops. The <a class="xref" href="Bodu.Text.Encoding.BaseFormatStyles.html#Bodu_Text_Encoding_BaseFormatStyles_AllowPrefix">AllowPrefix</a> and <a class="xref" href="Bodu.Text.Encoding.BaseFormatStyles.html#Bodu_Text_Encoding_BaseFormatStyles_AllowMissingPadding">AllowMissingPadding</a>
+flags are likewise ignored; only <a class="xref" href="Bodu.Text.Encoding.BaseFormatStyles.html#Bodu_Text_Encoding_BaseFormatStyles_IgnoreWhitespace">IgnoreWhitespace</a> has an effect on decode.
+</p>
+</div>
+  <h5 id="Bodu_Text_Encoding_Base58_examples"><strong>Examples</strong></h5>
+  <pre><code class="lang-csharp">// Bitcoin/Flickr Base58 (default) — leading zero bytes encode as leading '1' characters.
+byte[] data = { 0x00, 0xDE, 0xAD, 0xBE, 0xEF };
+string encoded = Base58.Encode(data);
+
+// Ripple alphabet — a permutation used by the XRP ledger.
+string ripple = Base58.Encode(data, Base58Variant.Ripple);
+
+// Round-trip.
+byte[] roundtrip = Base58.Decode(encoded);</code></pre>
+
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base58_Decode_System_Char___System_Int32_System_Int32_Bodu_Text_Encoding_Base58Variant_Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base58.Decode(System.Char[],System.Int32,System.Int32,Bodu.Text.Encoding.Base58Variant,Bodu.Text.Encoding.BaseFormatStyles)">
+          <a class="xref" href="Bodu.Text.Encoding.Base58.Decode.html#Bodu_Text_Encoding_Base58_Decode_System_Char___System_Int32_System_Int32_Bodu_Text_Encoding_Base58Variant_Bodu_Text_Encoding_BaseFormatStyles_">Decode(char[], int, int, Base58Variant, BaseFormatStyles)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes a portion of a character array into a byte array.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base58_Decode_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_Base58Variant_Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base58.Decode(System.ReadOnlySpan{System.Char},Bodu.Text.Encoding.Base58Variant,Bodu.Text.Encoding.BaseFormatStyles)">
+          <a class="xref" href="Bodu.Text.Encoding.Base58.Decode.html#Bodu_Text_Encoding_Base58_Decode_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_Base58Variant_Bodu_Text_Encoding_BaseFormatStyles_">Decode(ReadOnlySpan&lt;char&gt;, Base58Variant, BaseFormatStyles)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes a Base58 character span into a byte array.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base58_Decode_System_String_Bodu_Text_Encoding_Base58Variant_Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base58.Decode(System.String,Bodu.Text.Encoding.Base58Variant,Bodu.Text.Encoding.BaseFormatStyles)">
+          <a class="xref" href="Bodu.Text.Encoding.Base58.Decode.html#Bodu_Text_Encoding_Base58_Decode_System_String_Bodu_Text_Encoding_Base58Variant_Bodu_Text_Encoding_BaseFormatStyles_">Decode(string, Base58Variant, BaseFormatStyles)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes a Base58 string into a byte array using the supplied variant.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base58_DecodeFromUtf8_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__System_Int32__Bodu_Text_Encoding_Base58Variant_Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base58.DecodeFromUtf8(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@,System.Int32@,Bodu.Text.Encoding.Base58Variant,Bodu.Text.Encoding.BaseFormatStyles)">
+          <a class="xref" href="Bodu.Text.Encoding.Base58.DecodeFromUtf8.html#Bodu_Text_Encoding_Base58_DecodeFromUtf8_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__System_Int32__Bodu_Text_Encoding_Base58Variant_Bodu_Text_Encoding_BaseFormatStyles_">DecodeFromUtf8(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, out int, out int, Base58Variant, BaseFormatStyles)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes UTF-8 Base58 bytes into a byte span using the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.operationstatus">OperationStatus</a> return convention.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base58_DecodeGuid_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_Base58Variant_Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base58.DecodeGuid(System.ReadOnlySpan{System.Char},Bodu.Text.Encoding.Base58Variant,Bodu.Text.Encoding.BaseFormatStyles)">
+          <a class="xref" href="Bodu.Text.Encoding.Base58.DecodeGuid.html#Bodu_Text_Encoding_Base58_DecodeGuid_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_Base58Variant_Bodu_Text_Encoding_BaseFormatStyles_">DecodeGuid(ReadOnlySpan&lt;char&gt;, Base58Variant, BaseFormatStyles)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes a Base58 representation of a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.guid">Guid</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base58_Encode_System_Byte___Bodu_Text_Encoding_Base58Variant_" data-uid="Bodu.Text.Encoding.Base58.Encode(System.Byte[],Bodu.Text.Encoding.Base58Variant)">
+          <a class="xref" href="Bodu.Text.Encoding.Base58.Encode.html#Bodu_Text_Encoding_Base58_Encode_System_Byte___Bodu_Text_Encoding_Base58Variant_">Encode(byte[], Base58Variant)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Encodes <code class="paramref">bytes</code> into a Base58 string using the supplied variant.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base58_Encode_System_Byte___System_Int32_System_Int32_Bodu_Text_Encoding_Base58Variant_" data-uid="Bodu.Text.Encoding.Base58.Encode(System.Byte[],System.Int32,System.Int32,Bodu.Text.Encoding.Base58Variant)">
+          <a class="xref" href="Bodu.Text.Encoding.Base58.Encode.html#Bodu_Text_Encoding_Base58_Encode_System_Byte___System_Int32_System_Int32_Bodu_Text_Encoding_Base58Variant_">Encode(byte[], int, int, Base58Variant)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Encodes a portion of <code class="paramref">bytes</code> into a Base58 string.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base58_Encode_System_Guid_Bodu_Text_Encoding_Base58Variant_" data-uid="Bodu.Text.Encoding.Base58.Encode(System.Guid,Bodu.Text.Encoding.Base58Variant)">
+          <a class="xref" href="Bodu.Text.Encoding.Base58.Encode.html#Bodu_Text_Encoding_Base58_Encode_System_Guid_Bodu_Text_Encoding_Base58Variant_">Encode(Guid, Base58Variant)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Encodes the byte representation of <code class="paramref">value</code> as a Base58 string. Typical output is 22 characters
+(radix-58 representation of 16 bytes), though leading zero bytes inflate the count slightly.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base58_Encode_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_Base58Variant_" data-uid="Bodu.Text.Encoding.Base58.Encode(System.ReadOnlySpan{System.Byte},Bodu.Text.Encoding.Base58Variant)">
+          <a class="xref" href="Bodu.Text.Encoding.Base58.Encode.html#Bodu_Text_Encoding_Base58_Encode_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_Base58Variant_">Encode(ReadOnlySpan&lt;byte&gt;, Base58Variant)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Encodes a span of bytes into a Base58 string.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base58_Encode_System_ReadOnlySpan_System_Byte__System_Buffers_IBufferWriter_System_Char__Bodu_Text_Encoding_Base58Variant_" data-uid="Bodu.Text.Encoding.Base58.Encode(System.ReadOnlySpan{System.Byte},System.Buffers.IBufferWriter{System.Char},Bodu.Text.Encoding.Base58Variant)">
+          <a class="xref" href="Bodu.Text.Encoding.Base58.Encode.html#Bodu_Text_Encoding_Base58_Encode_System_ReadOnlySpan_System_Byte__System_Buffers_IBufferWriter_System_Char__Bodu_Text_Encoding_Base58Variant_">Encode(ReadOnlySpan&lt;byte&gt;, IBufferWriter&lt;char&gt;, Base58Variant)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Encodes <code class="paramref">source</code> as Base58 characters into <code class="paramref">writer</code>, suitable for use in
+pipelines and other <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.ibufferwriter-1">IBufferWriter&lt;T&gt;</a>-based scenarios.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base58_Encode_System_ReadOnlySpan_System_Byte__System_Span_System_Char__Bodu_Text_Encoding_Base58Variant_" data-uid="Bodu.Text.Encoding.Base58.Encode(System.ReadOnlySpan{System.Byte},System.Span{System.Char},Bodu.Text.Encoding.Base58Variant)">
+          <a class="xref" href="Bodu.Text.Encoding.Base58.Encode.html#Bodu_Text_Encoding_Base58_Encode_System_ReadOnlySpan_System_Byte__System_Span_System_Char__Bodu_Text_Encoding_Base58Variant_">Encode(ReadOnlySpan&lt;byte&gt;, Span&lt;char&gt;, Base58Variant)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Encodes a span of bytes directly into a destination character span.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base58_EncodeToUtf8_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_Base58Variant_" data-uid="Bodu.Text.Encoding.Base58.EncodeToUtf8(System.ReadOnlySpan{System.Byte},Bodu.Text.Encoding.Base58Variant)">
+          <a class="xref" href="Bodu.Text.Encoding.Base58.EncodeToUtf8.html#Bodu_Text_Encoding_Base58_EncodeToUtf8_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_Base58Variant_">EncodeToUtf8(ReadOnlySpan&lt;byte&gt;, Base58Variant)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Encodes <code class="paramref">source</code> into a UTF-8 Base58 byte array using the supplied variant.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base58_EncodeToUtf8_System_ReadOnlySpan_System_Byte__System_Buffers_IBufferWriter_System_Byte__Bodu_Text_Encoding_Base58Variant_" data-uid="Bodu.Text.Encoding.Base58.EncodeToUtf8(System.ReadOnlySpan{System.Byte},System.Buffers.IBufferWriter{System.Byte},Bodu.Text.Encoding.Base58Variant)">
+          <a class="xref" href="Bodu.Text.Encoding.Base58.EncodeToUtf8.html#Bodu_Text_Encoding_Base58_EncodeToUtf8_System_ReadOnlySpan_System_Byte__System_Buffers_IBufferWriter_System_Byte__Bodu_Text_Encoding_Base58Variant_">EncodeToUtf8(ReadOnlySpan&lt;byte&gt;, IBufferWriter&lt;byte&gt;, Base58Variant)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Encodes <code class="paramref">source</code> as UTF-8 Base58 bytes into <code class="paramref">writer</code>, suitable for use in
+pipelines and other <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.ibufferwriter-1">IBufferWriter&lt;T&gt;</a>-based scenarios.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base58_FromBase58String_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Encoding.Base58.FromBase58String(System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.Text.Encoding.Base58.FromBase58String.html#Bodu_Text_Encoding_Base58_FromBase58String_System_ReadOnlySpan_System_Byte__">FromBase58String(ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes UTF-8 Base58 bytes into a byte array using the Bitcoin/Flickr alphabet.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base58_FromBase58String_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__System_Int32__" data-uid="Bodu.Text.Encoding.Base58.FromBase58String(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@,System.Int32@)">
+          <a class="xref" href="Bodu.Text.Encoding.Base58.FromBase58String.html#Bodu_Text_Encoding_Base58_FromBase58String_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__System_Int32__">FromBase58String(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, out int, out int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Strict Bitcoin/Flickr Base58 decode from a UTF-8 byte span using the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.operationstatus">OperationStatus</a> return
+convention.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base58_FromBase58String_System_ReadOnlySpan_System_Char__" data-uid="Bodu.Text.Encoding.Base58.FromBase58String(System.ReadOnlySpan{System.Char})">
+          <a class="xref" href="Bodu.Text.Encoding.Base58.FromBase58String.html#Bodu_Text_Encoding_Base58_FromBase58String_System_ReadOnlySpan_System_Char__">FromBase58String(ReadOnlySpan&lt;char&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes a Base58 character span using the Bitcoin/Flickr alphabet.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base58_FromBase58String_System_ReadOnlySpan_System_Char__System_Span_System_Byte__System_Int32__System_Int32__" data-uid="Bodu.Text.Encoding.Base58.FromBase58String(System.ReadOnlySpan{System.Char},System.Span{System.Byte},System.Int32@,System.Int32@)">
+          <a class="xref" href="Bodu.Text.Encoding.Base58.FromBase58String.html#Bodu_Text_Encoding_Base58_FromBase58String_System_ReadOnlySpan_System_Char__System_Span_System_Byte__System_Int32__System_Int32__">FromBase58String(ReadOnlySpan&lt;char&gt;, Span&lt;byte&gt;, out int, out int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Strict Bitcoin/Flickr Base58 decode from a character span using the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.operationstatus">OperationStatus</a> return
+convention.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base58_FromBase58String_System_String_" data-uid="Bodu.Text.Encoding.Base58.FromBase58String(System.String)">
+          <a class="xref" href="Bodu.Text.Encoding.Base58.FromBase58String.html#Bodu_Text_Encoding_Base58_FromBase58String_System_String_">FromBase58String(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes <code class="paramref">s</code> as Bitcoin/Flickr Base58 into a byte array.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base58_GetMaxDecodedLength_System_Int32_" data-uid="Bodu.Text.Encoding.Base58.GetMaxDecodedLength(System.Int32)">
+          <a class="xref" href="Bodu.Text.Encoding.Base58.GetMaxDecodedLength.html#Bodu_Text_Encoding_Base58_GetMaxDecodedLength_System_Int32_">GetMaxDecodedLength(int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns an upper bound on the number of bytes that decoding <code class="paramref">charCount</code> characters can
+produce.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base58_GetMaxEncodedLength_System_Int32_" data-uid="Bodu.Text.Encoding.Base58.GetMaxEncodedLength(System.Int32)">
+          <a class="xref" href="Bodu.Text.Encoding.Base58.GetMaxEncodedLength.html#Bodu_Text_Encoding_Base58_GetMaxEncodedLength_System_Int32_">GetMaxEncodedLength(int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns an upper bound on the number of characters required to encode <code class="paramref">byteCount</code> bytes.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base58_IsBase58Digit_System_Char_Bodu_Text_Encoding_Base58Variant_" data-uid="Bodu.Text.Encoding.Base58.IsBase58Digit(System.Char,Bodu.Text.Encoding.Base58Variant)">
+          <a class="xref" href="Bodu.Text.Encoding.Base58.IsBase58Digit.html#Bodu_Text_Encoding_Base58_IsBase58Digit_System_Char_Bodu_Text_Encoding_Base58Variant_">IsBase58Digit(char, Base58Variant)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Indicates whether <code class="paramref">value</code> is a valid digit for the supplied Base58 variant.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base58_IsValid_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_Base58Variant_Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base58.IsValid(System.ReadOnlySpan{System.Char},Bodu.Text.Encoding.Base58Variant,Bodu.Text.Encoding.BaseFormatStyles)">
+          <a class="xref" href="Bodu.Text.Encoding.Base58.IsValid.html#Bodu_Text_Encoding_Base58_IsValid_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_Base58Variant_Bodu_Text_Encoding_BaseFormatStyles_">IsValid(ReadOnlySpan&lt;char&gt;, Base58Variant, BaseFormatStyles)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Indicates whether <code class="paramref">source</code> is a valid Base58 input under the supplied variant.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base58_ToBase58String_System_Byte___" data-uid="Bodu.Text.Encoding.Base58.ToBase58String(System.Byte[])">
+          <a class="xref" href="Bodu.Text.Encoding.Base58.ToBase58String.html#Bodu_Text_Encoding_Base58_ToBase58String_System_Byte___">ToBase58String(byte[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Encodes <code class="paramref">inArray</code> into a Base58 string using the Bitcoin/Flickr alphabet.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base58_ToBase58String_System_Byte___System_Int32_System_Int32_" data-uid="Bodu.Text.Encoding.Base58.ToBase58String(System.Byte[],System.Int32,System.Int32)">
+          <a class="xref" href="Bodu.Text.Encoding.Base58.ToBase58String.html#Bodu_Text_Encoding_Base58_ToBase58String_System_Byte___System_Int32_System_Int32_">ToBase58String(byte[], int, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Encodes a portion of <code class="paramref">inArray</code> into a Base58 string using the Bitcoin/Flickr alphabet.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base58_ToBase58String_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Encoding.Base58.ToBase58String(System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.Text.Encoding.Base58.ToBase58String.html#Bodu_Text_Encoding_Base58_ToBase58String_System_ReadOnlySpan_System_Byte__">ToBase58String(ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Encodes <code class="paramref">bytes</code> into a Base58 string using the Bitcoin/Flickr alphabet.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base58_TryDecode_System_ReadOnlySpan_System_Char__System_Span_System_Byte__System_Int32__Bodu_Text_Encoding_Base58Variant_Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base58.TryDecode(System.ReadOnlySpan{System.Char},System.Span{System.Byte},System.Int32@,Bodu.Text.Encoding.Base58Variant,Bodu.Text.Encoding.BaseFormatStyles)">
+          <a class="xref" href="Bodu.Text.Encoding.Base58.TryDecode.html#Bodu_Text_Encoding_Base58_TryDecode_System_ReadOnlySpan_System_Char__System_Span_System_Byte__System_Int32__Bodu_Text_Encoding_Base58Variant_Bodu_Text_Encoding_BaseFormatStyles_">TryDecode(ReadOnlySpan&lt;char&gt;, Span&lt;byte&gt;, out int, Base58Variant, BaseFormatStyles)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to decode a Base58 character span into a destination byte span.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base58_TryDecodeGuid_System_ReadOnlySpan_System_Char__System_Guid__Bodu_Text_Encoding_Base58Variant_Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base58.TryDecodeGuid(System.ReadOnlySpan{System.Char},System.Guid@,Bodu.Text.Encoding.Base58Variant,Bodu.Text.Encoding.BaseFormatStyles)">
+          <a class="xref" href="Bodu.Text.Encoding.Base58.TryDecodeGuid.html#Bodu_Text_Encoding_Base58_TryDecodeGuid_System_ReadOnlySpan_System_Char__System_Guid__Bodu_Text_Encoding_Base58Variant_Bodu_Text_Encoding_BaseFormatStyles_">TryDecodeGuid(ReadOnlySpan&lt;char&gt;, out Guid, Base58Variant, BaseFormatStyles)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to decode a Base58 representation of a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.guid">Guid</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base58_TryEncode_System_ReadOnlySpan_System_Byte__System_Span_System_Char__System_Int32__Bodu_Text_Encoding_Base58Variant_" data-uid="Bodu.Text.Encoding.Base58.TryEncode(System.ReadOnlySpan{System.Byte},System.Span{System.Char},System.Int32@,Bodu.Text.Encoding.Base58Variant)">
+          <a class="xref" href="Bodu.Text.Encoding.Base58.TryEncode.html#Bodu_Text_Encoding_Base58_TryEncode_System_ReadOnlySpan_System_Byte__System_Span_System_Char__System_Int32__Bodu_Text_Encoding_Base58Variant_">TryEncode(ReadOnlySpan&lt;byte&gt;, Span&lt;char&gt;, out int, Base58Variant)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to encode a span of bytes into a destination character span.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base58_TryEncodeToUtf8_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__Bodu_Text_Encoding_Base58Variant_" data-uid="Bodu.Text.Encoding.Base58.TryEncodeToUtf8(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@,Bodu.Text.Encoding.Base58Variant)">
+          <a class="xref" href="Bodu.Text.Encoding.Base58.TryEncodeToUtf8.html#Bodu_Text_Encoding_Base58_TryEncodeToUtf8_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__Bodu_Text_Encoding_Base58Variant_">TryEncodeToUtf8(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, out int, Base58Variant)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to encode <code class="paramref">source</code> as UTF-8 Base58 bytes into <code class="paramref">destination</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base58_TryToBase58String_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__" data-uid="Bodu.Text.Encoding.Base58.TryToBase58String(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@)">
+          <a class="xref" href="Bodu.Text.Encoding.Base58.TryToBase58String.html#Bodu_Text_Encoding_Base58_TryToBase58String_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__">TryToBase58String(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, out int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to encode <code class="paramref">source</code> as a Bitcoin/Flickr Base58 UTF-8 byte span.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base58_TryToBase58String_System_ReadOnlySpan_System_Byte__System_Span_System_Char__System_Int32__" data-uid="Bodu.Text.Encoding.Base58.TryToBase58String(System.ReadOnlySpan{System.Byte},System.Span{System.Char},System.Int32@)">
+          <a class="xref" href="Bodu.Text.Encoding.Base58.TryToBase58String.html#Bodu_Text_Encoding_Base58_TryToBase58String_System_ReadOnlySpan_System_Byte__System_Span_System_Char__System_Int32__">TryToBase58String(ReadOnlySpan&lt;byte&gt;, Span&lt;char&gt;, out int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to encode <code class="paramref">source</code> as a Bitcoin/Flickr Base58 character span.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Code coverage strategy | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Code coverage strategy | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="code-coverage-strategy">Code coverage strategy</h1>
+
+<p>This guide describes how Bodu measures test coverage, how to reproduce the
+numbers locally, and the handful of cases where a literal &quot;99% on one machine&quot;
+target is misleading — most importantly the SIMD/scalar split in
+<code>Bodu.Security.Cryptography</code>.</p>
+<h2 id="measuring-coverage">Measuring coverage</h2>
+<p><strong>coverlet is the authoritative basis.</strong> The test projects reference
+<code>coverlet.collector</code> (supplied centrally by <code>Directory.Build.targets</code>, gated on
+<code>IsTestProject</code>), and its <code>line-rate</code> already uses the line basis this document
+defines — see <a href="#reading-the-numbers">Reading the numbers</a> — so the tool's number
+and the project's working definition are the same number. <code>Microsoft.NET.Test.Sdk</code>
+also brings the Microsoft <strong>Code Coverage</strong> collector; it remains available as a
+secondary diagnostic, but reported figures come from coverlet.</p>
+<p>Coverage must be collected against the <strong>full</strong> suite — the <code>regression</code>
+tier — because the default <code>bvt</code> run deliberately excludes the exhaustive
+vector tables and large sweeps that exercise many branches. <code>coverage.runsettings</code>
+pairs that tier filter with a fully configured collector, so the ordinary
+<code>regression.runsettings</code> run stays uninstrumented and fast:</p>
+<pre><code class="lang-bash"># Collect (per project, into artifacts/coverage/raw/)
+bld/collect-coverage.sh                          # every test project in bodu.slnx
+bld/collect-coverage.sh --project &lt;Project&gt;/test/&lt;Project&gt;.Test.csproj
+bld/collect-coverage.sh --shard 3/8              # one balanced slice, for CI
+
+# Merge and publish
+bld/merge-coverage.sh                            # -&gt; artifacts/coverage/report/
+pwsh tools/New-CoverageMatrix.ps1                # -&gt; docs/articles/coverage-baseline.md
+</code></pre>
+<p>Pass the settings file, and <strong>do not</strong> also pass a <code>--collect</code> switch: a
+command-line collector is a second, unconfigured instance whose exclusion lists
+are empty, which silently readmits generated sources to the denominator.</p>
+<p>The current measured figures live in <a href="coverage-baseline.html">Coverage baseline</a>.</p>
+<p><code>tools/Filter-CoverageXml.ps1</code> extracts a single assembly's results from a
+Microsoft Code Coverage XML export for focused review.</p>
+<h2 id="reading-the-numbers">Reading the numbers</h2>
+<ul>
+<li><strong>Generated code is excluded.</strong> Microsoft Code Coverage drops <code>*.Designer.cs</code>
+resource accessors; coverlet does not. Compare like for like by filtering out
+<code>*.Designer.cs</code> before computing a percentage.</li>
+<li><strong>Partially-covered lines.</strong> When block data is collected, Microsoft Code
+Coverage reports a line that took only some of its branches as
+<em>partially covered</em> and excludes it from <code>line_coverage</code>. The project's
+working definition of line coverage counts a line as covered when it executed
+at all, i.e. <code>(lines_covered + lines_partially_covered) / total</code>. coverlet's
+<code>line-rate</code> already uses that basis.</li>
+<li><strong>Defensive throws and closing braces.</strong> Guard clauses that are unreachable
+through the public API (for example a validated enum's <code>default</code> switch arm,
+or a <code>Utf8JsonReader</code> &quot;unexpected end&quot; guard that the reader itself prevents)
+and coverlet's closing-brace artifacts will never reach 100% and are left
+uncovered by design.</li>
+</ul>
+<h2 id="the-90-floor">The 90% floor</h2>
+<p>Every collected package sits at or above <strong>90% line coverage</strong>, and
+<code>bld/coverage-thresholds.json</code> holds a per-package floor at roughly its measured
+rate. The floor is a gate, not a target: a package well above it is not
+&quot;finished&quot;, and a package at it is not in trouble. What the invariant buys is
+that a new gap has to be introduced deliberately — the ratchet fails the build
+before an untested subsystem can arrive quietly inside an otherwise healthy
+package total.</p>
+<p>Two consequences worth stating, because both were live questions while the floor
+was being established:</p>
+<ul>
+<li><strong>A package total can hide an entire dead subsystem.</strong> <code>Bodu.IO.Pst</code> read 79.9%
+overall while <code>PstDataTree.cs</code> — the <code>XBLOCK</code>/<code>XXBLOCK</code> layout every node payload
+above roughly 8 KB uses — was 30 of 37 lines uncovered, because the whole
+reference corpus is small files whose nodes each fit one block. The number to
+interrogate is the shape of the gap, not the percentage.</li>
+<li><strong>Reaching the floor with unrelated lines is the failure mode the floor exists
+to prevent.</strong> The honest fix for that package was a synthetic-container builder
+(<code>PstFixtureBuilder</code>), which authors a structurally valid PST in memory so the
+multi-block trees, the cyclic content encoding, the subnode index block and every
+validation guard can be reached at all. Where a corpus cannot produce a shape,
+author the shape; do not bank easier lines from elsewhere in the same package.</li>
+</ul>
+<h2 id="hardware-gated-simd-paths-the-avx512-split">Hardware-gated SIMD paths (the AVX512 split)</h2>
+<p><code>Bodu.Security.Cryptography</code> ships hardware-accelerated implementations
+(<code>ThreefishBlockCipher.{256,512,1024}.Avx512.cs</code>, <code>Blake2b/2s/3.Avx512.cs</code>,
+…) alongside scalar fallbacks. The JIT selects exactly one path per process
+based on the CPU, so <strong>no single machine can cover both</strong>:</p>
+<ul>
+<li>On an <strong>AVX512-capable</strong> host the existing known-answer tests drive the
+<code>*.Avx512.cs</code> path to ~100%, and the scalar fallback drops correspondingly.</li>
+<li>On a host <strong>without</strong> AVX512 the scalar path is covered and every
+<code>*.Avx512.cs</code> file reports 0%.</li>
+</ul>
+<p>These files are therefore <strong>not a missing-test gap</strong> — they are exercised by
+the standard KAT suites; coverage simply depends on where the suite runs. The
+report that prompted this work was collected on a non-AVX512 machine, which is
+why those files appeared at 0%.</p>
+<blockquote>
+<p><strong>Measured correction — see <a href="coverage-baseline.html">Coverage baseline</a>.</strong> That
+reasoning holds for whichever path the host <em>can</em> execute, but it has been used
+to wave away both. Collected on an <strong>AVX512-capable</strong> host with
+<code>Bodu.Security.Cryptography.Simd.Test</code> in the merge, the split is:</p>
+<table>
+<thead>
+<tr>
+<th>Path</th>
+<th style="text-align: right;">Covered / total</th>
+<th style="text-align: right;">Rate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>*.Avx512.cs</code> intrinsic</td>
+<td style="text-align: right;">676 / 680</td>
+<td style="text-align: right;">99.4%</td>
+</tr>
+<tr>
+<td>scalar reference</td>
+<td style="text-align: right;">327 / 993</td>
+<td style="text-align: right;">32.9%</td>
+</tr>
+</tbody>
+</table>
+<p>The scalar fallbacks are a <strong>real</strong> gap, not a hardware artifact:
+<code>ThreefishBlockCipher.1024.cs</code> sits at 8.3%, <code>.256.cs</code> at 19.0%, and <code>.512.cs</code>
+at 12.8%. The two-run merge is what should close this, but
+<code>Bodu.Security.Cryptography.Simd.Test</code> runs <strong>3 tests</strong> against the main
+suite's 28,757 — the feature switch works, the suite behind it is a stub.</p>
+<p>The symmetry is what makes this easy to miss: on a non-AVX512 machine the same
+gap is invisible, because there the scalar paths are the ones the KAT suite
+drives and the intrinsics read as 0% &quot;by design&quot;. Whichever host you measure
+on, one side is under-tested and the other side's 0% supplies a ready
+explanation for it.</p>
+<p>Closing it means running the existing known-answer suites under the switch, not
+authoring new vectors.</p>
+</blockquote>
+<h3 id="the-dual-pass--now-automated">The dual pass — now automated</h3>
+<p>The two-run merge this section prescribes is wired into the tooling:</p>
+<pre><code class="lang-bash">bld/collect-coverage.sh --project Bodu.Security.Cryptography/test/Bodu.Security.Cryptography.Test.csproj
+bld/collect-coverage.sh --project Bodu.Security.Cryptography/test/Bodu.Security.Cryptography.Test.csproj --scalar
+bld/merge-coverage.sh
+</code></pre>
+<p><code>--scalar</code> re-runs the suite with <code>DOTNET_EnableAVX512F=0 DOTNET_EnableAVX2=0 DOTNET_EnableHWIntrinsic=0</code> into a parallel <code>&lt;Name&gt;.scalar</code> directory.
+ReportGenerator takes the maximum hit count per line, so merging the two yields
+the union rather than either half. <code>.github/workflows/coverage.yml</code> runs the
+scalar pass automatically in whichever job collected the crypto suite.</p>
+<p>Measured effect of adding the second pass — no test code was written:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th style="text-align: right;">Intrinsic paths</th>
+<th style="text-align: right;">Scalar paths</th>
+<th style="text-align: right;">Package</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Native run only</td>
+<td style="text-align: right;">99.4%</td>
+<td style="text-align: right;">32.9%</td>
+<td style="text-align: right;">93.4%</td>
+</tr>
+<tr>
+<td>Both passes merged</td>
+<td style="text-align: right;">99.4%</td>
+<td style="text-align: right;"><strong>99.0%</strong></td>
+<td style="text-align: right;"><strong>98.4%</strong></td>
+</tr>
+</tbody>
+</table>
+<p><code>Bodu.Security.Cryptography</code> is the only package with hardware-gated dispatch, so
+it is the only one that needs this; disabling intrinsics elsewhere would cost
+wall clock for nothing.</p>
+<p><strong>This does not retire the <code>n/a (hardware-gated)</code> classification</strong> in
+<code>tools/New-CoverageMatrix.ps1</code>. A single-pass local run on a machine without
+AVX-512 still cannot execute the intrinsic files, and reporting them as 0% there
+would be wrong. The classification stays for that case; after a dual pass it
+simply never triggers, because neither path is unreachable any more.</p>
+<h3 id="the-switch-itself">The switch itself</h3>
+<p>The dual pass closes the numbers but does not exercise the shipped <code>DisableSimd</code>
+feature, which is a product contract rather than a coverage figure.
+<code>Bodu.Security.Cryptography.Simd.Test</code> covers that separately: it sets the switch
+through <code>runtimeconfig.template.json</code> and compiles in the published known-answer
+suites for every SIMD-gated primitive, so the scalar fallbacks are held to the
+same vectors as the accelerated paths.</p>
+<p>The suites are <strong>linked</strong>, not duplicated, and not reached by referencing the main
+test assembly — nothing there has to be unsealed or made visible. <code>KatCensus</code> is
+deliberately excluded: <code>KatCensusTests</code> rewrites the committed <code>kat-census.txt</code>,
+and a second writer in a second assembly would corrupt it.</p>
+<p>Run on its own, that assembly executes the scalar implementations at 87–95% and
+every Threefish <code>*.Avx512.cs</code> file at <strong>0%</strong> — measured proof that the switch is
+engaged and the intrinsic path is not running. The BLAKE intrinsic files show
+four lines of their static constructor, which initialize the rotation constants
+whenever the type is touched; no intrinsic compute code executes.</p>
+<p>Adding it changed the package figure not at all, which is the point: it buys
+confidence in the feature, and a second independent source of scalar coverage
+should the environment-variable pass ever be removed.</p>
+<h2 id="stale-paths-across-a-folder-or-namespace-refactor">Stale paths across a folder or namespace refactor</h2>
+<p>Coverage is keyed by source-file path. When a report is collected — or several
+runs are <strong>merged</strong> — across a commit that <em>moves or renames</em> source files, the
+result silently double-counts: the old paths linger as <strong>phantom entries at 0%</strong>
+that no longer exist on disk, sitting alongside the real entries for the renamed
+files. The phantom rows drag every module aggregate down even though the live
+code is well covered.</p>
+<p>The flatten in <strong>#528</strong> (<code>Bodu.Financial.ExchangeRates.&lt;Provider&gt;</code> →
+<code>Bodu.Financial.ExchangeRates</code>, moving <code>src/Financial.ExchangeRates.&lt;Provider&gt;/…</code>
+to <code>src/Financial.ExchangeRates/…</code>) is the worked example. A report spanning that
+commit listed the provider modules at 41–61% and every parser at 0%, when the
+real per-file coverage was already healthy:</p>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Report (phantom path)</th>
+<th>Actual (live path)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>EcbRateXmlParser</code></td>
+<td>0%</td>
+<td>93.1%</td>
+</tr>
+<tr>
+<td><code>BoeRateCsvParser</code></td>
+<td>0%</td>
+<td>93.9%</td>
+</tr>
+<tr>
+<td><code>RbaRateWorkbookParser</code></td>
+<td>0%</td>
+<td>94.3%</td>
+</tr>
+<tr>
+<td><code>YahooChartResponseParser</code></td>
+<td>0%</td>
+<td>87.7%</td>
+</tr>
+<tr>
+<td><code>OfxSpotRateHistoryResponseParser</code></td>
+<td>0%</td>
+<td>94.6%</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Remedy:</strong> re-collect on a clean post-refactor checkout, <strong>per project</strong>, and
+discard any row whose file path does not resolve on disk before computing a
+percentage. A path that exists under two different folder spellings is the
+tell-tale of a cross-refactor artifact, not a coverage gap.</p>
+<p>The genuinely low spots this re-measurement surfaced were narrow — the
+<code>OfxRateProvider</code> owned-client constructor path (now covered) and the
+file-system feed/response/workbook caches' best-effort I/O swallow blocks. The
+caches' <code>Store</code> <code>IOException</code> path is covered; their <code>UnauthorizedAccessException</code>
+catches and <code>TryGet</code> read-fault catches are left uncovered by design per
+<a href="#reading-the-numbers">Reading the numbers</a> — the test process runs as root, so
+permission denial cannot be forced, and a mid-read I/O fault is not reproducible
+cross-platform.</p>
+<h2 id="source-compiled-into-more-than-one-assembly">Source compiled into more than one assembly</h2>
+<p><code>Bodu.Text.Serialization/shared/**</code> is not only shipped as its own assembly — it
+is also <code>Compile Include</code>d directly into <code>Bodu.Text.Toml</code>, <code>Bodu.Text.Bencode</code>
+and <code>Bodu.Text.Yaml</code>, each under its own format symbol. The <code>Link=</code> metadata
+affects only IDE display, so the PDB document path — and therefore the Cobertura
+<code>filename</code> — is the real on-disk path under <code>Bodu.Text.Serialization/shared/</code>.</p>
+<p>Those lines consequently appear <strong>once per host assembly</strong>. ReportGenerator will
+not collapse them, and it is right not to: they genuinely belong to three
+different assemblies. Measured on a Toml + Bencode collection, the shared
+<code>ConverterFactory.cs</code> appears twice, and summing the shared files across hosts
+inflates them from 624 distinct lines to 2,360.</p>
+<p><code>tools/New-CoverageMatrix.ps1</code> therefore does two things no report filter can
+express:</p>
+<ul>
+<li>reports the shared source once, as the synthetic unit
+<strong><code>Bodu.Text.Serialization (shared source)</code></strong>, whose coverage is the <em>union</em>
+across the hosts (a line counts as covered when any host covers it); and</li>
+<li><strong>subtracts</strong> those files from the <code>Toml</code> / <code>Bencode</code> / <code>Yaml</code> rows, so the
+solution total does not count them once per host.</li>
+</ul>
+<h3 id="there-are-three-such-sets-not-one">There are three such sets, not one</h3>
+<p>The serializer core is the largest, but two more source sets are <code>Compile Include</code>d across projects, and each gets its own synthetic unit. The table lives
+at <code>$SharedSourceSets</code> in <code>tools/New-CoverageMatrix.ps1</code>; keep it in step with
+the host csproj globs.</p>
+<table>
+<thead>
+<tr>
+<th>Shared set</th>
+<th>Synthetic unit</th>
+<th>Compiled into</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Bodu.Text.Serialization/shared/**</code></td>
+<td><code>Bodu.Text.Serialization (shared source)</code></td>
+<td><code>Toml</code>, <code>Bencode</code>, <code>Yaml</code></td>
+</tr>
+<tr>
+<td><code>Bodu.IO.Hashing/shared/**</code> (<code>CrcCore.cs</code>)</td>
+<td><code>Bodu.IO.Hashing (shared source)</code></td>
+<td><code>IO.Hashing</code>, <code>IO.Pst</code>, <code>Formats.Outlook.Msg</code></td>
+</tr>
+<tr>
+<td><code>shared/Caching/**</code></td>
+<td><code>Caching (shared source)</code></td>
+<td><code>Financial.ExchangeRates.Caching</code>, <code>Globalization.Calendar.Caching</code></td>
+</tr>
+</tbody>
+</table>
+<p>Attribution matters even where the totals do not move. The file map is keyed by
+repo-relative path, so a shared file is never <em>double-counted</em> — but before this
+table existed, the two smaller sets were attributed wholesale to whichever host
+the merge happened to emit first. <code>Bodu.Formats.Outlook.Msg</code> carried all 48 lines
+of <code>CrcCore.cs</code> and <code>Bodu.IO.Pst</code> showed none of it; closing a line in that file
+would have moved a row that does not own it. Splitting the sets out cost
+<code>Outlook.Msg</code> 1.1pp and gained <code>ExchangeRates.Caching</code> 0.3pp, with the solution
+figure unchanged — a correction, not a regression, so the two <code>Outlook.Msg</code>
+ratchet floors were lowered by hand to match. That is the only circumstance in
+which a floor comes down.</p>
+<p>The three sets are not alike in one respect that the stale-numbering check cares
+about. <code>Bodu.Text.Serialization/shared/**</code> selects <strong>whole members</strong> by format
+symbol, so its hosts legitimately instrument different line sets and it is exempt
+from that check. The other two select only a namespace declaration, which carries
+no sequence points — so if their hosts ever disagree about which lines are
+instrumentable, that really is stale data and should be reported.</p>
+<p>The same keying — by source path and line number rather than by class — also
+collapses the duplicate rows a file containing several classes would otherwise
+contribute.</p>
+<p>Read a per-package figure from the generated matrix, never from a single
+project's Cobertura file: that file reports every assembly the test project
+touched transitively, most of them at a near-zero rate that says nothing about
+the package.</p>
+<h2 id="generated-catalogues">Generated catalogues</h2>
+<p>Large generated catalogues are covered by a single reflective sweep rather than
+per-item tests:</p>
+<ul>
+<li><strong><code>Bodu.Financial.Currencies</code></strong> — <code>CurrencyCatalogueTests</code> enumerates every
+shipped <code>ICurrency</code> tag type, validates its static metadata against the
+<code>CurrencyRegistry</code>, and exercises the generated constructors. Regenerating the
+catalogue (<code>dotnet run --project tools/CurrencyCatalogueGenerator</code>) keeps the
+sweep green without new tests.</li>
+</ul>
+<h2 id="adding-coverage-tests">Adding coverage tests</h2>
+<p>Follow the test conventions in <code>CLAUDE.md</code>. When a gap is a cross-cutting
+behavioural contract rather than a single member, a dedicated
+<code>&lt;Type&gt;CoverageTests.cs</code> (or <code>&lt;Type&gt;Tests.&lt;Area&gt;.cs</code>) partial is the
+established home; prefer data-driven <code>[DataRow]</code>/<code>[DynamicData]</code> rows that cover
+happy, edge, and exception cases together.</p>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

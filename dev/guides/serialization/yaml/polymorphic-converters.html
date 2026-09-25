@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Polymorphic converters | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Polymorphic converters | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../../images/favicon.svg">
+      <link rel="stylesheet" href="../../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../../styles/docfx.css">
+      <link rel="stylesheet" href="../../../styles/main.css">
+      <meta property="docfx:navrel" content="../../../toc.html">
+      <meta property="docfx:tocrel" content="../../toc.html">
+    
+    <meta property="docfx:rel" content="../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../../index.html">
+                <img id="logo" class="svg" src="../../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="polymorphic-converters">Polymorphic converters</h1>
+
+<p>A converter factory dispatches over a <em>family</em> of types rather than a single type. Where a <a href="converters.html">hand-written converter</a> handles one fixed <code>T</code>, a <code>YamlConverterFactory</code> (<a class="xref" href="../../../api/Bodu.Text.Yaml.Serialization.YamlConverterFactory.html">YamlConverterFactory</a>) decides <em>at resolution time</em> whether it applies to a requested type and builds the right concrete converter for it. This is the mechanism behind two common shapes:</p>
+<ul>
+<li><strong>Open-generic families</strong> — every closed <code>Money&lt;TCurrency&gt;</code>, every <code>Stack&lt;T&gt;</code>, where one factory serves an unbounded set of closed types.</li>
+<li><strong>Tagged (discriminated) hierarchies</strong> — a base type with a <code>kind</code> key whose value selects which derived type to materialize.</li>
+</ul>
+<p>This guide builds on <a href="converters.html">Writing converters</a>; read that first for the single-type <code>Read</code> / <code>Write</code> pattern, the precedence ladder, and the statelessness rules. Everything here is YAML; the sibling libraries (<a href="../toml/index.html">Bodu.Text.Toml</a>, <a href="../bencode/index.html">Bodu.Text.Bencode</a>) follow the identical shape against their own reader/writer pair.</p>
+<h2 id="what-yaml-does-without-a-factory">What YAML does without a factory</h2>
+<p>Before writing one, it is worth knowing how far the built-ins go. The serializer already dispatches on the <strong>runtime</strong> type when writing, so a <code>Circle</code> held in a <code>Shape</code>-typed member serializes with <code>Circle</code>'s members — but with no discriminator, because nothing knows the family exists:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">public abstract class Shape
+{
+    public string Kind { get; init; } = &quot;&quot;;
+}
+
+public sealed class Circle : Shape
+{
+    public double Radius { get; init; }
+}
+
+public sealed class Drawing
+{
+    public string Title { get; set; } = &quot;&quot;;
+    public Shape? Outline { get; set; }
+    public List&lt;Shape&gt; Shapes { get; set; } = [];
+}
+</code></pre>
+<pre><code class="lang-csharp">string plainYaml = YamlSerializer.Serialize(new Drawing { Title = &quot;t&quot;, Outline = new Circle { Kind = &quot;circle&quot;, Radius = 2 } });
+// Title: t
+// Outline:
+//   Radius: 2.0
+//   Kind: circle
+// Shapes: []
+
+YamlSerializer.Deserialize&lt;Drawing&gt;(plainYaml);
+// → throws YamlSerializationException: The type 'Shape' could not be instantiated.
+</code></pre>
+<p>Reading is where the built-ins stop: a member declared as an abstract class or interface is served by a built-in converter that accepts only a null scalar and otherwise throws, because it has no way to choose a concrete type. A factory closes that gap.</p>
+<h2 id="how-a-factory-participates-in-resolution">How a factory participates in resolution</h2>
+<p>A factory derives from <code>YamlConverterFactory</code> and overrides two methods:</p>
+<pre><code class="lang-csharp">public abstract bool CanConvert(Type typeToConvert);
+public abstract YamlConverter CreateConverter(Type typeToConvert, YamlSerializerOptions options);
+</code></pre>
+<p>The serializer treats the factory exactly like any other converter in the <a href="converters.html">resolution order</a>: member attribute, then type attribute, then <code>options.Converters</code>, then built-ins. When the candidate is a factory it calls <code>CanConvert(type)</code>; on <code>true</code> it calls <code>CreateConverter(type, options)</code> <strong>once per closed type</strong>, verifies that the returned converter's own <code>CanConvert</code> accepts the type, and caches the result. The factory itself never reads or writes a value — <code>CreateConverter</code> returns an ordinary <code>YamlConverter&lt;T&gt;</code> that does the work.</p>
+<h2 id="pattern-1--an-open-generic-family">Pattern 1 — an open-generic family</h2>
+<p>To serve every closed <code>Money&lt;TCurrency&gt;</code> from one registration, match the open generic in <code>CanConvert</code> and close <code>MoneyConverter&lt;&gt;</code> over the requested type argument in <code>CreateConverter</code>:</p>
+<pre><code class="lang-csharp">using Bodu.Text.Yaml;
+using Bodu.Text.Yaml.Serialization;
+
+public sealed class MoneyConverterFactory : YamlConverterFactory
+{
+    public override bool CanConvert(Type typeToConvert) =&gt;
+        typeToConvert.IsGenericType
+        &amp;&amp; typeToConvert.GetGenericTypeDefinition() == typeof(Money&lt;&gt;);
+
+    public override YamlConverter CreateConverter(Type typeToConvert, YamlSerializerOptions options) =&gt;
+        (YamlConverter)Activator.CreateInstance(
+            typeof(MoneyConverter&lt;&gt;).MakeGenericType(typeToConvert.GetGenericArguments()[0]))!;
+}
+</code></pre>
+<p><code>MoneyConverter&lt;TCurrency&gt;</code> is an ordinary <code>YamlConverter&lt;Money&lt;TCurrency&gt;&gt;</code> written as in <a href="converters.html">Writing converters</a> Pattern 1 — here it stores the amount as a fixed-point string scalar:</p>
+<pre><code class="lang-csharp">public sealed class MoneyConverter&lt;TCurrency&gt; : YamlConverter&lt;Money&lt;TCurrency&gt;&gt;
+{
+    public override Money&lt;TCurrency&gt; Read(ref Utf8YamlReader reader, Type typeToConvert, YamlSerializerOptions options) =&gt;
+        new(decimal.Parse(reader.GetString(), CultureInfo.InvariantCulture));
+
+    public override void Write(Utf8YamlWriter writer, Money&lt;TCurrency&gt; value, YamlSerializerOptions options) =&gt;
+        writer.WriteString(value.Amount.ToString(&quot;0.00&quot;, CultureInfo.InvariantCulture));
+}
+</code></pre>
+<p>Register the factory once on the options and every closed <code>Money&lt;TCurrency&gt;</code> resolves through it:</p>
+<pre><code class="lang-csharp">var options = new YamlSerializerOptions();
+options.Converters.Add(new MoneyConverterFactory());
+// Money&lt;Usd&gt;, Money&lt;Eur&gt;, Money&lt;Jpy&gt;, … all now use MoneyConverter&lt;&gt;.
+
+string w = YamlSerializer.Serialize(new Wallet { Cash = new(12.5m), Savings = new(1000m) }, options);
+// Cash: &quot;12.50&quot;
+// Savings: &quot;1000.00&quot;
+</code></pre>
+<p>The writer quotes the scalars because they would otherwise resolve as floats on the way back in — YAML's implicit typing is why a string-shaped wire form needs the quotes, and <code>WriteString</code> adds them for you. This is the same machinery the built-in nullable, enum, collection, and dictionary converters use.</p>
+<h2 id="pattern-2--a-tagged-discriminated-hierarchy">Pattern 2 — a tagged (discriminated) hierarchy</h2>
+<p>The richer case is a base type whose concrete shape is chosen by a discriminator key. Model the family as a closed set of derived types and a <code>kind</code> tag — the <code>Shape</code> / <code>Circle</code> pair above, plus a second subtype:</p>
+<pre><code class="lang-csharp">public sealed class Rectangle : Shape
+{
+    public double Width { get; init; }
+    public double Height { get; init; }
+}
+</code></pre>
+<p>A factory matches the <em>base</em> type (and its subclasses) and hands back a single converter that knows the tag-to-type mapping:</p>
+<pre><code class="lang-csharp">using Bodu.Text.Yaml;
+using Bodu.Text.Yaml.Serialization;
+
+public sealed class ShapeConverterFactory : YamlConverterFactory
+{
+    public override bool CanConvert(Type typeToConvert) =&gt;
+        typeof(Shape).IsAssignableFrom(typeToConvert);
+
+    public override YamlConverter CreateConverter(Type typeToConvert, YamlSerializerOptions options) =&gt;
+        new ShapeConverter();
+}
+</code></pre>
+<p><code>CanConvert</code> returns <code>true</code> for <code>Shape</code> itself and for any <code>Circle</code> / <code>Rectangle</code> member declared as the base type, so a property typed <code>Shape Outline { get; set; }</code> routes through the factory regardless of which concrete value it currently holds.</p>
+<h2 id="pattern-3--reading-and-writing-the-discriminator">Pattern 3 — reading and writing the discriminator</h2>
+<p>The concrete converter is a <code>YamlConverter&lt;Shape&gt;</code>. On entry to <code>Read</code> the reader is positioned on the mapping's <code>StartMapping</code> token; the converter walks the composed token stream — a key scalar followed by the value's token, through to the matching <code>EndMapping</code> — collecting the discriminator and the payload fields, then constructs the matching derived type:</p>
+<pre><code class="lang-csharp">using Bodu.Text.Yaml;
+using Bodu.Text.Yaml.Reader;
+using Bodu.Text.Yaml.Serialization;
+using Bodu.Text.Yaml.Writer;
+
+public sealed class ShapeConverter : YamlConverter&lt;Shape&gt;
+{
+    public override bool CanConvert(Type typeToConvert) =&gt;
+        typeof(Shape).IsAssignableFrom(typeToConvert);
+
+    public override Shape Read(ref Utf8YamlReader reader, Type typeToConvert, YamlSerializerOptions options)
+    {
+        if (reader.TokenType != YamlTokenType.StartMapping)
+            throw new YamlSerializationException($&quot;Expected a mapping but found '{reader.TokenType}'.&quot;);
+
+        string? kind = null;
+        double radius = 0, width = 0, height = 0;
+
+        // Walk key/value pairs until the matching EndMapping.
+        while (reader.Read() &amp;&amp; reader.TokenType != YamlTokenType.EndMapping)
+        {
+            string name = reader.GetString();   // the key
+            reader.Read();                       // advance onto the value
+
+            switch (name)
+            {
+                case &quot;kind&quot;:   kind = reader.GetString(); break;
+                case &quot;radius&quot;: radius = reader.GetDouble(); break;
+                case &quot;width&quot;:  width = reader.GetDouble(); break;
+                case &quot;height&quot;: height = reader.GetDouble(); break;
+                default:       reader.Skip(); break;   // ignore unknown members
+            }
+        }
+
+        return kind switch
+        {
+            &quot;circle&quot;    =&gt; new Circle { Kind = kind, Radius = radius },
+            &quot;rectangle&quot; =&gt; new Rectangle { Kind = kind, Width = width, Height = height },
+            null        =&gt; throw new YamlSerializationException(&quot;Shape is missing the 'kind' discriminator.&quot;),
+            _           =&gt; throw new YamlSerializationException($&quot;Unknown shape kind '{kind}'.&quot;),
+        };
+    }
+
+    public override void Write(Utf8YamlWriter writer, Shape value, YamlSerializerOptions options)
+    {
+        // Dispatch on the runtime type so the right payload — including the tag — is written.
+        switch (value)
+        {
+            case Circle c:
+                writer.WriteStartMapping();
+                writer.WritePropertyName(&quot;kind&quot;);   writer.WriteString(&quot;circle&quot;);
+                writer.WritePropertyName(&quot;radius&quot;); writer.WriteDouble(c.Radius);
+                writer.WriteEndMapping();
+                break;
+
+            case Rectangle r:
+                writer.WriteStartMapping();
+                writer.WritePropertyName(&quot;kind&quot;);   writer.WriteString(&quot;rectangle&quot;);
+                writer.WritePropertyName(&quot;width&quot;);  writer.WriteDouble(r.Width);
+                writer.WritePropertyName(&quot;height&quot;); writer.WriteDouble(r.Height);
+                writer.WriteEndMapping();
+                break;
+
+            default:
+                throw new YamlSerializationException($&quot;Unsupported shape '{value.GetType()}'.&quot;);
+        }
+    }
+}
+</code></pre>
+<p>The key moves:</p>
+<ul>
+<li><strong>Override <code>CanConvert</code> on the converter too.</strong> After a factory creates a converter the serializer verifies that the <em>converter</em> accepts the requested type. <code>YamlConverter&lt;Shape&gt;.CanConvert</code> defaults to an exact match, which would reject <code>Circle</code> when the factory is asked for a member declared as the subtype; widening it to <code>IsAssignableFrom</code> keeps the factory and its product in agreement.</li>
+<li><strong>Walk the composed token stream.</strong> <code>Utf8YamlReader</code> presents an already-composed tree — anchors, aliases, and merge keys are resolved before the first token is delivered, and a block mapping and a flow mapping produce the same <code>StartMapping</code> / key / value / <code>EndMapping</code> sequence — so a single read loop handles every spelling. Call <code>Skip()</code> to step over an unknown member's whole value, including nested mappings and sequences.</li>
+<li><strong>Dispatch on the runtime type when writing.</strong> The <code>switch</code> over the concrete subtype emits the discriminator plus exactly that type's payload, so the value round-trips back through <code>Read</code>.</li>
+<li><strong>Fail with the serialization exception.</strong> A missing or unknown tag is a <em>well-formed value that does not fit</em>, so throw <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlSerializationException.html">YamlSerializationException</a> — the same family the built-in converters throw — not <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlFormatException.html">YamlFormatException</a>, which is reserved for syntactically invalid documents.</li>
+</ul>
+<p>With the factory registered, a document holding a base-typed member and a base-typed list carries the tag everywhere:</p>
+<pre><code class="lang-csharp">var shapeOptions = new YamlSerializerOptions();
+shapeOptions.Converters.Add(new ShapeConverterFactory());
+
+var drawing = new Drawing
+{
+    Title = &quot;Logo&quot;,
+    Outline = new Rectangle { Kind = &quot;rectangle&quot;, Width = 10, Height = 4 },
+    Shapes = [new Circle { Kind = &quot;circle&quot;, Radius = 1.5 }, new Rectangle { Kind = &quot;rectangle&quot;, Width = 2, Height = 3 }],
+};
+
+string yaml = YamlSerializer.Serialize(drawing, shapeOptions);
+// Title: Logo
+// Outline:
+//   kind: rectangle
+//   width: 10.0
+//   height: 4.0
+// Shapes:
+//   -
+//     kind: circle
+//     radius: 1.5
+//   -
+//     kind: rectangle
+//     width: 2.0
+//     height: 3.0
+
+Drawing round = YamlSerializer.Deserialize&lt;Drawing&gt;(yaml, shapeOptions)!;
+// round.Outline is Rectangle; round.Shapes[0] is Circle { Radius = 1.5 }
+</code></pre>
+<p>And the failure paths surface as the serialization exception with the message the converter chose:</p>
+<pre><code class="lang-csharp">YamlSerializer.Deserialize&lt;Drawing&gt;(&quot;Outline:\n  radius: 1&quot;, shapeOptions);
+// → throws YamlSerializationException: Shape is missing the 'kind' discriminator.
+
+YamlSerializer.Deserialize&lt;Drawing&gt;(&quot;Outline:\n  kind: hexagon&quot;, shapeOptions);
+// → throws YamlSerializationException: Unknown shape kind 'hexagon'.
+
+YamlSerializer.Deserialize&lt;Drawing&gt;(&quot;Outline: circle&quot;, shapeOptions);
+// → throws YamlSerializationException: Expected a mapping but found 'String'.
+</code></pre>
+<h2 id="registration-and-resolution-order">Registration and resolution order</h2>
+<p>A factory occupies the same slots and obeys the same precedence as a single-type converter (see <a href="converters.html">Writing converters</a> Pattern 3), highest first:</p>
+<ol>
+<li>a member-level converter attribute;</li>
+<li>a type-level converter attribute;</li>
+<li>the first matching entry in <code>options.Converters</code>;</li>
+<li>the built-in converters.</li>
+</ol>
+<p>For a <em>family</em>, the natural placements are a type-level attribute on the base type, or a single registration on the options:</p>
+<pre><code class="lang-csharp">// Option A — annotate the base type so every Shape-typed member uses the factory.
+[Converter(typeof(ShapeConverterFactory))]
+public abstract class Shape { /* … */ }
+
+// Option B — register once on the options.
+var options = new YamlSerializerOptions();
+options.Converters.Add(new ShapeConverterFactory());
+</code></pre>
+<p>The two placements are not equivalent. The type-level attribute is looked up on the <em>declared</em> type of a member and is not inherited, so it governs members declared as <code>Shape</code> — a member declared as <code>Circle</code> resolves <code>Circle</code>'s own converter, which is the plain object mapping unless <code>Circle</code> carries its own attribute:</p>
+<pre><code class="lang-csharp">public sealed class Holder
+{
+    public Shape? Outline { get; set; }   // declared as the base → factory → tagged
+    public Circle? Exact { get; set; }    // declared as the subtype → object mapping → untagged
+}
+</code></pre>
+<pre><code class="lang-yaml">Outline:
+  kind: circle
+  radius: 1.0
+Exact:
+  Radius: 2.0
+  Kind: &quot;&quot;
+</code></pre>
+<p>The options registration, by contrast, is consulted for every type the factory's <code>CanConvert</code> accepts, so a <code>List&lt;Circle&gt;</code> also serializes with the tag. Prefer Option B when subtype-declared members must share the wire form; prefer Option A when the family is small and you want the wiring to travel with the type.</p>
+<p>Three ordering consequences are worth keeping in mind:</p>
+<ul>
+<li><strong>The first match wins, and order in <code>options.Converters</code> matters.</strong> When more than one factory could claim a type, the earlier registration is asked first. Register the most specific factory ahead of any broader one whose <code>CanConvert</code> would also return <code>true</code>.</li>
+<li><strong><code>CreateConverter</code> runs once per closed type and is cached.</strong> A factory matching an open generic produces one converter per closed type (<code>Money&lt;Usd&gt;</code>, <code>Money&lt;Eur&gt;</code>, …), each cached independently on the options.</li>
+<li><strong>Register before first use.</strong> As with all converters, a <code>YamlSerializerOptions</code> instance freezes the first time it is used (or via <code>MakeReadOnly()</code>); add factories before then, and reuse one options instance so the resolution and reflection work is paid once — see <a href="../options-and-lifetime.html">Serializer options: freezing, caching, and thread safety</a>.</li>
+</ul>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="converters.html">Writing converters</a> — the single-type <code>Read</code> / <code>Write</code> pattern, the precedence ladder, and converter statelessness.</li>
+<li><a href="builtin-converters.html">Built-in converter catalog</a> — the families that already have a factory (nullable, enum, collection, dictionary) and their wire forms.</li>
+<li><a href="attributes.html">Mapping attributes</a> — <code>[Converter]</code> placement and the precedence ladder in detail.</li>
+<li><a href="callbacks.html">Serialization callbacks</a> — the lifecycle hooks a converter-handled type gives up, and how to keep them on the members instead.</li>
+<li>The sibling guides — <a href="../toml/polymorphic-converters.html">TOML polymorphic converters</a> and <a href="../bencode/polymorphic-converters.html">Bencode polymorphic converters</a>.</li>
+<li>API reference — <a class="xref" href="../../../api/Bodu.Text.Yaml.Serialization.YamlConverterFactory.html">YamlConverterFactory</a>, <a class="xref" href="../../../api/Bodu.Text.Yaml.Serialization.YamlConverter-1.html">YamlConverter&lt;T&gt;</a>, <a class="xref" href="../../../api/Bodu.Text.Yaml.Reader.Utf8YamlReader.html">Utf8YamlReader</a>, <a class="xref" href="../../../api/Bodu.Text.Yaml.Writer.Utf8YamlWriter.html">Utf8YamlWriter</a>.</li>
+<li><a href="../index.html">Bodu serializer guides</a> and the <a href="../../topics/text-and-serialization.html">Text &amp; Serialization guides</a>.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../styles/main.js"></script>
+  </body>
+</html>

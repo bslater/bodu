@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Hybrid public key encryption with HPKE | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Hybrid public key encryption with HPKE | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="hybrid-public-key-encryption-with-hpke">Hybrid public key encryption with HPKE</h1>
+
+<p><a class="xref" href="../../api/Bodu.Security.Cryptography.Hpke.html">Hpke</a> implements Hybrid Public Key Encryption as standardized in RFC 9180 — the modern, vetted answer to &quot;encrypt this payload so only the holder of a given public key can read it.&quot; It replaces ad-hoc ECIES-style constructions and is the encryption layer beneath TLS Encrypted Client Hello, Message Layer Security (MLS), and Oblivious HTTP.</p>
+<p>HPKE composes three primitives you have already met in this library: a <strong>KEM</strong> establishes a fresh shared secret against the recipient's public key, a <strong>KDF</strong> (<a href="hkdf.html">HKDF</a>) derives an AEAD key and nonce from it, and an <strong>AEAD</strong> encrypts the payload. You never manage those steps by hand — you pick a suite and call <code>Seal</code> / <code>Open</code>.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>This implementation supports the <code>DHKEM(X25519, HKDF-SHA256)</code> KEM (it builds on <a class="xref" href="../../api/Bodu.Security.Cryptography.X25519.html">X25519</a>). Like the rest of the library it offers best-effort side-channel resistance and has not been independently audited.</p>
+</div>
+<h2 id="choosing-a-suite">Choosing a suite</h2>
+<p>A <a class="xref" href="../../api/Bodu.Security.Cryptography.HpkeSuite.html">HpkeSuite</a> fixes the KEM, the KDF, and the AEAD. Three combinations are pre-configured as static properties; construct any other directly.</p>
+<table>
+<thead>
+<tr>
+<th>Suite</th>
+<th>AEAD</th>
+<th>Key</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.HpkeSuite.X25519_HkdfSha256_Aes128Gcm.html#Bodu_Security_Cryptography_HpkeSuite_X25519_HkdfSha256_Aes128Gcm">X25519_HkdfSha256_Aes128Gcm</a></td>
+<td>AES-128-GCM</td>
+<td>16 B</td>
+<td>Hardware-accelerated default on x86/ARM.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.HpkeSuite.X25519_HkdfSha256_Aes256Gcm.html#Bodu_Security_Cryptography_HpkeSuite_X25519_HkdfSha256_Aes256Gcm">X25519_HkdfSha256_Aes256Gcm</a></td>
+<td>AES-256-GCM</td>
+<td>32 B</td>
+<td>256-bit key margin.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.HpkeSuite.X25519_HkdfSha256_ChaCha20Poly1305.html#Bodu_Security_Cryptography_HpkeSuite_X25519_HkdfSha256_ChaCha20Poly1305">X25519_HkdfSha256_ChaCha20Poly1305</a></td>
+<td>ChaCha20Poly1305</td>
+<td>32 B</td>
+<td>Fast in software / constant-time without AES-NI.</td>
+</tr>
+</tbody>
+</table>
+<p>The KEM always uses <code>DHKEM(X25519, HKDF-SHA256)</code> — 32-byte public keys and a 32-byte encapsulated key. The suite's <em>KDF</em> is independent of the KEM's internal HKDF and selects the key schedule's hash: <code>HpkeKdf.HkdfSha256</code> (the default in all three pre-configured suites), <code>HkdfSha384</code>, or <code>HkdfSha512</code>. Constructing a suite with any other KEM, KDF, or AEAD value throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a>.</p>
+<p>A suite is immutable and exposes the lengths RFC 9180 derives from its choices — <code>AeadKeySizeInBytes</code> (<code>Nk</code>), <code>AeadNonceSizeInBytes</code> (<code>Nn</code>), <code>AeadTagSizeInBytes</code> (<code>Nt</code>), and <code>EncapsulationSizeInBytes</code> (<code>Nenc</code>) — so you can size buffers without hard-coding constants. An export-only suite (<code>HpkeAead.ExportOnly</code>) reports zero for the AEAD lengths, derives secrets through <code>Export</code>, and refuses to seal or open.</p>
+<h2 id="the-single-shot-façade">The single-shot façade</h2>
+<p>For one message, <a class="xref" href="../../api/Bodu.Security.Cryptography.Hpke.html">Hpke</a> does the whole exchange in one call. The sender produces an <strong>encapsulated key</strong> (<code>enc</code>) alongside the ciphertext; the recipient needs both, plus the same <code>info</code>.</p>
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+
+using var recipient = X25519.Create();
+recipient.GenerateKey();
+byte[] recipientPublicKey = recipient.ExportPublicKey();   // published, 32 bytes
+
+HpkeSuite suite = HpkeSuite.X25519_HkdfSha256_Aes128Gcm;
+byte[] info = &quot;myapp v1&quot;u8.ToArray();   // binds the exchange to a context
+byte[] aad  = &quot;headers&quot;u8.ToArray();    // authenticated, not encrypted
+
+// Sender — needs only the recipient's public key.
+var (enc, ciphertext) = Hpke.Seal(suite, recipientPublicKey, info, aad, &quot;secret message&quot;u8);
+
+// Recipient — needs its private key, the encapsulated key, and the same info/aad.
+byte[] plaintext = Hpke.Open(suite, recipient, enc, info, aad, ciphertext);
+</code></pre>
+<p><code>info</code> and <code>aad</code> must match on both sides or <code>Open</code> throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicexception">CryptographicException</a>. The recipient private key is supplied as an <a class="xref" href="../../api/Bodu.Security.Cryptography.X25519.html">X25519</a> instance so you control its lifetime; the recipient public key and <code>enc</code> travel as raw 32-byte spans.</p>
+<h2 id="sealing-many-messages--sender-and-receiver-sessions">Sealing many messages — sender and receiver sessions</h2>
+<p>To send a stream of messages under one encapsulation, set up a <a class="xref" href="../../api/Bodu.Security.Cryptography.HpkeSender.html">HpkeSender</a> once and call <code>Seal</code> repeatedly. Each call advances an internal sequence number that derives a fresh per-message nonce, so the matching <a class="xref" href="../../api/Bodu.Security.Cryptography.HpkeReceiver.html">HpkeReceiver</a> must <code>Open</code> the messages <strong>in the same order</strong>.</p>
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+
+using var recipient = X25519.Create();
+recipient.GenerateKey();
+
+// Sender side.
+using HpkeSender sender = HpkeSender.SetupBase(suite, recipient.ExportPublicKey(), info, out byte[] enc);
+byte[] c0 = sender.Seal(aad, &quot;message zero&quot;u8);
+byte[] c1 = sender.Seal(aad, &quot;message one&quot;u8);
+
+// Receiver side — opens in sequence.
+using HpkeReceiver receiver = HpkeReceiver.SetupBase(suite, recipient, enc, info);
+byte[] m0 = receiver.Open(aad, c0);
+byte[] m1 = receiver.Open(aad, c1);
+</code></pre>
+<p>Both session types are <code>IDisposable</code> and zero their derived key material on dispose — always wrap them in <code>using</code>.</p>
+<h2 id="the-four-modes">The four modes</h2>
+<p>HPKE offers four establishment modes (RFC 9180 §5.1). Each has its own <code>Setup*</code> / single-shot pair, so the inputs a mode requires are always explicit.</p>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Adds</th>
+<th>Sender setup</th>
+<th>Receiver setup</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Base</strong></td>
+<td>nothing</td>
+<td><code>SetupBase</code></td>
+<td><code>SetupBase</code></td>
+</tr>
+<tr>
+<td><strong>PSK</strong></td>
+<td>a pre-shared key both parties hold</td>
+<td><code>SetupPsk</code></td>
+<td><code>SetupPsk</code></td>
+</tr>
+<tr>
+<td><strong>Auth</strong></td>
+<td>sender authentication via the sender's static key</td>
+<td><code>SetupAuth</code></td>
+<td><code>SetupAuth</code></td>
+</tr>
+<tr>
+<td><strong>AuthPSK</strong></td>
+<td>both of the above</td>
+<td><code>SetupAuthPsk</code></td>
+<td><code>SetupAuthPsk</code></td>
+</tr>
+</tbody>
+</table>
+<p>In the <strong>auth</strong> modes the sender proves possession of a static private key; the receiver verifies it with the sender's public key:</p>
+<pre><code class="lang-csharp">using var senderKey = X25519.Create();
+senderKey.GenerateKey();
+
+using HpkeSender sender = HpkeSender.SetupAuth(suite, recipient.ExportPublicKey(), info, senderKey, out byte[] enc);
+byte[] ciphertext = sender.Seal(aad, &quot;authenticated payload&quot;u8);
+
+using HpkeReceiver receiver = HpkeReceiver.SetupAuth(suite, recipient, enc, info, senderKey.ExportPublicKey());
+byte[] plaintext = receiver.Open(aad, ciphertext);   // fails unless it was sealed by senderKey
+</code></pre>
+<p>The <strong>PSK</strong> modes mix in a symmetric secret shared out of band, identified by a <code>pskId</code>; the pre-shared key and its identifier must both be present (or both absent), and must match the mode, or setup throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicexception">CryptographicException</a>.</p>
+<h2 id="exporting-secrets">Exporting secrets</h2>
+<p>Beyond encryption, every context can derive independent secrets bound to a label, via <code>Export</code> — the basis of protocols like Oblivious HTTP. The sender and receiver derive identical bytes for the same context and length:</p>
+<pre><code class="lang-csharp">byte[] senderSecret   = sender.Export(&quot;confirmation&quot;u8, 32);
+byte[] receiverSecret = receiver.Export(&quot;confirmation&quot;u8, 32);
+// senderSecret and receiverSecret are identical.
+</code></pre>
+<p>An <strong>export-only</strong> suite (<code>new HpkeSuite(HpkeKem.X25519HkdfSha256, HpkeKdf.HkdfSha256, HpkeAead.ExportOnly)</code>) supports <code>Export</code> but throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a> from <code>Seal</code> / <code>Open</code>.</p>
+<h2 id="what-hpke-is-not">What HPKE is not</h2>
+<ul>
+<li><strong>Not a transport / session protocol.</strong> It encrypts discrete messages; it has no handshake, key rotation, or replay window of its own. Build those above it.</li>
+<li><strong>Not sender-authenticated by default.</strong> Base and PSK modes do not prove <em>who</em> sealed a message — use an auth mode (or sign separately) when origin matters.</li>
+<li><strong>Not nonce-managed by you.</strong> The per-message nonce is derived from the sequence counter; never reuse a context to &quot;re-seal&quot; the same sequence number, and keep sender and receiver in step.</li>
+</ul>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="key-agreement-x25519.html">Key agreement with X25519</a> — the KEM HPKE builds on.</li>
+<li><a href="hkdf.html">Using HKDF</a> — the key-derivation stage inside HPKE's key schedule.</li>
+<li><a href="asymmetric-overview.html">Asymmetric algorithms overview</a> — where HPKE sits in the public-key family.</li>
+<li><a class="xref" href="../../api/Bodu.Security.Cryptography.Hpke.html">Hpke</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.HpkeSuite.html">HpkeSuite</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.HpkeMode.html">HpkeMode</a> (<code>Base</code> / <code>Psk</code> / <code>Auth</code> / <code>AuthPsk</code>), <a class="xref" href="../../api/Bodu.Security.Cryptography.HpkeSender.html">HpkeSender</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.HpkeReceiver.html">HpkeReceiver</a> — API reference.</li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> — every guide in this topic.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

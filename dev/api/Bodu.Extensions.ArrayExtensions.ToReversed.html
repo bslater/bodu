@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Method ToReversed | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Method ToReversed | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Extensions.ArrayExtensions.ToReversed*">
+
+
+
+<h1 id="Bodu_Extensions_ArrayExtensions_ToReversed_" data-uid="Bodu.Extensions.ArrayExtensions.ToReversed*">Method ToReversed</h1>
+<div class="markdown level0 summary"></div>
+<div class="markdown level0 conceptual"></div>
+
+<a id="Bodu_Extensions_ArrayExtensions_ToReversed_" data-uid="Bodu.Extensions.ArrayExtensions.ToReversed*"></a>
+<h4 id="Bodu_Extensions_ArrayExtensions_ToReversed__1___0___" data-uid="Bodu.Extensions.ArrayExtensions.ToReversed``1(``0[])">ToReversed&lt;T&gt;(T[])</h4>
+<div class="markdown level1 summary"><p>Creates a new array containing all elements of <code class="paramref">source</code> in reverse order.</p>
+</div>
+<div class="markdown level1 conceptual"></div>
+<h5 class="declaration">Declaration</h5>
+<div class="codewrapper">
+  <pre><code class="lang-csharp hljs">public static T[] ToReversed&lt;T&gt;(this T[] source)</code></pre>
+</div>
+<h5 class="parameters">Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>T[]</td>
+      <td><span class="parametername">source</span></td>
+      <td><p>The array whose elements will be reversed.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="returns">Returns</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>T[]</td>
+      <td><p>A new <code class="typeparamref">T</code>[] containing all elements of <code class="paramref">source</code> in reverse order.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="typeParameters">Type Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span class="parametername">T</span></td>
+      <td><p>The type of elements in the array.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 id="Bodu_Extensions_ArrayExtensions_ToReversed__1___0____remarks">Remarks</h5>
+<div class="markdown level1 remarks"><p>Converts <code class="paramref">source</code> to a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan&lt;T&gt;</a> via
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.memoryextensions.asspan#system-memoryextensions-asspan-1(-0())">AsSpan&lt;T&gt;(T[])</a> and delegates to <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReverseCore&lt;T&gt;(ReadOnlySpan&lt;T&gt;, int, int)</a>, which performs
+the SIMD-accelerated copy and reversal. See <a class="xref" href="Bodu.Extensions.ArrayExtensions.ToReversed.html#Bodu_Extensions_ArrayExtensions_ToReversed__1___0___System_Int32_System_Int32_">ToReversed&lt;T&gt;(T[], int, int)</a> for full performance and
+allocation details.</p>
+</div>
+<h5 class="exceptions">Exceptions</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Condition</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></td>
+      <td><p>Thrown when <code class="paramref">source</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<a id="Bodu_Extensions_ArrayExtensions_ToReversed_" data-uid="Bodu.Extensions.ArrayExtensions.ToReversed*"></a>
+<h4 id="Bodu_Extensions_ArrayExtensions_ToReversed__1___0___System_Int32_System_Int32_" data-uid="Bodu.Extensions.ArrayExtensions.ToReversed``1(``0[],System.Int32,System.Int32)">ToReversed&lt;T&gt;(T[], int, int)</h4>
+<div class="markdown level1 summary"><p>Creates a new array that is a copy of <code class="paramref">source</code> with elements in the specified range reversed,
+leaving all other elements in their original positions.</p>
+</div>
+<div class="markdown level1 conceptual"></div>
+<h5 class="declaration">Declaration</h5>
+<div class="codewrapper">
+  <pre><code class="lang-csharp hljs">public static T[] ToReversed&lt;T&gt;(this T[] source, int index, int count)</code></pre>
+</div>
+<h5 class="parameters">Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>T[]</td>
+      <td><span class="parametername">source</span></td>
+      <td><p>The array to copy and partially reverse.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></td>
+      <td><span class="parametername">index</span></td>
+      <td><p>The zero-based index of the first element in the range to reverse. Must be non-negative and less than or equal
+to <code>source.Length</code>.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></td>
+      <td><span class="parametername">count</span></td>
+      <td><p>The number of elements to reverse. Must be non-negative and, together with <code class="paramref">index</code>, must not
+exceed <code>source.Length</code>. A value of zero or one results in a straight copy with no reversal performed.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="returns">Returns</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>T[]</td>
+      <td><p>A new <code class="typeparamref">T</code>[] of the same length as <code class="paramref">source</code>, where elements in [
+<code class="paramref">index</code>, <code class="paramref">index</code> + <code class="paramref">count</code>) appear in reverse order and
+all other elements are copied unchanged.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="typeParameters">Type Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span class="parametername">T</span></td>
+      <td><p>The type of elements in the array.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 id="Bodu_Extensions_ArrayExtensions_ToReversed__1___0___System_Int32_System_Int32__remarks">Remarks</h5>
+<div class="markdown level1 remarks"><p>
+This is the canonical typed-array implementation. The full-array overload (<a class="xref" href="Bodu.Extensions.ArrayExtensions.ToReversed.html#Bodu_Extensions_ArrayExtensions_ToReversed__1___0___">ToReversed&lt;T&gt;(T[])</a>)
+and the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.range">Range</a>-based overload (<a class="xref" href="Bodu.Extensions.ArrayExtensions.ToReversed.html#Bodu_Extensions_ArrayExtensions_ToReversed__1___0___System_Range_">ToReversed&lt;T&gt;(T[], Range)</a>) both resolve their
+arguments and delegate here.
+</p>
+<p>
+Bounds validation is delegated to
+<a class="xref" href="Bodu.ThrowHelper.ThrowIfSpanOffsetOrCountInvalid.html#Bodu_ThrowHelper_ThrowIfSpanOffsetOrCountInvalid__1_System_ReadOnlySpan___0__System_Int32_System_Int32_System_String_System_String_System_String_">ThrowIfSpanOffsetOrCountInvalid&lt;T&gt;(ReadOnlySpan&lt;T&gt;, int, int, string?, string?, string?)</a>
+, which uses unsigned comparison to catch both negative values and out-of-bounds values in a single branch.
+Validated arguments are then forwarded to <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReverseCore&lt;T&gt;(ReadOnlySpan&lt;T&gt;, int, int)</a>, which performs the SIMD-accelerated
+copy and in-place reversal of the nominated slice.
+</p>
+</div>
+<h5 id="Bodu_Extensions_ArrayExtensions_ToReversed__1___0___System_Int32_System_Int32__examples">Examples</h5>
+<pre><code class="lang-csharp">int[] data = { 1, 2, 3, 4, 5 };
+int[] full = data.ToReversed(); // [ 5, 4, 3, 2, 1 ]
+int[] partial = data.ToReversed(index: 1, count: 3); // [ 1, 4, 3, 2, 5 ]</code></pre>
+
+<h5 class="exceptions">Exceptions</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Condition</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></td>
+      <td><p>Thrown when <code class="paramref">source</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></td>
+      <td><p>Thrown when <code class="paramref">index</code> is negative or greater than <code>source.Length</code>, or when
+<code class="paramref">count</code> is negative or would extend the range beyond the end of <code class="paramref">source</code>.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<a id="Bodu_Extensions_ArrayExtensions_ToReversed_" data-uid="Bodu.Extensions.ArrayExtensions.ToReversed*"></a>
+<h4 id="Bodu_Extensions_ArrayExtensions_ToReversed__1___0___System_Range_" data-uid="Bodu.Extensions.ArrayExtensions.ToReversed``1(``0[],System.Range)">ToReversed&lt;T&gt;(T[], Range)</h4>
+<div class="markdown level1 summary"><p>Creates a new array that is a copy of <code class="paramref">source</code> with elements in the specified
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.range">Range</a> reversed, leaving all other elements in their original positions.</p>
+</div>
+<div class="markdown level1 conceptual"></div>
+<h5 class="declaration">Declaration</h5>
+<div class="codewrapper">
+  <pre><code class="lang-csharp hljs">public static T[] ToReversed&lt;T&gt;(this T[] source, Range range)</code></pre>
+</div>
+<h5 class="parameters">Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>T[]</td>
+      <td><span class="parametername">source</span></td>
+      <td><p>The array to copy and partially reverse.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.range">Range</a></td>
+      <td><span class="parametername">range</span></td>
+      <td><p>The range of elements to reverse. Both start-relative (e.g. <code>1..4</code>) and end-relative (e.g. <code>^4..^1</code>)
+index expressions are supported. A range covering zero or one element results in a straight copy with no
+reversal performed.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="returns">Returns</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>T[]</td>
+      <td><p>A new <code class="typeparamref">T</code>[] of the same length as <code class="paramref">source</code>, where elements within
+<code class="paramref">range</code> appear in reverse order and all elements outside <code class="paramref">range</code> are copied
+unchanged.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="typeParameters">Type Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span class="parametername">T</span></td>
+      <td><p>The type of elements in the array.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 id="Bodu_Extensions_ArrayExtensions_ToReversed__1___0___System_Range__remarks">Remarks</h5>
+<div class="markdown level1 remarks"><p>Resolves <code class="paramref">range</code> via <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.range.getoffsetandlength">GetOffsetAndLength(int)</a> and delegates to
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReverseCore&lt;T&gt;(ReadOnlySpan&lt;T&gt;, int, int)</a>. Prefer <a class="xref" href="Bodu.Extensions.ArrayExtensions.ToReversed.html#Bodu_Extensions_ArrayExtensions_ToReversed__1___0___System_Int32_System_Int32_">ToReversed&lt;T&gt;(T[], int, int)</a> when the start and count are
+already available as integers to avoid constructing an intermediate <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.range">Range</a> value.</p>
+</div>
+<h5 id="Bodu_Extensions_ArrayExtensions_ToReversed__1___0___System_Range__examples">Examples</h5>
+<pre><code class="lang-csharp">int[] data = { 1, 2, 3, 4, 5 };
+int[] fromStart = data.ToReversed(1..4); // [ 1, 4, 3, 2, 5 ]
+int[] fromEnd = data.ToReversed(^4..^1); // [ 1, 4, 3, 2, 5 ]</code></pre>
+
+<h5 class="exceptions">Exceptions</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Condition</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></td>
+      <td><p>Thrown when <code class="paramref">source</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></td>
+      <td><p>Thrown when <code class="paramref">range</code> resolves to a start index that is negative or to an end index that exceeds
+<code>source.Length</code>. Resolution is performed by <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.range.getoffsetandlength">GetOffsetAndLength(int)</a>; the resulting values
+are forwarded directly to <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReverseCore&lt;T&gt;(ReadOnlySpan&lt;T&gt;, int, int)</a> without a second validation pass.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<a id="Bodu_Extensions_ArrayExtensions_ToReversed_" data-uid="Bodu.Extensions.ArrayExtensions.ToReversed*"></a>
+<h4 id="Bodu_Extensions_ArrayExtensions_ToReversed_System_Array_" data-uid="Bodu.Extensions.ArrayExtensions.ToReversed(System.Array)">ToReversed(Array)</h4>
+<div class="markdown level1 summary"><p>Creates a new single-dimensional array containing all elements of <code class="paramref">source</code> in reverse order.</p>
+</div>
+<div class="markdown level1 conceptual"></div>
+<h5 class="declaration">Declaration</h5>
+<div class="codewrapper">
+  <pre><code class="lang-csharp hljs">public static Array ToReversed(this Array source)</code></pre>
+</div>
+<h5 class="parameters">Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.array">Array</a></td>
+      <td><span class="parametername">source</span></td>
+      <td><p>The array whose elements will be reversed.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="returns">Returns</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.array">Array</a></td>
+      <td><p>A new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.array">Array</a> of the same element type and length as <code class="paramref">source</code>, with all elements
+in reverse order.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 id="Bodu_Extensions_ArrayExtensions_ToReversed_System_Array__remarks">Remarks</h5>
+<div class="markdown level1 remarks"><p>Delegates to <a class="xref" href="Bodu.Extensions.ArrayExtensions.ToReversed.html#Bodu_Extensions_ArrayExtensions_ToReversed_System_Array_System_Int32_System_Int32_">ToReversed(Array, int, int)</a> with <code>index = 0</code> and <code>count = source.Length</code>.
+See that overload for full implementation details. Prefer the generic <a class="xref" href="Bodu.Extensions.ArrayExtensions.ToReversed.html#Bodu_Extensions_ArrayExtensions_ToReversed__1___0___">ToReversed&lt;T&gt;(T[])</a> overload
+where the element type is known at compile time; the non-generic path cannot use <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReverseCore&lt;T&gt;(ReadOnlySpan&lt;T&gt;, int, int)</a>
+and falls back to <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.array.copy#system-array-copy(system-array-system-array-system-int32)">Copy(Array, Array, int)</a> and <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.array.reverse#system-array-reverse(system-array-system-int32-system-int32)">Reverse(Array, int, int)</a>.</p>
+</div>
+<h5 class="exceptions">Exceptions</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Condition</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></td>
+      <td><p>Thrown when <code class="paramref">source</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></td>
+      <td><p>Thrown when <code class="paramref">source</code> is not a single-dimensional array.
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.array.reverse#system-array-reverse(system-array-system-int32-system-int32)">Reverse(Array, int, int)</a>, which is used internally, does not support multidimensional
+arrays.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<a id="Bodu_Extensions_ArrayExtensions_ToReversed_" data-uid="Bodu.Extensions.ArrayExtensions.ToReversed*"></a>
+<h4 id="Bodu_Extensions_ArrayExtensions_ToReversed_System_Array_System_Int32_System_Int32_" data-uid="Bodu.Extensions.ArrayExtensions.ToReversed(System.Array,System.Int32,System.Int32)">ToReversed(Array, int, int)</h4>
+<div class="markdown level1 summary"><p>Creates a new single-dimensional array that is a copy of <code class="paramref">source</code> with elements in the
+specified range reversed, leaving all other elements in their original positions.</p>
+</div>
+<div class="markdown level1 conceptual"></div>
+<h5 class="declaration">Declaration</h5>
+<div class="codewrapper">
+  <pre><code class="lang-csharp hljs">public static Array ToReversed(this Array source, int index, int count)</code></pre>
+</div>
+<h5 class="parameters">Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.array">Array</a></td>
+      <td><span class="parametername">source</span></td>
+      <td><p>The array to copy and partially reverse.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></td>
+      <td><span class="parametername">index</span></td>
+      <td><p>The zero-based index of the first element in the range to reverse. Must be non-negative and less than or equal
+to <code>source.Length</code>.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></td>
+      <td><span class="parametername">count</span></td>
+      <td><p>The number of elements to reverse. Must be non-negative and, together with <code class="paramref">index</code>, must not
+exceed <code>source.Length</code>. A value of zero or one results in a straight copy with no reversal performed.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="returns">Returns</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.array">Array</a></td>
+      <td><p>A new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.array">Array</a> of the same element type and length as <code class="paramref">source</code>, where elements in
+[<code class="paramref">index</code>, <code class="paramref">index</code> + <code class="paramref">count</code>) appear in reverse order and
+all other elements are copied unchanged.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 id="Bodu_Extensions_ArrayExtensions_ToReversed_System_Array_System_Int32_System_Int32__remarks">Remarks</h5>
+<div class="markdown level1 remarks"><p>
+This is the canonical non-generic implementation. The full-array overload (<a class="xref" href="Bodu.Extensions.ArrayExtensions.ToReversed.html#Bodu_Extensions_ArrayExtensions_ToReversed_System_Array_">ToReversed(Array)</a>) and
+the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.range">Range</a>-based overload (<a class="xref" href="Bodu.Extensions.ArrayExtensions.ToReversed.html#Bodu_Extensions_ArrayExtensions_ToReversed_System_Array_System_Range_">ToReversed(Array, Range)</a>) both resolve their arguments
+and delegate here.
+</p>
+<p>
+Unlike the typed <a class="xref" href="Bodu.Extensions.ArrayExtensions.ToReversed.html#Bodu_Extensions_ArrayExtensions_ToReversed__1___0___System_Int32_System_Int32_">ToReversed&lt;T&gt;(T[], int, int)</a> overload, this method cannot delegate to
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReverseCore&lt;T&gt;(ReadOnlySpan&lt;T&gt;, int, int)</a> because the element type is not known at compile time. Instead it uses
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.array.createinstance#system-array-createinstance(system-type-system-int32)">CreateInstance(Type, int)</a> to allocate a correctly typed result,
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.array.copy#system-array-copy(system-array-system-array-system-int32)">Copy(Array, Array, int)</a> to populate it, and <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.array.reverse#system-array-reverse(system-array-system-int32-system-int32)">Reverse(Array, int, int)</a>
+to reverse the nominated slice in-place on the copy. These BCL methods are used internally via
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.array">ReverseArrayCore(Array, int, int)</a>.
+</p>
+<p>
+Bounds validation is delegated to <a class="xref" href="Bodu.ThrowHelper.ThrowIfArrayOffsetOrCountInvalid.html#Bodu_ThrowHelper_ThrowIfArrayOffsetOrCountInvalid_System_Array_System_Int32_System_Int32_System_String_System_String_System_String_">ThrowIfArrayOffsetOrCountInvalid(Array, int, int, string?, string?, string?)</a>, which also guards
+against <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>. The rank check is performed separately because
+<a class="xref" href="Bodu.ThrowHelper.ThrowIfArrayOffsetOrCountInvalid.html#Bodu_ThrowHelper_ThrowIfArrayOffsetOrCountInvalid_System_Array_System_Int32_System_Int32_System_String_System_String_System_String_">ThrowIfArrayOffsetOrCountInvalid(Array, int, int, string?, string?, string?)</a> does not inspect <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.array.rank">Rank</a>.
+</p>
+</div>
+<h5 class="exceptions">Exceptions</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Condition</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></td>
+      <td><p>Thrown when <code class="paramref">source</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></td>
+      <td><p>Thrown when <code class="paramref">source</code> is not a single-dimensional array, or when <code>index + count</code> exceeds
+<code>source.Length</code>.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></td>
+      <td><p>Thrown when <code class="paramref">index</code> or <code class="paramref">count</code> is negative or exceeds <code>source.Length</code>.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<a id="Bodu_Extensions_ArrayExtensions_ToReversed_" data-uid="Bodu.Extensions.ArrayExtensions.ToReversed*"></a>
+<h4 id="Bodu_Extensions_ArrayExtensions_ToReversed_System_Array_System_Range_" data-uid="Bodu.Extensions.ArrayExtensions.ToReversed(System.Array,System.Range)">ToReversed(Array, Range)</h4>
+<div class="markdown level1 summary"><p>Creates a new single-dimensional array that is a copy of <code class="paramref">source</code> with elements in the
+specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.range">Range</a> reversed, leaving all other elements in their original positions.</p>
+</div>
+<div class="markdown level1 conceptual"></div>
+<h5 class="declaration">Declaration</h5>
+<div class="codewrapper">
+  <pre><code class="lang-csharp hljs">public static Array ToReversed(this Array source, Range range)</code></pre>
+</div>
+<h5 class="parameters">Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.array">Array</a></td>
+      <td><span class="parametername">source</span></td>
+      <td><p>The array to copy and partially reverse.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.range">Range</a></td>
+      <td><span class="parametername">range</span></td>
+      <td><p>The range of elements to reverse. Both start-relative (e.g. <code>1..4</code>) and end-relative (e.g. <code>^4..^1</code>)
+index expressions are supported. A range covering zero or one element results in a straight copy with no
+reversal performed.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="returns">Returns</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.array">Array</a></td>
+      <td><p>A new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.array">Array</a> of the same element type and length as <code class="paramref">source</code>, where elements
+within <code class="paramref">range</code> appear in reverse order and all elements outside <code class="paramref">range</code> are
+copied unchanged.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 id="Bodu_Extensions_ArrayExtensions_ToReversed_System_Array_System_Range__remarks">Remarks</h5>
+<div class="markdown level1 remarks"><p>Resolves <code class="paramref">range</code> via <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.range.getoffsetandlength">GetOffsetAndLength(int)</a> and delegates to
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.array">ReverseArrayCore(Array, int, int)</a>. Prefer <a class="xref" href="Bodu.Extensions.ArrayExtensions.ToReversed.html#Bodu_Extensions_ArrayExtensions_ToReversed_System_Array_System_Int32_System_Int32_">ToReversed(Array, int, int)</a> when the start and count are
+already available as integers to avoid constructing an intermediate <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.range">Range</a> value.</p>
+</div>
+<h5 class="exceptions">Exceptions</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Condition</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></td>
+      <td><p>Thrown when <code class="paramref">source</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></td>
+      <td><p>Thrown when <code class="paramref">source</code> is not a single-dimensional array.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></td>
+      <td><p>Thrown when <code class="paramref">range</code> resolves to a start index that is negative or to an end index that exceeds
+<code>source.Length</code>. Resolution is performed by <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.range.getoffsetandlength">GetOffsetAndLength(int)</a>.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

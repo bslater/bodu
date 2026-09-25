@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Namespace Bodu.Financial.ExchangeRates | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Namespace Bodu.Financial.ExchangeRates | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Financial.ExchangeRates">
+
+  <h1 id="Bodu_Financial_ExchangeRates" data-uid="Bodu.Financial.ExchangeRates" class="text-break">Namespace Bodu.Financial.ExchangeRates</h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual">
+<p><img src="../images/hero-fx.svg" alt="Bodu.Financial.ExchangeRates"></p>
+<h1 id="bodufinancialexchangerates">Bodu.Financial.ExchangeRates</h1>
+<h2 id="purpose">Purpose</h2>
+<p><strong>Bodu.Financial.ExchangeRates</strong> is the exchange-rate namespace of the <a href="../apidoc/Bodu.Financial.md"><code>Bodu.Financial</code></a> family. The core FX types — <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.html">ExchangeRate</a> values, currency pairs, rate series and stores, and the standard <a class="xref" href="Bodu.Financial.ExchangeRates.IDatedRateProvider.html">IDatedRateProvider</a> and timeless <a class="xref" href="Bodu.Financial.ExchangeRates.IRateProvider.html">IRateProvider</a> contracts — ship in the core <code>Bodu.Financial</code> package. The separate <strong><code>Bodu.Financial.ExchangeRates</code></strong> package layers the web/HTTP provider machinery on top (the abstract <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.html">WebRateProvider</a> and <a class="xref" href="Bodu.Financial.ExchangeRates.PairWebRateProvider-1.html">PairWebRateProvider&lt;TSeries&gt;</a> bases and their supporting types), so the core package carries no HTTP machinery. The same flattened namespace then gathers the concrete providers for the public feeds — the Bank of England, the European Central Bank, the Reserve Bank of Australia, Yahoo Finance, OFX, XE.com, OANDA, Fixer (fixer.io), exchangerate.host, FRED (St. Louis Fed), and the IMF — each shipped as its own package. Every provider downloads and parses its source over a requested date window into a dated series, so they all compose with <code>Money.ConvertTo</code>, the <a href="../guides/financial/exchange-rate-caching.html">caching and aggregating</a> layer, and the rest of the FX stack.</p>
+<p>The single-base providers (BoE, ECB, RBA, IMF) publish one base currency (GBP, EUR, AUD, USD), so they support direct (<code>base→X</code>) and inverse (<code>X→base</code>) lookups but not cross pairs; IMF downloads the IMF's monthly Representative Exchange Rates tab-separated report and normalizes its quotation direction to a consistent USD base. The market providers (Yahoo, OFX, XE, OANDA, Fixer, exchangerate.host) fetch a distinct series per currency pair, so they serve <strong>arbitrary pairs</strong>; FRED is per-pair too but maps each pair to a source series identifier (with a built-in map for the major pairs). Fixer, exchangerate.host, and FRED require an API key on their options; IMF is keyless and daily. Every provider is <code>IDisposable</code>: the options-only constructor builds and owns its <code>HttpClient</code>, while the constructor that accepts an <code>HttpClient</code> (the form the dependency-injection registration uses) leaves the client's lifetime to the caller. Downloaded responses are cached on disk by default.</p>
+<p>Each provider ships its own dependency-injection registration in the <code>Bodu.Financial.ExchangeRates</code> namespace, so a single <code>using Bodu.Financial.ExchangeRates;</code> makes the <code>Add&lt;Source&gt;...</code> extension methods available — <code>AddBoeExchangeRates</code>, <code>AddEcbExchangeRates</code>, <code>AddRbaExchangeRates</code>, <code>AddYahooExchangeRates</code>, <code>AddOfxExchangeRates</code>, <code>AddXeExchangeRates</code>, <code>AddOandaExchangeRates</code>, <code>AddFixerExchangeRates</code>, <code>AddExchangeRateHostExchangeRates</code>, <code>AddFredExchangeRates</code>, and <code>AddImfExchangeRates</code>. There is no separate per-provider <code>*.DependencyInjection</code> package; the registration lives in the provider's own runtime package over the shared <code>AddWebRateProvider</code> machinery.</p>
+<h2 id="static-documentation">Static documentation</h2>
+<ul>
+<li><strong><a href="../docs/exchange-rates/index.html">Introduction</a></strong> — the infrastructure package: the two provider bases, the fetch machinery, the eleven-package provider family with status and DI registration, and the &quot;which provider&quot; table.</li>
+<li><strong><a href="../docs/exchange-rates/concepts.html">Core concepts</a></strong> — warm-then-lookup, bulk vs pair, <code>RateRangeResult</code>, history availability, payload cache vs rate cache, single-flight, synchronous access, resilience, failure modes, lifetimes, thread safety.</li>
+<li><strong><a href="../docs/exchange-rates/getting-started.html">Getting started</a></strong> — install, direct construction, DI registration with an <code>appsettings.json</code> section, API keys, range reads, and the payload cache.</li>
+<li><strong><a href="../guides/financial/exchange-rate-providers.html">Built-in exchange-rate providers guide</a></strong> — construction, warming the store or a pair, the shared lookup surface, dependency injection, and composing a provider with caching and aggregation.</li>
+<li><strong><a href="../guides/financial/testing-providers.html">Testing your own provider</a></strong> — the in-repository contract-test bases (see the <a href="../apidoc/Bodu.Financial.ExchangeRates.Testing.md"><code>Bodu.Financial.ExchangeRates.Testing</code> overview</a>) and the offline stub handler.</li>
+</ul>
+<h2 id="key-types">Key types</h2>
+<p><strong>Core exchange types (in the <code>Bodu.Financial</code> package)</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.IRateProvider.html">IRateProvider</a>, <a class="xref" href="Bodu.Financial.ExchangeRates.IDatedRateProvider.html">IDatedRateProvider</a> — timeless and dated provider contracts.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.IHistoricalRateProvider.html">IHistoricalRateProvider</a> — the optional contract a provider implements to advertise how far back it can serve rates (its <code>HistoryAvailability</code>), so composing layers avoid asking for dates it has declared unavailable.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.html">ExchangeRate</a>, <a class="xref" href="Bodu.Financial.ExchangeRates.CurrencyPair.html">CurrencyPair</a>, <a class="xref" href="Bodu.Financial.ExchangeRates.RateObservation.html">RateObservation</a>, <a class="xref" href="Bodu.Financial.ExchangeRates.RateSeries.html">RateSeries</a> — observation record, strongly-typed (from, to) key, single dated observation value, and an O(log n) read-optimised time series.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.RateSeriesBuilder.html">RateSeriesBuilder</a>, <a class="xref" href="Bodu.Financial.ExchangeRates.RateSeriesKey.html">RateSeriesKey</a>, <a class="xref" href="Bodu.Financial.ExchangeRates.RateTableBuilder.html">RateTableBuilder</a> — mutable companion for building or editing a series, the (pair, provider) key, and a higher-level multi-series editor for import workflows.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.RateLookupOptions.html">RateLookupOptions</a>, <a class="xref" href="Bodu.Financial.ExchangeRates.RateLookupResult.html">RateLookupResult</a>, <a class="xref" href="Bodu.Financial.ExchangeRates.RateDateResolution.html">RateDateResolution</a> — resolution policy options and the audit-grade lookup result.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.RateProvenance.html">RateProvenance</a> — readonly-record-struct recording where a rate came from (provider, optional backend, cached-at / as-of instants), with <code>Live</code> and <code>FromCache</code> factories.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.FixedRateTable.html">FixedRateTable</a>, <a class="xref" href="Bodu.Financial.ExchangeRates.FixedDatedRateProvider.html">FixedDatedRateProvider</a>, <a class="xref" href="Bodu.Financial.ExchangeRates.DatedRateProviderAdapter.html">DatedRateProviderAdapter</a> — in-memory provider implementations and an adapter that pins a date to a dated provider for codebases that don't need the dated surface. Grouping several providers (prioritised fallback, averaging, per-FX-pair routing) and read-through caching live in <a href="../apidoc/Bodu.Financial.ExchangeRates.Caching.md"><code>Bodu.Financial.ExchangeRates.Caching</code></a>.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.RateHistoryAvailability.html">RateHistoryAvailability</a>, <a class="xref" href="Bodu.Financial.ExchangeRates.RateRangeResult.html">RateRangeResult</a>, <a class="xref" href="Bodu.Financial.ExchangeRates.DateRangeCoverage.html">DateRangeCoverage</a> — how far back a source serves rates (unbounded, fixed earliest date, or rolling window), the whole-range read result, and the coverage record the caching layer stores.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.RateSeriesNotFoundException.html">RateSeriesNotFoundException</a> (a <code>KeyNotFoundException</code>) — the missing-series failure raised by the provider stack.</li>
+</ul>
+<p><strong>Web-provider machinery (in the <code>Bodu.Financial.ExchangeRates</code> package)</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.html">WebRateProvider</a>, <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html">WebRateProviderOptions</a> — the abstract HTTP-backed dated-provider base that every provider here derives from (it accumulates fetched observations into an immutable book / snapshot, coalesces concurrent loads, and owns or borrows its <code>HttpClient</code>) and the abstract options carrying <code>BaseAddress</code>, <code>HttpTimeout</code>, <code>UserAgent</code>, <code>DefaultLookback</code>, <code>CurrencyAliases</code>, and per-stage log levels.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.PairWebRateProvider-1.html">PairWebRateProvider&lt;TSeries&gt;</a> — the specialisation the pair-serving providers (Yahoo, OFX, XE, OANDA, Fixer, exchangerate.host, FRED) build on. IMF, like the central-bank providers, extends <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.html">WebRateProvider</a> directly.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.IPairRateSource-1.html">IPairRateSource&lt;TSeries&gt;</a>, <a class="xref" href="Bodu.Financial.ExchangeRates.IPairRateLoader.html">IPairRateLoader</a>, <a class="xref" href="Bodu.Financial.ExchangeRates.CurrencyPairRequest.html">CurrencyPairRequest</a>, <a class="xref" href="Bodu.Financial.ExchangeRates.PairRateData-1.html">PairRateData&lt;TSeries&gt;</a> — the pair-based fetch contracts (<code>GetPairAsync</code>), the request struct (pair + inclusive date range), and the result record (pair, observations, source-specific series metadata).</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.SingleFlightCoordinator-1.html">SingleFlightCoordinator&lt;TKey&gt;</a> — keyed single-flight coordinator that coalesces concurrent loads of the same key onto one in-flight operation (<code>RunAsync</code> / <code>RunAsync&lt;TResult&gt;</code>), used internally by <code>WebRateProvider</code> to deduplicate endpoint fetches.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.FileSystemByteCache-1.html">FileSystemByteCache&lt;TKey&gt;</a> — the abstract base for the file-feed providers' on-disk raw-response caches (best-effort <code>TryGetCore</code> / <code>StoreCore</code> keyed by a download unit); a derived cache supplies only the file name and, optionally, a freshness rule. The BoE / ECB / RBA <code>FileSystem*Cache</code> implementations derive from it.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.RateProviderHttpClientFactory.html">RateProviderHttpClientFactory</a> — builds the owned <code>HttpClient</code> for the options-only constructor form.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRateFormatException.html">ExchangeRateFormatException</a> (a <code>FormatException</code>) — the feed-parse failure raised by the provider stack.</li>
+</ul>
+<p><strong>Registration machinery (in the <code>Bodu.Financial.ExchangeRates.DependencyInjection</code> package)</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderExtensions.html">WebRateProviderExtensions</a> — the shared <code>AddWebRateProvider&lt;TProvider, TOptions&gt;(...)</code> registration machinery (named <code>HttpClient</code> plus Polly resilience) that every provider's <code>Add&lt;Source&gt;...</code> method delegates to, exposed in the same flattened <code>Bodu.Financial.ExchangeRates</code> namespace.</li>
+</ul>
+<p><strong>Bank of England (GBP base; daily spot, CSV export)</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.BoeRateProvider.html">BoeRateProvider</a> — the provider; warm it with <code>LoadRangeAsync</code>, then resolve through the dated or timeless surface. Registered with <code>AddBoeExchangeRates</code>.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.BoeRateProviderOptions.html">BoeRateProviderOptions</a>, <a class="xref" href="Bodu.Financial.ExchangeRates.BoeEndpointOptions.html">BoeEndpointOptions</a> — the endpoint, HTTP, on-demand-access, and on-disk response-cache configuration, and the series-to-endpoint map.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.BoeSeriesInfo.html">BoeSeriesInfo</a> — a discovered currency series, surfaced by <code>GetAvailablePairs</code>.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.IByteCache-1.html">IByteCache&lt;TKey&gt;</a>, <a class="xref" href="Bodu.Financial.ExchangeRates.FileSystemBoeResponseCache.html">FileSystemBoeResponseCache</a> — the shared raw-byte cache seam and its on-disk Bank of England implementation.</li>
+</ul>
+<p><strong>European Central Bank (EUR base; <code>eurofxref</code> XML feed)</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.EcbRateProvider.html">EcbRateProvider</a> — the provider; warm it with <code>LoadRangeAsync</code>. Registered with <code>AddEcbExchangeRates</code>.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.EcbRateProviderOptions.html">EcbRateProviderOptions</a>, <a class="xref" href="Bodu.Financial.ExchangeRates.EcbRateFeed.html">EcbRateFeed</a> — the options (endpoint, HTTP, on-demand access, on-disk feed cache) and the <code>eurofxref</code> feed variant a load fetches.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.EcbSeriesInfo.html">EcbSeriesInfo</a> — a discovered currency series, surfaced by <code>GetAvailablePairs</code>.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.IByteCache-1.html">IByteCache&lt;TKey&gt;</a>, <a class="xref" href="Bodu.Financial.ExchangeRates.FileSystemEcbFeedCache.html">FileSystemEcbFeedCache</a> — the shared raw-byte cache seam and its on-disk <code>eurofxref</code> feed implementation.</li>
+</ul>
+<p><strong>Reserve Bank of Australia (AUD base; published <code>.xls</code> workbooks, split into eras)</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.RbaRateProvider.html">RbaRateProvider</a> — the provider; warm it with <code>PreloadAsync</code>, <code>LoadEraAsync</code>, or <code>LoadRangeAsync</code>. Registered with <code>AddRbaExchangeRates</code>.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.RbaRateProviderOptions.html">RbaRateProviderOptions</a>, <a class="xref" href="Bodu.Financial.ExchangeRates.RbaEraWorkbook.html">RbaEraWorkbook</a> — the options (base URL, era list, HTTP, on-demand access, on-disk workbook cache) and one published workbook era.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.RbaSeriesInfo.html">RbaSeriesInfo</a> — a discovered currency series, surfaced by <code>GetAvailablePairs</code>.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.IByteCache-1.html">IByteCache&lt;TKey&gt;</a>, <a class="xref" href="Bodu.Financial.ExchangeRates.FileSystemRbaWorkbookCache.html">FileSystemRbaWorkbookCache</a> — the shared raw-byte cache seam and its on-disk workbook implementation.</li>
+</ul>
+<p><strong>Yahoo Finance (arbitrary pairs; chart per ticker)</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.YahooRateProvider.html">YahooRateProvider</a> — the provider; warm a pair with <code>LoadPairAsync</code>. Registered with <code>AddYahooExchangeRates</code>.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.YahooRateProviderOptions.html">YahooRateProviderOptions</a> — the endpoint, HTTP, user-agent, and on-demand-access configuration.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.YahooSeriesInfo.html">YahooSeriesInfo</a> — a discovered pair and its ticker symbol, surfaced by <code>GetAvailablePairs</code>.</li>
+</ul>
+<p><strong>OFX (arbitrary pairs; spot-rate-history JSON service)</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.OfxRateProvider.html">OfxRateProvider</a> — the provider built on the shared <code>PairWebRateProvider&lt;TSeries&gt;</code> base; warm a pair with <code>LoadPairAsync</code>. Registered with <code>AddOfxExchangeRates</code>.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.OfxRateProviderOptions.html">OfxRateProviderOptions</a> — the endpoint, reporting interval, decimal precision, HTTP timeout, and user agent.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.OfxSeriesInfo.html">OfxSeriesInfo</a> — a discovered pair and its quote-currency ISO code, surfaced by <code>GetAvailablePairs</code>.</li>
+</ul>
+<p><strong>XE.com (arbitrary pairs; charting-rates JSON service)</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.XeRateProvider.html">XeRateProvider</a> — the provider built on the shared <code>PairWebRateProvider&lt;TSeries&gt;</code> base; warm a pair with <code>LoadPairAsync</code>. Registered with <code>AddXeExchangeRates</code>.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.XeRateProviderOptions.html">XeRateProviderOptions</a> — the endpoint, HTTP, and token-acquisition configuration.</li>
+<li><code>IXeAuthTokenProvider</code>, <code>XeScrapingAuthTokenProvider</code> (internal) — the authorization-token seam and the default implementation that acquires XE's <code>Basic</code> credential automatically.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.XeSeriesInfo.html">XeSeriesInfo</a> — a discovered pair, surfaced by <code>GetAvailablePairs</code>.</li>
+</ul>
+<p><strong>OANDA (arbitrary pairs; anonymous rolling ~180-day history window)</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.OandaRateProvider.html">OandaRateProvider</a> — the provider built on the shared <code>PairWebRateProvider&lt;TSeries&gt;</code> base; advertises its rolling window through <code>WebRateProvider.HistoryAvailability</code>. Registered with <code>AddOandaExchangeRates</code>.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.OandaRateProviderOptions.html">OandaRateProviderOptions</a> — the Historical Currency Converter endpoint, HTTP, and window configuration.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.OandaSeriesInfo.html">OandaSeriesInfo</a> — a discovered pair, surfaced by <code>GetAvailablePairs</code>.</li>
+</ul>
+<p><strong>Fixer (fixer.io; arbitrary pairs; time-series / single-date JSON, API key)</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.FixerRateProvider.html">FixerRateProvider</a> — the provider built on the shared <code>PairWebRateProvider&lt;TSeries&gt;</code> base; warm a pair with <code>LoadPairAsync</code>. Registered with <code>AddFixerExchangeRates</code>.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.FixerRateProviderOptions.html">FixerRateProviderOptions</a> — the endpoint, <code>ApiKey</code> (<code>access_key</code>), time-series/single-date paths, HTTP, and on-demand-access configuration.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.FixerSeriesInfo.html">FixerSeriesInfo</a> — a discovered pair with its base and quote currencies, surfaced by <code>GetAvailablePairs</code>.</li>
+</ul>
+<p><strong>exchangerate.host (arbitrary pairs; time-series / single-date JSON, API key)</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRateHostRateProvider.html">ExchangeRateHostRateProvider</a> — the provider built on the shared <code>PairWebRateProvider&lt;TSeries&gt;</code> base; warm a pair with <code>LoadPairAsync</code>. Registered with <code>AddExchangeRateHostExchangeRates</code>.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRateHostRateProviderOptions.html">ExchangeRateHostRateProviderOptions</a> — the endpoint, <code>ApiKey</code> (<code>access_key</code>), source/currencies paths, HTTP, and on-demand-access configuration.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRateHostSeriesInfo.html">ExchangeRateHostSeriesInfo</a> — a discovered pair with its source and quote currencies, surfaced by <code>GetAvailablePairs</code>.</li>
+</ul>
+<p><strong>FRED (St. Louis Fed; mapped pairs; <code>series/observations</code> JSON, API key)</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.FredRateProvider.html">FredRateProvider</a> — the provider built on the shared <code>PairWebRateProvider&lt;TSeries&gt;</code> base; warm a pair with <code>LoadPairAsync</code>. Registered with <code>AddFredExchangeRates</code>.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.FredRateProviderOptions.html">FredRateProviderOptions</a> — the endpoint, <code>ApiKey</code> (<code>api_key</code>), and the <code>SeriesMap</code> mapping each pair to a FRED <code>series_id</code> (built-in map for the major USD pairs).</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.FredSeriesInfo.html">FredSeriesInfo</a> — a discovered pair and its FRED series identifier, surfaced by <code>GetAvailablePairs</code>.</li>
+</ul>
+<p><strong>IMF (base USD; monthly Representative Exchange Rates TSV report; keyless, daily)</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.ImfRateProvider.html">ImfRateProvider</a> — the single-base (USD) provider built on the shared <code>WebRateProvider</code> base; warm the store with <code>LoadRangeAsync</code>. Registered with <code>AddImfExchangeRates</code>.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.ImfRateProviderOptions.html">ImfRateProviderOptions</a> — the report endpoint (<code>ReportPath</code>/<code>ReportType</code>), the on-disk month cache settings, and the <code>CurrencyNames</code> map from IMF currency label to ISO 4217 code.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.ImfSeriesInfo.html">ImfSeriesInfo</a> — a discovered currency series (always quoted against USD), surfaced by <code>GetAvailablePairs</code>.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.ImfReportMonth.html">ImfReportMonth</a> — one calendar month of the Representative Exchange Rates report, the download unit the provider fetches and caches.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.IImfReportCache.html">IImfReportCache</a>, <a class="xref" href="Bodu.Financial.ExchangeRates.FileSystemImfReportCache.html">FileSystemImfReportCache</a>, <a class="xref" href="Bodu.Financial.ExchangeRates.NullImfReportCache.html">NullImfReportCache</a> — the raw-report cache seam, its on-disk implementation, and the no-op cache used when on-disk caching is disabled.</li>
+</ul>
+<h2 id="minimal-sample">Minimal sample</h2>
+<pre><code class="lang-csharp">using Bodu.Financial;
+using Bodu.Financial.ExchangeRates;
+
+using var ecb = new EcbRateProvider(new EcbRateProviderOptions());
+await ecb.LoadRangeAsync(new DateOnly(2023, 1, 1), new DateOnly(2023, 12, 31));
+
+RateLookupResult usd = ecb.GetRate(&quot;EUR&quot;, &quot;USD&quot;, new DateOnly(2023, 1, 3));
+</code></pre>
+<p>To register a provider in the container, add <code>using Bodu.Financial.ExchangeRates;</code> and call the source's <code>Add&lt;Source&gt;...</code> method — for example <code>services.AddEcbExchangeRates();</code>. See the <a href="../guides/financial/exchange-rate-providers.html">providers guide</a> for construction, warming, dependency injection, and composing with the <a href="../guides/financial/exchange-rate-caching.html">caching and aggregating</a> layer.</p>
+</div>
+  <div class="markdown level0 remarks"></div>
+    <h3 id="classes">
+Classes
+</h3>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.BoeEndpointOptions.html">BoeEndpointOptions</a></h4>
+      <section><p>Configures the provider's connection to the Bank of England Interactive Statistical Database (IADB): where the CSV
+query endpoint lives and how the HTTP requests that drive it are shaped.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.BoeFinancialServiceBuilderExtensions.html">BoeFinancialServiceBuilderExtensions</a></h4>
+      <section><p>Provides the fluent registration of the Bank of England exchange-rate provider onto an
+<a class="xref" href="Bodu.Financial.IFinancialServiceBuilder.html">IFinancialServiceBuilder</a>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.BoeRateProvider.html">BoeRateProvider</a></h4>
+      <section><p>Serves Bank of England daily spot rates as <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.html">ExchangeRate</a> values, implementing the Bodu.Financial
+provider contracts over data queried from the Bank's Interactive Statistical Database (IADB) CSV endpoint.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.BoeRateProviderOptions.html">BoeRateProviderOptions</a></h4>
+      <section><p>Configures how the <a class="xref" href="Bodu.Financial.ExchangeRates.BoeRateProvider.html">BoeRateProvider</a> downloads, caches, and interprets Bank of England daily spot
+exchange-rate data.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.BoeSeries.html">BoeSeries</a></h4>
+      <section><p>Maps a quote currency to the Bank of England Interactive Statistical Database (IADB) series code that publishes its
+daily spot rate against the pound sterling.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.BoeSeriesInfo.html">BoeSeriesInfo</a></h4>
+      <section><p>Describes one currency series discovered in a Bank of England response: the pair it represents and the IADB metadata
+that identifies it.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.BoeServiceCollectionExtensions.html">BoeServiceCollectionExtensions</a></h4>
+      <section><p>Provides a one-call entry point that registers the core Bodu.Financial services together with the Bank of England
+exchange-rate provider.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.DateRangeCoverage.html">DateRangeCoverage</a></h4>
+      <section><p>Tracks the set of <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a> ranges that have actually been observed, as a sorted list of disjoint
+inclusive intervals that merge on insertion but never bridge a gap.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.DatedRateProviderAdapter.html">DatedRateProviderAdapter</a></h4>
+      <section><p>Adapts an <a class="xref" href="Bodu.Financial.ExchangeRates.IDatedRateProvider.html">IDatedRateProvider</a> to the simpler timeless <a class="xref" href="Bodu.Financial.ExchangeRates.IRateProvider.html">IRateProvider</a> surface by pinning
+a fixed valuation date and lookup options.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.DistributedRateCacheExtensions.html">DistributedRateCacheExtensions</a></h4>
+      <section><p>Provides the fluent registration of a distributed (Redis-capable) exchange-rate cache onto an
+<a class="xref" href="Bodu.Financial.IFinancialServiceBuilder.html">IFinancialServiceBuilder</a>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.EcbEndpointOptions.html">EcbEndpointOptions</a></h4>
+      <section><p>Configures the provider's connection to the European Central Bank's <code>eurofxref</code> endpoints: where the feed files
+are published and how the HTTP requests that fetch them are shaped.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.EcbFinancialServiceBuilderExtensions.html">EcbFinancialServiceBuilderExtensions</a></h4>
+      <section><p>Provides the fluent registration of the ECB euro reference-rate provider onto an
+<a class="xref" href="Bodu.Financial.IFinancialServiceBuilder.html">IFinancialServiceBuilder</a>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.EcbRateFeed.html">EcbRateFeed</a></h4>
+      <section><p>Identifies one of the <code>eurofxref</code> XML files in which the European Central Bank publishes its euro
+foreign-exchange reference rates.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.EcbRateProvider.html">EcbRateProvider</a></h4>
+      <section><p>Serves European Central Bank euro reference rates as <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.html">ExchangeRate</a> values, implementing the
+Bodu.Financial provider contracts over data downloaded from the ECB's published <code>eurofxref</code> XML feeds.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.EcbRateProviderOptions.html">EcbRateProviderOptions</a></h4>
+      <section><p>Configures how the <a class="xref" href="Bodu.Financial.ExchangeRates.EcbRateProvider.html">EcbRateProvider</a> downloads, caches, and interprets ECB euro reference-rate data.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.EcbSeriesInfo.html">EcbSeriesInfo</a></h4>
+      <section><p>Describes one currency series discovered in an ECB feed: the pair it represents and the quote-currency code.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.EcbServiceCollectionExtensions.html">EcbServiceCollectionExtensions</a></h4>
+      <section><p>Provides a one-call entry point that registers the core Bodu.Financial services together with the ECB euro
+reference-rate provider.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRateFormatException.html">ExchangeRateFormatException</a></h4>
+      <section><p>The exception thrown when an upstream exchange-rate feed returns data that cannot be interpreted as exchange-rate
+information — because it is malformed or omits the expected values.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRateHostFinancialServiceBuilderExtensions.html">ExchangeRateHostFinancialServiceBuilderExtensions</a></h4>
+      <section><p>Provides the fluent registration of the exchangerate.host exchange-rate provider onto an
+<a class="xref" href="Bodu.Financial.IFinancialServiceBuilder.html">IFinancialServiceBuilder</a>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRateHostRateProvider.html">ExchangeRateHostRateProvider</a></h4>
+      <section><p>Serves exchangerate.host exchange rates as <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.html">ExchangeRate</a> values, implementing the Bodu.Financial
+provider contracts over the exchangerate.host time-series and historical JSON REST endpoints.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRateHostRateProviderOptions.html">ExchangeRateHostRateProviderOptions</a></h4>
+      <section><p>Configures how the <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRateHostRateProvider.html">ExchangeRateHostRateProvider</a> addresses and interprets the exchangerate.host
+foreign-exchange REST service.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRateHostSeriesInfo.html">ExchangeRateHostSeriesInfo</a></h4>
+      <section><p>Describes one currency series fetched from exchangerate.host: the pair it represents and the source and quote
+currencies the response was denominated in.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRateHostServiceCollectionExtensions.html">ExchangeRateHostServiceCollectionExtensions</a></h4>
+      <section><p>Provides a one-call entry point that registers the core Bodu.Financial services together with the exchangerate.host
+exchange-rate provider.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.FileSystemBoeResponseCache.html">FileSystemBoeResponseCache</a></h4>
+      <section><p>An <a class="xref" href="Bodu.Financial.ExchangeRates.IByteCache-1.html">IByteCache&lt;TKey&gt;</a> that persists downloaded IADB range responses as files in a cache directory,
+keyed by the inclusive date range that produced them.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.FileSystemByteCache-1.html">FileSystemByteCache&lt;TKey&gt;</a></h4>
+      <section><p>Provides a best-effort, file-backed cache of downloaded response bytes keyed by a provider-specific download unit.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.FileSystemEcbFeedCache.html">FileSystemEcbFeedCache</a></h4>
+      <section><p>An <a class="xref" href="Bodu.Financial.ExchangeRates.IByteCache-1.html">IByteCache&lt;TKey&gt;</a> that persists downloaded ECB feeds as files in a cache directory, keyed by the
+feed that produced them.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.FileSystemImfReportCache.html">FileSystemImfReportCache</a></h4>
+      <section><p>An <a class="xref" href="Bodu.Financial.ExchangeRates.IImfReportCache.html">IImfReportCache</a> that persists downloaded IMF monthly reports as files in a cache directory.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.FileSystemRbaWorkbookCache.html">FileSystemRbaWorkbookCache</a></h4>
+      <section><p>An <a class="xref" href="Bodu.Financial.ExchangeRates.IByteCache-1.html">IByteCache&lt;TKey&gt;</a> that persists downloaded RBA workbooks as files in a cache directory, keyed by
+the era workbook that produced them.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.FixedDatedRateProvider.html">FixedDatedRateProvider</a></h4>
+      <section><p>Provides an immutable <a class="xref" href="Bodu.Financial.ExchangeRates.IDatedRateProvider.html">IDatedRateProvider</a> facade over an <a class="xref" href="Bodu.Financial.ExchangeRates.RateBook.html">RateBook</a>, applying an explicit
+provider-priority list to disambiguate pairs that carry observations from more than one publishing source.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.FixedRateTable.html">FixedRateTable</a></h4>
+      <section><p>An <a class="xref" href="Bodu.Financial.ExchangeRates.IRateProvider.html">IRateProvider</a> backed by a fixed dictionary of (from, to) → rate mappings.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.FixerFinancialServiceBuilderExtensions.html">FixerFinancialServiceBuilderExtensions</a></h4>
+      <section><p>Provides the fluent registration of the Fixer exchange-rate provider onto an <a class="xref" href="Bodu.Financial.IFinancialServiceBuilder.html">IFinancialServiceBuilder</a>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.FixerRateProvider.html">FixerRateProvider</a></h4>
+      <section><p>Serves Fixer (<code>fixer.io</code>) exchange rates as <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.html">ExchangeRate</a> values, implementing the Bodu.Financial
+provider contracts over the Fixer time-series and historical JSON REST endpoints.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.FixerRateProviderOptions.html">FixerRateProviderOptions</a></h4>
+      <section><p>Configures how the <a class="xref" href="Bodu.Financial.ExchangeRates.FixerRateProvider.html">FixerRateProvider</a> addresses and interprets the Fixer (<code>fixer.io</code>)
+foreign-exchange REST service.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.FixerSeriesInfo.html">FixerSeriesInfo</a></h4>
+      <section><p>Describes one currency series fetched from Fixer: the pair it represents and the base and quote currencies the
+response was denominated in.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.FixerServiceCollectionExtensions.html">FixerServiceCollectionExtensions</a></h4>
+      <section><p>Provides a one-call entry point that registers the core Bodu.Financial services together with the Fixer
+exchange-rate provider.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.FredFinancialServiceBuilderExtensions.html">FredFinancialServiceBuilderExtensions</a></h4>
+      <section><p>Provides the fluent registration of the FRED exchange-rate provider onto an <a class="xref" href="Bodu.Financial.IFinancialServiceBuilder.html">IFinancialServiceBuilder</a>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.FredRateProvider.html">FredRateProvider</a></h4>
+      <section><p>Serves FRED (Federal Reserve Bank of St. Louis) exchange rates as <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.html">ExchangeRate</a> values, implementing
+the Bodu.Financial provider contracts over the FRED series-observations JSON REST endpoint.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.FredRateProviderOptions.html">FredRateProviderOptions</a></h4>
+      <section><p>Configures how the <a class="xref" href="Bodu.Financial.ExchangeRates.FredRateProvider.html">FredRateProvider</a> addresses and interprets the FRED (Federal Reserve Bank of St.
+Louis) foreign-exchange REST service.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.FredSeriesInfo.html">FredSeriesInfo</a></h4>
+      <section><p>Describes one currency series fetched from FRED: the pair it represents and the FRED series identifier the
+observations were read from.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.FredServiceCollectionExtensions.html">FredServiceCollectionExtensions</a></h4>
+      <section><p>Provides a one-call entry point that registers the core Bodu.Financial services together with the FRED exchange-rate
+provider.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.ImfFinancialServiceBuilderExtensions.html">ImfFinancialServiceBuilderExtensions</a></h4>
+      <section><p>Provides the fluent registration of the IMF exchange-rate provider onto an <a class="xref" href="Bodu.Financial.IFinancialServiceBuilder.html">IFinancialServiceBuilder</a>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.ImfRateProvider.html">ImfRateProvider</a></h4>
+      <section><p>Serves IMF (International Monetary Fund) Representative Exchange Rates as <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.html">ExchangeRate</a> values,
+implementing the Bodu.Financial provider contracts over the IMF's published monthly tab-separated report.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.ImfRateProviderOptions.html">ImfRateProviderOptions</a></h4>
+      <section><p>Configures how the <a class="xref" href="Bodu.Financial.ExchangeRates.ImfRateProvider.html">ImfRateProvider</a> addresses, caches, and interprets the IMF Representative Exchange
+Rates monthly report.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.ImfReportMonth.html">ImfReportMonth</a></h4>
+      <section><p>Identifies a single calendar month of the IMF Representative Exchange Rates report, the download unit the
+<a class="xref" href="Bodu.Financial.ExchangeRates.ImfRateProvider.html">ImfRateProvider</a> fetches and caches.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.ImfSeriesInfo.html">ImfSeriesInfo</a></h4>
+      <section><p>Describes one currency series discovered in an IMF Representative Exchange Rates report: the pair it represents and
+the quote-currency code.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.ImfServiceCollectionExtensions.html">ImfServiceCollectionExtensions</a></h4>
+      <section><p>Provides a one-call entry point that registers the core Bodu.Financial services together with the IMF exchange-rate
+provider.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.NullByteCache-1.html">NullByteCache&lt;TKey&gt;</a></h4>
+      <section><p>An <a class="xref" href="Bodu.Financial.ExchangeRates.IByteCache-1.html">IByteCache&lt;TKey&gt;</a> that stores nothing, used when on-disk caching is disabled.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.NullImfReportCache.html">NullImfReportCache</a></h4>
+      <section><p>An <a class="xref" href="Bodu.Financial.ExchangeRates.IImfReportCache.html">IImfReportCache</a> that stores nothing, used when on-disk caching is disabled.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.OandaFinancialServiceBuilderExtensions.html">OandaFinancialServiceBuilderExtensions</a></h4>
+      <section><p>Provides the fluent registration of the OANDA exchange-rate provider onto an <a class="xref" href="Bodu.Financial.IFinancialServiceBuilder.html">IFinancialServiceBuilder</a>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.OandaRateProvider.html">OandaRateProvider</a></h4>
+      <section><p>Serves OANDA (Historical Currency Converter) exchange rates as <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.html">ExchangeRate</a> values, implementing the
+Bodu.Financial provider contracts over the public OANDA Rates history JSON service.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.OandaRateProviderOptions.html">OandaRateProviderOptions</a></h4>
+      <section><p>Configures how the <a class="xref" href="Bodu.Financial.ExchangeRates.OandaRateProvider.html">OandaRateProvider</a> addresses and interprets the OANDA Historical Currency Converter
+rate-history service.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.OandaSeriesInfo.html">OandaSeriesInfo</a></h4>
+      <section><p>Describes one currency series fetched from OANDA: the pair it represents, the quote-currency code reported for it,
+and the price basis the rates were drawn from.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.OandaServiceCollectionExtensions.html">OandaServiceCollectionExtensions</a></h4>
+      <section><p>Provides a one-call entry point that registers the core Bodu.Financial services together with the OANDA
+exchange-rate provider.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.OfxFinancialServiceBuilderExtensions.html">OfxFinancialServiceBuilderExtensions</a></h4>
+      <section><p>Provides the fluent registration of the OFX exchange-rate provider onto an <a class="xref" href="Bodu.Financial.IFinancialServiceBuilder.html">IFinancialServiceBuilder</a>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.OfxRateProvider.html">OfxRateProvider</a></h4>
+      <section><p>Serves OFX (ofx.com) exchange rates as <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.html">ExchangeRate</a> values, implementing the Bodu.Financial provider
+contracts over the OFX public spot-rate-history JSON REST service.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.OfxRateProviderOptions.html">OfxRateProviderOptions</a></h4>
+      <section><p>Configures how the <a class="xref" href="Bodu.Financial.ExchangeRates.OfxRateProvider.html">OfxRateProvider</a> addresses and interprets the OFX public spot-rate-history REST
+service.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.OfxSeriesInfo.html">OfxSeriesInfo</a></h4>
+      <section><p>Describes one currency series fetched from OFX: the pair it represents and the quote-currency code reported for it.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.OfxServiceCollectionExtensions.html">OfxServiceCollectionExtensions</a></h4>
+      <section><p>Provides a one-call entry point that registers the core Bodu.Financial services together with the OFX exchange-rate
+provider.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.PairRateData-1.html">PairRateData&lt;TSeries&gt;</a></h4>
+      <section><p>Represents the normalized result an <a class="xref" href="Bodu.Financial.ExchangeRates.IPairRateSource-1.html">IPairRateSource&lt;TSeries&gt;</a> produces for one fetch: the resolved
+currency pair, its dated observations, and the source-specific series metadata.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.PairWebRateProvider-1.html">PairWebRateProvider&lt;TSeries&gt;</a></h4>
+      <section><p>Provides the shared machinery for a <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.html">WebRateProvider</a> that fetches one currency pair per request from a
+remote feed — per-pair coverage tracking, single-flight request coalescing, the fetch-and-accumulate orchestration,
+and the diagnostic logging — leaving a derived type to supply only the feed identity and the feed-specific exception
+text. The actual fetch and parse are delegated to an <a class="xref" href="Bodu.Financial.ExchangeRates.IPairRateSource-1.html">IPairRateSource&lt;TSeries&gt;</a>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.RateBook.html">RateBook</a></h4>
+      <section><p>Provides an immutable, read-heavy collection of <a class="xref" href="Bodu.Financial.ExchangeRates.RateSeries.html">RateSeries</a> instances keyed by
+<a class="xref" href="Bodu.Financial.ExchangeRates.RateSeriesKey.html">RateSeriesKey</a> (pair + provider), forming the immutable bridge between mutable build-side types (<a class="xref" href="Bodu.Financial.ExchangeRates.RateTableBuilder.html">RateTableBuilder</a>)
+and dated lookup providers ( <a class="xref" href="Bodu.Financial.ExchangeRates.FixedDatedRateProvider.html">FixedDatedRateProvider</a> and friends).</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.RateCacheWarmupExtensions.html">RateCacheWarmupExtensions</a></h4>
+      <section><p>Provides registration of the startup cache warm-up onto an <a class="xref" href="Bodu.Financial.IFinancialServiceBuilder.html">IFinancialServiceBuilder</a>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.RateCachingExtensions.html">RateCachingExtensions</a></h4>
+      <section><p>Provides fluent registration of caching and aggregating exchange-rate providers onto an
+<a class="xref" href="Bodu.Financial.IFinancialServiceBuilder.html">IFinancialServiceBuilder</a>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.RateLookupOptions.html">RateLookupOptions</a></h4>
+      <section><p>Encapsulates the rules an exchange-rate lookup must apply when an exact-date match is unavailable.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.RateProviderHttpClientFactory.html">RateProviderHttpClientFactory</a></h4>
+      <section><p>Creates and configures the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.net.http.httpclient">HttpClient</a> a web-backed exchange-rate provider owns when the caller does
+not supply one, applying the HTTP contract (user agent and request timeout) the remote endpoint requires.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.RateRangeResult.html">RateRangeResult</a></h4>
+      <section><p>Represents the outcome of a range exchange-rate lookup: the observations that fall within the requested window,
+ordered by date, together with the metadata that describes the request and the span actually covered.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.RateSeries.html">RateSeries</a></h4>
+      <section><p>Stores the ordered set of dated exchange-rate observations for a single provider and currency pair, optimised for
+read-heavy lookup with allocation-free <code>O(log n)</code> resolution under any <a class="xref" href="Bodu.Financial.ExchangeRates.RateDateResolution.html">RateDateResolution</a>
+policy.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.RateSeriesBuilder.html">RateSeriesBuilder</a></h4>
+      <section><p>Provides a mutable construction and editing surface for an <a class="xref" href="Bodu.Financial.ExchangeRates.RateSeries.html">RateSeries</a>, maintaining strictly ascending
+unique observation dates and strictly positive rates while supporting single-observation edits and bulk import.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.RateSeriesNotFoundException.html">RateSeriesNotFoundException</a></h4>
+      <section><p>The exception thrown when a requested currency pair cannot be served because the upstream feed structurally does not
+carry it.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.RateTableBuilder.html">RateTableBuilder</a></h4>
+      <section><p>Provides a mutable collection of <a class="xref" href="Bodu.Financial.ExchangeRates.RateSeriesBuilder.html">RateSeriesBuilder</a> instances keyed by currency pair and provider,
+intended for assembling rate observations across many series before producing immutable snapshots.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.RbaEraWorkbook.html">RbaEraWorkbook</a></h4>
+      <section><p>Identifies one of the date-range files in which the Reserve Bank of Australia publishes its historical daily
+exchange rates.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.RbaFinancialServiceBuilderExtensions.html">RbaFinancialServiceBuilderExtensions</a></h4>
+      <section><p>Provides the fluent registration of the RBA historical exchange-rate provider onto an
+<a class="xref" href="Bodu.Financial.IFinancialServiceBuilder.html">IFinancialServiceBuilder</a>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.RbaRateProvider.html">RbaRateProvider</a></h4>
+      <section><p>Serves Reserve Bank of Australia historical exchange rates as <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.html">ExchangeRate</a> values, implementing the
+Bodu.Financial provider contracts over data downloaded from the RBA's published <code>.xls</code> files.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.RbaRateProviderOptions.html">RbaRateProviderOptions</a></h4>
+      <section><p>Configures how the <a class="xref" href="Bodu.Financial.ExchangeRates.RbaRateProvider.html">RbaRateProvider</a> downloads, caches, and interprets RBA exchange-rate data.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.RbaSeriesInfo.html">RbaSeriesInfo</a></h4>
+      <section><p>Describes one currency series discovered in an RBA workbook: the pair it represents and the RBA metadata that
+identifies it.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.RbaServiceCollectionExtensions.html">RbaServiceCollectionExtensions</a></h4>
+      <section><p>Provides a one-call entry point that registers the core Bodu.Financial services together with the RBA historical
+exchange-rate provider.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.SingleFlightCoordinator-1.html">SingleFlightCoordinator&lt;TKey&gt;</a></h4>
+      <section><p>Coordinates concurrent asynchronous operations keyed by <code class="typeparamref">TKey</code> so that at most one operation
+per key runs at a time, with every concurrent caller for that key awaiting the same shared task.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.SqliteRateCacheExtensions.html">SqliteRateCacheExtensions</a></h4>
+      <section><p>Provides the fluent registration of a SQLite-backed exchange-rate cache onto an
+<a class="xref" href="Bodu.Financial.IFinancialServiceBuilder.html">IFinancialServiceBuilder</a>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.html">WebRateProvider</a></h4>
+      <section><p>Provides the shared machinery for an exchange-rate provider that materializes a remote feed into an in-memory
+<a class="xref" href="Bodu.Financial.ExchangeRates.RateBook.html">RateBook</a> snapshot: it owns the accumulator and the immutable snapshot, implements the full
+synchronous and asynchronous lookup matrix once, and optionally owns the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.net.http.httpclient">HttpClient</a> used to reach the
+feed. Derived types supply only the feed-specific fetch.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderExtensions.html">WebRateProviderExtensions</a></h4>
+      <section><p>Provides the shared registration machinery for web-based exchange-rate providers on an
+<a class="xref" href="Bodu.Financial.IFinancialServiceBuilder.html">IFinancialServiceBuilder</a>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html">WebRateProviderOptions</a></h4>
+      <section><p>Provides the configuration common to every pair-based web exchange-rate source: the endpoint base address, the HTTP
+contract (user agent and timeout), the synchronous-access and look-back behaviour, the currency-alias map, and the
+per-concern diagnostic log levels. A concrete source derives from this type to add its own endpoint members and
+validation.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.XeFinancialServiceBuilderExtensions.html">XeFinancialServiceBuilderExtensions</a></h4>
+      <section><p>Provides the fluent registration of the XE.com exchange-rate provider onto an
+<a class="xref" href="Bodu.Financial.IFinancialServiceBuilder.html">IFinancialServiceBuilder</a>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.XeRateProvider.html">XeRateProvider</a></h4>
+      <section><p>Serves XE.com exchange rates as <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.html">ExchangeRate</a> values, implementing the Bodu.Financial provider
+contracts over the XE charting-rates JSON service.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.XeRateProviderOptions.html">XeRateProviderOptions</a></h4>
+      <section><p>Configures how the <a class="xref" href="Bodu.Financial.ExchangeRates.XeRateProvider.html">XeRateProvider</a> addresses and interprets the XE.com charting-rates JSON service,
+and how it acquires the authorization token that endpoint requires.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.XeSeriesInfo.html">XeSeriesInfo</a></h4>
+      <section><p>Describes one currency series fetched from XE.com: the pair it represents and the quote-currency code reported for
+it.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.XeServiceCollectionExtensions.html">XeServiceCollectionExtensions</a></h4>
+      <section><p>Provides a one-call entry point that registers the core Bodu.Financial services together with the XE.com
+exchange-rate provider.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.YahooFinancialServiceBuilderExtensions.html">YahooFinancialServiceBuilderExtensions</a></h4>
+      <section><p>Provides the fluent registration of the Yahoo Finance exchange-rate provider onto an
+<a class="xref" href="Bodu.Financial.IFinancialServiceBuilder.html">IFinancialServiceBuilder</a>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.YahooRateProvider.html">YahooRateProvider</a></h4>
+      <section><p>Serves Yahoo Finance exchange rates as <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.html">ExchangeRate</a> values, implementing the Bodu.Financial provider
+contracts over the Yahoo Finance <code>v8/finance/chart</code> JSON REST service.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.YahooRateProviderOptions.html">YahooRateProviderOptions</a></h4>
+      <section><p>Configures how the <a class="xref" href="Bodu.Financial.ExchangeRates.YahooRateProvider.html">YahooRateProvider</a> addresses and interprets the Yahoo Finance chart REST service.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.YahooSeriesInfo.html">YahooSeriesInfo</a></h4>
+      <section><p>Describes one currency series fetched from Yahoo Finance: the pair it represents and the ticker that identifies it.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.YahooServiceCollectionExtensions.html">YahooServiceCollectionExtensions</a></h4>
+      <section><p>Provides a one-call entry point that registers the core Bodu.Financial services together with the Yahoo Finance
+exchange-rate provider.</p>
+</section>
+    <h3 id="structs">
+Structs
+</h3>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.CurrencyPair.html">CurrencyPair</a></h4>
+      <section><p>Represents an ordered pair of currencies that identifies the direction of an exchange-rate quotation.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.CurrencyPairRequest.html">CurrencyPairRequest</a></h4>
+      <section><p>Describes a single pair-based fetch request issued to an <code>IPairRateSource&lt;TSeries&gt;</code>: the currency pair to
+load and the inclusive date range to cover.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.html">ExchangeRate</a></h4>
+      <section><p>Represents a single dated foreign-exchange rate observation produced by a named provider.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate-2.html">ExchangeRate&lt;TBase, TQuote&gt;</a></h4>
+      <section><p>Strongly-typed companion to <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.html">ExchangeRate</a> where the base and quote currencies are domain invariants
+encoded as type parameters.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.RateHistoryAvailability.html">RateHistoryAvailability</a></h4>
+      <section><p>Declares how far back in time a provider can serve exchange rates, as one of three shapes: an unbounded archive, a
+rolling window of the most recent days, or a fixed earliest calendar date.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.RateLookupResult.html">RateLookupResult</a></h4>
+      <section><p>Represents the outcome of a successful exchange-rate lookup, carrying both the resolved rate and the metadata that
+describes how it was selected.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.RateObservation.html">RateObservation</a></h4>
+      <section><p>Represents a single observed exchange rate on a specific calendar date for a series.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.RateProvenance.html">RateProvenance</a></h4>
+      <section><p>Captures the lineage of a single served exchange rate: the provider name it is attributed to, whether it was
+resolved directly by a provider or served from a cache, the cache backend that served it, and — for a cache serve —
+the instant the served data was cached together with the derived age at the time of the lookup.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.RateSeriesKey.html">RateSeriesKey</a></h4>
+      <section><p>Identifies a single rate series within an <a class="xref" href="Bodu.Financial.ExchangeRates.RateTableBuilder.html">RateTableBuilder</a> by its currency pair and provider.</p>
+</section>
+    <h3 id="interfaces">
+Interfaces
+</h3>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.IByteCache-1.html">IByteCache&lt;TKey&gt;</a></h4>
+      <section><p>Caches the raw bytes of a downloaded response so an identical download unit need not be re-fetched.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.IDatedRateProvider.html">IDatedRateProvider</a></h4>
+      <section><p>Defines the contract for an exchange-rate provider that resolves dated and latest lookups and returns metadata
+describing how each rate was selected, over symmetric synchronous and asynchronous surfaces.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.IHistoricalRateProvider.html">IHistoricalRateProvider</a></h4>
+      <section><p>Identifies an exchange-rate provider that advertises how far back it can serve historical rates, so composing layers
+can avoid asking it for dates it has declared unavailable.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.IImfReportCache.html">IImfReportCache</a></h4>
+      <section><p>Caches the raw bytes of downloaded IMF monthly report files so they need not be re-fetched on every load.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.IPairRateLoader.html">IPairRateLoader</a></h4>
+      <section><p>Defines the common warm-up and discovery surface shared by every web-backed exchange-rate provider: a caller can
+prime a pair's window and enumerate the pairs currently held without knowing the concrete provider or how its feed
+is organized (per pair, per era, per feed, or per range).</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.IPairRateSource-1.html">IPairRateSource&lt;TSeries&gt;</a></h4>
+      <section><p>Fetches and parses the dated observations for a single currency pair and date range. This is the per-source seam
+between a <a class="xref" href="Bodu.Financial.ExchangeRates.PairWebRateProvider-1.html">PairWebRateProvider&lt;TSeries&gt;</a> and the network: a concrete implementation builds the
+feed-specific request, issues it, and parses the response into a <a class="xref" href="Bodu.Financial.ExchangeRates.PairRateData-1.html">PairRateData&lt;TSeries&gt;</a>, while tests
+substitute a fixture-backed implementation.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.IRateProvider.html">IRateProvider</a></h4>
+      <section><p>Source of foreign-exchange rates used to convert between currencies.</p>
+</section>
+    <h3 id="enums">
+Enums
+</h3>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.RateDateResolution.html">RateDateResolution</a></h4>
+      <section><p>Describes how an exchange-rate lookup should resolve a requested date when an exact match is unavailable.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.RateHistoryAvailabilityKind.html">RateHistoryAvailabilityKind</a></h4>
+      <section><p>Identifies how an <a class="xref" href="Bodu.Financial.ExchangeRates.RateHistoryAvailability.html">RateHistoryAvailability</a> bounds the earliest date for which a provider can serve
+rates.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.RateOrigin.html">RateOrigin</a></h4>
+      <section><p>Identifies where a served exchange rate was resolved from, distinguishing a value produced directly by a provider
+from one served out of a cache.</p>
+</section>
+
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

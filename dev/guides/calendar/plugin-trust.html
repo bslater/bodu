@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Calendar plugin trust | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Calendar plugin trust | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="calendar-plugin-trust">Calendar plugin trust</h1>
+
+<p><code>Bodu.Globalization.Calendar.Plugins</code> loads external assemblies that contribute custom <a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithm.html">INotableDateAlgorithm</a> implementations. Loading a plugin executes third-party code inside your process, so every load runs through an explicit, deny-by-default trust gate. This page states precisely what that gate validates, what each bundled policy does and does not guarantee, and where the security boundary actually sits.</p>
+<h2 id="the-security-boundary-stated-plainly">The security boundary, stated plainly</h2>
+<p>The trust gate is an <strong>admission check, not a sandbox</strong>. It answers one question — <em>should this assembly be allowed to run?</em> — before any plugin code executes. Once admitted, a plugin runs with the <strong>full trust of your process</strong>: it can use the file system, the network, reflection, and every capability your application has. There is no capability restriction, no resource limit, and no isolation of failures beyond what the loader itself guards (activation and registration faults surface as typed exceptions rather than crashing the host).</p>
+<p>Consequences:</p>
+<ul>
+<li>Only load plugins whose <em>publisher</em> you trust. The gate verifies <em>which bytes</em> run, not <em>what they do</em>.</li>
+<li>The strongest guarantee available is byte-level integrity pinning via <a class="xref" href="../../api/Bodu.Globalization.Calendar.Plugins.FileHashPluginTrustPolicy.html">FileHashPluginTrustPolicy</a> — combine it with provenance controls (where the file came from) rather than treating any policy as a substitute for them.</li>
+<li>For trimmed/AOT deployments the loader is annotated <code>[RequiresUnreferencedCode]</code> / <code>[RequiresDynamicCode]</code>: runtime plugin loading is inherently incompatible with native AOT, and the data-driven rule-pack path is the alternative.</li>
+</ul>
+<h2 id="what-the-gate-evaluates">What the gate evaluates</h2>
+<p><a class="xref" href="../../api/Bodu.Globalization.Calendar.Plugins.NotableDatePluginLoader.html">NotableDatePluginLoader</a> builds a <a class="xref" href="../../api/Bodu.Globalization.Calendar.Plugins.PluginTrustContext.html">PluginTrustContext</a> — assembly name, file path, SHA-256 hash, and strong-name public-key token — and passes it to your <a class="xref" href="../../api/Bodu.Globalization.Calendar.Plugins.IPluginTrustPolicy.html">IPluginTrustPolicy</a> <strong>before</strong> the plugin's entry-point type is activated. A rejected assembly's constructor never runs.</p>
+<p>The two load entry points offer different strengths:</p>
+<table>
+<thead>
+<tr>
+<th>Entry point</th>
+<th>Guarantee</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>LoadFrom(string assemblyPath, …)</code> / <code>LoadFromFile(string assemblyPath, …)</code></td>
+<td><strong>Strong.</strong> The file is read once; the hash the policy verifies is the digest of the exact bytes that are loaded (no time-of-check/time-of-use gap), and the assembly loads into a dedicated collectible <code>AssemblyLoadContext</code> whose dependencies resolve from the plugin's own directory. <code>LoadFromFile</code> additionally returns a disposable <a class="xref" href="../../api/Bodu.Globalization.Calendar.Plugins.NotableDatePluginHandle.html">NotableDatePluginHandle</a> that owns the context, so the plugin can later be unloaded.</td>
+</tr>
+<tr>
+<td><code>LoadFrom(Assembly, …)</code></td>
+<td><strong>Weak — trusted input only.</strong> The assembly is <em>already loaded</em> when the policy runs: module initializers may already have executed, and the hash is re-read from disk, which does not close the swap window. Use it only for assemblies you already trust for other reasons (for example, ones you compiled).</td>
+</tr>
+</tbody>
+</table>
+<h2 id="the-bundled-policies">The bundled policies</h2>
+<table>
+<thead>
+<tr>
+<th>Policy</th>
+<th>Validates</th>
+<th>Guarantee</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.Plugins.FileHashPluginTrustPolicy.html">FileHashPluginTrustPolicy</a></td>
+<td>The SHA-256 digest of the loaded bytes against a pinned allow-list (constant-time comparison).</td>
+<td><strong>Integrity.</strong> The strongest bundled policy: the exact reviewed bytes, or nothing. Re-pinning is required on every legitimate update.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.Plugins.StrongNamePluginTrustPolicy.html">StrongNamePluginTrustPolicy</a></td>
+<td>The assembly's <em>declared</em> strong-name public-key token against an allow-list.</td>
+<td><strong>Identity claim only.</strong> .NET (Core) does not verify strong-name signatures at load time, and a token is plain metadata an attacker can copy into a hostile assembly. Treat it as a labelling convention — useful for routing and defense in depth, <strong>never sufficient alone</strong> for untrusted input. Combine it with the file-hash policy.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.Plugins.CompositePluginTrustPolicy.html">CompositePluginTrustPolicy</a></td>
+<td>All constituent policies (AND).</td>
+<td>Fails closed: an empty composite trusts nothing, and every constituent must approve.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.Plugins.DelegatingPluginTrustPolicy.html">DelegatingPluginTrustPolicy</a></td>
+<td>Whatever your delegate decides.</td>
+<td>As strong as your delegate.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.Plugins.AllowAllPluginTrustPolicy.html">AllowAllPluginTrustPolicy</a></td>
+<td>Nothing.</td>
+<td><strong>Development and tests only.</strong></td>
+</tr>
+</tbody>
+</table>
+<p>A production-grade gate for third-party plugins:</p>
+<pre><code class="lang-csharp">IPluginTrustPolicy trust = new CompositePluginTrustPolicy(
+[
+    new StrongNamePluginTrustPolicy([&quot;c0ffee1234567890&quot;]),          // publisher labelling
+    new FileHashPluginTrustPolicy(new Dictionary&lt;string, byte[]&gt;    // byte-level integrity
+    {
+        [&quot;Contoso.Holidays&quot;] = reviewedDigest,
+    }),
+]);
+
+using NotableDatePluginHandle handle = NotableDatePluginLoader.LoadFromFile(&quot;plugins/Contoso.Holidays.dll&quot;, trust);
+</code></pre>
+<h2 id="after-admission-registration-is-also-gated">After admission: registration is also gated</h2>
+<p><a class="xref" href="../../api/Bodu.Globalization.Calendar.Plugins.NotableDatePluginLoader.html">NotableDatePluginLoader</a>.<code>RegisterAlgorithms</code> treats the plugin's contribution as untrusted:</p>
+<ul>
+<li>Registration is <strong>atomic</strong> — the contribution is fully staged and validated before the shared registry is touched, so a faulting or malformed plugin never leaves it partially mutated.</li>
+<li>A contributed key that collides with a <strong>built-in algorithm key or an existing registration is rejected by default</strong>, so a plugin cannot silently take over an existing resolution path. Overriding is an explicit opt-in via <a class="xref" href="../../api/Bodu.Globalization.Calendar.Plugins.PluginAlgorithmRegistrationOptions.html">PluginAlgorithmRegistrationOptions</a>.<code>AllowOverride</code>, and each replacement is logged at warning level.</li>
+</ul>
+<h2 id="unloading">Unloading</h2>
+<p>Disposing the <a class="xref" href="../../api/Bodu.Globalization.Calendar.Plugins.NotableDatePluginHandle.html">NotableDatePluginHandle</a> initiates the unload of the plugin's collectible load context. The runtime reclaims it only once nothing references the plugin's types — a registry still holding the plugin's algorithms, or a service over that registry, keeps the context alive, so tear consumers down before or promptly after disposing the handle.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="building-the-service.html">Building and extending the service</a> — wiring a plugin-populated registry into the loader and the service.</li>
+<li><a href="algorithms.html">Date calculation algorithms</a> — the <code>&lt;Algorithm key=&quot;…&quot;&gt;</code> rules a plugin's algorithms back.</li>
+<li><a class="xref" href="../../api/Bodu.Globalization.Calendar.Plugins.html"><code>Bodu.Globalization.Calendar.Plugins</code> API reference</a> — the full type list.</li>
+<li><strong><a href="../topics/globalization-and-calendars.html">Globalization &amp; Calendars guides</a></strong> — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

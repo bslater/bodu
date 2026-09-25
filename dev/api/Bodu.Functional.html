@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Namespace Bodu.Functional | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Namespace Bodu.Functional | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Functional">
+
+  <h1 id="Bodu_Functional" data-uid="Bodu.Functional" class="text-break">Namespace Bodu.Functional</h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual">
+<p><img src="../images/hero-core.svg" alt="Bodu.Functional"></p>
+<h2 id="purpose">Purpose</h2>
+<p><strong>Bodu.Functional</strong> holds the functional-style building blocks of <code>Bodu.Core</code>: the <a class="xref" href="Bodu.Functional.Memoizer.html">Memoizer</a> caching factory and the railway-oriented outcome primitives — <a class="xref" href="Bodu.Functional.Option-1.html">Option&lt;T&gt;</a> (a value that may be absent), <a class="xref" href="Bodu.Functional.Result.html">Result</a> / <a class="xref" href="Bodu.Functional.Result-1.html">Result&lt;T&gt;</a> with <a class="xref" href="Bodu.Functional.ResultError.html">ResultError</a> (success-or-described-failure), and <a class="xref" href="Bodu.Functional.Either-2.html">Either&lt;TLeft, TRight&gt;</a> (a symmetric disjoint union). The outcome types are <code>readonly struct</code>s that compose through <code>Map</code> / <code>Bind</code> / <code>Match</code> chains, with Task-based async companions.</p>
+<p>Three contracts define the family: present values are never <code>null</code> (the strict factories throw; the lenient lifts map <code>null</code> to absence), each type documents its <code>default</code> (<code>Option</code> defaults to <code>None</code>, the <code>Result</code> pair to a failure with an empty error, <code>Either</code> to an explicit uninitialized state whose side-requiring operations throw), and only <code>Result&lt;T&gt;</code> is railway-biased — <code>Either</code> deliberately exposes <code>MapLeft</code> / <code>MapRight</code> rather than an unqualified <code>Map</code>.</p>
+<h2 id="static-documentation">Static documentation</h2>
+<ul>
+<li><strong><a href="../docs/core/index.html">Introduction</a></strong> — where the functional types sit in the wider <code>Bodu.Core</code> surface.</li>
+<li><strong><a href="../guides/core/functional-results.html">Options, results, and eithers</a></strong> — the railway patterns, the null and <code>default</code> contracts, type bridges, and async composition.</li>
+<li><strong><a href="../guides/core/memoization.html">Memoization</a></strong> — wrapping a pure function, the comparer overload, multi-argument keys, and the thread-safety and unbounded-cache caveats.</li>
+</ul>
+<h2 id="key-types">Key types</h2>
+<ul>
+<li><a class="xref" href="Bodu.Functional.Option-1.html">Option&lt;T&gt;</a> — <code>Some</code> / <code>None</code> with <code>Map</code>, <code>Bind</code>, <code>Filter</code>, <code>Match</code>, the <code>GetValueOrDefault</code> family, and <code>ToResult</code>; the non-generic <a class="xref" href="Bodu.Functional.Option.html">Option</a> companion adds inference-friendly factories and <code>FromNullable</code>.</li>
+<li><a class="xref" href="Bodu.Functional.Result-1.html">Result&lt;T&gt;</a> / <a class="xref" href="Bodu.Functional.Result.html">Result</a> — the success/failure rail: <code>Map</code>, <code>Bind</code>, <code>MapError</code>, <code>Tap</code> / <code>TapError</code>, <code>Match</code>, <code>GetValueOrThrow</code>, <code>ToOption</code>; factories live on the non-generic <code>Result</code>.</li>
+<li><a class="xref" href="Bodu.Functional.ResultError.html">ResultError</a> — the failure descriptor: optional <code>Code</code>, never-null <code>Message</code>, optional captured <code>Exception</code> (attached as <code>InnerException</code> by <code>GetValueOrThrow</code>, never rethrown directly).</li>
+<li><a class="xref" href="Bodu.Functional.Either-2.html">Either&lt;TLeft, TRight&gt;</a> — <code>Left</code> / <code>Right</code> with <code>TryGetLeft</code> / <code>TryGetRight</code>, <code>Match</code>, <code>MapLeft</code> / <code>MapRight</code>, and <code>Swap</code>.</li>
+<li><a class="xref" href="Bodu.Functional.OptionAsyncExtensions.html">OptionAsyncExtensions</a> / <a class="xref" href="Bodu.Functional.ResultAsyncExtensions.html">ResultAsyncExtensions</a> — Task-based <code>MapAsync</code> / <code>BindAsync</code> / <code>MatchAsync</code> (plus <code>TapAsync</code> / <code>TapErrorAsync</code>) over both task and sync sources.</li>
+<li><a class="xref" href="Bodu.Functional.Memoizer.html">Memoizer</a> — wraps a pure function with a thread-safe unbounded cache (single- and two-argument overloads, optional key comparer).</li>
+</ul>
+<h2 id="example">Example</h2>
+<pre><code class="lang-csharp">using Bodu.Functional;
+
+Result&lt;Order&gt; ParseOrder(string json) =&gt;
+    TryParse(json, out var order)
+        ? Result.Success(order)
+        : Result.Failure&lt;Order&gt;(ResultError.FromMessage(&quot;The payload is not a valid order.&quot;, code: &quot;ORD001&quot;));
+
+var confirmation = ParseOrder(payload)
+    .Bind(Validate)
+    .Map(o =&gt; o.ConfirmationNumber)
+    .TapError(e =&gt; log.Warn(e.Message))
+    .GetValueOrDefault(&quot;(none)&quot;);
+</code></pre>
+<h2 id="notes">Notes</h2>
+<ul>
+<li><strong>Absence is typed, never null.</strong> <code>Option&lt;T&gt;.Some</code>, <code>Result.Success&lt;T&gt;</code>, and the <code>Either</code> factories reject <code>null</code> with <code>ArgumentNullException</code>; the implicit <code>T</code> → <code>Option&lt;T&gt;</code> conversion and <code>Option.FromNullable</code> are the lenient lifts that map <code>null</code> to <code>None</code>.</li>
+<li><strong>Totality by documented <code>default</code>.</strong> <code>default(Option&lt;T&gt;)</code> is <code>None</code> and <code>default(Result&lt;T&gt;)</code> is a failure carrying an empty <code>ResultError</code>, so fields and array elements are safe uninitialized. <code>default(Either&lt;,&gt;)</code> is the deliberate exception: with no privileged side, it throws from side-requiring operations (the <code>ImmutableArray&lt;T&gt;.IsDefault</code> precedent).</li>
+<li><strong>Async combinators take no <code>CancellationToken</code>.</strong> They perform no I/O of their own; cancellation belongs inside the caller's delegates. Guards throw synchronously and every await uses <code>ConfigureAwait(false)</code>.</li>
+<li><strong>Memoizer caveats.</strong> Only successful results are cached, the cache is unbounded, and argument types are <code>notnull</code> — see the guide for details; reach for <a class="xref" href="Bodu.Collections.Generic.EvictingDictionary-2.html">EvictingDictionary&lt;TKey, TValue&gt;</a> when eviction is needed.</li>
+</ul>
+</div>
+  <div class="markdown level0 remarks"></div>
+    <h3 id="classes">
+Classes
+</h3>
+      <h4><a class="xref" href="Bodu.Functional.EitherAsyncExtensions.html">EitherAsyncExtensions</a></h4>
+      <section><p>Provides Task-based asynchronous companions to the <a class="xref" href="Bodu.Functional.Either-2.html">Either&lt;TLeft, TRight&gt;</a> combinators.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Functional.Memoizer.html">Memoizer</a></h4>
+      <section><p>Provides factory methods that wrap a function with a thread-safe cache, so each distinct argument is computed at
+most once and subsequent calls return the stored result.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Functional.Option.html">Option</a></h4>
+      <section><p>Provides factory methods for creating <a class="xref" href="Bodu.Functional.Option-1.html">Option&lt;T&gt;</a> values with type inference at the call site.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Functional.OptionAsyncExtensions.html">OptionAsyncExtensions</a></h4>
+      <section><p>Provides Task-based asynchronous companions to the <a class="xref" href="Bodu.Functional.Option-1.html">Option&lt;T&gt;</a> railway combinators.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Functional.ResultAsyncExtensions.html">ResultAsyncExtensions</a></h4>
+      <section><p>Provides Task-based asynchronous companions to the <a class="xref" href="Bodu.Functional.Result-1.html">Result&lt;T&gt;</a> and non-generic <a class="xref" href="Bodu.Functional.Result.html">Result</a>
+railway combinators.</p>
+</section>
+    <h3 id="structs">
+Structs
+</h3>
+      <h4><a class="xref" href="Bodu.Functional.Either-2.html">Either&lt;TLeft, TRight&gt;</a></h4>
+      <section><p>Represents a disjoint union of two possibilities: either <code>Left(value)</code> carrying a non-<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>
+value of type <code class="typeparamref">TLeft</code>, or <code>Right(value)</code> carrying a non-<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> value of
+type <code class="typeparamref">TRight</code>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Functional.Option-1.html">Option&lt;T&gt;</a></h4>
+      <section><p>Represents an optional value: either <code>Some(value)</code> carrying a non-<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> value of type
+<code class="typeparamref">T</code>, or <code>None</code> carrying nothing.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Functional.Result.html">Result</a></h4>
+      <section><p>Represents the outcome of an operation that produces no value: either <code>Success</code>, or <code>Failure(error)</code>
+carrying a <a class="xref" href="Bodu.Functional.ResultError.html">ResultError</a>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Functional.ResultError.html">ResultError</a></h4>
+      <section><p>Represents the error carried by a failed <a class="xref" href="Bodu.Functional.Result.html">Result</a> or <a class="xref" href="Bodu.Functional.Result-1.html">Result&lt;T&gt;</a>: a human-readable
+message, an optional machine-readable code, and an optional originating exception.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Functional.Result-1.html">Result&lt;T&gt;</a></h4>
+      <section><p>Represents the outcome of an operation that produces a value: either <code>Success(value)</code> carrying a non-<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>
+value of type <code class="typeparamref">T</code>, or <code>Failure(error)</code> carrying a <a class="xref" href="Bodu.Functional.ResultError.html">ResultError</a>.</p>
+</section>
+
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

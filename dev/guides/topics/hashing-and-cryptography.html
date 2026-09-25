@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Hashing &amp; Cryptography — Guides | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Hashing &amp; Cryptography — Guides | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="hashing--cryptography--guides">Hashing &amp; Cryptography — Guides</h1>
+
+<p>Recipe-style walk-throughs for the <strong>Hashing &amp; Cryptography</strong> topic — <code>Bodu.IO.Hashing</code> (non-cryptographic fingerprints, checksums, and check digits) and <code>Bodu.Security.Cryptography</code> (ciphers, AEAD, MACs, digests, and KDFs with a formal adversary model).</p>
+<p>The two libraries answer different questions, and picking the wrong one is the most common mistake in this topic. If you have not already, read the <a href="../../docs/topics/hashing-and-cryptography.html">topic overview</a> for the decision rule — <em>can an attacker choose or tamper with the input, or does anything secret ride on the result?</em> — and the <a href="../../docs/topics/hashing-and-cryptography-concepts.html">topic concepts page</a> for the full taxonomy.</p>
+<h2 id="boduiohashing-guides">Bodu.IO.Hashing guides</h2>
+<p>Fast, portable, <em>non-adversarial</em> hashing on the BCL <code>NonCryptographicHashAlgorithm</code> contract.</p>
+<div class="bodu-cards">
+<div class="bodu-card">
+  <h3><a href="../io-hashing/index.html">Overview</a></h3>
+  <p>The full guide index for <code>Bodu.IO.Hashing</code> — namespace map across fingerprints, checksums, and check digits, and which guide covers each algorithm.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="../io-hashing/crc.html">Using CRC</a></h3>
+  <p>One engine, 112 named standards from the RevEng catalogue — <code>CrcStandard</code> selection, custom parameter sets, the shared lookup-table cache, and resumable hashing.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="../io-hashing/fnv.html">Using FNV</a></h3>
+  <p>FNV-1 and FNV-1a at 32 and 64 bits — the textbook constant-memory fingerprint and the default when in doubt.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="../io-hashing/murmurhash3.html">Using MurmurHash3</a></h3>
+  <p><code>MurmurHash3_32</code> and <code>MurmurHash3_128</code> — seeded, excellent avalanche, widely used in databases and distributed systems.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="../io-hashing/check-digits.html">Check digits overview</a></h3>
+  <p>Luhn, Damm, Verhoeff, EAN, GTIN, ISIN, IBAN, ISBN, SEDOL, CUSIP, ABA, LEI — compute-vs-validate surfaces for human-typed identifiers.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="../io-hashing/fletcher.html">Using Fletcher</a></h3>
+  <p>Twin-accumulator checksums in 16, 32, and 64 bits — catches the transpositions a simple sum or XOR misses.</p>
+</div>
+</div>
+<h2 id="bodusecuritycryptography-guides">Bodu.Security.Cryptography guides</h2>
+<p>Primitives with a formal adversary model, on the BCL <code>SymmetricAlgorithm</code> / <code>HashAlgorithm</code> contracts.</p>
+<div class="bodu-cards">
+<div class="bodu-card">
+  <h3><a href="../cryptography/index.html">Overview</a></h3>
+  <p>The full guide index for <code>Bodu.Security.Cryptography</code> — foundations, standard / tweakable / stream ciphers, AEAD, hashes, MACs, and the ASCON family.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="../cryptography/encryption-basics.html">Encryption basics</a></h3>
+  <p>Key, IV, Tweak, BlockMode, Padding — the mental model every cipher in the library follows, plus key generation and safe disposal.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="../cryptography/aead-modes.html">AEAD modes</a></h3>
+  <p>GCM, CCM, OCB, EAX, SIV, GCM-SIV — authenticated encryption with associated data using <code>AesBlockCipher</code> plus a mode transform.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="../cryptography/hashing.html">Hashing overview</a></h3>
+  <p>Cross-cutting overview of keyed hashes (SipHash, Poly1305), cryptographic digests (Tiger, CubeHash, Snefru), and Merkle trees.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="../cryptography/merkle-trees.html">Merkle trees and proofs</a></h3>
+  <p>The RFC 6962 tree over any inner <code>HashAlgorithm</code> — roots over entries, blocks, or a write-time accumulator; inclusion and consistency proofs; length-bound roots.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="../cryptography/siphash.html">Using SipHash</a></h3>
+  <p>SipHash-64 and SipHash-128 — the keyed PRF for hash-flooding-resistant tables and short-message authentication.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="../cryptography/argon2.html">Using Argon2</a></h3>
+  <p>Argon2id / Argon2i / Argon2d per RFC 9106 — memory-hard password hashing and key derivation, with the parameter guidance.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="../cryptography/asymmetric-overview.html">Asymmetric algorithms overview</a></h3>
+  <p>The four families over <code>AsymmetricAlgorithm</code> — key agreement, signatures, and post-quantum KEM / signatures — with selection guidance and the shared key import / export shape.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="../cryptography/key-agreement-x25519.html">Key agreement with X25519</a></h3>
+  <p><code>X25519</code> (RFC 7748) — Diffie-Hellman over Curve25519 for deriving a shared secret between two parties.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="../cryptography/signatures-ed25519.html">Signatures with Ed25519</a></h3>
+  <p><code>Ed25519</code> (RFC 8032) — deterministic EdDSA signing and verification over Curve25519.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="../cryptography/ml-kem.html">ML-KEM post-quantum key encapsulation</a></h3>
+  <p><code>MLKem512</code> / <code>MLKem768</code> / <code>MLKem1024</code> (FIPS 203) — lattice-based key encapsulation resistant to quantum attack.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="../cryptography/ml-dsa.html">ML-DSA post-quantum signatures</a></h3>
+  <p><code>MLDsa44</code> / <code>MLDsa65</code> / <code>MLDsa87</code> (FIPS 204) — lattice-based digital signatures resistant to quantum attack.</p>
+</div>
+</div>
+<h2 id="start-here">Start here</h2>
+<ol>
+<li><strong><a href="../../docs/topics/hashing-and-cryptography.html">Topic overview</a></strong> — the adversary-model split, the contrast table, and the &quot;which library do I need?&quot; scenarios.</li>
+<li><strong><a href="../../docs/topics/hashing-and-cryptography-concepts.html">Topic concepts</a></strong> — fingerprint vs. checksum vs. check digit vs. digest vs. MAC vs. AEAD vs. XOF vs. KDF.</li>
+<li><strong>For cryptography</strong>, start with <strong><a href="../cryptography/encryption-basics.html">Encryption basics</a></strong> before any cipher walk-through — the Key / IV / Tweak / mode / padding model carries across every algorithm. Then take <a href="../cryptography/aead-modes.html">AEAD modes</a> for authenticated encryption or the <a href="../cryptography/hashing.html">hashing overview</a> for digests and MACs.</li>
+<li><strong>For non-cryptographic hashing</strong>, start with the <strong><a href="../io-hashing/index.html">guide overview</a></strong> to pick a subfamily, then the per-algorithm walk-through — <a href="../io-hashing/crc.html">CRC</a> for channel checksums, <a href="../io-hashing/fnv.html">FNV</a> or <a href="../io-hashing/murmurhash3.html">MurmurHash3</a> for fingerprints, <a href="../io-hashing/check-digits.html">check digits</a> for identifiers.</li>
+</ol>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="../../docs/topics/hashing-and-cryptography.html">Hashing &amp; Cryptography overview</a></strong> — the topic landing page on the docs side.</li>
+<li><strong><a href="../../docs/topics/hashing-and-cryptography-concepts.html">Hashing &amp; Cryptography concepts</a></strong> — the cross-package taxonomy and safety vocabulary.</li>
+<li><strong>Member introductions:</strong> <a href="../../docs/io-hashing/index.html">Bodu.IO.Hashing</a> · <a href="../../docs/cryptography/index.html">Bodu.Security.Cryptography</a>.</li>
+<li><strong>API reference:</strong> <a class="xref" href="../../api/Bodu.IO.Hashing.html">Bodu.IO.Hashing</a> · <a class="xref" href="../../api/Bodu.Security.Cryptography.html">Bodu.Security.Cryptography</a>.</li>
+<li><strong>Complete guide indexes</strong> (this page shows the highlights; each index lists every guide for its package): <a href="../io-hashing/index.html">Bodu.IO.Hashing</a> · <a href="../cryptography/index.html">Bodu.Security.Cryptography</a>.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Using percent-encoding (URIs and forms) | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Using percent-encoding (URIs and forms) | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="using-percent-encoding-uris-and-forms">Using percent-encoding (URIs and forms)</h1>
+
+<p><code>PercentEncoding</code> implements the URI percent-encoded octet form of <strong>RFC 3986 §2.1</strong>, with the WHATWG URL Standard
+<code>application/x-www-form-urlencoded</code> rules available as a mode. Each byte that is not allowed unescaped in the selected
+component becomes a <code>%HH</code> triple with uppercase hexadecimal digits.</p>
+<pre><code>input         : a/b?c=d                        (7 ASCII characters)
+UriComponent  : a%2Fb%3Fc%3Dd                  ('/', '?', '=' are reserved → escaped)
+</code></pre>
+<div class="NOTE">
+<h5>Note</h5>
+<p><code>PercentEncoding</code> is <strong>not a URL parser</strong>. It does not resolve relative URLs, normalise hosts, paths, dot-segments,
+or scheme casing, implement IDNA / IRI processing, accept the obsolete <code>%uXXXX</code> escape, or depend on <code>System.Web</code>.
+It encodes and decodes a value according to an explicitly selected component rule.</p>
+</div>
+<h2 id="quick-reference">Quick reference</h2>
+<pre><code class="lang-csharp">using Bodu.Text.Encoding;
+
+// URI component (default) — only unreserved characters pass through.
+string component = PercentEncoding.EncodeString(&quot;a/b?c=d&quot;);                 // a%2Fb%3Fc%3Dd
+
+// Form field — space becomes '+'.
+string field = PercentEncoding.EncodeString(&quot;a b+c&quot;, mode: PercentEncodingMode.FormUrlEncoded); // a+b%2Bc
+
+// Round-trip.
+string value = PercentEncoding.DecodeString(&quot;a%2Fb&quot;);                       // a/b
+</code></pre>
+<p>Like Quoted-Printable, percent-encoding is content-dependent and mode-driven, so it is a <strong>static type, not an
+<a href="binary-encodings-interface.html"><code>IBinaryEncoding</code></a></strong>.</p>
+<h2 id="component-modes">Component modes</h2>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Passes through unescaped</th>
+<th>Use for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>UriComponent</code> (default)</td>
+<td>unreserved <code>ALPHA DIGIT - . _ ~</code></td>
+<td>A standalone value embedded in any URI component</td>
+</tr>
+<tr>
+<td><code>PathSegment</code></td>
+<td>unreserved + sub-delims + <code>:</code> <code>@</code> (encodes <code>/</code> <code>?</code> <code>#</code>)</td>
+<td>One path segment — encode each segment, then join with <code>/</code></td>
+</tr>
+<tr>
+<td><code>Query</code></td>
+<td>unreserved + sub-delims + <code>:</code> <code>@</code> <code>/</code> <code>?</code> (encodes <code>#</code>)</td>
+<td>A whole query component</td>
+</tr>
+<tr>
+<td><code>FormUrlEncoded</code></td>
+<td>ASCII alphanumeric + <code>*</code> <code>-</code> <code>.</code> <code>_</code></td>
+<td>HTML form / query name-value data</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-csharp">PercentEncoding.Encode(&quot;/&quot;u8, PercentEncodingMode.UriComponent);   // %2F
+PercentEncoding.Encode(&quot;/&quot;u8, PercentEncodingMode.Query);          // /   (slash allowed in a query)
+PercentEncoding.Encode(&quot;#&quot;u8, PercentEncodingMode.Query);          // %23 (fragment marker always encoded)
+</code></pre>
+<h3 id="form-mode-specifics">Form mode specifics</h3>
+<p><code>FormUrlEncoded</code> follows the WHATWG serializer rather than RFC 3986:</p>
+<table>
+<thead>
+<tr>
+<th>Octet</th>
+<th>Output</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Space <code>0x20</code></td>
+<td><code>+</code></td>
+</tr>
+<tr>
+<td>Plus <code>+</code></td>
+<td><code>%2B</code></td>
+</tr>
+<tr>
+<td>Percent <code>%</code></td>
+<td><code>%25</code></td>
+</tr>
+<tr>
+<td><code>~</code></td>
+<td><code>%7E</code> (not in the form pass-through set)</td>
+</tr>
+<tr>
+<td>ASCII alphanumeric, <code>*</code>, <code>-</code>, <code>.</code>, <code>_</code></td>
+<td>Literal</td>
+</tr>
+</tbody>
+</table>
+<p><code>+</code> is treated as a space <strong>only</strong> in <code>FormUrlEncoded</code> mode — in every other mode it is a literal plus byte.</p>
+<h2 id="hex-casing">Hex casing</h2>
+<p>Encoding always emits <strong>uppercase</strong> hex (<code>%2F</code>, <code>%E2%80%BD</code>), the form RFC 3986 recommends for producers. Decoding
+accepts <strong>both</strong> cases, which RFC 3986 defines as equivalent:</p>
+<pre><code class="lang-csharp">PercentEncoding.Decode(&quot;%2F&quot;);   // { 0x2F }
+PercentEncoding.Decode(&quot;%2f&quot;);   // { 0x2F }
+</code></pre>
+<h2 id="decoding-strict-vs-relaxed">Decoding: strict vs relaxed</h2>
+<p>By default the decoder rejects a malformed percent triple (<code>%</code>, <code>%A</code>, <code>%GG</code>, <code>%u1234</code>) and any non-ASCII character in
+the byte-oriented surface. The relaxation is opt-in:</p>
+<pre><code class="lang-csharp">PercentEncoding.Decode(&quot;%GG&quot;);                                                   // FormatException
+PercentEncoding.Decode(&quot;%GG&quot;, options: PercentDecodingOptions.AllowInvalidPercentLiterals); // { '%', 'G', 'G' }
+</code></pre>
+<p><code>AllowInvalidPercentLiterals</code> copies an invalid percent sequence literally as its ASCII bytes (WHATWG-style leniency)
+and never changes the decoding of a valid escape.</p>
+<h2 id="string-helpers-and-text-encodings">String helpers and text encodings</h2>
+<p><code>EncodeString</code> / <code>DecodeString</code> bridge a .NET <code>string</code> through a text encoding (UTF-8 by default):</p>
+<pre><code class="lang-csharp">PercentEncoding.EncodeString(&quot;‽&quot;);                       // %E2%80%BD  (UTF-8 octets)
+PercentEncoding.DecodeString(&quot;%E2%80%BD&quot;);               // ‽
+
+// Supply any System.Text.Encoding; its decoder fallback governs invalid input.
+PercentEncoding.DecodeString(&quot;%FF&quot;);                     // &quot;�&quot; (UTF-8 replacement fallback)
+</code></pre>
+<p>The byte-oriented <code>Decode</code> / <code>TryDecode</code> reject non-ASCII source characters — Unicode belongs in <code>DecodeString</code>.</p>
+<h2 id="validation-and-sizing">Validation and sizing</h2>
+<pre><code class="lang-csharp">PercentEncoding.IsValid(&quot;a%2Fb&quot;);                            // true
+PercentEncoding.IsValid(&quot;%GG&quot;);                              // false
+PercentEncoding.IsValid(&quot;a b&quot;);                              // false — literal space is not canonical
+PercentEncoding.IsValid(&quot;a/b?c&quot;, PercentEncodingMode.Query); // true — '/' and '?' are allowed in a query
+
+PercentEncoding.GetEncodedLength(value, mode);           // exact encoded length
+PercentEncoding.GetMaxEncodedLength(value.Length);       // worst case = length * 3
+PercentEncoding.TryGetDecodedLength(text, out int n, mode); // exact decoded length, false if malformed
+</code></pre>
+<p><code>IsValid</code> checks <strong>canonical</strong> conformance for the mode: a literal character the mode would percent-encode (a space, or
+<code>#</code> in a URI component) makes it return <code>false</code>, while a percent-escaped octet such as <code>%2F</code> is always accepted.
+<code>Decode</code> is more lenient — it still recovers a literal reserved character — so <code>IsValid(x) == true</code> implies <code>Decode(x)</code>
+succeeds, but not the reverse. <code>TryGetDecodedLength</code> mirrors <code>Decode</code>, so it can size a buffer for any decodable input.</p>
+<h2 id="span-path">Span path</h2>
+<pre><code class="lang-csharp">char[] buffer = new char[PercentEncoding.GetMaxEncodedLength(value.Length)];
+bool ok = PercentEncoding.TryEncode(value, buffer, out int written, PercentEncodingMode.UriComponent);
+</code></pre>
+<p><code>TryEncode</code> / <code>TryDecode</code> never throw — they return <code>false</code> and write <code>0</code> for an undefined mode, malformed input, or an
+undersized destination.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="quoted-printable.html">Quoted-Printable guide</a></strong> — the MIME body <code>=HH</code> escape encoding.</li>
+<li><strong><a href="base64.html">Base64 guide</a></strong> — the URL-safe variant when you need compact transport rather than readable URLs.</li>
+<li><strong><a href="../topics/text-and-serialization.html">Text &amp; Serialization guides</a></strong> — every guide in this topic.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

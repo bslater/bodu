@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Struct PstPropertyValue | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Struct PstPropertyValue | BODU ">
+    
+    <meta name="description" content="Represents one property value of a property context or table-context row: the 16-bit property identifier, the raw wire type code, and the resolved little-endian payload with typed accessors over it.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.IO.Pst.PstPropertyValue">
+
+
+
+  <h1 id="Bodu_IO_Pst_PstPropertyValue" data-uid="Bodu.IO.Pst.PstPropertyValue" class="text-break">Struct PstPropertyValue</h1>
+  <div class="markdown level0 summary"><p>Represents one property value of a property context or table-context row: the 16-bit property identifier, the raw
+wire type code, and the resolved little-endian payload with typed accessors over it.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetype.equals">ValueType.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetype.gethashcode">ValueType.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.IO.html">IO</a>.<a class="xref" href="Bodu.IO.Pst.html">Pst</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.IO.Pst.dll</h6>
+  <h5 id="Bodu_IO_Pst_PstPropertyValue_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly struct PstPropertyValue</code></pre>
+  </div>
+  <h5 id="Bodu_IO_Pst_PstPropertyValue_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+This layer carries no MAPI semantics: the wire type is the raw MS-OXCDATA code and the payload is the value's
+little-endian bytes. Multi-valued and object-typed payloads are surfaced raw — decoding them is a format reader's
+concern.
+</p>
+<p>
+Each typed accessor requires the matching wire type and a payload of at least the type's width;
+<a class="xref" href="Bodu.IO.Pst.PstPropertyValue.GetString.html#Bodu_IO_Pst_PstPropertyValue_GetString">GetString()</a> decodes the UTF-16LE string type (<code>0x001F</code>) only — the code-page string type (<code>0x001E</code>)
+stays bytes, because resolving its code page is a format-layer concern.
+</p>
+</div>
+  <h3 id="properties">Properties
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_IO_Pst_PstPropertyValue_PropertyId" data-uid="Bodu.IO.Pst.PstPropertyValue.PropertyId">
+          <a class="xref" href="Bodu.IO.Pst.PstPropertyValue.PropertyId.html#Bodu_IO_Pst_PstPropertyValue_PropertyId">PropertyId</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the 16-bit property identifier.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Pst_PstPropertyValue_RawData" data-uid="Bodu.IO.Pst.PstPropertyValue.RawData">
+          <a class="xref" href="Bodu.IO.Pst.PstPropertyValue.RawData.html#Bodu_IO_Pst_PstPropertyValue_RawData">RawData</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the resolved value payload.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Pst_PstPropertyValue_WireType" data-uid="Bodu.IO.Pst.PstPropertyValue.WireType">
+          <a class="xref" href="Bodu.IO.Pst.PstPropertyValue.WireType.html#Bodu_IO_Pst_PstPropertyValue_WireType">WireType</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the raw 16-bit property wire type code.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_IO_Pst_PstPropertyValue_GetBoolean" data-uid="Bodu.IO.Pst.PstPropertyValue.GetBoolean">
+          <a class="xref" href="Bodu.IO.Pst.PstPropertyValue.GetBoolean.html#Bodu_IO_Pst_PstPropertyValue_GetBoolean">GetBoolean()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads the value as a Boolean (wire type <code>0x000B</code>): any nonzero byte is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Pst_PstPropertyValue_GetBytes" data-uid="Bodu.IO.Pst.PstPropertyValue.GetBytes">
+          <a class="xref" href="Bodu.IO.Pst.PstPropertyValue.GetBytes.html#Bodu_IO_Pst_PstPropertyValue_GetBytes">GetBytes()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads the value's payload as a byte array.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Pst_PstPropertyValue_GetDouble" data-uid="Bodu.IO.Pst.PstPropertyValue.GetDouble">
+          <a class="xref" href="Bodu.IO.Pst.PstPropertyValue.GetDouble.html#Bodu_IO_Pst_PstPropertyValue_GetDouble">GetDouble()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads the value as a 64-bit floating-point number (wire type <code>0x0005</code>, or the floating time <code>0x0007</code>).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Pst_PstPropertyValue_GetGuid" data-uid="Bodu.IO.Pst.PstPropertyValue.GetGuid">
+          <a class="xref" href="Bodu.IO.Pst.PstPropertyValue.GetGuid.html#Bodu_IO_Pst_PstPropertyValue_GetGuid">GetGuid()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads the value as a GUID (wire type <code>0x0048</code>).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Pst_PstPropertyValue_GetInt16" data-uid="Bodu.IO.Pst.PstPropertyValue.GetInt16">
+          <a class="xref" href="Bodu.IO.Pst.PstPropertyValue.GetInt16.html#Bodu_IO_Pst_PstPropertyValue_GetInt16">GetInt16()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads the value as a 16-bit signed integer (wire type <code>0x0002</code>).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Pst_PstPropertyValue_GetInt32" data-uid="Bodu.IO.Pst.PstPropertyValue.GetInt32">
+          <a class="xref" href="Bodu.IO.Pst.PstPropertyValue.GetInt32.html#Bodu_IO_Pst_PstPropertyValue_GetInt32">GetInt32()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads the value as a 32-bit signed integer (wire type <code>0x0003</code>, or the 32-bit error code <code>0x000A</code>).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Pst_PstPropertyValue_GetInt64" data-uid="Bodu.IO.Pst.PstPropertyValue.GetInt64">
+          <a class="xref" href="Bodu.IO.Pst.PstPropertyValue.GetInt64.html#Bodu_IO_Pst_PstPropertyValue_GetInt64">GetInt64()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads the value as a 64-bit signed integer (wire types <code>0x0014</code>, <code>0x0006</code>, and the FILETIME
+<code>0x0040</code>).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Pst_PstPropertyValue_GetSingle" data-uid="Bodu.IO.Pst.PstPropertyValue.GetSingle">
+          <a class="xref" href="Bodu.IO.Pst.PstPropertyValue.GetSingle.html#Bodu_IO_Pst_PstPropertyValue_GetSingle">GetSingle()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads the value as a 32-bit floating-point number (wire type <code>0x0004</code>).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Pst_PstPropertyValue_GetString" data-uid="Bodu.IO.Pst.PstPropertyValue.GetString">
+          <a class="xref" href="Bodu.IO.Pst.PstPropertyValue.GetString.html#Bodu_IO_Pst_PstPropertyValue_GetString">GetString()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads the value as a string (the UTF-16LE wire type <code>0x001F</code> only).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Pst_PstPropertyValue_ToString" data-uid="Bodu.IO.Pst.PstPropertyValue.ToString">
+          <a class="xref" href="Bodu.IO.Pst.PstPropertyValue.ToString.html#Bodu_IO_Pst_PstPropertyValue_ToString">ToString()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a textual form of the value for diagnostics.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Clamp.html#Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.Clamp&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsBetween.html#Bodu_Extensions_ComparableExtensions_IsBetween__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsBetween&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThan.html#Bodu_Extensions_ComparableExtensions_IsGreaterThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThan.html#Bodu_Extensions_ComparableExtensions_IsLessThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsOutside.html#Bodu_Extensions_ComparableExtensions_IsOutside__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsOutside&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

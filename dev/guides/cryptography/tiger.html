@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Using Tiger | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Using Tiger | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="using-tiger">Using Tiger</h1>
+
+<p><a class="xref" href="../../api/Bodu.Security.Cryptography.Tiger.html">Tiger</a> is a 1995 cryptographic hash by Anderson and Biham, optimized for 64-bit platforms and widely deployed in file-transfer and content-addressing systems (most famously Direct Connect's Tiger Tree Hash). It processes 64-byte blocks and produces a <strong>192-bit digest by default</strong>, with 160-bit and 128-bit truncations available.</p>
+<p>Tiger derives from <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a>, so any API that accepts a standard .NET hash accepts Tiger.</p>
+<blockquote>
+<p>For new work where interoperability isn't a constraint, prefer the BCL's hardware-accelerated <code>System.Security.Cryptography.SHA256</code> or <code>System.Security.Cryptography.SHA512</code>. Use Tiger when you need to match an existing Tiger-based system, or as part of a Tiger Tree Hash (see the Merkle tree guide).</p>
+</blockquote>
+<h2 id="fixed-sizes-at-a-glance">Fixed sizes at a glance</h2>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Size</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Block size</td>
+<td>64 bytes (512 bits)</td>
+<td>Fixed.</td>
+</tr>
+<tr>
+<td>Output</td>
+<td>192 bits (default), 160 bits, or 128 bits</td>
+<td>Configurable via <code>HashSize</code>.</td>
+</tr>
+<tr>
+<td>Variant</td>
+<td><code>TigerHashingVariant.Tiger</code> (padding byte <code>0x01</code>) or <code>.Tiger2</code> (padding byte <code>0x80</code>)</td>
+<td>Default is <code>Tiger</code>.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="pattern-1--a-default-192-bit-digest">Pattern 1 — a default 192-bit digest</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Text;
+using Bodu.Security.Cryptography;
+
+byte[] data = Encoding.UTF8.GetBytes(&quot;the quick brown fox&quot;);
+
+using var tiger = new Tiger();                  // 192-bit, Tiger variant
+byte[] digest   = tiger.ComputeHash(data);      // 24 bytes
+string hex      = Convert.ToHexString(digest);
+</code></pre>
+<p>This matches the digest that a reference Tiger implementation would produce for the same input — 24 bytes, in the standard output layout.</p>
+<h2 id="pattern-2--choose-a-truncation">Pattern 2 — choose a truncation</h2>
+<p>Tiger accepts three output widths. 192 is the &quot;real&quot; Tiger; 160 and 128 are truncations of the same 192-bit internal state, useful when an external protocol fixes the digest size.</p>
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+
+using var tiger128 = new Tiger(hashSize: 128);  // 16-byte digest
+using var tiger160 = new Tiger(hashSize: 160);  // 20-byte digest
+using var tiger192 = new Tiger(hashSize: 192);  // 24-byte digest (the default)
+</code></pre>
+<p><code>HashSize</code> is also settable on an existing instance, but only <strong>before</strong> the first block is processed:</p>
+<pre><code class="lang-csharp">using var tiger = new Tiger { HashSize = 160 };
+byte[] digest = tiger.ComputeHash(data);
+</code></pre>
+<p>Attempting to change <code>HashSize</code> after <code>ComputeHash</code> / <code>TransformBlock</code> has begun throws — the schedule is fixed at the first call.</p>
+<h2 id="pattern-3--tiger-vs-tiger2">Pattern 3 — Tiger vs Tiger2</h2>
+<p>Tiger's original specification used a padding byte of <code>0x01</code>. A later clarification (Tiger2) changed the padding byte to <code>0x80</code> to match the convention used by SHA-2 and other Merkle-Damgård hashes. The two variants produce <strong>different digests</strong> for the same input.</p>
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+
+using var tiger  = new Tiger  { Variant = TigerHashingVariant.Tiger  };   // default
+using var tiger2 = new Tiger  { Variant = TigerHashingVariant.Tiger2 };
+
+byte[] d1 = tiger .ComputeHash(data);
+byte[] d2 = tiger2.ComputeHash(data);
+// d1 != d2 — different padding byte → different digest.
+</code></pre>
+<p>Match the variant to whatever the interoperating system speaks. <code>AlgorithmName</code> reflects the configured hash size (it follows the <code>Tiger/{bits}</code> convention regardless of variant; include the variant alongside it when logging):</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using var tiger = new Tiger { Variant = TigerHashingVariant.Tiger2, HashSize = 160 };
+Console.WriteLine($&quot;{tiger.AlgorithmName} ({tiger.Variant})&quot;);   // &quot;Tiger/160 (Tiger2)&quot;
+</code></pre>
+<h2 id="pattern-4--streaming-a-file">Pattern 4 — streaming a file</h2>
+<p>Tiger plugs into any BCL API that takes a <code>HashAlgorithm</code>:</p>
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+
+using var tiger = new Tiger();
+
+using var stream = File.OpenRead(&quot;archive.bin&quot;);
+byte[] digest = tiger.ComputeHash(stream);
+</code></pre>
+<p>For larger files where you want to verify ranges of the file without rehashing the whole thing, pair Tiger with <a class="xref" href="../../api/Bodu.Security.Cryptography.MerkleTree.html">MerkleTree</a> to build a Tiger Tree Hash — see the <a href="merkle-trees.html">Merkle trees guide</a>.</p>
+<p>To feed several discontiguous spans into one digest, use the <code>TransformBlock</code> / <code>TransformFinalBlock</code> pair, or the <a class="xref" href="../../api/Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html">HashAlgorithmExtensions</a> <code>AppendData</code> helper (which takes a <code>ReadOnlySpan&lt;byte&gt;</code>):</p>
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+using Bodu.Security.Cryptography.Extensions;
+
+using var tiger = new Tiger();
+tiger.AppendData(header);
+tiger.AppendData(body);
+tiger.TransformFinalBlock(Array.Empty&lt;byte&gt;(), 0, 0);
+
+byte[] digest = tiger.Hash!;
+</code></pre>
+<h2 id="pattern-5--verifying-a-digest">Pattern 5 — verifying a digest</h2>
+<p>Compare digests in constant time. The <code>VerifyHash</code> helper in <code>Bodu.Security.Cryptography.Extensions</code> wraps <code>CryptographicOperations.FixedTimeEquals</code>:</p>
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+using Bodu.Security.Cryptography.Extensions;
+
+byte[] expected = LoadExpectedDigest(&quot;report.pdf&quot;);
+
+using var tiger = new Tiger();
+bool ok = tiger.VerifyHash(fileBytes, expected);
+</code></pre>
+<p>A plain <code>SequenceEqual</code> leaks timing information and is unsafe when the result drives an authentication decision.</p>
+<h2 id="security-caveats">Security caveats</h2>
+<ul>
+<li><strong>Status.</strong> Tiger is unbroken for pre-image and second-pre-image resistance. A 1-bit-rotation collision attack on reduced-round Tiger exists in the literature, and the 192-bit width gives only 96-bit collision resistance by the birthday bound — comfortably above brute force today, but below the 128-bit collision margin a 256-bit hash provides. For long-lived collision-critical commitments prefer SHA-256 or wider.</li>
+<li><strong>Output width vs security level.</strong> An n-bit digest gives ≈ n-bit pre-image resistance and ≈ n/2-bit collision resistance. The 128- and 160-bit truncations are correspondingly weaker against collisions — choose them only when an external protocol fixes the width.</li>
+<li><strong>Length extension.</strong> Tiger is a Merkle–Damgård design and inherits the length-extension property. Do <strong>not</strong> authenticate with <code>key ‖ message</code>; use HMAC-Tiger, or reach for a native keyed hash (<a href="skein.html">Skein</a>, <a href="blake.html">BLAKE2b</a>) or a MAC (<a href="siphash.html">SipHash</a>, <a href="poly1305.html">Poly1305</a>).</li>
+</ul>
+<h2 id="when-to-use-tiger">When to use Tiger</h2>
+<ul>
+<li><strong>Interoperability</strong> with systems that already use Tiger — Direct Connect, the <code>tth:</code> URN scheme, older archive formats.</li>
+<li><strong>Tiger Tree Hash</strong> (Merkle tree of Tiger leaves) for content-addressable stores — pair with <a class="xref" href="../../api/Bodu.Security.Cryptography.MerkleTree.html">MerkleTree</a>.</li>
+<li><strong>Educational</strong> or research settings where the round structure and S-boxes are the object of study.</li>
+</ul>
+<p>For new work without an interoperability constraint, prefer SHA-2 or SHA-3 from the BCL — both are hardware-accelerated on modern CPUs and have broader analysis behind them.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="hashing.html">Hashing overview</a> — where Tiger sits alongside SipHash, Snefru, CubeHash, and the non-cryptographic families.</li>
+<li><a href="merkle-trees.html">Merkle trees guide</a> — build a Tiger Tree Hash over a stream.</li>
+<li><a href="siphash.html">Using SipHash</a> — keyed short-input hash, for hash-table DoS resistance.</li>
+<li><a href="cubehash.html">Using CubeHash</a>, <a href="snefru.html">Using Snefru</a> — other cryptographic digests in this package.</li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

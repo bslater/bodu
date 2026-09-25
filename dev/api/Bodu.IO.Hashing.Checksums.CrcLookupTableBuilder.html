@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class CrcLookupTableBuilder | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class CrcLookupTableBuilder | BODU ">
+    
+    <meta name="description" content="Generates the precomputed lookup tables that drive the byte-at-a-time inner loop of , given the width, polynomial, and input-reflection mode of a .">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.IO.Hashing.Checksums.CrcLookupTableBuilder">
+
+
+
+  <h1 id="Bodu_IO_Hashing_Checksums_CrcLookupTableBuilder" data-uid="Bodu.IO.Hashing.Checksums.CrcLookupTableBuilder" class="text-break">Class CrcLookupTableBuilder</h1>
+  <div class="markdown level0 summary"><p>Generates the precomputed lookup tables that drive the byte-at-a-time inner loop of <a class="xref" href="Bodu.IO.Hashing.Checksums.Crc.html">Crc</a>, given the
+width, polynomial, and input-reflection mode of a <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a>.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><span class="xref">CrcLookupTableBuilder</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.IO.html">IO</a>.<a class="xref" href="Bodu.IO.Hashing.html">Hashing</a>.<a class="xref" href="Bodu.IO.Hashing.Checksums.html">Checksums</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.IO.Hashing.dll</h6>
+  <h5 id="Bodu_IO_Hashing_Checksums_CrcLookupTableBuilder_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class CrcLookupTableBuilder</code></pre>
+  </div>
+  <h5 id="Bodu_IO_Hashing_Checksums_CrcLookupTableBuilder_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+The naive bit-by-bit CRC algorithm is straightforward but processes only one input bit per iteration. The standard
+production technique is to precompute a small table of partial CRCs — one entry per possible input byte under the
+chosen polynomial — so the per-byte cost collapses to a single XOR plus a table lookup.
+<a class="xref" href="Bodu.IO.Hashing.Checksums.CrcLookupTableBuilder.html">CrcLookupTableBuilder</a> is the routine that builds that table; <a class="xref" href="Bodu.IO.Hashing.Checksums.Crc.html">Crc</a> consumes it and
+<a class="xref" href="Bodu.IO.Hashing.Checksums.CrcLookupTableCache.html">CrcLookupTableCache</a> caches it across instances so the construction cost is paid at most once per
+<code>(width, polynomial, reflectIn)</code> tuple.
+</p>
+<p>
+<strong>When you would call this directly.</strong> Most callers should not — <a class="xref" href="Bodu.IO.Hashing.Checksums.Crc.html">Crc</a> resolves its lookup
+table automatically through <a class="xref" href="Bodu.IO.Hashing.Checksums.Crc.GlobalCache.html#Bodu_IO_Hashing_Checksums_Crc_GlobalCache">GlobalCache</a>. Reach for
+<a class="xref" href="Bodu.IO.Hashing.Checksums.CrcLookupTableBuilder.BuildLookupTable.html#Bodu_IO_Hashing_Checksums_CrcLookupTableBuilder_BuildLookupTable_System_Int32_System_UInt64_System_Boolean_">BuildLookupTable(int, ulong, bool)</a> directly when implementing a custom CRC engine outside the
+<a class="xref" href="Bodu.IO.Hashing.Checksums.Crc.html">Crc</a> hierarchy, when running diagnostics against a known-good table, or when populating a hand-rolled
+cache for an unusual polynomial that the global cache is not the right home for.
+</p>
+<p>
+<strong>Output shape.</strong> The returned table contains <code>1 &lt;&lt; min(size, 8)</code> entries (256 for any width
+of 8 bits or more, smaller for sub-byte widths). Each entry is masked to <code>size</code> bits and is suitable for direct
+XOR into a CRC register of the corresponding width. Output bit reflection (the <code>ReflectOut</code> step) is <em>not
+</em> applied here — that is a finalization step performed by the engine after the table-driven loop completes.
+</p>
+<p>
+The method is pure, deterministic, and allocation-bounded by the table size; results are safe to cache and share.
+The implementation lives in the shared <span class="xref">Bodu.IO.Hashing.Checksums.CrcCore</span> source (compiled here and into the format readers that
+verify vendor CRC variants); this type is the public facade over it.
+</p>
+</div>
+  <h5 id="Bodu_IO_Hashing_Checksums_CrcLookupTableBuilder_examples"><strong>Examples</strong></h5>
+  <pre><code class="lang-csharp">// Build the lookup table for CRC-32/ISO-HDLC (the canonical CRC-32 used by Ethernet, PKZIP, gzip).
+CrcStandard isoHdlc = CrcStandard.CRC32_ISOHDLC;
+ulong[] table = CrcLookupTableBuilder.BuildLookupTable(
+    size:       isoHdlc.Size,        // 32
+    polynomial: isoHdlc.Polynomial,  // 0x04C11DB7
+    reflectIn:  isoHdlc.ReflectIn);  // true
+
+// table has 256 entries; each value is masked to 32 bits and suitable for
+// direct XOR into the running CRC register.
+Console.WriteLine(table[0xFF]); // 0x...  the precomputed contribution for byte 0xFF</code></pre>
+
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcLookupTableBuilder_BuildLookupTable_System_Int32_System_UInt64_System_Boolean_" data-uid="Bodu.IO.Hashing.Checksums.CrcLookupTableBuilder.BuildLookupTable(System.Int32,System.UInt64,System.Boolean)">
+          <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcLookupTableBuilder.BuildLookupTable.html#Bodu_IO_Hashing_Checksums_CrcLookupTableBuilder_BuildLookupTable_System_Int32_System_UInt64_System_Boolean_">BuildLookupTable(int, ulong, bool)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Generates a CRC lookup table for a given bit size, polynomial, and reflection mode.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="seealso">See Also</h3>
+  <div class="seealso">
+      <div><a class="xref" href="Bodu.IO.Hashing.Checksums.Crc.html">Crc</a></div>
+      <div><a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a></div>
+      <div><a class="xref" href="Bodu.IO.Hashing.Checksums.CrcLookupTableCache.html">CrcLookupTableCache</a></div>
+  </div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Core Foundations — Overview | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Core Foundations — Overview | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="core-foundations">Core Foundations</h1>
+
+<p><strong>Bodu.Core</strong> is the foundation of the entire Bodu suite. Every other Bodu package depends on it — <code>Bodu.IO.Hashing</code>, <code>Bodu.Security.Cryptography</code>, <code>Bodu.Globalization.Calendar</code>, the text and serialization packages, <code>Bodu.Numerics</code>, and <code>Bodu.Financial</code> all reference it for shared primitives such as the centralized <a class="xref" href="../../api/Bodu.ThrowHelper.html">ThrowHelper</a> argument-validation catalogue, <a class="xref" href="../../api/Bodu.WeekPattern.html">WeekPattern</a>, the calendar-shape enums, and pooled buffers. It is also a useful library in its own right: a writer-style pooled buffer builder, async coordination and railway primitives, and a large set of date, numeric, span, and array extensions. The specialized collection catalogue — the bounded, ordered, navigable, graph, tree, and probabilistic collections — ships in the companion <strong><a href="../collections/index.html"><code>Bodu.Collections</code></a></strong> package (namespaces unchanged; it depends on <code>Bodu.Core</code>), and the thread-safe variants in <strong><a href="../collections-concurrent/index.html"><code>Bodu.Collections.Concurrent</code></a></strong> (which depends on <code>Bodu.Collections</code>).</p>
+<p>The package additionally ships the <strong><code>Bodu.Text</code></strong> namespace — character-encoding helpers over <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoding">Encoding</a> that add byte-order-mark detection, span- and UTF-8-friendly transcoding, preamble handling, and validation. <code>Bodu.Text</code> is a namespace inside the <code>Bodu.Core</code> package, not a separate package; installing <code>Bodu.Core</code> gives you both surfaces.</p>
+<h2 id="members-of-this-topic">Members of this topic</h2>
+<table>
+<thead>
+<tr>
+<th>Package</th>
+<th>Status</th>
+<th>What it provides</th>
+<th>Docs</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Bodu.Core</strong></td>
+<td>Stable</td>
+<td>The <code>WeekPattern</code> value type, <code>PooledBufferBuilder&lt;T&gt;</code>, date / numeric / span extensions, the enumerable / dictionary / list extension surfaces, threading and functional primitives, and the <code>ThrowHelper</code> validation catalogue.</td>
+<td><a href="../core/index.html">Introduction</a> · <a href="../core/concepts.html">Concepts</a> · <a href="../core/getting-started.html">Getting started</a></td>
+</tr>
+<tr>
+<td><strong>Bodu.Collections</strong></td>
+<td>Stable</td>
+<td>The specialized collection catalogue (namespaces unchanged; depends on <code>Bodu.Core</code>): bounded collections (<code>CircularBuffer&lt;T&gt;</code>, <code>Deque&lt;T&gt;</code>, <code>EvictingDictionary&lt;TKey,TValue&gt;</code> with TTL expiry), the insertion/access-ordered <code>SequencedDictionary&lt;TKey,TValue&gt;</code>, navigable and index-aware sets, priority queues, range-keyed lookups and interval trees, the <code>.Graphs</code> and <code>.Trees</code> sub-namespaces, the <code>Bodu.Collections.Probabilistic</code> sketches, and the packed <code>BitSet</code>.</td>
+<td><a href="../collections/index.html">Introduction</a> · <a href="../collections/concepts.html">Concepts</a> · <a href="../collections/getting-started.html">Getting started</a></td>
+</tr>
+<tr>
+<td><strong>Bodu.Collections.Concurrent</strong></td>
+<td>Stable</td>
+<td>The thread-safe collection companion (depends on <code>Bodu.Collections</code>): the lock-free <code>ConcurrentCircularBuffer&lt;T&gt;</code> (Vyukov MPMC, <code>IProducerConsumerCollection&lt;T&gt;</code>) and the lock-free split-ordered <code>ConcurrentHashSet&lt;T&gt;</code>, both with snapshot enumeration, plus the lock-striped <code>ConcurrentEvictingDictionary&lt;TKey,TValue&gt;</code> bounded cache (all six eviction policies, optional TTL, single-flight <code>GetOrAdd</code>).</td>
+<td><a href="../collections-concurrent/index.html">Introduction</a> · <a href="../collections-concurrent/concepts.html">Concepts</a> · <a href="../collections-concurrent/getting-started.html">Getting started</a></td>
+</tr>
+<tr>
+<td><strong>Bodu.Text</strong> <em>(namespace — ships inside the <code>Bodu.Core</code> package)</em></td>
+<td>Stable</td>
+<td>BOM-based <code>EncodingDetection</code>, plus <code>EncodingExtensions</code> and <code>StringEncodingExtensions</code> for span-, UTF-8-, and pooled-buffer-friendly transcoding, preamble handling, and validation over <code>System.Text.Encoding</code>.</td>
+<td><a href="../text/index.html">Introduction</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="the-shape-of-the-topic">The shape of the topic</h2>
+<p><code>Bodu.Core</code> is organized into focused namespaces, each with a clear responsibility. The four you will reach for most often:</p>
+<ul>
+<li><strong><code>Bodu</code></strong> — root-namespace primitives: <a class="xref" href="../../api/Bodu.ThrowHelper.html">ThrowHelper</a> (the argument-validation catalogue every Bodu library calls into), <a class="xref" href="../../api/Bodu.WeekPattern.html">WeekPattern</a> (an immutable day-of-week bitmask), and the <a class="xref" href="../../api/Bodu.IRandomGenerator.html">IRandomGenerator</a> abstraction with its <a class="xref" href="../../api/Bodu.XorShiftRandom.html">XorShiftRandom</a> implementation.</li>
+<li><strong><code>Bodu.Collections.Generic</code></strong> (ships in the <code>Bodu.Collections</code> package) — bounded ring-backed collections (<a class="xref" href="../../api/Bodu.Collections.Generic.CircularBuffer-1.html">CircularBuffer&lt;T&gt;</a>, <a class="xref" href="../../api/Bodu.Collections.Generic.Deque-1.html">Deque&lt;T&gt;</a>), the policy-driven <a class="xref" href="../../api/Bodu.Collections.Generic.EvictingDictionary-2.html">EvictingDictionary&lt;TKey, TValue&gt;</a> cache, the insertion/access-ordered <a class="xref" href="../../api/Bodu.Collections.Generic.SequencedDictionary-2.html">SequencedDictionary&lt;TKey, TValue&gt;</a>, index-aware sets (<a class="xref" href="../../api/Bodu.Collections.Generic.IndexedSet-1.html">IndexedSet&lt;T&gt;</a>, <a class="xref" href="../../api/Bodu.Collections.Generic.OrderedSet-1.html">OrderedSet&lt;T&gt;</a>), the heap-backed <a class="xref" href="../../api/Bodu.Collections.Generic.IndexedPriorityQueue-2.html">IndexedPriorityQueue&lt;TElement, TPriority&gt;</a>, multi-map / multi-set types, and range-keyed lookups. The thread-safe <a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer-1.html">ConcurrentCircularBuffer&lt;T&gt;</a>, <a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.html">ConcurrentHashSet&lt;T&gt;</a>, and <a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html">ConcurrentEvictingDictionary&lt;TKey, TValue&gt;</a> live in the <code>.Concurrent</code> sub-namespace, shipped by the <code>Bodu.Collections.Concurrent</code> package.</li>
+<li><strong><code>Bodu.Buffers</code></strong> — <a class="xref" href="../../api/Bodu.Buffers.PooledBufferBuilder-1.html">PooledBufferBuilder&lt;T&gt;</a>, an <code>ArrayPool&lt;T&gt;</code>-backed builder that assembles byte or character spans without allocation and slots into standard <code>IBufferWriter&lt;T&gt;</code> pipelines.</li>
+<li><strong><code>Bodu.Text</code></strong> — <a class="xref" href="../../api/Bodu.Text.EncodingDetection.html">EncodingDetection</a>, <a class="xref" href="../../api/Bodu.Text.EncodingExtensions.html">EncodingExtensions</a>, and <a class="xref" href="../../api/Bodu.Text.StringEncodingExtensions.html">StringEncodingExtensions</a>: the character-encoding surface that turns bytes into text and back through <code>System.Text.Encoding</code>, correctly and efficiently.</li>
+</ul>
+<p>Rounding out the package, <code>Bodu.Extensions</code> carries the date, numeric, span, and array extension methods (first-Monday-of-month arithmetic, ISO week-of-year, bit rotation and reversal, clamping), and <code>Bodu.Globalization.Extensions</code> adds culture-aware helpers over <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.datetimeformatinfo">DateTimeFormatInfo</a>. See the <a href="../core/index.html">Bodu.Core introduction</a> for the complete namespace map.</p>
+<h2 id="how-the-pieces-fit">How the pieces fit</h2>
+<p><code>Bodu.Core</code> is the one shared runtime dependency across the suite — every other topic's packages build on it. The <a href="../introduction.html">project introduction</a> spells out the dependency map; in topic terms:</p>
+<ul>
+<li><strong><a href="hashing-and-cryptography.html">Hashing &amp; Cryptography</a></strong> — <code>Bodu.IO.Hashing</code> and <code>Bodu.Security.Cryptography</code> take <code>ThrowHelper</code> for argument validation and share the pooled-buffer infrastructure.</li>
+<li><strong><a href="globalization-and-calendars.html">Globalization &amp; Calendars</a></strong> — <code>Bodu.Globalization.Calendar</code> builds on <code>WeekPattern</code> and the calendar-shape enums (<code>CalendarQuarterDefinition</code>, <code>WorkingDaysOfWeek</code>, <code>WeekOrdinal</code>) that live in <code>Bodu.Core</code>.</li>
+<li><strong><a href="text-and-serialization.html">Text &amp; Serialization</a></strong> — <code>Bodu.Text.Encoding</code>, <code>Bodu.Text.Formats</code>, <code>Bodu.Text.Bencode</code>, and <code>Bodu.Text.Toml</code> validate through <code>ThrowHelper</code> and sit alongside the <code>Bodu.Text</code> character-encoding helpers.</li>
+<li><strong><a href="configuration.html">Configuration</a></strong> — <code>Bodu.Text.Configuration</code> and its <code>Microsoft.Extensions.Configuration</code> bridge sit on the same foundation via <code>Bodu.Text.Formats</code>.</li>
+<li><strong><a href="numerics-and-financial.html">Numerics &amp; Financial</a></strong> — <code>Bodu.Numerics</code> and <code>Bodu.Financial</code> validate through <code>ThrowHelper</code>; <code>Bodu.Financial</code> additionally builds on <code>Bodu.Numerics</code>.</li>
+</ul>
+<p>Because <code>ThrowHelper</code> is the sole dependency most packages take on <code>Bodu.Core</code>, exception messages, parameter-name capture, and <code>[StackTraceHidden]</code> behavior stay consistent across every Bodu library. Adopting <code>Bodu.Core</code> in your own code buys the same consistency: one guard catalogue, one set of messages, one stack-trace shape.</p>
+<h2 id="which-do-i-need">Which do I need?</h2>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Reach for</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fixed-capacity FIFO queue (sliding window or bounded-throw)</td>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.CircularBuffer-1.html">CircularBuffer&lt;T&gt;</a></td>
+<td><code>AllowOverwrite</code> toggles between evict-the-oldest and throw-when-full. Thread-safe variant: <a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer-1.html">ConcurrentCircularBuffer&lt;T&gt;</a> (in <code>Bodu.Collections.Concurrent</code>).</td>
+</tr>
+<tr>
+<td>LRU / MRU / LFU / FIFO cache</td>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.EvictingDictionary-2.html">EvictingDictionary&lt;TKey, TValue&gt;</a></td>
+<td>Six policies via <a class="xref" href="../../api/Bodu.Collections.Generic.EvictingDictionaryPolicy.html">EvictingDictionaryPolicy</a>, including Random and Second-Chance.</td>
+</tr>
+<tr>
+<td>Insertion- or access-ordered dictionary with O(1) first/last access</td>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.SequencedDictionary-2.html">SequencedDictionary&lt;TKey, TValue&gt;</a></td>
+<td>Java <code>LinkedHashMap</code> shape; unbounded. Access-order mode is the building block for a hand-rolled LRU over <code>TryRemoveFirst</code>.</td>
+</tr>
+<tr>
+<td>Double-ended queue with O(1) ends</td>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Deque-1.html">Deque&lt;T&gt;</a></td>
+<td><code>AllowGrow</code> toggles between auto-resize and fixed-capacity-throw modes.</td>
+</tr>
+<tr>
+<td>Priority queue with in-place priority updates</td>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.IndexedPriorityQueue-2.html">IndexedPriorityQueue&lt;TElement, TPriority&gt;</a></td>
+<td>O(1) lookup-by-element plus <code>Update</code> / <code>EnqueueOrUpdate</code> — the operations Dijkstra, Prim, and A* require.</td>
+</tr>
+<tr>
+<td>Insertion-ordered set, indexable like a list</td>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.IndexedSet-1.html">IndexedSet&lt;T&gt;</a></td>
+<td>O(1) <code>Contains</code>, <code>IndexOf</code>, and indexed read; duplicates rejected on add.</td>
+</tr>
+<tr>
+<td>Pooled byte / char building without allocation</td>
+<td><a class="xref" href="../../api/Bodu.Buffers.PooledBufferBuilder-1.html">PooledBufferBuilder&lt;T&gt;</a></td>
+<td><code>ArrayPool&lt;T&gt;</code>-backed; implements <code>IBufferWriter&lt;T&gt;</code>; dispose to return the rented array.</td>
+</tr>
+<tr>
+<td>Range-keyed lookup (interval → value, or interval membership)</td>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.RangeDictionary-2.html">RangeDictionary&lt;TKey, TValue&gt;</a>, <a class="xref" href="../../api/Bodu.Collections.Generic.RangeSet-1.html">RangeSet&lt;T&gt;</a></td>
+<td>Half-open <code>[start, end)</code> keys with O(log n) lookup.</td>
+</tr>
+<tr>
+<td>One key mapping to many values</td>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.MultiValueDictionary-2.html">MultiValueDictionary&lt;TKey, TValue&gt;</a></td>
+<td>The indexer returns an empty live view, never <code>null</code>.</td>
+</tr>
+<tr>
+<td>Day-of-week masks you can union, intersect, and parse</td>
+<td><a class="xref" href="../../api/Bodu.WeekPattern.html">WeekPattern</a></td>
+<td>Immutable 7-bit bitmask value type; <code>Parse(&quot;_MTWTF_&quot;)</code>, bitwise operators, presets.</td>
+</tr>
+<tr>
+<td>Date arithmetic — first Monday of month, ISO week-of-year, age</td>
+<td><a class="xref" href="../../api/Bodu.Extensions.DateTimeExtensions.html">DateTimeExtensions</a>, <a class="xref" href="../../api/Bodu.Extensions.DateOnlyExtensions.html">DateOnlyExtensions</a></td>
+<td>Parameterized by the calendar-shape enums (quarter definitions, working weeks, week ordinals).</td>
+</tr>
+<tr>
+<td>Bit / byte rotation and reversal</td>
+<td><a class="xref" href="../../api/Bodu.Extensions.NumericExtensions.html">NumericExtensions</a></td>
+<td><code>ReverseBits</code>, <code>RotateBitsLeft</code> / <code>Right</code>, <code>ReverseBytes</code> over unsigned integers.</td>
+</tr>
+<tr>
+<td>Detect a file's encoding from its byte-order mark</td>
+<td><a class="xref" href="../../api/Bodu.Text.EncodingDetection.html">EncodingDetection</a></td>
+<td>Non-allocating <code>TryDetectByPreamble</code> over the five canonical Unicode preambles.</td>
+</tr>
+<tr>
+<td>Span- and UTF-8-friendly transcoding and validation</td>
+<td><a class="xref" href="../../api/Bodu.Text.EncodingExtensions.html">EncodingExtensions</a>, <a class="xref" href="../../api/Bodu.Text.StringEncodingExtensions.html">StringEncodingExtensions</a></td>
+<td>Encode, decode, transcode, preamble handling, pooled conversions.</td>
+</tr>
+<tr>
+<td>Centralized argument guards in your own code</td>
+<td><a class="xref" href="../../api/Bodu.ThrowHelper.html">ThrowHelper</a></td>
+<td><code>ThrowIfNull</code>, <code>ThrowIfZero</code>, range / enum / array / span checks; <code>[CallerArgumentExpression]</code> captures parameter names automatically.</td>
+</tr>
+</tbody>
+</table>
+<p>Not sure which collection fits? The <a href="../../guides/core/choosing-a-collection.html">Choosing a collection</a> guide is a full decision tree across the namespace — by access pattern, by capacity and lifecycle, and by concurrency. <code>Bodu.Core</code> deliberately does not duplicate BCL primitives; every type adds a contract that <code>List&lt;T&gt;</code>, <code>Dictionary&lt;TKey,TValue&gt;</code>, or <code>Queue&lt;T&gt;</code> does not provide.</p>
+<h2 id="design-notes">Design notes</h2>
+<p>The same conventions that govern the rest of the suite start here:</p>
+<ul>
+<li><strong>Small by intent.</strong> Each namespace solves one coherent problem; anything the BCL already covers well is left to the BCL.</li>
+<li><strong>Nullable reference types</strong> are enabled throughout, so public APIs make their null-intent explicit — and the <code>ThrowHelper</code> guards enforce it at runtime.</li>
+<li><strong>Allocation-aware by default.</strong> The collections are ring-backed to avoid element shifting, the buffer builder rents from <code>ArrayPool&lt;T&gt;</code>, and the <code>Bodu.Text</code> surface is span-first with UTF-8 fast paths.</li>
+<li><strong>Documentation-first.</strong> Every public member carries XML documentation; the API reference on this site is generated directly from the source.</li>
+</ul>
+<h2 id="install">Install</h2>
+<pre><code class="lang-bash">dotnet add package Bodu.Core
+dotnet add package Bodu.Collections
+dotnet add package Bodu.Collections.Concurrent
+</code></pre>
+<p>Targets <code>net8.0</code>. No external runtime dependencies. The <code>Bodu.Text</code> namespace is included in <code>Bodu.Core</code> — no separate install. Add <code>Bodu.Collections</code> for the specialized collection catalogue (it depends on <code>Bodu.Core</code>) and <code>Bodu.Collections.Concurrent</code> for the thread-safe variants (it depends on <code>Bodu.Collections</code>); <code>Bodu.Core</code> alone suffices for the guards, buffers, extensions, and encoding surfaces.</p>
+<p>A taste of the two surfaces together:</p>
+<pre><code class="lang-csharp">using Bodu;
+using Bodu.Collections.Generic;
+using Bodu.Text;
+
+// Bounded collections — a sliding window of the last four samples.
+var window = new CircularBuffer&lt;int&gt;(capacity: 4, allowOverwrite: true);
+window.Enqueue(1);
+window.Enqueue(2);
+
+// Argument guards — one line per rule, parameter name captured automatically.
+static double Average(IReadOnlyList&lt;int&gt; values)
+{
+    ThrowHelper.ThrowIfNull(values);
+    ThrowHelper.ThrowIfZero(values.Count);
+    return values.Average();
+}
+
+// Character encodings — detect a BOM and decode, skipping the preamble.
+if (EncodingDetection.TryDetectByPreamble(bytes, out var encoding))
+{
+    string text = encoding.GetStringSkippingPreamble(bytes);
+}
+</code></pre>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="core-foundations-concepts.html">Core Foundations — Concepts</a></strong> — the cross-member vocabulary: guard conventions, bounded vs. growable capacity, eviction policies, pooled buffers, and character-encoding terms.</li>
+<li><strong><a href="../core/index.html">Bodu.Core introduction</a></strong> — the foundation package's namespace map and headline types.</li>
+<li><strong><a href="../collections/index.html">Bodu.Collections introduction</a></strong> — the specialized collection catalogue.</li>
+<li><strong><a href="../collections-concurrent/index.html">Bodu.Collections.Concurrent introduction</a></strong> — the thread-safe collection companion.</li>
+<li><strong><a href="../text/index.html">Bodu.Text introduction</a></strong> — the character-encoding surface that ships inside <code>Bodu.Core</code>.</li>
+<li><strong><a href="../core/getting-started.html">Getting started</a></strong> — install plus a minimal sample for each headline type.</li>
+<li><strong><a href="../../guides/topics/core-foundations.html">Core Foundations guides</a></strong> — the recipe-style walk-throughs for this topic.</li>
+<li><strong>API reference:</strong> <a class="xref" href="../../api/Bodu.Collections.Generic.html">Bodu.Collections.Generic</a> · <a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.html">Bodu.Collections.Generic.Concurrent</a> · <a class="xref" href="../../api/Bodu.Text.html">Bodu.Text</a>.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

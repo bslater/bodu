@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Using Base58 | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Using Base58 | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="using-base58">Using Base58</h1>
+
+<p><code>Base58</code> is unlike the other encodings in this library: its radix (58) is <strong>not a power of two</strong>, so it cannot use
+the bit-stream technique that Base16, Base32, and Base64 share. Instead the implementation treats the input as a
+big-integer and repeatedly divides by 58 to extract digits.</p>
+<p>Base58's defining feature is that its alphabet excludes the four visually ambiguous characters <code>0</code>, <code>O</code>, <code>I</code>, and
+<code>l</code>. This makes it suitable for any context where a user might transcribe the encoded form by hand — Bitcoin
+addresses, IPFS CIDs, Solana / Stellar identifiers, Flickr short URLs.</p>
+<pre><code>input bytes        : 00 EB 15 23 1D FC EB 60 92 58 86 B6 7D 06 52 99 92 59 15 AE B1 72 C0 66 47
+                                                                                (Bitcoin payload)
+                     ┌── leading 0x00 → leading '1' character ──┐
+                     │  remaining 24 bytes → big-integer encode │
+encoded text       : 1NS17iag9jJgTHD1VXjvLCEnZuQ3rJDE9L          (Bitcoin/Flickr)
+</code></pre>
+<h2 id="quick-reference">Quick reference</h2>
+<pre><code class="lang-csharp">using Bodu.Text.Encoding;
+
+byte[] payload = Convert.FromHexString(&quot;00EB15231DFCEB60925886B67D065299925915AEB172C06647&quot;);
+
+// Bitcoin/Flickr alphabet (default)
+string address = Base58.Encode(payload);
+// &quot;1NS17iag9jJgTHD1VXjvLCEnZuQ3rJDE9L&quot;
+
+// Decode back
+byte[] back = Base58.Decode(address);
+
+// Ripple alphabet (XRP ledger)
+string rippled = Base58.Encode(payload, Base58Variant.Ripple);
+</code></pre>
+<h2 id="variant-comparison">Variant comparison</h2>
+<table>
+<thead>
+<tr>
+<th>Variant</th>
+<th>Alphabet ordering</th>
+<th>Used by</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BitcoinFlickr</code> (default)</td>
+<td>Digits ascending, then upper-case letters (minus <code>O</code>, <code>I</code>), then lower-case letters (minus <code>l</code>)</td>
+<td>Bitcoin, IPFS, Solana, NEAR, Stellar, Flickr</td>
+</tr>
+<tr>
+<td><code>Ripple</code></td>
+<td>Permuted ordering specific to the XRP ledger</td>
+<td>Ripple / XRP</td>
+</tr>
+</tbody>
+</table>
+<p>Both variants use the same 58 characters — only the <em>order</em> differs, so a string encoded under one variant
+decodes to different bytes under the other.</p>
+<h2 id="leading-zeros">Leading zeros</h2>
+<p>Because Base58 uses big-integer arithmetic, leading zero bytes would normally be lost. The Bitcoin convention
+preserves them as <strong>leading <code>1</code> characters</strong> in the encoded form (where <code>1</code> is <code>alphabet[0]</code>):</p>
+<table>
+<thead>
+<tr>
+<th>Input bytes</th>
+<th>Encoded</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>0x00</code></td>
+<td><code>1</code></td>
+</tr>
+<tr>
+<td><code>0x00 0x00</code></td>
+<td><code>11</code></td>
+</tr>
+<tr>
+<td><code>0x00 0x01</code></td>
+<td><code>12</code></td>
+</tr>
+<tr>
+<td><code>0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00</code></td>
+<td><code>1111111111</code></td>
+</tr>
+</tbody>
+</table>
+<p>This is the rule that makes Bitcoin P2PKH addresses (which always start with the mainnet version byte <code>0x00</code>)
+always start with <code>1</code> in their encoded form.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">// Round trip preserves leading zero bytes exactly:
+byte[] withZeros = new byte[] { 0x00, 0x00, 0xDE, 0xAD };
+string encoded = Base58.Encode(withZeros);  // &quot;115Q&quot;
+byte[] back = Base58.Decode(encoded);       // back.SequenceEqual(withZeros)
+</code></pre>
+<h2 id="excluded-characters">Excluded characters</h2>
+<p>The decoder rejects the four visually ambiguous characters that the alphabet intentionally omits:</p>
+<pre><code class="lang-csharp">Base58.Decode(&quot;0Ajdvzr&quot;);  // FormatException — '0' (zero) excluded
+Base58.Decode(&quot;OAjdvzr&quot;);  // FormatException — 'O' (capital O) excluded
+Base58.Decode(&quot;IAjdvzr&quot;);  // FormatException — 'I' (capital I) excluded
+Base58.Decode(&quot;lAjdvzr&quot;);  // FormatException — 'l' (lower L) excluded
+</code></pre>
+<p>This is intentional — a user transcribing <code>1NS17</code> might write <code>lNS17</code> or <code>INS17</code>, and the decoder rejecting those
+inputs catches the typo at the input boundary rather than silently producing different bytes.</p>
+<h2 id="lenient-parsing">Lenient parsing</h2>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BaseFormatStyles.IgnoreWhitespace</code></td>
+<td>Strip ASCII space / tab / CR / LF anywhere</td>
+</tr>
+<tr>
+<td><code>BaseFormatStyles.AllowPrefix</code></td>
+<td>No-op for Base58</td>
+</tr>
+<tr>
+<td><code>BaseFormatStyles.AllowMissingPadding</code></td>
+<td>No-op for Base58 (no padding character)</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-csharp">// User-pasted address with stray spaces — strip and decode
+byte[] payload = Base58.Decode(
+    &quot;  1NS17iag9jJgTHD1VXjvLCEnZuQ3rJDE9L  &quot;,
+    Base58Variant.BitcoinFlickr,
+    BaseFormatStyles.IgnoreWhitespace);
+</code></pre>
+<h2 id="span-path">Span path</h2>
+<pre><code class="lang-csharp">// Predict an upper bound (exact length is data-dependent for Base58)
+int maxChars = Base58.GetMaxEncodedLength(payload.Length);
+char[] buffer = new char[maxChars];
+
+int written = Base58.Encode(payload, buffer);
+ReadOnlySpan&lt;char&gt; result = buffer.AsSpan(0, written);
+</code></pre>
+<p>Base58 uses big-integer arithmetic, so there is no <code>OperationStatus</code> streaming path: each operation requires the
+entire input to be available. The <code>EncodeToUtf8</code> / <code>DecodeFromUtf8</code> methods exist for API consistency with the
+other encodings but behave as a single-shot transform.</p>
+<h2 id="validation-and-sizing">Validation and sizing</h2>
+<pre><code class="lang-csharp">Base58.IsValid(&quot;1NS17iag9jJgTHD1VXjvLCEnZuQ3rJDE9L&quot;);  // true
+Base58.IsValid(&quot;0NS17iag&quot;);                            // false ('0' excluded)
+Base58.IsBase58Digit('1');                              // true
+Base58.IsBase58Digit('0');                              // false
+
+Base58.GetMaxEncodedLength(25);  // ≈ 35 (upper bound)
+Base58.GetMaxDecodedLength(34);  // ≈ 25 (upper bound)
+</code></pre>
+<p>Exact encoded length depends on the actual data (specifically the leading-zero count and the magnitude of the
+non-zero portion), so the library only exposes <code>GetMaxEncodedLength</code> / <code>GetMaxDecodedLength</code>. Code that needs the
+exact length can call <code>Encode</code> / <code>Decode</code> and use the result's length.</p>
+<h2 id="common-patterns">Common patterns</h2>
+<h3 id="bitcoin-p2pkh-address-payload-extraction">Bitcoin P2PKH address payload extraction</h3>
+<pre><code class="lang-csharp">// payload = [version byte][20-byte HASH160][4-byte checksum]
+byte[] payload = Base58.Decode(address);
+
+byte version       = payload[0];
+ReadOnlySpan&lt;byte&gt; hash160 = payload.AsSpan(1, 20);
+ReadOnlySpan&lt;byte&gt; checksum = payload.AsSpan(21, 4);
+</code></pre>
+<p>(The example above decodes the raw payload and leaves checksum verification to the caller. For checksum-protected
+payloads, prefer <a class="xref" href="../../api/Bodu.Text.Encoding.Base58Check.html">Base58Check</a> below, which appends and verifies the 4-byte double-hash
+checksum for you.)</p>
+<h3 id="round-trip-short-id">Round-trip short ID</h3>
+<pre><code class="lang-csharp">byte[] randomBytes = RandomNumberGenerator.GetBytes(8);
+string shortId = Base58.Encode(randomBytes);  // ≈ 11 characters, no ambiguity
+</code></pre>
+<h3 id="encode-a-guid-as-an-ambiguity-free-token">Encode a GUID as an ambiguity-free token</h3>
+<p><code>Base58</code> encodes a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.guid">Guid</a> directly — a ~22-character token with none of the visually confusable
+<code>0</code>/<code>O</code>/<code>I</code>/<code>l</code> characters, ideal for an identifier a human might read aloud or transcribe:</p>
+<pre><code class="lang-csharp">Guid id = Guid.NewGuid();
+
+string token = Base58.Encode(id);                       // no encode-side options — Base58 has no formatting flags
+Guid back    = Base58.DecodeGuid(token);                // FormatException unless it decodes to 16 bytes
+bool ok      = Base58.TryDecodeGuid(token, out Guid parsed);
+</code></pre>
+<p>The 16 bytes are the GUID's native mixed-endian layout (matching <code>Guid.TryWriteBytes</code>), so the round trip is exact.
+Because Base58 preserves leading-zero bytes as leading <code>1</code> characters, a GUID whose first bytes are zero still
+round-trips losslessly.</p>
+<h2 id="base58check--checksum-protected-payloads">Base58Check — checksum-protected payloads</h2>
+<p><a class="xref" href="../../api/Bodu.Text.Encoding.Base58Check.html">Base58Check</a> wraps Base58 with the Bitcoin-style 4-byte checksum: <code>Encode</code> appends a
+truncated double-hash of the payload, and <code>Decode</code> verifies it (throwing on a corrupted string) before returning the
+original bytes. This is the right entry point for address- and key-style payloads where a single mistyped character
+must be rejected rather than silently decoded.</p>
+<pre><code class="lang-csharp">using Bodu.Text.Encoding;
+
+string encoded = Base58Check.Encode(payload);                 // payload + checksum, Base58
+byte[] decoded = Base58Check.Decode(encoded);                 // verifies, then strips the checksum
+
+bool valid = Base58Check.IsValid(encoded);                    // non-throwing validity probe
+</code></pre>
+<p>Like the core type, it offers a span path and explicit sizing, and accepts a <code>Base58Variant</code>
+(default <code>BitcoinFlickr</code>):</p>
+<pre><code class="lang-csharp">Span&lt;byte&gt; destination = stackalloc byte[Base58Check.GetMaxDecodedLength(encoded.Length)];
+if (Base58Check.TryDecode(encoded, destination, out int written))
+    Use(destination[..written]);
+</code></pre>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="base32.html">Base32 guide</a></strong> — when you want human-friendly encoding but power-of-two radix.</li>
+<li><strong><a href="base85.html">Base85 guide</a></strong> — when you need the densest possible ASCII-safe encoding.</li>
+<li><strong><a href="binary-encodings-interface.html"><code>IBinaryEncoding</code> interface</a></strong> — runtime-selected encoding choice.</li>
+<li><strong><a href="../topics/text-and-serialization.html">Text &amp; Serialization guides</a></strong> — every guide in this topic, across Bodu.Text.Encoding, Bodu.Text.Formats, and the Bencode / TOML serializers.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

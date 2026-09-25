@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class TomlNode | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class TomlNode | BODU ">
+    
+    <meta name="description" content="Represents a single node in a mutable TOML document object model, serving as the base for the three concrete node kinds — , , and .">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Text.Toml.Nodes.TomlNode">
+
+
+
+  <h1 id="Bodu_Text_Toml_Nodes_TomlNode" data-uid="Bodu.Text.Toml.Nodes.TomlNode" class="text-break">Class TomlNode</h1>
+  <div class="markdown level0 summary"><p>Represents a single node in a mutable TOML document object model, serving as the base for the three concrete node
+kinds — <a class="xref" href="Bodu.Text.Toml.Nodes.TomlObject.html">TomlObject</a>, <a class="xref" href="Bodu.Text.Toml.Nodes.TomlArray.html">TomlArray</a>, and <a class="xref" href="Bodu.Text.Toml.Nodes.TomlValue.html">TomlValue</a>.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><span class="xref">TomlNode</span></div>
+      <div class="level2"><a class="xref" href="Bodu.Text.Toml.Nodes.TomlArray.html">TomlArray</a></div>
+      <div class="level2"><a class="xref" href="Bodu.Text.Toml.Nodes.TomlObject.html">TomlObject</a></div>
+      <div class="level2"><a class="xref" href="Bodu.Text.Toml.Nodes.TomlValue.html">TomlValue</a></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Toml.html">Toml</a>.<a class="xref" href="Bodu.Text.Toml.Nodes.html">Nodes</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Text.Toml.dll</h6>
+  <h5 id="Bodu_Text_Toml_Nodes_TomlNode_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public abstract class TomlNode</code></pre>
+  </div>
+  <h5 id="Bodu_Text_Toml_Nodes_TomlNode_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+A node tree is editable in place: containers expose the standard collection surfaces, scalar values can be replaced,
+and any node can be re-serialized to normalized TOML through <a class="xref" href="Bodu.Text.Toml.Nodes.TomlNode.WriteTo.html#Bodu_Text_Toml_Nodes_TomlNode_WriteTo_Bodu_Text_Toml_Writer_Utf8TomlWriter_">WriteTo(Utf8TomlWriter)</a> or <a class="xref" href="Bodu.Text.Toml.Nodes.TomlNode.ToUtf8Bytes.html#Bodu_Text_Toml_Nodes_TomlNode_ToUtf8Bytes">ToUtf8Bytes()</a>.
+TOML defines eight scalar value kinds — a string, a 64-bit integer, a float, a Boolean, and the four date-time kinds
+— and has no null token, so the model defines no null node; a tree that still contains a <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>
+entry cannot be written.
+</p>
+<p>
+A TOML document's root is always a table, so a document cannot be a bare scalar or array.
+<a class="xref" href="Bodu.Text.Toml.Nodes.TomlNode.Parse.html#Bodu_Text_Toml_Nodes_TomlNode_Parse_System_ReadOnlySpan_System_Byte__">Parse(ReadOnlySpan&lt;byte&gt;)</a> therefore yields a <a class="xref" href="Bodu.Text.Toml.Nodes.TomlObject.html">TomlObject</a> root, and serializing a node
+whose root is not a table throws.
+</p>
+<p>
+Each node has at most one parent. Adding a node that already belongs to another container throws an
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a>.
+</p>
+</div>
+  <h5 id="Bodu_Text_Toml_Nodes_TomlNode_examples"><strong>Examples</strong></h5>
+  <pre><code class="lang-csharp">// Parse a document, edit it in place, add a nested table, then serialize the result.
+TomlObject config = TomlNode.Parse("name = \"app\"\nport = 8080\n"u8)!.AsObject();
+config["port"] = 9090;        // replace a scalar
+config["debug"] = true;       // add a scalar
+
+var server = new TomlObject();
+server["host"] = "localhost";
+config["server"] = server;    // add a nested table
+
+// Emits the scalar members as key/value lines, then the nested table as a [server] block.
+string toml = config.ToString();</code></pre>
+
+  <h3 id="properties">Properties
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Text_Toml_Nodes_TomlNode_Item_System_Int32_" data-uid="Bodu.Text.Toml.Nodes.TomlNode.Item(System.Int32)">
+          <a class="xref" href="Bodu.Text.Toml.Nodes.TomlNode.Item.html#Bodu_Text_Toml_Nodes_TomlNode_Item_System_Int32_">this[int]</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets or sets the element at the specified index, treating this node as a <a class="xref" href="Bodu.Text.Toml.Nodes.TomlArray.html">TomlArray</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Nodes_TomlNode_Item_System_String_" data-uid="Bodu.Text.Toml.Nodes.TomlNode.Item(System.String)">
+          <a class="xref" href="Bodu.Text.Toml.Nodes.TomlNode.Item.html#Bodu_Text_Toml_Nodes_TomlNode_Item_System_String_">this[string]</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets or sets the value associated with the specified property name, treating this node as a
+<a class="xref" href="Bodu.Text.Toml.Nodes.TomlObject.html">TomlObject</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Nodes_TomlNode_Parent" data-uid="Bodu.Text.Toml.Nodes.TomlNode.Parent">
+          <a class="xref" href="Bodu.Text.Toml.Nodes.TomlNode.Parent.html#Bodu_Text_Toml_Nodes_TomlNode_Parent">Parent</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the node that contains this node, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when this node is the root of its tree.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Nodes_TomlNode_Root" data-uid="Bodu.Text.Toml.Nodes.TomlNode.Root">
+          <a class="xref" href="Bodu.Text.Toml.Nodes.TomlNode.Root.html#Bodu_Text_Toml_Nodes_TomlNode_Root">Root</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the topmost node of the tree this node belongs to.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Text_Toml_Nodes_TomlNode_AsArray" data-uid="Bodu.Text.Toml.Nodes.TomlNode.AsArray">
+          <a class="xref" href="Bodu.Text.Toml.Nodes.TomlNode.AsArray.html#Bodu_Text_Toml_Nodes_TomlNode_AsArray">AsArray()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns this node as a <a class="xref" href="Bodu.Text.Toml.Nodes.TomlArray.html">TomlArray</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Nodes_TomlNode_AsObject" data-uid="Bodu.Text.Toml.Nodes.TomlNode.AsObject">
+          <a class="xref" href="Bodu.Text.Toml.Nodes.TomlNode.AsObject.html#Bodu_Text_Toml_Nodes_TomlNode_AsObject">AsObject()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns this node as a <a class="xref" href="Bodu.Text.Toml.Nodes.TomlObject.html">TomlObject</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Nodes_TomlNode_AsValue" data-uid="Bodu.Text.Toml.Nodes.TomlNode.AsValue">
+          <a class="xref" href="Bodu.Text.Toml.Nodes.TomlNode.AsValue.html#Bodu_Text_Toml_Nodes_TomlNode_AsValue">AsValue()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns this node as a <a class="xref" href="Bodu.Text.Toml.Nodes.TomlValue.html">TomlValue</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Nodes_TomlNode_DeepClone" data-uid="Bodu.Text.Toml.Nodes.TomlNode.DeepClone">
+          <a class="xref" href="Bodu.Text.Toml.Nodes.TomlNode.DeepClone.html#Bodu_Text_Toml_Nodes_TomlNode_DeepClone">DeepClone()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates a deep copy of this node and its entire subtree.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Nodes_TomlNode_DeepEquals_Bodu_Text_Toml_Nodes_TomlNode_Bodu_Text_Toml_Nodes_TomlNode_" data-uid="Bodu.Text.Toml.Nodes.TomlNode.DeepEquals(Bodu.Text.Toml.Nodes.TomlNode,Bodu.Text.Toml.Nodes.TomlNode)">
+          <a class="xref" href="Bodu.Text.Toml.Nodes.TomlNode.DeepEquals.html#Bodu_Text_Toml_Nodes_TomlNode_DeepEquals_Bodu_Text_Toml_Nodes_TomlNode_Bodu_Text_Toml_Nodes_TomlNode_">DeepEquals(TomlNode?, TomlNode?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether two node trees are structurally equal.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Nodes_TomlNode_GetValueKind" data-uid="Bodu.Text.Toml.Nodes.TomlNode.GetValueKind">
+          <a class="xref" href="Bodu.Text.Toml.Nodes.TomlNode.GetValueKind.html#Bodu_Text_Toml_Nodes_TomlNode_GetValueKind">GetValueKind()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the kind of value this node represents.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Nodes_TomlNode_GetValue__1" data-uid="Bodu.Text.Toml.Nodes.TomlNode.GetValue``1">
+          <a class="xref" href="Bodu.Text.Toml.Nodes.TomlNode.GetValue.html#Bodu_Text_Toml_Nodes_TomlNode_GetValue__1">GetValue&lt;T&gt;()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the scalar value of this node converted to the requested type, treating this node as a
+<a class="xref" href="Bodu.Text.Toml.Nodes.TomlValue.html">TomlValue</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Nodes_TomlNode_Parse_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Toml.Nodes.TomlNode.Parse(System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.Text.Toml.Nodes.TomlNode.Parse.html#Bodu_Text_Toml_Nodes_TomlNode_Parse_System_ReadOnlySpan_System_Byte__">Parse(ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Parses a single TOML document into a node tree.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Nodes_TomlNode_Parse_System_ReadOnlySpan_System_Byte__Bodu_Text_Toml_Nodes_TomlNodeOptions_" data-uid="Bodu.Text.Toml.Nodes.TomlNode.Parse(System.ReadOnlySpan{System.Byte},Bodu.Text.Toml.Nodes.TomlNodeOptions)">
+          <a class="xref" href="Bodu.Text.Toml.Nodes.TomlNode.Parse.html#Bodu_Text_Toml_Nodes_TomlNode_Parse_System_ReadOnlySpan_System_Byte__Bodu_Text_Toml_Nodes_TomlNodeOptions_">Parse(ReadOnlySpan&lt;byte&gt;, TomlNodeOptions)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Parses a single TOML document into a node tree, using the supplied options for every table created while
+parsing.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Nodes_TomlNode_ToString" data-uid="Bodu.Text.Toml.Nodes.TomlNode.ToString">
+          <a class="xref" href="Bodu.Text.Toml.Nodes.TomlNode.ToString.html#Bodu_Text_Toml_Nodes_TomlNode_ToString">ToString()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a string representation of this node.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Nodes_TomlNode_ToUtf8Bytes" data-uid="Bodu.Text.Toml.Nodes.TomlNode.ToUtf8Bytes">
+          <a class="xref" href="Bodu.Text.Toml.Nodes.TomlNode.ToUtf8Bytes.html#Bodu_Text_Toml_Nodes_TomlNode_ToUtf8Bytes">ToUtf8Bytes()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Serializes this node to a new normalized TOML byte array.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Nodes_TomlNode_WriteTo_Bodu_Text_Toml_Writer_Utf8TomlWriter_" data-uid="Bodu.Text.Toml.Nodes.TomlNode.WriteTo(Bodu.Text.Toml.Writer.Utf8TomlWriter)">
+          <a class="xref" href="Bodu.Text.Toml.Nodes.TomlNode.WriteTo.html#Bodu_Text_Toml_Nodes_TomlNode_WriteTo_Bodu_Text_Toml_Writer_Utf8TomlWriter_">WriteTo(Utf8TomlWriter)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes the normalized TOML encoding of this node to the supplied writer.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="operators">Operators
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Text_Toml_Nodes_TomlNode_op_Explicit_Bodu_Text_Toml_Nodes_TomlNode__System_Boolean" data-uid="Bodu.Text.Toml.Nodes.TomlNode.op_Explicit(Bodu.Text.Toml.Nodes.TomlNode)~System.Boolean">
+          <a class="xref" href="Bodu.Text.Toml.Nodes.TomlNode.op_Explicit.html#Bodu_Text_Toml_Nodes_TomlNode_op_Explicit_Bodu_Text_Toml_Nodes_TomlNode__System_Boolean">explicit operator bool(TomlNode)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads the scalar value of the supplied node as a Boolean.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Nodes_TomlNode_op_Explicit_Bodu_Text_Toml_Nodes_TomlNode__System_DateOnly" data-uid="Bodu.Text.Toml.Nodes.TomlNode.op_Explicit(Bodu.Text.Toml.Nodes.TomlNode)~System.DateOnly">
+          <a class="xref" href="Bodu.Text.Toml.Nodes.TomlNode.op_Explicit.html#Bodu_Text_Toml_Nodes_TomlNode_op_Explicit_Bodu_Text_Toml_Nodes_TomlNode__System_DateOnly">explicit operator DateOnly(TomlNode)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads the scalar value of the supplied node as a local date.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Nodes_TomlNode_op_Explicit_Bodu_Text_Toml_Nodes_TomlNode__System_DateTime" data-uid="Bodu.Text.Toml.Nodes.TomlNode.op_Explicit(Bodu.Text.Toml.Nodes.TomlNode)~System.DateTime">
+          <a class="xref" href="Bodu.Text.Toml.Nodes.TomlNode.op_Explicit.html#Bodu_Text_Toml_Nodes_TomlNode_op_Explicit_Bodu_Text_Toml_Nodes_TomlNode__System_DateTime">explicit operator DateTime(TomlNode)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads the scalar value of the supplied node as a local date-time.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Nodes_TomlNode_op_Explicit_Bodu_Text_Toml_Nodes_TomlNode__System_DateTimeOffset" data-uid="Bodu.Text.Toml.Nodes.TomlNode.op_Explicit(Bodu.Text.Toml.Nodes.TomlNode)~System.DateTimeOffset">
+          <a class="xref" href="Bodu.Text.Toml.Nodes.TomlNode.op_Explicit.html#Bodu_Text_Toml_Nodes_TomlNode_op_Explicit_Bodu_Text_Toml_Nodes_TomlNode__System_DateTimeOffset">explicit operator DateTimeOffset(TomlNode)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads the scalar value of the supplied node as an offset date-time.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Nodes_TomlNode_op_Explicit_Bodu_Text_Toml_Nodes_TomlNode__System_Double" data-uid="Bodu.Text.Toml.Nodes.TomlNode.op_Explicit(Bodu.Text.Toml.Nodes.TomlNode)~System.Double">
+          <a class="xref" href="Bodu.Text.Toml.Nodes.TomlNode.op_Explicit.html#Bodu_Text_Toml_Nodes_TomlNode_op_Explicit_Bodu_Text_Toml_Nodes_TomlNode__System_Double">explicit operator double(TomlNode)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads the scalar value of the supplied node as a floating-point value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Nodes_TomlNode_op_Explicit_Bodu_Text_Toml_Nodes_TomlNode__System_Int32" data-uid="Bodu.Text.Toml.Nodes.TomlNode.op_Explicit(Bodu.Text.Toml.Nodes.TomlNode)~System.Int32">
+          <a class="xref" href="Bodu.Text.Toml.Nodes.TomlNode.op_Explicit.html#Bodu_Text_Toml_Nodes_TomlNode_op_Explicit_Bodu_Text_Toml_Nodes_TomlNode__System_Int32">explicit operator int(TomlNode)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads the scalar value of the supplied node as a 32-bit integer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Nodes_TomlNode_op_Explicit_Bodu_Text_Toml_Nodes_TomlNode__System_Int64" data-uid="Bodu.Text.Toml.Nodes.TomlNode.op_Explicit(Bodu.Text.Toml.Nodes.TomlNode)~System.Int64">
+          <a class="xref" href="Bodu.Text.Toml.Nodes.TomlNode.op_Explicit.html#Bodu_Text_Toml_Nodes_TomlNode_op_Explicit_Bodu_Text_Toml_Nodes_TomlNode__System_Int64">explicit operator long(TomlNode)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads the scalar value of the supplied node as a 64-bit integer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Nodes_TomlNode_op_Explicit_Bodu_Text_Toml_Nodes_TomlNode__System_String" data-uid="Bodu.Text.Toml.Nodes.TomlNode.op_Explicit(Bodu.Text.Toml.Nodes.TomlNode)~System.String">
+          <a class="xref" href="Bodu.Text.Toml.Nodes.TomlNode.op_Explicit.html#Bodu_Text_Toml_Nodes_TomlNode_op_Explicit_Bodu_Text_Toml_Nodes_TomlNode__System_String">explicit operator string(TomlNode)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads the scalar value of the supplied node as a string.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Nodes_TomlNode_op_Explicit_Bodu_Text_Toml_Nodes_TomlNode__System_TimeOnly" data-uid="Bodu.Text.Toml.Nodes.TomlNode.op_Explicit(Bodu.Text.Toml.Nodes.TomlNode)~System.TimeOnly">
+          <a class="xref" href="Bodu.Text.Toml.Nodes.TomlNode.op_Explicit.html#Bodu_Text_Toml_Nodes_TomlNode_op_Explicit_Bodu_Text_Toml_Nodes_TomlNode__System_TimeOnly">explicit operator TimeOnly(TomlNode)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads the scalar value of the supplied node as a local time.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Nodes_TomlNode_op_Implicit_System_Boolean__Bodu_Text_Toml_Nodes_TomlNode" data-uid="Bodu.Text.Toml.Nodes.TomlNode.op_Implicit(System.Boolean)~Bodu.Text.Toml.Nodes.TomlNode">
+          <a class="xref" href="Bodu.Text.Toml.Nodes.TomlNode.op_Implicit.html#Bodu_Text_Toml_Nodes_TomlNode_op_Implicit_System_Boolean__Bodu_Text_Toml_Nodes_TomlNode">implicit operator TomlNode(bool)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates a <a class="xref" href="Bodu.Text.Toml.Nodes.TomlValue.html">TomlValue</a> that wraps the supplied Boolean value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Nodes_TomlNode_op_Implicit_System_DateOnly__Bodu_Text_Toml_Nodes_TomlNode" data-uid="Bodu.Text.Toml.Nodes.TomlNode.op_Implicit(System.DateOnly)~Bodu.Text.Toml.Nodes.TomlNode">
+          <a class="xref" href="Bodu.Text.Toml.Nodes.TomlNode.op_Implicit.html#Bodu_Text_Toml_Nodes_TomlNode_op_Implicit_System_DateOnly__Bodu_Text_Toml_Nodes_TomlNode">implicit operator TomlNode(DateOnly)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates a <a class="xref" href="Bodu.Text.Toml.Nodes.TomlValue.html">TomlValue</a> that wraps the supplied local date value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Nodes_TomlNode_op_Implicit_System_DateTime__Bodu_Text_Toml_Nodes_TomlNode" data-uid="Bodu.Text.Toml.Nodes.TomlNode.op_Implicit(System.DateTime)~Bodu.Text.Toml.Nodes.TomlNode">
+          <a class="xref" href="Bodu.Text.Toml.Nodes.TomlNode.op_Implicit.html#Bodu_Text_Toml_Nodes_TomlNode_op_Implicit_System_DateTime__Bodu_Text_Toml_Nodes_TomlNode">implicit operator TomlNode(DateTime)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates a <a class="xref" href="Bodu.Text.Toml.Nodes.TomlValue.html">TomlValue</a> that wraps the supplied local date-time value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Nodes_TomlNode_op_Implicit_System_DateTimeOffset__Bodu_Text_Toml_Nodes_TomlNode" data-uid="Bodu.Text.Toml.Nodes.TomlNode.op_Implicit(System.DateTimeOffset)~Bodu.Text.Toml.Nodes.TomlNode">
+          <a class="xref" href="Bodu.Text.Toml.Nodes.TomlNode.op_Implicit.html#Bodu_Text_Toml_Nodes_TomlNode_op_Implicit_System_DateTimeOffset__Bodu_Text_Toml_Nodes_TomlNode">implicit operator TomlNode(DateTimeOffset)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates a <a class="xref" href="Bodu.Text.Toml.Nodes.TomlValue.html">TomlValue</a> that wraps the supplied offset date-time value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Nodes_TomlNode_op_Implicit_System_Double__Bodu_Text_Toml_Nodes_TomlNode" data-uid="Bodu.Text.Toml.Nodes.TomlNode.op_Implicit(System.Double)~Bodu.Text.Toml.Nodes.TomlNode">
+          <a class="xref" href="Bodu.Text.Toml.Nodes.TomlNode.op_Implicit.html#Bodu_Text_Toml_Nodes_TomlNode_op_Implicit_System_Double__Bodu_Text_Toml_Nodes_TomlNode">implicit operator TomlNode(double)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates a <a class="xref" href="Bodu.Text.Toml.Nodes.TomlValue.html">TomlValue</a> that wraps the supplied floating-point value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Nodes_TomlNode_op_Implicit_System_Int32__Bodu_Text_Toml_Nodes_TomlNode" data-uid="Bodu.Text.Toml.Nodes.TomlNode.op_Implicit(System.Int32)~Bodu.Text.Toml.Nodes.TomlNode">
+          <a class="xref" href="Bodu.Text.Toml.Nodes.TomlNode.op_Implicit.html#Bodu_Text_Toml_Nodes_TomlNode_op_Implicit_System_Int32__Bodu_Text_Toml_Nodes_TomlNode">implicit operator TomlNode(int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates a <a class="xref" href="Bodu.Text.Toml.Nodes.TomlValue.html">TomlValue</a> that wraps the supplied 32-bit integer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Nodes_TomlNode_op_Implicit_System_Int64__Bodu_Text_Toml_Nodes_TomlNode" data-uid="Bodu.Text.Toml.Nodes.TomlNode.op_Implicit(System.Int64)~Bodu.Text.Toml.Nodes.TomlNode">
+          <a class="xref" href="Bodu.Text.Toml.Nodes.TomlNode.op_Implicit.html#Bodu_Text_Toml_Nodes_TomlNode_op_Implicit_System_Int64__Bodu_Text_Toml_Nodes_TomlNode">implicit operator TomlNode(long)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates a <a class="xref" href="Bodu.Text.Toml.Nodes.TomlValue.html">TomlValue</a> that wraps the supplied 64-bit integer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Nodes_TomlNode_op_Implicit_System_String__Bodu_Text_Toml_Nodes_TomlNode" data-uid="Bodu.Text.Toml.Nodes.TomlNode.op_Implicit(System.String)~Bodu.Text.Toml.Nodes.TomlNode">
+          <a class="xref" href="Bodu.Text.Toml.Nodes.TomlNode.op_Implicit.html#Bodu_Text_Toml_Nodes_TomlNode_op_Implicit_System_String__Bodu_Text_Toml_Nodes_TomlNode">implicit operator TomlNode(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates a <a class="xref" href="Bodu.Text.Toml.Nodes.TomlValue.html">TomlValue</a> that wraps the supplied string.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Nodes_TomlNode_op_Implicit_System_TimeOnly__Bodu_Text_Toml_Nodes_TomlNode" data-uid="Bodu.Text.Toml.Nodes.TomlNode.op_Implicit(System.TimeOnly)~Bodu.Text.Toml.Nodes.TomlNode">
+          <a class="xref" href="Bodu.Text.Toml.Nodes.TomlNode.op_Implicit.html#Bodu_Text_Toml_Nodes_TomlNode_op_Implicit_System_TimeOnly__Bodu_Text_Toml_Nodes_TomlNode">implicit operator TomlNode(TimeOnly)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates a <a class="xref" href="Bodu.Text.Toml.Nodes.TomlValue.html">TomlValue</a> that wraps the supplied local time value.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

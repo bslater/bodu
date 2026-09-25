@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class NumericExtensions | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class NumericExtensions | BODU ">
+    
+    <meta name="description" content="Provides bit-level and byte-level transformations over the integral primitive types — endian conversion, byte and word swaps, bit reversal and rotation, and unchecked arithmetic helpers — for hashing, serialization, and protocol code.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Extensions.NumericExtensions">
+
+
+
+  <h1 id="Bodu_Extensions_NumericExtensions" data-uid="Bodu.Extensions.NumericExtensions" class="text-break">Class NumericExtensions</h1>
+  <div class="markdown level0 summary"><p>Provides bit-level and byte-level transformations over the integral primitive types — endian conversion, byte and
+word swaps, bit reversal and rotation, and unchecked arithmetic helpers — for hashing, serialization, and protocol
+code.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><span class="xref">NumericExtensions</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Extensions.html">Extensions</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Core.dll</h6>
+  <h5 id="Bodu_Extensions_NumericExtensions_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class NumericExtensions</code></pre>
+  </div>
+  <h5 id="Bodu_Extensions_NumericExtensions_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+Hash algorithms, network protocols, and binary file formats routinely require operations that the BCL either does
+not expose (bit reversal, word swap), exposes only on a single type (
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.binary.binaryprimitives">BinaryPrimitives</a> covers endianness but not rotation), or hides behind
+generic-math abstractions. This class collects those operations as a single, type-overloaded surface so the same
+call site can target <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint16">ushort</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint32">uint</a>, or <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint64">ulong</a>
+without wrapping the value in a generic helper.
+</p>
+<p>
+The API surface is grouped into: byte-order conversion (<code>GetBytes</code>, <code>ReverseBytes</code>), within-value
+rearrangement (<code>ReverseWords</code>, <code>ReverseBits</code>), bit rotation (<code>RotateBitsLeft</code>, <code>RotateBitsRight</code>
+), and unchecked arithmetic helpers under <code>Unchecked</code>. <code>ReverseBits</code> additionally accepts a
+<code>bitLength</code> overload for callers reversing only the low-order portion of a value, and <code>GetBytes</code> accepts a
+flag to control endianness explicitly rather than depending on host order.
+</p>
+<p>
+All operations are pure, branch-light, allocation-free for the value-typed overloads, and deterministic. Where a
+<code>byte[]</code> is returned (for example, <code>GetBytes</code> or <code>ReverseBits(byte[])</code>) a fresh array is allocated
+each call — callers wanting buffer reuse should slice into a pre-allocated <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span&lt;T&gt;</a> via the BCL
+primitives instead.
+</p>
+<example>
+<pre><code class="lang-csharp">// Swap byte order for big-endian wire encoding.
+uint host = 0x11_22_33_44u;
+uint network = host.ReverseBytes(); // =&gt; 0x44_33_22_11
+
+// Bit reversal — useful in CRC and DSP code.
+byte mask = 0b1011_0001;
+byte mirrored = mask.ReverseBits(); // =&gt; 0b1000_1101
+
+// Cyclic bit rotation — common in hashing primitives.
+uint rotated = 0x0000_00FFu.RotateBitsLeft(8); // =&gt; 0x0000_FF00</code></pre>
+</example>
+</div>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_GetBytes__1___0_System_Boolean_" data-uid="Bodu.Extensions.NumericExtensions.GetBytes``1(``0,System.Boolean)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.GetBytes.html#Bodu_Extensions_NumericExtensions_GetBytes__1___0_System_Boolean_">GetBytes&lt;T&gt;(T, bool)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a byte array representing the binary encoding of the specified numeric value, in the requested byte
+order.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_GreatestCommonDivisor_System_Int16_System_Int16_" data-uid="Bodu.Extensions.NumericExtensions.GreatestCommonDivisor(System.Int16,System.Int16)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.GreatestCommonDivisor.html#Bodu_Extensions_NumericExtensions_GreatestCommonDivisor_System_Int16_System_Int16_">GreatestCommonDivisor(short, short)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the greatest common divisor of two non-negative <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int16">short</a> values.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_GreatestCommonDivisor_System_Int16___" data-uid="Bodu.Extensions.NumericExtensions.GreatestCommonDivisor(System.Int16[])">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.GreatestCommonDivisor.html#Bodu_Extensions_NumericExtensions_GreatestCommonDivisor_System_Int16___">GreatestCommonDivisor(short[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the greatest common divisor of every element in the supplied array of non-negative <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int16">short</a>
+values.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_GreatestCommonDivisor_System_Int32_System_Int32_" data-uid="Bodu.Extensions.NumericExtensions.GreatestCommonDivisor(System.Int32,System.Int32)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.GreatestCommonDivisor.html#Bodu_Extensions_NumericExtensions_GreatestCommonDivisor_System_Int32_System_Int32_">GreatestCommonDivisor(int, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the greatest common divisor of two non-negative <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a> values.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_GreatestCommonDivisor_System_Int32___" data-uid="Bodu.Extensions.NumericExtensions.GreatestCommonDivisor(System.Int32[])">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.GreatestCommonDivisor.html#Bodu_Extensions_NumericExtensions_GreatestCommonDivisor_System_Int32___">GreatestCommonDivisor(int[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the greatest common divisor of every element in the supplied array of non-negative <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>
+values.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_GreatestCommonDivisor_System_Int64_System_Int64_" data-uid="Bodu.Extensions.NumericExtensions.GreatestCommonDivisor(System.Int64,System.Int64)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.GreatestCommonDivisor.html#Bodu_Extensions_NumericExtensions_GreatestCommonDivisor_System_Int64_System_Int64_">GreatestCommonDivisor(long, long)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the greatest common divisor of two non-negative <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a> values.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_GreatestCommonDivisor_System_Int64___" data-uid="Bodu.Extensions.NumericExtensions.GreatestCommonDivisor(System.Int64[])">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.GreatestCommonDivisor.html#Bodu_Extensions_NumericExtensions_GreatestCommonDivisor_System_Int64___">GreatestCommonDivisor(long[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the greatest common divisor of every element in the supplied array of non-negative <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a>
+values.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_GreatestCommonDivisor_System_UInt16_System_UInt16_" data-uid="Bodu.Extensions.NumericExtensions.GreatestCommonDivisor(System.UInt16,System.UInt16)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.GreatestCommonDivisor.html#Bodu_Extensions_NumericExtensions_GreatestCommonDivisor_System_UInt16_System_UInt16_">GreatestCommonDivisor(ushort, ushort)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the greatest common divisor of two <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint16">ushort</a> values.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_GreatestCommonDivisor_System_UInt16___" data-uid="Bodu.Extensions.NumericExtensions.GreatestCommonDivisor(System.UInt16[])">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.GreatestCommonDivisor.html#Bodu_Extensions_NumericExtensions_GreatestCommonDivisor_System_UInt16___">GreatestCommonDivisor(ushort[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the greatest common divisor of every element in the supplied array of <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint16">ushort</a> values.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_GreatestCommonDivisor_System_UInt32_System_UInt32_" data-uid="Bodu.Extensions.NumericExtensions.GreatestCommonDivisor(System.UInt32,System.UInt32)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.GreatestCommonDivisor.html#Bodu_Extensions_NumericExtensions_GreatestCommonDivisor_System_UInt32_System_UInt32_">GreatestCommonDivisor(uint, uint)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the greatest common divisor of two <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint32">uint</a> values.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_GreatestCommonDivisor_System_UInt32___" data-uid="Bodu.Extensions.NumericExtensions.GreatestCommonDivisor(System.UInt32[])">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.GreatestCommonDivisor.html#Bodu_Extensions_NumericExtensions_GreatestCommonDivisor_System_UInt32___">GreatestCommonDivisor(uint[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the greatest common divisor of every element in the supplied array of <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint32">uint</a> values.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_GreatestCommonDivisor_System_UInt64_System_UInt64_" data-uid="Bodu.Extensions.NumericExtensions.GreatestCommonDivisor(System.UInt64,System.UInt64)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.GreatestCommonDivisor.html#Bodu_Extensions_NumericExtensions_GreatestCommonDivisor_System_UInt64_System_UInt64_">GreatestCommonDivisor(ulong, ulong)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the greatest common divisor of two <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint64">ulong</a> values.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_GreatestCommonDivisor_System_UInt64___" data-uid="Bodu.Extensions.NumericExtensions.GreatestCommonDivisor(System.UInt64[])">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.GreatestCommonDivisor.html#Bodu_Extensions_NumericExtensions_GreatestCommonDivisor_System_UInt64___">GreatestCommonDivisor(ulong[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the greatest common divisor of every element in the supplied array of <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint64">ulong</a> values.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_IsPrime_System_Int16_" data-uid="Bodu.Extensions.NumericExtensions.IsPrime(System.Int16)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.IsPrime.html#Bodu_Extensions_NumericExtensions_IsPrime_System_Int16_">IsPrime(short)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a value indicating whether the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int16">short</a> is a prime number.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_IsPrime_System_Int32_" data-uid="Bodu.Extensions.NumericExtensions.IsPrime(System.Int32)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.IsPrime.html#Bodu_Extensions_NumericExtensions_IsPrime_System_Int32_">IsPrime(int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a value indicating whether the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a> is a prime number.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_IsPrime_System_Int64_" data-uid="Bodu.Extensions.NumericExtensions.IsPrime(System.Int64)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.IsPrime.html#Bodu_Extensions_NumericExtensions_IsPrime_System_Int64_">IsPrime(long)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a value indicating whether the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a> is a prime number.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_IsPrime_System_UInt16_" data-uid="Bodu.Extensions.NumericExtensions.IsPrime(System.UInt16)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.IsPrime.html#Bodu_Extensions_NumericExtensions_IsPrime_System_UInt16_">IsPrime(ushort)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a value indicating whether the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint16">ushort</a> is a prime number.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_IsPrime_System_UInt32_" data-uid="Bodu.Extensions.NumericExtensions.IsPrime(System.UInt32)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.IsPrime.html#Bodu_Extensions_NumericExtensions_IsPrime_System_UInt32_">IsPrime(uint)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a value indicating whether the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint32">uint</a> is a prime number.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_IsPrime_System_UInt64_" data-uid="Bodu.Extensions.NumericExtensions.IsPrime(System.UInt64)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.IsPrime.html#Bodu_Extensions_NumericExtensions_IsPrime_System_UInt64_">IsPrime(ulong)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a value indicating whether the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint64">ulong</a> is a prime number.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_LeastCommonMultiple_System_Int16_System_Int16_" data-uid="Bodu.Extensions.NumericExtensions.LeastCommonMultiple(System.Int16,System.Int16)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.LeastCommonMultiple.html#Bodu_Extensions_NumericExtensions_LeastCommonMultiple_System_Int16_System_Int16_">LeastCommonMultiple(short, short)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the least common multiple of two non-negative <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int16">short</a> values.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_LeastCommonMultiple_System_Int16___" data-uid="Bodu.Extensions.NumericExtensions.LeastCommonMultiple(System.Int16[])">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.LeastCommonMultiple.html#Bodu_Extensions_NumericExtensions_LeastCommonMultiple_System_Int16___">LeastCommonMultiple(short[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the least common multiple of every element in the supplied array of non-negative <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int16">short</a>
+values.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_LeastCommonMultiple_System_Int32_System_Int32_" data-uid="Bodu.Extensions.NumericExtensions.LeastCommonMultiple(System.Int32,System.Int32)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.LeastCommonMultiple.html#Bodu_Extensions_NumericExtensions_LeastCommonMultiple_System_Int32_System_Int32_">LeastCommonMultiple(int, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the least common multiple of two non-negative <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a> values.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_LeastCommonMultiple_System_Int32___" data-uid="Bodu.Extensions.NumericExtensions.LeastCommonMultiple(System.Int32[])">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.LeastCommonMultiple.html#Bodu_Extensions_NumericExtensions_LeastCommonMultiple_System_Int32___">LeastCommonMultiple(int[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the least common multiple of every element in the supplied array of non-negative <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>
+values.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_LeastCommonMultiple_System_Int64_System_Int64_" data-uid="Bodu.Extensions.NumericExtensions.LeastCommonMultiple(System.Int64,System.Int64)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.LeastCommonMultiple.html#Bodu_Extensions_NumericExtensions_LeastCommonMultiple_System_Int64_System_Int64_">LeastCommonMultiple(long, long)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the least common multiple of two non-negative <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a> values.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_LeastCommonMultiple_System_Int64___" data-uid="Bodu.Extensions.NumericExtensions.LeastCommonMultiple(System.Int64[])">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.LeastCommonMultiple.html#Bodu_Extensions_NumericExtensions_LeastCommonMultiple_System_Int64___">LeastCommonMultiple(long[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the least common multiple of every element in the supplied array of non-negative <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a>
+values.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_LeastCommonMultiple_System_UInt16_System_UInt16_" data-uid="Bodu.Extensions.NumericExtensions.LeastCommonMultiple(System.UInt16,System.UInt16)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.LeastCommonMultiple.html#Bodu_Extensions_NumericExtensions_LeastCommonMultiple_System_UInt16_System_UInt16_">LeastCommonMultiple(ushort, ushort)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the least common multiple of two <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint16">ushort</a> values.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_LeastCommonMultiple_System_UInt16___" data-uid="Bodu.Extensions.NumericExtensions.LeastCommonMultiple(System.UInt16[])">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.LeastCommonMultiple.html#Bodu_Extensions_NumericExtensions_LeastCommonMultiple_System_UInt16___">LeastCommonMultiple(ushort[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the least common multiple of every element in the supplied array of <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint16">ushort</a> values.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_LeastCommonMultiple_System_UInt32_System_UInt32_" data-uid="Bodu.Extensions.NumericExtensions.LeastCommonMultiple(System.UInt32,System.UInt32)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.LeastCommonMultiple.html#Bodu_Extensions_NumericExtensions_LeastCommonMultiple_System_UInt32_System_UInt32_">LeastCommonMultiple(uint, uint)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the least common multiple of two <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint32">uint</a> values.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_LeastCommonMultiple_System_UInt32___" data-uid="Bodu.Extensions.NumericExtensions.LeastCommonMultiple(System.UInt32[])">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.LeastCommonMultiple.html#Bodu_Extensions_NumericExtensions_LeastCommonMultiple_System_UInt32___">LeastCommonMultiple(uint[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the least common multiple of every element in the supplied array of <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint32">uint</a> values.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_LeastCommonMultiple_System_UInt64_System_UInt64_" data-uid="Bodu.Extensions.NumericExtensions.LeastCommonMultiple(System.UInt64,System.UInt64)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.LeastCommonMultiple.html#Bodu_Extensions_NumericExtensions_LeastCommonMultiple_System_UInt64_System_UInt64_">LeastCommonMultiple(ulong, ulong)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the least common multiple of two <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint64">ulong</a> values.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_LeastCommonMultiple_System_UInt64___" data-uid="Bodu.Extensions.NumericExtensions.LeastCommonMultiple(System.UInt64[])">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.LeastCommonMultiple.html#Bodu_Extensions_NumericExtensions_LeastCommonMultiple_System_UInt64___">LeastCommonMultiple(ulong[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the least common multiple of every element in the supplied array of <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint64">ulong</a> values.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_ReverseBits_System_Byte_" data-uid="Bodu.Extensions.NumericExtensions.ReverseBits(System.Byte)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.ReverseBits.html#Bodu_Extensions_NumericExtensions_ReverseBits_System_Byte_">ReverseBits(byte)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reverses the order of all bits in the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a> value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_ReverseBits_System_Byte_System_Int32_" data-uid="Bodu.Extensions.NumericExtensions.ReverseBits(System.Byte,System.Int32)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.ReverseBits.html#Bodu_Extensions_NumericExtensions_ReverseBits_System_Byte_System_Int32_">ReverseBits(byte, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reverses the order of the least significant <code class="paramref">bitLength</code> bits in the specified
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a> value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_ReverseBits_System_Byte___" data-uid="Bodu.Extensions.NumericExtensions.ReverseBits(System.Byte[])">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.ReverseBits.html#Bodu_Extensions_NumericExtensions_ReverseBits_System_Byte___">ReverseBits(byte[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reverses the bits within each byte of the specified byte array and returns a new array.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_ReverseBits_System_UInt16_" data-uid="Bodu.Extensions.NumericExtensions.ReverseBits(System.UInt16)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.ReverseBits.html#Bodu_Extensions_NumericExtensions_ReverseBits_System_UInt16_">ReverseBits(ushort)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reverses the order of all bits in the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint16">ushort</a> value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_ReverseBits_System_UInt16_System_Int32_" data-uid="Bodu.Extensions.NumericExtensions.ReverseBits(System.UInt16,System.Int32)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.ReverseBits.html#Bodu_Extensions_NumericExtensions_ReverseBits_System_UInt16_System_Int32_">ReverseBits(ushort, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reverses the order of the least significant <code class="paramref">bitLength</code> bits in the specified
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint16">ushort</a> value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_ReverseBits_System_UInt32_" data-uid="Bodu.Extensions.NumericExtensions.ReverseBits(System.UInt32)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.ReverseBits.html#Bodu_Extensions_NumericExtensions_ReverseBits_System_UInt32_">ReverseBits(uint)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reverses the order of all bits in the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint32">uint</a> value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_ReverseBits_System_UInt32_System_Int32_" data-uid="Bodu.Extensions.NumericExtensions.ReverseBits(System.UInt32,System.Int32)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.ReverseBits.html#Bodu_Extensions_NumericExtensions_ReverseBits_System_UInt32_System_Int32_">ReverseBits(uint, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reverses the order of the least significant <code class="paramref">bitLength</code> bits in the specified
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint32">uint</a> value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_ReverseBits_System_UInt64_" data-uid="Bodu.Extensions.NumericExtensions.ReverseBits(System.UInt64)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.ReverseBits.html#Bodu_Extensions_NumericExtensions_ReverseBits_System_UInt64_">ReverseBits(ulong)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reverses the order of all bits in the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint64">ulong</a> value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_ReverseBits_System_UInt64_System_Int32_" data-uid="Bodu.Extensions.NumericExtensions.ReverseBits(System.UInt64,System.Int32)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.ReverseBits.html#Bodu_Extensions_NumericExtensions_ReverseBits_System_UInt64_System_Int32_">ReverseBits(ulong, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reverses the order of the least significant <code class="paramref">bitLength</code> bits in the specified
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint64">ulong</a> value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_ReverseBytes_System_UInt16_" data-uid="Bodu.Extensions.NumericExtensions.ReverseBytes(System.UInt16)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.ReverseBytes.html#Bodu_Extensions_NumericExtensions_ReverseBytes_System_UInt16_">ReverseBytes(ushort)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reverses the byte order of the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint16">ushort</a> value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_ReverseBytes_System_UInt32_" data-uid="Bodu.Extensions.NumericExtensions.ReverseBytes(System.UInt32)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.ReverseBytes.html#Bodu_Extensions_NumericExtensions_ReverseBytes_System_UInt32_">ReverseBytes(uint)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reverses the byte order of the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint32">uint</a> value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_ReverseBytes_System_UInt64_" data-uid="Bodu.Extensions.NumericExtensions.ReverseBytes(System.UInt64)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.ReverseBytes.html#Bodu_Extensions_NumericExtensions_ReverseBytes_System_UInt64_">ReverseBytes(ulong)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reverses the byte order of the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint64">ulong</a> value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_ReverseDigits_System_UInt16_" data-uid="Bodu.Extensions.NumericExtensions.ReverseDigits(System.UInt16)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.ReverseDigits.html#Bodu_Extensions_NumericExtensions_ReverseDigits_System_UInt16_">ReverseDigits(ushort)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reverses the decimal digits of a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint16">ushort</a> value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_ReverseDigits_System_UInt32_" data-uid="Bodu.Extensions.NumericExtensions.ReverseDigits(System.UInt32)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.ReverseDigits.html#Bodu_Extensions_NumericExtensions_ReverseDigits_System_UInt32_">ReverseDigits(uint)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reverses the decimal digits of a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint32">uint</a> value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_ReverseDigits_System_UInt64_" data-uid="Bodu.Extensions.NumericExtensions.ReverseDigits(System.UInt64)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.ReverseDigits.html#Bodu_Extensions_NumericExtensions_ReverseDigits_System_UInt64_">ReverseDigits(ulong)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reverses the decimal digits of a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint64">ulong</a> value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_ReverseWords_System_Byte___" data-uid="Bodu.Extensions.NumericExtensions.ReverseWords(System.Byte[])">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.ReverseWords.html#Bodu_Extensions_NumericExtensions_ReverseWords_System_Byte___">ReverseWords(byte[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Swaps the bytes within each 16-bit word of the specified byte array and returns a new array.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_ReverseWords_System_Span_System_Byte__" data-uid="Bodu.Extensions.NumericExtensions.ReverseWords(System.Span{System.Byte})">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.ReverseWords.html#Bodu_Extensions_NumericExtensions_ReverseWords_System_Span_System_Byte__">ReverseWords(Span&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Swaps the bytes within each 16-bit word of the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span&lt;T&gt;</a>, modifying it in place.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_ReverseWords_System_UInt16_" data-uid="Bodu.Extensions.NumericExtensions.ReverseWords(System.UInt16)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.ReverseWords.html#Bodu_Extensions_NumericExtensions_ReverseWords_System_UInt16_">ReverseWords(ushort)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Swaps the two bytes of the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint16">ushort</a> value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_ReverseWords_System_UInt32_" data-uid="Bodu.Extensions.NumericExtensions.ReverseWords(System.UInt32)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.ReverseWords.html#Bodu_Extensions_NumericExtensions_ReverseWords_System_UInt32_">ReverseWords(uint)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Swaps the bytes within each 16-bit word of the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint32">uint</a> value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_ReverseWords_System_UInt64_" data-uid="Bodu.Extensions.NumericExtensions.ReverseWords(System.UInt64)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.ReverseWords.html#Bodu_Extensions_NumericExtensions_ReverseWords_System_UInt64_">ReverseWords(ulong)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Swaps the bytes within each 16-bit word of the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint64">ulong</a> value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_RotateBitsLeft_System_Byte_System_Int32_" data-uid="Bodu.Extensions.NumericExtensions.RotateBitsLeft(System.Byte,System.Int32)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.RotateBitsLeft.html#Bodu_Extensions_NumericExtensions_RotateBitsLeft_System_Byte_System_Int32_">RotateBitsLeft(byte, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Rotates the bits of the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a> value to the left by the specified number of positions.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_RotateBitsLeft_System_UInt16_System_Int32_" data-uid="Bodu.Extensions.NumericExtensions.RotateBitsLeft(System.UInt16,System.Int32)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.RotateBitsLeft.html#Bodu_Extensions_NumericExtensions_RotateBitsLeft_System_UInt16_System_Int32_">RotateBitsLeft(ushort, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Rotates the bits of the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint16">ushort</a> value to the left by the specified number of positions.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_RotateBitsLeft_System_UInt32_System_Int32_" data-uid="Bodu.Extensions.NumericExtensions.RotateBitsLeft(System.UInt32,System.Int32)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.RotateBitsLeft.html#Bodu_Extensions_NumericExtensions_RotateBitsLeft_System_UInt32_System_Int32_">RotateBitsLeft(uint, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Rotates the bits of the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint32">uint</a> value to the left by the specified number of positions.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_RotateBitsLeft_System_UInt64_System_Int32_" data-uid="Bodu.Extensions.NumericExtensions.RotateBitsLeft(System.UInt64,System.Int32)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.RotateBitsLeft.html#Bodu_Extensions_NumericExtensions_RotateBitsLeft_System_UInt64_System_Int32_">RotateBitsLeft(ulong, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Rotates the bits of the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint64">ulong</a> value to the left by the specified number of positions.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_RotateBitsRight_System_Byte_System_Int32_" data-uid="Bodu.Extensions.NumericExtensions.RotateBitsRight(System.Byte,System.Int32)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.RotateBitsRight.html#Bodu_Extensions_NumericExtensions_RotateBitsRight_System_Byte_System_Int32_">RotateBitsRight(byte, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Rotates the bits of the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a> value to the right by the specified number of positions.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_RotateBitsRight_System_UInt16_System_Int32_" data-uid="Bodu.Extensions.NumericExtensions.RotateBitsRight(System.UInt16,System.Int32)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.RotateBitsRight.html#Bodu_Extensions_NumericExtensions_RotateBitsRight_System_UInt16_System_Int32_">RotateBitsRight(ushort, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Rotates the bits of the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint16">ushort</a> value to the right by the specified number of positions.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_RotateBitsRight_System_UInt32_System_Int32_" data-uid="Bodu.Extensions.NumericExtensions.RotateBitsRight(System.UInt32,System.Int32)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.RotateBitsRight.html#Bodu_Extensions_NumericExtensions_RotateBitsRight_System_UInt32_System_Int32_">RotateBitsRight(uint, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Rotates the bits of the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint32">uint</a> value to the right by the specified number of positions.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_RotateBitsRight_System_UInt64_System_Int32_" data-uid="Bodu.Extensions.NumericExtensions.RotateBitsRight(System.UInt64,System.Int32)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.RotateBitsRight.html#Bodu_Extensions_NumericExtensions_RotateBitsRight_System_UInt64_System_Int32_">RotateBitsRight(ulong, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Rotates the bits of the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint64">ulong</a> value to the right by the specified number of positions.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_RotateDigitsLeft_System_UInt16_" data-uid="Bodu.Extensions.NumericExtensions.RotateDigitsLeft(System.UInt16)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.RotateDigitsLeft.html#Bodu_Extensions_NumericExtensions_RotateDigitsLeft_System_UInt16_">RotateDigitsLeft(ushort)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Rotates the decimal digits of a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint16">ushort</a> value one place to the left.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_RotateDigitsLeft_System_UInt16_System_Int32_" data-uid="Bodu.Extensions.NumericExtensions.RotateDigitsLeft(System.UInt16,System.Int32)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.RotateDigitsLeft.html#Bodu_Extensions_NumericExtensions_RotateDigitsLeft_System_UInt16_System_Int32_">RotateDigitsLeft(ushort, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Rotates the decimal digits of a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint16">ushort</a> value the specified number of places to the left.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_RotateDigitsLeft_System_UInt32_" data-uid="Bodu.Extensions.NumericExtensions.RotateDigitsLeft(System.UInt32)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.RotateDigitsLeft.html#Bodu_Extensions_NumericExtensions_RotateDigitsLeft_System_UInt32_">RotateDigitsLeft(uint)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Rotates the decimal digits of a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint32">uint</a> value one place to the left.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_RotateDigitsLeft_System_UInt32_System_Int32_" data-uid="Bodu.Extensions.NumericExtensions.RotateDigitsLeft(System.UInt32,System.Int32)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.RotateDigitsLeft.html#Bodu_Extensions_NumericExtensions_RotateDigitsLeft_System_UInt32_System_Int32_">RotateDigitsLeft(uint, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Rotates the decimal digits of a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint32">uint</a> value the specified number of places to the left.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_RotateDigitsLeft_System_UInt64_" data-uid="Bodu.Extensions.NumericExtensions.RotateDigitsLeft(System.UInt64)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.RotateDigitsLeft.html#Bodu_Extensions_NumericExtensions_RotateDigitsLeft_System_UInt64_">RotateDigitsLeft(ulong)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Rotates the decimal digits of a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint64">ulong</a> value one place to the left.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_RotateDigitsLeft_System_UInt64_System_Int32_" data-uid="Bodu.Extensions.NumericExtensions.RotateDigitsLeft(System.UInt64,System.Int32)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.RotateDigitsLeft.html#Bodu_Extensions_NumericExtensions_RotateDigitsLeft_System_UInt64_System_Int32_">RotateDigitsLeft(ulong, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Rotates the decimal digits of a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint64">ulong</a> value the specified number of places to the left.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_RotateDigitsRight_System_UInt16_" data-uid="Bodu.Extensions.NumericExtensions.RotateDigitsRight(System.UInt16)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.RotateDigitsRight.html#Bodu_Extensions_NumericExtensions_RotateDigitsRight_System_UInt16_">RotateDigitsRight(ushort)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Rotates the decimal digits of a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint16">ushort</a> value one place to the right.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_RotateDigitsRight_System_UInt16_System_Int32_" data-uid="Bodu.Extensions.NumericExtensions.RotateDigitsRight(System.UInt16,System.Int32)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.RotateDigitsRight.html#Bodu_Extensions_NumericExtensions_RotateDigitsRight_System_UInt16_System_Int32_">RotateDigitsRight(ushort, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Rotates the decimal digits of a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint16">ushort</a> value the specified number of places to the right.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_RotateDigitsRight_System_UInt32_" data-uid="Bodu.Extensions.NumericExtensions.RotateDigitsRight(System.UInt32)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.RotateDigitsRight.html#Bodu_Extensions_NumericExtensions_RotateDigitsRight_System_UInt32_">RotateDigitsRight(uint)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Rotates the decimal digits of a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint32">uint</a> value one place to the right.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_RotateDigitsRight_System_UInt32_System_Int32_" data-uid="Bodu.Extensions.NumericExtensions.RotateDigitsRight(System.UInt32,System.Int32)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.RotateDigitsRight.html#Bodu_Extensions_NumericExtensions_RotateDigitsRight_System_UInt32_System_Int32_">RotateDigitsRight(uint, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Rotates the decimal digits of a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint32">uint</a> value the specified number of places to the right.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_RotateDigitsRight_System_UInt64_" data-uid="Bodu.Extensions.NumericExtensions.RotateDigitsRight(System.UInt64)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.RotateDigitsRight.html#Bodu_Extensions_NumericExtensions_RotateDigitsRight_System_UInt64_">RotateDigitsRight(ulong)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Rotates the decimal digits of a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint64">ulong</a> value one place to the right.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_RotateDigitsRight_System_UInt64_System_Int32_" data-uid="Bodu.Extensions.NumericExtensions.RotateDigitsRight(System.UInt64,System.Int32)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.RotateDigitsRight.html#Bodu_Extensions_NumericExtensions_RotateDigitsRight_System_UInt64_System_Int32_">RotateDigitsRight(ulong, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Rotates the decimal digits of a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint64">ulong</a> value the specified number of places to the right.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_RoundToSignificantDigits_System_Decimal_System_Int32_" data-uid="Bodu.Extensions.NumericExtensions.RoundToSignificantDigits(System.Decimal,System.Int32)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.RoundToSignificantDigits.html#Bodu_Extensions_NumericExtensions_RoundToSignificantDigits_System_Decimal_System_Int32_">RoundToSignificantDigits(decimal, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Rounds a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a> to the specified number of significant decimal digits.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_RoundToSignificantDigits_System_Double_System_Int32_" data-uid="Bodu.Extensions.NumericExtensions.RoundToSignificantDigits(System.Double,System.Int32)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.RoundToSignificantDigits.html#Bodu_Extensions_NumericExtensions_RoundToSignificantDigits_System_Double_System_Int32_">RoundToSignificantDigits(double, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Rounds a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a> to the specified number of significant decimal digits.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_ToDigitArray_System_UInt16_" data-uid="Bodu.Extensions.NumericExtensions.ToDigitArray(System.UInt16)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.ToDigitArray.html#Bodu_Extensions_NumericExtensions_ToDigitArray_System_UInt16_">ToDigitArray(ushort)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the decimal digits of a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint16">ushort</a> value in most-significant-first order.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_ToDigitArray_System_UInt32_" data-uid="Bodu.Extensions.NumericExtensions.ToDigitArray(System.UInt32)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.ToDigitArray.html#Bodu_Extensions_NumericExtensions_ToDigitArray_System_UInt32_">ToDigitArray(uint)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the decimal digits of a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint32">uint</a> value in most-significant-first order.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NumericExtensions_ToDigitArray_System_UInt64_" data-uid="Bodu.Extensions.NumericExtensions.ToDigitArray(System.UInt64)">
+          <a class="xref" href="Bodu.Extensions.NumericExtensions.ToDigitArray.html#Bodu_Extensions_NumericExtensions_ToDigitArray_System_UInt64_">ToDigitArray(ulong)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the decimal digits of a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint64">ulong</a> value in most-significant-first order.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Bodu.Text — Introduction | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Bodu.Text — Introduction | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="bodutext">Bodu.Text</h1>
+
+<p><img src="../../images/hero-text.svg" alt="Bodu.Text"></p>
+<p><strong>Bodu.Text</strong> is the text-encoding helpers namespace of the Bodu suite. It is not a package of its own — the namespace ships inside the <strong><code>Bodu.Core</code></strong> package and is part of the <strong><a href="../topics/core-foundations.html">Core Foundations</a></strong> topic, alongside the collections, pooled buffers, and guard helpers it shares an assembly with. It sits directly on top of the BCL <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoding">Encoding</a> contract and adds the ergonomic, allocation-aware surface the BCL leaves out: byte-order-mark detection, span- and UTF-8-friendly transcoding, preamble handling, pooled-buffer conversions, and validation.</p>
+<p>Unlike <a href="../text-encoding/index.html">Bodu.Text.Encoding</a> — which implements binary-to-text codecs such as Base16/32/64/85 — <code>Bodu.Text</code> is concerned with character encodings: turning bytes into text and back through <code>System.Text.Encoding</code>, correctly and efficiently.</p>
+<h2 id="namespaces-and-headline-types">Namespaces and headline types</h2>
+<h3 id="bodutext-1"><code>Bodu.Text</code></h3>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Text.EncodingDetection.html">EncodingDetection</a></td>
+<td>BOM-based heuristics for detecting which <code>System.Text.Encoding</code> produced a byte sequence — the five canonical Unicode preambles (UTF-8, UTF-16 LE/BE, UTF-32 LE/BE), with non-allocating <code>TryDetectByPreamble</code>.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Text.EncodingExtensions.html">EncodingExtensions</a></td>
+<td>Span-, UTF-8-, and <code>IBufferWriter&lt;byte&gt;</code>-friendly extensions on <code>System.Text.Encoding</code> — encode, decode, transcode, preamble inspection, classification, and validation, including pooled and chunked overloads.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Text.StringEncodingExtensions.html">StringEncodingExtensions</a></td>
+<td>Encoding-aware extensions on <code>string</code> / <code>ReadOnlySpan&lt;char&gt;</code> — <code>ToBytes</code>, <code>ToUtf8Bytes</code>, pooled conversions, preamble emission, and <code>Try*</code> write-to-span overloads.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="design-choices">Design choices</h2>
+<p>A few conventions hold across the whole surface:</p>
+<ul>
+<li><strong>Span-first, UTF-8-first.</strong> Every operation has overloads over <code>ReadOnlySpan&lt;char&gt;</code> / <code>ReadOnlySpan&lt;byte&gt;</code>, plus UTF-8 fast paths (<code>ToUtf8Bytes</code>, <code>EncodeUtf8To</code>, <code>GetUtf8ByteCount</code>) for the dominant wire encoding, so the common cases avoid intermediate allocations entirely.</li>
+<li><strong>Pooled and owned-memory variants.</strong> Where a result buffer must outlive the call, the surface offers <code>ArrayPool&lt;byte&gt;</code>-backed conversions (<code>GetUtf8BytesPooled</code>, <code>GetCharsPooled</code>, both returning a disposable <a class="xref" href="../../api/Bodu.Buffers.PooledBufferBuilder-1.html">PooledBufferBuilder&lt;T&gt;</a>) and <code>IMemoryOwner&lt;byte&gt;</code> overloads (<code>GetBytesOwner</code>) so the caller controls the buffer's lifetime instead of forcing a fresh array per call.</li>
+<li><strong><code>Try*</code> for the non-throwing path.</strong> Detection (<code>TryDetectByPreamble</code>) and write-to-span operations (<code>TryEncodeUtf8To</code>, <code>TryEncodeTo</code>) follow the BCL <code>Try</code> pattern — a <code>bool</code> result plus an <code>out</code> value, no exception on the failure path.</li>
+<li><strong>Incremental work reports <code>OperationStatus</code>.</strong> The chunked transcoding surface (<code>EncodeChunk</code> / <code>DecodeChunk</code>) returns <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.operationstatus">OperationStatus</a> (<code>Done</code>, <code>DestinationTooSmall</code>, <code>NeedMoreData</code>, <code>InvalidData</code>) so a caller can drive a pull-based loop with explicit backpressure rather than guessing buffer sizes.</li>
+<li><strong>Validation is explicit and configurable.</strong> Fallback behavior on malformed input is switched per call site — <code>WithExceptionFallbacks()</code> for strict throw-on-invalid decoding, <code>WithReplacementFallbacks()</code> to substitute U+FFFD — without mutating a shared <code>Encoding</code> instance, and dedicated validation overloads confirm a byte span is well-formed for an encoding before you trust it.</li>
+</ul>
+<h2 id="a-first-sample--detect-an-encoding-from-its-bom">A first sample — detect an encoding from its BOM</h2>
+<p>The headline scenario: read a file of unknown provenance, identify its encoding from the byte-order mark, and decode without leaking the preamble into the text.</p>
+<pre><code class="lang-csharp">using Bodu.Text;
+
+byte[] bytes = File.ReadAllBytes(&quot;settings.txt&quot;);
+
+System.Text.Encoding encoding =
+    EncodingDetection.TryDetectByPreamble(bytes, out System.Text.Encoding? detected)
+        ? detected
+        : System.Text.Encoding.UTF8;            // sensible default when there is no BOM
+
+string text = encoding.GetStringSkippingPreamble(bytes);
+</code></pre>
+<p><code>TryDetectByPreamble</code> is non-allocating and recognizes the five canonical Unicode preambles; <code>GetStringSkippingPreamble</code> decodes the payload while ignoring a leading BOM, so the result never starts with a stray U+FEFF.</p>
+<p>Going the other way — string to bytes — is equally direct, with a pooled variant for hot paths:</p>
+<pre><code class="lang-csharp">using Bodu.Buffers;
+using Bodu.Text;
+
+byte[] utf8 = &quot;héllo&quot;.ToUtf8Bytes();                                    // UTF-8, no BOM
+
+using PooledBufferBuilder&lt;byte&gt; pooled = &quot;héllo&quot;.GetUtf8BytesPooled();  // ArrayPool-backed
+</code></pre>
+<h2 id="scenarios-this-library-covers">Scenarios this library covers</h2>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Reach for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Detect a file's encoding from its byte-order-mark</td>
+<td><code>EncodingDetection.TryDetectByPreamble(bytes, out var encoding)</code></td>
+</tr>
+<tr>
+<td>Decode bytes, skipping any leading preamble</td>
+<td><code>encoding.GetStringSkippingPreamble(bytes)</code></td>
+</tr>
+<tr>
+<td>Convert a string to bytes without intermediate allocations</td>
+<td><code>value.ToUtf8Bytes()</code> / <code>value.GetUtf8BytesPooled()</code></td>
+</tr>
+<tr>
+<td>Encode straight into a caller-supplied span or pipeline</td>
+<td><code>value.EncodeUtf8To(destination)</code> / <code>value.TryEncodeUtf8To(...)</code> / <code>value.WriteUtf8To(bufferWriter)</code></td>
+</tr>
+<tr>
+<td>Inspect or strip a preamble by hand</td>
+<td><code>encoding.HasPreamble()</code> / <code>encoding.StartsWithPreamble(bytes)</code> / <code>encoding.StripPreamble(bytes)</code></td>
+</tr>
+<tr>
+<td>Classify an encoding (UTF-8 / UTF-16 / UTF-32, endianness)</td>
+<td><code>encoding.IsUtf8()</code> / <code>encoding.IsAnyUtf()</code> / <code>encoding.IsUtf16LittleEndian()</code></td>
+</tr>
+<tr>
+<td>Switch between strict and replacing decode behavior</td>
+<td><code>encoding.WithExceptionFallbacks()</code> / <code>encoding.WithReplacementFallbacks()</code></td>
+</tr>
+<tr>
+<td>Transcode between two encodings over spans</td>
+<td><code>EncodingExtensions</code> transcode overloads</td>
+</tr>
+<tr>
+<td>Transcode a large payload incrementally with backpressure</td>
+<td><code>encoding.EncodeChunk(...)</code> / <code>DecodeChunk(...)</code> returning <code>OperationStatus</code></td>
+</tr>
+<tr>
+<td>Validate that a byte span is well-formed for an encoding</td>
+<td><code>EncodingExtensions</code> validation overloads</td>
+</tr>
+</tbody>
+</table>
+<h2 id="bodutext-vs-bodutextencoding"><code>Bodu.Text</code> vs. <code>Bodu.Text.Encoding</code></h2>
+<p>The names are similar; the jobs are not.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th><code>Bodu.Text</code> (this namespace, in <code>Bodu.Core</code>)</th>
+<th><a href="../text-encoding/index.html"><code>Bodu.Text.Encoding</code></a> (separate package)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Concern</td>
+<td><strong>Character encodings</strong> — bytes ↔ text through <code>System.Text.Encoding</code></td>
+<td><strong>Binary-to-text codecs</strong> — arbitrary bytes ↔ a printable alphabet</td>
+</tr>
+<tr>
+<td>Typical input</td>
+<td>A file, stream, or buffer that <em>is</em> text in some encoding</td>
+<td>Binary data (hashes, keys, payloads) that must travel as text</td>
+</tr>
+<tr>
+<td>Headline operations</td>
+<td>BOM detection, preamble handling, transcoding, validation</td>
+<td>Base16 / Base32 / Base58 / Base64 / Base85 encode and decode</td>
+</tr>
+</tbody>
+</table>
+<p>If you are deciding between this namespace, the binary codecs, and the document formats / serializers, the <strong><a href="../topics/text-and-serialization.html">Text &amp; Serialization topic overview</a></strong> maps the full triangle.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="../core/index.html">Bodu.Core introduction</a></strong> — the host package: collections, pooled buffers, <code>ThrowHelper</code>, and the rest of the assembly this namespace ships in.</li>
+<li><strong><a href="../topics/core-foundations.html">Core Foundations topic overview</a></strong> — where <code>Bodu.Text</code> sits in the foundation layer.</li>
+<li><strong><a href="../topics/core-foundations-concepts.html">Core Foundations concepts</a></strong> — topic-level vocabulary, including a dedicated character-encoding section (preamble, transcoding, validation, span-first surfaces).</li>
+<li><strong><a href="../../guides/text-encoding/encoding-helpers.html">Encoding helpers and BOM detection guide</a></strong> — worked patterns for every surface above.</li>
+<li><strong><a href="../text-encoding/index.html">Bodu.Text.Encoding introduction</a></strong> — the sibling package for binary-to-text codecs (Base16/32/58/64/85).</li>
+<li><strong><a href="../getting-started.html">Cross-library getting started</a></strong> — install commands across the suite; the <code>Bodu.Text</code> walk-through itself is the <a href="../../guides/text-encoding/encoding-helpers.html">encoding helpers guide</a> above.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Text.html">Bodu.Text API reference</a></strong> — full type-by-type docs.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

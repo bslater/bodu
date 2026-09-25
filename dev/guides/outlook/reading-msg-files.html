@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Reading .msg files | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Reading .msg files | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="reading-msg-files">Reading <code>.msg</code> files</h1>
+
+<p><a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookMessage.html">OutlookMessage</a> is the session type: open it over a file path or a stream, read what you need through the conveniences or the raw property surface, and dispose it when done. The session owns the compound-file container and, unless you opt out with <code>leaveOpen</code>, the source stream.</p>
+<h2 id="open-a-message-and-read-the-common-fields">Open a message and read the common fields</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Formats.Outlook;
+
+using var message = OutlookMessage.OpenRead(&quot;invoice.msg&quot;);
+
+Console.WriteLine(message.Subject);
+Console.WriteLine(message.SenderName);
+Console.WriteLine(message.SenderEmailAddress);
+Console.WriteLine(message.SentTime);
+Console.WriteLine(message.BodyText);
+</code></pre>
+<p>Every convenience is nullable and returns <code>null</code> when the message does not carry the underlying property — real-world messages omit fields freely.</p>
+<h2 id="sniff-before-opening">Sniff before opening</h2>
+<p><code>IsMsgFile</code> checks that a stream is an OLE2 compound file whose root carries the message property stream, restoring the stream position afterwards. The conventional root class identifier is <em>not</em> required — real-world writers frequently omit it.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Formats.Outlook;
+
+using FileStream stream = File.OpenRead(&quot;maybe-a-message.bin&quot;);
+if (OutlookMessage.IsMsgFile(stream))
+{
+    using var message = OutlookMessage.OpenRead(stream, leaveOpen: true);
+    Console.WriteLine(message.Subject);
+}
+</code></pre>
+<h2 id="recipients-and-attachments">Recipients and attachments</h2>
+<p>Recipients and attachments are materialized lazily from their indexed child storages, in index order.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Formats.Outlook;
+
+using var message = OutlookMessage.OpenRead(&quot;invoice.msg&quot;);
+
+foreach (OutlookRecipient recipient in message.Recipients)
+    Console.WriteLine($&quot;{recipient.RecipientType}: {recipient.DisplayName} &lt;{recipient.EmailAddress}&gt;&quot;);
+
+foreach (OutlookAttachment attachment in message.Attachments)
+{
+    if (attachment.Method == OutlookAttachmentMethod.ByValue)
+    {
+        using Stream content = attachment.OpenContentStream();
+        using FileStream target = File.Create(attachment.FileName ?? &quot;attachment.bin&quot;);
+        content.CopyTo(target);
+    }
+    else if (attachment.Method == OutlookAttachmentMethod.EmbeddedMessage)
+    {
+        OutlookMessage nested = attachment.OpenMessage();
+        Console.WriteLine($&quot;attached message: {nested.Subject}&quot;);
+    }
+}
+</code></pre>
+<p>A nested message shares the root session's container and named-property mapping: disposing it is a no-op, and it becomes unusable for container-backed reads once the root session is disposed.</p>
+<h2 id="bodies">Bodies</h2>
+<p>Three body conveniences cover the forms a message stores:</p>
+<ul>
+<li><code>BodyText</code> — the plain-text <code>PidTagBody</code>.</li>
+<li><code>BodyHtml</code> — the <code>PidTagHtml</code> payload, decoded through the message's internet code page.</li>
+<li><code>BodyRtf</code> — the <code>PidTagRtfCompressed</code> payload, decompressed per MS-OXRTFCP. Set <a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookMessageReaderOptions.DecompressRtf.html#Bodu_Formats_Outlook_OutlookMessageReaderOptions_DecompressRtf">DecompressRtf</a> to <code>false</code> to suppress the decompression; the raw payload stays reachable through the property collection.</li>
+</ul>
+<h2 id="validation-levels">Validation levels</h2>
+<p><code>Open</code> accepts <a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookMessageReaderOptions.html">OutlookMessageReaderOptions</a>, whose <code>ValidationLevel</code> reuses the container's <a class="xref" href="../../api/Bodu.IO.Compound.CompoundValidationLevel.html">CompoundValidationLevel</a>:</p>
+<ul>
+<li><strong>Compatible</strong> (default) — malformed properties are omitted and decoding continues; the tolerance real-world messages need.</li>
+<li><strong>Strict</strong> — structural problems (a missing value stream, a misaligned property stream, inconsistent recipient/attachment counts) throw <a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookMsgFormatException.html">OutlookMsgFormatException</a>.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

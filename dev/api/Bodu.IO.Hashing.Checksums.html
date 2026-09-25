@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Namespace Bodu.IO.Hashing.Checksums | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Namespace Bodu.IO.Hashing.Checksums | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.IO.Hashing.Checksums">
+
+  <h1 id="Bodu_IO_Hashing_Checksums" data-uid="Bodu.IO.Hashing.Checksums" class="text-break">Namespace Bodu.IO.Hashing.Checksums</h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual">
+<p><img src="../images/hero-io.svg" alt="Bodu.IO.Hashing"></p>
+<h2 id="purpose">Purpose</h2>
+<p><strong>Bodu.IO.Hashing.Checksums</strong> ships the cyclic redundancy check (CRC) catalogue from the <a href="https://reveng.sourceforge.io/crc-catalogue/">RevEng project</a> — every variant from CRC-1 through CRC-64, addressable by name. The catalogue is auto-generated; the consumer-facing surface is the immutable <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a> parameter set, used as a parameter to <a class="xref" href="Bodu.IO.Hashing.Checksums.Crc.html">Crc</a>. The namespace also hosts the twin-accumulator checksums (Fletcher, Adler) and the CRC lookup-table machinery.</p>
+<h2 id="key-types">Key types</h2>
+<ul>
+<li><a class="xref" href="Bodu.IO.Hashing.Checksums.Crc.html">Crc</a> — the CRC engine, configured with a <code>CrcStandard</code>.</li>
+<li><a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a> — a sealed, immutable CRC parameter set: <code>Name</code>, <code>Size</code>, <code>Polynomial</code>, <code>InitialValue</code>, <code>ReflectIn</code>, <code>ReflectOut</code>, <code>XOrOut</code>. Common standards are exposed as static properties (<code>CRC32_ISOHDLC</code>, <code>CRC16_MODBUS</code>, …); every catalogue entry is reachable through <code>Get(CrcStandards)</code> and <code>FromName</code> / <code>TryFromName</code>; custom variants come from the public constructor.</li>
+<li><a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandards.html">CrcStandards</a> — the enum naming every canonical catalogue entry.</li>
+<li><a class="xref" href="Bodu.IO.Hashing.Checksums.CrcLookupTableBuilder.html">CrcLookupTableBuilder</a> / <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcLookupTableCache.html">CrcLookupTableCache</a> — lookup-table construction and the process-wide cache shared by every <code>Crc</code> with the same (width, polynomial, reflect-in) triple.</li>
+<li><a class="xref" href="Bodu.IO.Hashing.Checksums.Fletcher16.html">Fletcher16</a> / <a class="xref" href="Bodu.IO.Hashing.Checksums.Fletcher32.html">Fletcher32</a> / <a class="xref" href="Bodu.IO.Hashing.Checksums.Fletcher64.html">Fletcher64</a> and <a class="xref" href="Bodu.IO.Hashing.Checksums.Adler32.html">Adler32</a> / <a class="xref" href="Bodu.IO.Hashing.Checksums.Adler32C.html">Adler32C</a> / <a class="xref" href="Bodu.IO.Hashing.Checksums.Adler64.html">Adler64</a> — the twin-accumulator checksums.</li>
+</ul>
+<h2 id="example">Example</h2>
+<pre><code class="lang-csharp">using Bodu.IO.Hashing;
+using Bodu.IO.Hashing.Checksums;
+
+// CRC-32 (the standard variant used by Ethernet, ZIP, PNG).
+var crc32 = new Crc(CrcStandard.CRC32_ISOHDLC);
+ReadOnlySpan&lt;byte&gt; data = &quot;123456789&quot;u8;
+crc32.Append(data);
+byte[] digest = crc32.GetCurrentHash();
+// 0xCBF43926 — the canonical CRC-32 check value
+</code></pre>
+<h2 id="notes">Notes</h2>
+<ul>
+<li><strong>Auto-generated catalogue.</strong> The standards are produced from the RevEng database; consumers reference them by name (<code>CrcStandard.CRC32_ISOHDLC</code>, <code>CrcStandard.CRC16_MODBUS</code>, …) rather than constructing the configuration manually.</li>
+<li><strong>Resumable.</strong> <code>Crc</code>, the Fletcher family, and the Adler family implement <a class="xref" href="Bodu.IO.Hashing.IResumableHashAlgorithm.html">IResumableHashAlgorithm</a> — <code>ComputeHashFrom</code> reverse-finalizes a previously stored digest, appends more bytes, and finalizes again, without re-reading the original input. (Plain multi-<code>Append</code> streaming needs no special contract; every algorithm supports it.)</li>
+<li><strong>See also:</strong> the <a href="../guides/io-hashing/crc.html">CRC guide</a>, the <a href="../guides/io-hashing/crc-catalogue.html">CRC catalogue guide</a>, and the parent <a class="xref" href="Bodu.IO.Hashing.html">Bodu.IO.Hashing</a> landing page.</li>
+</ul>
+</div>
+  <div class="markdown level0 remarks"></div>
+    <h3 id="classes">
+Classes
+</h3>
+      <h4><a class="xref" href="Bodu.IO.Hashing.Checksums.Adler32.html">Adler32</a></h4>
+      <section><p>Computes the zlib-compatible <code>Adler-32</code> checksum of the input data using the standard modulus 65521. This class
+cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Hashing.Checksums.Adler32Base.html">Adler32Base</a></h4>
+      <section><p>Provides a reusable base class for <code>Adler-32</code> style checksum algorithms using <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint32">uint</a> accumulators.</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Hashing.Checksums.Adler32C.html">Adler32C</a></h4>
+      <section><p>Computes a 32-bit Adler-style checksum using the power-of-two modulus 65536 for SIMD-friendly alignment. This class
+cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Hashing.Checksums.Adler64.html">Adler64</a></h4>
+      <section><p>Computes a 64-bit Adler-style checksum using the prime modulus 4294967291. This class cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Hashing.Checksums.Adler64Base.html">Adler64Base</a></h4>
+      <section><p>Provides a reusable base class for <code>Adler-64</code> style checksum algorithms using <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint64">ulong</a>
+accumulators.</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Hashing.Checksums.Adler-1.html">Adler&lt;T&gt;</a></h4>
+      <section><p>Provides a generic base class for Adler-style checksum algorithms parameterized by the accumulator type.</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Hashing.Checksums.Crc.html">Crc</a></h4>
+      <section><p>General-purpose CRC (Cyclic Redundancy Check) engine driven by a <a class="xref" href="Bodu.IO.Hashing.Checksums.Crc.CrcStandard.html#Bodu_IO_Hashing_Checksums_Crc_CrcStandard">CrcStandard</a> parameter set — supports
+any catalogue width from 1 to 64 bits, snapshot-style intermediate digests, and resumption of a previous digest with
+additional input.</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Hashing.Checksums.CrcLookupTableBuilder.html">CrcLookupTableBuilder</a></h4>
+      <section><p>Generates the precomputed lookup tables that drive the byte-at-a-time inner loop of <a class="xref" href="Bodu.IO.Hashing.Checksums.Crc.html">Crc</a>, given the
+width, polynomial, and input-reflection mode of a <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Hashing.Checksums.CrcLookupTableCache.html">CrcLookupTableCache</a></h4>
+      <section><p>Thread-safe cache of precomputed CRC lookup tables keyed by width, polynomial, and input reflection — amortizes the
+per-tuple build cost of <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcLookupTableBuilder.BuildLookupTable.html#Bodu_IO_Hashing_Checksums_CrcLookupTableBuilder_BuildLookupTable_System_Int32_System_UInt64_System_Boolean_">BuildLookupTable(int, ulong, bool)</a> across every
+<a class="xref" href="Bodu.IO.Hashing.Checksums.Crc.html">Crc</a> instance that uses the same <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a></h4>
+      <section><p>Immutable parameter bundle that fully describes a CRC variant — width, polynomial, initial value, input/output bit
+reflection, and final XOR — and serves as the lookup key into the RevEng catalogue used by <a class="xref" href="Bodu.IO.Hashing.Checksums.Crc.html">Crc</a>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Hashing.Checksums.Fletcher.html">Fletcher</a></h4>
+      <section><p>Provides a base class for the Fletcher checksum family (Fletcher-16, Fletcher-32, Fletcher-64).</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Hashing.Checksums.Fletcher16.html">Fletcher16</a></h4>
+      <section><p>Computes the hash for the input data using the <code>Fletcher-16</code> hash algorithm. This variant performs a
+non-cryptographic checksum calculation using two 8-bit accumulators to detect errors in small byte sequences. This
+class cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Hashing.Checksums.Fletcher32.html">Fletcher32</a></h4>
+      <section><p>Computes the hash for the input data using the <code>Fletcher-32</code> hash algorithm. This variant performs a
+non-cryptographic checksum calculation using two 16-bit accumulators to efficiently detect errors in byte sequences.
+This class cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Hashing.Checksums.Fletcher64.html">Fletcher64</a></h4>
+      <section><p>Computes the hash for the input data using the <code>Fletcher-64</code> hash algorithm. This variant performs a
+non-cryptographic checksum calculation using two 32-bit accumulators to efficiently detect errors in byte sequences.
+This class cannot be inherited.</p>
+</section>
+    <h3 id="enums">
+Enums
+</h3>
+      <h4><a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandards.html">CrcStandards</a></h4>
+      <section><p>Identifies a CRC parameter set defined in the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm">CRC RevEng catalogue</a>.
+Pass to <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.Get.html#Bodu_IO_Hashing_Checksums_CrcStandard_Get_Bodu_IO_Hashing_Checksums_CrcStandards_">Get(CrcStandards)</a> to materialise the corresponding <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a> on demand.</p>
+</section>
+
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Async coordination primitives | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Async coordination primitives | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="async-coordination-primitives">Async coordination primitives</h1>
+
+<p>The <code>Bodu.Threading</code> namespace provides the <code>async</code>/<code>await</code> counterparts of the synchronous gates in <code>System.Threading</code>. Each primitive lets a caller wait on a condition without blocking a thread, so a held lock or a pending signal can span an <code>await</code>. Acquisition is exposed through a <code>ValueTask</code> that must be awaited exactly once; an uncontended acquisition completes synchronously with no allocation, queued waiters are released in strict FIFO order, and <em>success wins over cancellation</em> — an acquisition that can be granted immediately is granted even when the supplied token is already canceled.</p>
+<table>
+<thead>
+<tr>
+<th>Primitive</th>
+<th>Synchronous / BCL analogue</th>
+<th>Use it for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AsyncLock</code></td>
+<td><code>lock</code> statement / <code>SemaphoreSlim(1, 1)</code></td>
+<td>Async mutual exclusion that spans <code>await</code>.</td>
+</tr>
+<tr>
+<td><code>AsyncSemaphore</code></td>
+<td><code>SemaphoreSlim</code></td>
+<td>Bounded concurrency — N permits.</td>
+</tr>
+<tr>
+<td><code>AsyncReaderWriterLock</code></td>
+<td><code>ReaderWriterLockSlim</code></td>
+<td>Many concurrent readers or one exclusive writer.</td>
+</tr>
+<tr>
+<td><code>AsyncAutoResetEvent</code></td>
+<td><code>AutoResetEvent</code></td>
+<td>Wake one waiter per signal.</td>
+</tr>
+<tr>
+<td><code>AsyncManualResetEvent</code></td>
+<td><code>ManualResetEventSlim</code></td>
+<td>Open a gate for all current and future waiters.</td>
+</tr>
+<tr>
+<td><code>AsyncCountdownEvent</code></td>
+<td><code>CountdownEvent</code></td>
+<td>Fan-in: release once N signals arrive.</td>
+</tr>
+<tr>
+<td><code>AsyncLazy&lt;T&gt;</code></td>
+<td><code>Lazy&lt;T&gt;</code></td>
+<td>One-time async initialization, result cached and shared.</td>
+</tr>
+<tr>
+<td><code>AsyncDebouncer</code></td>
+<td>(no BCL equivalent)</td>
+<td>Coalesce a burst of triggers into one trailing call.</td>
+</tr>
+<tr>
+<td><code>RateGate</code></td>
+<td>rate limiter / leading-edge throttle</td>
+<td>Admit at most one call per fixed interval.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="pattern-1--mutual-exclusion-with-asynclock">Pattern 1 — mutual exclusion with <code>AsyncLock</code></h2>
+<p><code>AsyncLock</code> is a non-reentrant async mutex. <code>LockAsync()</code> returns a <code>ValueTask&lt;AsyncLock.Releaser&gt;</code>; await it, then scope the held lock with a <code>using</code> statement so disposal releases it. Because the lock is held by a disposable releaser rather than a thread, the critical section may freely <code>await</code>.</p>
+<pre><code class="lang-csharp">using Bodu.Threading;
+
+private readonly AsyncLock _mutex = new();
+
+public async Task UpdateAsync(CancellationToken cancellationToken)
+{
+    using (await _mutex.LockAsync(cancellationToken))
+    {
+        // Exclusive section; safe to await here.
+        await SomeOperationAsync(cancellationToken);
+    }
+}
+</code></pre>
+<p>The lock is <strong>not reentrant</strong>: a flow that already holds it and calls <code>LockAsync()</code> again deadlocks. Dispose the <code>AsyncLock</code> only at shutdown — disposal faults any still-queued waiter with <code>ObjectDisposedException</code>.</p>
+<h2 id="pattern-2--bounded-concurrency-with-asyncsemaphore">Pattern 2 — bounded concurrency with <code>AsyncSemaphore</code></h2>
+<p><code>AsyncSemaphore</code> admits a bounded number of concurrent holders. The disposable form, <code>LockAsync()</code>, pairs a permit with a <code>using</code> scope; the manual form pairs <code>WaitAsync()</code> with a <code>Release()</code> in a <code>finally</code> block. The constructor takes <code>(initialCount)</code>, or <code>(initialCount, maxCount)</code> to cap the permit count.</p>
+<pre><code class="lang-csharp">using Bodu.Threading;
+
+private readonly AsyncSemaphore _throttle = new(initialCount: 4);
+
+// Disposable form: at most four downloads run concurrently.
+public async Task DownloadAsync(Uri uri)
+{
+    using (await _throttle.LockAsync())
+    {
+        await HttpGetAsync(uri);
+    }
+}
+
+// Manual form: pair every WaitAsync with a Release.
+public async Task ProcessAsync()
+{
+    await _throttle.WaitAsync();
+    try
+    {
+        await DoWorkAsync();
+    }
+    finally
+    {
+        _throttle.Release();
+    }
+}
+</code></pre>
+<p><code>CurrentCount</code> reports the permits available right now. <code>Release(int)</code> returns several permits at once, handing them to queued waiters first.</p>
+<h2 id="pattern-3--many-concurrent-readers-one-writer-with-asyncreaderwriterlock">Pattern 3 — many concurrent readers, one writer with <code>AsyncReaderWriterLock</code></h2>
+<p><code>AsyncReaderWriterLock</code> admits any number of concurrent readers or a single exclusive writer. <code>ReaderAsync()</code> and <code>WriterAsync()</code> each return a <code>ValueTask&lt;AsyncReaderWriterLock.Releaser&gt;</code> scoped with <code>using</code>. The lock is writer-preferring, so a steady stream of writers can starve readers — and it has no upgradeable mode, so never request write access while holding read access on the same flow.</p>
+<pre><code class="lang-csharp">using Bodu.Threading;
+
+private readonly AsyncReaderWriterLock _lock = new();
+private readonly Dictionary&lt;string, int&gt; _cache = new();
+
+// Readers run concurrently with one another.
+public async Task&lt;int&gt; CountAsync()
+{
+    using (await _lock.ReaderAsync())
+        return _cache.Count;
+}
+
+// A writer runs exclusively, excluding all readers for its duration.
+public async Task SetAsync(string key, int value)
+{
+    using (await _lock.WriterAsync())
+        _cache[key] = value;
+}
+</code></pre>
+<p>The releaser is idempotent: disposing it more than once releases the access exactly once.</p>
+<h2 id="pattern-4--signalling-with-the-event-types">Pattern 4 — signalling with the event types</h2>
+<p>Three event primitives cover the common signalling shapes. Pick by how many waiters one signal should release.</p>
+<p><strong><code>AsyncAutoResetEvent</code></strong> — each <code>Set()</code> releases exactly one waiter, then reverts to unsignaled. It latches at most one pending signal. Ideal for a single-consumer &quot;item ready&quot; loop.</p>
+<pre><code class="lang-csharp">using Bodu.Threading;
+
+private readonly AsyncAutoResetEvent _itemReady = new();
+
+public void OnItemEnqueued() =&gt; _itemReady.Set();   // releases one waiter
+
+public async Task ConsumeAsync(CancellationToken token)
+{
+    while (!token.IsCancellationRequested)
+    {
+        await _itemReady.WaitAsync(token);
+        ProcessNextItem();
+    }
+}
+</code></pre>
+<p><strong><code>AsyncManualResetEvent</code></strong> — <code>Set()</code> opens the gate for every current and future waiter; <code>Reset()</code> closes it again; <code>IsSet</code> reports the state. Use it as a one-to-many &quot;ready&quot; gate.</p>
+<pre><code class="lang-csharp">using Bodu.Threading;
+
+private readonly AsyncManualResetEvent _ready = new();
+
+public async Task UseServiceAsync()
+{
+    await _ready.WaitAsync();   // all callers proceed once Set is called
+    CallService();
+}
+
+public void OnInitialized() =&gt; _ready.Set();      // open the gate for everyone
+public void OnConnectionLost() =&gt; _ready.Reset(); // later waiters block again
+</code></pre>
+<p><strong><code>AsyncCountdownEvent</code></strong> — fan-in: <code>WaitAsync()</code> completes once <code>Signal()</code> has been called the configured number of times. Raise the count while it is still above zero with <code>AddCount()</code>; the event is not resettable.</p>
+<pre><code class="lang-csharp">using Bodu.Threading;
+
+var remaining = new AsyncCountdownEvent(initialCount: 3);
+
+foreach (var job in jobs)
+    _ = Task.Run(async () =&gt;
+    {
+        await job.RunAsync();
+        remaining.Signal();   // last Signal drives the count to zero
+    });
+
+await remaining.WaitAsync();  // completes once all three have signaled
+</code></pre>
+<h2 id="pattern-5--one-time-async-initialization-with-asynclazyt">Pattern 5 — one-time async initialization with <code>AsyncLazy&lt;T&gt;</code></h2>
+<p><code>AsyncLazy&lt;T&gt;</code> runs an initializer at most once and caches the resulting <code>Task&lt;T&gt;</code>, shared by every awaiter. Construct it from a <code>Func&lt;Task&lt;T&gt;&gt;</code> (an async factory) or a <code>Func&lt;T&gt;</code> (a synchronous factory offloaded to the thread pool). The instance is awaitable directly, or use <code>GetValueAsync(token)</code> to abandon a single caller's wait without cancelling the shared work.</p>
+<pre><code class="lang-csharp">using Bodu.Threading;
+
+private readonly AsyncLazy&lt;Config&gt; _config =
+    new(async () =&gt; await LoadConfigAsync());
+
+public async Task&lt;int&gt; GetTimeoutAsync()
+{
+    Config config = await _config;   // factory runs once; result is cached and shared
+    return config.TimeoutSeconds;
+}
+
+// Abandon only this caller's wait on timeout; the shared factory keeps running for others.
+public async Task&lt;Config&gt; GetWithTimeoutAsync()
+{
+    using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+    return await _config.GetValueAsync(cts.Token);
+}
+</code></pre>
+<h2 id="pattern-6--debouncing-with-asyncdebouncer">Pattern 6 — debouncing with <code>AsyncDebouncer</code></h2>
+<p><code>AsyncDebouncer</code> coalesces a burst of <code>Invoke()</code> triggers into a single callback that runs once a quiet period has elapsed since the last trigger. The callback takes a <code>CancellationToken</code>. When a run becomes due while a previous callback is still running, behavior follows the <code>AsyncDebouncerExecutionPolicy</code> (default <code>QueueOneTrailingRun</code>). <code>FlushAsync()</code> runs a pending invocation immediately, <code>Cancel()</code> discards it, and <code>Dispose()</code> tears the debouncer down.</p>
+<pre><code class="lang-csharp">using Bodu.Threading;
+
+var debouncer = new AsyncDebouncer(
+    TimeSpan.FromMilliseconds(300),
+    async ct =&gt; await SaveAsync(ct));
+
+// Called on every keystroke; SaveAsync runs once, 300 ms after typing stops.
+textBox.TextChanged += (_, _) =&gt; debouncer.Invoke();
+
+// On shutdown, run the pending callback now instead of waiting out the quiet period.
+await debouncer.FlushAsync();
+</code></pre>
+<p>A callback that faults (other than its own cancellation) surfaces through the <code>CallbackFailed</code> event rather than being lost. Timing flows through a <code>TimeProvider</code>, so the quiet period can be driven deterministically in tests.</p>
+<h2 id="pattern-7--rate-limiting-with-rategate">Pattern 7 — rate limiting with <code>RateGate</code></h2>
+<p><code>RateGate</code> is a <strong>synchronous</strong> leading-edge gate: <code>TryInvoke()</code> returns <code>true</code> when a call is admitted and <code>false</code> when it falls inside the current cool-down window. The first call after construction is always admitted. It does no queuing, scheduling, or invoking of its own — it is a cheap, thread-safe decision you place in front of an async workflow.</p>
+<pre><code class="lang-csharp">using Bodu.Threading;
+
+private readonly RateGate _gate = new(TimeSpan.FromSeconds(1));
+
+public void OnSignalChanged()
+{
+    // Refreshes at most once per second regardless of call frequency.
+    if (_gate.TryInvoke())
+        _ = RefreshAsync();
+}
+</code></pre>
+<p><code>TimeUntilNext</code> reports how long remains before the next call would be admitted (<code>TimeSpan.Zero</code> when a call can proceed now). Like the debouncer, <code>RateGate</code> schedules through a <code>TimeProvider</code> for deterministic testing.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="circular-buffer.html">Circular buffer</a> — a fixed-capacity FIFO ring buffer, another Bodu.Core foundation type.</li>
+<li><a href="concurrent-collections.html">Concurrent collections</a> — thread-safe collections that pair with these gates.</li>
+<li><a href="../../docs/core/index.html">Bodu.Core introduction</a> — install notes and the headline types at a glance.</li>
+<li><a class="xref" href="../../api/Bodu.Threading.html">Bodu.Threading API reference</a> — full namespace overview.</li>
+<li><strong><a href="../topics/core-foundations.html">Core Foundations guides</a></strong> — every guide in this topic.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

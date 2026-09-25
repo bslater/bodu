@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Using CubeHash | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Using CubeHash | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="using-cubehash">Using CubeHash</h1>
+
+<p>CubeHash is Daniel J. Bernstein's 2008 submission to the NIST SHA-3 competition. It is a sponge-style hash built from a single simple permutation (&quot;Cube&quot;), parameterized by round counts and block size so you can dial the speed / margin trade-off. The default configuration reproduces the <strong>CubeHash 16/32–512</strong> variant submitted to the SHA-3 contest.</p>
+<p>The type is <a class="xref" href="../../api/Bodu.Security.Cryptography.CubeHash.html">CubeHash</a>, and it derives from <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a>.</p>
+<h2 id="tunable-parameters-at-a-glance">Tunable parameters at a glance</h2>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Default</th>
+<th>Range</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>HashSize</code></td>
+<td>512 bits</td>
+<td>One of <strong>224, 256, 384, 512</strong> (<code>CubeHash.MinHashSize</code> = 224, <code>MaxHashSize</code> = 512)</td>
+<td>Output width — a discrete set, not any multiple of 8.</td>
+</tr>
+<tr>
+<td><code>TransformBlockSize</code></td>
+<td>32 bytes</td>
+<td>1–128 (<code>MinInputBlockSize</code> / <code>MaxInputBlockSize</code>)</td>
+<td>Bytes absorbed per permutation call. Larger = faster per byte.</td>
+</tr>
+<tr>
+<td><code>Rounds</code></td>
+<td>16</td>
+<td>1–4096 (<code>MinRounds</code> / <code>MaxRounds</code>)</td>
+<td>Permutation rounds between blocks. More rounds = more margin, slower.</td>
+</tr>
+<tr>
+<td><code>InitializationRounds</code></td>
+<td>16</td>
+<td>1–4096</td>
+<td>Permutation rounds during init.</td>
+</tr>
+<tr>
+<td><code>FinalizationRounds</code></td>
+<td>32</td>
+<td>1–4096</td>
+<td>Permutation rounds after the last block.</td>
+</tr>
+</tbody>
+</table>
+<p><code>CubeHash</code> derives directly from <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a>, so the standard <code>ComputeHash</code> / <code>TransformBlock</code> lifecycle applies. A <code>HashSize</code> outside the permitted set throws <code>ArgumentOutOfRangeException</code> at construction (or when the setter runs).</p>
+<p>The published naming convention is <strong>CubeHash <code>r+b</code>/<code>w+f</code>-<code>h</code></strong> — initialization rounds <code>i</code>, transform rounds <code>r</code>, block size <code>b</code>, finalization rounds <code>f</code>, output bits <code>h</code>. <code>AlgorithmName</code> reflects the current configuration, e.g. <code>&quot;CubeHash16+16/32+32-512&quot;</code>.</p>
+<h2 id="pattern-1--default-cubehash-the-sha-3-submission">Pattern 1 — default CubeHash (the SHA-3 submission)</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Text;
+using Bodu.Security.Cryptography;
+
+byte[] data = Encoding.UTF8.GetBytes(&quot;the quick brown fox&quot;);
+
+using var cube = new CubeHash();              // default 512-bit output, 16/32-512 parameters
+byte[] digest = cube.ComputeHash(data);       // 64 bytes
+</code></pre>
+<p>This is the configuration referenced by most published CubeHash test vectors.</p>
+<h2 id="pattern-2--a-shorter-digest">Pattern 2 — a shorter digest</h2>
+<p>Reduce the hash size before hashing begins:</p>
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+
+using var cube = new CubeHash { HashSize = 256 };   // 32-byte digest
+byte[] digest = cube.ComputeHash(data);
+</code></pre>
+<p><code>HashSize</code> must be one of 224, 256, 384, or 512 bits — the same discrete set the SHA-3 submission defined, not an arbitrary multiple of 8. It is only settable before the first <code>ComputeHash</code> / <code>TransformBlock</code> — changing it mid-stream would invalidate the state, so the setter throws once hashing has started.</p>
+<h2 id="pattern-3--trading-speed-for-margin">Pattern 3 — trading speed for margin</h2>
+<p>Increase the transform rounds or the block size to move along the speed / margin curve:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+
+// Faster: larger blocks, fewer rounds between them.
+using var fast = new CubeHash
+{
+    TransformBlockSize = 64,
+    Rounds             = 8,
+    HashSize           = 256,
+};
+
+// More conservative margin: smaller blocks, more rounds.
+using var safe = new CubeHash
+{
+    TransformBlockSize = 16,
+    Rounds             = 32,
+    FinalizationRounds = 64,
+    HashSize           = 512,
+};
+</code></pre>
+<p>All four round-count properties (<code>Rounds</code>, <code>InitializationRounds</code>, <code>FinalizationRounds</code>) and <code>TransformBlockSize</code> are only settable before the first <code>ComputeHash</code> / <code>TransformBlock</code>. The <code>AlgorithmName</code> surfaces the effective parameters:</p>
+<pre><code class="lang-csharp">Console.WriteLine(fast.AlgorithmName);   // e.g. &quot;CubeHash16+8/64+32-256&quot;
+Console.WriteLine(safe.AlgorithmName);   // e.g. &quot;CubeHash16+32/16+64-512&quot;
+</code></pre>
+<h2 id="pattern-4--streaming">Pattern 4 — streaming</h2>
+<p>CubeHash plugs into the BCL streaming shape:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+
+using var cube = new CubeHash();
+
+using var stream = File.OpenRead(&quot;archive.bin&quot;);
+byte[] digest = cube.ComputeHash(stream);
+</code></pre>
+<p><code>CanReuseTransform</code> is <code>true</code>, so the same <code>CubeHash</code> instance can hash multiple independent inputs in a loop — call <code>Initialize()</code> between messages, or just let the next <code>ComputeHash</code> reset the state for you.</p>
+<h2 id="pattern-5--matching-published-test-vectors">Pattern 5 — matching published test vectors</h2>
+<p>The CubeHash test-vector files in the NIST competition submission use the notation <code>CubeHash i+r/b+f-h</code>. To reproduce a specific vector, set all four parameters plus <code>HashSize</code>:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+
+// CubeHash 16+32/32+32-256 — a common reference configuration.
+using var cube = new CubeHash
+{
+    InitializationRounds = 16,
+    Rounds               = 32,
+    TransformBlockSize   = 32,
+    FinalizationRounds   = 32,
+    HashSize             = 256,
+};
+</code></pre>
+<h2 id="security-caveats">Security caveats</h2>
+<ul>
+<li><strong>Status.</strong> CubeHash was a first-round SHA-3 <em>submission</em> — it did not advance to the final round (the finalists were BLAKE, Grøstl, JH, Keccak, and Skein). The default <code>16/32</code> configuration is unbroken but conservative parameterizations exist precisely because the low-round variants have a thinner margin; do not reduce <code>Rounds</code> below the default for security-sensitive use.</li>
+<li><strong>Output size vs security level.</strong> As with any digest, an n-bit output gives ≈ n-bit pre-image resistance but only ≈ n/2-bit collision resistance. The 224-bit minimum therefore offers 112-bit collision resistance — pick 256 or wider when collisions matter.</li>
+<li><strong>Length extension.</strong> CubeHash is a sponge construction, so it is immune to length extension and is safe to use as a keyed MAC by prepending the key (HMAC is unnecessary) — but no native MAC mode is exposed here; for a built-in keyed mode reach for <a href="skein.html">Skein</a> or <a href="blake.html">BLAKE2b</a>.</li>
+</ul>
+<h2 id="when-to-use-cubehash">When to use CubeHash</h2>
+<ul>
+<li><strong>Research</strong> into sponge constructions, SHA-3 alternatives, or round-count vs speed trade-offs.</li>
+<li><strong>Interoperability</strong> with systems that use a specific CubeHash parameterization.</li>
+</ul>
+<p>For new work without an interoperability requirement, the BCL's SHA-2 and SHA-3 families are hardware-accelerated and have broader analysis behind them. CubeHash's value is its knob-turnable parameter space — useful when that is specifically what you want.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="hashing.html">Hashing overview</a> — where CubeHash sits next to Tiger, SipHash, Snefru, and the non-cryptographic families.</li>
+<li><a href="tiger.html">Using Tiger</a>, <a href="snefru.html">Using Snefru</a> — the other cryptographic digests in this package.</li>
+<li><a class="xref" href="../../api/Bodu.Security.Cryptography.html">Bodu.Security.Cryptography namespace page</a>.</li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

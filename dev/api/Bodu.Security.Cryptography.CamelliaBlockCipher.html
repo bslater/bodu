@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class CamelliaBlockCipher | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class CamelliaBlockCipher | BODU ">
+    
+    <meta name="description" content="Provides the core Camellia block cipher engine, implementing low-level encryption and decryption of individual 128-bit blocks. This class cannot be inherited.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Security.Cryptography.CamelliaBlockCipher">
+
+
+
+  <h1 id="Bodu_Security_Cryptography_CamelliaBlockCipher" data-uid="Bodu.Security.Cryptography.CamelliaBlockCipher" class="text-break">Class CamelliaBlockCipher</h1>
+  <div class="markdown level0 summary"><p>Provides the core Camellia block cipher engine, implementing low-level encryption and decryption of individual
+128-bit blocks. This class cannot be inherited.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><span class="xref">CamelliaBlockCipher</span></div>
+  </div>
+  <div class="implements">
+    <h5>Implements</h5>
+    <div><a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a></div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Security.html">Security</a>.<a class="xref" href="Bodu.Security.Cryptography.html">Cryptography</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Security.Cryptography.dll</h6>
+  <h5 id="Bodu_Security_Cryptography_CamelliaBlockCipher_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class CamelliaBlockCipher : IBlockCipher, IDisposable</code></pre>
+  </div>
+  <h5 id="Bodu_Security_Cryptography_CamelliaBlockCipher_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+Camellia is a symmetric-key block cipher jointly developed by NTT and Mitsubishi Electric and specified in RFC 3713.
+It operates on a fixed 128-bit block size and accepts 128-bit, 192-bit, and 256-bit keys. The 128-bit key variant
+applies 18 Feistel rounds (three 6-round groups separated by FL/FL<sup>−1</sup> layers), while the 192-bit and
+256-bit key variants apply 24 rounds (four 6-round groups).
+</p>
+<p>
+This implementation keeps the RFC 3713 model visible: the S-box material is represented by the published
+<code>SBOX1</code> table, <code>SBOX2</code>/<code>SBOX3</code>/<code>SBOX4</code> are derived exactly as specified, the <code>SIGMA</code>
+constants are stored as their 64-bit values, and whitening keys (<code>kw1..kw4</code>) are kept separate from round keys
+(<code>k1..k18</code> or <code>k1..k24</code>) and FL/FL<sup>−1</sup> keys (<code>ke1..ke4</code> or <code>ke1..ke6</code>).
+</p>
+<p>
+The block operation follows the RFC Feistel structure directly: input whitening, repeated applications of the 64-bit
+<code>F</code> function, periodic <code>FL</code>/<code>FLINV</code> layers, final half swap, and output whitening. Decryption
+reverses the same schedule using the same subkeys in reverse order and swaps <code>FL</code> with <code>FLINV</code>.
+</p>
+<p>
+This type exposes the raw Camellia block primitive. Most callers should prefer the higher-level
+<a class="xref" href="Bodu.Security.Cryptography.Camellia.html">Camellia</a> class, which exposes the standard
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm">SymmetricAlgorithm</a> contract. Use <a class="xref" href="Bodu.Security.Cryptography.CamelliaBlockCipher.html">CamelliaBlockCipher</a>
+directly only when composing the raw block primitive with an <a class="xref" href="Bodu.Security.Cryptography.IBlockCipherModeTransform.html">IBlockCipherModeTransform</a> or
+<a class="xref" href="Bodu.Security.Cryptography.IPaddingStrategy.html">IPaddingStrategy</a>.
+</p>
+<ul><li><b>Block size:</b> 16 bytes (128 bits)</li><li><b>Key sizes:</b> 16 bytes (128 bits), 24 bytes (192 bits), 32 bytes (256 bits)</li><li><b>Rounds:</b> 18 (128-bit key) or 24 (192/256-bit key)</li></ul>
+<p>
+This implementation is constant-time in its control flow, but the fixed S-box lookup tables are read at
+data-dependent indices. As such, this implementation is <b>not</b> hardened against timing or cache-based
+side-channel attacks.
+</p>
+</div>
+  <h5 id="Bodu_Security_Cryptography_CamelliaBlockCipher_examples"><strong>Examples</strong></h5>
+  <pre><code class="lang-csharp">// Direct single-block use. For most workloads prefer the Camellia SymmetricAlgorithm wrapper.
+byte[] key = new byte[16];   // 128, 192, or 256 bits
+RandomNumberGenerator.Fill(key);
+
+using var cipher = new CamelliaBlockCipher(key);
+
+byte[] plaintext  = new byte[16];   // one 128-bit block
+byte[] ciphertext = new byte[16];
+cipher.Encrypt(plaintext, ciphertext);
+
+byte[] roundtrip = new byte[16];
+cipher.Decrypt(ciphertext, roundtrip);
+// roundtrip equals plaintext</code></pre>
+
+  <h3 id="constructors">Constructors
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Security_Cryptography_CamelliaBlockCipher__ctor_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.CamelliaBlockCipher.#ctor(System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.Security.Cryptography.CamelliaBlockCipher.-ctor.html#Bodu_Security_Cryptography_CamelliaBlockCipher__ctor_System_ReadOnlySpan_System_Byte__">CamelliaBlockCipher(ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Security.Cryptography.CamelliaBlockCipher.html">CamelliaBlockCipher</a> class using the specified key.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Security_Cryptography_CamelliaBlockCipher_BlockSize" data-uid="Bodu.Security.Cryptography.CamelliaBlockCipher.BlockSize">
+          <a class="xref" href="Bodu.Security.Cryptography.CamelliaBlockCipher.BlockSize.html#Bodu_Security_Cryptography_CamelliaBlockCipher_BlockSize">BlockSize</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the block size, in bits, of the cipher (for example, 128 bits / 16 bytes for AES).</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Security_Cryptography_CamelliaBlockCipher_Decrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__" data-uid="Bodu.Security.Cryptography.CamelliaBlockCipher.Decrypt(System.ReadOnlySpan{System.Byte},System.Span{System.Byte})">
+          <a class="xref" href="Bodu.Security.Cryptography.CamelliaBlockCipher.Decrypt.html#Bodu_Security_Cryptography_CamelliaBlockCipher_Decrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">Decrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decrypts a single 128-bit ciphertext block.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_CamelliaBlockCipher_Dispose" data-uid="Bodu.Security.Cryptography.CamelliaBlockCipher.Dispose">
+          <a class="xref" href="Bodu.Security.Cryptography.CamelliaBlockCipher.Dispose.html#Bodu_Security_Cryptography_CamelliaBlockCipher_Dispose">Dispose()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Securely clears all expanded subkey material and marks the instance as disposed.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_CamelliaBlockCipher_Encrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__" data-uid="Bodu.Security.Cryptography.CamelliaBlockCipher.Encrypt(System.ReadOnlySpan{System.Byte},System.Span{System.Byte})">
+          <a class="xref" href="Bodu.Security.Cryptography.CamelliaBlockCipher.Encrypt.html#Bodu_Security_Cryptography_CamelliaBlockCipher_Encrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">Encrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Encrypts a single 128-bit plaintext block.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <h3 id="seealso">See Also</h3>
+  <div class="seealso">
+      <div><span><a href="https://www.rfc-editor.org/rfc/rfc3713">RFC 3713 — A Description of the Camellia Encryption Algorithm</a></span></div>
+      <div><a class="xref" href="Bodu.Security.Cryptography.Camellia.html">Camellia</a></div>
+  </div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

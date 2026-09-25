@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Namespace Bodu.Text.Yaml.Writer | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Namespace Bodu.Text.Yaml.Writer | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Text.Yaml.Writer">
+
+  <h1 id="Bodu_Text_Yaml_Writer" data-uid="Bodu.Text.Yaml.Writer" class="text-break">Namespace Bodu.Text.Yaml.Writer</h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual">
+<p><img src="../images/hero-yaml.svg" alt="Bodu.Text.Yaml.Writer"></p>
+<h2 id="purpose">Purpose</h2>
+<p><strong>Bodu.Text.Yaml.Writer</strong> is the emitting counterpart of <a class="xref" href="Bodu.Text.Yaml.Reader.html">Bodu.Text.Yaml.Reader</a> in <a class="xref" href="Bodu.Text.Yaml.html">Bodu.Text.Yaml</a>: a forward-only writer that produces a block-style YAML document into an <code>IBufferWriter&lt;byte&gt;</code>, in the manner of <code>Utf8JsonWriter</code>. The <a class="xref" href="Bodu.Text.Yaml.YamlSerializer.html">YamlSerializer</a> and both DOMs (<code>WriteTo</code>) emit through it, and a custom <a class="xref" href="Bodu.Text.Yaml.Serialization.YamlConverter-1.html">YamlConverter&lt;T&gt;</a> writes its value through it.</p>
+<h2 id="key-types">Key types</h2>
+<ul>
+<li><a class="xref" href="Bodu.Text.Yaml.Writer.Utf8YamlWriter.html">Utf8YamlWriter</a> — the <code>ref struct</code> writer: <code>WriteStartMapping</code> / <code>WriteEndMapping</code>, <code>WriteStartSequence</code> / <code>WriteEndSequence</code>, <code>WritePropertyName</code>, and the scalar writers <code>WriteString</code>, <code>WriteInteger</code>, <code>WriteDouble</code>, <code>WriteBoolean</code>, <code>WriteNull</code>.</li>
+<li><a class="xref" href="Bodu.Text.Yaml.Writer.YamlWriterOptions.html">YamlWriterOptions</a> — <code>IndentSize</code>, <code>MaxDepth</code>, and <code>NewLine</code>.</li>
+</ul>
+<h2 id="example">Example</h2>
+<pre><code class="lang-csharp">using System.Buffers;
+using System.Text;
+using Bodu.Text.Yaml.Writer;
+
+var buffer = new ArrayBufferWriter&lt;byte&gt;();
+var writer = new Utf8YamlWriter(buffer);
+
+writer.WriteStartMapping();
+writer.WritePropertyName(&quot;host&quot;);
+writer.WriteString(&quot;localhost&quot;);
+writer.WritePropertyName(&quot;port&quot;);
+writer.WriteInteger(8080);
+writer.WriteEndMapping();
+
+string yaml = Encoding.UTF8.GetString(buffer.WrittenSpan);   // &quot;host: localhost\nport: 8080\n&quot;
+</code></pre>
+<h2 id="notes">Notes</h2>
+<ul>
+<li><strong>Safe scalar presentation.</strong> Each string is written plain when unambiguous and double-quoted otherwise, so a value such as <code>&quot;yes&quot;</code> or <code>&quot;8080&quot;</code> reads back as a string; empty collections are emitted as <code>{}</code> / <code>[]</code> so they round-trip as empty rather than null.</li>
+<li><strong>Block style only.</strong> The writer emits block mappings and sequences with configurable indentation; anchors, aliases, tags, and comments are not written.</li>
+<li><strong>Shared state.</strong> The writer is a <code>ref struct</code> whose state lives behind one shared reference, so a copy passed by value continues the same document.</li>
+<li><strong>See also:</strong> the <a href="../docs/serialization/yaml/index.html">Bodu.Text.Yaml introduction</a> and the <a href="../guides/serialization/yaml/using.html">Using YAML</a> guide (Pattern 9 — Drive the low-level reader and writer).</li>
+</ul>
+</div>
+  <div class="markdown level0 remarks"></div>
+    <h3 id="structs">
+Structs
+</h3>
+      <h4><a class="xref" href="Bodu.Text.Yaml.Writer.Utf8YamlWriter.html">Utf8YamlWriter</a></h4>
+      <section><p>Provides a forward-only writer that emits a YAML document in block style to a UTF-8 buffer, in the manner of
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.json.utf8jsonwriter">Utf8JsonWriter</a>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Yaml.Writer.YamlWriterOptions.html">YamlWriterOptions</a></h4>
+      <section><p>Provides options that configure how <a class="xref" href="Bodu.Text.Yaml.Writer.Utf8YamlWriter.html">Utf8YamlWriter</a> emits YAML.</p>
+</section>
+
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

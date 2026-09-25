@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Bodu.Collections.Concurrent — Core concepts | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Bodu.Collections.Concurrent — Core concepts | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="boducollectionsconcurrent--core-concepts">Bodu.Collections.Concurrent — Core concepts</h1>
+
+<p>This page is the concurrency vocabulary the package documentation assumes. Read it once before the <a href="getting-started.html">getting-started samples</a> or the <a href="../../guides/core/concurrent-collections.html">concurrent collections guide</a>.</p>
+<p>Part of the <strong><a href="../topics/core-foundations.html">Core Foundations</a></strong> topic. The general collection vocabulary — fixed capacity, ring backing, overflow policies — lives on the <a href="../collections/concepts.html">Bodu.Collections concepts page</a>; this page covers only what changes when multiple threads are involved.</p>
+<h2 id="lock-free-mpmc-ring">Lock-free MPMC ring</h2>
+<p><a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer-1.html">ConcurrentCircularBuffer&lt;T&gt;</a> is a <strong>multi-producer / multi-consumer (MPMC)</strong> ring using the <strong>Vyukov per-slot sequence protocol</strong>: each slot carries a sequence number that producers and consumers advance with compare-and-swap operations, so threads coordinate through the slots themselves rather than a global lock. Per-slot 64-byte cache-line padding prevents <em>false sharing</em> — two threads touching adjacent slots never invalidate each other's cache lines on x86 / x64.</p>
+<p>Two consequences of the protocol surface in the API:</p>
+<ul>
+<li><strong>Reference types only.</strong> The constraint is <code>T : class?</code> because slot publication relies on <code>Volatile</code> reads and writes of object references for atomic visibility. For a concurrent queue of value types, use the BCL <a href="https://learn.microsoft.com/dotnet/api/system.collections.concurrent.concurrentqueue-1"><code>ConcurrentQueue&lt;T&gt;</code></a>.</li>
+<li><strong>Capacity minimum of 2.</strong> On a single-slot ring the protocol cannot distinguish &quot;data published&quot; from &quot;slot released&quot;, so smaller capacities are rejected at construction.</li>
+</ul>
+<p>Single-element operations (<code>Enqueue</code> / <code>Dequeue</code> / <code>Peek</code> and their <code>Try…</code> variants) are individually atomic and lock-free on the hot path. The buffer implements <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.concurrent.iproducerconsumercollection-1">IProducerConsumerCollection&lt;T&gt;</a> (<code>TryAdd</code> / <code>TryTake</code>), so it composes with <a href="https://learn.microsoft.com/dotnet/api/system.collections.concurrent.blockingcollection-1"><code>BlockingCollection&lt;T&gt;</code></a> when consumers should block until an item arrives — neither type has blocking operations of its own.</p>
+<h2 id="lock-free-split-ordered-hashing">Lock-free split-ordered hashing</h2>
+<p><a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.html">ConcurrentHashSet&lt;T&gt;</a> is a <strong>lock-free split-ordered list</strong> (Shalev &amp; Shavit): every element lives in one Harris–Michael lock-free ordered linked list, sorted by the bit-reversed hash code, and the hash-table part is just an array of lazily created <em>shortcut</em> pointers into that list. Mutations are single compare-and-swap operations; deletion marks the node first and unlinks it cooperatively. Growing the table copies shortcut pointers but never rehashes or moves a node.</p>
+<p>No operation on the set takes a lock — <code>Add</code>, <code>Remove</code>, <code>Contains</code>, <code>Count</code>, <code>Clear</code>, and <code>ToArray</code> are all lock-free, so a preempted thread can never stall the others. <code>Clear</code> atomically swaps the entire backing structure in one compare-and-swap; <code>ToArray</code> and enumeration are <em>weakly consistent</em> traversals (see below).</p>
+<h2 id="lock-striped-evicting-cache">Lock-striped evicting cache</h2>
+<p><a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html">ConcurrentEvictingDictionary&lt;TKey, TValue&gt;</a> takes a different route, because in an evicting cache <em>reads are writes</em>: a lookup repositions the key for recency-tracked policies, so even <code>TryGetValue</code> mutates shared order structures and a lock-free design is impractical. Instead the cache uses <strong>lock striping</strong> — each internal segment is an exact policy cache over a fixed slice of the total capacity, guarded by its own monitor. The slices sum to <code>Capacity</code> exactly, so the global bound is strict while eviction order is exact per segment and approximate globally. That trade is what every production concurrent cache makes; a single global recency order would serialise all reads behind one lock.</p>
+<p>The stripe count is the cache's concurrency budget: operations that need a globally coherent view (<code>Count</code>, <code>ToArray</code>, enumeration, <code>Clear</code>) acquire <em>every</em> segment lock once, which is exactly why the approximate alternatives below exist.</p>
+<h2 id="amortized-maintenance-pseudo-lru">Amortized-maintenance pseudo-LRU</h2>
+<p><a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentLruCache-2.html">ConcurrentLruCache&lt;TKey, TValue&gt;</a> answers the same &quot;reads are writes&quot; problem the opposite way. Rather than locking the read so it can reposition the key exactly, it lets the read record only that the entry <em>was</em> touched — a single volatile write to an accessed flag, on top of a <code>ConcurrentDictionary</code> probe — and defers the repositioning. Recency lives in three FIFO queues (<strong>hot</strong> for new arrivals, <strong>warm</strong> for entries that proved reuse, <strong>cold</strong> for entries one unaccessed pass from eviction), and the work of promoting, demoting, and evicting is amortized onto writers: after a mutation at most one thread briefly cycles the queues while other writers proceed.</p>
+<p>The result is a <em>pseudo</em>-LRU — an approximation of least-recently-used, which is what BitFaster.Caching and Caffeine also ship. Two consequences follow directly from deferring the bookkeeping, and both are contractual rather than incidental:</p>
+<ul>
+<li><strong><code>Count</code> may transiently exceed <code>Capacity</code></strong>, by at most the number of concurrently in-flight writers. Write back-pressure bounds it: a writer that observes the cache over capacity converges maintenance before returning, so sustained insert pressure against a full cache serializes writes on the maintenance lock while reads stay lock-free.</li>
+<li><strong>Explicitly removed entries keep their queue slot</strong> until a maintenance cycle drains them, so internal occupancy accounting is eventual rather than instantaneous.</li>
+</ul>
+<p>The two caches therefore sit at opposite ends of one trade: the evicting dictionary buys exactness with a lock on every operation; the LRU cache buys lock-free reads with approximation. Neither dominates — pick by which property you cannot give up.</p>
+<h2 id="snapshot-enumeration">Snapshot enumeration</h2>
+<p>The single-threaded catalogue enumerates <strong>fail-fast</strong>: a version counter detects structural mutation and the enumerator throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a>. A lock-free structure cannot maintain that token, so both concurrent types substitute <strong>snapshot enumeration</strong> — <code>foreach</code> and <code>ToArray</code> capture the contents once, iterate over that fixed copy, and <em>never throw</em> on concurrent modification. Writes that land after the snapshot are simply not seen.</p>
+<p>The types capture their snapshots differently:</p>
+<ul>
+<li>The <strong>buffer</strong> uses a per-slot <em>seqlock</em>: the scan validates slot sequence numbers and restarts on churn, falling back to a sequence-validated best-effort snapshot only after an internal retry budget is exhausted. The result is a coherent point-in-time capture.</li>
+<li>The <strong>set</strong> performs a lock-free traversal of its split-ordered list. The capture is <strong>weakly consistent</strong> rather than point-in-time: it contains every element present for the entire duration of the call and never contains an element twice, but concurrent additions and removals may or may not be observed.</li>
+<li>The <strong>evicting dictionary</strong> acquires every segment lock once, copies, and releases — a brief globally consistent pause rather than an optimistic retry loop.</li>
+</ul>
+<h2 id="approximate-vs-coherent-counts">Approximate vs. coherent counts</h2>
+<p>Under concurrency, &quot;how many elements?&quot; has two honest answers, and the API names them:</p>
+<table>
+<thead>
+<tr>
+<th>Read</th>
+<th>Consistency</th>
+<th>Cost</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Buffer <code>Count</code></td>
+<td><strong>Approximate</strong> — head and tail positions are read independently</td>
+<td>Two volatile reads; never blocks</td>
+</tr>
+<tr>
+<td>Set <code>Count</code>, <code>IsEmpty</code></td>
+<td><strong>Exact at quiescence</strong> — an interlocked counter that may transiently lag operations still in flight</td>
+<td>One volatile read; lock-free</td>
+</tr>
+<tr>
+<td>Dictionary <code>ApproximateCount</code></td>
+<td><strong>Approximate</strong> — per-segment counters summed lock-free</td>
+<td>Lock-free</td>
+</tr>
+<tr>
+<td>Dictionary <code>Count</code>, <code>IsEmpty</code></td>
+<td><strong>Coherent</strong> — a true point-in-time value (raw count incl. expired-unpurged)</td>
+<td>Acquires every segment lock</td>
+</tr>
+<tr>
+<td>Buffer <code>ToArray</code> / enumeration</td>
+<td><strong>Coherent snapshot</strong> (seqlock)</td>
+<td>Restarts on churn</td>
+</tr>
+<tr>
+<td>Set <code>ToArray</code> / enumeration</td>
+<td><strong>Weakly consistent</strong> traversal</td>
+<td>Lock-free; never blocks writers</td>
+</tr>
+</tbody>
+</table>
+<p>Prefer <code>TryPeek</code> / <code>TryDequeue</code> over reading the buffer's <code>Count</code> for lightweight sampling of a busy buffer, and treat any count read under active mutation as already stale by the time it is inspected.</p>
+<h2 id="eviction-events-under-contention">Eviction events under contention</h2>
+<p>With <code>AllowOverwrite = true</code>, a producer that finds the buffer full silently overwrites the oldest entry and raises <code>ItemEvicted</code> with the displaced item. The event contract deliberately differs from the single-threaded <a class="xref" href="../../api/Bodu.Collections.Generic.CircularBuffer-1.html">CircularBuffer&lt;T&gt;</a>:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th><code>CircularBuffer&lt;T&gt;</code></th>
+<th><code>ConcurrentCircularBuffer&lt;T&gt;</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pre-eviction event</td>
+<td><code>ItemEvicting</code> (can veto)</td>
+<td><em>none</em></td>
+</tr>
+<tr>
+<td>Handler exceptions</td>
+<td>Propagate to the caller</td>
+<td><strong>Swallowed</strong></td>
+</tr>
+<tr>
+<td><code>Clear</code> raises events</td>
+<td>Yes</td>
+<td>No — bounded drain, no <code>ItemEvicted</code></td>
+</tr>
+</tbody>
+</table>
+<p>The lock-free path cannot safely unwind a half-completed slot handoff, so there is no veto and a throwing handler must not be able to fail the producer. Do not port veto logic between the two types; treat the concurrent event as telemetry, not control flow.</p>
+<p><a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html">ConcurrentEvictingDictionary&lt;TKey, TValue&gt;</a> follows the same concurrent contract relative to its non-concurrent peer: only the post-commit <code>ItemEvicted</code> survives (no <code>ItemEvicting</code>), handlers run <em>after</em> the owning segment's lock is released — so they may safely call back into the dictionary — and handler exceptions are swallowed. Capacity evictions and TTL expiries raise the event; explicit <code>TryRemove</code> and <code>Clear</code> do not.</p>
+<h2 id="bulk-operations-are-not-transactions">Bulk operations are not transactions</h2>
+<p><code>ConcurrentHashSet&lt;T&gt;</code>'s <code>ISet&lt;T&gt;</code> operations (<code>UnionWith</code>, <code>IntersectWith</code>, <code>ExceptWith</code>, <code>SymmetricExceptWith</code>, and the subset/superset predicates) are sequences of per-element atomic operations over a snapshot — they are <strong>not</strong> atomic as a whole, so concurrent mutation may interleave with them. When a mutation must be all-or-nothing, capture <code>ToArray()</code>, compute outside the set, and apply the result — or use an external lock for that operation only.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="index.html">Introduction</a></strong> — the package map and headline types.</li>
+<li><strong><a href="getting-started.html">Getting started</a></strong> — install + runnable minimal samples.</li>
+<li><strong><a href="../../guides/core/concurrent-collections.html">Concurrent collections guide</a></strong> — construction patterns, the consistency table, and when <em>not</em> to use these types.</li>
+<li><strong><a href="../collections/concepts.html">Bodu.Collections concepts</a></strong> — the single-threaded collection vocabulary this page builds on.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.html">Bodu.Collections.Generic.Concurrent API reference</a></strong> — full type-by-type docs.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

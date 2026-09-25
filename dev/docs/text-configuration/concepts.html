@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Bodu.Text.Configuration — Core concepts | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Bodu.Text.Configuration — Core concepts | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="bodutextconfiguration--core-concepts">Bodu.Text.Configuration — Core concepts</h1>
+
+<p>This page is the vocabulary the rest of the documentation assumes. Read it once before the
+<a href="getting-started.html">getting-started samples</a>, and refer back whenever a term feels imprecise.</p>
+<p>Part of the <strong><a href="../topics/configuration.html">Configuration</a></strong> topic.</p>
+<p>For the high-level shape of the library and the pipeline diagram, start with the <a href="index.html">introduction</a>.</p>
+<h2 id="document-and-view">Document and view</h2>
+<p>A <strong>document</strong> is the parsed-but-not-yet-resolved representation of the source text.
+<a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationDocument.html">ConfigurationDocument</a> is a <code>sealed</code> type that <em>inherits</em> the read-only
+<a class="xref" href="../../api/Bodu.Text.Configuration.IniDocumentBase.html">IniDocumentBase</a> model — the library's own trivia-preserving INI structure, which the reader
+produces — with a preamble (the <a class="xref" href="../../api/Bodu.Text.Configuration.IniDocumentBase.GlobalSection.html#Bodu_Text_Configuration_IniDocumentBase_GlobalSection">GlobalSection</a>) and zero or more named
+<a class="xref" href="../../api/Bodu.Text.Configuration.IniDocumentBase.Sections.html#Bodu_Text_Configuration_IniDocumentBase_Sections">Sections</a> in source order. The document preserves comments, ordering, and
+duplicate-policy decisions, so it can be re-emitted byte-for-byte.</p>
+<p>Because it derives from <code>IniDocumentBase</code>, every read member of the INI model is available directly on the document:
+<code>doc.GlobalSection[&quot;root&quot;]</code>, <code>doc.Sections[0].Name</code>, <code>section.Entries</code>, <code>section[&quot;indent_size&quot;]</code>, and the typed
+<code>section.TryGetValue&lt;T&gt;(...)</code> accessors all work without first resolving a view. The document-level surface is
+read-only — <code>ConfigurationDocument</code> exposes no way to add or remove sections (that mutation surface lives on the
+standalone <a class="xref" href="../../api/Bodu.Text.Configuration.IniDocument.html">IniDocument</a>, which adds <code>AddSection</code> / <code>GetOrAddSection</code> / <code>RemoveSection</code>)
+— but each <a class="xref" href="../../api/Bodu.Text.Configuration.IniSection.html">IniSection</a> stays editable through <code>AddEntry</code> / <code>SetEntry</code> / <code>RemoveEntry</code>,
+which is how a value is changed before a round-trip <code>Save</code>.</p>
+<p>A <strong>view</strong> is the resolved snapshot for one <strong>target path</strong> — a flat dictionary of colon-delimited configuration keys
+to their effective string values. <a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationView.html">ConfigurationView</a> is one-shot: subsequent mutation
+of the originating document does not retroactively update the view. Take a fresh view whenever the document changes or
+the target path changes.</p>
+<pre><code>source text ──► ConfigurationDocument.Parse ──► ConfigurationDocument
+ConfigurationDocument ──► .Resolve(targetPath) ──► ConfigurationView
+ConfigurationView ──► .GetXxx(key) ──────────► typed value
+</code></pre>
+<h2 id="profile">Profile</h2>
+<p>A <strong>profile</strong> is a named, validated combination of parse, resolve, and write options. Four profiles ship in the box:</p>
+<table>
+<thead>
+<tr>
+<th>Profile</th>
+<th>Intent</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Bodu</code> (default)</td>
+<td>Permissive Bodu defaults: dotted-to-colon keys, whitespace-introduced inline comments, last-wins duplicates, preamble participates in resolve.</td>
+</tr>
+<tr>
+<td><code>EditorConfigCompatible</code></td>
+<td>Strict alignment with EditorConfig 0.17.2: inline comments disabled, strict section headers, and preamble properties dropped from resolve (<code>root</code> is consumed by the reader).</td>
+</tr>
+<tr>
+<td><code>Strict</code></td>
+<td>Deterministic parsing for generated files: duplicate keys are rejected, key-only properties are not permitted.</td>
+</tr>
+<tr>
+<td><code>Relaxed</code></td>
+<td>Permissive parsing of user-authored files: inline comments enabled, duplicates last-wins, diagnostics collected rather than thrown.</td>
+</tr>
+</tbody>
+</table>
+<p>Each option type — <a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationParseOptions.html">ConfigurationParseOptions</a>,
+<a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationResolveOptions.html">ConfigurationResolveOptions</a>,
+<a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationWriteOptions.html">ConfigurationWriteOptions</a> — has a static <code>For(ConfigurationProfile)</code> factory that
+materialises any of the four profiles, plus a set of cached named presets. The three option types are sealed <em>classes</em>
+(not structs); each is immutable once constructed because every property is <code>init</code>-only, so the cached presets are safe
+to share across threads. Profiles are starting points, not contracts: compose a custom bag with an object initialiser
+and override only the properties that need to differ.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>The named static presets differ slightly per option type. <code>ConfigurationParseOptions</code> exposes all four
+(<code>Bodu</code>, <code>EditorConfigCompatible</code>, <code>Strict</code>, <code>Relaxed</code>); <code>ConfigurationResolveOptions</code> exposes only <code>Bodu</code> and
+<code>EditorConfigCompatible</code> as static properties (use <code>For(profile)</code> for the others); and <code>ConfigurationWriteOptions</code>
+exposes <code>Bodu</code>, <code>EditorConfigCompatible</code>, and <code>Normalized</code> (the last is <code>For(ConfigurationProfile.Strict)</code>). The
+<code>For(profile)</code> factory on every type covers all four profiles regardless.</p>
+</div>
+<h2 id="parse-resolve-and-write-options">Parse, resolve, and write options</h2>
+<p>Each option type controls one stage of the pipeline.</p>
+<p><strong><a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationParseOptions.html">ConfigurationParseOptions</a></strong> controls the reader:</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Profile</code></td>
+<td>The profile this bag represents. Default <code>Bodu</code>.</td>
+</tr>
+<tr>
+<td><code>InlineCommentMode</code></td>
+<td>Disabled / WhitespaceIntroduced (default) / Always.</td>
+</tr>
+<tr>
+<td><code>DuplicateKeyMode</code></td>
+<td>LastWins (default) / FirstWins / Disallowed (from <a class="xref" href="../../api/Bodu.Text.Configuration.DuplicateKeyPolicy.html">DuplicateKeyPolicy</a>).</td>
+</tr>
+<tr>
+<td><code>DuplicateSectionMode</code></td>
+<td>Preserve (default) / Merge / MergeAdjacent / Disallowed (from <a class="xref" href="../../api/Bodu.Text.Configuration.IniDuplicateSectionBehavior.html">IniDuplicateSectionBehavior</a>).</td>
+</tr>
+<tr>
+<td><code>SectionHeaderMode</code></td>
+<td>Lenient (default) / Strict / AllowTrailingInlineComment — how trailing content after <code>]</code> is treated.</td>
+</tr>
+<tr>
+<td><code>DiagnosticMode</code></td>
+<td>Throw (default) / Collect / Ignore.</td>
+</tr>
+<tr>
+<td><code>MaxLineLength</code> / <code>MaxKeyLength</code></td>
+<td>DoS-resistant caps; defaults 8192 / 1024 characters. Over-length input emits <code>LineTooLong</code> / <code>KeyTooLong</code>.</td>
+</tr>
+<tr>
+<td><code>TrimKeysAndValues</code></td>
+<td>EditorConfig-compatible trimming of leading/trailing whitespace; default <code>true</code>.</td>
+</tr>
+<tr>
+<td><code>AllowKeyOnlyProperties</code></td>
+<td>Whether lines without <code>=</code> are accepted (the value becomes the empty string); default <code>false</code>.</td>
+</tr>
+<tr>
+<td><code>KeyOptions</code></td>
+<td>The <a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationKeyOptions.html">ConfigurationKeyOptions</a> applied while reading raw keys.</td>
+</tr>
+<tr>
+<td><code>DefaultEncoding</code></td>
+<td>The encoding <code>Load</code> assumes for a stream/file with no byte-order mark; default <code>Encoding.UTF8</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>The <code>SectionHeaderMode</code> knob has no INI equivalent and is worth calling out: under <code>Lenient</code> (the <code>Bodu</code>/<code>Relaxed</code>
+default) trailing words after the closing <code>]</code> are accepted silently; under <code>Strict</code> (the <code>EditorConfigCompatible</code>/<code>Strict</code>
+default) they raise the <code>TrailingContentAfterSectionHeader</code> diagnostic; under <code>AllowTrailingInlineComment</code> a <code>#</code>/<code>;</code>
+after <code>]</code> is consumed as a comment while any other trailing content still errors.</p>
+<p>The configuration engine parses with its own reader over its own INI document model (the
+<code>IniDocumentBase</code> / <code>IniSection</code> / <code>IniEntry</code> family in the <code>Bodu.Text.Configuration</code> namespace) — it does not
+depend on the standalone <code>Bodu.Text.Ini</code> format library, so its inline-comment modes, diagnostics, and preamble
+handling are free to diverge from the raw-INI dialect.</p>
+<p><strong><a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationResolveOptions.html">ConfigurationResolveOptions</a></strong> controls the resolver:</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Profile</code></td>
+<td>The profile this bag represents. Default <code>Bodu</code>.</td>
+</tr>
+<tr>
+<td><code>PathRoot</code></td>
+<td>The directory anchor that anchored globs are rebased against. When <code>null</code>, the document's load path is used; when neither is available, <code>MissingPathRootMode</code> decides.</td>
+</tr>
+<tr>
+<td><code>MissingPathRootMode</code></td>
+<td>UseEmptyRoot (default) / Throw. There is no <code>IgnoreAnchoredPatterns</code> value.</td>
+</tr>
+<tr>
+<td><code>ApplyPreambleProperties</code></td>
+<td>Whether preamble (global section) properties contribute to the view. Default <code>true</code> (<code>Bodu</code>/<code>Strict</code>/<code>Relaxed</code>); <code>false</code> for <code>EditorConfigCompatible</code>.</td>
+</tr>
+<tr>
+<td><code>PathComparison</code></td>
+<td>The <code>StringComparison</code> used when matching target paths against patterns. Default <code>Ordinal</code>.</td>
+</tr>
+<tr>
+<td><code>UnsetValueMode</code></td>
+<td>TreatAsLiteral (default) / RemoveEffectiveValue (EditorConfig sentinel).</td>
+</tr>
+<tr>
+<td><code>KeyOptions</code></td>
+<td>The key options applied when expanding raw keys into colon-delimited form.</td>
+</tr>
+</tbody>
+</table>
+<div class="IMPORTANT">
+<h5>Important</h5>
+<p><code>MissingPathRootMode</code> only changes behaviour when <strong>no target path is supplied to <code>Resolve</code> at all</strong>. The <code>Throw</code>
+mode raises <code>InvalidOperationException</code> when <code>PathRoot</code> is <code>null</code>, the document carries no load path, and <code>targetPath</code>
+is <code>null</code> — the <code>EditorConfigCompatible</code> and <code>Strict</code> resolve profiles select it so a path-less resolve fails loudly
+rather than silently returning a preamble-only view. When a target path <em>is</em> supplied, an absent <code>PathRoot</code> simply
+means anchored globs are matched against the bare target path (the empty-root behaviour).</p>
+</div>
+<p><strong><a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationWriteOptions.html">ConfigurationWriteOptions</a></strong> controls <code>Save</code>: encoding, newline style, blank-line
+policy, property layout. Use the static <code>Bodu</code> / <code>EditorConfigCompatible</code> / <code>Normalized</code> presets (or <code>For(profile)</code>), or supply a
+custom bag.</p>
+<h2 id="key--raw-segments-configuration">Key — raw, segments, configuration</h2>
+<p>A configuration key has three concurrent forms:</p>
+<table>
+<thead>
+<tr>
+<th>Form</th>
+<th>Example</th>
+<th>Where used</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Raw key</strong></td>
+<td><code>logging.level.default</code></td>
+<td>The text as authored in the source file.</td>
+</tr>
+<tr>
+<td><strong>Segments</strong></td>
+<td><code>[&quot;logging&quot;, &quot;level&quot;, &quot;default&quot;]</code></td>
+<td>Split on the configured separators.</td>
+</tr>
+<tr>
+<td><strong>Path</strong></td>
+<td><code>logging:level:default</code></td>
+<td>The canonical colon-delimited form stored in the view.</td>
+</tr>
+</tbody>
+</table>
+<p><a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationKey.html">ConfigurationKey</a> is the read-only struct that holds all three.
+<code>ConfigurationKey.Parse(rawKey)</code> is the entry point; <code>TryParse</code> is the non-throwing variant.</p>
+<p>Lookups on a <a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationView.html">ConfigurationView</a> accept either the dotted or the colon-delimited form
+— <code>view[&quot;logging.level.default&quot;]</code> and <code>view[&quot;logging:level:default&quot;]</code> return the same value. The view stores keys in
+the colon-delimited form to interoperate with <code>Microsoft.Extensions.Configuration</code>.</p>
+<h2 id="key-mapping">Key mapping</h2>
+<p><code>ConfigurationKey</code> uses a <a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationKeyOptions.html">ConfigurationKeyOptions</a> to govern splitting and
+mapping:</p>
+<table>
+<thead>
+<tr>
+<th>Mapping</th>
+<th>Behaviour</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DotToColon</code> (default)</td>
+<td>Split on the configured separators; rejoin with <code>:</code>.</td>
+</tr>
+<tr>
+<td><code>Colon</code></td>
+<td>Split on the configured separators; rejoin with <code>:</code>.</td>
+</tr>
+<tr>
+<td><code>Identity</code></td>
+<td>Split on the configured separators; rejoin with the <em>first</em> configured separator (preserves the original delimiter).</td>
+</tr>
+</tbody>
+</table>
+<p>Splitting always uses the full <code>SegmentSeparators</code> set; <code>Mapping</code> only decides the join character. <code>DotToColon</code> and
+<code>Colon</code> therefore produce identical <code>Path</code> output under the default separator set — the distinction is naming intent,
+not behaviour. <code>Identity</code> is the one mapping that round-trips the original delimiter (joining on <code>'.'</code> by default).</p>
+<p><code>SegmentSeparators</code> defaults to <code>{ '.', ':' }</code>. <code>CaseSensitive</code> defaults to <code>false</code>, matching
+<code>Microsoft.Extensions.Configuration</code>, and is surfaced as a ready-made comparer via
+<a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationKeyOptions.KeyComparer.html#Bodu_Text_Configuration_ConfigurationKeyOptions_KeyComparer">KeyComparer</a> (<code>StringComparer.Ordinal</code> or
+<code>StringComparer.OrdinalIgnoreCase</code>). <code>AllowEmptySegments</code> defaults to <code>false</code> — <code>a..b</code> is rejected with
+<code>ArgumentException</code> unless the property is set explicitly. Keys are constructed through the
+<a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationKey.Parse.html#Bodu_Text_Configuration_ConfigurationKey_Parse_System_String_">Parse(string)</a> / <code>TryParse</code> factories or the equivalent
+constructor; control characters in a raw key are rejected at construction time. Equality compares the <em>segment
+sequence</em> under the configured comparer, so the raw form is informational only — <code>Logging.Level</code> and
+<code>logging:level</code> compare equal under the default options.</p>
+<h2 id="glob-pattern-and-target-path">Glob pattern and target path</h2>
+<p>Section headers are interpreted as <strong>glob patterns</strong> matched against the resolver's target path. The pattern
+language follows EditorConfig:</p>
+<table>
+<thead>
+<tr>
+<th>Pattern</th>
+<th>Matches</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>*</code></td>
+<td>Any characters except <code>/</code>.</td>
+</tr>
+<tr>
+<td><code>**</code></td>
+<td>Any characters including <code>/</code>.</td>
+</tr>
+<tr>
+<td><code>?</code></td>
+<td>Any single character.</td>
+</tr>
+<tr>
+<td><code>[abc]</code> / <code>[!abc]</code></td>
+<td>Character class / negated character class.</td>
+</tr>
+<tr>
+<td><code>{a,b,c}</code></td>
+<td>Alternation.</td>
+</tr>
+<tr>
+<td><code>[*.cs]</code></td>
+<td>All <code>.cs</code> files at any depth (unanchored).</td>
+</tr>
+<tr>
+<td><code>[src/**/*.cs]</code></td>
+<td>All <code>.cs</code> files under <code>src/</code> (anchored to <code>PathRoot</code>).</td>
+</tr>
+</tbody>
+</table>
+<p>The <strong>target path</strong> is the value passed to <code>document.Resolve(targetPath)</code>. Before matching, the resolver normalises the
+path to forward slashes and rebases it relative to <code>PathRoot</code>: if the path begins with <code>PathRoot + &quot;/&quot;</code> that prefix is
+stripped; if it equals <code>PathRoot</code> exactly, only the filename survives; otherwise the path is matched as-is. Anchored
+patterns (those that contain <code>/</code>) are then tested against the whole relative path; unanchored patterns (no <code>/</code>) match at
+any directory depth.</p>
+<div class="IMPORTANT">
+<h5>Important</h5>
+<p>Section matching requires a target path. When <code>Resolve</code> is called with no target path (or <code>null</code>), the normalised
+target is empty and <strong>every named section is skipped</strong> — only the preamble (when <code>ApplyPreambleProperties</code> is <code>true</code>)
+contributes to the view. A path-less resolve is therefore a preamble-only projection, not an &quot;all sections&quot; merge.</p>
+</div>
+<p>When <code>PathRoot</code> is unset, <a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationMissingPathRootMode.html">ConfigurationMissingPathRootMode</a> decides what a <em>path-less</em>
+resolve does: <code>UseEmptyRoot</code> returns the preamble-only view described above, while <code>Throw</code> raises
+<code>InvalidOperationException</code>. The mode has no effect once a non-null target path is supplied.</p>
+<p>The pattern compiler is <a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationPattern.html">ConfigurationPattern</a> — the same engine the resolver uses,
+exposed for callers who want to test pattern matching directly without instantiating a document. <code>Compile</code> memoises
+results in a bounded process-wide cache keyed on <code>(pattern, comparison)</code>, and each compiled pattern carries a bounded
+match timeout so an untrusted section-name glob cannot become a ReDoS vector.</p>
+<h2 id="preamble">Preamble</h2>
+<p>The <strong>preamble</strong> is the EditorConfig name for the file's global section — properties that appear before any <code>[...]</code>
+section header. Bodu exposes it as <a class="xref" href="../../api/Bodu.Text.Configuration.IniDocumentBase.GlobalSection.html#Bodu_Text_Configuration_IniDocumentBase_GlobalSection">GlobalSection</a>.</p>
+<p>Under the default <code>Bodu</code> profile, the resolver layers the preamble first and then each matching section in source
+order, so preamble properties act as defaults that any matching section can override. Under
+<code>EditorConfigCompatible</code>, <code>ApplyPreambleProperties</code> is <code>false</code>, so the preamble is dropped from resolve entirely — its
+well-known <code>root</code> directive is consumed by the reader rather than surfaced as a resolved key.</p>
+<h2 id="resolution-layering">Resolution layering</h2>
+<p><img src="../../images/diagrams/text-configuration-layering.svg" alt="Resolution layering — preamble plus matching sections in source order"></p>
+<p>The resolver walks the document once:</p>
+<ol>
+<li>If <code>ApplyPreambleProperties</code> is true, copy every preamble property into the working dictionary. Each raw key is run
+through <a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationKey.html">ConfigurationKey</a> so it is stored in its canonical colon-delimited form.</li>
+<li>For each named section in source order, test the header pattern against the normalised target path. If it matches,
+copy each property into the working dictionary, overwriting any earlier value for the same key (<strong>last-wins</strong>).</li>
+<li>While copying, apply the <code>UnsetValueMode</code> policy: under <code>RemoveEffectiveValue</code>, a property whose value equals
+<code>unset</code> (matched case-insensitively) <em>removes</em> the key from the working dictionary rather than setting it.</li>
+<li>Record per-key origin metadata (<a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationResolvedEntry.html">ConfigurationResolvedEntry</a>) so the winning section
+and source line are recoverable, then wrap the working dictionary in a
+<a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationView.html">ConfigurationView</a>.</li>
+</ol>
+<p>The walk is single-pass and source-order — no precedence rule beyond &quot;later wins for a given key&quot;. This matches
+EditorConfig semantics; tools that need different precedence rules should layer multiple documents or filter the
+sections before resolving.</p>
+<h2 id="diagnostic-mode">Diagnostic mode</h2>
+<p>The reader can route recoverable issues three ways:</p>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Behaviour</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Throw</code> (default)</td>
+<td>On the first recoverable error, raise <a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationParseException.html">ConfigurationParseException</a> and stop. The document is not returned.</td>
+</tr>
+<tr>
+<td><code>Collect</code></td>
+<td>Run the parser to completion and attach diagnostics to a <a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationParseResult.html">ConfigurationParseResult</a>. The document is still returned and its valid portions remain usable.</td>
+</tr>
+<tr>
+<td><code>Ignore</code></td>
+<td>Discard diagnostics; return the document anyway.</td>
+</tr>
+</tbody>
+</table>
+<p>Use <code>Throw</code> for generated files where any deviation is a programmer error; use <code>Collect</code> for user-authored files where
+you want to surface every problem at once; use <code>Ignore</code> only when you are happy to trust whatever the parser produces.
+<a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationDocument.ParseWithDiagnostics.html#Bodu_Text_Configuration_ConfigurationDocument_ParseWithDiagnostics_System_String_Bodu_Text_Configuration_ConfigurationParseOptions_">ParseWithDiagnostics(string, ConfigurationParseOptions?)</a>
+returns a <a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationParseResult.html">ConfigurationParseResult</a> directly, even under <code>Throw</code> (where the
+diagnostic list is always empty on a successful parse).</p>
+<h2 id="unset-sentinel">Unset sentinel</h2>
+<p>EditorConfig defines the literal string <code>unset</code> as a directive that <em>removes</em> the effective value of a property for
+the matching path — useful when a deeply nested section should opt out of a default established by an earlier
+section.</p>
+<p><a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationUnsetValueMode.html">ConfigurationUnsetValueMode</a> controls how the resolver treats it:</p>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Behaviour</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TreatAsLiteral</code> (default)</td>
+<td>The string <code>&quot;unset&quot;</code> is preserved verbatim in the view.</td>
+</tr>
+<tr>
+<td><code>RemoveEffectiveValue</code></td>
+<td>The key is removed from the working dictionary; it does not appear in the view.</td>
+</tr>
+</tbody>
+</table>
+<p>The sentinel is matched <strong>case-insensitively</strong> (<code>unset</code>, <code>UNSET</code>, <code>Unset</code> all qualify) to align with real-world
+EditorConfig tooling — a deliberate deviation from the strict lower-case-only reading of the spec. <code>Bodu</code> and <code>Relaxed</code>
+profiles default to <code>TreatAsLiteral</code> so the literal text is not silently dropped; <code>EditorConfigCompatible</code> and <code>Strict</code>
+default to <code>RemoveEffectiveValue</code>.</p>
+<h2 id="typed-accessors">Typed accessors</h2>
+<p><a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationView.html">ConfigurationView</a> exposes a family of typed getters built on top of
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.ispanparsable-1">ISpanParsable&lt;TSelf&gt;</a>:</p>
+<table>
+<thead>
+<tr>
+<th>Getter family</th>
+<th>Behaviour on missing key</th>
+<th>Behaviour on malformed value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GetString</code></td>
+<td>Throws <code>KeyNotFoundException</code>.</td>
+<td>n/a — value is already string.</td>
+</tr>
+<tr>
+<td><code>GetString(key, fallback)</code></td>
+<td>Returns the fallback.</td>
+<td>n/a.</td>
+</tr>
+<tr>
+<td><code>TryGetString</code></td>
+<td>Returns <code>false</code>.</td>
+<td>n/a.</td>
+</tr>
+<tr>
+<td><code>GetInt32</code> / <code>GetInt64</code> / <code>GetBoolean</code> / <code>GetEnum&lt;T&gt;</code></td>
+<td>Throws <code>KeyNotFoundException</code>.</td>
+<td>Throws <code>FormatException</code>.</td>
+</tr>
+<tr>
+<td><code>GetXxx(key, fallback)</code></td>
+<td>Returns the fallback.</td>
+<td>Throws <code>FormatException</code> (malformed values are never silently swallowed).</td>
+</tr>
+<tr>
+<td><code>TryGetXxx</code></td>
+<td>Returns <code>false</code>.</td>
+<td>Returns <code>false</code> (never throws on parse failure).</td>
+</tr>
+<tr>
+<td><code>GetValue&lt;T&gt;(key)</code></td>
+<td>Throws <code>KeyNotFoundException</code>.</td>
+<td>Throws <code>FormatException</code>.</td>
+</tr>
+<tr>
+<td><code>TryGetValue&lt;T&gt;(key, out value)</code></td>
+<td>Returns <code>false</code>.</td>
+<td>Returns <code>false</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>The <code>GetValue&lt;T&gt;</code> and <code>TryGetValue&lt;T&gt;</code> generics accept any type that implements <code>ISpanParsable&lt;T&gt;</code> — <code>int</code>, <code>long</code>,
+<code>double</code>, <code>Guid</code>, <code>TimeSpan</code>, <code>DateTimeOffset</code>, custom records, anything with a span-parseable surface. All numeric and
+<code>GetValue&lt;T&gt;</code> parsing is done with <code>CultureInfo.InvariantCulture</code> (and <code>NumberStyles.Integer</code> for <code>GetInt32</code>/<code>GetInt64</code>)
+to keep behaviour deterministic across locales.</p>
+<p>Two getters apply extra rules beyond plain parsing:</p>
+<ul>
+<li><code>GetBoolean</code> accepts only the EditorConfig literals <code>true</code>/<code>false</code>, case-insensitively. <code>yes</code>/<code>no</code>, <code>on</code>/<code>off</code>, and
+<code>1</code>/<code>0</code> are rejected with <code>FormatException</code> — broadening the set would break EditorConfig 0.17.2 parity. Wrap
+<code>GetString</code> yourself if you need a relaxed boolean parser.</li>
+<li><code>GetEnum&lt;TEnum&gt;</code> parses member names case-insensitively but guards the result with <code>Enum.IsDefined</code>, so an undefined
+integer (<code>severity = 99</code> against a three-member enum) and an unlisted combined-flags value (<code>Read, Write</code> when only the
+individual flags are declared) are both rejected. Parse against <code>GetString</code> with <code>Enum.Parse</code> directly when you need
+combined-flag handling.</li>
+</ul>
+<h2 id="resolved-entry-provenance">Resolved-entry provenance</h2>
+<p>Every key in a view carries origin metadata, surfaced as <a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationResolvedEntry.html">ConfigurationResolvedEntry</a>
+through <code>view.GetEntry(key)</code> and <code>view.Entries</code>. An entry records the canonical <code>Key</code>, the resolved <code>Value</code>, a
+<code>SourceLocation</code>, and the <code>SectionPattern</code> of the section that won under last-wins precedence (<code>null</code> when the value came
+from the preamble). This is the debugging surface for layered configuration — when a key resolves to an unexpected value,
+the entry tells you which section supplied it and where.</p>
+<pre><code class="lang-csharp">ConfigurationResolvedEntry? entry = view.GetEntry(&quot;format:indent:size&quot;);
+if (entry is not null)
+    Console.WriteLine($&quot;{entry.Key} = {entry.Value} (from {entry.SectionPattern ?? &quot;&lt;preamble&gt;&quot;})&quot;);
+</code></pre>
+<p>Only the <code>SourceLocation.LineNumber</code> is reliably populated; line position and length are approximate, and
+<code>SourceLocation.Path</code> is propagated only when the document was loaded from a file rather than parsed from a string.</p>
+<h2 id="saving-round-trip">Saving (round-trip)</h2>
+<p><a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationDocument.Save.html#Bodu_Text_Configuration_ConfigurationDocument_Save_Bodu_Text_Configuration_IniDocumentBase_System_String_Bodu_Text_Configuration_ConfigurationWriteOptions_">Save(IniDocumentBase, string, ConfigurationWriteOptions?)</a>
+emits the document back to text. The writer preserves comment lines, section ordering, and the original property
+ordering within each section, so a parse-then-save round-trip is byte-stable for any document the library produced.
+<a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationWriteOptions.html">ConfigurationWriteOptions</a> controls encoding (default UTF-8 <em>without</em> BOM), newline style
+(<code>NewLine</code>, default <code>\n</code>), the key/value separator (<code>KeyValueSeparator</code>, default <code>&quot; = &quot;</code>), comment prefix
+(<code>CommentPrefix</code>, default <code>#</code>), and three booleans — <code>PreserveComments</code>, <code>WriteInlineComments</code>, and
+<code>InsertBlankLineBetweenSections</code>. The <code>EditorConfigCompatible</code> preset suppresses inline comments; the <code>Normalized</code>
+preset (which is <code>For(ConfigurationProfile.Strict)</code>) additionally drops preserved comments for deterministic output.</p>
+<p>For documents the library <em>did not</em> produce — hand-authored INI files with idiosyncratic whitespace — the writer
+emits canonical formatting, so the round-trip is semantically stable but may rearrange incidental whitespace.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="getting-started.html">Getting started</a></strong> — install + runnable minimal samples.</li>
+<li><strong><a href="../extensions-configuration-text/index.html">Bodu.Extensions.Configuration.Text</a></strong> — <code>IConfigurationBuilder</code> integration.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Text.Configuration.html">Bodu.Text.Configuration API reference</a></strong> — full type-by-type docs.</li>
+<li><strong><a href="index.html">Introduction</a></strong> — the high-level shape of the library.</li>
+<li><strong><a href="../topics/configuration.html">Configuration topic</a></strong> — this package and its sibling Bodu.Extensions.Configuration.Text; the <a href="../topics/configuration-concepts.html">topic concepts</a> page collects the shared vocabulary.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

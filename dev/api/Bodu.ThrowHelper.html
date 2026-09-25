@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class ThrowHelper | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class ThrowHelper | BODU ">
+    
+    <meta name="description" content="Provides centralized guard clause methods for argument validation, offering consistent and concise exception throwing across the library.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.ThrowHelper">
+
+
+
+  <h1 id="Bodu_ThrowHelper" data-uid="Bodu.ThrowHelper" class="text-break">Class ThrowHelper</h1>
+  <div class="markdown level0 summary"><p>Provides centralized guard clause methods for argument validation, offering consistent and concise exception
+throwing across the library.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><span class="xref">ThrowHelper</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Core.dll</h6>
+  <h5 id="Bodu_ThrowHelper_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[SuppressMessage(&quot;StyleCop.CSharp.LayoutRules&quot;, &quot;SA1519:Braces should not be omitted from multi-line child statement&quot;, Justification = &quot;ThrowHelper methods intentionally use compact guard/throw clauses; adding braces adds noise without improving control-flow clarity.&quot;)]
+[SuppressMessage(&quot;Roslynator&quot;, &quot;RCS1001:Add braces (when expression spans over multiple lines)&quot;, Justification = &quot;ThrowHelper methods intentionally use compact guard/throw clauses; adding braces adds noise without improving control-flow clarity.&quot;)]
+public static class ThrowHelper</code></pre>
+  </div>
+  <h5 id="Bodu_ThrowHelper_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+This class is split into per-group partial files following the pattern
+<code>ThrowHelper.&lt;Group&gt;-CallerExpression.cs</code> (for example <code>ThrowHelper.Array-CallerExpression.cs</code>).
+Each guard relies on <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.runtime.compilerservices.callerargumentexpressionattribute">CallerArgumentExpressionAttribute</a> so the
+compiler automatically captures argument expressions at the call site.
+</p>
+</div>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfAddOverflows_System_Int32_System_Int32_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfAddOverflows(System.Int32,System.Int32,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfAddOverflows.html#Bodu_ThrowHelper_ThrowIfAddOverflows_System_Int32_System_Int32_System_String_">ThrowIfAddOverflows(int, int, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a> if the sum of <code class="paramref">left</code> and
+<code class="paramref">right</code> would fall outside the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a> range.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfAddOverflows_System_Int64_System_Int64_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfAddOverflows(System.Int64,System.Int64,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfAddOverflows.html#Bodu_ThrowHelper_ThrowIfAddOverflows_System_Int64_System_Int64_System_String_">ThrowIfAddOverflows(long, long, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a> if the sum of <code class="paramref">left</code> and
+<code class="paramref">right</code> would fall outside the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a> range.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfArrayContainsNonNumeric_System_Array_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfArrayContainsNonNumeric(System.Array,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfArrayContainsNonNumeric.html#Bodu_ThrowHelper_ThrowIfArrayContainsNonNumeric_System_Array_System_String_">ThrowIfArrayContainsNonNumeric(Array?, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a> if the array is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, or an
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> if it contains any non-numeric element.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfArrayIsNotZeroBased_System_Array_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfArrayIsNotZeroBased(System.Array,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfArrayIsNotZeroBased.html#Bodu_ThrowHelper_ThrowIfArrayIsNotZeroBased_System_Array_System_String_">ThrowIfArrayIsNotZeroBased(Array?, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a> if the array is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, or an
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> if it does not have a zero lower bound.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfArrayLengthIsInsufficient_System_Array_System_Int32_System_Int32_System_String_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfArrayLengthIsInsufficient(System.Array,System.Int32,System.Int32,System.String,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfArrayLengthIsInsufficient.html#Bodu_ThrowHelper_ThrowIfArrayLengthIsInsufficient_System_Array_System_Int32_System_Int32_System_String_System_String_">ThrowIfArrayLengthIsInsufficient(Array?, int, int, string?, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a> if the array is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, an
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a> if <code class="paramref">index</code> is negative, or an
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> if <code class="paramref">array</code> does not have enough room from
+<code class="paramref">index</code> to accommodate <code class="paramref">requiredLength</code> elements.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfArrayLengthIsInsufficient_System_Array_System_Int32_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfArrayLengthIsInsufficient(System.Array,System.Int32,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfArrayLengthIsInsufficient.html#Bodu_ThrowHelper_ThrowIfArrayLengthIsInsufficient_System_Array_System_Int32_System_String_">ThrowIfArrayLengthIsInsufficient(Array?, int, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an exception if the specified <code class="paramref">array</code> has fewer than <code class="paramref">minimumLength</code>
+elements.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfArrayLengthIsNotEqualTo_System_Array_System_Int32_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfArrayLengthIsNotEqualTo(System.Array,System.Int32,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfArrayLengthIsNotEqualTo.html#Bodu_ThrowHelper_ThrowIfArrayLengthIsNotEqualTo_System_Array_System_Int32_System_String_">ThrowIfArrayLengthIsNotEqualTo(Array?, int, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an exception if the specified <code class="paramref">array</code> does not have exactly
+<code class="paramref">expectedLength</code> elements.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfArrayLengthIsZero_System_Array_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfArrayLengthIsZero(System.Array,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfArrayLengthIsZero.html#Bodu_ThrowHelper_ThrowIfArrayLengthIsZero_System_Array_System_String_">ThrowIfArrayLengthIsZero(Array, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a> if the array is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, or an
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> if it has zero length.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfArrayLengthNotPositiveMultipleOf_System_Array_System_Int32_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfArrayLengthNotPositiveMultipleOf(System.Array,System.Int32,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfArrayLengthNotPositiveMultipleOf.html#Bodu_ThrowHelper_ThrowIfArrayLengthNotPositiveMultipleOf_System_Array_System_Int32_System_String_">ThrowIfArrayLengthNotPositiveMultipleOf(Array, int, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a> if the array is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, or an
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> if its length is not a positive multiple of <code class="paramref">divisor</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfArrayLengthOutOfRange_System_Array_System_Int32_System_Int32_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfArrayLengthOutOfRange(System.Array,System.Int32,System.Int32,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfArrayLengthOutOfRange.html#Bodu_ThrowHelper_ThrowIfArrayLengthOutOfRange_System_Array_System_Int32_System_Int32_System_String_">ThrowIfArrayLengthOutOfRange(Array, int, int, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a> if the array is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, or an
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a> if its length is not between <code class="paramref">minLength</code> and
+<code class="paramref">maxLength</code> (inclusive).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfArrayMultidimensional_System_Array_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfArrayMultidimensional(System.Array,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfArrayMultidimensional.html#Bodu_ThrowHelper_ThrowIfArrayMultidimensional_System_Array_System_String_">ThrowIfArrayMultidimensional(Array?, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a> if the array is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, or an
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> if it is not single-dimensional.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfArrayOffsetOrCountInvalid_System_Array_System_Int32_System_Int32_System_String_System_String_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(System.Array,System.Int32,System.Int32,System.String,System.String,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfArrayOffsetOrCountInvalid.html#Bodu_ThrowHelper_ThrowIfArrayOffsetOrCountInvalid_System_Array_System_Int32_System_Int32_System_String_System_String_System_String_">ThrowIfArrayOffsetOrCountInvalid(Array, int, int, string?, string?, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a> if the array is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, an
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a> if <code class="paramref">offset</code> or <code class="paramref">count</code> is out of
+range, or an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> if the segment they define exceeds the bounds of
+<code class="paramref">array</code> .</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfArrayTypeIsNotCompatible__1_System_Array_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfArrayTypeIsNotCompatible``1(System.Array,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfArrayTypeIsNotCompatible.html#Bodu_ThrowHelper_ThrowIfArrayTypeIsNotCompatible__1_System_Array_System_String_">ThrowIfArrayTypeIsNotCompatible&lt;TExpected&gt;(Array, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a> if the array is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, or an
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> if it is not assignable to <code class="typeparamref">TExpected</code>[].</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfCollectionIsEmpty__1_System_Collections_Generic_ICollection___0__System_String_" data-uid="Bodu.ThrowHelper.ThrowIfCollectionIsEmpty``1(System.Collections.Generic.ICollection{``0},System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfCollectionIsEmpty.html#Bodu_ThrowHelper_ThrowIfCollectionIsEmpty__1_System_Collections_Generic_ICollection___0__System_String_">ThrowIfCollectionIsEmpty&lt;T&gt;(ICollection&lt;T&gt;, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> if the collection is empty.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfCollectionTooSmall__1_System_Collections_Generic_ICollection___0__System_Int32_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfCollectionTooSmall``1(System.Collections.Generic.ICollection{``0},System.Int32,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfCollectionTooSmall.html#Bodu_ThrowHelper_ThrowIfCollectionTooSmall__1_System_Collections_Generic_ICollection___0__System_Int32_System_String_">ThrowIfCollectionTooSmall&lt;T&gt;(ICollection&lt;T&gt;, int, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> if the collection has fewer than <code class="paramref">minCount</code>
+elements.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfConditionallyRequiredParameterIsNull__2___0___1___1_System_String_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfConditionallyRequiredParameterIsNull``2(``0,``1,``1,System.String,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfConditionallyRequiredParameterIsNull.html#Bodu_ThrowHelper_ThrowIfConditionallyRequiredParameterIsNull__2___0___1___1_System_String_System_String_">ThrowIfConditionallyRequiredParameterIsNull&lt;TValue, TCondition&gt;(TValue?, TCondition, TCondition, string?, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> if <code class="paramref">value</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when
+<code class="paramref">conditionalParam</code> equals <code class="paramref">conditionalValue</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfCountExceedsAvailable_System_Int32_System_Int32_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfCountExceedsAvailable(System.Int32,System.Int32,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfCountExceedsAvailable.html#Bodu_ThrowHelper_ThrowIfCountExceedsAvailable_System_Int32_System_Int32_System_String_">ThrowIfCountExceedsAvailable(int, int, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a> if <code class="paramref">count</code> is negative or exceeds
+<code class="paramref">available</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfDestinationSpanTooSmall__2_System_ReadOnlySpan___0__System_Span___1__System_String_" data-uid="Bodu.ThrowHelper.ThrowIfDestinationSpanTooSmall``2(System.ReadOnlySpan{``0},System.Span{``1},System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfDestinationSpanTooSmall.html#Bodu_ThrowHelper_ThrowIfDestinationSpanTooSmall__2_System_ReadOnlySpan___0__System_Span___1__System_String_">ThrowIfDestinationSpanTooSmall&lt;TSource, TDestination&gt;(ReadOnlySpan&lt;TSource&gt;, Span&lt;TDestination&gt;, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> if <code class="paramref">destination</code> is shorter than
+<code class="paramref">source</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfDestinationTooSmall__2___0_____1___System_String_" data-uid="Bodu.ThrowHelper.ThrowIfDestinationTooSmall``2(``0[],``1[],System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfDestinationTooSmall.html#Bodu_ThrowHelper_ThrowIfDestinationTooSmall__2___0_____1___System_String_">ThrowIfDestinationTooSmall&lt;TSource, TDestination&gt;(TSource[], TDestination[], string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a> if either array is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, or an
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> if <code class="paramref">destination</code> is shorter than <code class="paramref">source</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfDisposed_System_Boolean_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfDisposed(System.Boolean,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfDisposed.html#Bodu_ThrowHelper_ThrowIfDisposed_System_Boolean_System_String_">ThrowIfDisposed(bool, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a> if <code class="paramref">disposed</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfEnumValueIsUndefined__1___0_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfEnumValueIsUndefined``1(``0,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfEnumValueIsUndefined.html#Bodu_ThrowHelper_ThrowIfEnumValueIsUndefined__1___0_System_String_">ThrowIfEnumValueIsUndefined&lt;TEnum&gt;(TEnum, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a> if <code class="paramref">value</code> is not a defined member of
+<code class="typeparamref">TEnum</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfEqual__1___0___0_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfEqual``1(``0,``0,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfEqual.html#Bodu_ThrowHelper_ThrowIfEqual__1___0___0_System_String_">ThrowIfEqual&lt;T&gt;(T, T, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a> if <code class="paramref">value</code> equals
+<code class="paramref">other</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfGreaterThanOrEqualOther__1___0___0_System_String_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfGreaterThanOrEqualOther``1(``0,``0,System.String,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfGreaterThanOrEqualOther.html#Bodu_ThrowHelper_ThrowIfGreaterThanOrEqualOther__1___0___0_System_String_System_String_">ThrowIfGreaterThanOrEqualOther&lt;T&gt;(T, T, string?, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> if <code class="paramref">value</code> is greater than or equal to
+<code class="paramref">other</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfGreaterThanOrEqual__1___0___0_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfGreaterThanOrEqual``1(``0,``0,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfGreaterThanOrEqual.html#Bodu_ThrowHelper_ThrowIfGreaterThanOrEqual__1___0___0_System_String_">ThrowIfGreaterThanOrEqual&lt;T&gt;(T, T, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a> if <code class="paramref">value</code> is greater than or equal to
+<code class="paramref">max</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfGreaterThanOther__1___0___0_System_String_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfGreaterThanOther``1(``0,``0,System.String,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfGreaterThanOther.html#Bodu_ThrowHelper_ThrowIfGreaterThanOther__1___0___0_System_String_System_String_">ThrowIfGreaterThanOther&lt;T&gt;(T, T, string?, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> if <code class="paramref">value</code> is greater than
+<code class="paramref">other</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfGreaterThan__1___0___0_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfGreaterThan``1(``0,``0,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfGreaterThan.html#Bodu_ThrowHelper_ThrowIfGreaterThan__1___0___0_System_String_">ThrowIfGreaterThan&lt;T&gt;(T, T, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a> if <code class="paramref">value</code> is greater than
+<code class="paramref">max</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfIndexOutOfRange_System_Int64_System_Array_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfIndexOutOfRange(System.Int64,System.Array,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfIndexOutOfRange.html#Bodu_ThrowHelper_ThrowIfIndexOutOfRange_System_Int64_System_Array_System_String_">ThrowIfIndexOutOfRange(long, Array, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a> if <code class="paramref">index</code> is outside the valid range of
+<code class="paramref">array</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfIndexOutOfRange__1_System_Int32_System_ReadOnlySpan___0__System_String_" data-uid="Bodu.ThrowHelper.ThrowIfIndexOutOfRange``1(System.Int32,System.ReadOnlySpan{``0},System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfIndexOutOfRange.html#Bodu_ThrowHelper_ThrowIfIndexOutOfRange__1_System_Int32_System_ReadOnlySpan___0__System_String_">ThrowIfIndexOutOfRange&lt;T&gt;(int, ReadOnlySpan&lt;T&gt;, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a> if <code class="paramref">index</code> is outside the valid element
+range of <code class="paramref">span</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfIndexOutOfRange__1_System_Int32_System_Span___0__System_String_" data-uid="Bodu.ThrowHelper.ThrowIfIndexOutOfRange``1(System.Int32,System.Span{``0},System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfIndexOutOfRange.html#Bodu_ThrowHelper_ThrowIfIndexOutOfRange__1_System_Int32_System_Span___0__System_String_">ThrowIfIndexOutOfRange&lt;T&gt;(int, Span&lt;T&gt;, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a> if <code class="paramref">index</code> is outside the valid element
+range of <code class="paramref">span</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfInvalidStringComparison_System_StringComparison_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfInvalidStringComparison(System.StringComparison,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfInvalidStringComparison.html#Bodu_ThrowHelper_ThrowIfInvalidStringComparison_System_StringComparison_System_String_">ThrowIfInvalidStringComparison(StringComparison, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> if <code class="paramref">comparison</code> is not a valid
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.stringcomparison">StringComparison</a> value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfLessThanOrEqualOther__1___0___0_System_String_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfLessThanOrEqualOther``1(``0,``0,System.String,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfLessThanOrEqualOther.html#Bodu_ThrowHelper_ThrowIfLessThanOrEqualOther__1___0___0_System_String_System_String_">ThrowIfLessThanOrEqualOther&lt;T&gt;(T, T, string?, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> if <code class="paramref">value</code> is less than or equal to
+<code class="paramref">other</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfLessThanOrEqual__1___0___0_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfLessThanOrEqual``1(``0,``0,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfLessThanOrEqual.html#Bodu_ThrowHelper_ThrowIfLessThanOrEqual__1___0___0_System_String_">ThrowIfLessThanOrEqual&lt;T&gt;(T, T, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a> if <code class="paramref">value</code> is less than or equal to
+<code class="paramref">min</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfLessThanOther__1___0___0_System_String_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfLessThanOther``1(``0,``0,System.String,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfLessThanOther.html#Bodu_ThrowHelper_ThrowIfLessThanOther__1___0___0_System_String_System_String_">ThrowIfLessThanOther&lt;T&gt;(T, T, string?, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> if <code class="paramref">value</code> is less than <code class="paramref">other</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfLessThan__1_System_Nullable___0____0_System_Boolean_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfLessThan``1(System.Nullable{``0},``0,System.Boolean,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfLessThan.html#Bodu_ThrowHelper_ThrowIfLessThan__1_System_Nullable___0____0_System_Boolean_System_String_">ThrowIfLessThan&lt;T&gt;(T?, T, bool, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a> if the nullable <code class="paramref">value</code> is less than
+<code class="paramref">min</code>. Optionally throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a> if <code class="paramref">value</code> is
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfLessThan__1___0___0_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfLessThan``1(``0,``0,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfLessThan.html#Bodu_ThrowHelper_ThrowIfLessThan__1___0___0_System_String_">ThrowIfLessThan&lt;T&gt;(T, T, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a> if <code class="paramref">value</code> is less than
+<code class="paramref">min</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfMultiplyOverflows_System_Int32_System_Int32_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfMultiplyOverflows(System.Int32,System.Int32,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfMultiplyOverflows.html#Bodu_ThrowHelper_ThrowIfMultiplyOverflows_System_Int32_System_Int32_System_String_">ThrowIfMultiplyOverflows(int, int, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a> if the product of <code class="paramref">left</code> and
+<code class="paramref">right</code> would fall outside the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a> range.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfMultiplyOverflows_System_Int64_System_Int64_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfMultiplyOverflows(System.Int64,System.Int64,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfMultiplyOverflows.html#Bodu_ThrowHelper_ThrowIfMultiplyOverflows_System_Int64_System_Int64_System_String_">ThrowIfMultiplyOverflows(long, long, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a> if the product of <code class="paramref">left</code> and
+<code class="paramref">right</code> would fall outside the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a> range.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfNegative__1___0_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfNegative``1(``0,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfNegative.html#Bodu_ThrowHelper_ThrowIfNegative__1___0_System_String_">ThrowIfNegative&lt;T&gt;(T, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a> if <code class="paramref">value</code> is negative.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfNotAsciiAlphanumericUppercase_System_Char_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfNotAsciiAlphanumericUppercase(System.Char,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfNotAsciiAlphanumericUppercase.html#Bodu_ThrowHelper_ThrowIfNotAsciiAlphanumericUppercase_System_Char_System_String_">ThrowIfNotAsciiAlphanumericUppercase(char, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a> if <code class="paramref">value</code> is not an ASCII uppercase
+alphanumeric character, that is, a character in the range <code>'0'</code> (U+0030) to <code>'9'</code> (U+0039) or
+<code>'A'</code> (U+0041) to <code>'Z'</code> (U+005A) inclusive.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfNotAsciiDecimalDigit_System_Char_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfNotAsciiDecimalDigit(System.Char,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfNotAsciiDecimalDigit.html#Bodu_ThrowHelper_ThrowIfNotAsciiDecimalDigit_System_Char_System_String_">ThrowIfNotAsciiDecimalDigit(char, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a> if <code class="paramref">value</code> is not an ASCII decimal digit
+character, that is, a character in the range <code>'0'</code> (U+0030) to <code>'9'</code> (U+0039) inclusive.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfNotAsciiHexDigit_System_Char_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfNotAsciiHexDigit(System.Char,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfNotAsciiHexDigit.html#Bodu_ThrowHelper_ThrowIfNotAsciiHexDigit_System_Char_System_String_">ThrowIfNotAsciiHexDigit(char, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a> if <code class="paramref">value</code> is not an ASCII hexadecimal
+digit character — that is, a character in the ranges <code>'0'</code>–<code>'9'</code> (U+0030–U+0039), <code>'A'</code>–
+<code>'F'</code> (U+0041–U+0046), or <code>'a'</code>–<code>'f'</code> (U+0061–U+0066) inclusive.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfNotEqual__1___0___0_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfNotEqual``1(``0,``0,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfNotEqual.html#Bodu_ThrowHelper_ThrowIfNotEqual__1___0___0_System_String_">ThrowIfNotEqual&lt;T&gt;(T, T, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> if <code class="paramref">value</code> does not equal <code class="paramref">other</code>
+.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfNotFinite_System_Double_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfNotFinite(System.Double,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfNotFinite.html#Bodu_ThrowHelper_ThrowIfNotFinite_System_Double_System_String_">ThrowIfNotFinite(double, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a> if <code class="paramref">value</code> is <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double.nan">NaN</a>,
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double.positiveinfinity">PositiveInfinity</a>, or <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double.negativeinfinity">NegativeInfinity</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfNotFinite_System_Single_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfNotFinite(System.Single,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfNotFinite.html#Bodu_ThrowHelper_ThrowIfNotFinite_System_Single_System_String_">ThrowIfNotFinite(float, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a> if <code class="paramref">value</code> is <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single.nan">NaN</a>,
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single.positiveinfinity">PositiveInfinity</a>, or <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single.negativeinfinity">NegativeInfinity</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfNotOfType__1_System_Object_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfNotOfType``1(System.Object,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfNotOfType.html#Bodu_ThrowHelper_ThrowIfNotOfType__1_System_Object_System_String_">ThrowIfNotOfType&lt;T&gt;(object?, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> if <code class="paramref">value</code> is not assignable to
+<code class="typeparamref">T</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfNotPositiveMultipleOf__1___0___0_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfNotPositiveMultipleOf``1(``0,``0,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfNotPositiveMultipleOf.html#Bodu_ThrowHelper_ThrowIfNotPositiveMultipleOf__1___0___0_System_String_">ThrowIfNotPositiveMultipleOf&lt;T&gt;(T, T, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a> if <code class="paramref">value</code> is not a positive multiple of
+<code class="paramref">divisor</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfNotPowerOfTwo__1___0_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfNotPowerOfTwo``1(``0,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfNotPowerOfTwo.html#Bodu_ThrowHelper_ThrowIfNotPowerOfTwo__1___0_System_String_">ThrowIfNotPowerOfTwo&lt;T&gt;(T, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a> if <code class="paramref">value</code> is not a positive power of
+two.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfNotZero__1___0_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfNotZero``1(``0,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfNotZero.html#Bodu_ThrowHelper_ThrowIfNotZero__1___0_System_String_">ThrowIfNotZero&lt;T&gt;(T, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a> if <code class="paramref">value</code> is not zero.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfNullOrEmpty_System_String_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfNullOrEmpty(System.String,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfNullOrEmpty.html#Bodu_ThrowHelper_ThrowIfNullOrEmpty_System_String_System_String_">ThrowIfNullOrEmpty(string, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a> if <code class="paramref">value</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, or an
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> if it is an empty string.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfNullOrWhiteSpace_System_String_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfNullOrWhiteSpace(System.String,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfNullOrWhiteSpace.html#Bodu_ThrowHelper_ThrowIfNullOrWhiteSpace_System_String_System_String_">ThrowIfNullOrWhiteSpace(string, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a> if <code class="paramref">value</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, or an
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> if it is empty or contains only whitespace.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfNull__1___0_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfNull``1(``0,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfNull.html#Bodu_ThrowHelper_ThrowIfNull__1___0_System_String_">ThrowIfNull&lt;T&gt;(T, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a> if <code class="paramref">value</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfNull__1___0_System_String_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfNull``1(``0,System.String,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfNull.html#Bodu_ThrowHelper_ThrowIfNull__1___0_System_String_System_String_">ThrowIfNull&lt;T&gt;(T, string, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a> if <code class="paramref">value</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, using
+<code class="paramref">message</code> as the exception message.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfOutOfRange__1___0___0___0_System_Boolean_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfOutOfRange``1(``0,``0,``0,System.Boolean,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfOutOfRange.html#Bodu_ThrowHelper_ThrowIfOutOfRange__1___0___0___0_System_Boolean_System_String_">ThrowIfOutOfRange&lt;T&gt;(T, T, T, bool, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a> if <code class="paramref">value</code> is not within the specified
+range.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfPositive__1___0_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfPositive``1(``0,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfPositive.html#Bodu_ThrowHelper_ThrowIfPositive__1___0_System_String_">ThrowIfPositive&lt;T&gt;(T, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a> if <code class="paramref">value</code> is positive.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfReadOnly__1_System_Collections_Generic_ICollection___0__System_String_" data-uid="Bodu.ThrowHelper.ThrowIfReadOnly``1(System.Collections.Generic.ICollection{``0},System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfReadOnly.html#Bodu_ThrowHelper_ThrowIfReadOnly__1_System_Collections_Generic_ICollection___0__System_String_">ThrowIfReadOnly&lt;T&gt;(ICollection&lt;T&gt;, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a> if <code class="paramref">collection</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, or
+an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> if it is read-only.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfSequenceRangeOverflows_System_Int32_System_Int32_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfSequenceRangeOverflows(System.Int32,System.Int32,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfSequenceRangeOverflows.html#Bodu_ThrowHelper_ThrowIfSequenceRangeOverflows_System_Int32_System_Int32_System_String_">ThrowIfSequenceRangeOverflows(int, int, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a> if the sequence starting at <code class="paramref">start</code> with
+<code class="paramref">count</code> elements would overflow <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32.maxvalue">MaxValue</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfSequenceRangeOverflows_System_Int64_System_Int32_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfSequenceRangeOverflows(System.Int64,System.Int32,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfSequenceRangeOverflows.html#Bodu_ThrowHelper_ThrowIfSequenceRangeOverflows_System_Int64_System_Int32_System_String_">ThrowIfSequenceRangeOverflows(long, int, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a> if the sequence starting at <code class="paramref">start</code> with
+<code class="paramref">count</code> elements would overflow <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64.maxvalue">MaxValue</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfSpanLengthIsInsufficient__1_System_ReadOnlySpan___0__System_Int32_System_Int32_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfSpanLengthIsInsufficient``1(System.ReadOnlySpan{``0},System.Int32,System.Int32,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfSpanLengthIsInsufficient.html#Bodu_ThrowHelper_ThrowIfSpanLengthIsInsufficient__1_System_ReadOnlySpan___0__System_Int32_System_Int32_System_String_">ThrowIfSpanLengthIsInsufficient&lt;T&gt;(ReadOnlySpan&lt;T&gt;, int, int, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> if the remaining elements of <code class="paramref">span</code> from
+<code class="paramref">index</code> are fewer than <code class="paramref">requiredLength</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfSpanLengthIsInsufficient__1_System_ReadOnlySpan___0__System_Int32_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfSpanLengthIsInsufficient``1(System.ReadOnlySpan{``0},System.Int32,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfSpanLengthIsInsufficient.html#Bodu_ThrowHelper_ThrowIfSpanLengthIsInsufficient__1_System_ReadOnlySpan___0__System_Int32_System_String_">ThrowIfSpanLengthIsInsufficient&lt;T&gt;(ReadOnlySpan&lt;T&gt;, int, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an exception if the specified <code class="paramref">span</code> has fewer than <code class="paramref">minimumLength</code>
+elements.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfSpanLengthIsInsufficient__1_System_Span___0__System_Int32_System_Int32_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfSpanLengthIsInsufficient``1(System.Span{``0},System.Int32,System.Int32,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfSpanLengthIsInsufficient.html#Bodu_ThrowHelper_ThrowIfSpanLengthIsInsufficient__1_System_Span___0__System_Int32_System_Int32_System_String_">ThrowIfSpanLengthIsInsufficient&lt;T&gt;(Span&lt;T&gt;, int, int, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> if the remaining elements of <code class="paramref">span</code> from
+<code class="paramref">index</code> are fewer than <code class="paramref">requiredLength</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfSpanLengthIsInsufficient__1_System_Span___0__System_Int32_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfSpanLengthIsInsufficient``1(System.Span{``0},System.Int32,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfSpanLengthIsInsufficient.html#Bodu_ThrowHelper_ThrowIfSpanLengthIsInsufficient__1_System_Span___0__System_Int32_System_String_">ThrowIfSpanLengthIsInsufficient&lt;T&gt;(Span&lt;T&gt;, int, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an exception if the specified <code class="paramref">span</code> has fewer than <code class="paramref">minimumLength</code>
+elements.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfSpanLengthIsNotEqualTo__1_System_ReadOnlySpan___0__System_Int32_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfSpanLengthIsNotEqualTo``1(System.ReadOnlySpan{``0},System.Int32,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfSpanLengthIsNotEqualTo.html#Bodu_ThrowHelper_ThrowIfSpanLengthIsNotEqualTo__1_System_ReadOnlySpan___0__System_Int32_System_String_">ThrowIfSpanLengthIsNotEqualTo&lt;T&gt;(ReadOnlySpan&lt;T&gt;, int, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an exception if the span does not have exactly <code class="paramref">expectedLength</code> elements.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfSpanLengthIsNotEqualTo__1_System_Span___0__System_Int32_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfSpanLengthIsNotEqualTo``1(System.Span{``0},System.Int32,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfSpanLengthIsNotEqualTo.html#Bodu_ThrowHelper_ThrowIfSpanLengthIsNotEqualTo__1_System_Span___0__System_Int32_System_String_">ThrowIfSpanLengthIsNotEqualTo&lt;T&gt;(Span&lt;T&gt;, int, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an exception if the span does not have exactly <code class="paramref">expectedLength</code> elements.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfSpanLengthNotPositiveMultipleOf__1_System_ReadOnlySpan___0__System_Int32_System_Boolean_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf``1(System.ReadOnlySpan{``0},System.Int32,System.Boolean,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf.html#Bodu_ThrowHelper_ThrowIfSpanLengthNotPositiveMultipleOf__1_System_ReadOnlySpan___0__System_Int32_System_Boolean_System_String_">ThrowIfSpanLengthNotPositiveMultipleOf&lt;T&gt;(ReadOnlySpan&lt;T&gt;, int, bool, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> if the span length is not a positive multiple of
+<code class="paramref">divisor</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfSpanLengthNotPositiveMultipleOf__1_System_Span___0__System_Int32_System_Boolean_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf``1(System.Span{``0},System.Int32,System.Boolean,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf.html#Bodu_ThrowHelper_ThrowIfSpanLengthNotPositiveMultipleOf__1_System_Span___0__System_Int32_System_Boolean_System_String_">ThrowIfSpanLengthNotPositiveMultipleOf&lt;T&gt;(Span&lt;T&gt;, int, bool, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> if the span length is not a positive multiple of
+<code class="paramref">divisor</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfSpanLengthOutOfRange__1_System_ReadOnlySpan___0__System_Int32_System_Int32_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfSpanLengthOutOfRange``1(System.ReadOnlySpan{``0},System.Int32,System.Int32,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfSpanLengthOutOfRange.html#Bodu_ThrowHelper_ThrowIfSpanLengthOutOfRange__1_System_ReadOnlySpan___0__System_Int32_System_Int32_System_String_">ThrowIfSpanLengthOutOfRange&lt;T&gt;(ReadOnlySpan&lt;T&gt;, int, int, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a> if the span length is not between
+<code class="paramref">minLength</code> and <code class="paramref">maxLength</code> (inclusive).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfSpanLengthOutOfRange__1_System_Span___0__System_Int32_System_Int32_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfSpanLengthOutOfRange``1(System.Span{``0},System.Int32,System.Int32,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfSpanLengthOutOfRange.html#Bodu_ThrowHelper_ThrowIfSpanLengthOutOfRange__1_System_Span___0__System_Int32_System_Int32_System_String_">ThrowIfSpanLengthOutOfRange&lt;T&gt;(Span&lt;T&gt;, int, int, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a> if the span length is not between
+<code class="paramref">minLength</code> and <code class="paramref">maxLength</code> (inclusive).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfSpanOffsetOrCountInvalid__1_System_ReadOnlySpan___0__System_Int32_System_Int32_System_String_System_String_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfSpanOffsetOrCountInvalid``1(System.ReadOnlySpan{``0},System.Int32,System.Int32,System.String,System.String,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfSpanOffsetOrCountInvalid.html#Bodu_ThrowHelper_ThrowIfSpanOffsetOrCountInvalid__1_System_ReadOnlySpan___0__System_Int32_System_Int32_System_String_System_String_System_String_">ThrowIfSpanOffsetOrCountInvalid&lt;T&gt;(ReadOnlySpan&lt;T&gt;, int, int, string?, string?, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a> if <code class="paramref">offset</code> or <code class="paramref">count</code>
+is out of range, or an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> if the segment they define exceeds the bounds of
+<code class="paramref">span</code> .</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfSpanOffsetOrCountInvalid__1_System_Span___0__System_Int32_System_Int32_System_String_System_String_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfSpanOffsetOrCountInvalid``1(System.Span{``0},System.Int32,System.Int32,System.String,System.String,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfSpanOffsetOrCountInvalid.html#Bodu_ThrowHelper_ThrowIfSpanOffsetOrCountInvalid__1_System_Span___0__System_Int32_System_Int32_System_String_System_String_System_String_">ThrowIfSpanOffsetOrCountInvalid&lt;T&gt;(Span&lt;T&gt;, int, int, string?, string?, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a> if <code class="paramref">offset</code> or <code class="paramref">count</code>
+is out of range, or an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> if the segment they define exceeds the bounds of
+<code class="paramref">span</code> .</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfStreamNotReadable_System_IO_Stream_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfStreamNotReadable(System.IO.Stream,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfStreamNotReadable.html#Bodu_ThrowHelper_ThrowIfStreamNotReadable_System_IO_Stream_System_String_">ThrowIfStreamNotReadable(Stream, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a> if <code class="paramref">stream</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, or an
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> if it does not support reading.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfStreamNotWritable_System_IO_Stream_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfStreamNotWritable(System.IO.Stream,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfStreamNotWritable.html#Bodu_ThrowHelper_ThrowIfStreamNotWritable_System_IO_Stream_System_String_">ThrowIfStreamNotWritable(Stream, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a> if <code class="paramref">stream</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, or an
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> if it does not support writing.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfStringLengthIsNotEqualTo_System_String_System_Int32_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfStringLengthIsNotEqualTo(System.String,System.Int32,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfStringLengthIsNotEqualTo.html#Bodu_ThrowHelper_ThrowIfStringLengthIsNotEqualTo_System_String_System_Int32_System_String_">ThrowIfStringLengthIsNotEqualTo(string, int, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a> if <code class="paramref">value</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, or an
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> if its length does not equal <code class="paramref">expectedLength</code> characters.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfStringLengthOutOfRange_System_String_System_Int32_System_Int32_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfStringLengthOutOfRange(System.String,System.Int32,System.Int32,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfStringLengthOutOfRange.html#Bodu_ThrowHelper_ThrowIfStringLengthOutOfRange_System_String_System_Int32_System_Int32_System_String_">ThrowIfStringLengthOutOfRange(string, int, int, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a> if <code class="paramref">value</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, or an
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a> if its length is not between <code class="paramref">minLength</code> and
+<code class="paramref">maxLength</code> (inclusive).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfStringTooLong_System_String_System_Int32_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfStringTooLong(System.String,System.Int32,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfStringTooLong.html#Bodu_ThrowHelper_ThrowIfStringTooLong_System_String_System_Int32_System_String_">ThrowIfStringTooLong(string, int, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a> if <code class="paramref">value</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, or an
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a> if its length exceeds <code class="paramref">maxLength</code> characters.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfZeroOrNegative__1___0_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfZeroOrNegative``1(``0,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfZeroOrNegative.html#Bodu_ThrowHelper_ThrowIfZeroOrNegative__1___0_System_String_">ThrowIfZeroOrNegative&lt;T&gt;(T, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a> if <code class="paramref">value</code> is zero or negative.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfZeroOrPositive__1___0_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfZeroOrPositive``1(``0,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfZeroOrPositive.html#Bodu_ThrowHelper_ThrowIfZeroOrPositive__1___0_System_String_">ThrowIfZeroOrPositive&lt;T&gt;(T, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a> if <code class="paramref">value</code> is zero or positive.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_ThrowHelper_ThrowIfZero__1___0_System_String_" data-uid="Bodu.ThrowHelper.ThrowIfZero``1(``0,System.String)">
+          <a class="xref" href="Bodu.ThrowHelper.ThrowIfZero.html#Bodu_ThrowHelper_ThrowIfZero__1___0_System_String_">ThrowIfZero&lt;T&gt;(T, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a> if <code class="paramref">value</code> equals zero.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Builder round-trip guarantees | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Builder round-trip guarantees | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="builder-round-trip-guarantees">Builder round-trip guarantees</h1>
+
+<p>The <a class="xref" href="../../api/Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html">NotableDateDocumentBuilder</a> serializes notable-date documents to XML and to a JSON subset, parses both back, and materializes a <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateResource.html">NotableDateResource</a> through the canonical loader. This page states exactly what those conversions guarantee — and what they do not — so you can rely on the contract rather than infer it. Every guarantee below is pinned by a test in <code>Bodu.Globalization.Calendar.Builder/test</code>; the citation names the test so a change to the contract cannot land silently.</p>
+<h2 id="the-guarantee-matrix">The guarantee matrix</h2>
+<table>
+<thead>
+<tr>
+<th>Conversion</th>
+<th>Guarantee</th>
+<th>Pinned by</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Builder XML → <code>FromXml</code> → <code>ToXml</code></td>
+<td><strong>Byte-identical.</strong> Re-serializing a document parsed from builder-emitted XML reproduces that XML exactly.</td>
+<td><code>NotableDateDocumentBuilderTests.RoundTrip.RoundTrip_WhenParsedFromXmlAndReserialized_ShouldReproduceXml</code></td>
+</tr>
+<tr>
+<td>Builder JSON → <code>FromJson</code> → <code>ToJson</code></td>
+<td><strong>Identical.</strong> Re-serializing a document parsed from builder-emitted JSON reproduces that JSON exactly.</td>
+<td><code>…RoundTrip.RoundTrip_WhenParsedFromJsonAndReserialized_ShouldReproduceJson</code></td>
+</tr>
+<tr>
+<td>XML round-trip → <code>Build()</code></td>
+<td><strong>Same resolved occurrences.</strong> A document parsed from its own XML resolves the same dates as the original.</td>
+<td><code>…RoundTrip.RoundTrip_WhenParsedFromXml_ShouldPreserveResolution</code></td>
+</tr>
+<tr>
+<td>JSON round-trip → <code>Build()</code></td>
+<td><strong>Same resolved occurrences</strong>, including resolution-policy semantics such as category precedence.</td>
+<td><code>…RoundTrip.RoundTrip_WhenParsedFromJson_ShouldPreserveResolution</code>, <code>…RoundTrip_WhenCategoryPrecedenceAuthored_ShouldPreserveCollisionResolution</code></td>
+</tr>
+<tr>
+<td>Bundled catalogue XML → <code>FromXml</code> → <code>Build()</code></td>
+<td><strong>Semantic equivalence.</strong> Every bundled catalogue re-parsed through the builder produces a resource with the same identifier, rule count, and multi-territory, multi-year resolved-occurrence fingerprint as loading it directly.</td>
+<td><code>…BundledRoundTrip.FromXml_WhenBundledCatalogue_ShouldRoundTripToEquivalentResource</code> (all bundled catalogues)</td>
+</tr>
+<tr>
+<td><code>ToXml()</code> → canonical loader</td>
+<td><strong>Loader parity.</strong> XML the builder emits, loaded through <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateResourceLoader.html">NotableDateResourceLoader</a>, assembles the same resource as calling <code>Build()</code> directly — <code>Build()</code> <em>is</em> the canonical loader over <code>ToXml()</code>.</td>
+<td><code>…Serialization.ToXml_WhenLoadedByResourceLoader_ShouldMatchDirectBuild</code></td>
+</tr>
+<tr>
+<td><code>ToXml()</code> vs <code>ToJson()</code> of the same document</td>
+<td><strong>Format parity.</strong> When a document fits the JSON subset, its XML and JSON serializations resolve identical occurrences.</td>
+<td><code>…Serialization.ToXmlAndToJson_WhenResolved_ShouldAgree</code></td>
+</tr>
+<tr>
+<td><code>Save(path)</code> → <code>Load(path)</code></td>
+<td><strong>Disk round-trip.</strong> Saving and re-loading a document (<code>.xml</code> or <code>.json</code>, format inferred from the extension) resolves identically.</td>
+<td><code>…SaveLoad.SaveLoad_WhenXmlFile_ShouldRoundTripThroughDisk</code>, <code>…SaveLoad_WhenJsonFile_ShouldRoundTripThroughDisk</code></td>
+</tr>
+<tr>
+<td><code>Clone()</code></td>
+<td><strong>Deep, independent copy.</strong> Mutating a clone never affects the original.</td>
+<td><code>…Clone</code> partial</td>
+</tr>
+</tbody>
+</table>
+<h2 id="xml-is-the-full-fidelity-format">XML is the full-fidelity format</h2>
+<p>Every document the builder can express serializes to XML, and builder-canonical XML round-trips byte-for-byte. The byte-identity guarantee applies to <strong>builder-emitted</strong> XML: parse the output of <code>ToXml()</code> (or a file written by <code>Save</code>) and re-serialize it, and you get the same bytes back.</p>
+<p>Hand-authored XML is normalized, not preserved: the builder parses into its object model and re-emits its canonical form, so insignificant whitespace, attribute ordering, XML comments, and alternative lexical forms from a hand-written file are replaced by the canonical rendering. What <em>is</em> guaranteed for any accepted XML — hand-authored or generated — is semantic equivalence: the re-emitted document builds a resource that resolves the same occurrences, which is the guarantee the bundled-catalogue sweep pins across every shipped catalogue.</p>
+<h2 id="json-is-a-subset--the-lossiness-runs-one-way">JSON is a subset — the lossiness runs one way</h2>
+<p><code>ToJson()</code> emits the narrower JSON-subset form. The subset is closed under round-trip in both directions <strong>once a document is inside it</strong>:</p>
+<ul>
+<li><strong>JSON → builder → JSON</strong> is identity.</li>
+<li><strong>JSON → builder → XML</strong> always succeeds, normalizing JSON lexical forms into the canonical XML rendering (a numeric month becomes its English name, Boolean flags become lowercase literals, <code>null</code> attributes become empty attributes — pinned by <code>…JsonSubset.FromJson_WhenStrategyAttributeVaries_ShouldNormalizeInXml</code>).</li>
+<li><strong>XML → builder → JSON</strong> is the lossy direction. A document using a feature outside the subset throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a> from <code>ToJson()</code> / <code>ToJsonObject()</code> / <code>Save(*.json)</code> naming the offending feature — it never silently drops it.</li>
+</ul>
+<p>Features outside the JSON subset (each rejection pinned by <code>…JsonSubset.ToJson_WhenDocumentUsesUnsupportedJsonFeature_ShouldThrowNotSupportedException</code> and the <code>…Serialization</code> import/calendar cases):</p>
+<table>
+<thead>
+<tr>
+<th>Feature outside the subset</th>
+<th>Where it appears</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Imports (<code>AddImport</code>)</td>
+<td>Document level</td>
+</tr>
+<tr>
+<td>Non-Gregorian rule calendars (<code>CalendarSystem</code> other than Gregorian)</td>
+<td>Rule strategies</td>
+</tr>
+<tr>
+<td>XML-only adjustment triggers and actions (for example <code>IfBeforeFixedDate</code>, <code>ReplaceWithRule</code>)</td>
+<td>Adjustment policies</td>
+</tr>
+<tr>
+<td>Trigger refinements: month, day, week ordinal, custom trigger handler keys</td>
+<td>Adjustment policies</td>
+</tr>
+<tr>
+<td>Action refinements: replacement rule references, custom action handler keys, handler parameters</td>
+<td>Adjustment policies</td>
+</tr>
+<tr>
+<td>Scope year bounds (<code>FromYear</code> / <code>ToYear</code> / <code>OnlyYears</code> / <code>ExceptYears</code>) and notable-date / rule scope references</td>
+<td>Adjustment scopes</td>
+</tr>
+<tr>
+<td>Override patches carrying applicability, strategy, tag, or adjustment changes</td>
+<td>Overrides</td>
+</tr>
+</tbody>
+</table>
+<p>Serialize such documents as XML. Scopes confined to territories, calendars, and categories — and lunisolar strategy flags — are inside the subset and round-trip through JSON unchanged.</p>
+<h2 id="build-parity-what-you-serialize-is-what-the-runtime-loads">Build parity: what you serialize is what the runtime loads</h2>
+<p><code>Build()</code> does not maintain a private assembly path: it serializes the document to XML and loads it through the canonical <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateResourceLoader.html">NotableDateResourceLoader</a>, so validation and assembly behave identically whether a document is built in-process or shipped as a file and loaded by the runtime. The same applies to the JSON form: a JSON document loaded through the loader's JSON entry point assembles a resource equivalent to <code>Build()</code> (<code>…Serialization.ToJson_WhenLoadedByResourceLoader_ShouldAssembleEquivalentResource</code>).</p>
+<h2 id="what-is-not-guaranteed">What is not guaranteed</h2>
+<ul>
+<li><strong>Byte identity for hand-authored input.</strong> Formatting, comments, and lexical variants are normalized to the canonical form (see above).</li>
+<li><strong>JSON representability of every document.</strong> XML → JSON throws for features outside the subset; it never degrades the document.</li>
+<li><strong>Stability of the canonical rendering across library versions.</strong> The canonical XML/JSON layout may evolve between versions; the semantic (resolved-occurrence) guarantees are the durable contract. Do not diff canonical output across different library versions as a change-detection mechanism.</li>
+</ul>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="notable-date-builder.html">Authoring with the notable-date builder</a> — the authoring API these guarantees apply to.</li>
+<li><a href="rule-authoring.html">Authoring notable date rules</a> — the XML / JSON document model.</li>
+<li><a class="xref" href="../../api/Bodu.Globalization.Calendar.Builder.html"><code>Bodu.Globalization.Calendar.Builder</code> API reference</a> — the full type list.</li>
+<li><strong><a href="../topics/globalization-and-calendars.html">Globalization &amp; Calendars guides</a></strong> — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

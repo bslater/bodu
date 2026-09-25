@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Using Threefish-512 | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Using Threefish-512 | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="using-threefish-512">Using Threefish-512</h1>
+
+<p><a class="xref" href="../../api/Bodu.Security.Cryptography.Threefish512.html">Threefish512</a> is the 512-bit variant of the Threefish tweakable block cipher family. It operates on <strong>512-bit (64-byte) blocks</strong> with a <strong>512-bit (64-byte) key</strong> and a <strong>128-bit (16-byte) tweak</strong>. Of the three Threefish variants, this is the one used as the core of the standard Skein hash function.</p>
+<p><img src="../../images/diagrams/threefish-round.svg" alt="Threefish round function — MIX, word permutation, and subkey injection"></p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Encrypt/decrypt ships an AVX-512 fast path that engages automatically on supporting hardware. See <a href="hardware-acceleration.html">Hardware acceleration &amp; SIMD opt-out</a> for when it runs and how to force the scalar path.</p>
+</div>
+<h2 id="fixed-sizes-at-a-glance">Fixed sizes at a glance</h2>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Size</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Block size</td>
+<td>512 bits (64 bytes)</td>
+<td>Ciphertext is a multiple of 64 bytes (except in stream modes).</td>
+</tr>
+<tr>
+<td>Key size</td>
+<td>512 bits (64 bytes)</td>
+<td>Fixed.</td>
+</tr>
+<tr>
+<td>Tweak size</td>
+<td>128 bits (16 bytes)</td>
+<td>Fixed across the Threefish family.</td>
+</tr>
+<tr>
+<td>IV size</td>
+<td>512 bits (64 bytes)</td>
+<td>Always matches the block size.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="encrypt-and-decrypt--cbc--pkcs7">Encrypt and decrypt — CBC + PKCS7</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Diagnostics;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
+using Bodu.Security.Cryptography;
+using Bodu.Security.Cryptography.Extensions;
+
+byte[] plaintext = Encoding.UTF8.GetBytes(&quot;a longer record payload for the 64-byte block cipher&quot;);
+
+byte[] key, iv, tweak, ciphertext;
+using (var alg = new Threefish512 { BlockMode = CipherModeKind.CBC, Padding = PaddingMode.PKCS7 })
+{
+    alg.GenerateKey();
+    alg.GenerateIV();
+    alg.GenerateTweak();
+
+    key   = alg.Key;     // 64 bytes
+    iv    = alg.IV;      // 64 bytes
+    tweak = alg.Tweak;   // 16 bytes
+
+    ciphertext = alg.Encrypt(plaintext);
+}
+
+byte[] recovered;
+using (var alg = new Threefish512 { BlockMode = CipherModeKind.CBC, Padding = PaddingMode.PKCS7,
+                                     Key = key, IV = iv, Tweak = tweak })
+{
+    recovered = alg.Decrypt(ciphertext);
+}
+
+Debug.Assert(plaintext.SequenceEqual(recovered));
+</code></pre>
+<h2 id="encrypt-and-decrypt--ctr-stream-mode-parallelisable">Encrypt and decrypt — CTR (stream mode, parallelisable)</h2>
+<pre><code class="lang-csharp">using var alg = new Threefish512
+{
+    BlockMode = CipherModeKind.CTR,
+    Padding   = PaddingMode.None,
+};
+alg.GenerateKey();
+alg.GenerateIV();
+alg.GenerateTweak();
+
+byte[] ciphertext = alg.Encrypt(plaintext);
+byte[] recovered  = alg.Decrypt(ciphertext);
+
+Debug.Assert(plaintext.SequenceEqual(recovered));
+</code></pre>
+<p>With a 512-bit block the counter space is astronomical; wrap-around is a theoretical concern only. CTR's usual rule still stands: never reuse an <code>(IV, Key)</code> pair across messages.</p>
+<h2 id="loading-and-reusing-a-known-key">Loading and reusing a known key</h2>
+<p>If you've stored a key in a secrets manager, load it directly rather than calling <code>GenerateKey()</code>:</p>
+<pre><code class="lang-csharp">byte[] key = LoadKeyFromVault(keyId: &quot;threefish-512/main&quot;);
+Debug.Assert(key.Length == 64);
+
+using var alg = new Threefish512 { Key = key, BlockMode = CipherModeKind.CTR, Padding = PaddingMode.None };
+alg.GenerateIV();           // fresh per message
+alg.GenerateTweak();        // or set a per-record tweak
+
+byte[] ciphertext = alg.Encrypt(plaintext);
+</code></pre>
+<h2 id="per-record-tweak">Per-record tweak</h2>
+<p>Threefish's tweak is particularly useful when encrypting many small records under the same key. Using the record's stable ID as a tweak gives each record an independent encryption stream without key rotation:</p>
+<pre><code class="lang-csharp">byte[] RecordTweak(long recordId)
+{
+    byte[] tweak = new byte[16];
+    BinaryPrimitives.WriteInt64LittleEndian(tweak.AsSpan(0, 8), recordId);
+    return tweak;
+}
+
+byte[] EncryptRecord(byte[] key, byte[] iv, long recordId, byte[] plaintext)
+{
+    using var alg = new Threefish512
+    {
+        Key       = key,
+        IV        = iv,
+        Tweak     = RecordTweak(recordId),
+        BlockMode = CipherModeKind.CBC,
+        Padding   = PaddingMode.PKCS7,
+    };
+    return alg.Encrypt(plaintext);
+}
+</code></pre>
+<p>The 8-byte little-endian record ID fills the low half of the 16-byte tweak; the high half stays zero, leaving room to encode a second discriminator (a table ID, a tenant ID) if you need it. Because the tweak is mixed into every round's subkey, two records with different IDs are cryptographically unrelated even under the same key and IV — see <a href="threefish-256.html#what-the-tweak-is--and-why-it-is-not-an-iv">Threefish-256</a> for the mechanism.</p>
+<h2 id="why-512-is-the-general-purpose-pick">Why 512 is the general-purpose pick</h2>
+<p>Of the three Threefish variants, Threefish-512 is the one used as the core of the standard Skein-512 hash (<a class="xref" href="../../api/Bodu.Security.Cryptography.Skein512.html">Skein512</a>) and is the recommended general-purpose choice:</p>
+<ul>
+<li>Its 64-byte block is wide enough to keep CBC's birthday bound irrelevant and large enough to amortise per-block overhead, yet its key schedule is far cheaper than Threefish-1024's.</li>
+<li>Throughput is roughly double Threefish-1024 on the same CPU for the same data.</li>
+<li>Padding waste rounds up to 64 bytes rather than 128 — material when records are a few hundred bytes.</li>
+</ul>
+<p>Choose <a href="threefish-256.html">Threefish-256</a> when ciphertext size on short messages matters most, and <a href="threefish-1024.html">Threefish-1024</a> only when you specifically want the widest block.</p>
+<p>The raw primitive is <code>Threefish512Cipher</code>, an <a class="xref" href="../../api/Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a> taking a 64-byte key and 16-byte tweak — use it for hand-composed pipelines (<a href="composing-primitives.html">Composing primitives</a>).</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="encryption-basics.html">Encryption basics</a> — the Key/IV/Tweak lifecycle.</li>
+<li><a href="cipher-modes.html">Cipher block modes</a> — CFB / OFB / ECB also work with <code>Threefish512</code>.</li>
+<li><a href="padding.html">Padding</a> — which padding scheme pairs with which mode.</li>
+<li>Other variants: <a href="threefish-256.html">Threefish-256</a>, <a href="threefish-1024.html">Threefish-1024</a>.</li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

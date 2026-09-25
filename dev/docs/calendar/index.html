@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Bodu.Globalization.Calendar — Introduction | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Bodu.Globalization.Calendar — Introduction | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="boduglobalizationcalendar">Bodu.Globalization.Calendar</h1>
+
+<p><img src="../../images/hero-calendar.svg" alt="Bodu.Globalization.Calendar"></p>
+<p><strong>Bodu.Globalization.Calendar</strong> resolves authored calendar rules into concrete notable dates such as public holidays, observances, religious festivals, and regional events. Consumers query dates by year, date, or range and territory, optionally filter by category, tag, or duration, and use the resolved dates for working-day-aware arithmetic. It anchors the <strong><a href="../topics/globalization-and-calendars.html">Globalization &amp; Calendars</a></strong> topic.</p>
+<p>Rules are authored on the notable-date schema as XML or JSON, import from a set of bundled common catalogues, and load eagerly into an immutable, validated resource. More advanced scenarios extend the library with custom algorithms, adjustment handlers, collision resolvers, localizers, and trust-gated plugins.</p>
+<h2 id="calendar-package-family">Calendar package family</h2>
+<p>The calendar runtime is intentionally small. Region-specific holiday data and dependency-injection registration ship as separate companion packages so they can release on their own cadence without forcing a main-library rebuild.</p>
+<p><img src="../../images/diagrams/calendar-package-family.svg" alt="Bodu.Globalization.Calendar package family — runtime, companions, and data packs"></p>
+<table>
+<thead>
+<tr>
+<th>Package</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>Bodu.Globalization.Calendar</code></strong></td>
+<td>The runtime — rule engine, resolution pipeline, working-day extensions. Required by every other calendar package.</td>
+</tr>
+<tr>
+<td><code>Bodu.Globalization.Calendar.Builder</code></td>
+<td>Fluent, chainable C# API for authoring notable-date documents in code, with XML / JSON serialization and load/save. See the <a href="../../guides/calendar/notable-date-builder.html">builder guide</a>.</td>
+</tr>
+<tr>
+<td><code>Bodu.Globalization.Calendar.DependencyInjection</code></td>
+<td><code>IServiceCollection</code> extensions for registering <code>INotableDateService</code> over a loaded <code>NotableDateResource</code>. See the <a href="../../guides/calendar/dependency-injection.html">DI guide</a>.</td>
+</tr>
+<tr>
+<td><code>Bodu.Globalization.Calendar.Plugins</code></td>
+<td>Trust-gated loading of external assemblies that contribute custom date-calculation algorithms. See <a href="../../guides/calendar/building-the-service.html">Building and extending the service</a>.</td>
+</tr>
+<tr>
+<td><code>Bodu.Globalization.Calendar.Americas</code></td>
+<td>Curated public-holiday rules for <code>AR</code>, <code>BR</code>, <code>CA</code>, <code>CL</code>, <code>CO</code>, <code>MX</code>, <code>PE</code>, <code>US</code>.</td>
+</tr>
+<tr>
+<td><code>Bodu.Globalization.Calendar.Europe</code></td>
+<td>Curated rules for 28 European territories including <code>DE</code>, <code>ES</code>, <code>FR</code>, <code>GB</code>, <code>IT</code>, <code>NL</code>.</td>
+</tr>
+<tr>
+<td><code>Bodu.Globalization.Calendar.AsiaPacific</code></td>
+<td>Curated rules for <code>AU</code> (with subdivisions), <code>CN</code>, <code>HK</code>, <code>ID</code>, <code>IN</code>, <code>JP</code>, <code>KR</code>, <code>MY</code>, <code>NZ</code>, <code>PH</code>, <code>SG</code>, <code>TH</code>, <code>TW</code>, <code>VN</code>.</td>
+</tr>
+<tr>
+<td><code>Bodu.Globalization.Calendar.Africa</code></td>
+<td>Curated rules for <code>ZA</code>, <code>NG</code>, <code>KE</code>, <code>GH</code>, <code>ET</code>, <code>EG</code>, <code>MA</code>.</td>
+</tr>
+<tr>
+<td><code>Bodu.Globalization.Calendar.MiddleEast</code></td>
+<td>Curated rules for <code>AE</code>, <code>SA</code>, <code>IL</code>, <code>TR</code>, <code>QA</code>, <code>JO</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>The data packs are independent NuGet packages, so consumers pull in only the regions they need. See the <a href="../../guides/calendar/data-packs.html">Calendar data packs guide</a> for per-pack install commands, territory coverage, and registration patterns.</p>
+<h2 id="core-mental-model">Core mental model</h2>
+<p><img src="../../images/diagrams/calendar-resolution-pipeline.svg" alt="NotableDateService resolution pipeline"></p>
+<p>A single notable date flows through the library in this order:</p>
+<p><img src="../../images/diagrams/calendar-notable-date-flow.svg" alt="Notable date flow — from authored document to consumer query"></p>
+<p>A <strong>rule document</strong> is authored text on the notable-date schema. <strong><code>NotableDateResourceLoader</code></strong> parses it, resolves its imports against the bundled common catalogues, applies any overrides, validates it, and produces an immutable <strong><code>NotableDateResource</code></strong>. A <strong><code>NotableDateService</code></strong> is built over that resource; for each requested year, date, or range it resolves every applicable rule using the rule's strategy (fixed date, <em>n</em>th weekday, weekday-near-date, offset from another rule, or a named algorithm), runs the referenced adjustment policies against the <em>nominal</em> date, settles same-day collisions, and emits the resolved <strong><code>NotableDate</code></strong> set. Consumers then query that set by territory, category, tag, or date range, or feed it into the working-day extensions.</p>
+<h2 id="key-concepts">Key concepts</h2>
+<table>
+<thead>
+<tr>
+<th>Concept</th>
+<th>Plain-language meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Document / resource</strong></td>
+<td>The authored XML/JSON, and the immutable validated value it loads into.</td>
+</tr>
+<tr>
+<td><strong>Definition / rule</strong></td>
+<td>A notable-date concept, and one of its calculation recipes.</td>
+</tr>
+<tr>
+<td><strong>Resolution strategy</strong></td>
+<td>How a rule finds its nominal date — a fixed or positional date, a weekday-in-month rule, a reference to another rule, a working-day rule, or a named algorithm (13 single-date strategies), or one of the four frequency-based recurrence sources. See the <a href="../../guides/calendar/strategy-reference.html">strategy reference</a>.</td>
+</tr>
+<tr>
+<td><strong>Adjustment policy</strong></td>
+<td>A reusable post-resolution shift that moves or substitutes the date — e.g. weekend rollover, substitute Monday — referenced by rules.</td>
+</tr>
+<tr>
+<td><strong>Territory</strong></td>
+<td>Geographic scope where the rule applies — <code>AU</code> for Australia, <code>AU-NSW</code> for New South Wales.</td>
+</tr>
+<tr>
+<td><strong>Category / tag</strong></td>
+<td>Classification used for filtering and display. <code>NotableDateCategory</code> is the well-known enum; tags are free-form strings.</td>
+</tr>
+<tr>
+<td><strong>Import</strong></td>
+<td>A pull from a bundled common catalogue, optionally re-scoped via <code>&lt;Use&gt;</code> directives.</td>
+</tr>
+<tr>
+<td><strong>Override</strong></td>
+<td>An ID-targeted add / patch / remove applied at load time; runtime change is a resource reload.</td>
+</tr>
+<tr>
+<td><strong>Resolved notable date</strong></td>
+<td>The concrete <code>NotableDate</code> returned to consumers — observed date, calculated date, name, category, territory, optional multi-day span.</td>
+</tr>
+</tbody>
+</table>
+<p>For the full glossary, see <a href="concepts.html">Core concepts</a>.</p>
+<h3 id="notable-date-vs-non-working-day">Notable date vs. non-working day</h3>
+<p>Not every notable date is a non-working day. A rule can describe a public holiday, observance, remembrance day, religious festival, or regional event. Working-day operations use the occurrence's <code>IsNonWorkingDay</code> flag together with the configured working week (a <code>Bodu.Core</code> <code>WeekPattern</code>) to decide whether a date should be skipped.</p>
+<h3 id="territory-containment">Territory containment</h3>
+<p>Territory codes are hierarchical. A query for <code>AU-NSW</code> includes rules authored for <code>AU</code> as well as rules specific to <code>AU-NSW</code>, so national and regional rules compose naturally. The same applies to <code>GB-ENG</code> inheriting <code>GB</code>, <code>US-CA</code> inheriting <code>US</code>, and so on.</p>
+<h2 id="worked-example--new-years-day-in-the-us">Worked example — New Year's Day in the US</h2>
+<p>A single rule traces the pipeline end-to-end:</p>
+<ol>
+<li><code>global-core</code> defines <code>new-years-day</code> as a <code>&lt;Fixed month=&quot;January&quot; day=&quot;1&quot; /&gt;</code> rule, <code>PublicHoliday</code>, non-working.</li>
+<li><code>region-us</code> imports it with <code>&lt;Use notableDateRef=&quot;new-years-day&quot; territory=&quot;US&quot;&gt;</code> and attaches the <code>saturday-to-friday</code> and <code>sunday-to-monday</code> adjustment policies.</li>
+<li>The service resolves the fixed date for the requested year — the <em>nominal</em> <code>ActualDate</code>. For 2028 that is <code>2028-01-01</code>, a Saturday.</li>
+<li>The <code>saturday-to-friday</code> policy fires, so the emitted <code>Date</code> is the observed <code>2027-12-31</code> (Friday), with <code>IsObserved == true</code> and <code>AdjustmentPolicyId == &quot;saturday-to-friday&quot;</code>.</li>
+<li>A query for territory <code>US-NY</code> returns the occurrence because <code>US-NY</code> is contained by <code>US</code>.</li>
+<li>Working-day arithmetic — <code>someDate.AddWorkingDays(1, service, &quot;US-NY&quot;)</code> — skips the observed date because the rule is non-working.</li>
+</ol>
+<p>The same flow applies to every other rule — only the strategy in step 3 and the adjustment outcome in step 4 differ.</p>
+<h2 id="common-scenarios">Common scenarios</h2>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Reach for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Resolve all notable dates in a country for a year</td>
+<td><code>service.Resolve(year, territory: &quot;AU&quot;)</code></td>
+</tr>
+<tr>
+<td>Resolve notable dates for a specific day or range</td>
+<td><code>service.Resolve(new DateOnly(2026, 1, 26), &quot;AU&quot;)</code> / <code>service.Resolve(new DateRange(from, to), &quot;AU&quot;)</code></td>
+</tr>
+<tr>
+<td>&quot;Is today a public holiday in NSW?&quot;</td>
+<td><code>dateOnly.IsNotableDate(service, &quot;AU-NSW&quot;, NotableDateFilter.ForCategory(NotableDateCategory.PublicHoliday))</code></td>
+</tr>
+<tr>
+<td>&quot;Add 5 working days to today (skipping weekends and holidays)&quot;</td>
+<td><code>dateOnly.AddWorkingDays(5, service, &quot;AU-NSW&quot;)</code></td>
+</tr>
+<tr>
+<td>Author rules in XML / JSON and load them</td>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateResourceLoader.html">NotableDateResourceLoader</a><code>.Load(xml)</code> / <code>.LoadJson(json)</code></td>
+</tr>
+<tr>
+<td>Author rules fluently in C# (and save to XML / JSON)</td>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html">NotableDateDocumentBuilder</a> — see the <a href="../../guides/calendar/notable-date-builder.html">builder guide</a></td>
+</tr>
+<tr>
+<td>Compute Easter / Diwali / Vesak for a year</td>
+<td>author an <code>&lt;Algorithm key=&quot;western-easter&quot;&gt;</code> (etc.) rule — see <a href="../../guides/calendar/algorithms.html">algorithms</a></td>
+</tr>
+<tr>
+<td>Layer ID-targeted edits over imported concepts</td>
+<td>a document <code>&lt;Overrides&gt;</code> block (<code>&lt;AddRule&gt;</code> / <code>&lt;PatchRule&gt;</code> / <code>&lt;RemoveRule&gt;</code>)</td>
+</tr>
+<tr>
+<td>Swap the rule set on a live service</td>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.MutableNotableDateResourceProvider.html">MutableNotableDateResourceProvider</a> + <a class="xref" href="../../api/Bodu.Globalization.Calendar.ReloadableNotableDateService.html">ReloadableNotableDateService</a></td>
+</tr>
+<tr>
+<td>Register the service in an <code>IServiceCollection</code>-based host</td>
+<td><code>services.AddNotableDateService(resource)</code> from <code>Bodu.Globalization.Calendar.DependencyInjection</code></td>
+</tr>
+<tr>
+<td>Enumerate the territories / calendar systems covered</td>
+<td><code>service.GetSupportedTerritories()</code> / <code>service.GetSupportedCalendars()</code></td>
+</tr>
+<tr>
+<td>Load algorithms from external assemblies safely</td>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.Plugins.NotableDatePluginLoader.html">NotableDatePluginLoader</a> + a trust policy</td>
+</tr>
+<tr>
+<td>Apply observance adjustments (weekend → next working day)</td>
+<td>an <a class="xref" href="../../api/Bodu.Globalization.Calendar.AdjustmentPolicy.html">AdjustmentPolicy</a> referenced by <code>policyRef</code></td>
+</tr>
+<tr>
+<td>Filter resolved notable dates by category, tag, or range</td>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateFilter.html">NotableDateFilter</a><code>.ForCategory(...)</code>, <code>.WithTag(...)</code>, <code>.InDateRange(...)</code> (combine with <code>.And</code> / <code>.Or</code>)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="main-types">Main types</h2>
+<p>The same surface, grouped by what role you're playing rather than by namespace.</p>
+<h3 id="types-most-consumers-use">Types most consumers use</h3>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateService.html">NotableDateService</a> / <a class="xref" href="../../api/Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a></td>
+<td>Main entry point — resolves and queries notable dates for a date, range, or year.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDate.html">NotableDate</a></td>
+<td>Resolved output — observed date, calculated date, name, category, territory, optional multi-day span.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateFilter.html">NotableDateFilter</a></td>
+<td>Composable predicate, built via static factory methods (<code>ForCategory</code>, <code>WithTag</code>, <code>WithId</code>, <code>InDateRange</code>, <code>IsNonWorkingDay</code>, …) and combined with <code>And</code> / <code>Or</code> / <code>Not</code>.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.TerritoryCode.html">TerritoryCode</a></td>
+<td>Strongly-typed ISO 3166 country / subdivision code with containment semantics.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateCategory.html">NotableDateCategory</a></td>
+<td><code>PublicHoliday</code> / <code>BankHoliday</code> / <code>Observance</code> / <code>Remembrance</code> / <code>Cultural</code> / <code>Religious</code> / <code>Seasonal</code> / <code>Civic</code> / <code>School</code> / <code>Regional</code> / <code>Other</code> / <code>None</code>.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Extensions.NotableDateOnlyExtensions.html">NotableDateOnlyExtensions</a>, <a class="xref" href="../../api/Bodu.Extensions.NotableDateTimeExtensions.html">NotableDateTimeExtensions</a></td>
+<td>Working-day arithmetic over <code>DateOnly</code> / <code>DateTime</code> — <code>IsWorkingDay</code>, <code>NextWorkingDay</code>, <code>AddWorkingDays</code>, <code>WorkingDaysBetween</code>, <code>SnapToWorkingDay</code>, … See <a href="../../guides/calendar/working-days.html">Working-day arithmetic</a>.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="types-used-when-authoring-and-loading-rules">Types used when authoring and loading rules</h3>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateResourceLoader.html">NotableDateResourceLoader</a></td>
+<td>Loads XML / JSON (string or <code>Stream</code>) into a validated <code>NotableDateResource</code>.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html">NotableDateDocumentBuilder</a></td>
+<td>Fluent C# authoring of a document — builds, serializes (XML / JSON), and saves; from the <code>Bodu.Globalization.Calendar.Builder</code> companion.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateResource.html">NotableDateResource</a>, <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateDefinition.html">NotableDateDefinition</a>, <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateRule.html">NotableDateRule</a></td>
+<td>The immutable loaded document: a resource of definitions, each with one or more rules.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.CommonNotableDateResources.html">CommonNotableDateResources</a></td>
+<td>Resolver over the bundled common catalogues that documents import by name.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.html">ResolutionPolicy</a></td>
+<td>Resource-level duplicate / collision / observed-date policy and working week.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.AdjustmentPolicy.html">AdjustmentPolicy</a></td>
+<td>A reusable, named adjustment referenced by rules.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="built-in-algorithms">Built-in algorithms</h3>
+<p>The <code>Bodu.Globalization.Calendar.Algorithms</code> namespace resolves an <code>&lt;Algorithm key=&quot;…&quot;&gt;</code> strategy to a bundled calculator. Common keys:</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Computes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>western-easter</code>, <code>orthodox-easter</code></td>
+<td>Easter Sunday (Gregorian / Orthodox computus).</td>
+</tr>
+<tr>
+<td><code>vernal-equinox</code>, <code>autumnal-equinox</code>, <code>qingming</code></td>
+<td>Sun-longitude based dates.</td>
+</tr>
+<tr>
+<td><code>vesak</code>, <code>asalha-puja</code>, <code>losar</code></td>
+<td>Buddhist Vesak / Asalha Puja and Tibetan New Year.</td>
+</tr>
+<tr>
+<td><code>matariki</code></td>
+<td>New Zealand Matariki (gazetted table).</td>
+</tr>
+<tr>
+<td><code>diwali</code>, <code>holi</code>, <code>maha-shivaratri</code>, …</td>
+<td>Hindu lunisolar festivals.</td>
+</tr>
+</tbody>
+</table>
+<p>Beneath the <code>&lt;Algorithm key=&quot;…&quot;&gt;</code> keys, the same <code>Bodu.Globalization.Calendar.Algorithms</code> namespace holds the date-computation <strong>strategy</strong> family — one type per resolution-strategy kind. The most common are <a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.FixedDateStrategy.html">FixedDateStrategy</a>, <a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.DayOfWeekInMonthStrategy.html">DayOfWeekInMonthStrategy</a>, <a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.RelativeWeekdayInMonthStrategy.html">RelativeWeekdayInMonthStrategy</a>, <a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.WeekdayNearDateStrategy.html">WeekdayNearDateStrategy</a>, <a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.OffsetFromRuleStrategy.html">OffsetFromRuleStrategy</a>, and <a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.AlgorithmDateStrategy.html">AlgorithmDateStrategy</a> (the bridge to a named <code>INotableDateAlgorithm</code>); the full catalogue is 13 <a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.IDateCalculationStrategy.html">IDateCalculationStrategy</a> implementations plus the four <a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.IDateRecurrenceStrategy.html">IDateRecurrenceStrategy</a> recurrence sources — see the <a href="../../guides/calendar/strategy-reference.html">strategy reference</a>. A rule selects its strategy declaratively through the notable-date XML / JSON or the <a href="../../guides/calendar/notable-date-builder.html">builder</a>; the strategies are resolved by the loader and are not instantiated directly by consumers. See the <a href="../../guides/calendar/algorithms.html">algorithms guide</a>.</p>
+<p>Region-specific holiday rules ship separately in the <code>Bodu.Globalization.Calendar.&lt;Region&gt;</code> data packs (<code>Americas</code>, <code>AsiaPacific</code>, <code>Europe</code>, <code>Africa</code>, <code>MiddleEast</code>) — see <a href="../../guides/calendar/data-packs.html">Calendar data packs</a>.</p>
+<h3 id="types-used-when-extending-the-library">Types used when extending the library</h3>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateServiceOptions.html">NotableDateServiceOptions</a></td>
+<td>Carries the optional service collaborators (<code>Algorithms</code>, <code>CollisionResolver</code>, <code>Handlers</code>, <code>TriggerHandlers</code>, <code>Providers</code>) as <code>init</code>-only slots — passed to the second <code>NotableDateService</code> constructor.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithm.html">INotableDateAlgorithm</a>, <a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.NotableDateAlgorithmRegistry.html">NotableDateAlgorithmRegistry</a></td>
+<td>Pluggable algorithm contract and registry, backing <code>&lt;Algorithm key=&quot;…&quot;&gt;</code> rules.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.INotableDateProvider.html">INotableDateProvider</a></td>
+<td>Code-first contribution of finished occurrences.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.MutableNotableDateResourceProvider.html">MutableNotableDateResourceProvider</a>, <a class="xref" href="../../api/Bodu.Globalization.Calendar.ReloadableNotableDateService.html">ReloadableNotableDateService</a></td>
+<td>Runtime resource swap on a live service.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.IAdjustmentHandler.html">IAdjustmentHandler</a>, <a class="xref" href="../../api/Bodu.Globalization.Calendar.IAdjustmentTriggerHandler.html">IAdjustmentTriggerHandler</a></td>
+<td>Custom adjustment action / trigger handlers.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.RangeResolution.INotableDateCollisionResolver.html">INotableDateCollisionResolver</a></td>
+<td>Custom same-day collision behaviour.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.INotableDateNameLocalizer.html">INotableDateNameLocalizer</a></td>
+<td>Pluggable display-name localization.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="dependency-injection">Dependency injection</h2>
+<p>The optional <code>Bodu.Globalization.Calendar.DependencyInjection</code> companion package wires <code>INotableDateService</code> into a <code>Microsoft.Extensions.DependencyInjection</code> container as a singleton. <code>AddNotableDateService</code> has six overloads — a loaded resource or a resource factory, each with or without a <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateServiceOptions.html">NotableDateServiceOptions</a> (or an options factory) carrying the optional collaborators, plus two <strong>keyed</strong> forms (<code>string serviceKey</code>) for multi-jurisdiction hosts — and <code>AddReloadableNotableDateService</code> has four (resource, resource + options, resource factory + options, and an <code>IOptionsMonitor&lt;TOptions&gt;</code>-driven factory) for the runtime-swap workflow. Resource-level behaviour still lives in the document's <code>&lt;ResolutionPolicy&gt;</code>; the options object only carries collaborators. See the <a href="../../guides/calendar/dependency-injection.html">dependency-injection guide</a>.</p>
+<h2 id="advanced-extensibility">Advanced extensibility</h2>
+<p>Plugin loading is intentionally isolated in the separate <strong><code>Bodu.Globalization.Calendar.Plugins</code></strong> package. Use it only when custom notable-date algorithms must be discovered from <em>external</em> assemblies; applications that consume only the built-in algorithms or the curated data packs never need it. Loading is trust-gated and default-deny — an assembly is admitted only when it satisfies an explicit <a class="xref" href="../../api/Bodu.Globalization.Calendar.Plugins.IPluginTrustPolicy.html">IPluginTrustPolicy</a> (<a class="xref" href="../../api/Bodu.Globalization.Calendar.Plugins.StrongNamePluginTrustPolicy.html">StrongNamePluginTrustPolicy</a>, <a class="xref" href="../../api/Bodu.Globalization.Calendar.Plugins.FileHashPluginTrustPolicy.html">FileHashPluginTrustPolicy</a>, <a class="xref" href="../../api/Bodu.Globalization.Calendar.Plugins.CompositePluginTrustPolicy.html">CompositePluginTrustPolicy</a>, or <a class="xref" href="../../api/Bodu.Globalization.Calendar.Plugins.DelegatingPluginTrustPolicy.html">DelegatingPluginTrustPolicy</a>), and each contributed algorithm must be marked with the <a class="xref" href="../../api/Bodu.Globalization.Calendar.Plugins.NotableDatePluginAttribute.html">NotableDatePluginAttribute</a>. Untrusted or user-writable locations are rejected rather than executed, and a plugin that cannot be admitted or activated surfaces as a clear failure — <a class="xref" href="../../api/Bodu.Globalization.Calendar.Plugins.PluginNotTrustedException.html">PluginNotTrustedException</a>, <a class="xref" href="../../api/Bodu.Globalization.Calendar.Plugins.PluginMissingAttributeException.html">PluginMissingAttributeException</a>, or <a class="xref" href="../../api/Bodu.Globalization.Calendar.Plugins.PluginActivationException.html">PluginActivationException</a> — rather than silently resolving. The host, the trust policies, and their failure behaviour are documented in <a href="../../guides/calendar/building-the-service.html">Building and extending the service</a>; a first read of this introduction does not need them.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="concepts.html">Core concepts</a></strong> — full vocabulary: document vs. resource, rule vs. date, nominal vs. observed, import vs. override, adjustment policy, category vs. tag, working day vs. non-working day.</li>
+<li><strong><a href="getting-started.html">Getting started</a></strong> — install + minimal samples for loading a resource, resolving dates, and working-day arithmetic.</li>
+<li><strong><a href="../../guides/calendar/index.html">Bodu.Globalization.Calendar guides</a></strong> — using <code>NotableDateService</code>, algorithms, rule authoring, working-day arithmetic, territories, data packs.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Globalization.Calendar.html">Bodu.Globalization.Calendar API reference</a></strong> — full type-by-type docs.</li>
+<li><strong><a href="../../guides/calendar/data-packs.html">Calendar data packs</a></strong> — region-specific resources (<code>AmericasCalendarData</code>, <code>AsiaPacificCalendarData</code>, <code>EuropeCalendarData</code>, <code>AfricaCalendarData</code>, <code>MiddleEastCalendarData</code>).</li>
+<li><strong><a href="../topics/globalization-and-calendars.html">Globalization &amp; Calendars topic</a></strong> — the runtime together with its companion packages (Builder, DependencyInjection, Plugins) and the regional data packs.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

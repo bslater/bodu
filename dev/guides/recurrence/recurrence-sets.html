@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Recurrence sets | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Recurrence sets | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="recurrence-sets">Recurrence sets</h1>
+
+<p><a class="xref" href="../../api/Bodu.Globalization.Recurrence.RecurrenceSet.html">RecurrenceSet</a> composes a schedule the way an iCalendar <code>VEVENT</code> does: one or more <a class="xref" href="../../api/Bodu.Globalization.Recurrence.RecurrenceRule.html">RecurrenceRule</a> streams anchored at a common <code>DTSTART</code>, plus explicit recurrence dates (<code>RDATE</code>), minus exception dates (<code>EXDATE</code>). The occurrence set is the ascending, duplicate-free <strong>union</strong> of every rule expansion and every explicit date, <strong>less</strong> any instant matching an exception date. Unlike a bare rule, a set carries its own start, so its queries take only the boundary instant.</p>
+<p>For the &quot;which form&quot; decision and the shared due-ness recipe, start at the <a href="index.html">recurrence overview</a>.</p>
+<h2 id="pattern-1--build-a-set-in-code">Pattern 1 — build a set in code</h2>
+<p>The constructor takes the start, the rules, and optional <code>dates</code> / <code>exceptionDates</code> sequences. At least one rule or one explicit date is required; an empty set throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> (&quot;A recurrence set requires at least one rule or explicit recurrence date.&quot;). The date lists are sorted ascending on construction; the rules keep the order supplied.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Globalization.Recurrence;
+
+var start = new DateTime(2026, 1, 5, 9, 0, 0);   // Monday 09:00
+
+var standUp = new RecurrenceSet(
+    start,
+    rules: new[] { RecurrenceRule.Parse(&quot;FREQ=WEEKLY;BYDAY=MO;COUNT=8&quot;) },
+    dates: new[] { new DateTime(2026, 1, 14, 9, 0, 0) },                                        // an extra Wednesday
+    exceptionDates: new[] { new DateTime(2026, 1, 26, 9, 0, 0), new DateTime(2026, 2, 9, 9, 0, 0) });
+
+DateTime startAgain                   = standUp.Start;            // 2026-01-05 09:00
+IReadOnlyList&lt;RecurrenceRule&gt; rules   = standUp.Rules;            // one rule
+IReadOnlyList&lt;DateTime&gt; extras        = standUp.Dates;            // [2026-01-14 09:00]
+IReadOnlyList&lt;DateTime&gt; skipped       = standUp.ExceptionDates;   // [2026-01-26 09:00, 2026-02-09 09:00]
+</code></pre>
+<p>The start is emitted only when a rule or an explicit date produces it — it is not added implicitly. A set whose only content is explicit dates is valid (pass an empty rule sequence).</p>
+<h2 id="composition-semantics">Composition semantics</h2>
+<ol>
+<li>Each rule is expanded from <code>Start</code> exactly as <code>rule.GetOccurrences(Start)</code> would.</li>
+<li>The expansions and <code>Dates</code> are merged in ascending order; an instant produced more than once contributes <strong>one</strong> occurrence.</li>
+<li>Any instant equal to an entry in <code>ExceptionDates</code> is removed. Matching is exact — an exception must carry the same time of day as the occurrence it removes.</li>
+<li><code>COUNT</code> on a rule bounds that rule's own expansion; it is not reduced by exceptions, so <code>COUNT=8</code> with two <code>EXDATE</code> hits yields six rule occurrences, not eight.</li>
+</ol>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Globalization.Recurrence;
+
+var standUp = RecurrenceSet.Parse(
+    &quot;DTSTART:20260105T090000\r\n&quot; +
+    &quot;RRULE:FREQ=WEEKLY;BYDAY=MO;COUNT=8\r\n&quot; +
+    &quot;RDATE:20260114T090000\r\n&quot; +
+    &quot;EXDATE:20260126T090000,20260209T090000&quot;);
+
+DateTime[] occurrences = standUp.GetOccurrences().ToArray();
+// 2026-01-05 Mon, 01-12 Mon, 01-14 Wed (RDATE), 01-19 Mon, 02-02 Mon, 02-16 Mon, 02-23 Mon
+//   — 01-26 and 02-09 removed by EXDATE; 7 occurrences from COUNT=8 plus one RDATE minus two exceptions
+
+var overlapping = new RecurrenceSet(
+    new DateTime(2026, 1, 5),
+    new[] { RecurrenceRule.Parse(&quot;FREQ=WEEKLY;BYDAY=MO;COUNT=2&quot;), RecurrenceRule.Parse(&quot;FREQ=WEEKLY;BYDAY=MO,WE;COUNT=3&quot;) });
+
+DateTime[] deduplicated = overlapping.GetOccurrences().ToArray();
+// 2026-01-05, 2026-01-07, 2026-01-12 — Monday 5 January is produced by both rules but emitted once
+</code></pre>
+<p><code>GetOccurrences()</code> is unbounded when any rule is unbounded; use the windowed <code>GetOccurrences(from, to)</code> or <code>Take</code>. A set whose rule uses a sub-daily frequency throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a> on enumeration, as the rule itself would.</p>
+<h2 id="the-property-block-text-format">The property-block text format</h2>
+<p><code>ToString()</code> renders the canonical iCalendar property block: a <code>DTSTART</code> line, one <code>RRULE</code> line per rule in the order supplied, then a single <code>RDATE</code> line and a single <code>EXDATE</code> line (each a comma-separated ascending list) when present. Lines are separated by CRLF per RFC 5545 with no trailing line break, and date-times use the iCalendar <code>yyyyMMddTHHmmss</code> form with a trailing <code>Z</code> only when the value's <code>Kind</code> is UTC.</p>
+<pre><code class="lang-text">DTSTART:20260105T090000
+RRULE:FREQ=WEEKLY;COUNT=8;BYDAY=MO
+RDATE:20260114T090000
+EXDATE:20260126T090000,20260209T090000
+</code></pre>
+<p><code>Parse</code> is more permissive than <code>ToString</code> is strict — it is designed to accept a <code>VEVENT</code> fragment as-is:</p>
+<ul>
+<li>Lines other than <code>DTSTART</code>, <code>RRULE</code>, <code>RDATE</code>, and <code>EXDATE</code> are ignored, so <code>BEGIN:VEVENT</code>, <code>UID</code>, <code>SUMMARY</code>, and <code>END:VEVENT</code> may be present.</li>
+<li>Property parameters between the name and the colon are ignored: <code>DTSTART;TZID=Australia/Sydney:20260105T090000</code> parses as the floating wall-clock value <code>2026-01-05 09:00</code> (the zone is <em>not</em> applied — see <a href="scheduling-host.html">Hosting schedules</a> for zone conversion at the host boundary), and <code>EXDATE;VALUE=DATE-TIME:…</code> is accepted.</li>
+<li><code>RDATE</code> / <code>EXDATE</code> accept multiple comma-separated values, multiple lines (accumulated), and the <code>VALUE=DATE</code> form (<code>20260114</code>, read as midnight).</li>
+<li>Line endings may be CRLF or LF. Property names are case-insensitive.</li>
+</ul>
+<p>The defect-naming <code>TryParse</code> reports: a missing start (&quot;A recurrence set requires a DTSTART property line.&quot;), a repeated one (&quot;The DTSTART property appears more than once.&quot;), a bad value (&quot;The date-time value 'bogus' is not in a supported iCalendar DATE or DATE-TIME format.&quot;), any <code>RRULE</code> defect (with the rule's own message), and a start with nothing else (&quot;A recurrence set requires at least one rule or explicit recurrence date.&quot;).</p>
+<h2 id="pattern-2--a-meeting-series-with-two-skipped-dates-and-one-moved-date">Pattern 2 — a meeting series with two skipped dates and one moved date</h2>
+<p>iCalendar expresses &quot;moved&quot; as an exception on the original instant plus an explicit date for the replacement. The set below skips the Australia Day (26 January) and 9 February stand-ups, and moves the 12 January meeting to Wednesday 14 January:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Globalization.Recurrence;
+
+var series = new RecurrenceSet(
+    start: new DateTime(2026, 1, 5, 9, 0, 0),
+    rules: new[] { RecurrenceRule.Parse(&quot;FREQ=WEEKLY;BYDAY=MO&quot;) },
+    dates: new[] { new DateTime(2026, 1, 14, 9, 0, 0) },                                        // moved-to instant
+    exceptionDates: new[]
+    {
+        new DateTime(2026, 1, 12, 9, 0, 0),   // moved-from instant
+        new DateTime(2026, 1, 26, 9, 0, 0),   // skipped
+        new DateTime(2026, 2, 9, 9, 0, 0),    // skipped
+    });
+
+DateTime[] january = series.GetOccurrences(new DateTime(2026, 1, 1), new DateTime(2026, 2, 20)).ToArray();
+// 2026-01-05 Mon, 01-14 Wed, 01-19 Mon, 02-02 Mon, 02-16 Mon
+
+DateTime? nextAfterSkip = series.GetNextOccurrence(new DateTime(2026, 1, 26, 9, 0, 0), inclusive: true);   // 2026-02-02 09:00
+DateTime? previous      = series.GetPreviousOccurrence(new DateTime(2026, 1, 26, 9, 0, 0), inclusive: true); // 2026-01-19 09:00
+</code></pre>
+<p>Point queries honour the same composition: with <code>inclusive: true</code> on an excluded instant, the answer moves past it in either direction.</p>
+<h2 id="pattern-3--import-from-and-export-to-a-vevent-fragment">Pattern 3 — import from and export to a <code>VEVENT</code> fragment</h2>
+<p>Because unrelated lines are ignored on parse, a set can be read straight from the recurrence-bearing lines of a <code>VEVENT</code>. Export the canonical block into a <code>VEVENT</code> you assemble yourself:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Globalization.Recurrence;
+
+string vevent =
+    &quot;BEGIN:VEVENT\r\n&quot; +
+    &quot;UID:standup-2026@example.com\r\n&quot; +
+    &quot;SUMMARY:Weekly stand-up\r\n&quot; +
+    &quot;DTSTART;TZID=Australia/Sydney:20260105T090000\r\n&quot; +
+    &quot;RRULE:FREQ=WEEKLY;BYDAY=MO\r\n&quot; +
+    &quot;EXDATE;VALUE=DATE-TIME:20260126T090000,20260209T090000\r\n&quot; +
+    &quot;RDATE:20260114T090000\r\n&quot; +
+    &quot;END:VEVENT&quot;;
+
+RecurrenceSet imported = RecurrenceSet.Parse(vevent);
+// imported.Start = 2026-01-05 09:00 (floating; the TZID parameter is ignored)
+
+string canonical = imported.ToString();
+// DTSTART:20260105T090000\r\nRRULE:FREQ=WEEKLY;BYDAY=MO\r\nRDATE:20260114T090000\r\nEXDATE:20260126T090000,20260209T090000
+
+string exported =
+    &quot;BEGIN:VEVENT\r\n&quot; +
+    &quot;UID:standup-2026@example.com\r\n&quot; +
+    &quot;SUMMARY:Weekly stand-up\r\n&quot; +
+    canonical + &quot;\r\n&quot; +
+    &quot;END:VEVENT\r\n&quot;;
+
+bool roundTrips = RecurrenceSet.Parse(exported).Equals(imported);   // true
+</code></pre>
+<p>To preserve a UTC start, anchor the set on a <code>DateTimeKind.Utc</code> value: <code>DTSTART:20260105T090000Z</code> parses to a UTC <code>Start</code> and renders with the <code>Z</code> again.</p>
+<h2 id="next-and-previous-over-the-set">Next and previous over the set</h2>
+<p><code>GetNextOccurrence(after, inclusive)</code> / <code>GetPreviousOccurrence(before, inclusive)</code> answer over the composed stream, so an exception date is never returned and an <code>RDATE</code> can be. The <code>DateTimeOffset</code> overloads interpret <code>Start</code>, <code>Dates</code>, and <code>ExceptionDates</code> — which are wall-clock values — in the offset of the argument and return an answer carrying that offset; no other conversion is performed:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Globalization.Recurrence;
+
+var series = RecurrenceSet.Parse(&quot;DTSTART:20260105T090000\r\nRRULE:FREQ=WEEKLY;BYDAY=MO;COUNT=8\r\nEXDATE:20260126T090000&quot;);
+
+DateTimeOffset? next = series.GetNextOccurrence(new DateTimeOffset(2026, 1, 20, 0, 0, 0, TimeSpan.FromHours(10)));
+// 2026-02-02 09:00 +10:00 — 26 January is excluded
+</code></pre>
+<h2 id="value-equality">Value equality</h2>
+<p>Two sets are equal when their <code>Start</code>, their rules (equal rules in the same order), their <code>Dates</code>, and their <code>ExceptionDates</code> are all equal. <code>Parse(set.ToString())</code> is always equal to <code>set</code>, so the canonical block is a reliable persisted form and change detector. <code>GetHashCode</code> is consistent with <code>Equals</code>.</p>
+<h2 id="api-summary">API summary</h2>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>RecurrenceSet(DateTime start, IEnumerable&lt;RecurrenceRule&gt; rules, IEnumerable&lt;DateTime&gt;? dates = null, IEnumerable&lt;DateTime&gt;? exceptionDates = null)</code></td>
+<td>Construct; at least one rule or date is required.</td>
+</tr>
+<tr>
+<td><code>Start</code>, <code>Rules</code>, <code>Dates</code>, <code>ExceptionDates</code></td>
+<td>The components; date lists are ascending.</td>
+</tr>
+<tr>
+<td><code>Parse(string)</code> / <code>Parse(string, IFormatProvider?)</code></td>
+<td>Parse a property block or <code>VEVENT</code> fragment.</td>
+</tr>
+<tr>
+<td><code>TryParse(string?, out result)</code> / <code>TryParse(string?, IFormatProvider?, out result)</code> / <code>TryParse(string?, out result, out failureMessage)</code></td>
+<td>Boolean parse, optionally naming the defect.</td>
+</tr>
+<tr>
+<td><code>GetOccurrences()</code> / <code>GetOccurrences(from, to)</code></td>
+<td>Composed ascending enumeration (<code>DateTime</code>).</td>
+</tr>
+<tr>
+<td><code>GetNextOccurrence(after, inclusive = false)</code> / <code>GetPreviousOccurrence(before, inclusive = false)</code></td>
+<td>Point queries; <code>DateTime</code> and <code>DateTimeOffset</code>.</td>
+</tr>
+<tr>
+<td><code>ToString()</code> / <code>ToString(string?)</code> / <code>ToString(string?, IFormatProvider?)</code></td>
+<td>Canonical CRLF property block.</td>
+</tr>
+<tr>
+<td><code>Equals</code> / <code>GetHashCode</code></td>
+<td>Component-wise value equality.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="rrule.html">RFC 5545 recurrence rules</a></strong> — the grammar of each <code>RRULE</code> line.</li>
+<li><strong><a href="scheduling-host.html">Hosting schedules</a></strong> — driving a set alongside the other forms from one loop, and applying a time zone to a floating <code>DTSTART</code>.</li>
+<li><strong><a href="../../samples/recurrence.html">Runnable samples</a></strong> — <code>Bodu.Globalization.Recurrence.Samples.RecurrenceSets</code>.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Globalization.Recurrence.html">Bodu.Globalization.Recurrence API reference</a></strong> — <code>RecurrenceSet</code>.</li>
+<li><strong><a href="../topics/globalization-and-calendars.html">Globalization &amp; Calendars guides</a></strong> — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

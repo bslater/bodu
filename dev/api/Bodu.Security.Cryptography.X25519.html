@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class X25519 | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class X25519 | BODU ">
+    
+    <meta name="description" content="Provides a managed implementation of the X25519 elliptic-curve Diffie-Hellman key agreement function defined in RFC 7748, exposed through the standard  framework. This class cannot be inherited.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Security.Cryptography.X25519">
+
+
+
+  <h1 id="Bodu_Security_Cryptography_X25519" data-uid="Bodu.Security.Cryptography.X25519" class="text-break">Class X25519</h1>
+  <div class="markdown level0 summary"><p>Provides a managed implementation of the X25519 elliptic-curve Diffie-Hellman key agreement function defined in RFC
+7748, exposed through the standard <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm">AsymmetricAlgorithm</a> framework. This class cannot be inherited.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm">AsymmetricAlgorithm</a></div>
+    <div class="level2"><a class="xref" href="Bodu.Security.Cryptography.RawKeyAsymmetricAlgorithm.html">RawKeyAsymmetricAlgorithm</a></div>
+    <div class="level3"><span class="xref">X25519</span></div>
+  </div>
+  <div class="implements">
+    <h5>Implements</h5>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm.clear">AsymmetricAlgorithm.Clear()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm.create#system-security-cryptography-asymmetricalgorithm-create(system-string)">AsymmetricAlgorithm.Create(string)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm.dispose#system-security-cryptography-asymmetricalgorithm-dispose">AsymmetricAlgorithm.Dispose()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm.exportencryptedpkcs8privatekey#system-security-cryptography-asymmetricalgorithm-exportencryptedpkcs8privatekey(system-readonlyspan((system-byte))-system-security-cryptography-pbeparameters)">AsymmetricAlgorithm.ExportEncryptedPkcs8PrivateKey(ReadOnlySpan&lt;byte&gt;, PbeParameters)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm.exportencryptedpkcs8privatekey#system-security-cryptography-asymmetricalgorithm-exportencryptedpkcs8privatekey(system-readonlyspan((system-char))-system-security-cryptography-pbeparameters)">AsymmetricAlgorithm.ExportEncryptedPkcs8PrivateKey(ReadOnlySpan&lt;char&gt;, PbeParameters)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm.exportencryptedpkcs8privatekeypem#system-security-cryptography-asymmetricalgorithm-exportencryptedpkcs8privatekeypem(system-readonlyspan((system-byte))-system-security-cryptography-pbeparameters)">AsymmetricAlgorithm.ExportEncryptedPkcs8PrivateKeyPem(ReadOnlySpan&lt;byte&gt;, PbeParameters)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm.exportencryptedpkcs8privatekeypem#system-security-cryptography-asymmetricalgorithm-exportencryptedpkcs8privatekeypem(system-readonlyspan((system-char))-system-security-cryptography-pbeparameters)">AsymmetricAlgorithm.ExportEncryptedPkcs8PrivateKeyPem(ReadOnlySpan&lt;char&gt;, PbeParameters)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm.exportpkcs8privatekey">AsymmetricAlgorithm.ExportPkcs8PrivateKey()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm.exportpkcs8privatekeypem">AsymmetricAlgorithm.ExportPkcs8PrivateKeyPem()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm.exportsubjectpublickeyinfo">AsymmetricAlgorithm.ExportSubjectPublicKeyInfo()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm.exportsubjectpublickeyinfopem">AsymmetricAlgorithm.ExportSubjectPublicKeyInfoPem()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm.importfromencryptedpem#system-security-cryptography-asymmetricalgorithm-importfromencryptedpem(system-readonlyspan((system-char))-system-readonlyspan((system-byte)))">AsymmetricAlgorithm.ImportFromEncryptedPem(ReadOnlySpan&lt;char&gt;, ReadOnlySpan&lt;byte&gt;)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm.importfromencryptedpem#system-security-cryptography-asymmetricalgorithm-importfromencryptedpem(system-readonlyspan((system-char))-system-readonlyspan((system-char)))">AsymmetricAlgorithm.ImportFromEncryptedPem(ReadOnlySpan&lt;char&gt;, ReadOnlySpan&lt;char&gt;)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm.importfrompem">AsymmetricAlgorithm.ImportFromPem(ReadOnlySpan&lt;char&gt;)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm.tryexportencryptedpkcs8privatekeypem#system-security-cryptography-asymmetricalgorithm-tryexportencryptedpkcs8privatekeypem(system-readonlyspan((system-byte))-system-security-cryptography-pbeparameters-system-span((system-char))-system-int32@)">AsymmetricAlgorithm.TryExportEncryptedPkcs8PrivateKeyPem(ReadOnlySpan&lt;byte&gt;, PbeParameters, Span&lt;char&gt;, out int)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm.tryexportencryptedpkcs8privatekeypem#system-security-cryptography-asymmetricalgorithm-tryexportencryptedpkcs8privatekeypem(system-readonlyspan((system-char))-system-security-cryptography-pbeparameters-system-span((system-char))-system-int32@)">AsymmetricAlgorithm.TryExportEncryptedPkcs8PrivateKeyPem(ReadOnlySpan&lt;char&gt;, PbeParameters, Span&lt;char&gt;, out int)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm.tryexportpkcs8privatekeypem">AsymmetricAlgorithm.TryExportPkcs8PrivateKeyPem(Span&lt;char&gt;, out int)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm.tryexportsubjectpublickeyinfopem">AsymmetricAlgorithm.TryExportSubjectPublicKeyInfoPem(Span&lt;char&gt;, out int)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm.keysize">AsymmetricAlgorithm.KeySize</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm.legalkeysizes">AsymmetricAlgorithm.LegalKeySizes</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Security.html">Security</a>.<a class="xref" href="Bodu.Security.Cryptography.html">Cryptography</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Security.Cryptography.dll</h6>
+  <h5 id="Bodu_Security_Cryptography_X25519_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class X25519 : RawKeyAsymmetricAlgorithm, IDisposable</code></pre>
+  </div>
+  <h5 id="Bodu_Security_Cryptography_X25519_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+X25519 performs scalar multiplication on the Montgomery form of Curve25519, providing a 128-bit security level with
+32-byte keys and a 32-byte shared secret. Two parties each generate a key pair, exchange public keys, and call
+<a class="xref" href="Bodu.Security.Cryptography.X25519.DeriveSharedSecret.html#Bodu_Security_Cryptography_X25519_DeriveSharedSecret_System_ReadOnlySpan_System_Byte__">DeriveSharedSecret(ReadOnlySpan&lt;byte&gt;)</a> with the peer's public key to arrive at the same shared
+secret. The shared secret is a raw curve point coordinate and should be passed through a key derivation function
+(such as HKDF or <a class="xref" href="Bodu.Security.Cryptography.Blake2b.html">Blake2b</a> in keyed mode) before use as symmetric key material.
+</p>
+<p>
+<strong>Parameters at a glance.</strong>
+</p>
+<ul><li>Private key: 32 bytes; clamped per RFC 7748 §5 at the point of use, never in stored form.</li><li>
+Public key: 32 bytes (the little-endian u-coordinate of the scalar multiple of the base point).
+</li><li>Shared secret: 32 bytes; security level: 128 bits.</li><li>Specification: RFC 7748.</li></ul>
+<p>
+<strong>Low-order point rejection.</strong> When the peer public key is one of the small set of low-order points,
+every scalar produces an all-zero shared secret that an attacker can predict without knowing the private key.
+<a class="xref" href="Bodu.Security.Cryptography.X25519.DeriveSharedSecret.html#Bodu_Security_Cryptography_X25519_DeriveSharedSecret_System_ReadOnlySpan_System_Byte__">DeriveSharedSecret(ReadOnlySpan&lt;byte&gt;)</a> applies the check recommended by RFC 7748 §6.1 strictly and
+throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicexception">CryptographicException</a> instead of returning the all-zero output.
+</p>
+<p>
+<strong>Key formats.</strong> Only the raw RFC 7748 32-byte key encodings are supported via
+<a class="xref" href="Bodu.Security.Cryptography.X25519.ImportPrivateKey.html#Bodu_Security_Cryptography_X25519_ImportPrivateKey_System_ReadOnlySpan_System_Byte__">ImportPrivateKey(ReadOnlySpan&lt;byte&gt;)</a>, <a class="xref" href="Bodu.Security.Cryptography.X25519.ImportPublicKey.html#Bodu_Security_Cryptography_X25519_ImportPublicKey_System_ReadOnlySpan_System_Byte__">ImportPublicKey(ReadOnlySpan&lt;byte&gt;)</a>, <a class="xref" href="Bodu.Security.Cryptography.X25519.ExportPrivateKey.html#Bodu_Security_Cryptography_X25519_ExportPrivateKey">ExportPrivateKey()</a>, and
+<a class="xref" href="Bodu.Security.Cryptography.X25519.ExportPublicKey.html#Bodu_Security_Cryptography_X25519_ExportPublicKey">ExportPublicKey()</a>, plus the RFC 8410 PKCS#8 / SubjectPublicKeyInfo DER containers (OID 1.3.101.110) and
+the RFC 7468 PEM helpers inherited from <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm">AsymmetricAlgorithm</a> (<code>ImportFromPem</code>,
+<code>ExportPkcs8PrivateKeyPem</code>, <code>ExportSubjectPublicKeyInfoPem</code>). The XML members and encrypted PKCS#8 are out
+of scope and throw <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a>.
+</p>
+<p>
+Scalar multiplication runs in constant time with respect to the private key. Private key material is zeroed when the
+instance is disposed. This implementation, like the rest of the library, offers best-effort side-channel resistance
+and has not been independently audited.
+</p>
+</div>
+  <h5 id="Bodu_Security_Cryptography_X25519_examples"><strong>Examples</strong></h5>
+  <pre><code class="lang-csharp">using var alice = X25519.Create();
+using var bob = X25519.Create();
+alice.GenerateKey();
+bob.GenerateKey();
+
+byte[] aliceShared = alice.DeriveSharedSecret(bob.ExportPublicKey());
+byte[] bobShared = bob.DeriveSharedSecret(alice.ExportPublicKey());
+// aliceShared and bobShared are identical.</code></pre>
+
+  <h3 id="constructors">Constructors
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Security_Cryptography_X25519__ctor" data-uid="Bodu.Security.Cryptography.X25519.#ctor">
+          <a class="xref" href="Bodu.Security.Cryptography.X25519.-ctor.html#Bodu_Security_Cryptography_X25519__ctor">X25519()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Security.Cryptography.X25519.html">X25519</a> class with no key material.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="fields">Fields
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Security_Cryptography_X25519_KeySizeInBytes" data-uid="Bodu.Security.Cryptography.X25519.KeySizeInBytes">
+          <a class="xref" href="Bodu.Security.Cryptography.X25519.KeySizeInBytes.html">KeySizeInBytes</a>
+        </td>
+        <td class="markdown level1 summary"><p>The size, in bytes, of an X25519 private key and public key (32 bytes each).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_X25519_SharedSecretSizeInBytes" data-uid="Bodu.Security.Cryptography.X25519.SharedSecretSizeInBytes">
+          <a class="xref" href="Bodu.Security.Cryptography.X25519.SharedSecretSizeInBytes.html">SharedSecretSizeInBytes</a>
+        </td>
+        <td class="markdown level1 summary"><p>The size, in bytes, of the shared secret produced by <a class="xref" href="Bodu.Security.Cryptography.X25519.DeriveSharedSecret.html#Bodu_Security_Cryptography_X25519_DeriveSharedSecret_System_ReadOnlySpan_System_Byte__">DeriveSharedSecret(ReadOnlySpan&lt;byte&gt;)</a>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Security_Cryptography_X25519_AlgorithmName" data-uid="Bodu.Security.Cryptography.X25519.AlgorithmName">
+          <a class="xref" href="Bodu.Security.Cryptography.X25519.AlgorithmName.html#Bodu_Security_Cryptography_X25519_AlgorithmName">AlgorithmName</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the algorithm name <code>&quot;X25519&quot;</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_X25519_HasPrivateKey" data-uid="Bodu.Security.Cryptography.X25519.HasPrivateKey">
+          <a class="xref" href="Bodu.Security.Cryptography.X25519.HasPrivateKey.html#Bodu_Security_Cryptography_X25519_HasPrivateKey">HasPrivateKey</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a value indicating whether the instance currently holds a private key.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_X25519_HasPublicKey" data-uid="Bodu.Security.Cryptography.X25519.HasPublicKey">
+          <a class="xref" href="Bodu.Security.Cryptography.X25519.HasPublicKey.html#Bodu_Security_Cryptography_X25519_HasPublicKey">HasPublicKey</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a value indicating whether the instance currently holds a public key.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_X25519_KeyExchangeAlgorithm" data-uid="Bodu.Security.Cryptography.X25519.KeyExchangeAlgorithm">
+          <a class="xref" href="Bodu.Security.Cryptography.X25519.KeyExchangeAlgorithm.html#Bodu_Security_Cryptography_X25519_KeyExchangeAlgorithm">KeyExchangeAlgorithm</a>
+        </td>
+        <td class="markdown level1 summary"><p>When overridden in a derived class, gets the name of the key exchange algorithm. Otherwise, throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notimplementedexception">NotImplementedException</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_X25519_SecurityStrengthBits" data-uid="Bodu.Security.Cryptography.X25519.SecurityStrengthBits">
+          <a class="xref" href="Bodu.Security.Cryptography.X25519.SecurityStrengthBits.html#Bodu_Security_Cryptography_X25519_SecurityStrengthBits">SecurityStrengthBits</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the approximate classical security strength of X25519, in bits.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_X25519_SignatureAlgorithm" data-uid="Bodu.Security.Cryptography.X25519.SignatureAlgorithm">
+          <a class="xref" href="Bodu.Security.Cryptography.X25519.SignatureAlgorithm.html#Bodu_Security_Cryptography_X25519_SignatureAlgorithm">SignatureAlgorithm</a>
+        </td>
+        <td class="markdown level1 summary"><p>When implemented in a derived class, gets the name of the signature algorithm. Otherwise, always throws a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notimplementedexception">NotImplementedException</a>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Security_Cryptography_X25519_Create" data-uid="Bodu.Security.Cryptography.X25519.Create">
+          <a class="xref" href="Bodu.Security.Cryptography.X25519.Create.html#Bodu_Security_Cryptography_X25519_Create">Create()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates a new <a class="xref" href="Bodu.Security.Cryptography.X25519.html">X25519</a> instance with no key material.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_X25519_DeriveSharedSecret_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.X25519.DeriveSharedSecret(System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.Security.Cryptography.X25519.DeriveSharedSecret.html#Bodu_Security_Cryptography_X25519_DeriveSharedSecret_System_ReadOnlySpan_System_Byte__">DeriveSharedSecret(ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Derives the 32-byte X25519 shared secret between this instance's private key and the supplied peer public key.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_X25519_DeriveSharedSecret_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__" data-uid="Bodu.Security.Cryptography.X25519.DeriveSharedSecret(System.ReadOnlySpan{System.Byte},System.Span{System.Byte})">
+          <a class="xref" href="Bodu.Security.Cryptography.X25519.DeriveSharedSecret.html#Bodu_Security_Cryptography_X25519_DeriveSharedSecret_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">DeriveSharedSecret(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Derives the 32-byte X25519 shared secret between this instance's private key and the supplied peer public key,
+writing it into <code class="paramref">destination</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_X25519_ExportPrivateKey" data-uid="Bodu.Security.Cryptography.X25519.ExportPrivateKey">
+          <a class="xref" href="Bodu.Security.Cryptography.X25519.ExportPrivateKey.html#Bodu_Security_Cryptography_X25519_ExportPrivateKey">ExportPrivateKey()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Exports the raw 32-byte RFC 7748 private key.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_X25519_ExportPublicKey" data-uid="Bodu.Security.Cryptography.X25519.ExportPublicKey">
+          <a class="xref" href="Bodu.Security.Cryptography.X25519.ExportPublicKey.html#Bodu_Security_Cryptography_X25519_ExportPublicKey">ExportPublicKey()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Exports the raw 32-byte RFC 7748 public key.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_X25519_FromXmlString_System_String_" data-uid="Bodu.Security.Cryptography.X25519.FromXmlString(System.String)">
+          <a class="xref" href="Bodu.Security.Cryptography.X25519.FromXmlString.html#Bodu_Security_Cryptography_X25519_FromXmlString_System_String_">FromXmlString(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>When overridden in a derived class, reconstructs an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm">AsymmetricAlgorithm</a> object from an XML string. Otherwise, throws a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notimplementedexception">NotImplementedException</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_X25519_GenerateKey" data-uid="Bodu.Security.Cryptography.X25519.GenerateKey">
+          <a class="xref" href="Bodu.Security.Cryptography.X25519.GenerateKey.html#Bodu_Security_Cryptography_X25519_GenerateKey">GenerateKey()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Generates a fresh random key pair, replacing any existing key material on the instance.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_X25519_ImportEncryptedPkcs8PrivateKey_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__System_Int32__" data-uid="Bodu.Security.Cryptography.X25519.ImportEncryptedPkcs8PrivateKey(System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte},System.Int32@)">
+          <a class="xref" href="Bodu.Security.Cryptography.X25519.ImportEncryptedPkcs8PrivateKey.html#Bodu_Security_Cryptography_X25519_ImportEncryptedPkcs8PrivateKey_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__System_Int32__">ImportEncryptedPkcs8PrivateKey(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;, out int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>When overridden in a derived class, imports the public/private keypair from a PKCS#8 EncryptedPrivateKeyInfo structure after decrypting with a byte-based password, replacing the keys for this object.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_X25519_ImportEncryptedPkcs8PrivateKey_System_ReadOnlySpan_System_Char__System_ReadOnlySpan_System_Byte__System_Int32__" data-uid="Bodu.Security.Cryptography.X25519.ImportEncryptedPkcs8PrivateKey(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Byte},System.Int32@)">
+          <a class="xref" href="Bodu.Security.Cryptography.X25519.ImportEncryptedPkcs8PrivateKey.html#Bodu_Security_Cryptography_X25519_ImportEncryptedPkcs8PrivateKey_System_ReadOnlySpan_System_Char__System_ReadOnlySpan_System_Byte__System_Int32__">ImportEncryptedPkcs8PrivateKey(ReadOnlySpan&lt;char&gt;, ReadOnlySpan&lt;byte&gt;, out int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>When overridden in a derived class, imports the public/private keypair from a PKCS#8 EncryptedPrivateKeyInfo structure after decrypting with a char-based password, replacing the keys for this object.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_X25519_ImportPkcs8PrivateKey_System_ReadOnlySpan_System_Byte__System_Int32__" data-uid="Bodu.Security.Cryptography.X25519.ImportPkcs8PrivateKey(System.ReadOnlySpan{System.Byte},System.Int32@)">
+          <a class="xref" href="Bodu.Security.Cryptography.X25519.ImportPkcs8PrivateKey.html#Bodu_Security_Cryptography_X25519_ImportPkcs8PrivateKey_System_ReadOnlySpan_System_Byte__System_Int32__">ImportPkcs8PrivateKey(ReadOnlySpan&lt;byte&gt;, out int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>When overriden in a derived class, imports the public/private keypair from a PKCS#8 PrivateKeyInfo structure after decryption, replacing the keys for this object.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_X25519_ImportPrivateKey_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.X25519.ImportPrivateKey(System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.Security.Cryptography.X25519.ImportPrivateKey.html#Bodu_Security_Cryptography_X25519_ImportPrivateKey_System_ReadOnlySpan_System_Byte__">ImportPrivateKey(ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Imports a raw 32-byte RFC 7748 private key and derives the matching public key, replacing any existing key
+material on the instance.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_X25519_ImportPublicKey_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.X25519.ImportPublicKey(System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.Security.Cryptography.X25519.ImportPublicKey.html#Bodu_Security_Cryptography_X25519_ImportPublicKey_System_ReadOnlySpan_System_Byte__">ImportPublicKey(ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Imports a raw 32-byte RFC 7748 public key, replacing any existing key material on the instance.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_X25519_ImportSubjectPublicKeyInfo_System_ReadOnlySpan_System_Byte__System_Int32__" data-uid="Bodu.Security.Cryptography.X25519.ImportSubjectPublicKeyInfo(System.ReadOnlySpan{System.Byte},System.Int32@)">
+          <a class="xref" href="Bodu.Security.Cryptography.X25519.ImportSubjectPublicKeyInfo.html#Bodu_Security_Cryptography_X25519_ImportSubjectPublicKeyInfo_System_ReadOnlySpan_System_Byte__System_Int32__">ImportSubjectPublicKeyInfo(ReadOnlySpan&lt;byte&gt;, out int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>When overriden in a derived class, imports the public key from an X.509 SubjectPublicKeyInfo structure after decryption, replacing the keys for this object.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_X25519_IsLowOrderPoint_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.X25519.IsLowOrderPoint(System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.Security.Cryptography.X25519.IsLowOrderPoint.html#Bodu_Security_Cryptography_X25519_IsLowOrderPoint_System_ReadOnlySpan_System_Byte__">IsLowOrderPoint(ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether <code class="paramref">publicKey</code> is one of the known low-order Curve25519 u-coordinates, for
+which X25519 yields an all-zero shared secret that an observer can predict without the private key.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_X25519_ToXmlString_System_Boolean_" data-uid="Bodu.Security.Cryptography.X25519.ToXmlString(System.Boolean)">
+          <a class="xref" href="Bodu.Security.Cryptography.X25519.ToXmlString.html#Bodu_Security_Cryptography_X25519_ToXmlString_System_Boolean_">ToXmlString(bool)</a>
+        </td>
+        <td class="markdown level1 summary"><p>When overridden in a derived class, creates and returns an XML string representation of the current <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm">AsymmetricAlgorithm</a> object. Otherwise, throws a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notimplementedexception">NotImplementedException</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_X25519_TryExportEncryptedPkcs8PrivateKey_System_ReadOnlySpan_System_Byte__System_Security_Cryptography_PbeParameters_System_Span_System_Byte__System_Int32__" data-uid="Bodu.Security.Cryptography.X25519.TryExportEncryptedPkcs8PrivateKey(System.ReadOnlySpan{System.Byte},System.Security.Cryptography.PbeParameters,System.Span{System.Byte},System.Int32@)">
+          <a class="xref" href="Bodu.Security.Cryptography.X25519.TryExportEncryptedPkcs8PrivateKey.html#Bodu_Security_Cryptography_X25519_TryExportEncryptedPkcs8PrivateKey_System_ReadOnlySpan_System_Byte__System_Security_Cryptography_PbeParameters_System_Span_System_Byte__System_Int32__">TryExportEncryptedPkcs8PrivateKey(ReadOnlySpan&lt;byte&gt;, PbeParameters, Span&lt;byte&gt;, out int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>When overridden in a derived class, attempts to export the current key in the PKCS#8 EncryptedPrivateKeyInfo format into a provided buffer, using a byte-based password.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_X25519_TryExportEncryptedPkcs8PrivateKey_System_ReadOnlySpan_System_Char__System_Security_Cryptography_PbeParameters_System_Span_System_Byte__System_Int32__" data-uid="Bodu.Security.Cryptography.X25519.TryExportEncryptedPkcs8PrivateKey(System.ReadOnlySpan{System.Char},System.Security.Cryptography.PbeParameters,System.Span{System.Byte},System.Int32@)">
+          <a class="xref" href="Bodu.Security.Cryptography.X25519.TryExportEncryptedPkcs8PrivateKey.html#Bodu_Security_Cryptography_X25519_TryExportEncryptedPkcs8PrivateKey_System_ReadOnlySpan_System_Char__System_Security_Cryptography_PbeParameters_System_Span_System_Byte__System_Int32__">TryExportEncryptedPkcs8PrivateKey(ReadOnlySpan&lt;char&gt;, PbeParameters, Span&lt;byte&gt;, out int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>When overriden in a derived class, attempts to export the current key in the PKCS#8 EncryptedPrivateKeyInfo format into a provided buffer, using a char-based password.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_X25519_TryExportPkcs8PrivateKey_System_Span_System_Byte__System_Int32__" data-uid="Bodu.Security.Cryptography.X25519.TryExportPkcs8PrivateKey(System.Span{System.Byte},System.Int32@)">
+          <a class="xref" href="Bodu.Security.Cryptography.X25519.TryExportPkcs8PrivateKey.html#Bodu_Security_Cryptography_X25519_TryExportPkcs8PrivateKey_System_Span_System_Byte__System_Int32__">TryExportPkcs8PrivateKey(Span&lt;byte&gt;, out int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>When overridden in a derived class, attempts to export the current key in the PKCS#8 PrivateKeyInfo format into a provided buffer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_X25519_TryExportSubjectPublicKeyInfo_System_Span_System_Byte__System_Int32__" data-uid="Bodu.Security.Cryptography.X25519.TryExportSubjectPublicKeyInfo(System.Span{System.Byte},System.Int32@)">
+          <a class="xref" href="Bodu.Security.Cryptography.X25519.TryExportSubjectPublicKeyInfo.html#Bodu_Security_Cryptography_X25519_TryExportSubjectPublicKeyInfo_System_Span_System_Byte__System_Int32__">TryExportSubjectPublicKeyInfo(Span&lt;byte&gt;, out int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>When overridden in a derived class, attempts to export the current key in the X.509 SubjectPublicKeyInfo format into a provided buffer.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

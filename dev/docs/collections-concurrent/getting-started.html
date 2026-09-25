@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Bodu.Collections.Concurrent — Getting started | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Bodu.Collections.Concurrent — Getting started | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="boducollectionsconcurrent--getting-started">Bodu.Collections.Concurrent — Getting started</h1>
+
+<h2 id="install">Install</h2>
+<pre><code class="lang-bash">dotnet add package Bodu.Collections.Concurrent
+</code></pre>
+<p>Targets <code>net8.0</code>. No external runtime dependencies — the package references <code>Bodu.Collections</code> (which in turn references <code>Bodu.Core</code>), so both are pulled in automatically. The types live in the <code>Bodu.Collections.Generic.Concurrent</code> namespace.</p>
+<h2 id="minimal-samples">Minimal samples</h2>
+<h3 id="concurrent-circular-buffer-concurrentcircularbuffert">Concurrent circular buffer (<code>ConcurrentCircularBuffer&lt;T&gt;</code>)</h3>
+<p>A lock-free multi-producer / multi-consumer FIFO ring — no external lock needed:</p>
+<pre><code class="lang-csharp">using Bodu.Collections.Generic.Concurrent;
+
+var ring = new ConcurrentCircularBuffer&lt;Message&gt;(capacity: 1024, allowOverwrite: true);
+
+// Producers — may run on many threads concurrently.
+ring.Enqueue(message);            // overwrites the oldest entry when full
+ring.ItemEvicted += dropped =&gt; log.Warn(&quot;Dropped {Id}&quot;, dropped.Id);
+
+// Consumers — also concurrent.
+while (ring.TryDequeue(out Message? item))
+    Process(item);
+</code></pre>
+<p>With <code>allowOverwrite: false</code>, <code>Enqueue</code> throws when full and <code>TryEnqueue</code> returns <code>false</code>. The buffer implements <code>IProducerConsumerCollection&lt;T&gt;</code> (<code>TryAdd</code> / <code>TryTake</code>), so wrap it in a <code>BlockingCollection&lt;T&gt;</code> when consumers should block for work. <code>T</code> must be a reference type, and the minimum capacity is 2 — see <a href="concepts.html">concepts</a> for why.</p>
+<h3 id="concurrent-hash-set-concurrenthashsett">Concurrent hash set (<code>ConcurrentHashSet&lt;T&gt;</code>)</h3>
+<p>A lock-free split-ordered set of unique elements — every operation is lock-free, so writers never block each other or readers:</p>
+<pre><code class="lang-csharp">using Bodu.Collections.Generic.Concurrent;
+
+var seen = new ConcurrentHashSet&lt;string&gt;(StringComparer.OrdinalIgnoreCase);
+
+// Dedup a concurrent stream: Add returns true only for the first arrival.
+Parallel.ForEach(events, e =&gt;
+{
+    if (seen.Add(e.CorrelationId))
+        ProcessFirstOccurrence(e);
+});
+
+bool active = seen.Contains(&quot;req-42&quot;);   // lock-free — never blocks a writer
+int count   = seen.Count;                // lock-free counter — exact at quiescence
+</code></pre>
+<p>Enumeration and <code>ToArray()</code> are weakly consistent lock-free traversals and never throw on concurrent modification.</p>
+<h3 id="concurrent-evicting-dictionary-concurrentevictingdictionarytkeytvalue">Concurrent evicting dictionary (<code>ConcurrentEvictingDictionary&lt;TKey,TValue&gt;</code>)</h3>
+<p>A lock-striped bounded cache — the thread-safe variant of <code>EvictingDictionary&lt;TKey,TValue&gt;</code>, with the same six eviction policies and optional TTL expiry:</p>
+<pre><code class="lang-csharp">using Bodu.Collections.Generic.Concurrent;
+
+var cache = new ConcurrentEvictingDictionary&lt;string, Report&gt;(
+    capacity: 1024, EvictingDictionaryPolicy.LeastRecentlyUsed);
+
+// Single-flight GetOrAdd: under concurrent misses the factory runs at most
+// once per key, so an expensive load is never duplicated.
+Parallel.ForEach(requests, request =&gt;
+{
+    Report report = cache.GetOrAdd(request.Key, key =&gt; BuildReport(key));
+    Serve(request, report);
+});
+
+cache.ItemEvicted += (key, _) =&gt; log.Debug(&quot;Evicted {Key}&quot;, key);
+
+bool hit  = cache.TryGetValue(&quot;q-42&quot;, out Report? cached); // counts as an LRU access
+int hot   = cache.ApproximateCount;                        // lock-free estimate
+int exact = cache.Count;                                   // coherent — acquires every segment lock
+</code></pre>
+<p>The capacity bound is strict — the cache never stores more than <code>capacity</code> entries — while eviction order is exact within each internal segment and approximate globally. Pass an <code>EvictingDictionaryExpiration</code> to add absolute or sliding TTL on top of the capacity policy.</p>
+<h3 id="concurrent-lru-cache-concurrentlrucachetkeytvalue">Concurrent LRU cache (<code>ConcurrentLruCache&lt;TKey,TValue&gt;</code>)</h3>
+<p>The read-optimized bounded cache — lookups take no lock at all:</p>
+<pre><code class="lang-csharp">using Bodu.Collections.Generic.Concurrent;
+
+var cache = new ConcurrentLruCache&lt;string, Report&gt;(capacity: 1024);
+
+Parallel.ForEach(requests, request =&gt;
+{
+    // Lock-free on a hit. Note this is NOT single-flight: racing callers may each
+    // run the factory, and one produced value is stored and returned to all.
+    Report report = cache.GetOrAdd(request.Key, key =&gt; BuildReport(key));
+    Serve(request, report);
+});
+
+cache.ItemEvicted += (key, _) =&gt; log.Debug(&quot;Evicted {Key}&quot;, key);
+
+bool hit = cache.TryGetValue(&quot;q-42&quot;, out Report? cached);  // lock-free; records a hit or a miss
+Console.WriteLine($&quot;Hit ratio: {cache.HitRatio:P1}&quot;);      // striped counters, aggregated on demand
+</code></pre>
+<p>Use this when reads dominate and approximate recency is acceptable. Use <code>ConcurrentEvictingDictionary&lt;TKey,TValue&gt;</code> instead when you need a policy other than LRU, a strict capacity bound, TTL expiry, or a genuine cache-stampede guard.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="index.html">Bodu.Collections.Concurrent introduction</a></strong> — headline types, scenarios, and design notes.</li>
+<li><strong><a href="concepts.html">Core concepts</a></strong> — MPMC rings, split-ordered hashing, snapshot enumeration, counting under concurrency.</li>
+<li><strong><a href="../../guides/core/concurrent-collections.html">Concurrent collections guide</a></strong> — the full walk-through, including the consistency table and when <em>not</em> to use these types.</li>
+<li><strong><a href="../collections/getting-started.html">Bodu.Collections getting started</a></strong> — the single-threaded catalogue.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.html">Bodu.Collections.Generic.Concurrent API reference</a></strong> — full type-by-type docs.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Bodu licensing | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Bodu licensing | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="bodu-licensing">Bodu licensing</h1>
+
+<p>The Bodu suite — every primary library, every companion package, every data pack — is released under the <strong>MIT License</strong>.</p>
+<h2 id="summary">Summary</h2>
+<ul>
+<li><strong>License:</strong> <a href="https://opensource.org/licenses/MIT">MIT</a></li>
+<li><strong>Copyright:</strong> © 2024-2026 Bodu Pty. Ltd.</li>
+<li><strong>Repository LICENSE file:</strong> <a href="https://github.com/bslater/bodu/blob/master/LICENSE">LICENSE</a></li>
+<li><strong>NuGet metadata:</strong> every shipped package declares <code>&lt;PackageLicenseExpression&gt;MIT&lt;/PackageLicenseExpression&gt;</code> through the shared <a href="https://github.com/bslater/bodu/blob/master/bld/Copyright.props"><code>bld/Copyright.props</code></a>.</li>
+</ul>
+<h2 id="what-mit-permits">What MIT permits</h2>
+<p>The MIT License is one of the most permissive open-source licenses. You may:</p>
+<ul>
+<li><strong>Use</strong> the libraries in commercial or non-commercial software.</li>
+<li><strong>Modify</strong> the source code for your own needs.</li>
+<li><strong>Distribute</strong> the libraries (modified or unmodified) as part of your own software.</li>
+<li><strong>Sublicense</strong> the libraries as part of a larger work.</li>
+<li><strong>Sell</strong> software that includes the libraries.</li>
+</ul>
+<p>The only requirement is that the MIT copyright notice and permission notice be included in all copies or substantial portions of the software you distribute. The libraries are provided &quot;as is&quot; without warranty.</p>
+<h2 id="what-mit-does-not-require">What MIT does not require</h2>
+<ul>
+<li>Sharing your modifications back to the project (though contributions are welcome).</li>
+<li>Disclosing your source code.</li>
+<li>Licensing your downstream work under MIT or any specific license.</li>
+<li>Attribution beyond preserving the copyright notice.</li>
+</ul>
+<h2 id="third-party-dependencies">Third-party dependencies</h2>
+<p>The Bodu libraries are intentionally light on external runtime dependencies. The few exceptions are documented per package and use compatible permissive licenses (MIT, Apache 2.0, or BSD):</p>
+<table>
+<thead>
+<tr>
+<th>Package</th>
+<th>External runtime dependency</th>
+<th>License</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Bodu.IO.Hashing</code></td>
+<td><code>System.IO.Hashing</code> (BCL)</td>
+<td>MIT</td>
+</tr>
+<tr>
+<td><code>Bodu.Security.Cryptography</code></td>
+<td><code>System.Security.Cryptography</code> (BCL)</td>
+<td>MIT</td>
+</tr>
+<tr>
+<td><code>Bodu.Numerics.Serialization.Json</code>, <code>Bodu.Financial.Serialization.Json</code></td>
+<td><code>System.Text.Json</code>; the Financial companion also <code>Microsoft.Extensions.DependencyInjection.Abstractions</code></td>
+<td>MIT</td>
+</tr>
+<tr>
+<td><code>Bodu.Formats.Outlook.Msg</code>, <code>Bodu.Formats.Outlook.Pst</code></td>
+<td><code>System.Text.Encoding.CodePages</code> (legacy Windows code pages for MAPI string properties)</td>
+<td>MIT</td>
+</tr>
+<tr>
+<td><code>Bodu.Extensions.Configuration.Text</code></td>
+<td><code>Microsoft.Extensions.Configuration</code> (+ <code>.Binder</code>, <code>.FileExtensions</code>), <code>Microsoft.Extensions.FileProviders.Physical</code>, <code>Microsoft.Extensions.Options.ConfigurationExtensions</code>, <code>Microsoft.Extensions.DependencyInjection.Abstractions</code>, <code>Microsoft.Extensions.Primitives</code></td>
+<td>MIT</td>
+</tr>
+<tr>
+<td><code>Bodu.Globalization.Calendar</code>, <code>Bodu.Globalization.Calendar.Plugins</code>, <code>Bodu.Financial.ExchangeRates</code></td>
+<td><code>Microsoft.Extensions.Logging.Abstractions</code></td>
+<td>MIT</td>
+</tr>
+<tr>
+<td><code>Bodu.Globalization.Calendar.DependencyInjection</code>, <code>Bodu.Financial.DependencyInjection</code>, <code>Bodu.Globalization.Calendar.Caching</code>, <code>Bodu.Financial.ExchangeRates.Caching</code>, and the <code>Bodu.Financial.ExchangeRates.&lt;Source&gt;</code> provider packages</td>
+<td><code>Microsoft.Extensions.DependencyInjection.Abstractions</code>, <code>Microsoft.Extensions.Options</code> (+ <code>.ConfigurationExtensions</code>), <code>Microsoft.Extensions.Configuration.Abstractions</code> / <code>.Binder</code>, <code>Microsoft.Extensions.Logging.Abstractions</code>; the two caching cores also <code>Microsoft.Extensions.Hosting.Abstractions</code></td>
+<td>MIT</td>
+</tr>
+<tr>
+<td><code>Bodu.Financial.ExchangeRates.DependencyInjection</code> and the <code>Bodu.Financial.ExchangeRates.&lt;Source&gt;</code> provider packages</td>
+<td><code>Microsoft.Extensions.Http</code>, <code>Microsoft.Extensions.Http.Resilience</code> (which brings in Polly)</td>
+<td>MIT; Polly BSD-3-Clause</td>
+</tr>
+<tr>
+<td><code>Bodu.Globalization.Calendar.Caching.Sqlite</code>, <code>Bodu.Financial.ExchangeRates.Caching.Sqlite</code></td>
+<td><code>Microsoft.Data.Sqlite</code> (which brings in the <code>SQLitePCLRaw</code> bundle and the native SQLite engine)</td>
+<td>MIT; SQLitePCLRaw Apache 2.0; SQLite public domain</td>
+</tr>
+<tr>
+<td><code>Bodu.Globalization.Calendar.Caching.Distributed</code>, <code>Bodu.Financial.ExchangeRates.Caching.Distributed</code></td>
+<td><code>Microsoft.Extensions.Caching.Abstractions</code>, <code>Microsoft.Extensions.Caching.StackExchangeRedis</code> (which brings in <code>StackExchange.Redis</code>)</td>
+<td>MIT</td>
+</tr>
+</tbody>
+</table>
+<p>Every other package depends only on other Bodu packages and the .NET 8 BCL — several layer on a sibling (<code>Bodu.Financial</code> on <code>Bodu.Numerics</code>, <code>Bodu.Formats.Excel.Binary</code> on <code>Bodu.IO.Compound</code>, <code>Bodu.IO.Pst</code> on <code>Bodu.Collections</code>, the serializers on <code>Bodu.Text.Serialization</code>), but those are all MIT-licensed Bodu code. The <a href="package-matrix.html">package matrix</a> lists each package's dependencies.</p>
+<h2 id="contributing">Contributing</h2>
+<p>Pull requests are welcome under the same MIT terms. By submitting a change you confirm that you have the right to license it under MIT.</p>
+<h2 id="reporting-a-license-issue">Reporting a license issue</h2>
+<p>If you find a file in the repository that appears to carry conflicting license metadata (a copyright header, third-party code with a different license, generated output, …), open an issue at <a href="https://github.com/bslater/bodu/issues">https://github.com/bslater/bodu/issues</a> so it can be reconciled.</p>
+<h2 id="full-license-text">Full license text</h2>
+<p>The full MIT License text is in the repository's <a href="https://github.com/bslater/bodu/blob/master/LICENSE">LICENSE</a> file and is reproduced in every distributed NuGet package.</p>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

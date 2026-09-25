@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Editing an existing container in place | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Editing an existing container in place | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="editing-an-existing-container-in-place">Editing an existing container in place</h1>
+
+<p><a href="authoring-compound-files.html">Authoring compound files</a> shows two ways to write: build a detached tree with <a class="xref" href="../../api/Bodu.IO.Compound.Builders.CompoundStorageBuilder.html">CompoundStorageBuilder</a> and serialize it once, or create a fresh writable <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFile.html">CompoundFile</a> and <code>Commit</code>. This guide covers the third: open a container that already exists — a <code>.doc</code>, an <code>.xls</code>, a <code>.msg</code> — for update, mutate it through the same storage and stream surface you read it with, and write it back to the same destination with a single <code>Commit</code>, or throw the edits away with <code>Revert</code>.</p>
+<p>The samples run against <code>sample1.doc</code> from the <a href="../../samples/io-compound.html">runnable compound-file sample</a>, a Word 2000 document copied as <code>report.doc</code>; the quoted output is what they print.</p>
+<h2 id="how-update-mode-works">How update mode works</h2>
+<p><code>CompoundFile.Open(path, FileMode.Open, FileAccess.ReadWrite)</code> — or the stream overload <code>Open(stream, FileMode.Open, FileAccess.ReadWrite, leaveOpen)</code> — mirrors <code>System.IO.Packaging.Package.Open</code>. It reads the whole existing container once, parses it, and loads the hierarchy into an in-memory <strong>staging tree</strong>: every storage's metadata and every stream's full payload. It also keeps an independent <strong>baseline</strong> clone of that tree. From then on:</p>
+<ul>
+<li><code>RootStorage</code> and everything beneath it operate on the staging tree. Reads see your edits immediately; the destination sees nothing.</li>
+<li><code>IsDirty</code> turns <code>true</code> on the first mutation — opening a writable cursor counts, even before anything is written — and <code>false</code> after <code>Commit</code> or <code>Revert</code>.</li>
+<li><code>Commit</code> (or <code>CommitAsync</code>) truncates the destination and <strong>rewrites the whole container</strong> from the staging tree. There is no in-place patching of sectors — the layout is recomputed from scratch every time.</li>
+<li><code>Revert</code> resets the staging tree to the baseline — the state loaded <strong>at open</strong>.</li>
+<li><code>Dispose</code> without <code>Commit</code> leaves the destination exactly as it was.</li>
+</ul>
+<p>The mode/access combinations <code>Open(stream, mode, access)</code> accepts:</p>
+<table>
+<thead>
+<tr>
+<th><code>FileMode</code></th>
+<th><code>FileAccess</code></th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Open</code></td>
+<td><code>Read</code></td>
+<td>Read-only, as <code>CompoundFile.Open(stream)</code>; <code>buffered</code> applies.</td>
+</tr>
+<tr>
+<td><code>Open</code></td>
+<td><code>ReadWrite</code></td>
+<td><strong>Update mode</strong> — loads the existing content for editing.</td>
+</tr>
+<tr>
+<td><code>Create</code> / <code>CreateNew</code></td>
+<td><code>Write</code> or <code>ReadWrite</code></td>
+<td>A new, empty writable file, as <code>CompoundFile.Create</code>.</td>
+</tr>
+<tr>
+<td><code>OpenOrCreate</code></td>
+<td><code>ReadWrite</code></td>
+<td>Update mode when the stream holds content; create mode when it is empty.</td>
+</tr>
+<tr>
+<td><code>Open</code></td>
+<td><code>Write</code></td>
+<td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a> — mutating an existing file requires read access, because update loads a snapshot first.</td>
+</tr>
+<tr>
+<td>anything else</td>
+<td></td>
+<td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a>.</td>
+</tr>
+</tbody>
+</table>
+<p>The path overload adds a <code>FileShare</code> (default <code>FileShare.Read</code>) and owns the <code>FileStream</code> it opens; <code>FileNotFoundException</code> surfaces when <code>Open</code> names a file that does not exist.</p>
+<h2 id="pattern-1--add-a-stream-to-an-existing-doc-and-commit">Pattern 1 — add a stream to an existing <code>.doc</code> and commit</h2>
+<pre><code class="lang-csharp">using Bodu.IO.Compound;
+using System.Text;
+
+File.Copy(&quot;report.doc&quot;, &quot;report-edited.doc&quot;, overwrite: true);
+
+using (CompoundFile file = CompoundFile.Open(&quot;report-edited.doc&quot;, FileMode.Open, FileAccess.ReadWrite))
+{
+    Console.WriteLine($&quot;opened: CanWrite={file.CanWrite} IsDirty={file.IsDirty}&quot;);
+
+    file.RootStorage.CreateStream(&quot;Bodu.Notes&quot;, Encoding.UTF8.GetBytes(&quot;reviewed 2026-09-09&quot;));
+    Console.WriteLine($&quot;staged:  IsDirty={file.IsDirty}&quot;);
+
+    file.Commit();                                   // the container is rewritten now
+    Console.WriteLine($&quot;committed: IsDirty={file.IsDirty}&quot;);
+}
+
+using CompoundFile check = CompoundFile.OpenRead(&quot;report-edited.doc&quot;);
+foreach (CompoundEntryInfo entry in check.RootStorage.EnumerateEntries())
+    Console.WriteLine($&quot;  {entry.EntryType} {entry.Name.Replace(&quot;\u0005&quot;, &quot;\\x05&quot;).Replace(&quot;\u0001&quot;, &quot;\\x01&quot;)} ({entry.Length} bytes)&quot;);
+
+// opened: CanWrite=True IsDirty=False
+// staged:  IsDirty=True
+// committed: IsDirty=False
+//   Stream 1Table (8375 bytes)
+//   Stream \x01CompObj (106 bytes)
+//   Stream Bodu.Notes (19 bytes)
+//   Storage ObjectPool (0 bytes)
+//   Stream WordDocument (9280 bytes)
+//   Stream \x05SummaryInformation (4096 bytes)
+//   Stream \x05DocumentSummaryInformation (4096 bytes)
+</code></pre>
+<p><code>CreateStream(name, ReadOnlyMemory&lt;byte&gt;)</code> stages a complete payload in one call and throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> when a child of that name already exists; <code>CreateStream(name)</code> instead returns an empty writable cursor. <code>CreateStorage(name)</code> adds a nested storage. Word ignores streams it does not recognize, so a private stream beside <code>WordDocument</code> is the conventional way to carry application metadata in a document you do not otherwise change.</p>
+<p>The same session over a stream you own:</p>
+<pre><code class="lang-csharp">using Bodu.IO.Compound;
+
+using FileStream stream = new(&quot;report-edited.doc&quot;, FileMode.Open, FileAccess.ReadWrite, FileShare.None);
+using CompoundFile file = CompoundFile.Open(stream, FileMode.Open, FileAccess.ReadWrite, leaveOpen: true);
+
+Console.WriteLine(file.RootStorage.TryOpenStream(&quot;Bodu.Notes&quot;, out CompoundStream? notes));
+notes?.Dispose();
+
+// True
+</code></pre>
+<p>The stream must be seekable (update mode rewinds it to load the snapshot) and writable (for <code>Commit</code>). <code>Commit</code> on a non-seekable destination appends the container at the current position rather than truncating.</p>
+<h2 id="pattern-2--replace-a-streams-bytes">Pattern 2 — replace a stream's bytes</h2>
+<p>A writable file hands out a <strong>read-write cursor</strong> from <code>OpenStream(name, FileMode, FileAccess)</code> — a real <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a> whose <code>CanWrite</code> is <code>true</code> — and the <code>FileMode</code> decides what the cursor starts with:</p>
+<table>
+<thead>
+<tr>
+<th><code>FileMode</code></th>
+<th>Stream exists</th>
+<th>Stream missing</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Open</code></td>
+<td>Cursor seeded with the current bytes, positioned at 0.</td>
+<td><a class="xref" href="../../api/Bodu.IO.Compound.CompoundStreamNotFoundException.html">CompoundStreamNotFoundException</a> (<code>TryOpenStream</code> returns <code>false</code>).</td>
+</tr>
+<tr>
+<td><code>OpenOrCreate</code></td>
+<td>As <code>Open</code>.</td>
+<td>Created empty.</td>
+</tr>
+<tr>
+<td><code>Create</code></td>
+<td><strong>Truncated</strong> to empty.</td>
+<td>Created empty.</td>
+</tr>
+<tr>
+<td><code>CreateNew</code></td>
+<td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.ioexception">IOException</a> (<code>TryOpenStream</code> returns <code>false</code>).</td>
+<td>Created empty.</td>
+</tr>
+<tr>
+<td><code>Append</code></td>
+<td>Cursor seeded with the current bytes, positioned at the end.</td>
+<td>Created empty.</td>
+</tr>
+<tr>
+<td><code>Truncate</code></td>
+<td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a>.</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>With <code>FileAccess.Write</code> the cursor is write-only (<code>CanRead</code> is <code>false</code>); with <code>ReadWrite</code> you can read what you seeded. Requesting write access on a read-only file throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a>. Four ways to replace a payload, all staged until <code>Commit</code>:</p>
+<pre><code class="lang-csharp">using Bodu.IO.Compound;
+using System.Text;
+
+using CompoundFile file = CompoundFile.Open(&quot;report-edited.doc&quot;, FileMode.Open, FileAccess.ReadWrite);
+
+// (a) Truncate and rewrite: FileMode.Create resets the payload to empty.
+using (CompoundStream stream = file.RootStorage.OpenStream(&quot;Bodu.Notes&quot;, FileMode.Create, FileAccess.Write))
+    stream.Write(Encoding.UTF8.GetBytes(&quot;reviewed 2026-09-09; approved 2026-09-10&quot;));
+
+// (b) Patch in place: FileMode.Open seeds the cursor with the current bytes.
+using (CompoundStream stream = file.RootStorage.OpenStream(&quot;Bodu.Notes&quot;, FileMode.Open, FileAccess.ReadWrite))
+{
+    stream.Seek(-10, SeekOrigin.End);
+    stream.Write(Encoding.UTF8.GetBytes(&quot;2026-09-11&quot;));
+}
+
+// (c) Append: FileMode.Append positions the cursor at the end.
+using (CompoundStream stream = file.RootStorage.OpenStream(&quot;Bodu.Notes&quot;, FileMode.Append, FileAccess.Write))
+    stream.Write(Encoding.UTF8.GetBytes(&quot;; archived&quot;));
+
+// (d) Replace wholesale from a byte buffer: delete, then create.
+file.RootStorage.Delete(&quot;Bodu.Notes&quot;);
+file.RootStorage.CreateStream(&quot;Bodu.Notes&quot;, Encoding.UTF8.GetBytes(&quot;reviewed 2026-09-09; approved 2026-09-11; archived&quot;));
+
+file.Commit();
+
+using CompoundStream read = file.RootStorage.OpenStream(&quot;Bodu.Notes&quot;);
+Console.WriteLine(Encoding.UTF8.GetString(read.ReadAllBytes()));
+
+// reviewed 2026-09-09; approved 2026-09-11; archived
+</code></pre>
+<div class="NOTE">
+<h5>Note</h5>
+<p>A writable cursor buffers its payload in memory and flushes it into the staging tree when it is flushed or disposed — <strong>dispose the cursor before you <code>Commit</code></strong>, or the bytes you wrote are not yet in the tree. <code>Flush()</code> stores a snapshot mid-life; <code>Dispose()</code> transfers the buffer. The cursor caps its payload at <code>int.MaxValue</code> bytes; larger payloads belong to the builder's deferred sources (see <a href="streaming-and-buffering.html">Buffered vs streaming access</a>). <code>SetLength</code> shrinks or grows the payload.</p>
+</div>
+<p>The non-throwing form takes the same mode and access:</p>
+<pre><code class="lang-csharp">using Bodu.IO.Compound;
+
+using CompoundFile file = CompoundFile.Open(&quot;report-edited.doc&quot;, FileMode.Open, FileAccess.ReadWrite);
+
+if (file.RootStorage.TryOpenStream(&quot;Bodu.Notes&quot;, FileMode.Open, FileAccess.ReadWrite, out CompoundStream? notes))
+{
+    using (notes)
+        Console.WriteLine($&quot;{notes.Length} bytes, CanWrite={notes.CanWrite}&quot;);
+}
+
+// CreateNew over an existing name reports false rather than throwing.
+bool created = file.RootStorage.TryOpenStream(&quot;Bodu.Notes&quot;, FileMode.CreateNew, FileAccess.Write, out CompoundStream? duplicate);
+duplicate?.Dispose();
+Console.WriteLine($&quot;CreateNew over an existing stream: {created}&quot;);
+
+file.Revert();
+
+// 50 bytes, CanWrite=True
+// CreateNew over an existing stream: False
+</code></pre>
+<p><code>OpenStream(name)</code> and <code>TryOpenStream(name, out stream)</code> without a mode still work on a writable file: they return a read-only <em>snapshot</em> cursor over the staged bytes, so a plain read never marks the file dirty.</p>
+<h2 id="rename-and-delete">Rename and delete</h2>
+<pre><code class="lang-csharp">using Bodu.IO.Compound;
+
+using CompoundFile file = CompoundFile.Open(&quot;report-edited.doc&quot;, FileMode.Open, FileAccess.ReadWrite);
+
+file.RootStorage.Rename(&quot;Bodu.Notes&quot;, &quot;Bodu.Archive&quot;);            // in place; the payload is untouched
+bool removed = file.RootStorage.Delete(&quot;\u0001CompObj&quot;);          // true when a child was removed
+bool missing = file.RootStorage.Delete(&quot;NoSuchStream&quot;);           // false, not an exception
+
+Console.WriteLine($&quot;removed={removed} missing={missing} dirty={file.IsDirty}&quot;);
+file.Revert();                                                    // keep the file as it was for the next pattern
+
+// removed=True missing=False dirty=True
+</code></pre>
+<p><code>Rename</code> applies to a storage or a stream, keeps its payload, metadata, and position in the tree, and throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keynotfoundexception">KeyNotFoundException</a> for a missing source or <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> for a taken target name. <code>Delete</code> removes a stream or a whole storage subtree and reports whether anything was removed. Names follow the container's rules — at most 31 UTF-16 code units, no <code>/</code> or null characters, compared case-insensitively — and the <code>\x05</code> / <code>\x01</code> control prefixes are part of the name.</p>
+<p>A writable storage also exposes its directory metadata as settable properties — <code>ClassId</code>, <code>CreationTime</code>, <code>ModifiedTime</code>, <code>StateBits</code> — which <code>Commit</code> writes exactly as set and never stamps for you.</p>
+<h2 id="pattern-3--revert-after-a-failed-edit">Pattern 3 — revert after a failed edit</h2>
+<p>Because nothing reaches the destination until <code>Commit</code>, a multi-step edit that fails part-way is undone by a single <code>Revert</code>:</p>
+<pre><code class="lang-csharp">using Bodu.IO.Compound;
+
+using CompoundFile file = CompoundFile.Open(&quot;report-edited.doc&quot;, FileMode.Open, FileAccess.ReadWrite);
+
+try
+{
+    file.RootStorage.Delete(&quot;WordDocument&quot;);
+    file.RootStorage.CreateStream(&quot;WordDocument&quot;, Transform());   // throws before the container is touched
+    file.Commit();
+}
+catch (InvalidDataException ex)
+{
+    Console.WriteLine($&quot;edit failed: {ex.Message}; IsDirty={file.IsDirty}&quot;);
+    file.Revert();
+    Console.WriteLine($&quot;reverted: IsDirty={file.IsDirty}, WordDocument present={file.RootStorage.TryOpenStream(&quot;WordDocument&quot;, out CompoundStream? _)}&quot;);
+}
+
+static byte[] Transform() =&gt;
+    throw new InvalidDataException(&quot;unsupported document version&quot;);
+
+// edit failed: unsupported document version; IsDirty=True
+// reverted: IsDirty=False, WordDocument present=True
+</code></pre>
+<p>Disposing instead of reverting has the same effect on the destination — the staged edits are simply dropped — so <code>Revert</code> matters when you intend to keep using the session.</p>
+<div class="WARNING">
+<h5>Warning</h5>
+<p><code>Revert</code> restores the baseline captured <strong>at open</strong>, not the state of the last <code>Commit</code>. After a <code>Commit</code>, a <code>Revert</code> silently stages the open-time content again and reports <code>IsDirty == false</code> even though the destination now holds the committed edits; a second <code>Commit</code> would write the original content back out. If you need a &quot;commit, then keep editing, then undo just the recent edits&quot; flow, close and reopen the file after committing.</p>
+</div>
+<pre><code class="lang-csharp">using Bodu.IO.Compound;
+
+using CompoundFile file = CompoundFile.Open(&quot;report-edited.doc&quot;, FileMode.Open, FileAccess.ReadWrite);
+
+file.RootStorage.CreateStream(&quot;Bodu.Second&quot;, new byte[] { 1, 2, 3 });
+file.Commit();
+
+file.Revert();                                                    // back to the open-time snapshot...
+Console.WriteLine($&quot;IsDirty={file.IsDirty}, Bodu.Second staged={file.RootStorage.TryOpenStream(&quot;Bodu.Second&quot;, out CompoundStream? _)}&quot;);
+
+file.Commit();                                                    // ...which this writes back out
+
+// IsDirty=False, Bodu.Second staged=False
+</code></pre>
+<h2 id="what-is-guaranteed-and-what-is-not">What is guaranteed, and what is not</h2>
+<table>
+<thead>
+<tr>
+<th>Guarantee</th>
+<th>Holds?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Edits are invisible to the destination until <code>Commit</code>.</td>
+<td>Yes — the destination is not touched by any mutation, cursor, or <code>Revert</code>.</td>
+</tr>
+<tr>
+<td>Disposing without <code>Commit</code> leaves the destination unchanged.</td>
+<td>Yes.</td>
+</tr>
+<tr>
+<td>A <code>Commit</code> writes every staged edit or none of them <em>as far as the staging tree goes</em>.</td>
+<td>Yes — the layout is computed from the whole tree before the first byte is written.</td>
+</tr>
+<tr>
+<td>A <code>Commit</code> that faults or is cancelled mid-write leaves the destination intact.</td>
+<td><strong>No.</strong> The destination has been truncated and partially written; the file stays dirty with the staging tree intact, so <code>Commit</code> again or <code>Revert</code>.</td>
+</tr>
+<tr>
+<td>Unchanged streams keep their bytes; storages keep their <code>ClassId</code>, timestamps, and state bits.</td>
+<td>Yes — the rewrite preserves entry metadata and payloads; only the sector layout is recomputed.</td>
+</tr>
+<tr>
+<td>The output is byte-identical to the input when nothing changed.</td>
+<td>No — a rewrite may lay sectors out differently from the original writer.</td>
+</tr>
+<tr>
+<td>Concurrent use of one <code>CompoundFile</code>.</td>
+<td>Not supported.</td>
+</tr>
+</tbody>
+</table>
+<p>Because a faulting <code>Commit</code> is not crash-safe, commit to a temporary copy and swap it into place when the original must survive a power failure or a full disk:</p>
+<pre><code class="lang-csharp">using Bodu.IO.Compound;
+
+string path = &quot;report-edited.doc&quot;;
+string temp = path + &quot;.tmp&quot;;
+
+using (FileStream source = File.OpenRead(path))
+using (FileStream destination = File.Create(temp))
+{
+    source.CopyTo(destination);
+    destination.Position = 0;
+
+    using CompoundFile file = CompoundFile.Open(destination, FileMode.Open, FileAccess.ReadWrite, leaveOpen: true);
+    file.RootStorage.CreateStream(&quot;Bodu.Safe&quot;, new byte[] { 7 });
+    file.Commit();
+}
+
+File.Move(temp, path, overwrite: true);   // atomic on the same volume
+Console.WriteLine(&quot;replaced&quot;);
+</code></pre>
+<p><code>CommitAsync</code> / <code>FlushAsync</code> write the same bytes with asynchronous I/O and observe the cancellation token before the destination is touched and again between chunks; <code>Flush</code> is an alias for <code>Commit</code> for stream-style consumers.</p>
+<pre><code class="lang-csharp">using Bodu.IO.Compound;
+
+using CompoundFile file = CompoundFile.Open(&quot;report-edited.doc&quot;, FileMode.Open, FileAccess.ReadWrite);
+
+file.RootStorage.CreateStream(&quot;Bodu.Async&quot;, new byte[] { 4, 5, 6 });
+await file.CommitAsync(cancellationToken);
+Console.WriteLine($&quot;IsDirty={file.IsDirty}&quot;);
+
+// IsDirty=False
+</code></pre>
+<p>The rewrite preserves what the original writer recorded — the root storage's class identifier and timestamps, and every untouched payload byte for byte:</p>
+<pre><code class="lang-csharp">using Bodu.IO.Compound;
+
+using CompoundFile before = CompoundFile.OpenRead(&quot;report.doc&quot;);
+using CompoundFile after = CompoundFile.OpenRead(&quot;report-edited.doc&quot;);
+
+Console.WriteLine($&quot;root class id: {before.RootStorage.ClassId} -&gt; {after.RootStorage.ClassId}&quot;);
+Console.WriteLine($&quot;root modified: {before.RootStorage.ModifiedTime} -&gt; {after.RootStorage.ModifiedTime}&quot;);
+
+using CompoundStream a = before.RootStorage.OpenStream(&quot;WordDocument&quot;);
+using CompoundStream b = after.RootStorage.OpenStream(&quot;WordDocument&quot;);
+Console.WriteLine($&quot;WordDocument identical: {a.ReadAllBytes().AsSpan().SequenceEqual(b.ReadAllBytes())}&quot;);
+
+// root class id: 00020906-0000-0000-c000-000000000046 -&gt; 00020906-0000-0000-c000-000000000046
+// root modified: 03/02/2001 18:14:04 +00:00 -&gt; 03/02/2001 18:14:04 +00:00
+// WordDocument identical: True
+</code></pre>
+<h2 id="in-place-editing-versus-the-builder-round-trip">In-place editing versus the builder round-trip</h2>
+<p>The builder path in <a href="authoring-compound-files.html">Authoring compound files</a> reaches the same outcome — load, mutate, write — with a different shape:</p>
+<pre><code class="lang-csharp">using Bodu.IO.Compound;
+using Bodu.IO.Compound.Builders;
+using System.Text;
+
+CompoundStorageBuilder root;
+using (CompoundFile source = CompoundFile.OpenRead(&quot;report.doc&quot;))
+    root = CompoundStorageBuilder.FromFile(source);
+
+root.AddStream(&quot;Bodu.Notes&quot;, Encoding.UTF8.GetBytes(&quot;reviewed&quot;));
+root.Save(&quot;report-rebuilt.doc&quot;);
+Console.WriteLine(new FileInfo(&quot;report-rebuilt.doc&quot;).Length);
+
+// 29696
+</code></pre>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>In-place <code>CompoundFile</code></th>
+<th>Builder round-trip</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Entry point</td>
+<td><code>Open(…, FileMode.Open, FileAccess.ReadWrite)</code></td>
+<td><code>CompoundStorageBuilder.FromFile(file)</code> / <code>Load(stream)</code></td>
+</tr>
+<tr>
+<td>Mutation surface</td>
+<td>The <code>CompoundStorage</code> / <code>CompoundStream</code> read surface plus <code>CreateStream</code>, <code>Delete</code>, <code>Rename</code>, writable cursors</td>
+<td>The builder's dictionary-style <code>AddStream</code> / <code>AddStorage</code> / <code>Remove</code> / <code>Rename</code></td>
+</tr>
+<tr>
+<td>Writing bytes</td>
+<td>Through a <code>Stream</code> cursor — seek, patch, append</td>
+<td>Whole payloads: <code>ReadOnlyMemory&lt;byte&gt;</code>, a deferred opener, or a file path</td>
+</tr>
+<tr>
+<td>Destination</td>
+<td>The same file or stream, rewritten by <code>Commit</code></td>
+<td>Wherever <code>Save</code> / <code>WriteTo</code> / <code>ToArray</code> points</td>
+</tr>
+<tr>
+<td>Memory</td>
+<td>The whole file is loaded at open</td>
+<td><code>FromFile(file, lazy: true)</code> defers payloads until serialization; deferred sources never load</td>
+</tr>
+<tr>
+<td>Undo</td>
+<td><code>Revert</code> to the open-time baseline</td>
+<td>Discard the builder</td>
+</tr>
+<tr>
+<td>Sector version</td>
+<td>The <code>CompoundBuildOptions</code> default (V3)</td>
+<td>Any <code>CompoundBuildOptions</code> per call</td>
+</tr>
+</tbody>
+</table>
+<p>Reach for in-place editing when you want <code>Stream</code> semantics over the bytes or a single file handle from open to commit. Reach for the builder when the output goes somewhere else, payloads are too large to buffer, or you want to choose the sector version.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="authoring-compound-files.html">Authoring compound files</a> — the builder and create-mode paths, options, and naming rules.</li>
+<li><a href="custom-property-sets.html">Authoring custom property sets</a> — <code>WritePropertySet</code> and the OLE property-set model, the commonest reason to edit a document in place.</li>
+<li><a href="streaming-and-buffering.html">Buffered vs streaming access</a> — the writable cursor's memory profile and the asynchronous commit.</li>
+<li><a href="reading-compound-files.html">Reading compound files</a> — the navigation surface the write path reuses.</li>
+<li><a href="index.html">Bodu.IO.Compound guides</a> — every guide in this topic.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

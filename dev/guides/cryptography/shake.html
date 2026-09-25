@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>SHAKE extendable output | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="SHAKE extendable output | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="shake-extendable-output">SHAKE extendable output</h1>
+
+<p><code>Shake</code> is the NIST FIPS 202 eXtendable Output Function (XOF) family built on the Keccak-f[1600] permutation — the same permutation that underpins SHA-3. The headline difference from SHA-3 is that the output length is <strong>independent of the security level</strong> and is configurable per instance: SHAKE128 admits any positive number of output bits at a 128-bit security target; SHAKE256 admits the same at a 256-bit security target.</p>
+<p>XOFs are useful whenever you need more output than a fixed-spec hash supplies — KMAC inputs, post-quantum signature schemes (e.g. Dilithium, Falcon), hash-based DRBGs, fast key derivation, deterministic randomness from a seed.</p>
+<p>For the broader &quot;which hash do I pick?&quot; framing, see <a href="hashing.html">Hashing</a>.</p>
+<h2 id="at-a-glance">At a glance</h2>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Underlying permutation</td>
+<td>Keccak-f[1600] (1600-bit state)</td>
+</tr>
+<tr>
+<td>Variants</td>
+<td>SHAKE128 (rate 168 bytes, capacity 32 bytes) — SHAKE256 (rate 136 bytes, capacity 64 bytes)</td>
+</tr>
+<tr>
+<td>Security level</td>
+<td>128 bits (SHAKE128) / 256 bits (SHAKE256)</td>
+</tr>
+<tr>
+<td>Output</td>
+<td>Configurable; any positive multiple of 8 bits</td>
+</tr>
+<tr>
+<td>Domain-separation byte</td>
+<td><code>0x1F</code> (distinguishes from raw Keccak and SHA-3)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="construction">Construction</h2>
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+
+// Default — SHAKE128 with 256-bit output.
+using var shake = new Shake();
+byte[] output = shake.ComputeHash(seed);   // 32 bytes
+
+// Explicit — SHAKE256 with 1024-bit output.
+using var shake256 = new Shake(outputBits: 1024, securityLevel: 256);
+byte[] longOutput = shake256.ComputeHash(seed);   // 128 bytes
+</code></pre>
+<p><code>outputBits</code> must be positive and divisible by 8 — the API does not support sub-byte output sizes. <code>securityLevel</code> is either <code>128</code> (SHAKE128) or <code>256</code> (SHAKE256); any other value is rejected at construction.</p>
+<p><code>AlgorithmName</code> reports <code>&quot;SHAKE128&quot;</code> or <code>&quot;SHAKE256&quot;</code> to match the chosen security level. <code>HashSize</code> returns the output size in bits.</p>
+<p><code>HashSize</code> is mutable before hashing starts; once <code>TransformBlock</code> / <code>ComputeHash</code> has been called, attempting to change it throws <code>CryptographicUnexpectedOperationException</code>.</p>
+<h2 id="streaming">Streaming</h2>
+<pre><code class="lang-csharp">using var shake = new Shake(outputBits: 512, securityLevel: 256);
+
+shake.TransformBlock(buffer1, 0, n1, null, 0);
+shake.TransformBlock(buffer2, 0, n2, null, 0);
+shake.TransformFinalBlock(buffer3, 0, n3);
+
+byte[] output = shake.Hash!;   // 64 bytes
+</code></pre>
+<p><code>CanReuseTransform</code> and <code>CanTransformMultipleBlocks</code> are both <code>true</code>.</p>
+<h2 id="shake128-vs-shake256">SHAKE128 vs. SHAKE256</h2>
+<p>The two variants differ in rate / capacity split and therefore in security level:</p>
+<table>
+<thead>
+<tr>
+<th>Variant</th>
+<th>Rate</th>
+<th>Capacity</th>
+<th>Security</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SHAKE128</td>
+<td>168 bytes / call</td>
+<td>32 bytes</td>
+<td>128-bit</td>
+</tr>
+<tr>
+<td>SHAKE256</td>
+<td>136 bytes / call</td>
+<td>64 bytes</td>
+<td>256-bit</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>SHAKE128</strong> absorbs and squeezes 168 bytes per Keccak call. Faster, lower security target. Adequate for any non-cryptographic use of the output, and for cryptographic uses where a 128-bit security target is sufficient (KMAC128, AES-128-equivalent contexts).</li>
+<li><strong>SHAKE256</strong> absorbs and squeezes 136 bytes per Keccak call. Slower, higher security target. The right choice when the output drives a 256-bit-security primitive (KMAC256, AES-256-equivalent contexts, post-quantum schemes that require it).</li>
+</ul>
+<h2 id="worked-example--deterministic-randomness-from-a-seed">Worked example — deterministic randomness from a seed</h2>
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+
+byte[] seed = RandomNumberGenerator.GetBytes(32);
+
+// Squeeze 4 KiB of deterministic randomness from a 32-byte seed.
+using var shake = new Shake(outputBits: 4 * 1024 * 8, securityLevel: 256);
+byte[] randomness = shake.ComputeHash(seed);
+</code></pre>
+<p>This is the canonical XOF idiom: a high-entropy seed in, a deterministic but arbitrarily long sequence out, security target controlled by the variant.</p>
+<h2 id="worked-example--kmac-input">Worked example — KMAC input</h2>
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+
+// Compose a SHAKE128 absorption with a domain string (poor-man's KMAC).
+using var shake = new Shake(outputBits: 256, securityLevel: 128);
+
+byte[] domain = &quot;MyApp/auth/v1&quot;u8.ToArray();
+shake.TransformBlock(domain, 0, domain.Length, null, 0);
+shake.TransformBlock(payload, 0, payload.Length, null, 0);
+shake.TransformFinalBlock(Array.Empty&lt;byte&gt;(), 0, 0);
+
+byte[] mac = shake.Hash!;
+</code></pre>
+<p>This is <em>not</em> a real KMAC — KMAC has specific encoding rules for the domain, key, and customisation strings (FIPS SP 800-185). It illustrates the pattern. For interop with KMAC consumers, reach for a dedicated KMAC implementation.</p>
+<h2 id="security-caveats">Security caveats</h2>
+<ul>
+<li><strong>Domain separation matters.</strong> SHAKE128 and SHAKE256 use domain-separation byte <code>0x1F</code>, which is different from raw Keccak (no separator) and from SHA-3 (<code>0x06</code>). Do not mix SHAKE output with raw-Keccak or SHA-3 output expecting interoperability — the absorbed messages differ even if the input bytes are identical.</li>
+<li><strong>Output truncation is safe.</strong> Unlike Merkle–Damgård hashes, truncating a SHAKE output to a smaller size does not weaken the algorithm beyond the security target of the chosen variant.</li>
+<li><strong>Length extension is impossible.</strong> SHAKE is a sponge construction; the capacity portion of the state is not exposed in the output, so length-extension does not apply.</li>
+<li><strong>Non-determinism caveat.</strong> SHAKE output is deterministic given the input. If the input includes any non-deterministic component (system time, process ID, …), the output will also be non-deterministic — which is rarely what you want from a &quot;deterministic randomness from a seed&quot; pattern. Pin the input carefully.</li>
+</ul>
+<h2 id="when-not-to-use-shake">When <em>not</em> to use SHAKE</h2>
+<ul>
+<li><strong>You need a fixed-spec hash.</strong> Reach for SHA-2 / SHA-3 (BCL) or <a href="blake.html">BLAKE2 / 3</a> for fixed-size output.</li>
+<li><strong>You need a MAC.</strong> Reach for KMAC, BLAKE2b-MAC, or HMAC-SHA-256. SHAKE absorbed with a domain string is <em>almost</em> a MAC but lacks the formal KMAC construction.</li>
+<li><strong>You need a KDF.</strong> Reach for the BCL <code>HKDF</code> class. HKDF is specifically designed for key derivation; SHAKE can be used as a KDF but HKDF's framing gives you the standard test vectors and the documented security argument.</li>
+<li><strong>You need a non-cryptographic fingerprint.</strong> Reach for <a class="xref" href="../../api/Bodu.IO.Hashing.html"><code>Bodu.IO.Hashing</code></a>.</li>
+</ul>
+<h2 id="see-also">See also</h2>
+<ul>
+<li><a href="hashing.html">Hashing overview</a> — the framework's overall hash story.</li>
+<li><a href="blake.html">BLAKE</a>, <a href="tiger.html">Tiger</a>, <a href="skein.html">Skein</a>, <a href="whirlpool.html">Whirlpool</a> — other cryptographic digests in the package.</li>
+<li><a href="composing-primitives.html">Composing primitives</a> — encrypt-then-MAC, key derivation patterns.</li>
+<li><a class="xref" href="../../api/Bodu.Security.Cryptography.Shake.html"><code>Bodu.Security.Cryptography.Shake</code> API reference</a></li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

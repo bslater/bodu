@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Authenticated stream ciphers | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Authenticated stream ciphers | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="authenticated-stream-ciphers">Authenticated stream ciphers</h1>
+
+<p>A raw stream cipher gives confidentiality only. <code>Bodu.Security.Cryptography</code> pairs the extended-nonce stream ciphers with Poly1305 in three ready-made AEAD constructions, all built on the abstract <a class="xref" href="../../api/Bodu.Security.Cryptography.Poly1305AeadTransform.html">Poly1305AeadTransform</a> and all implementing <a class="xref" href="../../api/Bodu.Security.Cryptography.IStreamAeadTransform.html">IStreamAeadTransform</a>. They share one shape: a 256-bit (32-byte) key, a 192-bit (24-byte) nonce that is large enough to draw at random, a 128-bit (16-byte) tag, and the wire format <code>ciphertext ‖ tag</code>.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Like the rest of the library, these constructions are not independently audited and offer best-effort, not guaranteed, side-channel resistance.</p>
+</div>
+<h2 id="the-three-constructions">The three constructions</h2>
+<table>
+<thead>
+<tr>
+<th>Construction</th>
+<th>Type</th>
+<th>Keystream</th>
+<th>Framing</th>
+<th>Associated data</th>
+<th>Interoperates with</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>XChaCha20-Poly1305</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.XChaCha20Poly1305.html">XChaCha20Poly1305</a></td>
+<td>XChaCha20 (HChaCha20 subkey + ChaCha20)</td>
+<td>RFC 8439 AEAD</td>
+<td>Yes</td>
+<td><code>draft-irtf-cfrg-xchacha</code>; libsodium <code>crypto_aead_xchacha20poly1305_ietf</code></td>
+</tr>
+<tr>
+<td>XSalsa20-Poly1305 (secretbox)</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.XSalsa20Poly1305.html">XSalsa20Poly1305</a></td>
+<td>XSalsa20 (HSalsa20 subkey + Salsa20)</td>
+<td>NaCl secretbox — tag over the ciphertext only</td>
+<td><strong>No</strong> — non-empty AAD throws <code>ArgumentException</code></td>
+<td>NaCl / libsodium <code>crypto_secretbox</code> (same bytes, different order — see Pattern 3)</td>
+</tr>
+<tr>
+<td>XSalsa20-Poly1305-AEAD</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.XSalsa20Poly1305Aead.html">XSalsa20Poly1305Aead</a></td>
+<td>XSalsa20</td>
+<td>RFC 8439 AEAD</td>
+<td>Yes</td>
+<td><strong>Nothing</strong> — a Bodu-defined hybrid; use only when both peers are Bodu</td>
+</tr>
+</tbody>
+</table>
+<p>In every case the counter-0 keystream block supplies the one-time Poly1305 key and the message is encrypted from counter 1 (XChaCha20, XSalsa20-AEAD) or from byte 32 of the keystream (secretbox). The RFC 8439 framing authenticates <code>AAD ‖ pad16(AAD) ‖ ciphertext ‖ pad16(ciphertext) ‖ le64(|AAD|) ‖ le64(|ciphertext|)</code>.</p>
+<p><strong>Which one?</strong> <code>XChaCha20Poly1305</code> is the interoperable, random-nonce AEAD — the gap the BCL's 96-bit-nonce <code>ChaCha20Poly1305</code> leaves (<a href="bcl-interop.html#pattern-6--xchacha20poly1305-is-not-chacha20poly1305">BCL interop</a>). <code>XSalsa20Poly1305</code> exists to talk to NaCl secretbox. <code>XSalsa20Poly1305Aead</code> exists for symmetry; prefer the other two unless a protocol names it.</p>
+<h2 id="pattern-1--xchacha20-poly1305-with-associated-data">Pattern 1 — XChaCha20-Poly1305 with associated data</h2>
+<p>This is the <code>draft-irtf-cfrg-xchacha</code> appendix A.3.1 vector; the tag reproduces the draft's <code>c0875924c1c7987947deafd8780acf49</code>.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+using Bodu.Security.Cryptography.Extensions;
+
+byte[] key   = Convert.FromHexString(&quot;808182838485868788898a8b8c8d8e8f909192939495969798999a9b9c9d9e9f&quot;);
+byte[] nonce = Convert.FromHexString(&quot;404142434445464748494a4b4c4d4e4f5051525354555657&quot;);
+byte[] aad   = Convert.FromHexString(&quot;50515253c0c1c2c3c4c5c6c7&quot;);
+byte[] plaintext = &quot;Ladies and Gentlemen of the class of '99: If I could offer you only one tip for the future, sunscreen would be it.&quot;u8.ToArray();
+
+using var enc = new XChaCha20Poly1305(key, nonce);
+byte[] sealed_ = enc.Encrypt(plaintext, associatedData: aad);        // ciphertext ‖ tag: BD6D179D…  ‖ C0875924C1C7987947DEAFD8780ACF49
+
+using var dec = new XChaCha20Poly1305(key, nonce);
+byte[] recovered = dec.Decrypt(sealed_, associatedData: aad);        // throws CryptographicException on any tamper
+</code></pre>
+<p><code>Encrypt</code> / <code>Decrypt</code> come from <a class="xref" href="../../api/Bodu.Security.Cryptography.Extensions.AeadTransformExtensions.html">AeadTransformExtensions</a>, which size and allocate the array; <code>TagSize</code> is 128 bits, and <code>XChaCha20Poly1305.KeySize</code> / <code>NonceSize</code> are 256 / 192.</p>
+<div class="WARNING">
+<h5>Warning</h5>
+<p>Name the <code>associatedData:</code> argument. <code>Poly1305AeadTransform</code> also has a public <code>Encrypt(ReadOnlySpan&lt;byte&gt; plaintext, Span&lt;byte&gt; output, ReadOnlySpan&lt;byte&gt; associatedData = default)</code>; with two positional <code>byte[]</code> arguments that overload wins, your AAD array becomes the <strong>output buffer</strong>, and the call returns an <code>int</code>. <code>Encrypt(plaintext)</code> with a single argument is unambiguous.</p>
+</div>
+<h2 id="pattern-2--single-use-and-what-happens-on-tamper">Pattern 2 — single use, and what happens on tamper</h2>
+<p>Every instance is stateful and single-use. A second <code>Encrypt</code> or <code>Decrypt</code> on the same instance throws <code>InvalidOperationException</code> — including after a failed tag check, so a &quot;retry on the same transform&quot; is impossible by construction. A modified ciphertext, tag, or AAD throws <code>CryptographicException</code> and writes no plaintext.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Security.Cryptography;
+using Bodu.Security.Cryptography;
+using Bodu.Security.Cryptography.Extensions;
+
+byte[] key = new byte[32], nonce = new byte[24];
+byte[] plaintext = &quot;single use&quot;u8.ToArray();
+
+using var enc = new XChaCha20Poly1305(key, nonce);
+byte[] sealed_ = enc.Encrypt(plaintext);
+try { enc.Encrypt(plaintext); } catch (InvalidOperationException) { /* one message per instance */ }
+
+sealed_[0] ^= 0x01;
+using var dec = new XChaCha20Poly1305(key, nonce);
+try { dec.Decrypt(sealed_); } catch (CryptographicException) { /* tag did not verify */ }
+try { dec.Decrypt(sealed_); } catch (InvalidOperationException) { /* the instance is burned */ }
+</code></pre>
+<div class="WARNING">
+<h5>Warning</h5>
+<p>A <code>(key, nonce)</code> pair must encrypt at most one message. The 24-byte nonce is large enough to draw from <code>RandomNumberGenerator</code> (or <a class="xref" href="../../api/Bodu.Security.Cryptography.Nonce.Random.html#Bodu_Security_Cryptography_Nonce_Random_System_Int32_">Random(int)</a>) per message without meaningful collision risk; that is the whole point of the extended nonce. Do not reuse a key across these constructions and the raw <code>XChaCha20</code> / <code>XSalsa20</code> ciphers without an HKDF-style key separation.</p>
+</div>
+<h2 id="pattern-3--nacl-secretbox-and-the-libsodium-layout">Pattern 3 — NaCl secretbox and the libsodium layout</h2>
+<p><a class="xref" href="../../api/Bodu.Security.Cryptography.XSalsa20Poly1305.html">XSalsa20Poly1305</a> reproduces the secretbox body byte for byte, but emits <code>ciphertext ‖ tag</code> like the rest of the library where libsodium's <code>crypto_secretbox_easy</code> emits <code>tag ‖ ciphertext</code>. Two static helpers swap the order at the boundary; both accept an aliased destination for in-place conversion.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+using Bodu.Security.Cryptography.Extensions;
+
+byte[] key   = Convert.FromHexString(&quot;808182838485868788898a8b8c8d8e8f909192939495969798999a9b9c9d9e9f&quot;);
+byte[] nonce = Convert.FromHexString(&quot;404142434445464748494a4b4c4d4e4f5051525354555657&quot;);
+byte[] plaintext = &quot;Ladies and Gentlemen of the class of '99: If I could offer you only one tip for the future, sunscreen would be it.&quot;u8.ToArray();
+
+using var box = new XSalsa20Poly1305(key, nonce);
+byte[] sealed_ = box.Encrypt(plaintext);                     // ciphertext ‖ tag; tag = 838EBCFC76D4B1D823B89BB6E0FC0520
+
+byte[] libsodium = new byte[sealed_.Length];
+XSalsa20Poly1305.ToLibsodiumCombined(sealed_, libsodium);   // tag ‖ ciphertext — what crypto_secretbox_easy produces
+
+byte[] back = new byte[libsodium.Length];
+XSalsa20Poly1305.FromLibsodiumCombined(libsodium, back);    // ciphertext ‖ tag again
+
+using var open = new XSalsa20Poly1305(key, nonce);
+byte[] recovered = open.Decrypt(back);
+</code></pre>
+<p>Secretbox authenticates no associated data: <code>Encrypt(plaintext, associatedData: header)</code> with a non-empty header throws <code>ArgumentException</code> (<code>associatedData</code>). When you need AAD with an XSalsa20 keystream use <code>XSalsa20Poly1305Aead</code>, whose call shape is identical to Pattern 1 but whose output no other library will open.</p>
+<h2 id="pattern-4--programming-against-the-interface">Pattern 4 — programming against the interface</h2>
+<p>All three types are <a class="xref" href="../../api/Bodu.Security.Cryptography.IStreamAeadTransform.html">IStreamAeadTransform</a>, and through it <a class="xref" href="../../api/Bodu.Security.Cryptography.IAeadTransform.html">IAeadTransform</a> — the same interface the block-cipher AEADs and <code>AsconAead128</code> implement — so one code path can serve any of them. The span-based members return the number of bytes written; the output must be at least <code>plaintext.Length + TagSize / 8</code>.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+
+byte[] key = new byte[32], nonce = new byte[24], aad = &quot;hdr&quot;u8.ToArray();
+byte[] plaintext = &quot;polymorphic&quot;u8.ToArray();
+
+foreach (Func&lt;IStreamAeadTransform&gt; make in new Func&lt;IStreamAeadTransform&gt;[]
+{
+    () =&gt; new XChaCha20Poly1305(key, nonce),
+    () =&gt; new XSalsa20Poly1305Aead(key, nonce),
+})
+{
+    using IStreamAeadTransform enc = make();
+    byte[] output = new byte[plaintext.Length + enc.TagSize / 8];
+    int written = enc.Encrypt(plaintext, output, aad);
+
+    using IStreamAeadTransform dec = make();
+    byte[] plain = new byte[written - enc.TagSize / 8];
+    int plainLength = dec.Decrypt(output.AsSpan(0, written), plain, aad);
+}
+</code></pre>
+<p>Exact in-place operation is supported — the output span may start at the same address as the input — but any other overlap throws <code>ArgumentException</code>:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+
+byte[] key = new byte[32], nonce = new byte[24];
+byte[] plaintext = &quot;in place&quot;u8.ToArray();
+byte[] buffer = new byte[plaintext.Length + 16];
+plaintext.CopyTo(buffer, 0);
+
+using var enc = new XChaCha20Poly1305(key, nonce);
+int written = enc.Encrypt(buffer.AsSpan(0, plaintext.Length), buffer);          // same start: allowed
+
+using var dec = new XChaCha20Poly1305(key, nonce);
+int plainLength = dec.Decrypt(buffer.AsSpan(0, written), buffer);
+</code></pre>
+<h2 id="pattern-5--detached-tags">Pattern 5 — detached tags</h2>
+<p><code>EncryptDetached</code> / <code>DecryptDetached</code> — the overloads that return an <a class="xref" href="../../api/Bodu.Security.Cryptography.AuthenticationTag.html">AuthenticationTag</a> separately from the ciphertext — are declared on <a class="xref" href="../../api/Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions.html">AeadBlockCipherModeTransformExtensions</a> for <a class="xref" href="../../api/Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.html">IAeadBlockCipherModeTransform</a> only. The stream AEADs do not have them; because their layout is always <code>ciphertext ‖ tag</code>, detaching is a slice:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+using Bodu.Security.Cryptography.Extensions;
+
+byte[] key = new byte[32], nonce = new byte[24], aad = &quot;hdr&quot;u8.ToArray();
+byte[] plaintext = &quot;detached&quot;u8.ToArray();
+
+using var enc = new XChaCha20Poly1305(key, nonce);
+byte[] combined = enc.Encrypt(plaintext, associatedData: aad);
+
+int tagBytes = enc.TagSize / 8;
+byte[] ciphertext = combined[..^tagBytes];
+AuthenticationTag tag = AuthenticationTag.FromBytes(combined.AsSpan(^tagBytes));   // travels out of band
+
+using var dec = new XChaCha20Poly1305(key, nonce);
+byte[] recovered = dec.Decrypt([.. ciphertext, .. tag.AsSpan()], associatedData: aad);
+</code></pre>
+<p>See <a href="value-types.html">Nonces, salts, tags, and secrets</a> for <code>AuthenticationTag</code> and the block-cipher <code>EncryptDetached</code> shape.</p>
+<h2 id="building-your-own">Building your own</h2>
+<p><a class="xref" href="../../api/Bodu.Security.Cryptography.Poly1305AeadTransform.html">Poly1305AeadTransform</a> is abstract and public. A subclass supplies <code>CreateEngine()</code> — an <a class="xref" href="../../api/Bodu.Security.Cryptography.IStreamCipher.html">IStreamCipher</a> positioned at block counter 0 — and may override <code>SealCore</code> / <code>OpenCore</code> to substitute a framing (that is how the secretbox variant is built) or <code>SupportsAssociatedData</code> to reject AAD. The base handles length validation, the overlap rule, the single-use latch, and zeroizing the retained key and nonce on <code>Dispose</code>. The library's own keystream engines are internal, so a subclass brings its own <code>IStreamCipher</code>.</p>
+<h2 id="api-summary">API summary</h2>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Where</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Encrypt(plaintext, output, associatedData = default)</code> / <code>Decrypt(…)</code> → <code>int</code></td>
+<td><code>Poly1305AeadTransform</code> (<code>IAeadTransform</code>)</td>
+<td>span form; output ≥ input + 16 / input − 16</td>
+</tr>
+<tr>
+<td><code>Encrypt(plaintext, associatedData = default)</code> / <code>Decrypt(…)</code> → <code>byte[]</code></td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.Extensions.AeadTransformExtensions.html">AeadTransformExtensions</a></td>
+<td>name <code>associatedData:</code></td>
+</tr>
+<tr>
+<td><code>TagSize</code></td>
+<td><code>IAeadTransform</code></td>
+<td>128 bits</td>
+</tr>
+<tr>
+<td><code>KeySize</code> / <code>NonceSize</code> constants</td>
+<td>each concrete type</td>
+<td>256 / 192 bits</td>
+</tr>
+<tr>
+<td><code>ToLibsodiumCombined</code> / <code>FromLibsodiumCombined</code></td>
+<td><code>XSalsa20Poly1305</code> (static)</td>
+<td>swap <code>ciphertext ‖ tag</code> ↔ <code>tag ‖ ciphertext</code></td>
+</tr>
+<tr>
+<td><code>CreateEngine</code>, <code>SealCore</code>, <code>OpenCore</code>, <code>SupportsAssociatedData</code></td>
+<td><code>Poly1305AeadTransform</code> (protected)</td>
+<td>extension points</td>
+</tr>
+<tr>
+<td><code>Dispose</code></td>
+<td>all</td>
+<td>zeroes the retained key and nonce</td>
+</tr>
+</tbody>
+</table>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="stream-ciphers.html">Using stream ciphers</a> — the raw, unauthenticated keystream ciphers these are built on.</li>
+<li><a href="poly1305.html">Using Poly1305</a> — the one-time authenticator on its own.</li>
+<li><a href="aead-modes.html">AEAD modes</a> and <a href="ascon-aead.html">ASCON AEAD</a> — the block-cipher and sponge alternatives.</li>
+<li><a href="bcl-interop.html">Interoperating with System.Security.Cryptography</a> — why this is not the BCL <code>ChaCha20Poly1305</code>.</li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

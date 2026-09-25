@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Struct Utf8BencodeWriter | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Struct Utf8BencodeWriter | BODU ">
+    
+    <meta name="description" content="Provides a forward-only writer that emits canonical Bencode (BEP 3) bytes to an . Because the grammar requires dictionary keys in ascending bytewise order, the writer buffers each dictionary&#39;s entries and sorts them when the dictionary is closed; values at the root and inside lists stream directly to the destination.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter">
+
+
+
+  <h1 id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter" class="text-break">Struct Utf8BencodeWriter</h1>
+  <div class="markdown level0 summary"><p>Provides a forward-only writer that emits canonical Bencode (BEP 3) bytes to an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.ibufferwriter-1">IBufferWriter&lt;T&gt;</a>.
+Because the grammar requires dictionary keys in ascending bytewise order, the writer buffers each dictionary's
+entries and sorts them when the dictionary is closed; values at the root and inside lists stream directly to the
+destination.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetype.equals">ValueType.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetype.gethashcode">ValueType.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetype.tostring">ValueType.ToString()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Bencode.html">Bencode</a>.<a class="xref" href="Bodu.Text.Bencode.Writer.html">Writer</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Text.Bencode.dll</h6>
+  <h5 id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ref struct Utf8BencodeWriter</code></pre>
+  </div>
+  <h5 id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+The writer is a <code>ref struct</code> whose mutable state lives in shared managed buffers, so a copy taken
+by value continues to write to the same output. Booleans, floating-point values, and date-times have no Bencode
+representation and must be reduced to an integer or byte string by a converter before they are written.
+</p>
+<p>
+The writer validates the call sequence against the canonical grammar: a property name may only be written inside an
+open dictionary, every dictionary value must follow a property name, container ends must match the open container
+kind, a dictionary containing duplicate keys is rejected when it is closed, and a second root value is rejected
+unless <a class="xref" href="Bodu.Text.Bencode.Writer.BencodeWriterOptions.AllowMultipleRootValues.html#Bodu_Text_Bencode_Writer_BencodeWriterOptions_AllowMultipleRootValues">AllowMultipleRootValues</a> is set.
+</p>
+<p>
+Scalars and lists written outside any dictionary are emitted to the destination as they are written; bytes that
+belong to an open dictionary are held in that dictionary's buffer until it closes, because the canonical key order
+is only known at that point. A consequence of streaming is that a write failing partway through a document leaves
+the bytes already emitted in the destination — discard the destination when any write throws, and assert
+<a class="xref" href="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.CurrentDepth.html#Bodu_Text_Bencode_Writer_Utf8BencodeWriter_CurrentDepth">CurrentDepth</a> is zero before consuming it.
+</p>
+<example>
+<pre><code class="lang-csharp">var output = new ArrayBufferWriter&lt;byte&gt;();
+var writer = new Utf8BencodeWriter(output);
+
+writer.WriteStartDictionary();
+writer.WriteString("cow", "moo");   // keys are sorted on close
+writer.WriteInteger("age", 42);
+writer.WriteEndDictionary();
+
+// output.WrittenSpan now holds canonical "d3:agei42e3:cow3:mooe".</code></pre>
+</example>
+</div>
+  <h3 id="constructors">Constructors
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter__ctor_System_Buffers_IBufferWriter_System_Byte__" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.#ctor(System.Buffers.IBufferWriter{System.Byte})">
+          <a class="xref" href="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.-ctor.html#Bodu_Text_Bencode_Writer_Utf8BencodeWriter__ctor_System_Buffers_IBufferWriter_System_Byte__">Utf8BencodeWriter(IBufferWriter&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.html">Utf8BencodeWriter</a> struct.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter__ctor_System_Buffers_IBufferWriter_System_Byte__Bodu_Text_Bencode_Writer_BencodeWriterOptions_" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.#ctor(System.Buffers.IBufferWriter{System.Byte},Bodu.Text.Bencode.Writer.BencodeWriterOptions)">
+          <a class="xref" href="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.-ctor.html#Bodu_Text_Bencode_Writer_Utf8BencodeWriter__ctor_System_Buffers_IBufferWriter_System_Byte__Bodu_Text_Bencode_Writer_BencodeWriterOptions_">Utf8BencodeWriter(IBufferWriter&lt;byte&gt;, BencodeWriterOptions)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.html">Utf8BencodeWriter</a> struct using the supplied options.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_CurrentDepth" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.CurrentDepth">
+          <a class="xref" href="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.CurrentDepth.html#Bodu_Text_Bencode_Writer_Utf8BencodeWriter_CurrentDepth">CurrentDepth</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the current container nesting depth.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_Options" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.Options">
+          <a class="xref" href="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.Options.html#Bodu_Text_Bencode_Writer_Utf8BencodeWriter_Options">Options</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the customizations the writer was created with.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteByteString_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteByteString(System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteByteString.html#Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteByteString_System_ReadOnlySpan_System_Byte__">WriteByteString(ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes a byte-string value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteByteString_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteByteString(System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteByteString.html#Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteByteString_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__">WriteByteString(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes a property name and a byte-string value in one call.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteByteString_System_String_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteByteString(System.String,System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteByteString.html#Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteByteString_System_String_System_ReadOnlySpan_System_Byte__">WriteByteString(string, ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes a property name and a byte-string value in one call.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteEndDictionary" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteEndDictionary">
+          <a class="xref" href="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteEndDictionary.html#Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteEndDictionary">WriteEndDictionary()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes the end of the current dictionary, emitting its entries in ascending bytewise key order.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteEndList" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteEndList">
+          <a class="xref" href="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteEndList.html#Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteEndList">WriteEndList()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes the end of the current list.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteInteger_System_Int64_" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteInteger(System.Int64)">
+          <a class="xref" href="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteInteger.html#Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteInteger_System_Int64_">WriteInteger(long)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes an integer value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteInteger_System_ReadOnlySpan_System_Byte__System_Int64_" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteInteger(System.ReadOnlySpan{System.Byte},System.Int64)">
+          <a class="xref" href="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteInteger.html#Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteInteger_System_ReadOnlySpan_System_Byte__System_Int64_">WriteInteger(ReadOnlySpan&lt;byte&gt;, long)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes a property name and an integer value in one call.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteInteger_System_ReadOnlySpan_System_Byte__System_UInt64_" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteInteger(System.ReadOnlySpan{System.Byte},System.UInt64)">
+          <a class="xref" href="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteInteger.html#Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteInteger_System_ReadOnlySpan_System_Byte__System_UInt64_">WriteInteger(ReadOnlySpan&lt;byte&gt;, ulong)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes a property name and an unsigned integer value in one call, permitting the full <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint64">ulong</a>
+range.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteInteger_System_String_System_Int64_" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteInteger(System.String,System.Int64)">
+          <a class="xref" href="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteInteger.html#Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteInteger_System_String_System_Int64_">WriteInteger(string, long)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes a property name and an integer value in one call.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteInteger_System_String_System_UInt64_" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteInteger(System.String,System.UInt64)">
+          <a class="xref" href="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteInteger.html#Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteInteger_System_String_System_UInt64_">WriteInteger(string, ulong)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes a property name and an unsigned integer value in one call, permitting the full <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint64">ulong</a>
+range.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteInteger_System_UInt64_" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteInteger(System.UInt64)">
+          <a class="xref" href="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteInteger.html#Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteInteger_System_UInt64_">WriteInteger(ulong)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes an unsigned integer value, permitting the full <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint64">ulong</a> range.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WritePropertyName_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WritePropertyName(System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WritePropertyName.html#Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WritePropertyName_System_ReadOnlySpan_System_Byte__">WritePropertyName(ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes the name of the dictionary key whose value follows.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WritePropertyName_System_ReadOnlySpan_System_Char__" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WritePropertyName(System.ReadOnlySpan{System.Char})">
+          <a class="xref" href="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WritePropertyName.html#Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WritePropertyName_System_ReadOnlySpan_System_Char__">WritePropertyName(ReadOnlySpan&lt;char&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes the name of the dictionary key whose value follows, encoding the characters as UTF-8.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WritePropertyName_System_String_" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WritePropertyName(System.String)">
+          <a class="xref" href="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WritePropertyName.html#Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WritePropertyName_System_String_">WritePropertyName(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes the name of the dictionary key whose value follows, encoding the name as UTF-8.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteRawValue_System_ReadOnlySpan_System_Byte__System_Boolean_" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteRawValue(System.ReadOnlySpan{System.Byte},System.Boolean)">
+          <a class="xref" href="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteRawValue.html#Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteRawValue_System_ReadOnlySpan_System_Byte__System_Boolean_">WriteRawValue(ReadOnlySpan&lt;byte&gt;, bool)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes a pre-encoded Bencode value verbatim. Supports round-tripping verified slices such as a torrent's
+<code>info</code> dictionary without re-encoding.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteStartDictionary" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteStartDictionary">
+          <a class="xref" href="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteStartDictionary.html#Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteStartDictionary">WriteStartDictionary()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes the start of a dictionary.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteStartDictionary_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteStartDictionary(System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteStartDictionary.html#Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteStartDictionary_System_ReadOnlySpan_System_Byte__">WriteStartDictionary(ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes a property name and the start of a dictionary as its value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteStartDictionary_System_String_" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteStartDictionary(System.String)">
+          <a class="xref" href="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteStartDictionary.html#Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteStartDictionary_System_String_">WriteStartDictionary(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes a property name and the start of a dictionary as its value, combining
+<a class="xref" href="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WritePropertyName.html#Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WritePropertyName_System_String_">WritePropertyName(string)</a> and <a class="xref" href="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteStartDictionary.html#Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteStartDictionary">WriteStartDictionary()</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteStartList" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteStartList">
+          <a class="xref" href="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteStartList.html#Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteStartList">WriteStartList()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes the start of a list.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteStartList_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteStartList(System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteStartList.html#Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteStartList_System_ReadOnlySpan_System_Byte__">WriteStartList(ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes a property name and the start of a list as its value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteStartList_System_String_" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteStartList(System.String)">
+          <a class="xref" href="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteStartList.html#Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteStartList_System_String_">WriteStartList(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes a property name and the start of a list as its value, combining <a class="xref" href="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WritePropertyName.html#Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WritePropertyName_System_String_">WritePropertyName(string)</a>
+and <a class="xref" href="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteStartList.html#Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteStartList">WriteStartList()</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteString_System_ReadOnlySpan_System_Byte__System_String_" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteString(System.ReadOnlySpan{System.Byte},System.String)">
+          <a class="xref" href="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteString.html#Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteString_System_ReadOnlySpan_System_Byte__System_String_">WriteString(ReadOnlySpan&lt;byte&gt;, string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes a property name and a string value in one call, encoding the value as UTF-8.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteString_System_String_" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteString(System.String)">
+          <a class="xref" href="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteString.html#Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteString_System_String_">WriteString(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes a string value, encoding it as a UTF-8 byte string.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteString_System_String_System_String_" data-uid="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteString(System.String,System.String)">
+          <a class="xref" href="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.WriteString.html#Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteString_System_String_System_String_">WriteString(string, string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes a property name and a string value in one call, encoding both as UTF-8.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Namespace Bodu.Text.Bencode.Reader | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Namespace Bodu.Text.Bencode.Reader | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Text.Bencode.Reader">
+
+  <h1 id="Bodu_Text_Bencode_Reader" data-uid="Bodu.Text.Bencode.Reader" class="text-break">Namespace Bodu.Text.Bencode.Reader</h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual">
+<p><img src="../images/hero-bencode.svg" alt="Bodu.Text.Bencode.Reader"></p>
+<h2 id="purpose">Purpose</h2>
+<p><strong>Bodu.Text.Bencode.Reader</strong> is the lowest tier of <a class="xref" href="Bodu.Text.Bencode.html">Bodu.Text.Bencode</a>: a forward-only, allocation-free token reader over canonical Bencode (BEP 3) bytes, in the manner of <code>Utf8JsonReader</code>. The <a class="xref" href="Bodu.Text.Bencode.BencodeSerializer.html">BencodeSerializer</a>, the mutable <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeNode.html">BencodeNode</a> DOM, and the read-only <a class="xref" href="Bodu.Text.Bencode.Document.BencodeDocument.html">BencodeDocument</a> DOM are all built over it, and a custom <a class="xref" href="Bodu.Text.Bencode.Serialization.BencodeConverter-1.html">BencodeConverter&lt;T&gt;</a> consumes values through it. Use it directly when you need full control over a token stream without materializing a document.</p>
+<h2 id="key-types">Key types</h2>
+<ul>
+<li><a class="xref" href="Bodu.Text.Bencode.Reader.Utf8BencodeReader.html">Utf8BencodeReader</a> — the <code>ref struct</code> token cursor: <code>Read</code> / <code>Skip</code> / <code>TrySkip</code>, <code>TokenType</code> (a <a class="xref" href="Bodu.Text.Bencode.BencodeTokenType.html">BencodeTokenType</a>), <code>ValueSpan</code>, and the typed accessors <code>GetString</code> / <code>GetBytes</code> / <code>GetInt32</code> / <code>GetInt64</code> / <code>GetUInt64</code> with their <code>TryGet*</code> counterparts, plus <code>ValueTextEquals</code> for allocation-free key matching.</li>
+<li><a class="xref" href="Bodu.Text.Bencode.Reader.BencodeReaderOptions.html">BencodeReaderOptions</a> — <code>MaxDepth</code>, and the <code>AllowUnsortedKeys</code> / <code>AllowDuplicateKeys</code> relaxations for non-canonical producers.</li>
+</ul>
+<h2 id="example">Example</h2>
+<pre><code class="lang-csharp">using Bodu.Text.Bencode;
+using Bodu.Text.Bencode.Reader;
+
+var reader = new Utf8BencodeReader(&quot;d6:lengthi1024e4:name10:ubuntu.isoe&quot;u8);
+
+while (reader.Read())
+{
+    if (reader.TokenType == BencodeTokenType.PropertyName &amp;&amp; reader.ValueTextEquals(&quot;name&quot;u8))
+    {
+        reader.Read();
+        string name = reader.GetString();   // &quot;ubuntu.iso&quot;
+    }
+}
+</code></pre>
+<h2 id="notes">Notes</h2>
+<ul>
+<li><strong>Canonical by default.</strong> The reader rejects unsorted or duplicate dictionary keys and non-minimal integers unless the corresponding option is set; malformed bytes throw <a class="xref" href="Bodu.Text.Bencode.BencodeFormatException.html">BencodeFormatException</a>.</li>
+<li><strong>Byte strings, not text.</strong> <code>ValueSpan</code> and <code>GetBytes</code> return the raw byte string; <code>GetString</code> decodes it as UTF-8.</li>
+<li><strong>See also:</strong> the <a href="../docs/serialization/bencode/index.html">Bodu.Text.Bencode introduction</a> and the <a href="../guides/serialization/bencode/using.html">Using Bencode</a> guide (Pattern 9 — Process tokens by hand).</li>
+</ul>
+</div>
+  <div class="markdown level0 remarks"></div>
+    <h3 id="structs">
+Structs
+</h3>
+      <h4><a class="xref" href="Bodu.Text.Bencode.Reader.BencodeReaderOptions.html">BencodeReaderOptions</a></h4>
+      <section><p>Defines the customizations applied when creating a <a class="xref" href="Bodu.Text.Bencode.Reader.Utf8BencodeReader.html">Utf8BencodeReader</a>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Bencode.Reader.Utf8BencodeReader.html">Utf8BencodeReader</a></h4>
+      <section><p>Provides a high-performance, forward-only, allocation-light reader for Bencode (BEP 3) bytes. The reader is a
+<code>ref struct</code>, so it lives on the stack and cannot be boxed or captured; pass it by
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/ref">ref</a> to thread it through a converter.</p>
+</section>
+
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Struct RunningQuantile&lt;T&gt; | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Struct RunningQuantile&lt;T&gt; | BODU ">
+    
+    <meta name="description" content="Estimates a single quantile of a sample stream in one forward pass and constant space, using the P&#178; algorithm of Jain and Chlamtac (1985).">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Numerics.RunningQuantile`1">
+
+
+
+  <h1 id="Bodu_Numerics_RunningQuantile_1" data-uid="Bodu.Numerics.RunningQuantile`1" class="text-break">Struct RunningQuantile&lt;T&gt;</h1>
+  <div class="markdown level0 summary"><p>Estimates a single quantile of a sample stream in one forward pass and constant space, using the P² algorithm of
+Jain and Chlamtac (1985).</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetype.equals">ValueType.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetype.gethashcode">ValueType.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Numerics.html">Numerics</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Numerics.dll</h6>
+  <h5 id="Bodu_Numerics_RunningQuantile_1_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public struct RunningQuantile&lt;T&gt; where T : INumber&lt;T&gt;</code></pre>
+  </div>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">T</span></td>
+        <td><p>The numeric type of the samples.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="Bodu_Numerics_RunningQuantile_1_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+The estimator maintains five markers that track the minimum, the maximum, the target quantile, and the two quantiles
+halfway between it and the extremes, adjusting the middle markers with piecewise-parabolic (hence "P²")
+interpolation as samples arrive. Each <a class="xref" href="Bodu.Numerics.RunningQuantile-1.Add.html#Bodu_Numerics_RunningQuantile_1_Add__0_">Add(T)</a> is O(1) and the state is a fixed scalar block — the samples
+themselves are never stored. Samples are widened to <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a> with
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double.createchecked">CreateChecked&lt;TOther&gt;(TOther)</a>, so <a class="xref" href="Bodu.Numerics.RunningQuantile-1.Estimate.html#Bodu_Numerics_RunningQuantile_1_Estimate">Estimate</a> is always a floating-point estimate.
+</p>
+<p>
+The first five samples are held exactly; while fewer than five have been observed <a class="xref" href="Bodu.Numerics.RunningQuantile-1.Estimate.html#Bodu_Numerics_RunningQuantile_1_Estimate">Estimate</a> returns
+the linearly interpolated empirical quantile, and from the fifth sample onward the P² markers take over. The
+estimate is an approximation whose accuracy improves with stream length; for exact quantiles over small data, sort
+and index instead.
+</p>
+<p>
+This is a <b>mutable value type</b>. Store it in a mutable field or local and pass it by <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/ref">ref</a>; do
+not capture it in a lambda or iterator that expects reference semantics — each copy accumulates independently from
+the point of the copy, which is also the supported way to checkpoint. The <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/default">default</a> value is a
+valid empty <em>median</em> estimator; use the constructor for any other probability.
+</p>
+<p>
+Unlike <a class="xref" href="Bodu.Numerics.RunningStatistics-1.html">RunningStatistics&lt;T&gt;</a>, two P² estimators cannot be merged — the marker states of two partitions
+do not compose. Partition-and-combine workloads should carry the mergeable moments in
+<a class="xref" href="Bodu.Numerics.RunningStatistics-1.html">RunningStatistics&lt;T&gt;</a> and reserve this type for single-stream use. Samples must be finite: NaN and
+infinite values are rejected by <a class="xref" href="Bodu.Numerics.RunningQuantile-1.Add.html#Bodu_Numerics_RunningQuantile_1_Add__0_">Add(T)</a>.
+</p>
+</div>
+  <h5 id="Bodu_Numerics_RunningQuantile_1_examples"><strong>Examples</strong></h5>
+  <pre><code class="lang-csharp">var median = RunningQuantile&lt;double&gt;.CreateMedian();
+foreach (var sample in new[] { 0.02, 0.15, 0.74, 3.39, 0.83, 22.37, 10.15, 15.43, 38.62, 15.92,
+                               34.60, 10.28, 1.47, 0.40, 0.05, 11.39, 0.27, 0.42, 0.09, 11.37 })
+    median.Add(sample);
+
+median.Estimate;   // ≈ 4.44 (exact sorted median of this stream: 2.43)
+
+var p95 = new RunningQuantile&lt;int&gt;(0.95);</code></pre>
+
+  <h3 id="constructors">Constructors
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Numerics_RunningQuantile_1__ctor_System_Double_" data-uid="Bodu.Numerics.RunningQuantile`1.#ctor(System.Double)">
+          <a class="xref" href="Bodu.Numerics.RunningQuantile-1.-ctor.html#Bodu_Numerics_RunningQuantile_1__ctor_System_Double_">RunningQuantile(double)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Numerics.RunningQuantile-1.html">RunningQuantile&lt;T&gt;</a> struct targeting the given quantile.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Numerics_RunningQuantile_1_Count" data-uid="Bodu.Numerics.RunningQuantile`1.Count">
+          <a class="xref" href="Bodu.Numerics.RunningQuantile-1.Count.html#Bodu_Numerics_RunningQuantile_1_Count">Count</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the number of samples accumulated so far.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_RunningQuantile_1_Estimate" data-uid="Bodu.Numerics.RunningQuantile`1.Estimate">
+          <a class="xref" href="Bodu.Numerics.RunningQuantile-1.Estimate.html#Bodu_Numerics_RunningQuantile_1_Estimate">Estimate</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the current estimated value of the target quantile for the observed sample stream.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_RunningQuantile_1_IsEmpty" data-uid="Bodu.Numerics.RunningQuantile`1.IsEmpty">
+          <a class="xref" href="Bodu.Numerics.RunningQuantile-1.IsEmpty.html#Bodu_Numerics_RunningQuantile_1_IsEmpty">IsEmpty</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a value indicating whether the estimator contains no samples.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_RunningQuantile_1_Probability" data-uid="Bodu.Numerics.RunningQuantile`1.Probability">
+          <a class="xref" href="Bodu.Numerics.RunningQuantile-1.Probability.html#Bodu_Numerics_RunningQuantile_1_Probability">Probability</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the quantile this estimator targets, strictly between 0 and 1.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Numerics_RunningQuantile_1_Add__0_" data-uid="Bodu.Numerics.RunningQuantile`1.Add(`0)">
+          <a class="xref" href="Bodu.Numerics.RunningQuantile-1.Add.html#Bodu_Numerics_RunningQuantile_1_Add__0_">Add(T)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Adds a sample to the estimator, updating the marker state in O(1).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_RunningQuantile_1_CreateMedian" data-uid="Bodu.Numerics.RunningQuantile`1.CreateMedian">
+          <a class="xref" href="Bodu.Numerics.RunningQuantile-1.CreateMedian.html#Bodu_Numerics_RunningQuantile_1_CreateMedian">CreateMedian()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates an empty estimator targeting the median (probability 0.5).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_RunningQuantile_1_Reset" data-uid="Bodu.Numerics.RunningQuantile`1.Reset">
+          <a class="xref" href="Bodu.Numerics.RunningQuantile-1.Reset.html#Bodu_Numerics_RunningQuantile_1_Reset">Reset()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Resets the estimator to the empty state, discarding all samples but preserving <a class="xref" href="Bodu.Numerics.RunningQuantile-1.Probability.html#Bodu_Numerics_RunningQuantile_1_Probability">Probability</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_RunningQuantile_1_ToString" data-uid="Bodu.Numerics.RunningQuantile`1.ToString">
+          <a class="xref" href="Bodu.Numerics.RunningQuantile-1.ToString.html#Bodu_Numerics_RunningQuantile_1_ToString">ToString()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a culture-invariant summary of the estimator state for diagnostics.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Bodu.Extensions.BufferConverter.CopyTo.html#Bodu_Extensions_BufferConverter_CopyTo__1___0_System_Byte___System_Int32_">BufferConverter.CopyTo&lt;T&gt;(T, byte[], int)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Clamp.html#Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.Clamp&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsBetween.html#Bodu_Extensions_ComparableExtensions_IsBetween__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsBetween&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThan.html#Bodu_Extensions_ComparableExtensions_IsGreaterThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThan.html#Bodu_Extensions_ComparableExtensions_IsLessThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsOutside.html#Bodu_Extensions_ComparableExtensions_IsOutside__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsOutside&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

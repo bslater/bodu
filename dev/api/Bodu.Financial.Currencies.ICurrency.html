@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Interface ICurrency | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Interface ICurrency | BODU ">
+    
+    <meta name="description" content="Identifies a currency at the type-system level, supplying the ISO 4217 code, minor-unit precision, and optional cash-rounding and historicity metadata used by .">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Financial.Currencies.ICurrency">
+
+
+
+  <h1 id="Bodu_Financial_Currencies_ICurrency" data-uid="Bodu.Financial.Currencies.ICurrency" class="text-break">Interface ICurrency</h1>
+  <div class="markdown level0 summary"><p>Identifies a currency at the type-system level, supplying the ISO 4217 code, minor-unit precision, and optional
+cash-rounding and historicity metadata used by <a class="xref" href="Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a>.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Financial.html">Financial</a>.<a class="xref" href="Bodu.Financial.Currencies.html">Currencies</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Financial.dll</h6>
+  <h5 id="Bodu_Financial_Currencies_ICurrency_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public interface ICurrency</code></pre>
+  </div>
+  <h5 id="Bodu_Financial_Currencies_ICurrency_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+Implementations of <a class="xref" href="Bodu.Financial.Currencies.ICurrency.html">ICurrency</a> are tag types — they exist solely to parameterize
+<a class="xref" href="Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a> and carry the currency's static metadata. They are never instantiated; the shipped
+implementations declare a private constructor and expose only static members.
+</p>
+<p>
+The interface relies on the C# 11 static-abstract-member feature, so members are accessed through the type itself (
+<code>USD.IsoCode</code>, <code>USD.MinorUnits</code>) and via <code>TCurrency.IsoCode</code> from within generic code constrained by
+<code>where TCurrency : ICurrency</code>.
+</p>
+<p>
+<a class="xref" href="Bodu.Financial.Currencies.ICurrency.IsoCode.html#Bodu_Financial_Currencies_ICurrency_IsoCode">IsoCode</a> and <a class="xref" href="Bodu.Financial.Currencies.ICurrency.MinorUnits.html#Bodu_Financial_Currencies_ICurrency_MinorUnits">MinorUnits</a> are required. The remaining members (
+<a class="xref" href="Bodu.Financial.Currencies.ICurrency.CashRoundingIncrement.html#Bodu_Financial_Currencies_ICurrency_CashRoundingIncrement">CashRoundingIncrement</a>, <a class="xref" href="Bodu.Financial.Currencies.ICurrency.IsHistoric.html#Bodu_Financial_Currencies_ICurrency_IsHistoric">IsHistoric</a>, <a class="xref" href="Bodu.Financial.Currencies.ICurrency.DemonetizedOn.html#Bodu_Financial_Currencies_ICurrency_DemonetizedOn">DemonetizedOn</a>,
+<a class="xref" href="Bodu.Financial.Currencies.ICurrency.SuccessorIsoCode.html#Bodu_Financial_Currencies_ICurrency_SuccessorIsoCode">SuccessorIsoCode</a>) are <code>static virtual</code> with sensible defaults so existing custom implementations
+remain source-compatible — only the shipped <code>Bodu.Financial.Currencies</code> tags override the defaults to surface
+country-specific cash rounding or historic-currency metadata.
+</p>
+<example>
+<pre><code class="lang-csharp">using Bodu.Financial;
+using Bodu.Financial.Currencies;
+
+// Metadata is read statically from the tag type - no instance is ever created.
+string code = USD.IsoCode;        // "USD"
+int minorUnits = USD.MinorUnits;  // 2
+int numeric = USD.NumericCode;    // 840
+
+// The same members are reachable through a generic constraint.
+static string DescribeCurrency&lt;TCurrency&gt;() where TCurrency : ICurrency =&gt;
+    $"{TCurrency.IsoCode} ({TCurrency.MinorUnits} minor units)";</code></pre>
+</example>
+</div>
+  <h3 id="properties">Properties
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Financial_Currencies_ICurrency_CashRoundingIncrement" data-uid="Bodu.Financial.Currencies.ICurrency.CashRoundingIncrement">
+          <a class="xref" href="Bodu.Financial.Currencies.ICurrency.CashRoundingIncrement.html#Bodu_Financial_Currencies_ICurrency_CashRoundingIncrement">CashRoundingIncrement</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the smallest cash denomination of the currency, expressed in the major unit.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_Currencies_ICurrency_DemonetizedOn" data-uid="Bodu.Financial.Currencies.ICurrency.DemonetizedOn">
+          <a class="xref" href="Bodu.Financial.Currencies.ICurrency.DemonetizedOn.html#Bodu_Financial_Currencies_ICurrency_DemonetizedOn">DemonetizedOn</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the date the currency was withdrawn from circulation, if known.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_Currencies_ICurrency_EnglishName" data-uid="Bodu.Financial.Currencies.ICurrency.EnglishName">
+          <a class="xref" href="Bodu.Financial.Currencies.ICurrency.EnglishName.html#Bodu_Financial_Currencies_ICurrency_EnglishName">EnglishName</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the English-language name of the currency.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_Currencies_ICurrency_IsHistoric" data-uid="Bodu.Financial.Currencies.ICurrency.IsHistoric">
+          <a class="xref" href="Bodu.Financial.Currencies.ICurrency.IsHistoric.html#Bodu_Financial_Currencies_ICurrency_IsHistoric">IsHistoric</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a value indicating whether the currency has been demonetized and is no longer in active circulation.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_Currencies_ICurrency_IsoCode" data-uid="Bodu.Financial.Currencies.ICurrency.IsoCode">
+          <a class="xref" href="Bodu.Financial.Currencies.ICurrency.IsoCode.html#Bodu_Financial_Currencies_ICurrency_IsoCode">IsoCode</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the ISO 4217 three-letter alphabetic code that identifies the currency.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_Currencies_ICurrency_MinorUnits" data-uid="Bodu.Financial.Currencies.ICurrency.MinorUnits">
+          <a class="xref" href="Bodu.Financial.Currencies.ICurrency.MinorUnits.html#Bodu_Financial_Currencies_ICurrency_MinorUnits">MinorUnits</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the number of fractional digits in the currency's minor unit — the precision
+<a class="xref" href="Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a> rounds to on construction and formats by default.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_Currencies_ICurrency_NumericCode" data-uid="Bodu.Financial.Currencies.ICurrency.NumericCode">
+          <a class="xref" href="Bodu.Financial.Currencies.ICurrency.NumericCode.html#Bodu_Financial_Currencies_ICurrency_NumericCode">NumericCode</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the ISO 4217 three-digit numeric code that identifies the currency.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_Currencies_ICurrency_SuccessorIsoCode" data-uid="Bodu.Financial.Currencies.ICurrency.SuccessorIsoCode">
+          <a class="xref" href="Bodu.Financial.Currencies.ICurrency.SuccessorIsoCode.html#Bodu_Financial_Currencies_ICurrency_SuccessorIsoCode">SuccessorIsoCode</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the ISO 4217 alphabetic code of the currency that replaced this one, when applicable.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

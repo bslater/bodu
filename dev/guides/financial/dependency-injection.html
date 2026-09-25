@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Financial dependency injection | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Financial dependency injection | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="financial-dependency-injection">Financial dependency injection</h1>
+
+<p>The optional <code>Bodu.Financial.DependencyInjection</code> companion package wires the <a href="index.html"><code>Bodu.Financial</code></a> stack into a <code>Microsoft.Extensions.DependencyInjection</code> container. A single <code>AddFinancialService(...)</code> call registers the currency-lookup service and hands back a fluent <a class="xref" href="../../api/Bodu.Financial.IFinancialServiceBuilder.html">IFinancialServiceBuilder</a> on which you compose currency lookups, named monetary contexts, and exchange-rate providers. JSON registration is not part of this package — it is the <code>AddFinancialJson</code> extension in the companion <code>Bodu.Financial.Serialization.Json</code> package (see <a href="#consuming-the-financial-json-options">Consuming the financial JSON options</a>). The registration extension methods live in the <code>Bodu.Financial</code> namespace, so a single <code>using Bodu.Financial;</code> brings them into scope.</p>
+<p>If you are constructing the financial types by hand — in a console app or a test — keep using the <code>Bodu.Financial</code> constructors directly; this page is only relevant when you want the host to compose the stack for you.</p>
+<h2 id="install">Install</h2>
+<pre><code class="lang-bash">dotnet add package Bodu.Financial.DependencyInjection
+</code></pre>
+<p>The package references <code>Bodu.Financial</code> and <code>Bodu.Core</code>, plus <code>Microsoft.Extensions.DependencyInjection.Abstractions</code>, <code>Microsoft.Extensions.Options</code>, <code>Microsoft.Extensions.Options.ConfigurationExtensions</code>, <code>Microsoft.Extensions.Configuration.Abstractions</code>, and <code>Microsoft.Extensions.Configuration.Binder</code> (for the <code>IConfiguration</code> binding overload).</p>
+<h2 id="the-registration-surface">The registration surface</h2>
+<p>The entry point is the <code>AddFinancialService</code> <code>IServiceCollection</code> extension (in the <code>Bodu.Financial</code> namespace), with two overloads. Both register the default <a class="xref" href="../../api/Bodu.Financial.Currencies.ICurrency.html">ICurrency</a> lookup and return an <a class="xref" href="../../api/Bodu.Financial.IFinancialServiceBuilder.html">IFinancialServiceBuilder</a>.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Registers</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AddFinancialService(IServiceCollection, IConfiguration?, string sectionName = &quot;Financial&quot;)</code></td>
+<td>The currency lookup, and binds <a class="xref" href="../../api/Bodu.Financial.FinancialOptions.html">FinancialOptions</a> (currently an empty options class — see <a href="#binding-options-from-configuration">Binding options from configuration</a>) from the named configuration section. The <code>sectionName</code> constant is <code>ServiceCollectionExtensions.DefaultConfigurationSection</code>.</td>
+</tr>
+<tr>
+<td><code>AddFinancialService(IServiceCollection, Action&lt;IFinancialServiceBuilder&gt; configure)</code></td>
+<td>The same, with the builder configured imperatively by the delegate.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="composing-the-builder">Composing the builder</h2>
+<p>The chainable <code>IFinancialServiceBuilder</code> extension methods (in the <code>Bodu.Financial</code> namespace) add the rest of the stack:</p>
+<table>
+<thead>
+<tr>
+<th>Builder method</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AddCurrencyLookup&lt;TLookup&gt;()</code></td>
+<td>Replaces the default currency lookup with your <code>ICurrencyLookup</code> implementation.</td>
+</tr>
+<tr>
+<td><code>AddMonetaryContext(string name, MonetaryContext context)</code></td>
+<td>Registers a named monetary context (rounding, minor units, formatting).</td>
+</tr>
+<tr>
+<td><code>AddExchangeRateProvider&lt;TProvider&gt;()</code> / <code>AddExchangeRateProvider(provider)</code></td>
+<td>Registers a timeless <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.IRateProvider.html">IRateProvider</a>, by type or by instance.</td>
+</tr>
+<tr>
+<td><code>AddDatedExchangeRateProvider&lt;TProvider&gt;()</code> / <code>AddDatedExchangeRateProvider(provider)</code></td>
+<td>Registers a dated <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.IDatedRateProvider.html">IDatedRateProvider</a>.</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-csharp">using Bodu.Financial;
+
+builder.Services.AddFinancialService(configure: financial =&gt;
+{
+    financial
+        .AddExchangeRateProvider&lt;MyRateProvider&gt;()
+        .AddDatedExchangeRateProvider&lt;HistoricalRateProvider&gt;();
+});
+</code></pre>
+<p>The delegate overload is sugar over the first form — <code>AddFinancialService()</code> followed by calls on the returned builder produces the same registrations, so chain directly when that reads better:</p>
+<pre><code class="lang-csharp">services
+    .AddFinancialService()
+    .AddDatedExchangeRateProvider&lt;HistoricalRateProvider&gt;();
+</code></pre>
+<h2 id="named-monetary-contexts">Named monetary contexts</h2>
+<p><code>AddMonetaryContext(name, context)</code> registers a <a class="xref" href="../../api/Bodu.Financial.MonetaryContext.html">MonetaryContext</a> as a <strong>keyed singleton</strong>, so an application can carry several rounding regimes side by side — for example a settlement context that follows banker's rounding and a cash-desk context that snaps to the currency's cash increment:</p>
+<pre><code class="lang-csharp">services.AddFinancialService(financial =&gt;
+{
+    financial
+        .AddMonetaryContext(&quot;Settlement&quot;, MonetaryContext.Default)
+        .AddMonetaryContext(&quot;CashDesk&quot;, new MonetaryContext
+        {
+            Rounding     = MidpointRoundingStrategy.AwayFromZero,
+            CashRounding = CashRoundingPolicy.CurrencyCashIncrement,
+        });
+});
+</code></pre>
+<p>Resolve a named context with the standard keyed-service surface:</p>
+<pre><code class="lang-csharp">public sealed class CashDeskService
+{
+    private readonly MonetaryContext _context;
+
+    public CashDeskService([FromKeyedServices(&quot;CashDesk&quot;)] MonetaryContext context) =&gt;
+        _context = context;
+}
+
+// …or imperatively from a built provider:
+MonetaryContext cashDesk = provider.GetRequiredKeyedService&lt;MonetaryContext&gt;(&quot;CashDesk&quot;);
+</code></pre>
+<p>The name must be non-empty; <code>AddMonetaryContext</code> throws <code>ArgumentException</code> for a blank name and <code>ArgumentNullException</code> for a null context.</p>
+<h2 id="registering-exchange-rate-providers">Registering exchange-rate providers</h2>
+<p>The generic overloads register an implementation <em>type</em>; the instance overloads accept a pre-built provider. Both use <code>TryAdd</code> semantics, so the first registration for each contract wins:</p>
+<pre><code class="lang-csharp">using Bodu.Financial;
+using Bodu.Financial.ExchangeRates;
+
+services.AddFinancialService(financial =&gt;
+{
+    financial.AddDatedExchangeRateProvider(new FixedDatedRateProvider(ecbObservations));
+});
+</code></pre>
+<p>To group several providers behind one registration — prioritised fallback, averaging, or per-FX-pair routing — and add read-through caching, use <code>AddAggregatedRateProvider(...)</code> from the <code>Bodu.Financial.ExchangeRates.Caching</code> package (its DI registration ships in the package, in the <code>Bodu.Financial.ExchangeRates</code> namespace), which registers an <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider.html">AggregatingRateProvider</a> as the application's single <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.IDatedRateProvider.html">IDatedRateProvider</a>. <code>RateLookupResult.Rate.Provider</code> records which source answered, so the audit trail survives the composition. See the <a href="exchange-rate-caching.html#dependency-injection">caching and aggregating guide</a> for the full walkthrough.</p>
+<p>Neither <code>AddFinancialService</code> overload registers an FX provider by default — an application that never crosses currencies pays nothing for the contract.</p>
+<h2 id="consuming-the-financial-json-options">Consuming the financial JSON options</h2>
+<p>Financial JSON registration ships in the companion <code>Bodu.Financial.Serialization.Json</code> package as a plain <code>IServiceCollection</code> extension. <code>services.AddFinancialJson(policy)</code> registers a configured <code>JsonSerializerOptions</code> as a keyed singleton under <code>FinancialJsonServiceCollectionExtensions.JsonOptionsKey</code> (<code>&quot;Financial&quot;</code>), with the financial converters applied for the chosen <a class="xref" href="../../api/Bodu.Financial.Serialization.Json.FinancialJsonPolicy.html">FinancialJsonPolicy</a>:</p>
+<pre><code class="lang-csharp">using Bodu.Financial.Serialization.Json;
+
+services.AddFinancialJson(FinancialJsonPolicy.Strict);
+
+JsonSerializerOptions financialJson =
+    provider.GetRequiredKeyedService&lt;JsonSerializerOptions&gt;(
+        FinancialJsonServiceCollectionExtensions.JsonOptionsKey);
+
+string payload = JsonSerializer.Serialize(new Money&lt;USD&gt;(19.99m), financialJson);
+</code></pre>
+<h2 id="binding-options-from-configuration">Binding options from configuration</h2>
+<p>Passing an <code>IConfiguration</code> binds <a class="xref" href="../../api/Bodu.Financial.FinancialOptions.html">FinancialOptions</a> from the named section (default <code>&quot;Financial&quot;</code>). The type currently declares no settings of its own — it is the binding seam for future options:</p>
+<pre><code class="lang-csharp">builder.Services.AddFinancialService(builder.Configuration);
+</code></pre>
+<h2 id="activating-static-currency-resolution">Activating static currency resolution</h2>
+<p><code>Bodu.Financial</code> exposes a static currency-resolution surface used by parsing and formatting. After the container is built, call <code>UseCurrencyResolution</code> (an <code>IServiceProvider</code> extension in the <code>Bodu.Financial</code> namespace) once so the resolved <code>ICurrencyLookup</code> backs that static surface:</p>
+<pre><code class="lang-csharp">var app = builder.Build();
+app.Services.UseCurrencyResolution();
+</code></pre>
+<p>This is a composition-root operation — it installs the container's lookup as the process-wide ambient default via <code>CurrencyResolution.SetDefault</code>. Omitting the call leaves the registry-backed default in place, so existing applications behave identically without it. Only the runtime-tagged <a class="xref" href="../../api/Bodu.Financial.Money.html">Money</a> consults the ambient lookup; <code>Money&lt;TCurrency&gt;</code> reads its precision from the currency tag and is unaffected.</p>
+<h2 id="end-to-end-with-the-generic-host">End-to-end with the Generic Host</h2>
+<p>A complete wiring — host builder, financial registration, and a service that consumes the dated provider through constructor injection:</p>
+<pre><code class="lang-csharp">using Bodu.Financial;
+using Bodu.Financial.Currencies;
+using Bodu.Financial.ExchangeRates;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+
+HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
+
+builder.Services.AddFinancialService(builder.Configuration)   // binds the &quot;Financial&quot; section
+    .AddMonetaryContext(&quot;Settlement&quot;, MonetaryContext.Default)
+    .AddDatedExchangeRateProvider(new FixedDatedRateProvider(observations));
+
+builder.Services.AddFinancialJson();   // Bodu.Financial.Serialization.Json companion
+
+builder.Services.AddSingleton&lt;SettlementService&gt;();
+
+IHost host = builder.Build();
+host.Services.UseCurrencyResolution();        // ambient lookup = the DI lookup
+
+SettlementService settlement = host.Services.GetRequiredService&lt;SettlementService&gt;();
+</code></pre>
+<p>The consuming service depends only on the contract:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">public sealed class SettlementService
+{
+    private readonly IDatedRateProvider _rates;
+
+    public SettlementService(IDatedRateProvider rates) =&gt;
+        _rates = rates;
+
+    public Money&lt;EUR&gt; Settle(Money&lt;USD&gt; amount, DateOnly postingDate)
+    {
+        RateLookupResult lookup = _rates.GetRate(
+            &quot;USD&quot;, &quot;EUR&quot;, postingDate,
+            RateLookupOptions.PreviousWithin(3));
+
+        return amount.Convert&lt;EUR&gt;(lookup.Rate.Rate);
+    }
+}
+</code></pre>
+<p>Swapping the fixed table for a live feed later means changing one registration; <code>SettlementService</code> never sees the difference.</p>
+<h2 id="swapping-in-a-test-double">Swapping in a test double</h2>
+<p>Because consumers depend on <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.IDatedRateProvider.html">IDatedRateProvider</a> rather than a concrete feed, tests substitute a deterministic table — <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.FixedDatedRateProvider.html">FixedDatedRateProvider</a> over hand-written observations is usually all the fake you need:</p>
+<pre><code class="lang-csharp">using Bodu.Financial;
+using Bodu.Financial.Currencies;
+using Bodu.Financial.ExchangeRates;
+using Microsoft.Extensions.DependencyInjection;
+
+ServiceCollection services = new();
+services.AddFinancialService(financial =&gt;
+{
+    financial.AddDatedExchangeRateProvider(new FixedDatedRateProvider(new ExchangeRate[]
+    {
+        new(CurrencyCode.USD, CurrencyCode.EUR, new DateOnly(2024, 6, 14), 0.928m, &quot;Test&quot;),
+    }));
+});
+services.AddSingleton&lt;SettlementService&gt;();
+
+using ServiceProvider provider = services.BuildServiceProvider();
+SettlementService sut = provider.GetRequiredService&lt;SettlementService&gt;();
+// sut.Settle(new Money&lt;USD&gt;(100m), new DateOnly(2024, 6, 14))  →  EUR 92.80
+</code></pre>
+<p>Two registration details matter for tests:</p>
+<ul>
+<li>The provider registrations use <code>TryAdd</code> semantics — the <em>first</em> registration for a contract wins. Register the fake before any production wiring runs, or use <code>services.Replace(ServiceDescriptor.Singleton&lt;IDatedRateProvider&gt;(fake))</code> (from <code>Microsoft.Extensions.DependencyInjection.Extensions</code>) to override an existing registration.</li>
+<li><code>UseCurrencyResolution</code> mutates <em>process-wide</em> ambient state. Avoid calling it in unit tests; if a test must exercise a custom ambient lookup, prefer the flow-scoped <code>CurrencyResolution.PushScoped(...)</code> from <code>Bodu.Financial</code>, which restores the previous lookup on dispose and isolates parallel tests.</li>
+</ul>
+<h2 id="see-also">See also</h2>
+<ul>
+<li><a href="money.html">Working with <code>Money&lt;TCurrency&gt;</code></a> — the monetary type that the resolved services back.</li>
+<li><a href="exchange-rates.html">Working with exchange rates</a> — the FX provider contracts you register above.</li>
+<li><a href="exchange-types.html">Exchange-rate types — a usage-scenario catalogue</a> — choosing between the provider implementations.</li>
+<li><a href="index.html">Bodu.Financial guides</a> — the member overview for this package.</li>
+<li><a href="../topics/numerics-and-financial.html">Numerics &amp; Financial topic guides</a> — every guide in the topic.</li>
+<li><a href="../../docs/topics/numerics-and-financial.html">Numerics &amp; Financial topic overview</a> — package boundaries and the decision table.</li>
+<li><a class="xref" href="../../api/Bodu.Financial.IFinancialServiceBuilder.html"><code>IFinancialServiceBuilder</code></a> · <a class="xref" href="../../api/Bodu.Financial.FinancialOptions.html"><code>FinancialOptions</code></a> — the builder and bound options (in <code>Bodu.Financial</code>).</li>
+<li><a class="xref" href="../../api/Bodu.Financial.html">Bodu.Financial API reference</a> — full namespace overview; the <code>AddFinancialService</code> / builder / <code>UseCurrencyResolution</code> extension methods live in the <code>Bodu.Financial</code> namespace.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

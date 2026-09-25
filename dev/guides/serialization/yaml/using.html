@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Using YAML | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Using YAML | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../../images/favicon.svg">
+      <link rel="stylesheet" href="../../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../../styles/docfx.css">
+      <link rel="stylesheet" href="../../../styles/main.css">
+      <meta property="docfx:navrel" content="../../../toc.html">
+      <meta property="docfx:tocrel" content="../../toc.html">
+    
+    <meta property="docfx:rel" content="../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../../index.html">
+                <img id="logo" class="svg" src="../../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="using-yaml">Using YAML</h1>
+
+<p><a class="xref" href="../../../api/Bodu.Text.Yaml.YamlSerializer.html">YamlSerializer</a> maps your types to and from <a href="https://yaml.org/">YAML</a>. Behavior is configured through <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlSerializerOptions.html">YamlSerializerOptions</a>; when you do not want a POCO, the same documents are served by the mutable <a class="xref" href="../../../api/Bodu.Text.Yaml.Nodes.YamlNode.html">YamlNode</a> DOM and the read-only <a class="xref" href="../../../api/Bodu.Text.Yaml.Document.YamlDocument.html">YamlDocument</a> DOM. The surface is string text and UTF-8 bytes, plus the same stream facade the sibling serializers ship — <code>Serialize&lt;T&gt;(IBufferWriter&lt;byte&gt;, …)</code>, <code>SerializeAsync&lt;T&gt;(Stream, …)</code>, <code>Deserialize&lt;T&gt;(Stream)</code>, and <code>DeserializeAsync&lt;T&gt;(Stream)</code> — buffered in full, with only the stream copy asynchronous.</p>
+<h2 id="pattern-1--round-trip-an-object">Pattern 1 — Round-trip an object</h2>
+<pre><code class="lang-csharp">using Bodu.Text.Yaml;
+
+public sealed class ServerConfig
+{
+    public string Host { get; set; } = &quot;&quot;;
+    public int Port { get; set; }
+}
+
+var config = new ServerConfig { Host = &quot;localhost&quot;, Port = 8080 };
+
+string yaml = YamlSerializer.Serialize(config);
+ServerConfig back = YamlSerializer.Deserialize&lt;ServerConfig&gt;(yaml)!;
+</code></pre>
+<p><code>Serialize</code> returns a <code>string</code>; an <code>object</code> + <code>Type</code> overload covers runtime-typed values. <code>Deserialize&lt;T&gt;</code> reads a <code>string</code>, a <code>ReadOnlySpan&lt;byte&gt;</code> (UTF-8), or a <code>Stream</code> and returns <code>T?</code>, so use <code>!</code> when the document is known to be non-null:</p>
+<pre><code class="lang-csharp">ReadOnlySpan&lt;byte&gt; utf8 = Encoding.UTF8.GetBytes(yaml);
+ServerConfig fromBytes = YamlSerializer.Deserialize&lt;ServerConfig&gt;(utf8)!;
+</code></pre>
+<h2 id="pattern-2--know-the-type-mapping">Pattern 2 — Know the type mapping</h2>
+<table>
+<thead>
+<tr>
+<th>.NET</th>
+<th>YAML</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>string</code> / <code>char</code> / <code>Guid</code> / <code>Uri</code></td>
+<td>string scalar</td>
+</tr>
+<tr>
+<td>integer family (<code>byte</code> … <code>long</code>, <code>nint</code>/<code>nuint</code>; <code>ulong</code> above <code>long.MaxValue</code> as a quoted string)</td>
+<td>integer scalar</td>
+</tr>
+<tr>
+<td><code>double</code> / <code>float</code></td>
+<td>float scalar (<code>.nan</code> / <code>.inf</code> / <code>-.inf</code> for the special values)</td>
+</tr>
+<tr>
+<td><code>decimal</code></td>
+<td>quoted string of the exact text</td>
+</tr>
+<tr>
+<td><code>DateTime</code> / <code>DateTimeOffset</code> / <code>TimeSpan</code></td>
+<td>string scalar (ISO-8601 round-trip for the date kinds)</td>
+</tr>
+<tr>
+<td><code>bool</code></td>
+<td>Boolean scalar (<code>true</code> / <code>false</code>)</td>
+</tr>
+<tr>
+<td><code>null</code> / <code>Nullable&lt;T&gt;</code> when null</td>
+<td>the null scalar</td>
+</tr>
+<tr>
+<td><code>enum</code></td>
+<td>string (member name), or integer when <code>WriteEnumsAsStrings = false</code></td>
+</tr>
+<tr>
+<td>arrays, lists, sets, collections</td>
+<td>sequence</td>
+</tr>
+<tr>
+<td>objects, dictionaries</td>
+<td>mapping, in insertion order</td>
+</tr>
+<tr>
+<td><code>object</code> members</td>
+<td>runtime type on write; a loosely-typed graph (<code>Dictionary&lt;string, object?&gt;</code> / <code>List&lt;object?&gt;</code> / scalars) on read</td>
+</tr>
+</tbody>
+</table>
+<p>Public fields join in when <code>IncludeFields</code> is set on the options. The full per-type catalog — including the radix forms (<code>0x</code>, <code>0o</code>) accepted on read and the quoting rules — is in the <a href="builtin-converters.html">built-in converter catalog</a>. A nested object becomes an indented block mapping and a collection of objects becomes a block sequence:</p>
+<pre><code class="lang-csharp">public sealed class AppConfig
+{
+    public string? Title { get; set; }
+    public ServerConfig? Server { get; set; }
+    public List&lt;string&gt;? Tags { get; set; }
+}
+
+var app = new AppConfig
+{
+    Title = &quot;demo&quot;,
+    Server = new ServerConfig { Host = &quot;localhost&quot;, Port = 8080 },
+    Tags = [&quot;web&quot;, &quot;api&quot;],
+};
+
+string yaml = YamlSerializer.Serialize(app);
+</code></pre>
+<pre><code class="lang-yaml">Title: demo
+Server:
+  Host: localhost
+  Port: 8080
+Tags:
+  - web
+  - api
+</code></pre>
+<h2 id="pattern-3--configure-via-yamlserializeroptions">Pattern 3 — Configure via YamlSerializerOptions</h2>
+<p>One options object holds every setting. Configure it once and reuse it — it freezes on first use and then caches its resolved converters and type metadata:</p>
+<pre><code class="lang-csharp">var options = new YamlSerializerOptions
+{
+    PropertyNamingPolicy = NamingPolicy.SnakeCaseLower,
+    DefaultIgnoreCondition = IgnoreCondition.WhenWritingNull,
+    WriteEnumsAsStrings = true,
+    PropertyNameCaseInsensitive = true,
+};
+
+string yaml = YamlSerializer.Serialize(app, options);
+</code></pre>
+<p>Start from a scenario preset by constructing the options from <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlSerializerDefaults.html">YamlSerializerDefaults</a> (for example <code>YamlSerializerDefaults.Web</code>, which selects camel-case naming and case-insensitive matching). Member shaping — naming policies, <code>[PropertyName]</code>, <code>[Ignore]</code>, the wider attribute family, and the options flags — is covered in <a href="attributes.html">Mapping attributes</a>.</p>
+<h2 id="pattern-4--edit-a-document-with-the-mutable-dom">Pattern 4 — Edit a document with the mutable DOM</h2>
+<p>Parse to <a class="xref" href="../../../api/Bodu.Text.Yaml.Nodes.YamlNode.html">YamlNode</a>, index into the tree, build scalars with <code>YamlValue.Create(…)</code>, and write it back with <code>ToYamlString()</code>:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Text.Yaml.Nodes;
+
+string source = &quot;&quot;&quot;
+    server:
+      host: localhost
+      port: 8080
+    &quot;&quot;&quot;;
+
+YamlNode root = YamlNode.Parse(source)!;
+root[&quot;server&quot;]![&quot;port&quot;] = YamlValue.Create(9090);
+
+string updated = root.ToYamlString();
+</code></pre>
+<p><code>YamlValue.Create</code> has overloads for <code>string</code>, <code>long</code>, <code>double</code>, and <code>bool</code> — those four kinds are the entire scalar model, so build an <code>int</code> as <code>YamlValue.Create((long)42)</code> and a <code>float</code> as a <code>double</code>. <code>GetValue&lt;T&gt;()</code> reads a value back out, returning a stored value of the matching CLR type directly and otherwise coercing through <code>Convert.ChangeType</code> with <code>CultureInfo.InvariantCulture</code> (so <code>GetValue&lt;string&gt;()</code> always succeeds, and <code>GetValue&lt;int&gt;()</code> narrows a stored <code>long</code>); an impossible conversion raises <code>InvalidOperationException</code>. <a class="xref" href="../../../api/Bodu.Text.Yaml.Nodes.YamlValue.ValueKind.html#Bodu_Text_Yaml_Nodes_YamlValue_ValueKind">ValueKind</a> reports which of the four kinds a scalar holds.</p>
+<p>The <code>YamlNode</code> tree is fully mutable and re-entrant: <code>AsObject()</code> / <code>AsArray()</code> / <code>AsValue()</code> cast a node to its concrete shape (throwing <code>InvalidOperationException</code> on a mismatch). <a class="xref" href="../../../api/Bodu.Text.Yaml.Nodes.YamlObject.html">YamlObject</a> preserves insertion order and exposes <code>Count</code>, <code>Keys</code>, <code>Add</code> (which throws on a duplicate key, unlike the adding <code>[string]</code> setter), <code>ContainsKey</code>, <code>Remove</code>, and <code>TryGetValue</code>; <a class="xref" href="../../../api/Bodu.Text.Yaml.Nodes.YamlArray.html">YamlArray</a> implements <code>IList&lt;YamlNode?&gt;</code> (<code>Add</code>, <code>Insert</code>, <code>RemoveAt</code>, <code>IndexOf</code>, the <code>[int]</code> indexer). A node may appear at most once in a tree. <code>WriteTo(Utf8YamlWriter)</code> drives the writer directly when you need control over indentation or the newline sequence; <code>ToYamlString()</code> is the convenience wrapper over it.</p>
+<h2 id="pattern-5--inspect-a-document-with-the-read-only-dom">Pattern 5 — Inspect a document with the read-only DOM</h2>
+<p>The read-only counterpart is a low-allocation view walked through <code>RootElement</code>. <code>YamlDocument</code> is <code>IDisposable</code>, so dispose a document you parse:</p>
+<pre><code class="lang-csharp">using Bodu.Text.Yaml.Document;
+
+using YamlDocument doc = YamlDocument.Parse(source);
+YamlElement port = doc.RootElement.GetProperty(&quot;server&quot;).GetProperty(&quot;port&quot;);
+// port.GetInt64() → 8080
+</code></pre>
+<p>Typed access goes through <code>GetString</code> / <code>GetInt64</code> / <code>GetDouble</code> / <code>GetBoolean</code>, each of which throws <code>InvalidOperationException</code> on a kind mismatch — gate them on <code>ValueKind</code> first. <code>GetProperty(name)</code> throws <code>KeyNotFoundException</code> when the key is absent; <code>TryGetProperty(name, out value)</code> is the non-throwing form. The <code>[int]</code> indexer and <code>GetSequenceLength</code> address a sequence, and <code>EnumerateMapping</code> / <code>EnumerateSequence</code> walk a container. <code>GetInt64</code> reads only an integer scalar, while <code>GetDouble</code> accepts an integer <em>or</em> float scalar (so a whole number bound to a <code>double</code> member needs no float marker). <code>ValueKind</code> reports the <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlValueKind.html">YamlValueKind</a>; <code>ScalarStyle</code> records the original <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlScalarStyle.html">YamlScalarStyle</a> of a parsed scalar, or <code>Any</code> for a non-scalar node.</p>
+<div class="IMPORTANT">
+<h5>Important</h5>
+<p>A <a class="xref" href="../../../api/Bodu.Text.Yaml.Document.YamlDocument.html">YamlDocument</a> owns its parsed buffer and every <a class="xref" href="../../../api/Bodu.Text.Yaml.Document.YamlElement.html">YamlElement</a> is a struct view back onto it. Reading an element after the document is disposed raises <code>ObjectDisposedException</code>, so do not let an element (or a value pulled from one lazily) outlive the <code>using</code> block.</p>
+</div>
+<pre><code class="lang-csharp">foreach (YamlProperty property in doc.RootElement.GetProperty(&quot;server&quot;).EnumerateMapping())
+{
+    // property.Name → &quot;host&quot;, &quot;port&quot;; property.Value is a YamlElement
+}
+</code></pre>
+<h2 id="pattern-6--multi-document-streams">Pattern 6 — Multi-document streams</h2>
+<p>A YAML stream can hold several documents separated by <code>---</code> (and optionally terminated by <code>...</code>). <a class="xref" href="../../../api/Bodu.Text.Yaml.Document.YamlDocument.ParseAllDocuments.html">ParseAllDocuments</a> returns every document; the single-document <code>Parse</code> and <code>Deserialize&lt;T&gt;</code> read the first only:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Text.Yaml.Document;
+
+string stream = &quot;&quot;&quot;
+    name: first
+    ---
+    name: second
+    &quot;&quot;&quot;;
+
+IReadOnlyList&lt;YamlDocument&gt; documents = YamlDocument.ParseAllDocuments(stream);
+foreach (YamlDocument document in documents)
+{
+    using (document)
+    {
+        string name = document.RootElement.GetProperty(&quot;name&quot;).GetString();
+        // &quot;first&quot;, then &quot;second&quot;
+    }
+}
+</code></pre>
+<p>Each returned document is caller-owned — dispose each when finished.</p>
+<h2 id="pattern-7--select-the-spec-version">Pattern 7 — Select the spec version</h2>
+<pre><code class="lang-csharp">var options = new YamlSerializerOptions { SpecVersion = YamlSpecVersion.V1_1 };
+var config = YamlSerializer.Deserialize&lt;ServerConfig&gt;(text, options);
+</code></pre>
+<p>The default is the strict <strong>1.2 core schema</strong>, where only <code>true</code> / <code>false</code> are Booleans. Opting in to <strong>1.1</strong> additionally accepts the <code>yes</code> / <code>no</code> / <code>on</code> / <code>off</code> Boolean spellings and sexagesimal numbers, and enables merge keys (Pattern 8). A <code>%YAML</code> directive in the document overrides the typing per document.</p>
+<h2 id="pattern-8--anchors-aliases-and-merge-keys-on-the-read-path">Pattern 8 — Anchors, aliases, and merge keys on the read path</h2>
+<p>Anchors (<code>&amp;a</code>) and aliases (<code>*a</code>) are resolved transparently by the reader — an alias produces the same value as the anchor it names (anchors must be unique and acyclic). Merge keys (<code>&lt;&lt;</code>) are a YAML 1.1 feature governed by <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlMergeKeyBehavior.html">YamlMergeKeyBehavior</a>:</p>
+<pre><code class="lang-csharp">string text = &quot;&quot;&quot;
+    defaults: &amp;defaults
+      retries: 3
+      timeout: 30
+    production:
+      &lt;&lt;: *defaults
+      timeout: 60
+    &quot;&quot;&quot;;
+
+var options = new YamlSerializerOptions
+{
+    SpecVersion = YamlSpecVersion.V1_1,
+    MergeKeyBehavior = YamlMergeKeyBehavior.Expand,   // the default
+};
+
+using YamlDocument doc = YamlDocument.Parse(Encoding.UTF8.GetBytes(text));
+// With Expand, production resolves to { retries: 3, timeout: 60 }.
+</code></pre>
+<p><code>Expand</code> (default) merges the referenced mapping in place, with <strong>keys already present in the target taking precedence</strong> over the merged ones — so <code>production</code>'s explicit <code>timeout: 60</code> overrides the merged <code>timeout: 30</code>. <code>Disabled</code> and <code>PreserveAsNormalKey</code> both retain <code>&lt;&lt;</code> as an ordinary mapping key without expanding it; the two are equivalent in the produced tree and differ only in expressed intent. Merge keys are gated on <code>SpecVersion = V1_1</code>: they are not part of the 1.2 core schema, so under the default <code>V1_2</code> a <code>&lt;&lt;</code> key is an ordinary key regardless of <code>MergeKeyBehavior</code>.</p>
+<p>Anchors and aliases work under either spec version — they are structural, not implicit-typing, features. The reader composes the tree before any token surfaces, so an alias presents the same resolved value as its anchor; a cyclic anchor or an alias that names no anchor is rejected as a <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlFormatException.html">YamlFormatException</a>. Duplicate mapping keys are governed separately by <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlDuplicateKeyBehavior.html">YamlDuplicateKeyBehavior</a> (<code>Throw</code> by default — the only specification-conformant mode — or the lenient <code>UseFirst</code> / <code>UseLast</code>). The duplicate-key and merge-key policies apply equally to the serializer, both DOMs, and the raw reader, because all four parse through the same <a class="xref" href="../../../api/Bodu.Text.Yaml.Reader.YamlReaderOptions.html">YamlReaderOptions</a>.</p>
+<h2 id="pattern-9--drive-the-low-level-reader-and-writer">Pattern 9 — Drive the low-level reader and writer</h2>
+<p>Below the serializer and the DOMs sit the <code>ref struct</code> token machines. <a class="xref" href="../../../api/Bodu.Text.Yaml.Reader.Utf8YamlReader.html">Utf8YamlReader</a> walks a parsed document as a token stream, and <a class="xref" href="../../../api/Bodu.Text.Yaml.Writer.Utf8YamlWriter.html">Utf8YamlWriter</a> emits one. Because YAML's anchors, aliases, merge keys, and indentation require a composed tree, the reader is <strong>buffered</strong>: its constructor copies the UTF-8 source and parses it fully, then <code>Read()</code> walks the in-memory store. This is unlike <code>Utf8JsonReader</code>'s single-pass scan, so the reader is not a streaming reader over a growing buffer — feed it the whole document.</p>
+<pre><code class="lang-csharp">using Bodu.Text.Yaml;
+using Bodu.Text.Yaml.Reader;
+
+var reader = new Utf8YamlReader(Encoding.UTF8.GetBytes(&quot;host: localhost\nport: 8080\n&quot;));
+while (reader.Read())
+{
+    switch (reader.TokenType)
+    {
+        case YamlTokenType.PropertyName:
+            string key = reader.GetString();          // &quot;host&quot;, then &quot;port&quot;
+            break;
+        case YamlTokenType.String:
+            string s = reader.GetString();            // &quot;localhost&quot;
+            break;
+        case YamlTokenType.Integer:
+            long n = reader.GetInt64();               // 8080
+            break;
+    }
+}
+</code></pre>
+<p><code>TokenType</code> reports the current <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlTokenType.html">YamlTokenType</a> (the <code>StartMapping</code> / <code>EndMapping</code> / <code>StartSequence</code> / <code>EndSequence</code> brackets, <code>PropertyName</code>, and the <code>Null</code> / <code>String</code> / <code>Integer</code> / <code>Float</code> / <code>Boolean</code> scalar tokens), <code>CurrentDepth</code> the nesting level, and <code>ValueTextEquals(ReadOnlySpan&lt;byte&gt;)</code> compares the current key against UTF-8 text without allocating. The scalar getters throw <code>InvalidOperationException</code> if the current token is the wrong kind. <a class="xref" href="../../../api/Bodu.Text.Yaml.Reader.YamlReaderOptions.html">YamlReaderOptions</a> carries the same <code>SpecVersion</code>, <code>DuplicateKeyBehavior</code>, <code>MergeKeyBehavior</code>, and <code>MaxDepth</code> the document layer uses.</p>
+<p>The writer's surface is <code>WriteStartMapping</code> / <code>WriteEndMapping</code>, <code>WriteStartSequence</code> / <code>WriteEndSequence</code>, <code>WritePropertyName</code>, and the scalar writers <code>WriteString</code> / <code>WriteInteger</code> / <code>WriteDouble</code> / <code>WriteBoolean</code> / <code>WriteNull</code>. It always emits <strong>block</strong> collections, quoting a string scalar only when a plain rendering would be ambiguous (it would resolve as a non-string, begin with an indicator character, contain <code>&quot;: &quot;</code>, and so on) and falling back to a double-quoted, escaped form otherwise. Empty mappings and sequences are written as flow <code>{}</code> / <code>[]</code> so they round-trip as empty rather than null. <a class="xref" href="../../../api/Bodu.Text.Yaml.Writer.YamlWriterOptions.html">YamlWriterOptions</a> sets <code>IndentSize</code> (default 2, capped at 16), <code>NewLine</code> (only <code>&quot;\n&quot;</code> or <code>&quot;\r\n&quot;</code>), and <code>MaxDepth</code>:</p>
+<pre><code class="lang-csharp">using Bodu.Text.Yaml.Writer;
+using System.Buffers;
+
+var buffer = new ArrayBufferWriter&lt;byte&gt;();
+var writer = new Utf8YamlWriter(buffer, new YamlWriterOptions { IndentSize = 4 });
+writer.WriteStartMapping();
+writer.WritePropertyName(&quot;host&quot;);
+writer.WriteString(&quot;localhost&quot;);
+writer.WriteEndMapping();
+string yaml = Encoding.UTF8.GetString(buffer.WrittenSpan);
+</code></pre>
+<p>Both types are <code>ref struct</code>s — they cannot be boxed, stored on the heap, or captured by a lambda, and the writer enforces a well-formed call sequence (a value without a pending key, a mismatched end, or a second root all throw <code>InvalidOperationException</code>).</p>
+<h2 id="error-handling">Error handling</h2>
+<p>Two exception types separate &quot;the text is not YAML&quot; from &quot;the YAML does not fit your type&quot;:</p>
+<ul>
+<li><a class="xref" href="../../../api/Bodu.Text.Yaml.YamlFormatException.html">YamlFormatException</a> — malformed input. A subtype of <code>FormatException</code>. Because YAML is edited by hand, the exception carries <code>LineNumber</code>, <code>ColumnNumber</code>, and byte <code>Offset</code> (each nullable when no position applies; the offset and column count UTF-8 bytes). It is raised for inconsistent indentation, a tab used as indentation, an unterminated quoted scalar, an invalid escape, a cyclic or dangling alias, a duplicate mapping key under <code>Throw</code>, and nesting beyond <code>MaxDepth</code>.</li>
+<li><a class="xref" href="../../../api/Bodu.Text.Yaml.YamlSerializationException.html">YamlSerializationException</a> — the document parsed, but a value cannot bind: a kind mismatch, an out-of-range or non-integral number under <code>Strict</code>, a multi-character <code>char</code>, a duplicate dictionary key on write, or an unmapped member when <code>UnmappedMemberHandling</code> is <code>Disallow</code>. It carries <code>Offset</code>, <code>LineNumber</code>, <code>ColumnNumber</code>, and a dotted member <code>Path</code> such as <code>server.endpoints[0].timeout</code> that pinpoints the offending member, index, or key.</li>
+</ul>
+<pre><code class="lang-csharp">try
+{
+    AppConfig config = YamlSerializer.Deserialize&lt;AppConfig&gt;(text)!;
+}
+catch (YamlFormatException ex)
+{
+    // Not valid YAML, e.g. a tab used as indentation.
+    log.Warn($&quot;Parse error at {ex.LineNumber}:{ex.ColumnNumber}: {ex.Message}&quot;);
+}
+catch (YamlSerializationException ex)
+{
+    // Valid YAML that does not match the model.
+    log.Warn($&quot;Document does not bind at '{ex.Path}': {ex.Message}&quot;);
+}
+</code></pre>
+<p><code>TryParse</code>-style members do not exist on the serializer; wrap <code>Deserialize</code> as above when reading untrusted input.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="attributes.html">Mapping attributes</a> — declarative shaping with <code>[PropertyName]</code>, <code>[Ignore]</code>, the wider attribute family, and the naming policies.</li>
+<li><a href="converters.html">Writing converters</a> and the <a href="builtin-converters.html">built-in converter catalog</a> — custom and provisioned type handling.</li>
+<li><a href="../../../docs/serialization/yaml/index.html">Bodu.Text.Yaml introduction</a> and <a href="../../../docs/serialization/yaml/concepts.html">core concepts</a> — the format specifics and family vocabulary.</li>
+<li><a href="../index.html">Bodu serializer guides</a> and the <a href="../../topics/text-and-serialization.html">Text &amp; Serialization guides</a>.</li>
+<li>API reference — <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlSerializer.html">YamlSerializer</a>, <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlSerializerOptions.html">YamlSerializerOptions</a>, <a class="xref" href="../../../api/Bodu.Text.Yaml.Nodes.YamlNode.html">YamlNode</a>, <a class="xref" href="../../../api/Bodu.Text.Yaml.Document.YamlDocument.html">YamlDocument</a>.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../styles/main.js"></script>
+  </body>
+</html>

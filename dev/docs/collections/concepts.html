@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Bodu.Collections — Core concepts | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Bodu.Collections — Core concepts | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="boducollections--core-concepts">Bodu.Collections — Core concepts</h1>
+
+<p>This page is the vocabulary the rest of the collection documentation assumes. Read it once before the <a href="getting-started.html">getting-started samples</a> or the <a href="../../guides/core/index.html">guides</a>, and refer back whenever a term feels imprecise.</p>
+<p>Part of the <strong><a href="../topics/core-foundations.html">Core Foundations</a></strong> topic.</p>
+<p>For the high-level shape of the library and the namespace map, start with the <a href="index.html">introduction</a>. Concurrency-specific vocabulary — lock-free rings, split-ordered hashing, snapshot enumeration — lives on the <a href="../collections-concurrent/concepts.html">Bodu.Collections.Concurrent concepts page</a>.</p>
+<h2 id="fixed-capacity-collection">Fixed-capacity collection</h2>
+<p>A <strong>fixed-capacity</strong> collection sizes its backing storage once and never grows. Once <code>Count</code> reaches <code>Capacity</code>, the collection has to choose between two behaviours: reject the next add, or evict an existing element to make room. Bodu's ring-backed types expose that choice as a single toggle rather than two separate classes.</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Toggle</th>
+<th>Add when full</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.CircularBuffer-1.html">CircularBuffer&lt;T&gt;</a></td>
+<td><code>AllowOverwrite</code></td>
+<td><code>true</code> evicts the head; <code>false</code> throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a>.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Deque-1.html">Deque&lt;T&gt;</a></td>
+<td><code>AllowGrow</code> + <code>OverflowPolicy</code></td>
+<td><code>AllowGrow = true</code> doubles the backing array; <code>false</code> consults <a class="xref" href="../../api/Bodu.Collections.Generic.DequeOverflowPolicy.html">DequeOverflowPolicy</a> — <code>Reject</code> throws, <code>EvictOpposite</code> discards the element at the opposite end.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.EvictingDictionary-2.html">EvictingDictionary&lt;TKey, TValue&gt;</a></td>
+<td>(always evicting)</td>
+<td>Removes the entry selected by the configured <a class="xref" href="../../api/Bodu.Collections.Generic.EvictingDictionaryPolicy.html">EvictingDictionaryPolicy</a>.</td>
+</tr>
+</tbody>
+</table>
+<p>The <code>Try…</code> variants (<code>TryEnqueue</code>, <code>TryAddFirst</code>, <code>TryAddLast</code>) substitute a <code>false</code> return for the throw, so callers can prefer non-throwing code paths without changing the toggle.</p>
+<h2 id="overflow-policies">Overflow policies</h2>
+<p>The <code>Deque&lt;T&gt;</code> / <code>CircularBuffer&lt;T&gt;</code> kinship runs deeper than the shared ring: both express &quot;what happens on overflow&quot; as data, not as a subclass. <code>CircularBuffer&lt;T&gt;</code> has one axis (<code>AllowOverwrite</code> — overwrite the oldest, or refuse) because a FIFO has only one natural victim. <code>Deque&lt;T&gt;</code> is double-ended, so its fixed-capacity mode needs a policy: <a class="xref" href="../../api/Bodu.Collections.Generic.DequeOverflowPolicy.html#Bodu_Collections_Generic_DequeOverflowPolicy_Reject">Reject</a> preserves the historical throw-on-full contract, while <a class="xref" href="../../api/Bodu.Collections.Generic.DequeOverflowPolicy.html#Bodu_Collections_Generic_DequeOverflowPolicy_EvictOpposite">EvictOpposite</a> discards the element at the <em>opposite</em> end of the add — the tail for <code>AddFirst</code>, the head for <code>AddLast</code> — mirroring Python's <code>collections.deque(maxlen: N)</code> bounded-deque semantics. The policy is consulted only when <code>AllowGrow</code> is <code>false</code>; a growable deque never overflows.</p>
+<h2 id="ring-backed-collection">Ring-backed collection</h2>
+<p>A <strong>ring-backed</strong> collection stores its elements in a single contiguous array with <code>head</code> and <code>tail</code> indices that wrap modulo <code>Capacity</code>. This gives O(1) add and remove at either end without shifting elements, at the cost of a fixed capacity (or, for growable variants, an occasional array-doubling pass).</p>
+<p><a class="xref" href="../../api/Bodu.Collections.Generic.RingBackedCollection-1.html">RingBackedCollection&lt;T&gt;</a> is the shared abstract base. It owns the storage, the wrap arithmetic, the structural-version counter that powers fail-fast enumeration, and the protected primitives (<code>AddTail</code>, <code>AddHead</code>, <code>RemoveHead</code>, <code>RemoveTail</code>, <code>PeekHead</code>, <code>PeekTail</code>, <code>Resize</code>) that the concrete types build on. <a class="xref" href="../../api/Bodu.Collections.Generic.CircularBuffer-1.html">CircularBuffer&lt;T&gt;</a> layers a single-ended FIFO surface on top; <a class="xref" href="../../api/Bodu.Collections.Generic.Deque-1.html">Deque&lt;T&gt;</a> layers a double-ended surface. Both share enumeration, copy, indexer, and trim behaviour through the base.</p>
+<p>Derived types skip capacity and emptiness checks on the protected mutators — the public surface enforces those contracts before calling — so the hot path stays branch-free. Because elements are never shifted, every add, remove, and peek is O(1), and the head-relative indexer <code>this[i]</code> is an O(1) random read (index <code>0</code> is the oldest element).</p>
+<p>Enumeration over the ring-backed types is <strong>fail-fast</strong>: the base owns a structural-version counter that every mutator bumps, and the <code>struct</code> enumerator captures that token at creation. A structural change while an enumerator is live — including <code>Clear</code> and <code>TrimExcess</code> — makes the next <code>MoveNext</code> (or <code>Reset</code>) throw <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a>. This is the BCL collection contract; the concurrent peer, <a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer-1.html">ConcurrentCircularBuffer&lt;T&gt;</a> (in <a href="../collections-concurrent/index.html">Bodu.Collections.Concurrent</a>), deliberately drops it in favour of snapshot enumeration that never throws.</p>
+<h2 id="bounded-vs-growing">Bounded vs. growing</h2>
+<p>The <code>AllowGrow</code> flag on <a class="xref" href="../../api/Bodu.Collections.Generic.Deque-1.html">Deque&lt;T&gt;</a> picks between two modes at runtime:</p>
+<ul>
+<li><strong>Growing</strong> (<code>AllowGrow = true</code>, the default) — the backing array doubles on overflow, capped at <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.array.maxlength">MaxLength</a>. The deque behaves like a <code>List&lt;T&gt;</code> with O(1) ends.</li>
+<li><strong>Bounded</strong> (<code>AllowGrow = false</code>) — the deque is fixed at its current capacity. Overflow behaviour follows the configured <a class="xref" href="../../api/Bodu.Collections.Generic.DequeOverflowPolicy.html">DequeOverflowPolicy</a>: <code>Reject</code> throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a> (the <code>Try…</code> variants return <code>false</code> instead); <code>EvictOpposite</code> silently discards from the opposite end.</li>
+</ul>
+<p>The toggle can be flipped at runtime — useful when a deque starts in growable mode during warm-up and is then locked down for steady-state. Switching to <code>false</code> does not shrink the backing array; call <code>TrimExcess</code> afterwards if a smaller footprint is wanted. <code>EnsureCapacity(int)</code> can pre-grow even when <code>AllowGrow</code> is <code>false</code>.</p>
+<h2 id="eviction-policy">Eviction policy</h2>
+<p>An <a class="xref" href="../../api/Bodu.Collections.Generic.EvictingDictionary-2.html">EvictingDictionary&lt;TKey, TValue&gt;</a> is bounded by a capacity and an <a class="xref" href="../../api/Bodu.Collections.Generic.EvictingDictionaryPolicy.html">EvictingDictionaryPolicy</a> that decides which entry leaves when a new key triggers overflow:</p>
+<table>
+<thead>
+<tr>
+<th>Policy</th>
+<th>Evicts</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>FirstInFirstOut</code></td>
+<td>The entry that was added earliest, regardless of access.</td>
+</tr>
+<tr>
+<td><code>LeastRecentlyUsed</code></td>
+<td>The entry with the oldest last-access timestamp.</td>
+</tr>
+<tr>
+<td><code>LeastFrequentlyUsed</code></td>
+<td>The entry with the lowest cumulative access count.</td>
+</tr>
+<tr>
+<td><code>MostRecentlyUsed</code></td>
+<td>The entry with the newest last-access timestamp.</td>
+</tr>
+<tr>
+<td><code>RandomReplacement</code></td>
+<td>A uniformly randomly chosen entry.</td>
+</tr>
+<tr>
+<td><code>SecondChance</code></td>
+<td>A FIFO scan that skips entries flagged as recently accessed (the flag clears on skip), evicting the first unflagged entry.</td>
+</tr>
+</tbody>
+</table>
+<p>All policies share the same <code>IDictionary&lt;TKey, TValue&gt;</code> surface and the same overflow trigger; the policy only changes the selection. <code>SecondChance</code> is the <em>clock</em> algorithm — a low-overhead LRU approximation that swaps the per-access list-splice for a single reference bit — and <code>MostRecentlyUsed</code> is the scan-resistant inverse of LRU, evicting the just-touched entry to preserve the older working set.</p>
+<p>Two <code>Action&lt;TKey, TValue&gt;</code> events bracket each eviction — <code>ItemEvicting</code> (before) and <code>ItemEvicted</code> (after) — so a backing store can be flushed or a resource counter decremented as entries leave. Handlers must not mutate the dictionary; a re-entrant <code>Add</code>, <code>Remove</code>, <code>Clear</code>, or indexer set from inside a handler throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a>. <code>PeekEvictionCandidate()</code> reports the next victim without disturbing the policy metadata, and the running <code>EvictionCount</code> / <code>TotalTouches</code> totals support cache-effectiveness telemetry.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>A successful read through the <code>this[key]</code> getter or <code>TryGetValue</code> <strong>counts as an access</strong> and updates the recency / frequency metadata for LRU, MRU, LFU, and SecondChance — so even concurrent read-read is unsafe without external synchronisation. <code>ContainsKey</code> and <code>PeekEvictionCandidate</code> are pure reads. <code>Add(key, value)</code> is add-<em>or-replace</em> and does not throw on a duplicate key (there is no <code>GetOrAdd</code>).</p>
+</div>
+<h2 id="time-based-expiry">Time-based expiry</h2>
+<p>Capacity bounds <em>how many</em> entries a cache holds; <strong>time-based expiry</strong> bounds <em>how long</em> an entry stays useful. An <a class="xref" href="../../api/Bodu.Collections.Generic.EvictingDictionary-2.html">EvictingDictionary&lt;TKey, TValue&gt;</a> constructed with an <a class="xref" href="../../api/Bodu.Collections.Generic.EvictingDictionaryExpiration.html">EvictingDictionaryExpiration</a> configuration layers a time-to-live on top of its capacity policy:</p>
+<ul>
+<li><strong>Absolute vs. sliding.</strong> Under <a class="xref" href="../../api/Bodu.Collections.Generic.EvictingDictionaryExpirationKind.html#Bodu_Collections_Generic_EvictingDictionaryExpirationKind_Absolute">Absolute</a> the clock runs from the write; under <a class="xref" href="../../api/Bodu.Collections.Generic.EvictingDictionaryExpirationKind.html#Bodu_Collections_Generic_EvictingDictionaryExpirationKind_Sliding">Sliding</a> every successful read access renews the deadline. A per-entry <code>Add(key, value, timeToLive)</code> / <code>TryAdd(key, value, timeToLive)</code> override trumps the dictionary-wide default for that write.</li>
+<li><strong>Testable time.</strong> The configuration accepts a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.timeprovider">TimeProvider</a>, so tests drive expiry with a fake clock instead of <code>Thread.Sleep</code>. Without an expiration configuration the dictionary performs no clock reads at all and behaves as a capacity-only cache.</li>
+<li><strong>Lazy reclamation and the raw-<code>Count</code> contract.</strong> There is no background timer. An expired entry is removed lazily when an access touches its key; until then it still counts toward <code>Count</code> and <code>Capacity</code>. <code>RemoveExpired()</code> purges every expired entry on demand — call it periodically for caches that can sit idle — and each expiry-driven removal raises <code>ItemEvicting</code> / <code>ItemEvicted</code> and increments <code>EvictionCount</code> exactly like a capacity-triggered eviction. When a new key overflows a full dictionary, expired entries are purged <em>first</em>; the policy evicts a live victim only when none had expired.</li>
+</ul>
+<h2 id="navigation-and-rankselect">Navigation and rank/select</h2>
+<p>A <strong>navigable</strong> collection answers <em>nearest-neighbour</em> questions about ordered data, not just exact lookups. <a class="xref" href="../../api/Bodu.Collections.Generic.NavigableSet-1.html">NavigableSet&lt;T&gt;</a> and <a class="xref" href="../../api/Bodu.Collections.Generic.NavigableDictionary-2.html">NavigableDictionary&lt;TKey, TValue&gt;</a> store their elements in an order-statistic red-black tree, which makes four query families O(log n):</p>
+<ul>
+<li><strong>Floor / ceiling / higher / lower</strong> — the greatest element ≤ a probe, the least ≥ it, and the strict variants (<code>TryGetFloor</code>, <code>TryGetCeiling</code>, <code>TryGetHigher</code>, <code>TryGetLower</code>; entry-valued equivalents on the dictionary). This is the query <code>SortedSet&lt;T&gt;</code> makes awkward and a hash set cannot answer at all.</li>
+<li><strong>Rank</strong> — <code>IndexOf</code> reports how many elements precede a value in sort order.</li>
+<li><strong>Select</strong> — <code>GetAt(rank)</code> returns the element at a given rank, turning the sorted collection into a virtual sorted array without materializing one.</li>
+<li><strong>Range counting and views</strong> — <code>CountInRange(low, high)</code> counts without enumerating, and the live <code>Ascending</code> / <code>Descending</code> / <code>Range</code> views enumerate a slice fail-fast without copying.</li>
+</ul>
+<p>Rank and select are what the <em>order-statistic</em> augmentation buys: each tree node carries its subtree size, so position arithmetic rides along every rebalance at no extra asymptotic cost.</p>
+<h2 id="overlap-storing-intervals-vs-range-maps">Overlap-storing intervals vs. range maps</h2>
+<p>The range family splits on one question: <strong>may stored ranges overlap?</strong></p>
+<ul>
+<li><a class="xref" href="../../api/Bodu.Collections.Generic.RangeDictionary-2.html">RangeDictionary&lt;TKey, TValue&gt;</a> and <a class="xref" href="../../api/Bodu.Collections.Generic.RangeSet-1.html">RangeSet&lt;T&gt;</a> keep <em>disjoint</em> half-open <code>[start, end)</code> ranges over sorted parallel arrays — the dictionary rejects overlapping insertions with <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a>, the set coalesces them. Lookup is a binary search: O(log n) to find <em>the one</em> range containing a point. Reach for these when ranges partition a domain (tax brackets, IP blocks, tiered pricing).</li>
+<li><a class="xref" href="../../api/Bodu.Collections.Generic.IntervalTree-1.html">IntervalTree&lt;T&gt;</a> / <a class="xref" href="../../api/Bodu.Collections.Generic.IntervalTree-2.html">IntervalTree&lt;TKey, TValue&gt;</a> store <em>closed</em> <code>[low, high]</code> intervals that may freely overlap — duplicates included — over a max-endpoint augmented red-black tree. Queries return <em>every</em> match: <code>QueryPoint</code> (stabbing) and <code>QueryOverlaps</code> (window) run in O(log n + k) where <code>k</code> is the number of results, and <code>Intersects</code> / <code>IntersectsPoint</code> answer existence in O(log n). Reach for it when overlap is the data (bookings, effective-dated records, genomic ranges).</li>
+</ul>
+<p>The two are complements, not competitors: a range map answers &quot;which bucket?&quot;, an interval tree answers &quot;which of these things cover this point?&quot;.</p>
+<h2 id="approximate-sketches">Approximate sketches</h2>
+<p>The <code>Bodu.Collections.Probabilistic</code> types are <strong>sketches</strong>: fixed-size summaries that answer queries about unbounded streams by accepting a quantified, <em>one-sided</em> error. Each is sized once from its accuracy parameters and never grows, and each states which direction it can be wrong in:</p>
+<table>
+<thead>
+<tr>
+<th>Sketch</th>
+<th>Question</th>
+<th>Error contract</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Probabilistic.BloomFilter-1.html">BloomFilter&lt;T&gt;</a></td>
+<td>&quot;Have I seen this element?&quot;</td>
+<td><strong>No false negatives.</strong> Added elements always report present; never-added elements misreport at roughly the design false-positive rate.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Probabilistic.CountMinSketch-1.html">CountMinSketch&lt;T&gt;</a></td>
+<td>&quot;How many times has this occurred?&quot;</td>
+<td><strong>Never underestimates.</strong> With probability ≥ <code>1 − δ</code>, an estimate exceeds the truth by at most <code>ε · TotalCount</code>.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Probabilistic.HyperLogLog-1.html">HyperLogLog&lt;T&gt;</a></td>
+<td>&quot;How many distinct elements?&quot;</td>
+<td>Symmetric relative error ~<code>1.04/√m</code> for <code>m = 2^precision</code> registers — a few percent in a few kilobytes.</td>
+</tr>
+</tbody>
+</table>
+<p>The one-sided contracts are what make sketches composable into exact systems: a Bloom filter can safely <em>skip</em> work (a &quot;no&quot; is definitive), a count-min sketch can safely <em>throttle</em> (it never lets a heavy hitter hide). All three support parameter-compatible merging (<code>UnionWith</code> / <code>MergeWith</code>) and version-checked export/import for cross-process aggregation.</p>
+<h2 id="bidirectional-one-to-one-mapping">Bidirectional one-to-one mapping</h2>
+<p>A <a class="xref" href="../../api/Bodu.Collections.Generic.BiDictionary-2.html">BiDictionary&lt;TKey, TValue&gt;</a> maintains a strict <strong>one-to-one</strong> correspondence: keys are unique <em>and values are unique</em>, so lookup is O(1) in both directions. The <code>Inverse</code> property is a live view sharing the same storage — writes through either face are visible through the other, with no copy and no synchronisation step. Because a value insert can collide with an existing value, the construction-time <a class="xref" href="../../api/Bodu.Collections.Generic.BiDictionaryDuplicateValuePolicy.html">BiDictionaryDuplicateValuePolicy</a> decides the outcome: <code>Throw</code> treats a duplicate value as a bug; <code>Replace</code> evicts the pair that previously held the value. Use it wherever two identifier spaces alias the same entities (id ↔ code, name ↔ handle) and a second reverse dictionary would inevitably drift.</p>
+<h2 id="layered-first-wins-views">Layered first-wins views</h2>
+<p>A <a class="xref" href="../../api/Bodu.Collections.Generic.LayeredDictionary-2.html">LayeredDictionary&lt;TKey, TValue&gt;</a> composes an ordered list of dictionaries into a single <strong>first-wins</strong> read-through view (Python's <code>ChainMap</code>): a read walks the layers in order and returns the first hit, all writes go to the first layer only, and removing a first-layer entry <em>unshadows</em> the value beneath it. The layers are held by reference — mutate an underlying dictionary and the view reflects it immediately. This is the configuration-override shape (defaults ← environment ← per-request) without flattening or copying. Its sibling <a class="xref" href="../../api/Bodu.Collections.Generic.DefaultingDictionary-2.html">DefaultingDictionary&lt;TKey, TValue&gt;</a> solves the adjacent problem — a <em>missing</em> key on the indexer getter materializes, stores, and returns a factory default (Python's <code>defaultdict</code>), so grouping and counting loops lose their <code>TryGetValue</code>-else-add boilerplate.</p>
+<h2 id="path-compression-and-multi-pattern-matching">Path compression and multi-pattern matching</h2>
+<p>The trie family trades on the same idea at two scales:</p>
+<ul>
+<li><strong>Path compression.</strong> A plain <a class="xref" href="../../api/Bodu.Collections.Generic.Trees.Trie.html">Trie</a> spends one node per character, which is wasteful when keys are long and branching is sparse. <a class="xref" href="../../api/Bodu.Collections.Generic.Trees.RadixTrie.html">RadixTrie</a> (PATRICIA-style) fuses each single-child run into one string-labelled edge — edges split on insert and re-fuse on remove — so node count tracks <em>key</em> count rather than character count. The public surface is member-for-member identical to <code>Trie</code>; choose by key shape (URLs, file paths, and hierarchical identifiers favour the radix form).</li>
+<li><strong>Multi-pattern matching.</strong> An <a class="xref" href="../../api/Bodu.Collections.Generic.Trees.AhoCorasickAutomaton.html">AhoCorasickAutomaton</a> extends the trie with failure links, turning a <em>set of patterns</em> into a single automaton that scans a text once and reports <strong>every</strong> occurrence of <strong>every</strong> pattern — overlapping and nested matches included — in O(text + matches), independent of pattern count. The automaton is immutable after construction: build once from the pattern set, reuse across scans and threads. The keyed variant carries a caller value per pattern onto each match, which is what content-filtering and token-routing pipelines need.</li>
+</ul>
+<h2 id="multi-value-and-multi-set-semantics">Multi-value and multi-set semantics</h2>
+<p>A <strong>multi-</strong> prefix in this library means <em>duplicate-aware</em>:</p>
+<ul>
+<li><a class="xref" href="../../api/Bodu.Collections.Generic.MultiValueDictionary-2.html">MultiValueDictionary&lt;TKey, TValue&gt;</a> — sometimes called a multimap. A single key maps to zero or more values; values for the same key are retained in insertion order. <code>Count</code> is the total number of key-value entries; <code>KeyCount</code> is the number of distinct keys. The indexer returns a live read-only view that reflects later mutations to the same key, and an empty list (not <code>null</code>) when the key is absent.</li>
+<li><a class="xref" href="../../api/Bodu.Collections.Generic.Multiset-1.html">Multiset&lt;T&gt;</a> — a set that tracks the <em>multiplicity</em> of each element. <code>Count</code> includes multiplicity (<code>{a, a, b}</code> has count 3); <code>DistinctCount</code> does not. Set-theoretic operations (<code>Union</code>, <code>Intersect</code>, <code>Except</code>, <code>Sum</code>) return new multisets and follow multiset algebra — <code>Union</code> is element-wise <code>max(a, b)</code>, <code>Intersect</code> is <code>min(a, b)</code>, <code>Except</code> is <code>max(0, a − b)</code>, and <code>Sum</code> is <code>a + b</code>.</li>
+</ul>
+<p>Both types are not thread-safe and require external synchronisation under concurrent mutation.</p>
+<h2 id="range-keyed-lookup">Range-keyed lookup</h2>
+<p>A <a class="xref" href="../../api/Bodu.Collections.Generic.Range-1.html">Range&lt;T&gt;</a> is an immutable half-open interval <code>[StartInclusive, EndExclusive)</code> over any <code>IComparable&lt;T&gt;</code> endpoint. The half-open convention matches .NET span slicing and <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.range">Range</a>: adjacent ranges (<code>[0, 5)</code> followed by <code>[5, 10)</code>) abut without overlapping, which is the property the collection types rely on for internal consistency.</p>
+<p>Two range-keyed collections build on it:</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Backing</th>
+<th>Behaviour on overlap</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.RangeDictionary-2.html">RangeDictionary&lt;TKey, TValue&gt;</a></td>
+<td>Sorted parallel arrays of start, end, and value</td>
+<td>Rejects overlapping insertions with <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a>.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.RangeSet-1.html">RangeSet&lt;T&gt;</a></td>
+<td>Sorted parallel arrays of start and end</td>
+<td>Merges adjacent and overlapping ranges on insertion.</td>
+</tr>
+</tbody>
+</table>
+<p>Both use binary search across the start endpoints for O(log n) lookup. The constructor of <code>Range&lt;T&gt;</code> validates that <code>start &lt; end</code> and rejects degenerate or inverted ranges.</p>
+<h2 id="index-aware-collections">Index-aware collections</h2>
+<p>An <strong>index-aware</strong> collection exposes positional access alongside its primary semantic. Two types in <code>Bodu.Collections.Generic</code> carry the prefix:</p>
+<ul>
+<li><a class="xref" href="../../api/Bodu.Collections.Generic.IndexedSet-1.html">IndexedSet&lt;T&gt;</a> — an insertion-ordered set that implements the full <code>IList&lt;T&gt;</code> contract. Duplicates are rejected on add (<code>Add</code> returns <code>false</code>), positional mutation works through <code>Insert</code>, <code>RemoveAt</code>, <code>Move</code>, and the indexer setter. Backed by a contiguous element array plus an open-addressing hash table, giving O(1) <code>Contains</code>, <code>IndexOf</code>, and indexed read. <a class="xref" href="../../api/Bodu.Collections.Generic.OrderedSet-1.html">OrderedSet&lt;T&gt;</a> is the conceptually-a-set sibling that shares the same engine but exposes indices only as a read-only view.</li>
+<li><a class="xref" href="../../api/Bodu.Collections.Generic.IndexedPriorityQueue-2.html">IndexedPriorityQueue&lt;TElement, TPriority&gt;</a> — a binary min-heap that maintains an element-to-slot map alongside the heap. The map turns <code>Contains</code>, <code>TryGetPriority</code>, <code>Update</code>, <code>Remove</code>, and <code>EnqueueOrUpdate</code> into O(1) lookup plus O(log n) heap repair — the operations Dijkstra's algorithm, Prim's algorithm, and A* require. Elements are unique; <code>Enqueue</code> of an existing element throws.</li>
+</ul>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="index.html">Introduction</a></strong> — the namespace map and headline types.</li>
+<li><strong><a href="getting-started.html">Getting started</a></strong> — install + runnable minimal samples.</li>
+<li><strong><a href="../../guides/core/choosing-a-collection.html">Choosing a collection</a></strong> — the decision guide across the catalogue.</li>
+<li><strong><a href="../../guides/core/index.html">Collections guides</a></strong> — recipe-style walk-throughs for every headline type.</li>
+<li><strong><a href="../collections-concurrent/concepts.html">Bodu.Collections.Concurrent concepts</a></strong> — the concurrency vocabulary for the thread-safe companion package.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Collections.Generic.html">Bodu.Collections.Generic API reference</a></strong> — full type-by-type docs.</li>
+<li><strong><a href="../topics/core-foundations.html">Core Foundations topic</a></strong> — the package family; the <a href="../topics/core-foundations-concepts.html">topic concepts</a> page collects the shared vocabulary.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

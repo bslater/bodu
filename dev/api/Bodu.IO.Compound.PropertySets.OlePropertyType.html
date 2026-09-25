@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Enum OlePropertyType | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Enum OlePropertyType | BODU ">
+    
+    <meta name="description" content="Identifies the scalar value type carried by an , corresponding to the COM VARENUM (VT_*) constants used in OLE property sets.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyType">
+
+
+
+
+  <h1 id="Bodu_IO_Compound_PropertySets_OlePropertyType" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyType" class="text-break">Enum OlePropertyType</h1>
+  <div class="markdown level0 summary"><p>Identifies the scalar value type carried by an <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertyValue.html">OlePropertyValue</a>, corresponding to the COM
+<code>VARENUM</code> (<code>VT_*</code>) constants used in OLE property sets.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.IO.html">IO</a>.<a class="xref" href="Bodu.IO.Compound.html">Compound</a>.<a class="xref" href="Bodu.IO.Compound.PropertySets.html">PropertySets</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.IO.Compound.dll</h6>
+  <h5 id="Bodu_IO_Compound_PropertySets_OlePropertyType_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public enum OlePropertyType : ushort</code></pre>
+  </div>
+  <h5 id="Bodu_IO_Compound_PropertySets_OlePropertyType_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>These values are the base (scalar) type only; the vector modifier (<code>VT_VECTOR</code>) is surfaced separately through
+<a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertyValue.IsVector.html#Bodu_IO_Compound_PropertySets_OlePropertyValue_IsVector">IsVector</a>.</p>
+</div>
+  <h3 id="fields">Fields
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    <thead>
+    </thead></thead><tbody>
+      <tr>
+        <td id="Bodu_IO_Compound_PropertySets_OlePropertyType_Empty">Empty</td>
+        <td><p>An empty value (<code>VT_EMPTY</code>).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_PropertySets_OlePropertyType_Null">Null</td>
+        <td><p>A null value (<code>VT_NULL</code>).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_PropertySets_OlePropertyType_Int16">Int16</td>
+        <td><p>A signed 16-bit integer (<code>VT_I2</code>).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_PropertySets_OlePropertyType_Int32">Int32</td>
+        <td><p>A signed 32-bit integer (<code>VT_I4</code>).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_PropertySets_OlePropertyType_Float32">Float32</td>
+        <td><p>A 32-bit IEEE floating-point value (<code>VT_R4</code>).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_PropertySets_OlePropertyType_Float64">Float64</td>
+        <td><p>A 64-bit IEEE floating-point value (<code>VT_R8</code>).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_PropertySets_OlePropertyType_Variant">Variant</td>
+        <td><p>A self-describing variant element (<code>VT_VARIANT</code>), used within variant vectors.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_PropertySets_OlePropertyType_Currency">Currency</td>
+        <td><p>A currency value (<code>VT_CY</code>), surfaced as <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_PropertySets_OlePropertyType_Date">Date</td>
+        <td><p>An OLE automation date (<code>VT_DATE</code>), surfaced as <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetimeoffset">DateTimeOffset</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_PropertySets_OlePropertyType_BinaryString">BinaryString</td>
+        <td><p>A length-prefixed code-page string (<code>VT_BSTR</code>).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_PropertySets_OlePropertyType_Boolean">Boolean</td>
+        <td><p>A boolean value (<code>VT_BOOL</code>).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_PropertySets_OlePropertyType_Int8">Int8</td>
+        <td><p>A signed 8-bit integer (<code>VT_I1</code>).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_PropertySets_OlePropertyType_UInt8">UInt8</td>
+        <td><p>An unsigned 8-bit integer (<code>VT_UI1</code>).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_PropertySets_OlePropertyType_UInt16">UInt16</td>
+        <td><p>An unsigned 16-bit integer (<code>VT_UI2</code>).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_PropertySets_OlePropertyType_UInt32">UInt32</td>
+        <td><p>An unsigned 32-bit integer (<code>VT_UI4</code>).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_PropertySets_OlePropertyType_Int64">Int64</td>
+        <td><p>A signed 64-bit integer (<code>VT_I8</code>).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_PropertySets_OlePropertyType_UInt64">UInt64</td>
+        <td><p>An unsigned 64-bit integer (<code>VT_UI8</code>).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_PropertySets_OlePropertyType_AnsiString">AnsiString</td>
+        <td><p>A length-prefixed ANSI string decoded with the section code page (<code>VT_LPSTR</code>).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_PropertySets_OlePropertyType_UnicodeString">UnicodeString</td>
+        <td><p>A length-prefixed UTF-16 string (<code>VT_LPWSTR</code>).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_PropertySets_OlePropertyType_FileTime">FileTime</td>
+        <td><p>A Windows FILETIME (<code>VT_FILETIME</code>), surfaced as <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetimeoffset">DateTimeOffset</a> or <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.timespan">TimeSpan</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_PropertySets_OlePropertyType_Blob">Blob</td>
+        <td><p>An opaque length-prefixed binary blob (<code>VT_BLOB</code>).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_PropertySets_OlePropertyType_ClipboardData">ClipboardData</td>
+        <td><p>Clipboard data (<code>VT_CF</code>), surfaced as a byte array.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Bodu.Extensions.BufferConverter.CopyTo.html#Bodu_Extensions_BufferConverter_CopyTo__1___0_System_Byte___System_Int32_">BufferConverter.CopyTo&lt;OlePropertyType&gt;(OlePropertyType, byte[], int)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;OlePropertyType&gt;(OlePropertyType, OlePropertyType, IComparer&lt;OlePropertyType&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;OlePropertyType&gt;(OlePropertyType, OlePropertyType, IComparer&lt;OlePropertyType&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Clamp.html#Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.Clamp&lt;OlePropertyType&gt;(OlePropertyType, OlePropertyType?, OlePropertyType?, IComparer&lt;OlePropertyType&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsBetween.html#Bodu_Extensions_ComparableExtensions_IsBetween__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsBetween&lt;OlePropertyType&gt;(OlePropertyType, OlePropertyType?, OlePropertyType?, IComparer&lt;OlePropertyType&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;OlePropertyType&gt;(OlePropertyType, OlePropertyType, IComparer&lt;OlePropertyType&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThanOrEqual&lt;OlePropertyType&gt;(OlePropertyType, OlePropertyType?, IComparer&lt;OlePropertyType&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThan.html#Bodu_Extensions_ComparableExtensions_IsGreaterThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThan&lt;OlePropertyType&gt;(OlePropertyType, OlePropertyType?, IComparer&lt;OlePropertyType&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThanOrEqual&lt;OlePropertyType&gt;(OlePropertyType, OlePropertyType?, IComparer&lt;OlePropertyType&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThan.html#Bodu_Extensions_ComparableExtensions_IsLessThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThan&lt;OlePropertyType&gt;(OlePropertyType, OlePropertyType?, IComparer&lt;OlePropertyType&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsOutside.html#Bodu_Extensions_ComparableExtensions_IsOutside__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsOutside&lt;OlePropertyType&gt;(OlePropertyType, OlePropertyType?, OlePropertyType?, IComparer&lt;OlePropertyType&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;OlePropertyType&gt;(OlePropertyType, OlePropertyType, IComparer&lt;OlePropertyType&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;OlePropertyType&gt;(OlePropertyType, OlePropertyType, IComparer&lt;OlePropertyType&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.EnumExtensions.ClearFlag.html#Bodu_Extensions_EnumExtensions_ClearFlag__1___0___0_">EnumExtensions.ClearFlag&lt;OlePropertyType&gt;(OlePropertyType, OlePropertyType)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.EnumExtensions.GetDescription.html#Bodu_Extensions_EnumExtensions_GetDescription__1___0_">EnumExtensions.GetDescription&lt;OlePropertyType&gt;(OlePropertyType)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.EnumExtensions.GetDisplayName.html#Bodu_Extensions_EnumExtensions_GetDisplayName__1___0_">EnumExtensions.GetDisplayName&lt;OlePropertyType&gt;(OlePropertyType)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.EnumExtensions.HasAllFlags.html#Bodu_Extensions_EnumExtensions_HasAllFlags__1___0___0_">EnumExtensions.HasAllFlags&lt;OlePropertyType&gt;(OlePropertyType, OlePropertyType)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.EnumExtensions.HasAnyFlag.html#Bodu_Extensions_EnumExtensions_HasAnyFlag__1___0___0_">EnumExtensions.HasAnyFlag&lt;OlePropertyType&gt;(OlePropertyType, OlePropertyType)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.EnumExtensions.SetFlag.html#Bodu_Extensions_EnumExtensions_SetFlag__1___0___0_">EnumExtensions.SetFlag&lt;OlePropertyType&gt;(OlePropertyType, OlePropertyType)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.EnumExtensions.ToggleFlag.html#Bodu_Extensions_EnumExtensions_ToggleFlag__1___0___0_">EnumExtensions.ToggleFlag&lt;OlePropertyType&gt;(OlePropertyType, OlePropertyType)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.EnumExtensions.TryGetDescription.html#Bodu_Extensions_EnumExtensions_TryGetDescription__1___0_System_String__">EnumExtensions.TryGetDescription&lt;OlePropertyType&gt;(OlePropertyType, out string)</a>
+  </div>
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

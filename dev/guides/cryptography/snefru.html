@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Using Snefru | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Using Snefru | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="using-snefru">Using Snefru</h1>
+
+<p>Snefru is a 1990 cryptographic hash by Ralph Merkle, named after the Egyptian pharaoh. It runs a block-mix function over the input and keeps the low half of the state as output. <strong>Bodu.Security.Cryptography</strong> ships both published widths:</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Output</th>
+<th>Block size</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.Snefru128.html">Snefru128</a></td>
+<td>128 bits</td>
+<td>48 bytes</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.Snefru256.html">Snefru256</a></td>
+<td>256 bits</td>
+<td>32 bytes</td>
+</tr>
+</tbody>
+</table>
+<p>Both derive from a shared <a class="xref" href="../../api/Bodu.Security.Cryptography.Snefru.html">Snefru</a> base, which sits on <a class="xref" href="../../api/Bodu.Security.Cryptography.BlockHashAlgorithm.html">BlockHashAlgorithm</a> and, through it, on <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a>. Each input block runs through 8 rounds of S-box substitution and word-wise rotation; the low half of the 512-bit working buffer becomes the next chaining value, and the final chaining value is the digest.</p>
+<div class="WARNING">
+<h5>Warning</h5>
+<p>Snefru is <strong>cryptographically broken</strong> — it satisfies none of the resistance properties a cryptographic hash is supposed to provide. Eli Biham published practical collisions against both the 2-pass and 4-pass variants. The implementation in this package is provided for <strong>interoperability with legacy systems and for research</strong>, not for protecting real data. An attacker who can choose part of the input can forge a colliding message at negligible cost, so Snefru must never sit on a security boundary — no password hashing, no signature input, no integrity check that an adversary can influence. For any new work where you need a cryptographic hash, use the BCL's <code>System.Security.Cryptography.SHA256</code> / <code>System.Security.Cryptography.SHA512</code>, or <a class="xref" href="../../api/Bodu.Security.Cryptography.Tiger.html">Tiger</a> if you need 192-bit output.</p>
+</div>
+<h2 id="pattern-1--compute-a-digest">Pattern 1 — compute a digest</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Text;
+using Bodu.Security.Cryptography;
+
+byte[] data = Encoding.UTF8.GetBytes(&quot;the quick brown fox&quot;);
+
+using var snefru = new Snefru256();
+byte[] digest   = snefru.ComputeHash(data);   // 32 bytes
+string hex      = Convert.ToHexString(digest);
+</code></pre>
+<p>Swap <code>Snefru256</code> for <code>Snefru128</code> for a 16-byte digest.</p>
+<h2 id="pattern-2--streaming">Pattern 2 — streaming</h2>
+<p>Snefru inherits the standard BCL streaming shape:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+
+using var snefru = new Snefru256();
+using var stream = File.OpenRead(&quot;archive.bin&quot;);
+byte[] digest = snefru.ComputeHash(stream);
+</code></pre>
+<p>You can also drive it block-by-block via <code>TransformBlock</code> / <code>TransformFinalBlock</code>.</p>
+<h2 id="pattern-3--the-two-widths">Pattern 3 — the two widths</h2>
+<p>The two classes are completely independent — the block size differs (48 bytes for Snefru-128, 32 bytes for Snefru-256), and the outputs are not truncations of one another. Pick the width your interoperating system specifies.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+
+using var snefru128 = new Snefru128();   // 128-bit output, 48-byte blocks
+using var snefru256 = new Snefru256();   // 256-bit output, 32-byte blocks
+</code></pre>
+<h2 id="when-to-use-snefru">When to use Snefru</h2>
+<ul>
+<li><strong>Interoperability</strong> with a legacy system that already uses Snefru (rare — Snefru is mostly of historical interest).</li>
+<li><strong>Research</strong> into early hash-function design, or as a test case for cryptanalysis tooling.</li>
+</ul>
+<p>For everything else, pick a modern digest. The <a href="hashing.html">hashing overview</a> lists the options in this package; for brand-new work, the BCL's SHA-2 family is the right default.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="hashing.html">Hashing overview</a> — how Snefru compares to the other hashes in this package.</li>
+<li><a href="tiger.html">Using Tiger</a> — another classic cryptographic hash with wider deployment.</li>
+<li><a href="cubehash.html">Using CubeHash</a> — a modern, highly tunable cryptographic hash (SHA-3 first-round submission).</li>
+<li><a class="xref" href="../../api/Bodu.Security.Cryptography.html">Bodu.Security.Cryptography namespace page</a>.</li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class Base85 | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class Base85 | BODU ">
+    
+    <meta name="description" content="Provides Base85 encoding and decoding of binary data using the Adobe Ascii85, ZeroMQ Z85, or Git-style alphabets.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Text.Encoding.Base85">
+
+
+
+  <h1 id="Bodu_Text_Encoding_Base85" data-uid="Bodu.Text.Encoding.Base85" class="text-break">Class Base85</h1>
+  <div class="markdown level0 summary"><p>Provides Base85 encoding and decoding of binary data using the Adobe Ascii85, ZeroMQ Z85, or Git-style alphabets.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><span class="xref">Base85</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Encoding.html">Encoding</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Text.Encoding.dll</h6>
+  <h5 id="Bodu_Text_Encoding_Base85_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class Base85</code></pre>
+  </div>
+  <h5 id="Bodu_Text_Encoding_Base85_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+Base85 packs four input bytes into a 32-bit unsigned integer, then divides by 85 four times to emit five output
+characters per four-byte group — a payload expansion of 25 %, compared to Base64's 33 % and Base16's 100 %.
+</p>
+<p>
+The Adobe Ascii85 variant recognises the character <code>z</code> as a shortcut for four zero bytes and permits partial
+trailing groups of one, two, or three bytes (output grows by one character per byte plus one). The Z85 variant
+requires the input to be a whole multiple of four bytes and does not use any shortcut. The
+<a class="xref" href="Bodu.Text.Encoding.Base85Variant.html#Bodu_Text_Encoding_Base85Variant_GitCompact">GitCompact</a> variant uses the Git binary-patch alphabet with the same compact
+partial-tail behaviour as Ascii85 but without the <code>z</code> shortcut or the Adobe delimiters; it implements only the
+alphabet and does not parse Git binary patches. The exact Git binary-patch line primitive (always five characters
+per group, with the decoded length carried out of band) is available through the <code>EncodeGitPadded</code> /
+<code>DecodeGitPadded</code> helpers.
+</p>
+<p>
+Base85 has no padding character. The <a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html#Bodu_Text_Encoding_BaseFormattingOptions_UpperCase">UpperCase</a>,
+<a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html#Bodu_Text_Encoding_BaseFormattingOptions_InsertSpacing">InsertSpacing</a>, <a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html#Bodu_Text_Encoding_BaseFormattingOptions_InsertLineBreaks">InsertLineBreaks</a>, and
+<a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html#Bodu_Text_Encoding_BaseFormattingOptions_OmitPadding">OmitPadding</a> flags are ignored on the encode side.
+<a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html#Bodu_Text_Encoding_BaseFormattingOptions_IncludePrefix">IncludePrefix</a> is honoured for the <a class="xref" href="Bodu.Text.Encoding.Base85Variant.html#Bodu_Text_Encoding_Base85Variant_Ascii85">Ascii85</a> variant
+— when set, the output is wrapped in the Adobe Ascii85 <code>&lt;~</code> / <code>~&gt;</code> delimiter pair. The flag is
+ignored for <a class="xref" href="Bodu.Text.Encoding.Base85Variant.html#Bodu_Text_Encoding_Base85Variant_Z85">Z85</a>.
+</p>
+<p>
+On the decode side, <a class="xref" href="Bodu.Text.Encoding.BaseFormatStyles.html#Bodu_Text_Encoding_BaseFormatStyles_IgnoreWhitespace">IgnoreWhitespace</a> permits whitespace in the input.
+<a class="xref" href="Bodu.Text.Encoding.BaseFormatStyles.html#Bodu_Text_Encoding_BaseFormatStyles_AllowPrefix">AllowPrefix</a> permits an optional <code>&lt;~</code> / <code>~&gt;</code> delimiter pair around
+the Ascii85 payload.
+</p>
+</div>
+  <h5 id="Bodu_Text_Encoding_Base85_examples"><strong>Examples</strong></h5>
+  <pre><code class="lang-csharp">byte[] data = "hello world"u8.ToArray();
+
+// Adobe Ascii85 (default) — the form used by PostScript and PDF, with the 'z' shortcut for all-zero groups.
+string ascii85 = Base85.Encode(data);
+
+// Wrap the output in the Adobe &lt;~ ... ~&gt; delimiter pair.
+string delimited = Base85.Encode(data, BaseFormattingOptions.IncludePrefix);
+
+// ZeroMQ Z85 — shell-safe alphabet; the input must be a multiple of four bytes.
+byte[] padded = "hello wor"u8.ToArray();    // 9 bytes — pad to 12 before encoding
+string z85    = Base85.Encode(padded.AsSpan(0, 8), Base85Variant.Z85);
+
+// Round-trip.
+byte[] roundtrip = Base85.Decode(ascii85);</code></pre>
+
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base85_Decode_System_Char___System_Int32_System_Int32_Bodu_Text_Encoding_Base85Variant_Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base85.Decode(System.Char[],System.Int32,System.Int32,Bodu.Text.Encoding.Base85Variant,Bodu.Text.Encoding.BaseFormatStyles)">
+          <a class="xref" href="Bodu.Text.Encoding.Base85.Decode.html#Bodu_Text_Encoding_Base85_Decode_System_Char___System_Int32_System_Int32_Bodu_Text_Encoding_Base85Variant_Bodu_Text_Encoding_BaseFormatStyles_">Decode(char[], int, int, Base85Variant, BaseFormatStyles)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes a portion of a character array.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base85_Decode_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_Base85Variant_Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base85.Decode(System.ReadOnlySpan{System.Char},Bodu.Text.Encoding.Base85Variant,Bodu.Text.Encoding.BaseFormatStyles)">
+          <a class="xref" href="Bodu.Text.Encoding.Base85.Decode.html#Bodu_Text_Encoding_Base85_Decode_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_Base85Variant_Bodu_Text_Encoding_BaseFormatStyles_">Decode(ReadOnlySpan&lt;char&gt;, Base85Variant, BaseFormatStyles)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes a Base85 character span into a byte array.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base85_Decode_System_String_Bodu_Text_Encoding_Base85Variant_Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base85.Decode(System.String,Bodu.Text.Encoding.Base85Variant,Bodu.Text.Encoding.BaseFormatStyles)">
+          <a class="xref" href="Bodu.Text.Encoding.Base85.Decode.html#Bodu_Text_Encoding_Base85_Decode_System_String_Bodu_Text_Encoding_Base85Variant_Bodu_Text_Encoding_BaseFormatStyles_">Decode(string, Base85Variant, BaseFormatStyles)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes a Base85 string into a byte array using the supplied variant.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base85_DecodeFromUtf8_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__System_Int32__Bodu_Text_Encoding_Base85Variant_Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base85.DecodeFromUtf8(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@,System.Int32@,Bodu.Text.Encoding.Base85Variant,Bodu.Text.Encoding.BaseFormatStyles)">
+          <a class="xref" href="Bodu.Text.Encoding.Base85.DecodeFromUtf8.html#Bodu_Text_Encoding_Base85_DecodeFromUtf8_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__System_Int32__Bodu_Text_Encoding_Base85Variant_Bodu_Text_Encoding_BaseFormatStyles_">DecodeFromUtf8(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, out int, out int, Base85Variant, BaseFormatStyles)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes UTF-8 Base85 bytes into a byte span using the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.operationstatus">OperationStatus</a> return convention.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base85_DecodeGitPadded_System_ReadOnlySpan_System_Char__System_Int32_Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base85.DecodeGitPadded(System.ReadOnlySpan{System.Char},System.Int32,Bodu.Text.Encoding.BaseFormatStyles)">
+          <a class="xref" href="Bodu.Text.Encoding.Base85.DecodeGitPadded.html#Bodu_Text_Encoding_Base85_DecodeGitPadded_System_ReadOnlySpan_System_Char__System_Int32_Bodu_Text_Encoding_BaseFormatStyles_">DecodeGitPadded(ReadOnlySpan&lt;char&gt;, int, BaseFormatStyles)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes a Git-padded Base85 character span, returning the leading <code class="paramref">decodedLength</code> bytes.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base85_DecodeGuid_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_Base85Variant_Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base85.DecodeGuid(System.ReadOnlySpan{System.Char},Bodu.Text.Encoding.Base85Variant,Bodu.Text.Encoding.BaseFormatStyles)">
+          <a class="xref" href="Bodu.Text.Encoding.Base85.DecodeGuid.html#Bodu_Text_Encoding_Base85_DecodeGuid_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_Base85Variant_Bodu_Text_Encoding_BaseFormatStyles_">DecodeGuid(ReadOnlySpan&lt;char&gt;, Base85Variant, BaseFormatStyles)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes a Base85 representation of a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.guid">Guid</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base85_Encode_System_Byte___Bodu_Text_Encoding_Base85Variant_Bodu_Text_Encoding_BaseFormattingOptions_" data-uid="Bodu.Text.Encoding.Base85.Encode(System.Byte[],Bodu.Text.Encoding.Base85Variant,Bodu.Text.Encoding.BaseFormattingOptions)">
+          <a class="xref" href="Bodu.Text.Encoding.Base85.Encode.html#Bodu_Text_Encoding_Base85_Encode_System_Byte___Bodu_Text_Encoding_Base85Variant_Bodu_Text_Encoding_BaseFormattingOptions_">Encode(byte[], Base85Variant, BaseFormattingOptions)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Encodes <code class="paramref">bytes</code> into a Base85 string using the supplied variant and options.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base85_Encode_System_Byte___System_Int32_System_Int32_Bodu_Text_Encoding_Base85Variant_Bodu_Text_Encoding_BaseFormattingOptions_" data-uid="Bodu.Text.Encoding.Base85.Encode(System.Byte[],System.Int32,System.Int32,Bodu.Text.Encoding.Base85Variant,Bodu.Text.Encoding.BaseFormattingOptions)">
+          <a class="xref" href="Bodu.Text.Encoding.Base85.Encode.html#Bodu_Text_Encoding_Base85_Encode_System_Byte___System_Int32_System_Int32_Bodu_Text_Encoding_Base85Variant_Bodu_Text_Encoding_BaseFormattingOptions_">Encode(byte[], int, int, Base85Variant, BaseFormattingOptions)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Encodes a portion of <code class="paramref">bytes</code> into a Base85 string.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base85_Encode_System_Guid_Bodu_Text_Encoding_Base85Variant_Bodu_Text_Encoding_BaseFormattingOptions_" data-uid="Bodu.Text.Encoding.Base85.Encode(System.Guid,Bodu.Text.Encoding.Base85Variant,Bodu.Text.Encoding.BaseFormattingOptions)">
+          <a class="xref" href="Bodu.Text.Encoding.Base85.Encode.html#Bodu_Text_Encoding_Base85_Encode_System_Guid_Bodu_Text_Encoding_Base85Variant_Bodu_Text_Encoding_BaseFormattingOptions_">Encode(Guid, Base85Variant, BaseFormattingOptions)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Encodes the byte representation of <code class="paramref">value</code> as a Base85 string. 16 bytes encode to exactly 20
+characters (Ascii85 or Z85).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base85_Encode_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_Base85Variant_Bodu_Text_Encoding_BaseFormattingOptions_" data-uid="Bodu.Text.Encoding.Base85.Encode(System.ReadOnlySpan{System.Byte},Bodu.Text.Encoding.Base85Variant,Bodu.Text.Encoding.BaseFormattingOptions)">
+          <a class="xref" href="Bodu.Text.Encoding.Base85.Encode.html#Bodu_Text_Encoding_Base85_Encode_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_Base85Variant_Bodu_Text_Encoding_BaseFormattingOptions_">Encode(ReadOnlySpan&lt;byte&gt;, Base85Variant, BaseFormattingOptions)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Encodes a span of bytes into a Base85 string.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base85_Encode_System_ReadOnlySpan_System_Byte__System_Buffers_IBufferWriter_System_Char__Bodu_Text_Encoding_Base85Variant_Bodu_Text_Encoding_BaseFormattingOptions_" data-uid="Bodu.Text.Encoding.Base85.Encode(System.ReadOnlySpan{System.Byte},System.Buffers.IBufferWriter{System.Char},Bodu.Text.Encoding.Base85Variant,Bodu.Text.Encoding.BaseFormattingOptions)">
+          <a class="xref" href="Bodu.Text.Encoding.Base85.Encode.html#Bodu_Text_Encoding_Base85_Encode_System_ReadOnlySpan_System_Byte__System_Buffers_IBufferWriter_System_Char__Bodu_Text_Encoding_Base85Variant_Bodu_Text_Encoding_BaseFormattingOptions_">Encode(ReadOnlySpan&lt;byte&gt;, IBufferWriter&lt;char&gt;, Base85Variant, BaseFormattingOptions)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Encodes <code class="paramref">source</code> as Base85 characters into <code class="paramref">writer</code>, suitable for use in
+pipelines and other <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.ibufferwriter-1">IBufferWriter&lt;T&gt;</a>-based scenarios.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base85_Encode_System_ReadOnlySpan_System_Byte__System_Span_System_Char__Bodu_Text_Encoding_Base85Variant_Bodu_Text_Encoding_BaseFormattingOptions_" data-uid="Bodu.Text.Encoding.Base85.Encode(System.ReadOnlySpan{System.Byte},System.Span{System.Char},Bodu.Text.Encoding.Base85Variant,Bodu.Text.Encoding.BaseFormattingOptions)">
+          <a class="xref" href="Bodu.Text.Encoding.Base85.Encode.html#Bodu_Text_Encoding_Base85_Encode_System_ReadOnlySpan_System_Byte__System_Span_System_Char__Bodu_Text_Encoding_Base85Variant_Bodu_Text_Encoding_BaseFormattingOptions_">Encode(ReadOnlySpan&lt;byte&gt;, Span&lt;char&gt;, Base85Variant, BaseFormattingOptions)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Encodes a span of bytes directly into a destination character span.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base85_EncodeGitPadded_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Encoding.Base85.EncodeGitPadded(System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.Text.Encoding.Base85.EncodeGitPadded.html#Bodu_Text_Encoding_Base85_EncodeGitPadded_System_ReadOnlySpan_System_Byte__">EncodeGitPadded(ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Encodes <code class="paramref">source</code> using the exact Git binary-patch Base85 primitive, emitting five characters
+for every one-to-four-byte group.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base85_EncodeToUtf8_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_Base85Variant_" data-uid="Bodu.Text.Encoding.Base85.EncodeToUtf8(System.ReadOnlySpan{System.Byte},Bodu.Text.Encoding.Base85Variant)">
+          <a class="xref" href="Bodu.Text.Encoding.Base85.EncodeToUtf8.html#Bodu_Text_Encoding_Base85_EncodeToUtf8_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_Base85Variant_">EncodeToUtf8(ReadOnlySpan&lt;byte&gt;, Base85Variant)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Encodes <code class="paramref">source</code> into a UTF-8 Base85 byte array.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base85_EncodeToUtf8_System_ReadOnlySpan_System_Byte__System_Buffers_IBufferWriter_System_Byte__Bodu_Text_Encoding_Base85Variant_" data-uid="Bodu.Text.Encoding.Base85.EncodeToUtf8(System.ReadOnlySpan{System.Byte},System.Buffers.IBufferWriter{System.Byte},Bodu.Text.Encoding.Base85Variant)">
+          <a class="xref" href="Bodu.Text.Encoding.Base85.EncodeToUtf8.html#Bodu_Text_Encoding_Base85_EncodeToUtf8_System_ReadOnlySpan_System_Byte__System_Buffers_IBufferWriter_System_Byte__Bodu_Text_Encoding_Base85Variant_">EncodeToUtf8(ReadOnlySpan&lt;byte&gt;, IBufferWriter&lt;byte&gt;, Base85Variant)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Encodes <code class="paramref">source</code> as UTF-8 Base85 bytes into <code class="paramref">writer</code>, suitable for use in
+pipelines and other <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.ibufferwriter-1">IBufferWriter&lt;T&gt;</a>-based scenarios.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base85_FromBase85String_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Encoding.Base85.FromBase85String(System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.Text.Encoding.Base85.FromBase85String.html#Bodu_Text_Encoding_Base85_FromBase85String_System_ReadOnlySpan_System_Byte__">FromBase85String(ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes UTF-8 Ascii85 bytes into a byte array.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base85_FromBase85String_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__System_Int32__" data-uid="Bodu.Text.Encoding.Base85.FromBase85String(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@,System.Int32@)">
+          <a class="xref" href="Bodu.Text.Encoding.Base85.FromBase85String.html#Bodu_Text_Encoding_Base85_FromBase85String_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__System_Int32__">FromBase85String(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, out int, out int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Ascii85 decode from a UTF-8 byte span returning <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.operationstatus">OperationStatus</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base85_FromBase85String_System_ReadOnlySpan_System_Char__" data-uid="Bodu.Text.Encoding.Base85.FromBase85String(System.ReadOnlySpan{System.Char})">
+          <a class="xref" href="Bodu.Text.Encoding.Base85.FromBase85String.html#Bodu_Text_Encoding_Base85_FromBase85String_System_ReadOnlySpan_System_Char__">FromBase85String(ReadOnlySpan&lt;char&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes an Ascii85 character span into a byte array.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base85_FromBase85String_System_ReadOnlySpan_System_Char__System_Span_System_Byte__System_Int32__System_Int32__" data-uid="Bodu.Text.Encoding.Base85.FromBase85String(System.ReadOnlySpan{System.Char},System.Span{System.Byte},System.Int32@,System.Int32@)">
+          <a class="xref" href="Bodu.Text.Encoding.Base85.FromBase85String.html#Bodu_Text_Encoding_Base85_FromBase85String_System_ReadOnlySpan_System_Char__System_Span_System_Byte__System_Int32__System_Int32__">FromBase85String(ReadOnlySpan&lt;char&gt;, Span&lt;byte&gt;, out int, out int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Ascii85 decode from a character span returning <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.operationstatus">OperationStatus</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base85_FromBase85String_System_String_" data-uid="Bodu.Text.Encoding.Base85.FromBase85String(System.String)">
+          <a class="xref" href="Bodu.Text.Encoding.Base85.FromBase85String.html#Bodu_Text_Encoding_Base85_FromBase85String_System_String_">FromBase85String(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes an Ascii85 string into a byte array.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base85_GetEncodedLength_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_Base85Variant_Bodu_Text_Encoding_BaseFormattingOptions_" data-uid="Bodu.Text.Encoding.Base85.GetEncodedLength(System.ReadOnlySpan{System.Byte},Bodu.Text.Encoding.Base85Variant,Bodu.Text.Encoding.BaseFormattingOptions)">
+          <a class="xref" href="Bodu.Text.Encoding.Base85.GetEncodedLength.html#Bodu_Text_Encoding_Base85_GetEncodedLength_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_Base85Variant_Bodu_Text_Encoding_BaseFormattingOptions_">GetEncodedLength(ReadOnlySpan&lt;byte&gt;, Base85Variant, BaseFormattingOptions)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the exact number of characters that
+<a class="xref" href="Bodu.Text.Encoding.Base85.Encode.html#Bodu_Text_Encoding_Base85_Encode_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_Base85Variant_Bodu_Text_Encoding_BaseFormattingOptions_">Encode(ReadOnlySpan&lt;byte&gt;, Base85Variant, BaseFormattingOptions)</a> will produce for the supplied
+data, accounting for the Adobe Ascii85 <code>z</code> shortcut on all-zero groups and the optional Adobe Ascii85
+<code>&lt;~ ... ~&gt;</code> delimiter pair.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base85_GetGitPaddedEncodedLength_System_Int32_" data-uid="Bodu.Text.Encoding.Base85.GetGitPaddedEncodedLength(System.Int32)">
+          <a class="xref" href="Bodu.Text.Encoding.Base85.GetGitPaddedEncodedLength.html#Bodu_Text_Encoding_Base85_GetGitPaddedEncodedLength_System_Int32_">GetGitPaddedEncodedLength(int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the exact number of characters that <a class="xref" href="Bodu.Text.Encoding.Base85.EncodeGitPadded.html#Bodu_Text_Encoding_Base85_EncodeGitPadded_System_ReadOnlySpan_System_Byte__">EncodeGitPadded(ReadOnlySpan&lt;byte&gt;)</a> produces for the
+supplied byte count.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base85_GetMaxDecodedLength_System_Int32_" data-uid="Bodu.Text.Encoding.Base85.GetMaxDecodedLength(System.Int32)">
+          <a class="xref" href="Bodu.Text.Encoding.Base85.GetMaxDecodedLength.html#Bodu_Text_Encoding_Base85_GetMaxDecodedLength_System_Int32_">GetMaxDecodedLength(int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the maximum number of bytes that decoding <code class="paramref">charCount</code> characters could produce (worst
+case, assuming no <code>z</code> shortcuts expand to four zero bytes).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base85_GetMaxEncodedLength_System_Int32_Bodu_Text_Encoding_Base85Variant_Bodu_Text_Encoding_BaseFormattingOptions_" data-uid="Bodu.Text.Encoding.Base85.GetMaxEncodedLength(System.Int32,Bodu.Text.Encoding.Base85Variant,Bodu.Text.Encoding.BaseFormattingOptions)">
+          <a class="xref" href="Bodu.Text.Encoding.Base85.GetMaxEncodedLength.html#Bodu_Text_Encoding_Base85_GetMaxEncodedLength_System_Int32_Bodu_Text_Encoding_Base85Variant_Bodu_Text_Encoding_BaseFormattingOptions_">GetMaxEncodedLength(int, Base85Variant, BaseFormattingOptions)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the maximum number of characters that encoding <code class="paramref">byteCount</code> bytes could produce (i.e.
+assuming no Ascii85 <code>z</code> shortcuts are emitted), with optional Adobe Ascii85 delimiters.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base85_IsBase85Digit_System_Char_Bodu_Text_Encoding_Base85Variant_" data-uid="Bodu.Text.Encoding.Base85.IsBase85Digit(System.Char,Bodu.Text.Encoding.Base85Variant)">
+          <a class="xref" href="Bodu.Text.Encoding.Base85.IsBase85Digit.html#Bodu_Text_Encoding_Base85_IsBase85Digit_System_Char_Bodu_Text_Encoding_Base85Variant_">IsBase85Digit(char, Base85Variant)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Indicates whether <code class="paramref">value</code> is a valid digit for the supplied Base85 variant. The Ascii85
+<code>z</code> shortcut is not considered a digit.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base85_IsValid_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_Base85Variant_Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base85.IsValid(System.ReadOnlySpan{System.Char},Bodu.Text.Encoding.Base85Variant,Bodu.Text.Encoding.BaseFormatStyles)">
+          <a class="xref" href="Bodu.Text.Encoding.Base85.IsValid.html#Bodu_Text_Encoding_Base85_IsValid_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_Base85Variant_Bodu_Text_Encoding_BaseFormatStyles_">IsValid(ReadOnlySpan&lt;char&gt;, Base85Variant, BaseFormatStyles)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Indicates whether <code class="paramref">source</code> is a valid Base85 input under the supplied variant.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base85_ToBase85String_System_Byte___" data-uid="Bodu.Text.Encoding.Base85.ToBase85String(System.Byte[])">
+          <a class="xref" href="Bodu.Text.Encoding.Base85.ToBase85String.html#Bodu_Text_Encoding_Base85_ToBase85String_System_Byte___">ToBase85String(byte[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Encodes <code class="paramref">inArray</code> into an Adobe Ascii85 string.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base85_ToBase85String_System_Byte___System_Int32_System_Int32_" data-uid="Bodu.Text.Encoding.Base85.ToBase85String(System.Byte[],System.Int32,System.Int32)">
+          <a class="xref" href="Bodu.Text.Encoding.Base85.ToBase85String.html#Bodu_Text_Encoding_Base85_ToBase85String_System_Byte___System_Int32_System_Int32_">ToBase85String(byte[], int, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Encodes a portion of <code class="paramref">inArray</code> into an Ascii85 string.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base85_ToBase85String_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Encoding.Base85.ToBase85String(System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.Text.Encoding.Base85.ToBase85String.html#Bodu_Text_Encoding_Base85_ToBase85String_System_ReadOnlySpan_System_Byte__">ToBase85String(ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Encodes <code class="paramref">bytes</code> into an Ascii85 string.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base85_TryDecode_System_ReadOnlySpan_System_Char__System_Span_System_Byte__System_Int32__Bodu_Text_Encoding_Base85Variant_Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base85.TryDecode(System.ReadOnlySpan{System.Char},System.Span{System.Byte},System.Int32@,Bodu.Text.Encoding.Base85Variant,Bodu.Text.Encoding.BaseFormatStyles)">
+          <a class="xref" href="Bodu.Text.Encoding.Base85.TryDecode.html#Bodu_Text_Encoding_Base85_TryDecode_System_ReadOnlySpan_System_Char__System_Span_System_Byte__System_Int32__Bodu_Text_Encoding_Base85Variant_Bodu_Text_Encoding_BaseFormatStyles_">TryDecode(ReadOnlySpan&lt;char&gt;, Span&lt;byte&gt;, out int, Base85Variant, BaseFormatStyles)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to decode Base85 characters into a destination byte span.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base85_TryDecodeGitPadded_System_ReadOnlySpan_System_Char__System_Int32_System_Span_System_Byte__System_Int32__Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base85.TryDecodeGitPadded(System.ReadOnlySpan{System.Char},System.Int32,System.Span{System.Byte},System.Int32@,Bodu.Text.Encoding.BaseFormatStyles)">
+          <a class="xref" href="Bodu.Text.Encoding.Base85.TryDecodeGitPadded.html#Bodu_Text_Encoding_Base85_TryDecodeGitPadded_System_ReadOnlySpan_System_Char__System_Int32_System_Span_System_Byte__System_Int32__Bodu_Text_Encoding_BaseFormatStyles_">TryDecodeGitPadded(ReadOnlySpan&lt;char&gt;, int, Span&lt;byte&gt;, out int, BaseFormatStyles)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to decode a Git-padded Base85 character span, returning the leading <code class="paramref">decodedLength</code>
+bytes.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base85_TryDecodeGuid_System_ReadOnlySpan_System_Char__System_Guid__Bodu_Text_Encoding_Base85Variant_Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base85.TryDecodeGuid(System.ReadOnlySpan{System.Char},System.Guid@,Bodu.Text.Encoding.Base85Variant,Bodu.Text.Encoding.BaseFormatStyles)">
+          <a class="xref" href="Bodu.Text.Encoding.Base85.TryDecodeGuid.html#Bodu_Text_Encoding_Base85_TryDecodeGuid_System_ReadOnlySpan_System_Char__System_Guid__Bodu_Text_Encoding_Base85Variant_Bodu_Text_Encoding_BaseFormatStyles_">TryDecodeGuid(ReadOnlySpan&lt;char&gt;, out Guid, Base85Variant, BaseFormatStyles)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to decode a Base85 representation of a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.guid">Guid</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base85_TryEncode_System_ReadOnlySpan_System_Byte__System_Span_System_Char__System_Int32__Bodu_Text_Encoding_Base85Variant_Bodu_Text_Encoding_BaseFormattingOptions_" data-uid="Bodu.Text.Encoding.Base85.TryEncode(System.ReadOnlySpan{System.Byte},System.Span{System.Char},System.Int32@,Bodu.Text.Encoding.Base85Variant,Bodu.Text.Encoding.BaseFormattingOptions)">
+          <a class="xref" href="Bodu.Text.Encoding.Base85.TryEncode.html#Bodu_Text_Encoding_Base85_TryEncode_System_ReadOnlySpan_System_Byte__System_Span_System_Char__System_Int32__Bodu_Text_Encoding_Base85Variant_Bodu_Text_Encoding_BaseFormattingOptions_">TryEncode(ReadOnlySpan&lt;byte&gt;, Span&lt;char&gt;, out int, Base85Variant, BaseFormattingOptions)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to encode a span of bytes into a destination character span.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base85_TryEncodeGitPadded_System_ReadOnlySpan_System_Byte__System_Span_System_Char__System_Int32__" data-uid="Bodu.Text.Encoding.Base85.TryEncodeGitPadded(System.ReadOnlySpan{System.Byte},System.Span{System.Char},System.Int32@)">
+          <a class="xref" href="Bodu.Text.Encoding.Base85.TryEncodeGitPadded.html#Bodu_Text_Encoding_Base85_TryEncodeGitPadded_System_ReadOnlySpan_System_Byte__System_Span_System_Char__System_Int32__">TryEncodeGitPadded(ReadOnlySpan&lt;byte&gt;, Span&lt;char&gt;, out int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to encode <code class="paramref">source</code> using the Git binary-patch Base85 primitive into a destination
+character span.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base85_TryEncodeToUtf8_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__Bodu_Text_Encoding_Base85Variant_" data-uid="Bodu.Text.Encoding.Base85.TryEncodeToUtf8(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@,Bodu.Text.Encoding.Base85Variant)">
+          <a class="xref" href="Bodu.Text.Encoding.Base85.TryEncodeToUtf8.html#Bodu_Text_Encoding_Base85_TryEncodeToUtf8_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__Bodu_Text_Encoding_Base85Variant_">TryEncodeToUtf8(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, out int, Base85Variant)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to encode <code class="paramref">source</code> as UTF-8 Base85 bytes into <code class="paramref">destination</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base85_TryToBase85String_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__" data-uid="Bodu.Text.Encoding.Base85.TryToBase85String(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@)">
+          <a class="xref" href="Bodu.Text.Encoding.Base85.TryToBase85String.html#Bodu_Text_Encoding_Base85_TryToBase85String_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__">TryToBase85String(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, out int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to encode <code class="paramref">source</code> as Ascii85 UTF-8 bytes into <code class="paramref">utf8Destination</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base85_TryToBase85String_System_ReadOnlySpan_System_Byte__System_Span_System_Char__System_Int32__" data-uid="Bodu.Text.Encoding.Base85.TryToBase85String(System.ReadOnlySpan{System.Byte},System.Span{System.Char},System.Int32@)">
+          <a class="xref" href="Bodu.Text.Encoding.Base85.TryToBase85String.html#Bodu_Text_Encoding_Base85_TryToBase85String_System_ReadOnlySpan_System_Byte__System_Span_System_Char__System_Int32__">TryToBase85String(ReadOnlySpan&lt;byte&gt;, Span&lt;char&gt;, out int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to encode <code class="paramref">source</code> into <code class="paramref">destination</code> using Ascii85.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

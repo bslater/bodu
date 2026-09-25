@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Bodu.Financial | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Bodu.Financial | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="bodufinancial">Bodu.Financial</h1>
+
+<p><code>Bodu.Financial</code> is the financial-primitives library that pairs with
+<code>Bodu.Numerics</code>. It ships the money, currency, and foreign-exchange
+types that an enterprise / accounting workload needs — kept separate
+from the generic numeric primitives so consumers of <code>Fraction&lt;T&gt;</code>
+don't pull in the 184-currency catalogue and the FX provider stack
+they don't need.</p>
+<p>The package references <code>Bodu.Numerics</code> so <code>Money&lt;TCurrency&gt;</code> can
+hand off to <code>Fraction&lt;BigInteger&gt;</code> for exact-arithmetic chains via
+<code>ToFraction()</code> / <code>FromFraction(…)</code> / <code>MultiplyExact(…)</code>.</p>
+<h2 id="whats-included">What's included</h2>
+<ul>
+<li><strong><a class="xref" href="../../api/Bodu.Financial.Money-1.html"><code>Money&lt;TCurrency&gt;</code></a></strong> — an
+immutable monetary amount whose currency is encoded at the type
+level via an <code>ICurrency</code> tag, so cross-currency arithmetic fails
+the build rather than running with the wrong unit at runtime.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Financial.Money.html"><code>Money</code></a></strong> — the
+runtime-tagged sister type for &quot;currency unknown until
+deserialisation&quot; scenarios.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Financial.MoneyBag.html"><code>MoneyBag</code></a></strong> — immutable
+mixed-currency portfolio with aggregate-then-round and
+round-each-then-sum policies.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Financial.Currencies.CurrencyRegistry.html"><code>CurrencyRegistry</code></a></strong> —
+runtime ISO-to-metadata lookup, populated from the source-generated
+catalogue.</li>
+<li><strong>FX provider stack:</strong>
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.IRateProvider.html"><code>IRateProvider</code></a>
+for timeless rates plus
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.IDatedRateProvider.html"><code>IDatedRateProvider</code></a>
+for dated lookups with full audit metadata
+(<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.ExchangeRate.html"><code>ExchangeRate</code></a>,
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateSeries.html"><code>RateSeries</code></a>,
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.FixedDatedRateProvider.html"><code>FixedDatedRateProvider</code></a>; grouping via
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider.html"><code>AggregatingRateProvider</code></a>).</li>
+<li><strong>FX editing surface:</strong>
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateSeriesBuilder.html"><code>RateSeriesBuilder</code></a>
+as the mutable companion to <code>RateSeries</code>, plus
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateTableBuilder.html"><code>RateTableBuilder</code></a> for
+multi-pair / multi-provider import workflows that produce
+immutable snapshots. Live providers export those snapshots back out —
+see <a href="exchange-rate-providers.html#snapshotting-and-exporting-rates">Snapshotting and exporting rates</a>.</li>
+</ul>
+<h2 id="guides">Guides</h2>
+<div class="bodu-cards">
+<div class="bodu-card">
+  <h3><a href="money.html">Working with <code>Money&lt;TCurrency&gt;</code></a></h3>
+  <p>Type-parameter currency, allocation, conversion, exact-arithmetic chains, formatting and parsing, cash rounding, and the runtime-tagged <code>Money</code> / <code>MoneyBag</code> companions.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="monetary-precision.html">Monetary precision &amp; unit pricing</a></h3>
+  <p>Sub-minor-unit prices — a 6-dp share price in 2-dp USD — via explicit-scale <code>Money</code> and unrounded <code>CalculatedMoney</code>, with the scale preserved through arithmetic and every JSON wire shape.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="exchange-rates.html">Working with exchange rates</a></h3>
+  <p>The FX provider stack — timeless vs. dated contracts, the audit-grade <code>RateLookupResult</code>, provider grouping via the aggregator, and the <code>RateSeriesBuilder</code> + <code>RateTableBuilder</code> editing surface.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="exchange-types.html">Exchange-rate types — a usage-scenario catalogue</a></h3>
+  <p>Every FX type mapped to the scenario it was defined for, with a one-line "reach for this when…" map and a decision walk-through.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="exchange-rate-lookups.html">Exchange-rate lookups on a known dataset</a></h3>
+  <p>One fixed dataset run through every <code>RateDateResolution</code> policy, tolerance window, and the inverse / identity switches, with a results matrix.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="exchange-rate-providers.html">Built-in exchange-rate providers</a></h3>
+  <p>The eleven live-feed packages — BoE, ECB, RBA, Yahoo, OFX, XE, OANDA, Fixer, exchangerate.host, FRED, IMF — with construction, warming, the shared lookup surface, dependency injection, and snapshot export.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="exchange-rate-caching.html">Caching and aggregating exchange rates</a></h3>
+  <p>Read-through caching one provider per cache (<code>CachingRateProvider</code>, TOML or in-memory, per-provider expiry), and grouping many providers with <code>AggregatingRateProvider</code> — priority fallback, averaging, and per-FX-pair routing.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="dependency-injection.html">Dependency injection</a></h3>
+  <p>Register the financial stack with <code>AddFinancialService(...)</code> — currency lookups, named monetary contexts, FX providers, and options binding — plus the keyed JSON options via <code>AddFinancialJson(...)</code> from the JSON companion.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="testing-providers.html">Testing your own provider</a></h3>
+  <p><code>FixedDatedRateProvider</code> as the deterministic test double for provider consumers, and the in-repository contract-test bases the built-in providers pass.</p>
+</div>
+</div>
+<h2 id="reading-path">Reading path</h2>
+<ol>
+<li><strong><a href="money.html">Working with <code>Money&lt;TCurrency&gt;</code></a></strong> — the monetary core; everything else builds on it.</li>
+<li><strong><a href="monetary-precision.html">Monetary precision &amp; unit pricing</a></strong> — when a price is finer than the currency settles at: explicit scale, deferred rounding, and precision-preserving JSON.</li>
+<li><strong><a href="exchange-rates.html">Working with exchange rates</a></strong> — the provider contracts and editing surface for crossing currencies.</li>
+<li><strong><a href="exchange-types.html">Exchange-rate types</a></strong> and <strong><a href="exchange-rate-lookups.html">lookups on a known dataset</a></strong> — reference material; dip in when choosing a type or tuning a lookup policy.</li>
+<li><strong><a href="exchange-rate-caching.html">Caching exchange rates</a></strong> — add a TOML disk cache in front of any provider, with per-provider expiry.</li>
+<li><strong><a href="json-serialization.html">JSON serialization</a></strong> — the <code>Bodu.Financial.Serialization.Json</code> companion: the converters, the three wire shapes, and the <code>AddFinancialJsonConverters()</code> / <code>AddFinancialJson()</code> registrations.</li>
+<li><strong><a href="provider-configuration.html">Configuring providers from <code>appsettings</code></a></strong> and <strong><a href="caching-configuration.html">configuring rate caching</a></strong> — the options each provider and cache backend binds, with worked configuration files.</li>
+<li><strong><a href="custom-web-provider.html">Writing your own web provider</a></strong> — subclass <code>WebRateProvider</code> or <code>PairWebRateProvider&lt;TSeries&gt;</code> when no built-in feed fits.</li>
+<li><strong><a href="dependency-injection.html">Dependency injection</a></strong> — last, once you know which services your application composes.</li>
+<li><strong><a href="testing-providers.html">Testing your own provider</a></strong> and <strong><a href="../../samples/financial.html">runnable samples</a></strong> — the contract-test bases for consumer-written providers, and the offline sample projects under <code>samples/Financial/</code> that compose everything above end to end.</li>
+</ol>
+<h2 id="see-also">See also</h2>
+<ul>
+<li><p><a href="../../docs/financial/index.html">Bodu.Financial introduction</a> — namespaces, headline types, scenarios.</p>
+</li>
+<li><p><a href="../../docs/financial/getting-started.html">Bodu.Financial getting started</a> — install + minimal samples.</p>
+</li>
+<li><p><a href="../topics/numerics-and-financial.html">Numerics &amp; Financial topic guides</a> — the topic map; the complete financial guide list is this page, and the numerics one is <a href="../numerics/index.html">its index</a>.</p>
+</li>
+<li><p><a href="../../docs/topics/numerics-and-financial.html">Numerics &amp; Financial topic overview</a> — package boundaries and the decision table.</p>
+</li>
+<li><p><a class="xref" href="../../api/Bodu.Financial.Money-1.html"><code>Money&lt;TCurrency&gt;</code> API reference</a></p>
+</li>
+<li><p><a class="xref" href="../../api/Bodu.Financial.Money.html"><code>Money</code> API reference</a></p>
+</li>
+<li><p><a class="xref" href="../../api/Bodu.Financial.CalculatedMoney.html"><code>CalculatedMoney</code> API reference</a></p>
+</li>
+<li><p><a class="xref" href="../../api/Bodu.Financial.MoneyBag.html"><code>MoneyBag</code> API reference</a></p>
+</li>
+<li><p><a class="xref" href="../../api/Bodu.Financial.Currencies.CurrencyRegistry.html"><code>CurrencyRegistry</code></a></p>
+</li>
+<li><p><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.IRateProvider.html"><code>IRateProvider</code></a></p>
+</li>
+<li><p><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.IDatedRateProvider.html"><code>IDatedRateProvider</code></a></p>
+</li>
+<li><p><a class="xref" href="../../api/Bodu.Financial.Currencies.ICurrency.html"><code>ICurrency</code> interface</a></p>
+</li>
+<li><p><a href="../numerics/index.html"><code>Bodu.Numerics</code> overview</a> — for the
+underlying <code>Fraction&lt;T&gt;</code> escape hatch.</p>
+</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

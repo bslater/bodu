@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Bodu.Globalization.Recurrence — Getting started | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Bodu.Globalization.Recurrence — Getting started | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="boduglobalizationrecurrence--getting-started">Bodu.Globalization.Recurrence — Getting started</h1>
+
+<p>Unfamiliar with terms like <em>occurrence</em>, <em>anchor</em>, <em>inclusive boundary</em>, or <em><code>BYSETPOS</code></em>? Read <a href="concepts.html">Core concepts</a> first.</p>
+<h2 id="install">Install</h2>
+<pre><code class="lang-bash">dotnet add package Bodu.Globalization.Recurrence
+</code></pre>
+<p>Targets <code>net8.0</code>. <strong>Depends on</strong> <code>Bodu.Core</code> only — no calendar data, no time-zone database, and no dependency on <code>Bodu.Globalization.Calendar</code>.</p>
+<p>Status: <strong>Preview</strong> (see the <a href="../package-matrix.html">package matrix</a>).</p>
+<p>Every sample below is a pure function of the instants it is handed: substitute your own &quot;now&quot; and the answers are reproducible in a test.</p>
+<h2 id="minimal-samples">Minimal samples</h2>
+<h3 id="rfc-5545-recurrence-rule--parse-next--previous-enumerate-a-window">RFC 5545 recurrence rule — parse, next / previous, enumerate a window</h3>
+<p>A rule carries no start of its own; the series start (<code>DTSTART</code>) is passed to every query.</p>
+<pre><code class="lang-csharp">using Bodu.Globalization.Recurrence;
+
+RecurrenceRule rule = RecurrenceRule.Parse(&quot;FREQ=WEEKLY;INTERVAL=2;BYDAY=MO,WE,FR&quot;);
+
+var start = new DateTime(2026, 1, 5, 9, 0, 0);                      // Monday 5 Jan 2026, 09:00
+
+DateTime? next     = rule.GetNextOccurrence(start, after: new DateTime(2026, 1, 20));
+DateTime? previous = rule.GetPreviousOccurrence(start, before: new DateTime(2026, 1, 20));
+// next     = 2026-01-21 09:00 (Wednesday of the second fortnight)
+// previous = 2026-01-19 09:00 (Monday)
+
+// Every occurrence inside an inclusive window:
+foreach (DateTime occurrence in rule.GetOccurrences(start, new DateTime(2026, 2, 1), new DateTime(2026, 2, 28)))
+    Console.WriteLine(occurrence);                                  // 2 Feb, 4 Feb, 6 Feb, 16 Feb, 18 Feb, 20 Feb — all 09:00
+
+Console.WriteLine(rule);                                            // FREQ=WEEKLY;INTERVAL=2;BYDAY=MO,WE,FR
+Console.WriteLine(rule.Frequency);                                  // Weekly
+Console.WriteLine(rule.ByDay.Count);                                // 3
+</code></pre>
+<p>An unbounded rule enumerates to the end of the representable calendar, so bound the open-ended <code>GetOccurrences(start)</code> with <code>Take</code> or use the windowed overload. <code>BYSETPOS</code> turns a weekday list into &quot;the last working day of each month&quot;:</p>
+<pre><code class="lang-csharp">RecurrenceRule lastWeekday = RecurrenceRule.Parse(&quot;FREQ=MONTHLY;BYDAY=MO,TU,WE,TH,FR;BYSETPOS=-1&quot;);
+
+foreach (DateTime occurrence in lastWeekday.GetOccurrences(new DateTime(2026, 1, 1)).Take(3))
+    Console.WriteLine($&quot;{occurrence:yyyy-MM-dd ddd}&quot;);              // 2026-01-30 Fri, 2026-02-27 Fri, 2026-03-31 Tue
+</code></pre>
+<h3 id="build-a-rule-fluently">Build a rule fluently</h3>
+<p><a class="xref" href="../../api/Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.html">RecurrenceRuleBuilder</a> is the alternative to parsing text. A <code>BYDAY</code> entry with an ordinal is a <a class="xref" href="../../api/Bodu.Globalization.Recurrence.WeekDayNum.html">WeekDayNum</a>; plain weekdays can be passed as <code>DayOfWeek</code>.</p>
+<pre><code class="lang-csharp">using Bodu.Globalization.Recurrence;
+
+// The last Friday of the month, six times.
+RecurrenceRule lastFriday = new RecurrenceRuleBuilder(RecurrenceFrequency.Monthly)
+    .ByDay(new WeekDayNum(-1, DayOfWeek.Friday))
+    .WithCount(6)
+    .Build();
+
+Console.WriteLine(lastFriday);                                      // FREQ=MONTHLY;COUNT=6;BYDAY=-1FR
+
+foreach (DateTime occurrence in lastFriday.GetOccurrences(new DateTime(2026, 1, 1, 17, 0, 0)))
+    Console.WriteLine($&quot;{occurrence:yyyy-MM-dd HH:mm}&quot;);            // 2026-01-30 17:00 … 2026-06-26 17:00 (six dates)
+
+// Value equality: the built rule equals its parsed canonical text.
+Console.WriteLine(lastFriday.Equals(RecurrenceRule.Parse(&quot;FREQ=MONTHLY;COUNT=6;BYDAY=-1FR&quot;)));   // True
+
+// Every other week on Monday and Thursday until the end of June. WithUntil clears any WithCount and vice versa.
+RecurrenceRule fortnightly = new RecurrenceRuleBuilder(RecurrenceFrequency.Weekly)
+    .WithInterval(2)
+    .ByDay(DayOfWeek.Monday, DayOfWeek.Thursday)
+    .WithUntil(new DateTime(2026, 6, 30))
+    .Build();
+
+Console.WriteLine(fortnightly);                                     // FREQ=WEEKLY;INTERVAL=2;UNTIL=20260630T000000;BYDAY=MO,TH
+</code></pre>
+<h3 id="recurrence-set--rules-plus-rdate--exdate-and-a-round-trip">Recurrence set — rules plus <code>RDATE</code> / <code>EXDATE</code>, and a round trip</h3>
+<p>A <a class="xref" href="../../api/Bodu.Globalization.Recurrence.RecurrenceSet.html">RecurrenceSet</a> owns its start and composes rules, explicit dates, and exception dates into one ascending, duplicate-free stream. Its canonical text is the iCalendar property block, which <code>Parse</code> reads back to an equal value.</p>
+<pre><code class="lang-csharp">using Bodu.Globalization.Recurrence;
+
+var set = new RecurrenceSet(
+    start: new DateTime(2026, 3, 2, 10, 0, 0),                      // Monday
+    rules: [RecurrenceRule.Parse(&quot;FREQ=WEEKLY;BYDAY=MO;COUNT=4&quot;)],
+    dates: [new DateTime(2026, 3, 12, 10, 0, 0)],                   // an extra Thursday
+    exceptionDates: [new DateTime(2026, 3, 16, 10, 0, 0)]);         // one Monday cancelled
+
+foreach (DateTime occurrence in set.GetOccurrences())
+    Console.WriteLine($&quot;{occurrence:yyyy-MM-dd ddd}&quot;);              // 03-02 Mon, 03-09 Mon, 03-12 Thu, 03-23 Mon
+
+DateTime? next = set.GetNextOccurrence(new DateTime(2026, 3, 10));  // 2026-03-12 10:00 — the RDATE
+
+// Round trip through the property block (CRLF-separated, no trailing line break):
+string block = set.ToString();
+// DTSTART:20260302T100000
+// RRULE:FREQ=WEEKLY;COUNT=4;BYDAY=MO
+// RDATE:20260312T100000
+// EXDATE:20260316T100000
+
+RecurrenceSet reparsed = RecurrenceSet.Parse(block);
+Console.WriteLine(set.Equals(reparsed));                            // True
+</code></pre>
+<h3 id="cron-expression--parse-next--previous-enumerate">Cron expression — parse, next / previous, enumerate</h3>
+<p>A <a class="xref" href="../../api/Bodu.Globalization.Recurrence.CronExpression.html">CronExpression</a> needs no anchor. <code>Parse(string)</code> infers the five- or six-field layout from the field count; <code>Parse(string, CronFormat)</code> insists on one.</p>
+<pre><code class="lang-csharp">using Bodu.Globalization.Recurrence;
+
+CronExpression nightly = CronExpression.Parse(&quot;0 2 * * MON-FRI&quot;);     // 02:00 on weekdays
+var now = new DateTime(2026, 1, 9, 14, 30, 0);                        // Friday afternoon
+
+DateTime? next     = nightly.GetNextOccurrence(now);                  // 2026-01-12 02:00 (Monday)
+DateTime? previous = nightly.GetPreviousOccurrence(now);              // 2026-01-09 02:00 (this morning)
+
+Console.WriteLine(nightly);                                           // 0 2 * * 1,2,3,4,5  — canonical numeric lists
+Console.WriteLine(nightly.Format);                                    // Standard
+
+// Enumerate: cron has no GetOccurrences, so loop on the next occurrence.
+DateTime? cursor = new DateTime(2026, 1, 12);
+for (var i = 0; i &lt; 3 &amp;&amp; cursor is not null; i++)
+{
+    cursor = nightly.GetNextOccurrence(cursor.Value, inclusive: i == 0);
+    Console.WriteLine(cursor);                                        // 12 Jan, 13 Jan, 14 Jan — 02:00
+}
+
+// Six-field layout with a leading seconds field, and the macros:
+CronExpression halfMinute = CronExpression.Parse(&quot;*/30 * 9-17 * * *&quot;, CronFormat.WithSeconds);
+Console.WriteLine(halfMinute.GetNextOccurrence(now));                 // 2026-01-09 14:30:30
+
+CronExpression daily = CronExpression.Parse(&quot;@daily&quot;);
+Console.WriteLine(daily);                                             // 0 0 * * *
+Console.WriteLine(daily.Equals(CronExpression.Parse(&quot;0 0 * * *&quot;)));  // True — value equality
+
+// DateTimeOffset: evaluated on the wall clock, answered in the argument's offset.
+var nowInSydney = new DateTimeOffset(2026, 1, 9, 14, 30, 0, TimeSpan.FromHours(10));
+DateTimeOffset? nextInSydney = nightly.GetNextOccurrence(nowInSydney); // 2026-01-12 02:00 +10:00
+</code></pre>
+<p>Remember the Vixie day-field rule: when both day fields are restricted an instant matches <strong>either</strong> — <code>0 0 13 * FRI</code> fires on every 13th <em>and</em> every Friday. See <a href="concepts.html#cron-field-semantics">Cron field semantics</a>.</p>
+<h3 id="anchored-interval--every-4-hours-after-the-last-completed-run">Anchored interval — &quot;every 4 hours after the last completed run&quot;</h3>
+<p>An <a class="xref" href="../../api/Bodu.Globalization.Recurrence.AnchoredInterval.html">AnchoredInterval</a> produces <code>anchor + k·interval</code> for <code>k ≥ 1</code>; the anchor is passed to every query and is never itself an occurrence.</p>
+<pre><code class="lang-csharp">using Bodu.Globalization.Recurrence;
+
+AnchoredInterval every4h = AnchoredInterval.Parse(&quot;PT4H&quot;);           // or: new AnchoredInterval(TimeSpan.FromHours(4))
+
+var lastCompleted = new DateTime(2026, 1, 9, 6, 15, 0);
+var now           = new DateTime(2026, 1, 9, 15, 0, 0);
+
+DateTime? next     = every4h.GetNextOccurrence(lastCompleted, now);       // 2026-01-09 18:15
+DateTime? previous = every4h.GetPreviousOccurrence(lastCompleted, now);   // 2026-01-09 14:15
+
+// The due-ness recipe — a single comparison, no stored state:
+bool isDue = lastCompleted &lt; every4h.GetPreviousOccurrence(anchor: lastCompleted, before: now, inclusive: true);   // True
+
+foreach (DateTime occurrence in every4h.GetOccurrences(lastCompleted, new DateTime(2026, 1, 9), new DateTime(2026, 1, 10)))
+    Console.WriteLine($&quot;{occurrence:HH:mm}&quot;);                             // 10:15, 14:15, 18:15, 22:15
+
+Console.WriteLine(new AnchoredInterval(TimeSpan.FromDays(14)));           // P2W — canonical RFC 5545 duration text
+Console.WriteLine(AnchoredInterval.Parse(&quot;P1DT2H30M&quot;).Interval);          // 1.02:30:00
+</code></pre>
+<h3 id="tryparse-with-a-defect-naming-failure-message"><code>TryParse</code> with a defect-naming failure message</h3>
+<p>Every form has the BCL-shaped <code>TryParse(s, out result)</code> and an overload that also reports <em>why</em> parsing failed, in a message suitable for surfacing to the user verbatim.</p>
+<pre><code class="lang-csharp">using Bodu.Globalization.Recurrence;
+
+if (!RecurrenceRule.TryParse(&quot;FREQ=WEEKLY;COUNT=3;UNTIL=20261231T000000Z&quot;, out RecurrenceRule? _, out string? failure))
+    Console.WriteLine(failure);   // The COUNT and UNTIL rule parts cannot both appear in the same rule.
+
+if (!RecurrenceRule.TryParse(&quot;FREQ=WEEKLY;BYDAY=XX&quot;, out RecurrenceRule? _, out failure))
+    Console.WriteLine(failure);   // The recurrence-rule component 'BYDAY=XX' is not valid.
+
+if (!CronExpression.TryParse(&quot;0 25 * * *&quot;, out CronExpression? _, out failure))
+    Console.WriteLine(failure);   // The cron field '25' is not valid.
+
+if (!AnchoredInterval.TryParse(&quot;4h&quot;, out AnchoredInterval? _, out failure))
+    Console.WriteLine(failure);   // An iCalendar duration must begin with the 'P' designator.
+
+if (!RecurrenceSet.TryParse(&quot;RRULE:FREQ=DAILY&quot;, out RecurrenceSet? _, out failure))
+    Console.WriteLine(failure);   // A recurrence set requires a DTSTART property line.
+</code></pre>
+<p><code>Parse</code> throws <code>FormatException</code> with the same message. Two cases are deliberately <em>not</em> format errors: a cron expression using a Quartz extension token (<code>L</code>, <code>W</code>, <code>#</code>, <code>?</code>) parses to <code>NotSupportedException</code>, and a rule with a sub-daily <code>FREQ</code> parses successfully but throws <code>NotSupportedException</code> when enumerated.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="concepts.html">Core concepts</a></strong> — the vocabulary behind these samples: occurrence vs. due-ness, anchor / <code>DTSTART</code>, inclusive boundaries, <code>WKST</code>, the <code>BY*</code> parts, cron semantics, the duration grammar, offsets.</li>
+<li><strong><a href="../../guides/recurrence/index.html">Recurrence and scheduling guide</a></strong> — the due-ness recipe for a scheduling host, calendar-aware filtering by composition, bounded searches, and conformance.</li>
+<li><strong><a href="../../samples/recurrence.html">Runnable samples</a></strong> — the per-form console projects and the <code>SchedulingHost</code> adapter that puts all four forms behind one interface.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Globalization.Recurrence.html">Bodu.Globalization.Recurrence API reference</a></strong> — full type-by-type docs.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

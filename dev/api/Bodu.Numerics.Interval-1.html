@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Struct Interval&lt;T&gt; | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Struct Interval&lt;T&gt; | BODU ">
+    
+    <meta name="description" content="Represents an immutable, bounded interval over any  type, with independent open or closed endpoints on each side.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Numerics.Interval`1">
+
+
+
+  <h1 id="Bodu_Numerics_Interval_1" data-uid="Bodu.Numerics.Interval`1" class="text-break">Struct Interval&lt;T&gt;</h1>
+  <div class="markdown level0 summary"><p>Represents an immutable, bounded interval over any <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.inumber-1">INumber&lt;TSelf&gt;</a> type, with independent open or
+closed endpoints on each side.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="implements">
+    <h5>Implements</h5>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.ispanformattable">ISpanFormattable</a></div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iformattable">IFormattable</a></div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iutf8spanformattable">IUtf8SpanFormattable</a></div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="Bodu.Numerics.Interval-1.html">Interval</a>&lt;T&gt;&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.ispanparsable-1">ISpanParsable</a>&lt;<a class="xref" href="Bodu.Numerics.Interval-1.html">Interval</a>&lt;T&gt;&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iparsable-1">IParsable</a>&lt;<a class="xref" href="Bodu.Numerics.Interval-1.html">Interval</a>&lt;T&gt;&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iutf8spanparsable-1">IUtf8SpanParsable</a>&lt;<a class="xref" href="Bodu.Numerics.Interval-1.html">Interval</a>&lt;T&gt;&gt;</div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Numerics.html">Numerics</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Numerics.dll</h6>
+  <h5 id="Bodu_Numerics_Interval_1_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly struct Interval&lt;T&gt; : ISpanFormattable, IFormattable, IUtf8SpanFormattable, IEquatable&lt;Interval&lt;T&gt;&gt;, ISpanParsable&lt;Interval&lt;T&gt;&gt;, IParsable&lt;Interval&lt;T&gt;&gt;, IUtf8SpanParsable&lt;Interval&lt;T&gt;&gt; where T : INumber&lt;T&gt;</code></pre>
+  </div>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">T</span></td>
+        <td><p>The numeric type used for the interval's endpoints.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="Bodu_Numerics_Interval_1_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+<a class="xref" href="Bodu.Numerics.Interval-1.html">Interval&lt;T&gt;</a> is the value-typed building block for working with numeric ranges as first-class data.
+Rather than encoding a range as a <code>(min, max)</code> tuple or a pair of <code>bool</code> predicates and threading the
+inclusivity convention through every call site, an interval carries both endpoints and their inclusivity in a single
+immutable value, with set algebra — membership, containment, intersection, union, overlap, adjacency — defined on
+the type. Reach for it whenever the range itself is a value the code passes around, validates against, intersects,
+merges, or persists. <a class="xref" href="Bodu.Numerics.Interval-1.html">Interval&lt;T&gt;</a> is more general than <code>System.Range</code> (which is integer-only and
+always <code>[start, end)</code>) and safer than untyped tuples or <code>(bool, bool)</code> flags, where the inclusivity
+convention lives in comments rather than in the value.
+</p>
+<p>
+The generic-math constraint on <code class="typeparamref">T</code> means the same code can carry an integer scheduling window,
+a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a> percentage range, a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a> price band, or a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.biginteger">BigInteger</a>
+arbitrary-magnitude bound; any type implementing <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.inumber-1">INumber&lt;TSelf&gt;</a> is a valid endpoint type, including
+consumer-defined numeric types.
+</p>
+<p>
+An interval is the set of values <code>x</code> such that <code>Lower ≤ x ≤ Upper</code> (closed-closed),
+<code>Lower &lt; x &lt; Upper</code> (open-open), <code>Lower ≤ x &lt; Upper</code> (closed-open), or
+<code>Lower &lt; x ≤ Upper</code> (open-closed). Endpoint inclusion is independent for the two sides and is
+preserved through every operation defined on the type. The closed-open shape — <code>[a, b)</code> — is the most common in
+programming contexts because adjacent half-open intervals partition a span with no overlap and no gap, matching the
+conventions of <code>System.Range</code>, LINQ's <code>Enumerable.Range</code>, and slice iterators.
+</p>
+<p>
+An interval is <b>empty</b> when its bounds do not admit any value — either <code>Lower &gt; Upper</code>, or
+<code>Lower ≡ Upper</code> with at least one endpoint open. All empty intervals are equal to <a class="xref" href="Bodu.Numerics.Interval-1.Empty.html#Bodu_Numerics_Interval_1_Empty">Empty</a>
+by <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1.equals">Equals(T)</a>, and a structural pattern-match against an empty instance always returns
+the same canonical projection regardless of how the empty value was constructed. The default-constructed
+<code>Interval&lt;T&gt;</code> is empty, so a <code>default(Interval&lt;T&gt;)</code> field reads as the empty interval rather
+than as a malformed value.
+</p>
+<p>
+Unbounded intervals — those with no lower limit, no upper limit, or neither, written <code>(-∞, b]</code>,
+<code>[a, +∞)</code>, or <code>(-∞, +∞)</code> — are representable through the <a class="xref" href="Bodu.Numerics.Interval-1.AtLeast.html#Bodu_Numerics_Interval_1_AtLeast__0_">AtLeast(T)</a>,
+<a class="xref" href="Bodu.Numerics.Interval-1.GreaterThan.html#Bodu_Numerics_Interval_1_GreaterThan__0_">GreaterThan(T)</a>, <a class="xref" href="Bodu.Numerics.Interval-1.AtMost.html#Bodu_Numerics_Interval_1_AtMost__0_">AtMost(T)</a>, <a class="xref" href="Bodu.Numerics.Interval-1.LessThan.html#Bodu_Numerics_Interval_1_LessThan__0_">LessThan(T)</a>, and <a class="xref" href="Bodu.Numerics.Interval-1.All.html#Bodu_Numerics_Interval_1_All">All</a>
+factories. An unbounded endpoint carries no concrete value and is always open (infinity is never a member);
+<a class="xref" href="Bodu.Numerics.Interval-1.LowerUnbounded.html#Bodu_Numerics_Interval_1_LowerUnbounded">LowerUnbounded</a> and <a class="xref" href="Bodu.Numerics.Interval-1.UpperUnbounded.html#Bodu_Numerics_Interval_1_UpperUnbounded">UpperUnbounded</a> report which sides, if any, are unbounded, and
+<a class="xref" href="Bodu.Numerics.Interval-1.IsBounded.html#Bodu_Numerics_Interval_1_IsBounded">IsBounded</a> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> only when both sides are finite. An unbounded interval is never
+empty, and <a class="xref" href="Bodu.Numerics.Interval-1.Length.html#Bodu_Numerics_Interval_1_Length">Length</a> is undefined for it.
+</p>
+<p>
+Instances are immutable, structurally equatable, and safe to share. They format using ISO 31-11 interval notation
+(square brackets for closed endpoints, round brackets for open endpoints, and the U+2205 EMPTY SET glyph for the
+empty interval) via <a class="xref" href="Bodu.Numerics.Interval-1.ToString.html#Bodu_Numerics_Interval_1_ToString">ToString()</a>, and parse the same notation through
+<a class="xref" href="Bodu.Numerics.Interval-1.Parse.html#Bodu_Numerics_Interval_1_Parse_System_String_System_IFormatProvider_">Parse(string, IFormatProvider?)</a> and the
+<a class="xref" href="Bodu.Numerics.Interval-1.TryParse.html#Bodu_Numerics_Interval_1_TryParse_System_String_System_IFormatProvider_Bodu_Numerics_Interval__0___">TryParse(string?, IFormatProvider?, out Interval&lt;T&gt;)</a> family.
+</p>
+</div>
+  <h5 id="Bodu_Numerics_Interval_1_examples"><strong>Examples</strong></h5>
+  <pre><code class="lang-csharp">using Bodu.Numerics;
+
+// Scheduling windows — closed-open at the end keeps adjacent slots disjoint.
+var morning = Interval&lt;int&gt;.ClosedOpen(9, 12);
+var meeting = Interval&lt;int&gt;.ClosedOpen(11, 13);
+bool clash   = morning.Overlaps(meeting);            // True
+var conflict = morning.Intersect(meeting);           // [11, 12)
+
+// Validation predicate — a percentage in [0, 100].
+var percentage = Interval&lt;double&gt;.Closed(0.0, 100.0);
+bool ok = percentage.Contains(99.5);                 // True
+
+// Adjacent half-open ranges merge into a single contiguous interval.
+var q1 = Interval&lt;int&gt;.ClosedOpen(0, 90);
+var q2 = Interval&lt;int&gt;.ClosedOpen(90, 181);
+q1.TryUnion(q2, out var firstHalf);                  // firstHalf = [0, 181)</code></pre>
+
+  <h3 id="constructors">Constructors
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Numerics_Interval_1__ctor__0__0_System_Boolean_System_Boolean_" data-uid="Bodu.Numerics.Interval`1.#ctor(`0,`0,System.Boolean,System.Boolean)">
+          <a class="xref" href="Bodu.Numerics.Interval-1.-ctor.html#Bodu_Numerics_Interval_1__ctor__0__0_System_Boolean_System_Boolean_">Interval(T, T, bool, bool)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Numerics.Interval-1.html">Interval&lt;T&gt;</a> struct from a lower and upper endpoint and explicit
+inclusion flags for each side.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Numerics_Interval_1_All" data-uid="Bodu.Numerics.Interval`1.All">
+          <a class="xref" href="Bodu.Numerics.Interval-1.All.html#Bodu_Numerics_Interval_1_All">All</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the unbounded interval <code>(-∞, +∞)</code> — the interval that contains every value of
+<code class="typeparamref">T</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Interval_1_Empty" data-uid="Bodu.Numerics.Interval`1.Empty">
+          <a class="xref" href="Bodu.Numerics.Interval-1.Empty.html#Bodu_Numerics_Interval_1_Empty">Empty</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the canonical empty interval — the interval that contains no values. Equal by
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1.equals">Equals(T)</a> to every other empty <a class="xref" href="Bodu.Numerics.Interval-1.html">Interval&lt;T&gt;</a> over the same
+<code class="typeparamref">T</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Interval_1_IsBounded" data-uid="Bodu.Numerics.Interval`1.IsBounded">
+          <a class="xref" href="Bodu.Numerics.Interval-1.IsBounded.html#Bodu_Numerics_Interval_1_IsBounded">IsBounded</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a value indicating whether both endpoints are finite — the interval has a concrete lower and upper limit.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Interval_1_IsDegenerate" data-uid="Bodu.Numerics.Interval`1.IsDegenerate">
+          <a class="xref" href="Bodu.Numerics.Interval-1.IsDegenerate.html#Bodu_Numerics_Interval_1_IsDegenerate">IsDegenerate</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a value indicating whether the interval represents a single point — a closed-closed interval whose lower
+and upper endpoints are equal.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Interval_1_IsEmpty" data-uid="Bodu.Numerics.Interval`1.IsEmpty">
+          <a class="xref" href="Bodu.Numerics.Interval-1.IsEmpty.html#Bodu_Numerics_Interval_1_IsEmpty">IsEmpty</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a value indicating whether the interval contains no values.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Interval_1_Length" data-uid="Bodu.Numerics.Interval`1.Length">
+          <a class="xref" href="Bodu.Numerics.Interval-1.Length.html#Bodu_Numerics_Interval_1_Length">Length</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the algebraic length of the interval — the difference between its upper and lower endpoints.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Interval_1_Lower" data-uid="Bodu.Numerics.Interval`1.Lower">
+          <a class="xref" href="Bodu.Numerics.Interval-1.Lower.html#Bodu_Numerics_Interval_1_Lower">Lower</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the lower endpoint of the interval.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Interval_1_LowerInclusive" data-uid="Bodu.Numerics.Interval`1.LowerInclusive">
+          <a class="xref" href="Bodu.Numerics.Interval-1.LowerInclusive.html#Bodu_Numerics_Interval_1_LowerInclusive">LowerInclusive</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a value indicating whether the lower endpoint is part of the interval.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Interval_1_LowerUnbounded" data-uid="Bodu.Numerics.Interval`1.LowerUnbounded">
+          <a class="xref" href="Bodu.Numerics.Interval-1.LowerUnbounded.html#Bodu_Numerics_Interval_1_LowerUnbounded">LowerUnbounded</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a value indicating whether the lower side is unbounded — the interval extends to <code>-∞</code> with no
+finite lower limit.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Interval_1_Upper" data-uid="Bodu.Numerics.Interval`1.Upper">
+          <a class="xref" href="Bodu.Numerics.Interval-1.Upper.html#Bodu_Numerics_Interval_1_Upper">Upper</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the upper endpoint of the interval.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Interval_1_UpperInclusive" data-uid="Bodu.Numerics.Interval`1.UpperInclusive">
+          <a class="xref" href="Bodu.Numerics.Interval-1.UpperInclusive.html#Bodu_Numerics_Interval_1_UpperInclusive">UpperInclusive</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a value indicating whether the upper endpoint is part of the interval.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Interval_1_UpperUnbounded" data-uid="Bodu.Numerics.Interval`1.UpperUnbounded">
+          <a class="xref" href="Bodu.Numerics.Interval-1.UpperUnbounded.html#Bodu_Numerics_Interval_1_UpperUnbounded">UpperUnbounded</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a value indicating whether the upper side is unbounded — the interval extends to <code>+∞</code> with no
+finite upper limit.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Numerics_Interval_1_AtLeast__0_" data-uid="Bodu.Numerics.Interval`1.AtLeast(`0)">
+          <a class="xref" href="Bodu.Numerics.Interval-1.AtLeast.html#Bodu_Numerics_Interval_1_AtLeast__0_">AtLeast(T)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates the lower-bounded interval <code>[lower, +∞)</code> — every value greater than or equal to
+<code class="paramref">lower</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Interval_1_AtMost__0_" data-uid="Bodu.Numerics.Interval`1.AtMost(`0)">
+          <a class="xref" href="Bodu.Numerics.Interval-1.AtMost.html#Bodu_Numerics_Interval_1_AtMost__0_">AtMost(T)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates the upper-bounded interval <code>(-∞, upper]</code> — every value less than or equal to
+<code class="paramref">upper</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Interval_1_Closed__0__0_" data-uid="Bodu.Numerics.Interval`1.Closed(`0,`0)">
+          <a class="xref" href="Bodu.Numerics.Interval-1.Closed.html#Bodu_Numerics_Interval_1_Closed__0__0_">Closed(T, T)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates a closed-closed interval — <code>[lower, upper]</code> — that includes both endpoints.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Interval_1_ClosedOpen__0__0_" data-uid="Bodu.Numerics.Interval`1.ClosedOpen(`0,`0)">
+          <a class="xref" href="Bodu.Numerics.Interval-1.ClosedOpen.html#Bodu_Numerics_Interval_1_ClosedOpen__0__0_">ClosedOpen(T, T)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates a closed-open interval — <code>[lower, upper)</code> — that includes the lower endpoint and excludes the upper
+endpoint.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Interval_1_Contains_Bodu_Numerics_Interval__0__" data-uid="Bodu.Numerics.Interval`1.Contains(Bodu.Numerics.Interval{`0})">
+          <a class="xref" href="Bodu.Numerics.Interval-1.Contains.html#Bodu_Numerics_Interval_1_Contains_Bodu_Numerics_Interval__0__">Contains(Interval&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether this interval fully contains <code class="paramref">other</code> — every value of
+<code class="paramref">other</code> is also a value of this interval.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Interval_1_Contains__0_" data-uid="Bodu.Numerics.Interval`1.Contains(`0)">
+          <a class="xref" href="Bodu.Numerics.Interval-1.Contains.html#Bodu_Numerics_Interval_1_Contains__0_">Contains(T)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether <code class="paramref">value</code> lies within the interval, honoring the inclusivity of each
+endpoint.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Interval_1_Difference_Bodu_Numerics_Interval__0__" data-uid="Bodu.Numerics.Interval`1.Difference(Bodu.Numerics.Interval{`0})">
+          <a class="xref" href="Bodu.Numerics.Interval-1.Difference.html#Bodu_Numerics_Interval_1_Difference_Bodu_Numerics_Interval__0__">Difference(Interval&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns this interval with the values of <code class="paramref">other</code> removed — the set difference
+<code>this \ other</code> — as zero, one, or two disjoint intervals.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Interval_1_Equals_Bodu_Numerics_Interval__0__" data-uid="Bodu.Numerics.Interval`1.Equals(Bodu.Numerics.Interval{`0})">
+          <a class="xref" href="Bodu.Numerics.Interval-1.Equals.html#Bodu_Numerics_Interval_1_Equals_Bodu_Numerics_Interval__0__">Equals(Interval&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether this interval equals <code class="paramref">other</code> as a set — same lower endpoint, same upper
+endpoint, and matching inclusivity on each side. Any two empty intervals are equal regardless of the bounds used
+to construct them.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Interval_1_Equals_System_Object_" data-uid="Bodu.Numerics.Interval`1.Equals(System.Object)">
+          <a class="xref" href="Bodu.Numerics.Interval-1.Equals.html#Bodu_Numerics_Interval_1_Equals_System_Object_">Equals(object?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether this interval equals the boxed <code class="paramref">obj</code> reference.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Interval_1_GetHashCode" data-uid="Bodu.Numerics.Interval`1.GetHashCode">
+          <a class="xref" href="Bodu.Numerics.Interval-1.GetHashCode.html#Bodu_Numerics_Interval_1_GetHashCode">GetHashCode()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a hash code consistent with <a class="xref" href="Bodu.Numerics.Interval-1.Equals.html#Bodu_Numerics_Interval_1_Equals_Bodu_Numerics_Interval__0__">Equals(Interval&lt;T&gt;)</a>. All empty intervals share the same hash;
+non-empty intervals hash on their endpoints and inclusivity flags.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Interval_1_GreaterThan__0_" data-uid="Bodu.Numerics.Interval`1.GreaterThan(`0)">
+          <a class="xref" href="Bodu.Numerics.Interval-1.GreaterThan.html#Bodu_Numerics_Interval_1_GreaterThan__0_">GreaterThan(T)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates the lower-bounded interval <code>(lower, +∞)</code> — every value strictly greater than
+<code class="paramref">lower</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Interval_1_Intersect_Bodu_Numerics_Interval__0__" data-uid="Bodu.Numerics.Interval`1.Intersect(Bodu.Numerics.Interval{`0})">
+          <a class="xref" href="Bodu.Numerics.Interval-1.Intersect.html#Bodu_Numerics_Interval_1_Intersect_Bodu_Numerics_Interval__0__">Intersect(Interval&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the intersection of this interval with <code class="paramref">other</code> — the interval of values shared by
+both.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Interval_1_LessThan__0_" data-uid="Bodu.Numerics.Interval`1.LessThan(`0)">
+          <a class="xref" href="Bodu.Numerics.Interval-1.LessThan.html#Bodu_Numerics_Interval_1_LessThan__0_">LessThan(T)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates the upper-bounded interval <code>(-∞, upper)</code> — every value strictly less than
+<code class="paramref">upper</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Interval_1_Open__0__0_" data-uid="Bodu.Numerics.Interval`1.Open(`0,`0)">
+          <a class="xref" href="Bodu.Numerics.Interval-1.Open.html#Bodu_Numerics_Interval_1_Open__0__0_">Open(T, T)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates an open-open interval — <code>(lower, upper)</code> — that excludes both endpoints.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Interval_1_OpenClosed__0__0_" data-uid="Bodu.Numerics.Interval`1.OpenClosed(`0,`0)">
+          <a class="xref" href="Bodu.Numerics.Interval-1.OpenClosed.html#Bodu_Numerics_Interval_1_OpenClosed__0__0_">OpenClosed(T, T)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates an open-closed interval — <code>(lower, upper]</code> — that excludes the lower endpoint and includes the
+upper endpoint.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Interval_1_Overlaps_Bodu_Numerics_Interval__0__" data-uid="Bodu.Numerics.Interval`1.Overlaps(Bodu.Numerics.Interval{`0})">
+          <a class="xref" href="Bodu.Numerics.Interval-1.Overlaps.html#Bodu_Numerics_Interval_1_Overlaps_Bodu_Numerics_Interval__0__">Overlaps(Interval&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether this interval shares any values with <code class="paramref">other</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Interval_1_Parse_System_ReadOnlySpan_System_Byte__System_IFormatProvider_" data-uid="Bodu.Numerics.Interval`1.Parse(System.ReadOnlySpan{System.Byte},System.IFormatProvider)">
+          <a class="xref" href="Bodu.Numerics.Interval-1.Parse.html#Bodu_Numerics_Interval_1_Parse_System_ReadOnlySpan_System_Byte__System_IFormatProvider_">Parse(ReadOnlySpan&lt;byte&gt;, IFormatProvider?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Parses a UTF-8 byte span containing ISO 31-11 bracket notation into an <a class="xref" href="Bodu.Numerics.Interval-1.html">Interval&lt;T&gt;</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Interval_1_Parse_System_ReadOnlySpan_System_Char__System_IFormatProvider_" data-uid="Bodu.Numerics.Interval`1.Parse(System.ReadOnlySpan{System.Char},System.IFormatProvider)">
+          <a class="xref" href="Bodu.Numerics.Interval-1.Parse.html#Bodu_Numerics_Interval_1_Parse_System_ReadOnlySpan_System_Char__System_IFormatProvider_">Parse(ReadOnlySpan&lt;char&gt;, IFormatProvider?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Parses an interval from its ISO 31-11 bracket-notation span representation.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Interval_1_Parse_System_String_" data-uid="Bodu.Numerics.Interval`1.Parse(System.String)">
+          <a class="xref" href="Bodu.Numerics.Interval-1.Parse.html#Bodu_Numerics_Interval_1_Parse_System_String_">Parse(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Parses an interval from its ISO 31-11 bracket-notation string representation using the current culture.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Interval_1_Parse_System_String_System_IFormatProvider_" data-uid="Bodu.Numerics.Interval`1.Parse(System.String,System.IFormatProvider)">
+          <a class="xref" href="Bodu.Numerics.Interval-1.Parse.html#Bodu_Numerics_Interval_1_Parse_System_String_System_IFormatProvider_">Parse(string, IFormatProvider?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Parses an interval from its ISO 31-11 bracket-notation string representation.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Interval_1_Singleton__0_" data-uid="Bodu.Numerics.Interval`1.Singleton(`0)">
+          <a class="xref" href="Bodu.Numerics.Interval-1.Singleton.html#Bodu_Numerics_Interval_1_Singleton__0_">Singleton(T)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates a degenerate interval that contains the single value <code class="paramref">value</code> — equivalent to
+<code>[value, value]</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Interval_1_SymmetricDifference_Bodu_Numerics_Interval__0__" data-uid="Bodu.Numerics.Interval`1.SymmetricDifference(Bodu.Numerics.Interval{`0})">
+          <a class="xref" href="Bodu.Numerics.Interval-1.SymmetricDifference.html#Bodu_Numerics_Interval_1_SymmetricDifference_Bodu_Numerics_Interval__0__">SymmetricDifference(Interval&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the symmetric difference of this interval and <code class="paramref">other</code> — the values in exactly one of
+the two, <code>(this \ other) ∪ (other \ this)</code> — as zero, one, or two disjoint intervals.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Interval_1_ToString" data-uid="Bodu.Numerics.Interval`1.ToString">
+          <a class="xref" href="Bodu.Numerics.Interval-1.ToString.html#Bodu_Numerics_Interval_1_ToString">ToString()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the default string representation of this interval using ISO 31-11 bracket notation.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Interval_1_ToString_System_String_" data-uid="Bodu.Numerics.Interval`1.ToString(System.String)">
+          <a class="xref" href="Bodu.Numerics.Interval-1.ToString.html#Bodu_Numerics_Interval_1_ToString_System_String_">ToString(string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a string representation of this interval using the endpoint format specifier <code class="paramref">format</code>
+applied to <a class="xref" href="Bodu.Numerics.Interval-1.Lower.html#Bodu_Numerics_Interval_1_Lower">Lower</a> and <a class="xref" href="Bodu.Numerics.Interval-1.Upper.html#Bodu_Numerics_Interval_1_Upper">Upper</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Interval_1_ToString_System_String_System_IFormatProvider_" data-uid="Bodu.Numerics.Interval`1.ToString(System.String,System.IFormatProvider)">
+          <a class="xref" href="Bodu.Numerics.Interval-1.ToString.html#Bodu_Numerics_Interval_1_ToString_System_String_System_IFormatProvider_">ToString(string?, IFormatProvider?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a string representation of this interval using the supplied endpoint format and culture.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Interval_1_TryFormat_System_Span_System_Byte__System_Int32__System_ReadOnlySpan_System_Char__System_IFormatProvider_" data-uid="Bodu.Numerics.Interval`1.TryFormat(System.Span{System.Byte},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)">
+          <a class="xref" href="Bodu.Numerics.Interval-1.TryFormat.html#Bodu_Numerics_Interval_1_TryFormat_System_Span_System_Byte__System_Int32__System_ReadOnlySpan_System_Char__System_IFormatProvider_">TryFormat(Span&lt;byte&gt;, out int, ReadOnlySpan&lt;char&gt;, IFormatProvider?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to format this interval into the provided UTF-8 byte span.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Interval_1_TryFormat_System_Span_System_Char__System_Int32__System_ReadOnlySpan_System_Char__System_IFormatProvider_" data-uid="Bodu.Numerics.Interval`1.TryFormat(System.Span{System.Char},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)">
+          <a class="xref" href="Bodu.Numerics.Interval-1.TryFormat.html#Bodu_Numerics_Interval_1_TryFormat_System_Span_System_Char__System_Int32__System_ReadOnlySpan_System_Char__System_IFormatProvider_">TryFormat(Span&lt;char&gt;, out int, ReadOnlySpan&lt;char&gt;, IFormatProvider?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to format this interval into the provided character span.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Interval_1_TryParse_System_ReadOnlySpan_System_Byte__System_IFormatProvider_Bodu_Numerics_Interval__0___" data-uid="Bodu.Numerics.Interval`1.TryParse(System.ReadOnlySpan{System.Byte},System.IFormatProvider,Bodu.Numerics.Interval{`0}@)">
+          <a class="xref" href="Bodu.Numerics.Interval-1.TryParse.html#Bodu_Numerics_Interval_1_TryParse_System_ReadOnlySpan_System_Byte__System_IFormatProvider_Bodu_Numerics_Interval__0___">TryParse(ReadOnlySpan&lt;byte&gt;, IFormatProvider?, out Interval&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to parse a UTF-8 byte span containing ISO 31-11 bracket notation into an <a class="xref" href="Bodu.Numerics.Interval-1.html">Interval&lt;T&gt;</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Interval_1_TryParse_System_ReadOnlySpan_System_Char__System_IFormatProvider_Bodu_Numerics_Interval__0___" data-uid="Bodu.Numerics.Interval`1.TryParse(System.ReadOnlySpan{System.Char},System.IFormatProvider,Bodu.Numerics.Interval{`0}@)">
+          <a class="xref" href="Bodu.Numerics.Interval-1.TryParse.html#Bodu_Numerics_Interval_1_TryParse_System_ReadOnlySpan_System_Char__System_IFormatProvider_Bodu_Numerics_Interval__0___">TryParse(ReadOnlySpan&lt;char&gt;, IFormatProvider?, out Interval&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to parse an interval from its ISO 31-11 bracket-notation span representation.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Interval_1_TryParse_System_String_Bodu_Numerics_Interval__0___" data-uid="Bodu.Numerics.Interval`1.TryParse(System.String,Bodu.Numerics.Interval{`0}@)">
+          <a class="xref" href="Bodu.Numerics.Interval-1.TryParse.html#Bodu_Numerics_Interval_1_TryParse_System_String_Bodu_Numerics_Interval__0___">TryParse(string?, out Interval&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to parse an interval from its ISO 31-11 bracket-notation string representation using the current
+culture.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Interval_1_TryParse_System_String_System_IFormatProvider_Bodu_Numerics_Interval__0___" data-uid="Bodu.Numerics.Interval`1.TryParse(System.String,System.IFormatProvider,Bodu.Numerics.Interval{`0}@)">
+          <a class="xref" href="Bodu.Numerics.Interval-1.TryParse.html#Bodu_Numerics_Interval_1_TryParse_System_String_System_IFormatProvider_Bodu_Numerics_Interval__0___">TryParse(string?, IFormatProvider?, out Interval&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to parse an interval from its ISO 31-11 bracket-notation string representation.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Interval_1_TryUnion_Bodu_Numerics_Interval__0__Bodu_Numerics_Interval__0___" data-uid="Bodu.Numerics.Interval`1.TryUnion(Bodu.Numerics.Interval{`0},Bodu.Numerics.Interval{`0}@)">
+          <a class="xref" href="Bodu.Numerics.Interval-1.TryUnion.html#Bodu_Numerics_Interval_1_TryUnion_Bodu_Numerics_Interval__0__Bodu_Numerics_Interval__0___">TryUnion(Interval&lt;T&gt;, out Interval&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to compute the union of this interval with <code class="paramref">other</code> as a single contiguous interval.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="operators">Operators
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Numerics_Interval_1_op_BitwiseAnd_Bodu_Numerics_Interval__0__Bodu_Numerics_Interval__0__" data-uid="Bodu.Numerics.Interval`1.op_BitwiseAnd(Bodu.Numerics.Interval{`0},Bodu.Numerics.Interval{`0})">
+          <a class="xref" href="Bodu.Numerics.Interval-1.op_BitwiseAnd.html#Bodu_Numerics_Interval_1_op_BitwiseAnd_Bodu_Numerics_Interval__0__Bodu_Numerics_Interval__0__">operator &amp;(Interval&lt;T&gt;, Interval&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the intersection of two intervals — the values shared by both — as an operator alias for
+<a class="xref" href="Bodu.Numerics.Interval-1.Intersect.html#Bodu_Numerics_Interval_1_Intersect_Bodu_Numerics_Interval__0__">Intersect(Interval&lt;T&gt;)</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Interval_1_op_BitwiseOr_Bodu_Numerics_Interval__0__Bodu_Numerics_Interval__0__" data-uid="Bodu.Numerics.Interval`1.op_BitwiseOr(Bodu.Numerics.Interval{`0},Bodu.Numerics.Interval{`0})">
+          <a class="xref" href="Bodu.Numerics.Interval-1.op_BitwiseOr.html#Bodu_Numerics_Interval_1_op_BitwiseOr_Bodu_Numerics_Interval__0__Bodu_Numerics_Interval__0__">operator |(Interval&lt;T&gt;, Interval&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the contiguous union of two intervals as an operator alias for
+<a class="xref" href="Bodu.Numerics.Interval-1.TryUnion.html#Bodu_Numerics_Interval_1_TryUnion_Bodu_Numerics_Interval__0__Bodu_Numerics_Interval__0___">TryUnion(Interval&lt;T&gt;, out Interval&lt;T&gt;)</a>, for operands whose union is a single interval.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Interval_1_op_Equality_Bodu_Numerics_Interval__0__Bodu_Numerics_Interval__0__" data-uid="Bodu.Numerics.Interval`1.op_Equality(Bodu.Numerics.Interval{`0},Bodu.Numerics.Interval{`0})">
+          <a class="xref" href="Bodu.Numerics.Interval-1.op_Equality.html#Bodu_Numerics_Interval_1_op_Equality_Bodu_Numerics_Interval__0__Bodu_Numerics_Interval__0__">operator ==(Interval&lt;T&gt;, Interval&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether two intervals are equal as sets. See <a class="xref" href="Bodu.Numerics.Interval-1.Equals.html#Bodu_Numerics_Interval_1_Equals_Bodu_Numerics_Interval__0__">Equals(Interval&lt;T&gt;)</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Interval_1_op_Inequality_Bodu_Numerics_Interval__0__Bodu_Numerics_Interval__0__" data-uid="Bodu.Numerics.Interval`1.op_Inequality(Bodu.Numerics.Interval{`0},Bodu.Numerics.Interval{`0})">
+          <a class="xref" href="Bodu.Numerics.Interval-1.op_Inequality.html#Bodu_Numerics_Interval_1_op_Inequality_Bodu_Numerics_Interval__0__Bodu_Numerics_Interval__0__">operator !=(Interval&lt;T&gt;, Interval&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether two intervals are not equal as sets. See <a class="xref" href="Bodu.Numerics.Interval-1.Equals.html#Bodu_Numerics_Interval_1_Equals_Bodu_Numerics_Interval__0__">Equals(Interval&lt;T&gt;)</a>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Clamp.html#Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.Clamp&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsBetween.html#Bodu_Extensions_ComparableExtensions_IsBetween__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsBetween&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThan.html#Bodu_Extensions_ComparableExtensions_IsGreaterThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThan.html#Bodu_Extensions_ComparableExtensions_IsLessThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsOutside.html#Bodu_Extensions_ComparableExtensions_IsOutside__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsOutside&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Bodu.Text.Serialization — Getting started | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Bodu.Text.Serialization — Getting started | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../../images/favicon.svg">
+      <link rel="stylesheet" href="../../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../../styles/docfx.css">
+      <link rel="stylesheet" href="../../../styles/main.css">
+      <meta property="docfx:navrel" content="../../../toc.html">
+      <meta property="docfx:tocrel" content="../../toc.html">
+    
+    <meta property="docfx:rel" content="../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../../index.html">
+                <img id="logo" class="svg" src="../../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="getting-started">Getting started</h1>
+
+<p>Unfamiliar with terms like <em>naming policy</em>, <em>ignore condition</em>, <em>required member</em>, <em>extension data</em>, or <em>callback</em>? Read <a href="concepts.html">Core concepts</a> first.</p>
+<h2 id="install">Install</h2>
+<p>You rarely add this package by hand: every format package (<code>Bodu.Text.Toml</code>, <code>Bodu.Text.Yaml</code>, <code>Bodu.Text.Bencode</code>, <code>Bodu.Text.Delimited</code>, <code>Bodu.Text.DotEnv</code>, <code>Bodu.Text.Ini</code>) restores it transitively. Add it directly when a project only <em>declares</em> models and should not depend on any one format — a shared DTO or contracts assembly:</p>
+<pre><code class="lang-shell">dotnet add package Bodu.Text.Serialization
+</code></pre>
+<p>Targets <code>net8.0</code>. Depends on <code>Bodu.Core</code> only.</p>
+<p>A typical split — the model library references the core package; the application references the formats it actually uses:</p>
+<pre><code class="lang-xml">&lt;!-- Contracts.csproj — DTOs annotated once --&gt;
+&lt;ItemGroup&gt;
+  &lt;PackageReference Include=&quot;Bodu.Text.Serialization&quot; Version=&quot;…&quot; /&gt;
+&lt;/ItemGroup&gt;
+
+&lt;!-- App.csproj — picks the wire formats --&gt;
+&lt;ItemGroup&gt;
+  &lt;ProjectReference Include=&quot;..\Contracts\Contracts.csproj&quot; /&gt;
+  &lt;PackageReference Include=&quot;Bodu.Text.Toml&quot; Version=&quot;…&quot; /&gt;
+  &lt;PackageReference Include=&quot;Bodu.Text.Yaml&quot; Version=&quot;…&quot; /&gt;
+&lt;/ItemGroup&gt;
+</code></pre>
+<h2 id="annotate-once-serialize-twice">Annotate once, serialize twice</h2>
+<p>The DTO below uses five members of the attribute family and nothing format-specific. It then goes through <strong>TOML</strong> and <strong>YAML</strong> unchanged.</p>
+<pre><code class="lang-csharp">using Bodu.Text.Serialization;
+
+[NamingPolicy(KnownNamingPolicy.SnakeCaseLower)]
+public sealed class ServiceProfile
+{
+    [Required]
+    public string DisplayName { get; set; } = &quot;&quot;;
+
+    [PropertyName(&quot;listen-port&quot;)]
+    public int Port { get; set; }
+
+    [Ignore(Condition = IgnoreCondition.WhenWritingNull)]
+    public string? Description { get; set; }
+
+    [Ignore]
+    public string? ApiKey { get; set; }
+
+    public int MaxRetryCount { get; set; } = 3;
+}
+</code></pre>
+<pre><code class="lang-csharp">using Bodu.Text.Toml;
+using Bodu.Text.Yaml;
+
+var profile = new ServiceProfile
+{
+    DisplayName = &quot;Billing API&quot;,
+    Port = 8080,
+    Description = null,
+    ApiKey = &quot;s3cret&quot;,
+    MaxRetryCount = 5,
+};
+
+string toml = TomlSerializer.Serialize(profile);
+// display_name = &quot;Billing API&quot;
+// listen-port = 8080
+// max_retry_count = 5
+
+string yaml = YamlSerializer.Serialize(profile);
+// display_name: Billing API
+// listen-port: 8080
+// max_retry_count: 5
+
+ServiceProfile fromToml = TomlSerializer.Deserialize&lt;ServiceProfile&gt;(toml);
+ServiceProfile fromYaml = YamlSerializer.Deserialize&lt;ServiceProfile&gt;(yaml)!;
+</code></pre>
+<p>Reading the output against the attributes:</p>
+<ul>
+<li><code>[NamingPolicy(KnownNamingPolicy.SnakeCaseLower)]</code> turned <code>DisplayName</code> and <code>MaxRetryCount</code> into <code>display_name</code> / <code>max_retry_count</code>.</li>
+<li><code>[PropertyName(&quot;listen-port&quot;)]</code> pinned one key and was <strong>not</strong> passed through the policy.</li>
+<li><code>[Ignore(Condition = IgnoreCondition.WhenWritingNull)]</code> dropped <code>description</code> because it was <code>null</code>; had it been set, both documents would carry it.</li>
+<li><code>[Ignore]</code> removed <code>ApiKey</code> entirely — it is neither written nor read back (<code>fromToml.ApiKey</code> is <code>null</code>).</li>
+<li><code>[Required]</code> has no effect on the write, but a document missing <code>display_name</code> fails to bind with the format's serialization exception:</li>
+</ul>
+<pre><code class="lang-csharp">try
+{
+    TomlSerializer.Deserialize&lt;ServiceProfile&gt;(&quot;listen-port = 1\n&quot;);
+}
+catch (TomlSerializationException ex)
+{
+    // Required member 'display_name' was not present in the input for type '…ServiceProfile'.
+    Console.Error.WriteLine(ex.Message);
+}
+</code></pre>
+<h2 id="a-callback">A callback</h2>
+<p>Implement the interfaces explicitly so the hooks stay off the type's public surface. <code>OnSerializing</code> runs before the members are written, so the stamped value lands in the document; <code>OnDeserialized</code> runs after every member is assigned, so it can validate across members.</p>
+<pre><code class="lang-csharp">using Bodu.Text.Serialization;
+using Bodu.Text.Toml;
+
+public sealed class Manifest : IOnSerializing, IOnDeserialized
+{
+    public string Name { get; set; } = &quot;&quot;;
+    public int Version { get; set; }
+    public long SavedAt { get; set; }
+
+    void IOnSerializing.OnSerializing() =&gt;
+        SavedAt = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+
+    void IOnDeserialized.OnDeserialized()
+    {
+        if (Version &lt;= 0)
+            throw new InvalidOperationException(&quot;Version must be positive.&quot;);
+    }
+}
+
+string text = TomlSerializer.Serialize(new Manifest { Name = &quot;demo&quot;, Version = 2 });
+// Name = &quot;demo&quot;
+// Version = 2
+// SavedAt = 1788924353
+
+Manifest back = TomlSerializer.Deserialize&lt;Manifest&gt;(text);          // SavedAt restored
+TomlSerializer.Deserialize&lt;Manifest&gt;(&quot;Name = \&quot;x\&quot;\nVersion = 0\n&quot;);  // throws InvalidOperationException from OnDeserialized
+</code></pre>
+<p>The same type fires the same hooks under <code>YamlSerializer</code>, <code>BencodeSerializer</code>, <code>IniSerializer</code>, <code>DotEnvSerializer</code>, and <code>DelimitedSerializer</code>.</p>
+<h2 id="a-naming-policy">A naming policy</h2>
+<p>Set a policy on the options to rename every member of every type, or annotate a single type with <code>[NamingPolicy]</code> to rename just that one. The type-level attribute beats the options, and <code>[PropertyName]</code> beats both.</p>
+<pre><code class="lang-csharp">using Bodu.Text.Serialization;
+using Bodu.Text.Yaml;
+
+var options = new YamlSerializerOptions { PropertyNamingPolicy = NamingPolicy.KebabCaseLower };
+
+string yaml = YamlSerializer.Serialize(new Manifest { Name = &quot;demo&quot;, Version = 1 }, options);
+// name: demo
+// version: 1
+// saved-at: 1788924353
+</code></pre>
+<p>A custom convention is one subclass with one method:</p>
+<pre><code class="lang-csharp">using Bodu.Text.Serialization;
+using Bodu.Text.Toml;
+
+public sealed class PrefixNamingPolicy : NamingPolicy
+{
+    public override string ConvertName(string name) =&gt;
+        &quot;app_&quot; + NamingPolicy.SnakeCaseLower.ConvertName(name);
+}
+
+var options = new TomlSerializerOptions { PropertyNamingPolicy = new PrefixNamingPolicy() };
+
+string toml = TomlSerializer.Serialize(new Manifest { Name = &quot;demo&quot;, Version = 1 }, options);
+// app_name = &quot;demo&quot;
+// app_version = 1
+// app_saved_at = 1788924353
+</code></pre>
+<p>Serializing the annotated profile type from the first sample with those same options still produces <code>display_name = …</code>: its type-level <code>[NamingPolicy]</code> wins over <code>PropertyNamingPolicy</code>.</p>
+<h2 id="reuse-the-options">Reuse the options</h2>
+<p>Once an options instance has been used it is frozen — <code>IsReadOnly</code> reports <code>true</code>, and setting a property throws <code>InvalidOperationException</code>. Configure one instance, then share it; it caches per-type metadata and is safe to use from many threads.</p>
+<pre><code class="lang-csharp">var options = new TomlSerializerOptions { PropertyNamingPolicy = NamingPolicy.CamelCase };
+options.MakeReadOnly();                                   // optional — first use freezes anyway
+
+_ = TomlSerializer.Serialize(profile, options);
+options.PropertyNamingPolicy = NamingPolicy.SnakeCaseLower;   // throws InvalidOperationException
+</code></pre>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="index.html">Bodu.Text.Serialization introduction</a></strong> — the full attribute family and which serializers honor which parts.</li>
+<li><strong><a href="concepts.html">Core concepts</a></strong> — precedence, naming order, required members, extension data, callback order, options freezing, converter resolution.</li>
+<li><strong><a href="../../../guides/serialization/toml/attributes.html">TOML attribute patterns</a></strong> — the remaining attributes (<code>[Include]</code>, <code>[Constructor]</code>, <code>[ExtensionData]</code>, <code>[UnmappedMemberHandling]</code>, <code>[ObjectCreationHandling]</code>, <code>[Converter]</code>, <code>[StringEnumMemberName]</code>) as worked recipes.</li>
+<li><strong><a href="../../formats/getting-started.html">Line formats getting started</a></strong> — the same attributes over CSV, <code>.env</code>, and INI.</li>
+<li><strong><a href="../../topics/text-and-serialization.html">Text &amp; Serialization topic overview</a></strong> — where the serializers sit among the codecs and document formats.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../styles/main.js"></script>
+  </body>
+</html>

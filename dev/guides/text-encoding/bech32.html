@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Using Bech32 and Bech32m | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Using Bech32 and Bech32m | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="using-bech32-and-bech32m">Using Bech32 and Bech32m</h1>
+
+<p><code>Bech32</code> implements the checksummed base-32 format defined by <a href="https://github.com/bitcoin/bips/blob/master/bip-0173.mediawiki">BIP 173</a>
+(Bech32) and <a href="https://github.com/bitcoin/bips/blob/master/bip-0350.mediawiki">BIP 350</a> (Bech32m). It is best known
+as the encoding of Bitcoin SegWit addresses (<code>bc1…</code>) and Lightning BOLT11 invoices, but it is a general-purpose
+encoding for any payload that benefits from a human-readable prefix and strong, position-aware error detection.</p>
+<p>Unlike the other encodings in this library, Bech32 is <strong>not</strong> a flat binary-to-text transform. An encoded string has
+four parts:</p>
+<pre><code>   bc 1 qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4
+   │  │ │                                  │
+   │  │ │                                  └─ 6-symbol checksum
+   │  │ └─ data part (5-bit groups, drawn from &quot;qpzry9x8gf2tvdw0s3jn54khce6mua7l&quot;)
+   │  └─ separator '1'
+   └─ human-readable part (HRP)
+</code></pre>
+<p>Because the HRP and checksum are integral to the string, <code>Bech32</code> is modelled on <a href="base58.html#base58check--checksum-protected-payloads"><code>Base58Check</code></a>
+rather than the <a href="binary-encodings-interface.html"><code>IBinaryEncoding</code></a> family — it sits outside the runtime registry.</p>
+<h2 id="5-bit-groups-vs-8-bit-bytes">5-bit groups vs. 8-bit bytes</h2>
+<p>The core methods operate on <strong>5-bit data groups</strong> (each value <code>0</code>–<code>31</code>). Two convenience pairs bridge to ordinary
+bytes, and <code>ConvertBits</code> does it by hand:</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Data form</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Encode(hrp, data, scheme)</code> / <code>Decode(...)</code></td>
+<td>5-bit groups (values 0–31)</td>
+</tr>
+<tr>
+<td><code>EncodeFromBytes(hrp, data, scheme)</code> / <code>DecodeToBytes(...)</code></td>
+<td>8-bit bytes (repacked with <code>ConvertBits</code> internally)</td>
+</tr>
+<tr>
+<td><code>ConvertBits(data, fromBits, toBits, pad)</code></td>
+<td>manual bit-width conversion</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-csharp">using Bodu.Text.Encoding;
+
+// Round-trip arbitrary bytes through the byte-oriented pair.
+byte[] payload = { 0xDE, 0xAD, 0xBE, 0xEF };
+string encoded = Bech32.EncodeFromBytes(&quot;data&quot;, payload, Bech32Encoding.Bech32m);
+
+Bech32.DecodeToBytes(encoded, out string hrp, out byte[] back, out Bech32Encoding scheme);
+// hrp == &quot;data&quot;; back.SequenceEqual(payload); scheme == Bech32Encoding.Bech32m
+</code></pre>
+<h2 id="bech32-vs-bech32m">Bech32 vs. Bech32m</h2>
+<p>The two schemes differ only in the checksum constant, which makes a Bech32m string fail a Bech32 checksum and vice
+versa. <a class="xref" href="../../api/Bodu.Text.Encoding.Bech32Encoding.html">Bech32Encoding</a> selects the scheme on encode, and the decoder <strong>reports which scheme
+validated</strong> the checksum through an out parameter:</p>
+<table>
+<thead>
+<tr>
+<th>Scheme</th>
+<th>BIP</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Bech32Encoding.Bech32</code> (default)</td>
+<td>BIP 173</td>
+<td>SegWit v0 (<code>bc1q…</code>), Lightning invoices</td>
+</tr>
+<tr>
+<td><code>Bech32Encoding.Bech32m</code></td>
+<td>BIP 350</td>
+<td>SegWit v1+ / Taproot (<code>bc1p…</code>)</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-csharp">Bech32.Decode(&quot;bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4&quot;,
+    out string hrp, out byte[] data, out Bech32Encoding scheme);
+// scheme == Bech32Encoding.Bech32
+</code></pre>
+<h2 id="worked-example--a-segwit-v0-address">Worked example — a SegWit v0 address</h2>
+<p>A SegWit address is not a plain byte payload: the data part is a one-symbol <strong>witness version</strong> followed by the
+witness program repacked from 8 bits to 5. Witness v0 uses Bech32; v1+ uses Bech32m.</p>
+<pre><code class="lang-csharp">using Bodu.Text.Encoding;
+
+byte[] program = Base16.Decode(&quot;751e76e8199196d454941c45d1b3a323f1433bd6&quot;); // 20-byte HASH160
+
+byte[] groups = Bech32.ConvertBits(program, 8, 5, pad: true)!;   // program → 5-bit groups
+byte[] data = new byte[1 + groups.Length];
+data[0] = 0;                                                     // witness version 0
+groups.CopyTo(data, 1);
+
+string address = Bech32.Encode(&quot;bc&quot;, data, Bech32Encoding.Bech32);
+// &quot;bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4&quot;
+</code></pre>
+<h2 id="case-handling">Case handling</h2>
+<p>Encoded output is always <strong>lower case</strong> (the canonical form). The decoder accepts an all-lower-case or all-upper-case
+string and rejects mixed case per BIP 173; the returned HRP is normalised to lower case.</p>
+<pre><code class="lang-csharp">Bech32.IsValid(&quot;BC1QW508D6QEJXTDG4Y5R3ZARVARY0C5XW7KV8F3T4&quot;);   // true  (all upper)
+Bech32.IsValid(&quot;bc1qw508d6qejxtdg4Y5r3zarvary0c5xw7kv8f3t4&quot;);   // false (mixed case)
+</code></pre>
+<h2 id="the-90-character-limit">The 90-character limit</h2>
+<p>BIP 173 caps an address at <strong>90 characters</strong>. The decoder enforces this limit; the encoder does <strong>not</strong>, so it can
+produce the longer strings non-address schemes need — Lightning BOLT11 invoices routinely exceed 90 characters.</p>
+<h2 id="hrp-rules">HRP rules</h2>
+<p>The human-readable part must be <strong>non-empty</strong> and contain only US-ASCII characters in the range 33–126. An empty or
+out-of-range HRP throws <code>ArgumentException</code> from the encoder; <code>TryEncode</code> returns <code>false</code>.</p>
+<h2 id="non-throwing-forms">Non-throwing forms</h2>
+<pre><code class="lang-csharp">if (Bech32.TryEncode(&quot;bc&quot;, data, Bech32Encoding.Bech32, out string? encoded))
+{
+    // encoded is non-null
+}
+
+if (Bech32.TryDecodeToBytes(input, out string? hrp, out byte[]? bytes, out Bech32Encoding scheme))
+{
+    // hrp / bytes are non-null; scheme reports Bech32 vs Bech32m
+}
+</code></pre>
+<p><code>Decode</code> / <code>DecodeToBytes</code> throw <code>FormatException</code> on a bad checksum, mixed case, missing separator, over-length
+input, or an out-of-alphabet character; the <code>Try*</code> forms return <code>false</code> instead. <code>Bech32.IsValid</code> is a shorthand for
+&quot;does this decode without error&quot;.</p>
+<h2 id="sizing">Sizing</h2>
+<pre><code class="lang-csharp">// hrpLength + 1 separator + dataLength + 6 checksum symbols
+int length = Bech32.GetEncodedLength(hrpLength: 2, dataLength: 33);
+</code></pre>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="base58.html">Base58 guide</a></strong> — the legacy Bitcoin address encoding and <code>Base58Check</code>.</li>
+<li><strong><a href="base32.html">Base32 guide</a></strong> — the plain 5-bit encoding Bech32's data part is built on.</li>
+<li><strong><a href="binary-encodings-interface.html"><code>IBinaryEncoding</code> interface</a></strong> — the runtime registry for the flat-byte encodings (Bech32 stays outside it).</li>
+<li><strong><a href="../topics/text-and-serialization.html">Text &amp; Serialization guides</a></strong> — every guide in this topic, across Bodu.Text.Encoding, Bodu.Text.Formats, and the Bencode / TOML serializers.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

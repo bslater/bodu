@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Bodu.Formats.Excel.Binary — Introduction | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Bodu.Formats.Excel.Binary — Introduction | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="boduformatsexcelbinary">Bodu.Formats.Excel.Binary</h1>
+
+<p><img src="../../images/hero-excel.svg" alt="Bodu.Formats.Excel.Binary"></p>
+<p><strong>Bodu.Formats.Excel.Binary</strong> is a narrow, read-only reader for the Excel binary workbook format (<code>.xls</code>) — BIFF8 (Excel 97–2003) and BIFF5 (Excel 5.0/95). Part of the <strong><a href="../topics/binary-formats.html">Binary Formats &amp; I/O</a></strong> topic, it surfaces the raw cell values of each worksheet — strings, numbers, booleans, and errors, including a formula cell's cached result — without formula evaluation, styling, or any higher-level interpretation.</p>
+<p>An <code>.xls</code> file is a BIFF5 or BIFF8 record stream stored <em>inside</em> the <code>Workbook</code> stream of an OLE2 compound file. This package interprets that record stream as worksheets and cells; the container around it is read by <a href="../io-compound/index.html"><code>Bodu.IO.Compound</code></a>, and the record framing and decoding come from <a href="../io-biff/index.html"><code>Bodu.IO.Biff</code></a> — this package is built on both. <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelBinaryWorkbook.html">ExcelBinaryWorkbook</a> is the disposable session: it parses the workbook globals once and reads each sheet on demand.</p>
+<p><img src="../../images/diagrams/excel-binary-structure.svg" alt="An Excel binary workbook is a BIFF5 or BIFF8 record stream stored inside the Workbook stream of an OLE2 compound file. Bodu.IO.Compound supplies the Workbook stream's bytes and Bodu.IO.Biff decodes the records; ExcelBinaryWorkbook parses the workbook globals once — the date system, shared strings, number formats, and sheet directory — then reads each sheet on demand and surfaces ExcelCell values through a forward-only reader or a materialized worksheet."></p>
+<table>
+<thead>
+<tr>
+<th>Concept</th>
+<th>Type</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Workbook</strong></td>
+<td><a class="xref" href="../../api/Bodu.Formats.Excel.ExcelBinaryWorkbook.html">ExcelBinaryWorkbook</a></td>
+<td>Opens the <code>.xls</code> container, parses the globals, and lists the sheets; static <code>OpenRead</code> / <code>Open</code> factories.</td>
+</tr>
+<tr>
+<td><strong>Streaming reader</strong></td>
+<td><a class="xref" href="../../api/Bodu.Formats.Excel.ExcelWorksheetReader.html">ExcelWorksheetReader</a></td>
+<td>The forward-only, low-allocation cell surface — <code>TryReadCell</code>, <code>ReadCells</code>, <code>ReadRows</code>.</td>
+</tr>
+<tr>
+<td><strong>Materialized sheet</strong></td>
+<td><a class="xref" href="../../api/Bodu.Formats.Excel.ExcelWorksheet.html">ExcelWorksheet</a></td>
+<td>A randomly addressable view — <code>TryGetCell(row, column, …)</code> and grouped <code>Rows</code>.</td>
+</tr>
+<tr>
+<td><strong>Cell</strong></td>
+<td><a class="xref" href="../../api/Bodu.Formats.Excel.ExcelCell.html">ExcelCell</a></td>
+<td>An immutable cell value: position, <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelCellKind.html">ExcelCellKind</a>, and the typed value.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="key-concepts">Key concepts</h2>
+<table>
+<thead>
+<tr>
+<th>Concept</th>
+<th>Plain-language meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>BIFF8</strong></td>
+<td>The Excel 97–2003 binary record format: a flat stream of type-length-body records inside the container's <code>Workbook</code> stream. <strong>BIFF5</strong> is its Excel 5.0/95 predecessor, with code-page byte strings in place of Unicode; the record framing and decoding for both come from <code>Bodu.IO.Biff</code>.</td>
+</tr>
+<tr>
+<td><strong>Workbook globals</strong></td>
+<td>The records parsed once at open time — the date system, the shared string table, the number-format table, and the sheet directory.</td>
+</tr>
+<tr>
+<td><strong>Cell kind</strong></td>
+<td>Each populated cell is classified as a string, number, boolean, or error; blank cells are simply not returned, so a worksheet is a sparse sequence.</td>
+</tr>
+<tr>
+<td><strong>Serial date</strong></td>
+<td>Excel stores dates as floating-point serial numbers; the reader never infers a date, but flags date-formatted numbers and offers a converter.</td>
+</tr>
+<tr>
+<td><strong>Used range</strong></td>
+<td>The half-open span of rows and columns a sheet's <code>DIMENSIONS</code> record declares — an upper bound, not a tight fit.</td>
+</tr>
+</tbody>
+</table>
+<p>For the full glossary, see <a href="concepts.html">Core concepts</a>.</p>
+<h2 id="how-opening-a-workbook-works">How opening a workbook works</h2>
+<p><code>OpenRead</code> / <code>Open</code> parse the <strong>workbook globals</strong> once — the date system, the shared string table, the number-format table, and the sheet directory — then keep the compound-file container open. No sheet body is read at open: each sheet is read on demand by seeking to the byte offset its directory entry records, so a single sheet can be read without parsing the others and the whole workbook is never materialised in memory. The session owns the container and, unless <code>LeaveOpen</code> is set, the source stream, so dispose it (a <code>using</code> declaration suffices) when reading is complete.</p>
+<h2 id="scope-and-limitations">Scope and limitations</h2>
+<ul>
+<li><strong>Read-only.</strong> The reader surfaces values; it never writes, evaluates formulas, applies styles, or interprets charts and macros.</li>
+<li><strong>Raw values.</strong> A formula cell yields its <em>cached</em> result (the value Excel last stored), not a recomputation. Numbers are raw <code>double</code> values with no date interpretation applied.</li>
+<li><strong>BIFF8 and BIFF5.</strong> The reader accepts BIFF8 (Excel 97–2003) and BIFF5 (Excel 5.0/95) workbooks, exposing which through <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelBinaryWorkbook.BiffVersion.html#Bodu_Formats_Excel_ExcelBinaryWorkbook_BiffVersion">BiffVersion</a>; other BIFF versions are reported through <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelBinaryUnsupportedException.html">ExcelBinaryUnsupportedException</a> rather than mis-parsed; encrypted workbooks raise <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelBinaryEncryptedWorkbookException.html">ExcelBinaryEncryptedWorkbookException</a>.</li>
+</ul>
+<div class="IMPORTANT">
+<h5>Important</h5>
+<p>A formula cell is surfaced as whichever <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelCellKind.html">ExcelCellKind</a> its cached result holds — there is no distinct &quot;formula&quot; kind, and the cached value is the one Excel last stored, not a recomputation. Treat a numeric cell as a date only when <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelCell.IsDateFormatted.html#Bodu_Formats_Excel_ExcelCell_IsDateFormatted">IsDateFormatted</a> says so, and convert it with the workbook's own <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelBinaryWorkbook.DateSystem.html#Bodu_Formats_Excel_ExcelBinaryWorkbook_DateSystem">DateSystem</a>.</p>
+</div>
+<h2 id="worked-example--open-list-read">Worked example — open, list, read</h2>
+<pre><code class="lang-csharp">using Bodu.Formats.Excel;
+
+using ExcelBinaryWorkbook workbook = ExcelBinaryWorkbook.OpenRead(&quot;rates.xls&quot;);
+
+foreach (ExcelWorksheetInfo sheet in workbook.Worksheets)
+    Console.WriteLine($&quot;{sheet.Index}: {sheet.Name} ({sheet.Dimensions.RowCount} rows)&quot;);
+
+using ExcelWorksheetReader reader = workbook.OpenWorksheet(&quot;Data&quot;);
+while (reader.TryReadCell(out ExcelCell cell))
+{
+    if (cell.Kind == ExcelCellKind.Number)
+        Console.WriteLine($&quot;{ExcelCellReference.ToA1(cell.RowIndex, cell.ColumnIndex)} = {cell.NumberValue}&quot;);
+}
+</code></pre>
+<h2 id="common-scenarios">Common scenarios</h2>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Reach for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Open a workbook from a path or stream</td>
+<td><code>ExcelBinaryWorkbook.OpenRead(path)</code> / <code>OpenRead(stream)</code></td>
+</tr>
+<tr>
+<td>List the sheets and their used ranges</td>
+<td><a class="xref" href="../../api/Bodu.Formats.Excel.ExcelBinaryWorkbook.Worksheets.html#Bodu_Formats_Excel_ExcelBinaryWorkbook_Worksheets">Worksheets</a></td>
+</tr>
+<tr>
+<td>Stream a sheet's cells with minimal allocation</td>
+<td><code>workbook.OpenWorksheet(name)</code> → <code>TryReadCell</code> / <code>ReadCells</code></td>
+</tr>
+<tr>
+<td>Group a sheet's cells into rows</td>
+<td><code>ExcelWorksheetReader.ReadRows()</code></td>
+</tr>
+<tr>
+<td>Read a sheet by position (random access)</td>
+<td><code>workbook.ReadWorksheet(name)</code> → <code>ExcelWorksheet.TryGetCell(...)</code></td>
+</tr>
+<tr>
+<td>Tell whether a numeric cell is a date</td>
+<td><a class="xref" href="../../api/Bodu.Formats.Excel.ExcelCell.IsDateFormatted.html#Bodu_Formats_Excel_ExcelCell_IsDateFormatted">IsDateFormatted</a></td>
+</tr>
+<tr>
+<td>Convert a serial number to a calendar date</td>
+<td><code>ExcelSerialDate.FromSerialDate(value, workbook.DateSystem)</code></td>
+</tr>
+<tr>
+<td>Convert coordinates to an A1 reference</td>
+<td><code>ExcelCellReference.ToA1(row, column)</code></td>
+</tr>
+<tr>
+<td>Read authored document metadata</td>
+<td><a class="xref" href="../../api/Bodu.Formats.Excel.ExcelBinaryWorkbook.Properties.html#Bodu_Formats_Excel_ExcelBinaryWorkbook_Properties">Properties</a></td>
+</tr>
+<tr>
+<td>Skip optional work for throughput</td>
+<td><code>ExcelBinaryReaderOptions { ReadDocumentProperties = false, DetectDateFormats = false }</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="headline-types--">Headline types — <a class="xref" href="../../api/Bodu.Formats.Excel.html">Bodu.Formats.Excel</a></h2>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Formats.Excel.ExcelBinaryWorkbook.html">ExcelBinaryWorkbook</a></td>
+<td>The disposable read-only session — <code>OpenRead</code> / <code>Open</code> factories, <code>Worksheets</code>, <code>Properties</code>, <code>DateSystem</code>, <code>BiffVersion</code>, and the <code>OpenWorksheet</code> / <code>ReadWorksheet</code> surfaces.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Formats.Excel.ExcelBinaryReaderOptions.html">ExcelBinaryReaderOptions</a></td>
+<td>Trades optional metadata work for throughput and governs stream ownership — <code>LeaveOpen</code>, <code>ReadDocumentProperties</code>, <code>DetectDateFormats</code>.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Formats.Excel.ExcelWorksheetReader.html">ExcelWorksheetReader</a></td>
+<td>Forward-only, low-allocation cell reader — <code>TryReadCell</code>, <code>ReadCells</code>, <code>ReadRows</code>.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Formats.Excel.ExcelWorksheet.html">ExcelWorksheet</a>, <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelRow.html">ExcelRow</a></td>
+<td>The materialized, randomly addressable worksheet and its grouped rows.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Formats.Excel.ExcelCell.html">ExcelCell</a>, <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelCellKind.html">ExcelCellKind</a>, <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelErrorCode.html">ExcelErrorCode</a></td>
+<td>The immutable cell value, its classification, and the spreadsheet error codes.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Formats.Excel.ExcelWorksheetInfo.html">ExcelWorksheetInfo</a>, <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelWorksheetDimensions.html">ExcelWorksheetDimensions</a></td>
+<td>The sheet descriptor (name, index, visibility, type) and its declared used range.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Formats.Excel.ExcelSerialDate.html">ExcelSerialDate</a>, <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelDateSystem.html">ExcelDateSystem</a></td>
+<td>Serial-date conversion and the 1900 / 1904 date systems.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Formats.Excel.ExcelCellReference.html">ExcelCellReference</a></td>
+<td>A1 reference conversion — <code>ColumnName</code>, <code>ToA1</code>, <code>TryParseA1</code>.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Formats.Excel.ExcelWorkbookProperties.html">ExcelWorkbookProperties</a></td>
+<td>The flattened document properties read from the OLE summary-information streams.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Formats.Excel.ExcelBinaryFormatException.html">ExcelBinaryFormatException</a>, <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelBinaryUnsupportedException.html">ExcelBinaryUnsupportedException</a>, <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelBinaryEncryptedWorkbookException.html">ExcelBinaryEncryptedWorkbookException</a>, <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelBinaryWorkbookStreamNotFoundException.html">ExcelBinaryWorkbookStreamNotFoundException</a></td>
+<td>Malformed-record, unsupported-version, encrypted-workbook, and missing-stream errors.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="concepts.html">Core concepts</a></strong> — full vocabulary: BIFF record, workbook globals, shared string table, cell kind, serial date, used range.</li>
+<li><strong><a href="getting-started.html">Getting started</a></strong> — install + minimal samples for opening, listing, and reading cells.</li>
+<li><strong><a href="../../guides/excel/index.html">Bodu.Formats.Excel.Binary guides</a></strong> — reading workbooks, cell values and dates, and the streaming-vs-materialized surfaces.</li>
+<li><strong>API reference</strong> — <a class="xref" href="../../api/Bodu.Formats.Excel.html">Bodu.Formats.Excel</a>.</li>
+<li><strong><a href="../topics/binary-formats.html">Binary Formats &amp; I/O topic overview</a></strong> — where the format reader sits above the container reader.</li>
+<li><strong>For the container reader beneath this package</strong>, see <a href="../io-compound/index.html">Bodu.IO.Compound</a>; <strong>for the record codec</strong>, see <a href="../io-biff/index.html">Bodu.IO.Biff</a>.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

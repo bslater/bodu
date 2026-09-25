@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Thread-safety contracts across Core Foundations | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Thread-safety contracts across Core Foundations | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="thread-safety-contracts-across-core-foundations">Thread-safety contracts across Core Foundations</h1>
+
+<p>This page is the one-table answer to &quot;can I share this object between threads?&quot; for every public type in <strong>Bodu.Core</strong>, <strong>Bodu.Collections</strong>, and <strong>Bodu.Collections.Concurrent</strong>. Each row is derived from the type's XML documentation and source — the presence or absence of internal synchronization, whether reads mutate state, and how enumeration behaves under concurrent modification — not from a general assumption.</p>
+<p>The columns use these terms:</p>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Safe</strong></td>
+<td>Designed for concurrent use from any number of threads without external locking.</td>
+</tr>
+<tr>
+<td><strong>Immutable</strong></td>
+<td>Cannot change after construction; sharing is trivially safe.</td>
+</tr>
+<tr>
+<td><strong>Read-only safe</strong></td>
+<td>Concurrent <em>reads</em> are safe once no thread is writing; any write (including a <em>read that mutates</em> — see the caveat column) needs exclusive access.</td>
+</tr>
+<tr>
+<td><strong>Unsafe</strong></td>
+<td>No synchronization at all; every access needs an external lock, or the object must stay confined to one thread.</td>
+</tr>
+<tr>
+<td><strong>Fail-fast</strong></td>
+<td>Enumerators capture a structural-version counter and throw <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a> on the next <code>MoveNext</code> after a structural mutation. Fail-fast detection is a <em>debugging aid on one thread</em>, not a concurrency mechanism.</td>
+</tr>
+<tr>
+<td><strong>Snapshot</strong></td>
+<td>Enumeration runs over a point-in-time copy and never throws for concurrent modification.</td>
+</tr>
+<tr>
+<td><strong>Undefined</strong></td>
+<td>No version counter; mutating during enumeration produces unspecified results.</td>
+</tr>
+</tbody>
+</table>
+<div class="IMPORTANT">
+<h5>Important</h5>
+<p>&quot;Read-only safe&quot; only holds when <em>no</em> thread mutates. For the collections whose lookups reposition entries (<code>EvictingDictionary</code> under a recency policy, <code>SequencedDictionary</code> in access order, <code>DefaultingDictionary</code>'s indexer, <code>DisjointSet.Find</code>), even a lookup is a write — those rows are marked <strong>Unsafe</strong> rather than read-only safe.</p>
+</div>
+<h2 id="boducore"><code>Bodu.Core</code></h2>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Contract</th>
+<th>Enumeration</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.WeekPattern.html">WeekPattern</a></td>
+<td>Immutable</td>
+<td>Snapshot (value type)</td>
+<td>Every operator returns a new value. <a href="week-pattern.html">Guide</a></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a>, <a class="xref" href="../../api/Bodu.Extensions.CalendarQuarterDefinition.html">CalendarQuarterDefinition</a>, <a class="xref" href="../../api/Bodu.Extensions.WeekOrdinal.html">WeekOrdinal</a>, <a class="xref" href="../../api/Bodu.Extensions.DateTimeResolution.html">DateTimeResolution</a>, <a class="xref" href="../../api/Bodu.Extensions.FiscalWeekPattern.html">FiscalWeekPattern</a>, <a class="xref" href="../../api/Bodu.Extensions.IdentifierCase.html">IdentifierCase</a>, <a class="xref" href="../../api/Bodu.Extensions.TitleCaseOptions.html">TitleCaseOptions</a>, <a class="xref" href="../../api/Bodu.Extensions.SentenceCaseOptions.html">SentenceCaseOptions</a>, <a class="xref" href="../../api/Bodu.Collections.Generic.Extensions.RandomizationMode.html">RandomizationMode</a>, <a class="xref" href="../../api/Bodu.Collections.Extensions.RecursiveSelectControl.html">RecursiveSelectControl</a>, <a class="xref" href="../../api/Bodu.Threading.AsyncDebouncerExecutionPolicy.html">AsyncDebouncerExecutionPolicy</a></td>
+<td>Immutable</td>
+<td>—</td>
+<td>Enums.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Functional.Option-1.html">Option&lt;T&gt;</a>, <a class="xref" href="../../api/Bodu.Functional.Result.html">Result</a>, <a class="xref" href="../../api/Bodu.Functional.Result-1.html">Result&lt;T&gt;</a>, <a class="xref" href="../../api/Bodu.Functional.ResultError.html">ResultError</a>, <a class="xref" href="../../api/Bodu.Functional.Either-2.html">Either&lt;TLeft, TRight&gt;</a></td>
+<td>Immutable</td>
+<td>—</td>
+<td><code>readonly struct</code> railway values. <a href="functional-results.html">Guide</a></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Functional.Memoizer.html">Memoizer</a></td>
+<td>Safe</td>
+<td>—</td>
+<td>The cache is thread-safe; under concurrent <em>first</em> calls for the same argument the wrapped function may run more than once, but only one result is published. <a href="memoization.html">Guide</a></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Threading.AsyncLock.html">AsyncLock</a>, <a class="xref" href="../../api/Bodu.Threading.AsyncSemaphore.html">AsyncSemaphore</a>, <a class="xref" href="../../api/Bodu.Threading.AsyncReaderWriterLock.html">AsyncReaderWriterLock</a>, <a class="xref" href="../../api/Bodu.Threading.AsyncAutoResetEvent.html">AsyncAutoResetEvent</a>, <a class="xref" href="../../api/Bodu.Threading.AsyncManualResetEvent.html">AsyncManualResetEvent</a>, <a class="xref" href="../../api/Bodu.Threading.AsyncCountdownEvent.html">AsyncCountdownEvent</a>, <a class="xref" href="../../api/Bodu.Threading.AsyncLazy-1.html">AsyncLazy&lt;T&gt;</a>, <a class="xref" href="../../api/Bodu.Threading.AsyncDebouncer.html">AsyncDebouncer</a>, <a class="xref" href="../../api/Bodu.Threading.RateGate.html">RateGate</a></td>
+<td>Safe</td>
+<td>—</td>
+<td>Coordination primitives — concurrent use is their purpose. <code>AsyncLazy&lt;T&gt;</code> runs its factory exactly once under contention; <code>RateGate</code> is leading-edge only. <a href="async-primitives.html">Guide</a></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Buffers.PooledBufferBuilder-1.html">PooledBufferBuilder&lt;T&gt;</a></td>
+<td>Unsafe</td>
+<td>—</td>
+<td>Single-owner builder over a rented array; no synchronization, and <code>Dispose</code> returns the buffer. <a href="pooled-buffer-builder.html">Guide</a></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Extensions.NaturalStringComparer.html">NaturalStringComparer</a></td>
+<td>Safe</td>
+<td>—</td>
+<td>Stateless; the static <code>Ordinal</code> / <code>OrdinalIgnoreCase</code> instances may be shared freely. <a href="natural-string-comparer.html">Guide</a></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Extensions.WordCasingOptions.html">WordCasingOptions</a>, <a class="xref" href="../../api/Bodu.Extensions.SlugOptions.html">SlugOptions</a></td>
+<td>Immutable</td>
+<td>—</td>
+<td><code>init</code>-only properties; build once, share. <a href="string-extensions.html">Guide</a></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Extensions.FiscalWeekQuarterProvider.html">FiscalWeekQuarterProvider</a></td>
+<td>Immutable</td>
+<td>—</td>
+<td>All configuration is captured in <code>readonly</code> fields at construction. <a href="calendar-shapes-and-providers.html">Guide</a></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Extensions.IQuarterDefinitionProvider.html">IQuarterDefinitionProvider</a>, <a class="xref" href="../../api/Bodu.Extensions.IWeekendDefinitionProvider.html">IWeekendDefinitionProvider</a></td>
+<td>Implementation-defined</td>
+<td>—</td>
+<td>The date extensions call them from whatever thread calls the extension; keep implementations stateless.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IRandomGenerator.html">IRandomGenerator</a></td>
+<td>Implementation-defined</td>
+<td>—</td>
+<td>Implementations are <em>not</em> required to be thread-safe; helpers that draw from one generator on several threads must pick a safe implementation or lock.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.XorShiftRandom.html">XorShiftRandom</a></td>
+<td>Unsafe</td>
+<td>—</td>
+<td>Non-atomic state updates; concurrent draws corrupt the generator. Use one per thread.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Extensions.SystemRandomAdapter.html">SystemRandomAdapter</a></td>
+<td>As the wrapped <code>Random</code></td>
+<td>—</td>
+<td>Safe over <code>Random.Shared</code>; unsafe over a <code>new Random()</code> shared across threads.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Xml.Linq.XmlNamespaceResolver.html">XmlNamespaceResolver</a></td>
+<td>Immutable</td>
+<td>—</td>
+<td>Holds only the root's default namespace.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Extensions.StringExtensions.html">StringExtensions</a>, <a class="xref" href="../../api/Bodu.Extensions.DateTimeExtensions.html">DateTimeExtensions</a>, <a class="xref" href="../../api/Bodu.Extensions.DateOnlyExtensions.html">DateOnlyExtensions</a>, <a class="xref" href="../../api/Bodu.Globalization.Extensions.DateTimeFormatInfoExtensions.html">DateTimeFormatInfoExtensions</a>, <a class="xref" href="../../api/Bodu.Extensions.NumericExtensions.html">NumericExtensions</a>, <a class="xref" href="../../api/Bodu.Extensions.ComparableExtensions.html">ComparableExtensions</a>, <a class="xref" href="../../api/Bodu.Extensions.ComparableHelper.html">ComparableHelper</a>, <a class="xref" href="../../api/Bodu.Extensions.EnumExtensions.html">EnumExtensions</a>, <a class="xref" href="../../api/Bodu.Extensions.Enums.html">Enums</a>, <a class="xref" href="../../api/Bodu.Extensions.ArrayExtensions.html">ArrayExtensions</a>, <a class="xref" href="../../api/Bodu.Extensions.SpanExtensions.html">SpanExtensions</a>, <a class="xref" href="../../api/Bodu.Extensions.StreamExtensions.html">StreamExtensions</a>, <a class="xref" href="../../api/Bodu.Extensions.BufferConverter.html">BufferConverter</a>, <a class="xref" href="../../api/Bodu.Extensions.WorkingDaysOfWeekExtensions.html">WorkingDaysOfWeekExtensions</a>, <a class="xref" href="../../api/Bodu.Extensions.IWeekendDefinitionProviderExtensions.html">IWeekendDefinitionProviderExtensions</a>, <a class="xref" href="../../api/Bodu.Text.EncodingDetection.html">EncodingDetection</a>, <a class="xref" href="../../api/Bodu.Text.EncodingExtensions.html">EncodingExtensions</a>, <a class="xref" href="../../api/Bodu.Text.StringEncodingExtensions.html">StringEncodingExtensions</a>, <a class="xref" href="../../api/Bodu.ThrowHelper.html">ThrowHelper</a>, <a class="xref" href="../../api/Bodu.Functional.Option.html">Option</a>, <a class="xref" href="../../api/Bodu.Functional.OptionAsyncExtensions.html">OptionAsyncExtensions</a>, <a class="xref" href="../../api/Bodu.Functional.ResultAsyncExtensions.html">ResultAsyncExtensions</a>, <a class="xref" href="../../api/Bodu.Functional.EitherAsyncExtensions.html">EitherAsyncExtensions</a></td>
+<td>Safe (stateless)</td>
+<td>—</td>
+<td>Pure static helpers. <code>Enums</code> fills a per-<code>TEnum</code> static cache in a type initializer and hands out copies. They are only as safe as the <em>arguments</em> you pass — an array or stream shared between threads is your problem, not theirs.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html">IEnumerableExtensions</a></td>
+<td>Safe (stateless); results Unsafe</td>
+<td>Per operator</td>
+<td>The returned sequences are single-consumer iterators — except <code>Cache()</code>, whose buffer is explicitly safe for concurrent enumeration from multiple threads. <code>BatchPooled</code> windows alias one rented buffer and are valid only until the enumerator advances. <a href="sequence-operators.html">Guide</a></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Extensions.IListExtensions.html">IListExtensions</a>, <a class="xref" href="../../api/Bodu.Collections.Generic.Extensions.IDictionaryExtensions.html">IDictionaryExtensions</a></td>
+<td>Safe (stateless); no synchronization of the target</td>
+<td>—</td>
+<td><code>GetOrAdd</code> / <code>AddOrUpdate</code> are a lookup then a write — not atomic; use <code>ConcurrentDictionary&lt;TKey,TValue&gt;</code> for shared maps.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.ShuffleHelpers.html">ShuffleHelpers</a>, <a class="xref" href="../../api/Bodu.Sequences.SequenceGenerator.html">SequenceGenerator</a></td>
+<td>Safe (stateless); sequences Unsafe</td>
+<td>—</td>
+<td>Generated sequences carry per-enumerator state only; <code>ShuffleHelpers</code> is as safe as the <code>IRandomGenerator</code> it is given.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="boducollections"><code>Bodu.Collections</code></h2>
+<p>Every mutable collection in this package is <strong>single-threaded by design</strong>: none takes locks, and the non-generic <code>ICollection.IsSynchronized</code> is always <code>false</code>. Their enumerators are <strong>fail-fast</strong> unless the table says otherwise.</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Contract</th>
+<th>Enumeration</th>
+<th>Read-mutates caveat / notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.RingBackedCollection-1.html">RingBackedCollection&lt;T&gt;</a></td>
+<td>Unsafe</td>
+<td>Fail-fast (struct enumerator)</td>
+<td>Abstract base; the version counter is bumped inside every protected mutator. <a href="ring-backed-collections.html">Guide</a></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.CircularBuffer-1.html">CircularBuffer&lt;T&gt;</a></td>
+<td>Unsafe</td>
+<td>Fail-fast</td>
+<td>Eviction events run inline; mutating from a handler throws. Use <code>ConcurrentCircularBuffer&lt;T&gt;</code> for MPMC. <a href="circular-buffer.html">Guide</a></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Deque-1.html">Deque&lt;T&gt;</a></td>
+<td>Unsafe</td>
+<td>Fail-fast</td>
+<td>Same eviction-handler rule under <code>EvictOpposite</code>. <a href="deque.html">Guide</a></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.EvictingDictionary-2.html">EvictingDictionary&lt;TKey, TValue&gt;</a></td>
+<td><strong>Unsafe — reads mutate</strong></td>
+<td>Fail-fast; expired entries are filtered against a clock snapshot taken at enumerator creation</td>
+<td>Every lookup (<code>this[key]</code>, <code>TryGetValue</code>, <code>ContainsKey</code>, …) counts as a <em>touch</em>: LRU / LFU-style policies reposition the entry, and with an expiration configured an access may purge expired keys. Even concurrent readers race. <a href="evicting-dictionary.html">Guide</a></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.EvictingDictionaryExpiration.html">EvictingDictionaryExpiration</a></td>
+<td>Immutable</td>
+<td>—</td>
+<td>Expiration configuration value.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.SequencedDictionary-2.html">SequencedDictionary&lt;TKey, TValue&gt;</a></td>
+<td>Read-only safe in insertion order; <strong>Unsafe in access order</strong></td>
+<td>Fail-fast</td>
+<td>In access-order mode a lookup moves the entry to the end. <a href="sequenced-dictionary.html">Guide</a></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.BiDictionary-2.html">BiDictionary&lt;TKey, TValue&gt;</a></td>
+<td>Read-only safe</td>
+<td>Fail-fast (BCL-dictionary rules, through either view)</td>
+<td>The <code>Inverse</code> view shares storage — a write through one view is a write to both. <a href="bi-dictionary.html">Guide</a></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.LayeredDictionary-2.html">LayeredDictionary&lt;TKey, TValue&gt;</a></td>
+<td>Read-only safe</td>
+<td><code>Keys</code> / <code>Values</code> are snapshots; enumeration follows each layer's own rules</td>
+<td>Writes go to the first layer only; the layers themselves are ordinary dictionaries you also must not mutate concurrently. <a href="layered-and-defaulting-dictionaries.html">Guide</a></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.DefaultingDictionary-2.html">DefaultingDictionary&lt;TKey, TValue&gt;</a></td>
+<td><strong>Unsafe — indexer reads mutate</strong></td>
+<td>Fail-fast (wrapped dictionary); enumeration never materializes defaults</td>
+<td><code>this[key]</code> on a missing key invokes the factory and <em>stores</em> the result; the check-invoke-store sequence is not atomic. <a href="layered-and-defaulting-dictionaries.html">Guide</a></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Table-3.html">Table&lt;TRow, TColumn, TValue&gt;</a></td>
+<td>Read-only safe</td>
+<td>Fail-fast (dictionary rules) via the live <code>Row</code> / <code>Column</code> views; <code>ColumnKeys</code> is a snapshot</td>
+<td><a href="table.html">Guide</a></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.IndexedPriorityQueue-2.html">IndexedPriorityQueue&lt;TElement, TPriority&gt;</a></td>
+<td>Read-only safe</td>
+<td>Fail-fast (also bumped by re-prioritization)</td>
+<td><a href="indexed-priority-queue.html">Guide</a></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.IndexedSet-1.html">IndexedSet&lt;T&gt;</a>, <a class="xref" href="../../api/Bodu.Collections.Generic.OrderedSet-1.html">OrderedSet&lt;T&gt;</a></td>
+<td>Read-only safe</td>
+<td>Fail-fast</td>
+<td>The set-algebra members (<code>UnionWith</code>, …) mutate in place. <a href="ordered-sets.html">Guide</a></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.NavigableSet-1.html">NavigableSet&lt;T&gt;</a>, <a class="xref" href="../../api/Bodu.Collections.Generic.NavigableDictionary-2.html">NavigableDictionary&lt;TKey, TValue&gt;</a></td>
+<td>Read-only safe</td>
+<td>Fail-fast, including every ascending / descending / range view and the key and value collections</td>
+<td>Views are live: they reflect later mutations on their <em>next</em> iteration. <a href="navigable-set.html">Guides</a> · <a href="navigable-dictionary.html">dictionary</a></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Multiset-1.html">Multiset&lt;T&gt;</a></td>
+<td>Read-only safe</td>
+<td>Fail-fast</td>
+<td><a href="multiset.html">Guide</a></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.MultiValueDictionary-2.html">MultiValueDictionary&lt;TKey, TValue&gt;</a></td>
+<td>Read-only safe</td>
+<td>Fail-fast</td>
+<td><a href="multi-value-dictionary.html">Guide</a></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Range-1.html">Range&lt;T&gt;</a>, <a class="xref" href="../../api/Bodu.Collections.Generic.ValueRange-2.html">ValueRange&lt;TKey, TValue&gt;</a></td>
+<td>Immutable</td>
+<td>—</td>
+<td><code>readonly struct</code> keys and entries. <a href="range-dictionary.html">Guide</a></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.RangeDictionary-2.html">RangeDictionary&lt;TKey, TValue&gt;</a>, <a class="xref" href="../../api/Bodu.Collections.Generic.RangeSet-1.html">RangeSet&lt;T&gt;</a></td>
+<td>Read-only safe</td>
+<td>Fail-fast</td>
+<td><a href="range-dictionary.html">Guide</a></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.IntervalTree-1.html">IntervalTree&lt;T&gt;</a>, <a class="xref" href="../../api/Bodu.Collections.Generic.IntervalTree-2.html">IntervalTree&lt;TKey, TValue&gt;</a></td>
+<td>Read-only safe</td>
+<td>Fail-fast, including <code>QueryPoint</code> / <code>QueryOverlaps</code> results while they are being iterated</td>
+<td><a href="interval-tree.html">Guide</a></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.SegmentedBuffer-1.html">SegmentedBuffer&lt;T&gt;</a></td>
+<td>Read-only safe</td>
+<td>Fail-fast</td>
+<td>Append-only. <a href="segmented-buffer.html">Guide</a></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Specialized.BitSet.html">BitSet</a></td>
+<td>Read-only safe</td>
+<td>Fail-fast</td>
+<td>The in-place logical operators (<code>And</code>, <code>Or</code>, …) are writes. <a href="bit-set.html">Guide</a></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Probabilistic.BloomFilter-1.html">BloomFilter&lt;T&gt;</a>, <a class="xref" href="../../api/Bodu.Collections.Probabilistic.CountMinSketch-1.html">CountMinSketch&lt;T&gt;</a>, <a class="xref" href="../../api/Bodu.Collections.Probabilistic.HyperLogLog-1.html">HyperLogLog&lt;T&gt;</a></td>
+<td>Read-only safe</td>
+<td>— (no element enumeration)</td>
+<td><code>Add</code> / <code>Merge</code> / <code>Import</code> are writes; <code>Export</code> produces a versioned snapshot. <a href="probabilistic-collections.html">Guide</a></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Graphs.Graph-1.html">Graph&lt;T&gt;</a></td>
+<td>Read-only safe</td>
+<td><strong>Undefined</strong> — no version counter; do not mutate while iterating <code>Vertices</code> or <code>Neighbors</code></td>
+<td>Algorithms in <code>GraphAlgorithms</code> only read. <a href="graphs.html">Guide</a></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Graphs.IReadOnlyGraph-1.html">IReadOnlyGraph&lt;TVertex&gt;</a>, <a class="xref" href="../../api/Bodu.Collections.Generic.Graphs.IReadOnlyWeightedGraph-1.html">IReadOnlyWeightedGraph&lt;TVertex&gt;</a></td>
+<td>As the implementation</td>
+<td>—</td>
+<td>Read-only <em>interfaces</em>, not immutable views — the underlying graph may still be mutated by its owner.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Graphs.GraphAlgorithms.html">GraphAlgorithms</a></td>
+<td>Safe (stateless)</td>
+<td>—</td>
+<td>Operates on the graph it is given; the graph must not be mutated during a run.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Graphs.ShortestPathResult-1.html">ShortestPathResult&lt;TVertex&gt;</a></td>
+<td>Immutable</td>
+<td>—</td>
+<td><code>readonly record struct</code> result.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Graphs.DisjointSet-1.html">DisjointSet&lt;T&gt;</a></td>
+<td><strong>Unsafe — <code>Find</code> mutates</strong></td>
+<td>— (no public enumeration)</td>
+<td>Path-halving compression rewrites parent links on every <code>Find</code> / <code>TryFind</code> / <code>AreConnected</code>, so even concurrent lookups race. <a href="graphs.html">Guide</a></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Trees.Trie.html">Trie</a>, <a class="xref" href="../../api/Bodu.Collections.Generic.Trees.Trie-1.html">Trie&lt;TValue&gt;</a>, <a class="xref" href="../../api/Bodu.Collections.Generic.Trees.RadixTrie.html">RadixTrie</a>, <a class="xref" href="../../api/Bodu.Collections.Generic.Trees.RadixTrie-1.html">RadixTrie&lt;TValue&gt;</a></td>
+<td>Read-only safe</td>
+<td>Fail-fast, including prefix-query sequences</td>
+<td><a href="trie.html">Guide</a></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Trees.AhoCorasickAutomaton.html">AhoCorasickAutomaton</a>, <a class="xref" href="../../api/Bodu.Collections.Generic.Trees.AhoCorasickAutomaton-1.html">AhoCorasickAutomaton&lt;TValue&gt;</a></td>
+<td>Immutable</td>
+<td>—</td>
+<td>Built once from the full pattern set (a new set means a new automaton); matching is a pure read and is safe to run concurrently. <a href="trie.html">Guide</a></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Trees.AhoCorasickMatch.html">AhoCorasickMatch</a>, <a class="xref" href="../../api/Bodu.Collections.Generic.Trees.AhoCorasickMatch-1.html">AhoCorasickMatch&lt;TValue&gt;</a></td>
+<td>Immutable</td>
+<td>—</td>
+<td><code>readonly record struct</code> results.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Trees.Tree-1.html">Tree&lt;T&gt;</a></td>
+<td>Read-only safe</td>
+<td><strong>Undefined</strong> — traversals carry no version; snapshot with <code>ToList()</code> before mutating</td>
+<td><code>Depth</code> / <code>Height</code> are computed reads. <a href="tree.html">Guide</a></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.DequeOverflowPolicy.html">DequeOverflowPolicy</a>, <a class="xref" href="../../api/Bodu.Collections.Generic.EvictingDictionaryPolicy.html">EvictingDictionaryPolicy</a>, <a class="xref" href="../../api/Bodu.Collections.Generic.EvictingDictionaryExpirationKind.html">EvictingDictionaryExpirationKind</a>, <a class="xref" href="../../api/Bodu.Collections.Generic.BiDictionaryDuplicateValuePolicy.html">BiDictionaryDuplicateValuePolicy</a>, <a class="xref" href="../../api/Bodu.Collections.Generic.MultiValueBacking.html">MultiValueBacking</a>, <a class="xref" href="../../api/Bodu.Collections.Generic.Graphs.GraphKind.html">GraphKind</a></td>
+<td>Immutable</td>
+<td>—</td>
+<td>Enums.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="boducollectionsconcurrent"><code>Bodu.Collections.Concurrent</code></h2>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Contract</th>
+<th>Enumeration</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer-1.html">ConcurrentCircularBuffer&lt;T&gt;</a></td>
+<td><strong>Safe</strong> — lock-free MPMC (Vyukov ring)</td>
+<td>Snapshot (atomic copy at <code>GetEnumerator</code>); never throws for concurrent modification</td>
+<td><code>Count</code> may be transiently stale under contention. Like its two siblings it reports <code>ICollection.IsSynchronized == false</code> — there is no lock to expose because the type manages its own synchronization, so do not try to coordinate access through <code>SyncRoot</code>. <a href="concurrent-collections.html">Guide</a></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.html">ConcurrentHashSet&lt;T&gt;</a></td>
+<td><strong>Safe</strong> — lock-free split-ordered list</td>
+<td>Weakly consistent snapshot: elements added or removed after the snapshot completes are not seen; elements changing <em>during</em> capture may or may not appear</td>
+<td>Resizes are lock-free and never invalidate readers. The <code>ISet&lt;T&gt;</code> bulk operations (<code>UnionWith</code>, <code>IntersectWith</code>, …) are sequences of individual atomic steps, not one atomic operation. <a href="concurrent-collections.html">Guide</a></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html">ConcurrentEvictingDictionary&lt;TKey, TValue&gt;</a></td>
+<td><strong>Safe</strong> — lock-striped segments</td>
+<td>Point-in-time snapshot; <code>Keys</code> / <code>Values</code> are snapshots too (each read allocates)</td>
+<td><code>GetOrAdd</code> is single-flight per key (the factory runs under the owning segment's lock, at most once per key even under concurrent misses); <code>ItemEvicted</code> is raised <em>after</em> the lock is released. Reads still touch eviction state, but the striping makes that safe. <a href="concurrent-collections.html">Guide</a></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentLruCache-2.html">ConcurrentLruCache&lt;TKey, TValue&gt;</a></td>
+<td><strong>Safe</strong> — lock-free reads</td>
+<td>Point-in-time snapshot of the backing dictionary; order unspecified</td>
+<td>Reads take no lock; queue maintenance is amortized onto writers. <code>GetOrAdd</code> follows <code>ConcurrentDictionary</code> semantics — racing callers may each run the factory, so it is <em>not</em> a stampede guard. <code>Count</code> may transiently exceed <code>Capacity</code> by at most the number of in-flight writers. <a href="concurrent-collections.html">Guide</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="rules-of-thumb">Rules of thumb</h2>
+<ol>
+<li><strong>Confine or lock every <code>Bodu.Collections</code> type.</strong> Wrap it in your own lock, or hand it to one thread. A <code>ReaderWriterLockSlim</code> is only valid for the rows marked <em>read-only safe</em> — never for <code>EvictingDictionary</code>, access-ordered <code>SequencedDictionary</code>, <code>DefaultingDictionary</code>, or <code>DisjointSet</code>, whose reads write.</li>
+<li><strong>Do not rely on fail-fast to detect races.</strong> The version check runs on the enumerating thread and can miss interleavings; it exists to turn a same-thread bug into an exception.</li>
+<li><strong>Prefer the <code>Bodu.Collections.Concurrent</code> type when one exists</strong> — it will beat a locked single-threaded collection under contention and its enumerators are snapshots rather than exceptions.</li>
+<li><strong>Share immutable values, not builders.</strong> <code>WeekPattern</code>, the option classes, the providers, and the <code>readonly struct</code> results are free to share; <code>PooledBufferBuilder&lt;T&gt;</code> and <code>XorShiftRandom</code> are not.</li>
+<li><strong>Stateless helpers are safe; their arguments may not be.</strong> Every extension class is pure, so thread safety collapses to the thread safety of the object you pass in.</li>
+</ol>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="concurrent-collections.html">Concurrent collections</a> — the three safe collections in depth.</li>
+<li><a href="async-primitives.html">Async coordination primitives</a> — the locks and gates for coordinating the rest.</li>
+<li><a href="choosing-a-collection.html">Choosing a collection</a> — picking by requirement, including &quot;shared between threads&quot;.</li>
+<li><a href="ring-backed-collections.html">Extending <code>RingBackedCollection&lt;T&gt;</code></a> — the version counter and fail-fast contract from the implementer's side.</li>
+<li><strong><a href="../topics/core-foundations.html">Core Foundations guides</a></strong> — every guide in this topic.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 220" role="img" aria-label="Bodu.Formats.Outlook — the shared MAPI value model for the Outlook format readers">
+  <title>Bodu.Formats.Outlook</title>
+  <defs>
+    <linearGradient id="olk-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0F172A"/>
+      <stop offset="1" stop-color="#1E293B"/>
+    </linearGradient>
+  </defs>
+  <rect width="480" height="220" rx="12" fill="url(#olk-bg)"/>
+
+  <!-- Left panel -->
+  <g transform="translate(28 30)" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="11">
+    <rect width="150" height="160" rx="8" fill="#1E293B" stroke="#334155" stroke-width="1.2"/>
+    <rect width="150" height="22" rx="8" fill="#60A5FA"/>
+    <rect y="14" width="150" height="8" fill="#60A5FA"/>
+    <text x="75" y="16" fill="#0B2545" text-anchor="middle" font-weight="700" font-size="10">MapiPropertyTag</text>
+
+    <g fill="#E2E8F0" font-family="'Consolas','Menlo',monospace" font-size="10">
+      <text x="10" y="44"><tspan fill="#94A3B8">0x0037</tspan> 001F Subject</text>
+      <text x="10" y="61"><tspan fill="#94A3B8">0x0C1A</tspan> 001F SenderName</text>
+      <text x="10" y="78"><tspan fill="#94A3B8">0x3701</tspan> 0102 AttachData</text>
+      <text x="10" y="95"><tspan fill="#94A3B8">0x8000</tspan>+ named range</text>
+      <text x="10" y="120"><tspan fill="#94A3B8" font-size="9">id · type · multi-valued flag</tspan></text>
+    </g>
+  </g>
+
+  <!-- Bidirectional pipeline arrows -->
+  <g transform="translate(186 80)" fill="none" stroke="#60A5FA" stroke-width="2" stroke-linecap="round">
+    <line x1="0" y1="0" x2="104" y2="0"/>
+    <polygon points="104,0 96,-4 96,4" fill="#60A5FA" stroke="none"/>
+    <line x1="104" y1="36" x2="0" y2="36"/>
+    <polygon points="0,36 8,32 8,40" fill="#60A5FA" stroke="none"/>
+  </g>
+  <g transform="translate(186 80)" fill="#60A5FA" font-family="'Consolas','Menlo',monospace" font-size="10" text-anchor="middle">
+    <text x="52" y="-6">decode</text>
+    <text x="52" y="56">address</text>
+  </g>
+
+  <!-- Right panel -->
+  <g transform="translate(310 30)" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="11">
+    <rect width="142" height="160" rx="8" fill="#1E293B" stroke="#334155" stroke-width="1.2"/>
+    <rect width="142" height="22" rx="8" fill="#3B82F6"/>
+    <rect y="14" width="142" height="8" fill="#3B82F6"/>
+    <text x="71" y="16" fill="#F8FAFC" text-anchor="middle" font-weight="700" font-size="11">Value model</text>
+
+    <g fill="#E2E8F0" font-family="'Consolas','Menlo',monospace" font-size="10">
+      <text x="10" y="44">MapiProperty</text>
+      <text x="10" y="61">MapiPropertyCollection</text>
+      <text x="10" y="78">MapiNamedProperty</text>
+      <text x="10" y="95">MapiPropertyIds</text>
+      <text x="10" y="112"><tspan fill="#2DD4BF">recipient · attachment</tspan></text>
+      <text x="10" y="129"><tspan fill="#94A3B8" font-size="9">container-free · shared by</tspan></text>
+      <text x="10" y="146"><tspan fill="#94A3B8" font-size="9">the .msg and .pst readers</tspan></text>
+    </g>
+  </g>
+
+  <!-- Bottom caption -->
+  <g fill="#94A3B8" font-family="'Consolas','Menlo',monospace" font-size="10">
+    <text x="240" y="206" text-anchor="middle">property tags · typed values · named identities</text>
+  </g>
+</svg>

@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Using Base32 | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Using Base32 | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="using-base32">Using Base32</h1>
+
+<p><code>Base32</code> packs five bits per output character (radix 32), so the payload expansion is <strong>60 %</strong> — between Base16's
+100 % and Base64's 33 %. The library ships four variants: the two RFC 4648 alphabets plus two human-oriented
+alternatives.</p>
+<pre><code>input bytes  : 66 6F 6F 62 61 72             (ASCII &quot;foobar&quot;)
+              :                              ┌── 6 bytes = 48 bits ──┐
+              :                              │ 5 chars × 5 = 25 bits │ + 3 bits leftover
+              :                              └──   ─ 5-byte group ─  ┘
+encoded text : MZXW6YTBOI======              (Standard, 16 chars including padding)
+              CPNMUOJ1E8======               (HexExtended)
+              CPNMUOJ1E8                     (Crockford — no padding by default)
+              csrtbarvni                     (Z-Base-32 — lowercase alphabet, no padding)
+</code></pre>
+<h2 id="quick-reference">Quick reference</h2>
+<pre><code class="lang-csharp">using Bodu.Text.Encoding;
+
+byte[] data = System.Text.Encoding.ASCII.GetBytes(&quot;foobar&quot;);
+
+// Standard RFC 4648 §6 (default variant)
+string s = Base32.Encode(data);
+// &quot;MZXW6YTBOI======&quot;
+
+// Base32hex (RFC 4648 §7)
+string h = Base32.Encode(data, Base32Variant.HexExtended);
+// &quot;CPNMUOJ1E8======&quot;
+
+// Crockford — no padding by default
+string c = Base32.Encode(data, Base32Variant.Crockford);
+// &quot;CSQPYRK1E8&quot;
+
+// z-base-32 — lowercase human-oriented
+string z = Base32.Encode(data, Base32Variant.ZBase32);
+// (lowercase z-base-32 form)
+</code></pre>
+<h2 id="variant-comparison">Variant comparison</h2>
+<table>
+<thead>
+<tr>
+<th>Variant</th>
+<th>Alphabet</th>
+<th>Padding default</th>
+<th>Visually ambiguous chars excluded</th>
+<th>Decode aliases</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Standard</code> (RFC 4648 §6)</td>
+<td><code>A-Z 2-7</code></td>
+<td>Yes (<code>=</code>)</td>
+<td>—</td>
+<td>Case-insensitive</td>
+</tr>
+<tr>
+<td><code>HexExtended</code> (RFC 4648 §7)</td>
+<td><code>0-9 A-V</code></td>
+<td>Yes (<code>=</code>)</td>
+<td>—</td>
+<td>Case-insensitive</td>
+</tr>
+<tr>
+<td><code>Crockford</code></td>
+<td><code>0-9 A-Z</code> minus <code>I L O U</code></td>
+<td>No</td>
+<td>Yes — <code>I</code> <code>L</code> <code>O</code> <code>U</code></td>
+<td><code>I</code>/<code>L</code> → <code>1</code>, <code>O</code> → <code>0</code>, case-insensitive</td>
+</tr>
+<tr>
+<td><code>ZBase32</code></td>
+<td>Permuted lowercase</td>
+<td>No</td>
+<td>Indirectly</td>
+<td>Case-insensitive</td>
+</tr>
+</tbody>
+</table>
+<h3 id="when-to-pick-each">When to pick each</h3>
+<table>
+<thead>
+<tr>
+<th>Variant</th>
+<th>Reach for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Standard</td>
+<td>TOTP / HOTP shared secrets (Google Authenticator), DNSSEC NSEC3, RFC-spec compliance, MIME content-transfer</td>
+</tr>
+<tr>
+<td>HexExtended</td>
+<td>DNSSEC labels, anywhere that retains case-insensitive lexicographic order with the underlying bytes</td>
+</tr>
+<tr>
+<td>Crockford</td>
+<td>Human-spoken short IDs (transaction codes, voucher codes); tolerates 0/O and 1/I/L confusion</td>
+</tr>
+<tr>
+<td>ZBase32</td>
+<td>Lowercase-only contexts where the human-friendly ordering of frequent letters helps recognition</td>
+</tr>
+</tbody>
+</table>
+<h2 id="crockford-specifics">Crockford specifics</h2>
+<p>Crockford Base32 is designed for human transcription. The encoder always emits the canonical alphabet
+<code>0-9 A-Z</code> (skipping <code>I</code>, <code>L</code>, <code>O</code>, <code>U</code>), but the decoder is more permissive:</p>
+<table>
+<thead>
+<tr>
+<th>Input character</th>
+<th>Decoded as</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>I</code>, <code>i</code>, <code>L</code>, <code>l</code></td>
+<td><code>1</code></td>
+</tr>
+<tr>
+<td><code>O</code>, <code>o</code></td>
+<td><code>0</code></td>
+</tr>
+<tr>
+<td>Any other ASCII letter</td>
+<td>Case-insensitive match against the alphabet</td>
+</tr>
+<tr>
+<td><code>U</code>, <code>u</code></td>
+<td><strong>Rejected</strong> (explicitly excluded per spec)</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-csharp">// &quot;D1G2&quot; and &quot;DIG2&quot; / &quot;DLG2&quot; / &quot;dlg2&quot; all decode to the same bytes.
+byte[] canonical = Base32.Decode(&quot;D1G2&quot;, Base32Variant.Crockford);
+byte[] aliased   = Base32.Decode(&quot;DLG2&quot;, Base32Variant.Crockford);
+Debug.Assert(canonical.SequenceEqual(aliased));
+</code></pre>
+<p>Crockford and z-base-32 also do <strong>not</strong> enforce the RFC 4648 §6 terminal-quantum rule, so terminal lengths like
+1, 3, or 6 data characters are tolerated by those variants while rejected by Standard and HexExtended.</p>
+<h2 id="padding-and-missing-padding-tolerance">Padding and missing-padding tolerance</h2>
+<p>Standard and HexExtended require canonical padding by default. Pass <code>BaseFormatStyles.AllowMissingPadding</code> on
+decode and <code>BaseFormattingOptions.OmitPadding</code> on encode to opt out:</p>
+<pre><code class="lang-csharp">string  withoutPad = Base32.Encode(secret, Base32Variant.Standard, BaseFormattingOptions.OmitPadding);
+byte[]  back       = Base32.Decode(withoutPad, Base32Variant.Standard, BaseFormatStyles.AllowMissingPadding);
+</code></pre>
+<h2 id="lenient-parsing">Lenient parsing</h2>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BaseFormatStyles.IgnoreWhitespace</code></td>
+<td>Strip ASCII space, tab, CR, LF (handy for line-wrapped output)</td>
+</tr>
+<tr>
+<td><code>BaseFormatStyles.AllowMissingPadding</code></td>
+<td>Accept inputs that omit the trailing <code>=</code> characters</td>
+</tr>
+<tr>
+<td><code>BaseFormatStyles.AllowPrefix</code></td>
+<td>No-op for Base32 (no standard prefix)</td>
+</tr>
+<tr>
+<td><code>BaseFormatStyles.RequireCanonicalEncoding</code></td>
+<td><strong>Tightens</strong> the decoder — rejects a terminal symbol with non-zero unused bits</td>
+</tr>
+</tbody>
+</table>
+<p><code>BaseFormattingOptions.InsertLineBreaks</code> is supported on encode and wraps at 64 characters — the same convention
+as Base16.</p>
+<h3 id="canonical-form-and-the-5-byte-quantum">Canonical form and the 5-byte quantum</h3>
+<p>Base32 repeats a <strong>5-byte → 8-character</strong> quantum (40 bits = lcm of the 8-bit byte and the 5-bit symbol). A
+partial tail does not fill every bit of its final symbol — a 1-byte tail leaves 2 unused bits, a 2-byte tail
+leaves 4, and so on — and RFC 4648 §3.5 lets a decoder accept the result whatever those leftover bits are. Two
+encoded strings that differ only in those unused trailing bits therefore decode to the <em>same</em> bytes. By default
+the decoder tolerates the non-canonical form; <code>RequireCanonicalEncoding</code> rejects it, so every byte sequence has a
+single accepted spelling:</p>
+<pre><code class="lang-csharp">byte[] bytes = { 0xDE, 0xAD };
+
+string canonical = Base32.Encode(bytes, Base32Variant.Standard);   // the one form the encoder ever emits
+Base32.Decode(canonical, Base32Variant.Standard);                  // ok
+
+// A hand-edited tail whose unused bits are non-zero still decodes to { 0xDE, 0xAD } by default …
+Base32.Decode(canonical, Base32Variant.Standard,
+    BaseFormatStyles.RequireCanonicalEncoding);                    // … but is rejected under canonical enforcement
+</code></pre>
+<p>Pass <code>RequireCanonicalEncoding</code> when each byte sequence must have exactly one accepted spelling — content-addressed
+keys, deduplication, or a value that feeds a signature. The flag is a no-op for the leftover-bit-free families
+(Base16) and the non-bit-stream families (Base58, Base85).</p>
+<h2 id="span-and-utf-8-paths">Span and UTF-8 paths</h2>
+<pre><code class="lang-csharp">// Predict size and write into a destination span
+char[] buffer = new char[Base32.GetEncodedLength(data.Length)];
+int written = Base32.Encode(data, buffer);
+
+// Non-throwing
+bool ok = Base32.TryEncode(data, buffer, out int charsWritten);
+
+// UTF-8 encode / decode
+byte[] utf8 = Base32.EncodeToUtf8(data);
+var status = Base32.DecodeFromUtf8(
+    utf8Source, byteDestination,
+    out int bytesConsumed, out int bytesWritten,
+    Base32Variant.Standard, BaseFormatStyles.None, isFinalBlock: true);
+</code></pre>
+<h2 id="validation-and-sizing">Validation and sizing</h2>
+<pre><code class="lang-csharp">Base32.IsValid(&quot;MZXW6YTBOI======&quot;);          // true (Standard, padded)
+Base32.IsValid(&quot;MZXW6YTBOI&quot;);                // false (strict — missing padding)
+Base32.IsValid(&quot;MZXW6YTBOI&quot;,
+    Base32Variant.Standard,
+    BaseFormatStyles.AllowMissingPadding);   // true
+
+Base32.IsBase32Digit('A');                    // true (Standard alphabet)
+Base32.IsBase32Digit('0', Base32Variant.Standard);    // false ('0' is excluded)
+Base32.IsBase32Digit('0', Base32Variant.Crockford);   // true
+
+Base32.GetEncodedLength(20);                  // 32 (5-byte groups → 8-char groups, padded)
+Base32.GetEncodedLength(20, Base32Variant.Crockford); // 32 (still 32 chars without padding fits)
+Base32.GetMaxDecodedLength(32);               // 20
+</code></pre>
+<h2 id="encoding-a-guid">Encoding a GUID</h2>
+<p><code>Base32</code> encodes a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.guid">Guid</a> into a 26-character (padless) or 32-character (padded) token — denser than
+hex and case-insensitive, so it survives shouting down a phone line in Crockford form:</p>
+<pre><code class="lang-csharp">Guid id = Guid.NewGuid();
+
+string token = Base32.Encode(id, Base32Variant.Crockford);    // 26 chars, no padding, no I/L/O/U ambiguity
+Guid back    = Base32.DecodeGuid(token, Base32Variant.Crockford);
+bool ok      = Base32.TryDecodeGuid(token, out Guid parsed, Base32Variant.Crockford);
+</code></pre>
+<p>The 16 GUID bytes are written in their native mixed-endian layout (matching <code>Guid.TryWriteBytes</code>), so the round
+trip is exact for whichever variant you encode and decode with.</p>
+<h2 id="common-patterns">Common patterns</h2>
+<h3 id="totp--hotp-shared-secret">TOTP / HOTP shared secret</h3>
+<pre><code class="lang-csharp">// Secret is canonical Base32 Standard, but most consumer apps accept lower case and missing padding too.
+byte[] secret = RandomNumberGenerator.GetBytes(20);
+string display = Base32.Encode(
+    secret,
+    Base32Variant.Standard,
+    BaseFormattingOptions.OmitPadding); // e.g. &quot;JBSWY3DPEHPK3PXP&quot;
+</code></pre>
+<h3 id="crockford-friendly-short-id">Crockford-friendly short ID</h3>
+<pre><code class="lang-csharp">byte[] randomBytes = RandomNumberGenerator.GetBytes(5);
+string code = Base32.Encode(randomBytes, Base32Variant.Crockford);
+// e.g. &quot;F08NHM37&quot; — 8 characters, no ambiguity with O/0/I/L
+</code></pre>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="base64.html">Base64 guide</a></strong> — when you need denser packing.</li>
+<li><strong><a href="base16.html">Base16 guide</a></strong> — when you need explicit byte boundaries.</li>
+<li><strong><a href="binary-encodings-interface.html"><code>IBinaryEncoding</code> interface</a></strong> — runtime-selected encoding choice.</li>
+<li><strong><a href="../topics/text-and-serialization.html">Text &amp; Serialization guides</a></strong> — every guide in this topic, across Bodu.Text.Encoding, Bodu.Text.Formats, and the Bencode / TOML serializers.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

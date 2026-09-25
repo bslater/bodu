@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Using stream ciphers | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Using stream ciphers | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="using-stream-ciphers">Using stream ciphers</h1>
+
+<p>A <strong>stream cipher</strong> generates a key- and nonce-dependent keystream and XORs it with the plaintext. Unlike the block ciphers elsewhere in this library, there is no cipher block, no block mode, and no padding: any byte length is encrypted directly. All of Bodu's stream ciphers derive from <a class="xref" href="../../api/Bodu.Security.Cryptography.SymmetricStreamAlgorithm.html">SymmetricStreamAlgorithm</a> — a standalone <code>IDisposable</code> base (not a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm">SymmetricAlgorithm</a>) with <code>Key</code>, <code>Nonce</code>, <code>NonceSize</code>, <code>GenerateKey()</code> / <code>GenerateNonce()</code>, and <code>CreateTransform()</code> — so they still flow through <code>CreateEncryptor()</code> / <code>CreateDecryptor()</code>, a <code>CryptoStream</code>, and the <code>Encrypt</code> / <code>Decrypt</code> extension methods in <a class="xref" href="../../api/Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.html">SymmetricStreamAlgorithmExtensions</a>, much like the block ciphers do.</p>
+<p>Because the keystream is XORed in, every stream cipher here is <strong>self-inverse</strong>: encryption and decryption are the same operation, and <code>CreateEncryptor()</code> and <code>CreateDecryptor()</code> are interchangeable. These ciphers derive from <code>SymmetricStreamAlgorithm</code>, not <code>SymmetricAlgorithm</code>, so the per-message nonce is supplied through the <code>Nonce</code> property (generated with <code>GenerateNonce()</code>) rather than a block-cipher <code>IV</code>.</p>
+<div class="WARNING">
+<h5>Warning</h5>
+<p>These are <strong>raw, confidentiality-only</strong> ciphers — they provide no authentication. A given <code>(key, nonce)</code> pair must encrypt <strong>at most one message</strong>: reusing it XORs two keystreams together and reveals the XOR of the plaintexts. For most applications, prefer an <strong>AEAD</strong> construction (see the <a href="aead-modes.html">AEAD modes guide</a> and <a href="ascon-aead.html">ASCON AEAD</a>) so that tampering is detected; if you use a raw stream cipher, pair it with a MAC such as <a href="poly1305.html">Poly1305</a> (encrypt-then-MAC).</p>
+</div>
+<h2 id="the-family-at-a-glance">The family at a glance</h2>
+<table>
+<thead>
+<tr>
+<th>Cipher</th>
+<th>Key</th>
+<th>Nonce / IV</th>
+<th>Counter</th>
+<th>Lineage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.ChaCha20.html">ChaCha20</a></td>
+<td>256 bits (32 B)</td>
+<td>96 bits (12 B)</td>
+<td>32-bit</td>
+<td>Bernstein; RFC 8439</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.XChaCha20.html">XChaCha20</a></td>
+<td>256 bits (32 B)</td>
+<td>192 bits (24 B)</td>
+<td>32-bit</td>
+<td>Extended-nonce ChaCha20 (HChaCha20 subkey)</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.Salsa20.html">Salsa20</a></td>
+<td>128 or 256 bits</td>
+<td>64 bits (8 B)</td>
+<td>64-bit</td>
+<td>Bernstein; eSTREAM</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.XSalsa20.html">XSalsa20</a></td>
+<td>256 bits (32 B)</td>
+<td>192 bits (24 B)</td>
+<td>64-bit</td>
+<td>Extended-nonce Salsa20 (HSalsa20 subkey); NaCl</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.Rabbit.html">Rabbit</a></td>
+<td>128 bits (16 B)</td>
+<td>64 bits (8 B)</td>
+<td>— (evolving state)</td>
+<td>RFC 4503; eSTREAM</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.Hc128.html">Hc128</a></td>
+<td>128 bits (16 B)</td>
+<td>128 bits (16 B)</td>
+<td>— (evolving state)</td>
+<td>Wu; eSTREAM</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Which one?</strong> For new work prefer <strong>ChaCha20</strong> (the de-facto modern standard, RFC 8439) or, when nonces are chosen at random rather than from a counter, <strong>XChaCha20</strong> / <strong>XSalsa20</strong> — their 192-bit nonces are large enough to pick randomly without meaningful collision risk. Salsa20, Rabbit, and HC-128 are provided for interoperability and for completeness of the eSTREAM portfolio.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>A 64-bit nonce (Salsa20, Rabbit) is <strong>too short to choose randomly</strong> without collision risk. Use a strict counter, or prefer an extended-nonce cipher.</p>
+</div>
+<h2 id="nonce-vs-iv--and-how-to-manage-it">Nonce vs IV — and how to manage it</h2>
+<p>A stream cipher takes a <code>Nonce</code>, not a block-cipher <code>IV</code>. The two play the same role — both randomise the keystream so the same key encrypts different messages safely — but the requirements differ. A CBC IV must be <em>unpredictable</em>; a stream-cipher nonce only has to be <em>unique</em> under the key. The size dictates how you should generate it:</p>
+<table>
+<thead>
+<tr>
+<th>Nonce width</th>
+<th>Safe to pick at random?</th>
+<th>Recommended source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>96-bit (ChaCha20)</td>
+<td>Borderline — a counter is safer</td>
+<td>A monotonic 96-bit counter, or a sequence number per session</td>
+</tr>
+<tr>
+<td>64-bit (Salsa20, Rabbit)</td>
+<td><strong>No</strong> — collisions at ~2³² messages</td>
+<td>A strict counter; never <code>RandomNumberGenerator</code></td>
+</tr>
+<tr>
+<td>192-bit (XChaCha20, XSalsa20)</td>
+<td><strong>Yes</strong> — collision risk negligible</td>
+<td><code>GenerateNonce()</code> / <code>RandomNumberGenerator</code></td>
+</tr>
+</tbody>
+</table>
+<p>The birthday bound is why width matters: random 96-bit nonces reach a ~50 % collision probability near 2⁴⁸ messages, and 64-bit nonces near 2³². A single collision under a fixed key XORs two keystreams together and exposes the XOR of the two plaintexts — there is no recovery. When you cannot guarantee a counter never repeats (distributed senders, restarts that lose state), prefer an extended-nonce cipher and choose the nonce at random, or move to an AEAD that is misuse-resistant.</p>
+<h2 id="encrypt-and-decrypt--chacha20">Encrypt and decrypt — ChaCha20</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Diagnostics;
+using System.Linq;
+using System.Text;
+using Bodu.Security.Cryptography;
+using Bodu.Security.Cryptography.Extensions;
+
+byte[] plaintext = Encoding.UTF8.GetBytes(&quot;message under ChaCha20&quot;);
+
+byte[] key, nonce, ciphertext;
+using (var alg = new ChaCha20())
+{
+    alg.GenerateKey();    // 32 bytes (256-bit)
+    alg.GenerateNonce();     // 12 bytes (96-bit nonce) — unique per message
+
+    key   = alg.Key;
+    nonce = alg.Nonce;
+
+    ciphertext = alg.Encrypt(plaintext);
+}
+
+byte[] recovered;
+using (var alg = new ChaCha20 { Key = key, Nonce = nonce })
+{
+    recovered = alg.Decrypt(ciphertext);   // self-inverse — Encrypt would work too
+}
+
+Debug.Assert(plaintext.SequenceEqual(recovered));
+</code></pre>
+<h2 id="streaming-with-cryptostream">Streaming with <code>CryptoStream</code></h2>
+<p>Because a stream cipher imposes no block alignment, it composes naturally with <code>CryptoStream</code> for arbitrary-length, chunked data:</p>
+<pre><code class="lang-csharp">using System.IO;
+using System.Security.Cryptography;
+using Bodu.Security.Cryptography;
+
+using var alg = new XChaCha20();
+alg.GenerateKey();
+alg.GenerateNonce();                       // 24-byte nonce — safe to choose at random
+
+using var output = new MemoryStream();
+using (var crypto = new CryptoStream(output, alg.CreateEncryptor(alg.Key, alg.Nonce), CryptoStreamMode.Write))
+{
+    crypto.Write(firstChunk);
+    crypto.Write(secondChunk);          // any lengths; the keystream carries across calls
+}
+
+byte[] ciphertext = output.ToArray();
+</code></pre>
+<h2 id="salsa20-with-a-128-bit-key">Salsa20 with a 128-bit key</h2>
+<p>Salsa20 is the only cipher in this family that accepts more than one key size. Set <code>KeySize</code> to <code>128</code> <em>before</em> generating or assigning the key:</p>
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+using Bodu.Security.Cryptography.Extensions;
+
+using var alg = new Salsa20 { KeySize = 128 };   // default is 256
+alg.GenerateKey();                               // 16 bytes
+alg.GenerateNonce();                                // 8-byte nonce
+
+byte[] ciphertext = alg.Encrypt(plaintext);
+</code></pre>
+<h2 id="choosing-the-keystream-start--initialcounter">Choosing the keystream start — <code>InitialCounter</code></h2>
+<p>ChaCha20, XChaCha20, Salsa20, and XSalsa20 expose an <code>InitialCounter</code> that sets the block counter for the first keystream block. The default is <code>0</code>; set it to match an external convention (for example, some protocols reserve block 0 for a one-time MAC key and start the message at block 1):</p>
+<pre><code class="lang-csharp">using var alg = new ChaCha20 { InitialCounter = 1 };
+alg.GenerateKey();
+alg.GenerateNonce();
+
+byte[] ciphertext = alg.Encrypt(plaintext);
+</code></pre>
+<p>Rabbit and HC-128 have no seekable counter — their keystream comes from an evolving internal state, so a message is always encrypted as one forward sequence.</p>
+<h2 id="a-note-on-initialization-cost">A note on initialization cost</h2>
+<p>HC-128 has a comparatively expensive setup: it warms up two 512-word tables before releasing any keystream. Rabbit's key/IV setup is lighter but still non-trivial. As with Blowfish's key schedule, <strong>do not</strong> build a fresh instance per message under the same key — cache the instance and call <code>CreateEncryptor()</code> / <code>CreateDecryptor()</code> per message instead.</p>
+<h2 id="authenticated-stream-ciphers--poly1305-aead">Authenticated stream ciphers — Poly1305 AEAD</h2>
+<p>A raw stream cipher gives you confidentiality but <strong>not</strong> integrity. The library pairs the extended-nonce ciphers with Poly1305 in three ready-made AEAD constructions — <a class="xref" href="../../api/Bodu.Security.Cryptography.XChaCha20Poly1305.html">XChaCha20Poly1305</a>, the NaCl <code>secretbox</code> <a class="xref" href="../../api/Bodu.Security.Cryptography.XSalsa20Poly1305.html">XSalsa20Poly1305</a> (with converters for libsodium's <code>tag ‖ ciphertext</code> layout), and the Bodu-defined <a class="xref" href="../../api/Bodu.Security.Cryptography.XSalsa20Poly1305Aead.html">XSalsa20Poly1305Aead</a> — all built on <a class="xref" href="../../api/Bodu.Security.Cryptography.Poly1305AeadTransform.html">Poly1305AeadTransform</a>, all taking a 256-bit key and a 192-bit nonce, all emitting <code>ciphertext ‖ tag</code>, and all single-use per message. They have their own guide now: <strong><a href="stream-aead.html">Authenticated stream ciphers</a></strong> covers the draft-vector round trip, tamper and reuse behaviour, the secretbox layout, the <code>IStreamAeadTransform</code> interface, in-place operation, and detached tags.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="encryption-basics.html">Encryption basics</a> — the Key/IV lifecycle shared with the block ciphers.</li>
+<li><a href="stream-aead.html">Authenticated stream ciphers</a> — the XChaCha20-Poly1305 and XSalsa20-Poly1305 constructions built on these ciphers.</li>
+<li><a href="poly1305.html">Using Poly1305</a> — pair a raw stream cipher with a one-time authenticator (encrypt-then-MAC).</li>
+<li><a href="aead-modes.html">AEAD modes</a> and <a href="ascon-aead.html">ASCON AEAD</a> — authenticated encryption, the recommended default when you need integrity as well as confidentiality.</li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

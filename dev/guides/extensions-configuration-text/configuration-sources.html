@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Configuration sources | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Configuration sources | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="configuration-sources">Configuration sources</h1>
+
+<p><code>Bodu.Extensions.Configuration.Text</code> bridges <a href="../text-configuration/index.html"><code>Bodu.Text.Configuration</code></a> into <code>Microsoft.Extensions.Configuration</code>. Add a Bodu-formatted INI file or stream to an <code>IConfigurationBuilder</code>, and the parsed and resolved view becomes available through the standard <code>IConfiguration</code> surface that ASP.NET Core, Generic Host, and the rest of the BCL configuration pipeline already consume.</p>
+<h2 id="pattern-1--file-backed-source-with-reload-on-change">Pattern 1 — file-backed source with reload-on-change</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Extensions.Configuration.Text;
+using Microsoft.Extensions.Configuration;
+
+IConfiguration configuration = new ConfigurationBuilder()
+    .AddTextConfigurationFile(&quot;appsettings.ini&quot;, optional: false, reloadOnChange: true)
+    .Build();
+
+string? appName = configuration[&quot;appName&quot;];
+string? level   = configuration[&quot;logging:level&quot;];
+</code></pre>
+<p><code>AddTextConfigurationFile(path, …)</code> registers a <code>TextConfigurationSource</code>. The provider uses the host's default file provider, watches for changes when <code>reloadOnChange: true</code>, and re-resolves the view when the file is rewritten. The dotted keys in the INI source flatten through <code>ConfigurationKeyOptions.Default</code> so <code>logging.level.default = …</code> is reachable as <code>&quot;logging:level:default&quot;</code> — the canonical colon-delimited form <code>IConfiguration</code> consumers expect.</p>
+<h2 id="pattern-2--explicit-file-provider">Pattern 2 — explicit file provider</h2>
+<pre><code class="lang-csharp">using Bodu.Extensions.Configuration.Text;
+using Microsoft.Extensions.FileProviders;
+
+IConfiguration configuration = new ConfigurationBuilder()
+    .AddTextConfigurationFile(
+        provider: new PhysicalFileProvider(&quot;/etc/myapp&quot;),
+        path: &quot;config.ini&quot;,
+        targetPath: null,
+        optional: false,
+        reloadOnChange: true)
+    .Build();
+</code></pre>
+<p>Pass an <code>IFileProvider</code> to read from a specific physical or embedded location rather than the builder's default file provider. The <code>targetPath</code> argument, when supplied, enables EditorConfig glob anchoring — sections become globs that the resolver matches against the target path. See <a href="../text-configuration/views-and-resolution.html#pattern-2--anchored-editorconfig-globs">Views and resolution</a>.</p>
+<h2 id="pattern-3--convention-based-discovery">Pattern 3 — convention-based discovery</h2>
+<pre><code class="lang-csharp">using Bodu.Extensions.Configuration.Text;
+
+IConfiguration configuration = new ConfigurationBuilder()
+    .AddTextConfiguration(optional: true, reloadOnChange: false)
+    .Build();
+</code></pre>
+<p>The parameterless overload probes for <code>.boduconfig</code> first and then <code>bodu.config</code> in the builder's base path. With <code>optional: true</code> (the default) the call is a no-op when neither file is present; with <code>optional: false</code> it throws <code>FileNotFoundException</code>.</p>
+<h2 id="pattern-4--stream-backed-source">Pattern 4 — stream-backed source</h2>
+<pre><code class="lang-csharp">using Bodu.Extensions.Configuration.Text;
+using Bodu.Text.Configuration;
+
+using var ms = new MemoryStream(Encoding.UTF8.GetBytes(iniText));
+
+IConfiguration configuration = new ConfigurationBuilder()
+    .AddTextConfigurationStream(
+        stream: ms,
+        targetPath: null,
+        parseOptions: ConfigurationParseOptions.Relaxed,
+        resolveOptions: ConfigurationResolveOptions.EditorConfigCompatible)
+    .Build();
+</code></pre>
+<p><code>AddTextConfigurationStream(Stream, …)</code> registers a <code>TextStreamConfigurationSource</code>. Unlike file-backed sources, stream sources do not support reload-on-change — the stream is consumed once during <code>Build()</code>. Use the stream overload when the configuration comes from a network resource, an embedded resource, or anywhere else that cannot be expressed as a file path.</p>
+<h2 id="pattern-5--pre-parsed-document">Pattern 5 — pre-parsed document</h2>
+<pre><code class="lang-csharp">using Bodu.Extensions.Configuration.Text;
+using Bodu.Text.Configuration;
+
+// Already-parsed document, shared across builders.
+ConfigurationDocument doc = ConfigurationDocument.Parse(iniText);
+
+IConfiguration configuration = new ConfigurationBuilder()
+    .AddTextConfigurationDocument(doc, targetPath: null)
+    .Build();
+</code></pre>
+<p><code>AddTextConfigurationDocument</code> accepts any <a class="xref" href="../../api/Bodu.Text.Configuration.IniDocumentBase.html">IniDocumentBase</a> — including a
+<a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationDocument.html">ConfigurationDocument</a>. The bridge resolves the document once and flattens the view into an
+in-memory collection before handing it to the configuration root, so the source is captured <strong>by value</strong>: later mutations to the document do not flow into the configuration, and there is no reload-on-change.</p>
+<p>To author or mutate a document in code rather than parsing one, build an <a class="xref" href="../../api/Bodu.Text.Configuration.IniDocument.html">IniDocument</a> (the configuration library's own INI model) through its public surface (<code>GetOrAddSection</code>, <code>AddEntry</code>) and pass it the same way:</p>
+<pre><code class="lang-csharp">using Bodu.Extensions.Configuration.Text;
+using Bodu.Text.Configuration;
+
+var doc = new IniDocument();
+doc.GetOrAddSection(&quot;logging&quot;).AddEntry(new IniEntry(&quot;level&quot;, &quot;Debug&quot;));
+
+IConfiguration configuration = new ConfigurationBuilder()
+    .AddTextConfigurationDocument(doc)
+    .Build();
+</code></pre>
+<h2 id="pattern-6--fluent-source-configuration">Pattern 6 — fluent source configuration</h2>
+<pre><code class="lang-csharp">using Bodu.Extensions.Configuration.Text;
+
+IConfiguration configuration = new ConfigurationBuilder()
+    .AddTextConfigurationFile(source =&gt;
+    {
+        source.Path           = &quot;appsettings.ini&quot;;
+        source.TargetPath     = &quot;src/Foo.cs&quot;;          // enable EditorConfig glob mode
+        source.Optional       = true;
+        source.ReloadOnChange = true;
+        source.ParseOptions   = ConfigurationParseOptions.Strict;
+        source.ResolveOptions = ConfigurationResolveOptions.EditorConfigCompatible;
+    })
+    .Build();
+</code></pre>
+<p>The delegate overload mirrors the <code>AddJsonFile(source =&gt; …)</code> pattern from <code>Microsoft.Extensions.Configuration.Json</code>. Set every property up front rather than choosing the right <code>AddTextConfiguration*</code> overload for the combination you need.</p>
+<h2 id="pattern-7--toml-file-or-stream-source">Pattern 7 — TOML file or stream source</h2>
+<p>Alongside the Bodu INI bridge, the package ships a read-only TOML bridge that surfaces <a href="../serialization/toml/index.html"><code>Bodu.Text.Toml</code></a> through the same <code>IConfiguration</code> pipeline, mirroring the <code>AddJsonFile</code> / <code>AddJsonStream</code> shape:</p>
+<pre><code class="lang-csharp">using Bodu.Extensions.Configuration.Text;
+using Microsoft.Extensions.Configuration;
+
+IConfiguration configuration = new ConfigurationBuilder()
+    .AddTomlFile(&quot;appsettings.toml&quot;, optional: true)
+    .Build();
+
+string? level = configuration[&quot;logging:level&quot;];
+</code></pre>
+<p><code>AddTomlFile(path, optional)</code> registers a <code>TomlConfigurationSource</code>. The source is <strong>read once</strong> when the configuration is built — the TOML bridge is read-only and attaches no reload-on-change watcher, so there is no <code>reloadOnChange</code> parameter (unlike the file-backed INI source in Pattern 1). With <code>optional: true</code> a missing file yields an empty source; with <code>optional: false</code> it throws <code>FileNotFoundException</code>.</p>
+<p>For configuration that arrives as a stream rather than a file path, use the stream overload — the UTF-8 TOML text is consumed once during <code>Build()</code>:</p>
+<pre><code class="lang-csharp">using Bodu.Extensions.Configuration.Text;
+using System.Text;
+
+using var ms = new MemoryStream(Encoding.UTF8.GetBytes(&quot;[logging]\nlevel = \&quot;Debug\&quot;&quot;));
+
+IConfiguration configuration = new ConfigurationBuilder()
+    .AddTomlStream(ms)
+    .Build();
+</code></pre>
+<h3 id="how-toml-keys-map-to-configuration-keys">How TOML keys map to configuration keys</h3>
+<p>The provider flattens the TOML document's table hierarchy into the canonical colon-delimited form <code>IConfiguration</code> consumers expect. A TOML table dotted-path becomes a colon-delimited key:</p>
+<pre><code class="lang-toml">[logging]
+level = &quot;Debug&quot;
+
+[logging.console]
+includeScopes = true
+</code></pre>
+<p>flattens to:</p>
+<pre><code>logging:level            = Debug
+logging:console:includeScopes = true
+</code></pre>
+<p>Keys are matched case-insensitively, exactly as the BCL JSON and INI providers behave, so <code>configuration[&quot;Logging:Level&quot;]</code> and <code>configuration[&quot;logging:level&quot;]</code> resolve to the same value. Because the TOML bridge surfaces the same colon-delimited key space, it layers and binds to <code>IOptions&lt;T&gt;</code> exactly like the INI sources described below; the only difference is that, being read-only, it never participates in reload-on-change.</p>
+<h2 id="pattern-8--bencode-file-or-stream-source">Pattern 8 — Bencode file or stream source</h2>
+<p>The package also ships a read-only Bencode bridge that surfaces <a href="../serialization/bencode/index.html"><code>Bodu.Text.Bencode</code></a> through the same <code>IConfiguration</code> pipeline, with the same shape as the TOML bridge:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Extensions.Configuration.Text;
+using Microsoft.Extensions.Configuration;
+
+IConfiguration configuration = new ConfigurationBuilder()
+    .AddBencodeFile(&quot;appsettings.bencode&quot;, optional: true)
+    .Build();
+
+string? level = configuration[&quot;logging:level&quot;];
+</code></pre>
+<p><code>AddBencodeFile(path, optional)</code> registers a <code>BencodeConfigurationSource</code>. Like the TOML bridge, the source is <strong>read once</strong> when the configuration is built — it is read-only and attaches no reload-on-change watcher. With <code>optional: true</code> a missing file yields an empty source; with <code>optional: false</code> it throws <code>FileNotFoundException</code>.</p>
+<p>For configuration that arrives as a stream, use the stream overload — the Bencode document is consumed once during <code>Build()</code>:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Extensions.Configuration.Text;
+using Microsoft.Extensions.Configuration;
+
+using var ms = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(&quot;d7:loggingd5:level5:Debugee&quot;));
+
+IConfiguration configuration = new ConfigurationBuilder()
+    .AddBencodeStream(ms)
+    .Build();
+</code></pre>
+<h3 id="how-bencode-values-map-to-configuration-keys">How Bencode values map to configuration keys</h3>
+<p>The document root must be a Bencode <strong>dictionary</strong> — an integer, byte-string, or list root is rejected with <code>FormatException</code>, because it cannot contribute named configuration keys. Nested dictionaries contribute one colon-delimited segment per level, and list elements contribute their zero-based index as a segment, mirroring the framework JSON provider:</p>
+<pre><code>d7:loggingd6:levelsl4:info4:warneee
+</code></pre>
+<p>flattens to:</p>
+<pre><code>logging:levels:0 = info
+logging:levels:1 = warn
+</code></pre>
+<p>The document is parsed with the library's strict canonical defaults, so unsorted or duplicate dictionary keys are rejected. Integers render invariant across the full unsigned 64-bit range the format supports; byte strings decode as UTF-8, with content that is not valid UTF-8 decoded via U+FFFD replacement rather than rejected. Keys are matched case-insensitively, so two Bencode keys that differ only in case collide and are rejected as duplicates.</p>
+<h2 id="pattern-9--binding-to-ioptionst">Pattern 9 — binding to <code>IOptions&lt;T&gt;</code></h2>
+<p>Because the bridge surfaces standard colon-delimited keys, the values bind to typed options classes through the ordinary <code>Microsoft.Extensions.Options</code> pipeline. <code>ConfigurationOptionsExtensions.AddConfigurationOptions&lt;TOptions&gt;</code> is a discoverable shim over <code>services.Configure&lt;TOptions&gt;(section)</code> — either call produces the same registration:</p>
+<pre><code class="lang-csharp">using Bodu.Extensions.Configuration.Text;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+
+public sealed class LoggingOptions
+{
+    public string Level { get; init; } = &quot;Information&quot;;
+    public bool   IncludeScopes { get; init; }
+}
+
+var builder = WebApplication.CreateBuilder(args);
+builder.Configuration.AddTextConfigurationFile(&quot;appsettings.boduconfig&quot;);
+
+// Bind by section name against the configuration root…
+builder.Services.AddConfigurationOptions&lt;LoggingOptions&gt;(
+    builder.Configuration, sectionName: &quot;logging&quot;);
+
+// …or bind a pre-resolved section directly.
+builder.Services.AddConfigurationOptions&lt;LoggingOptions&gt;(
+    builder.Configuration.GetSection(&quot;logging&quot;));
+</code></pre>
+<p>Consume the bound options through constructor injection as usual:</p>
+<pre><code class="lang-csharp">public sealed class RequestLogger
+{
+    private readonly LoggingOptions _options;
+
+    public RequestLogger(IOptions&lt;LoggingOptions&gt; options) =&gt;
+        _options = options.Value;   // e.g. _options.Level == &quot;Debug&quot;
+}
+</code></pre>
+<p>So an INI source containing <code>logging.level = Debug</code> flattens to the key <code>&quot;logging:level&quot;</code>, the <code>&quot;logging&quot;</code> section binds onto <code>LoggingOptions</code>, and <code>options.Value.Level</code> reads <code>&quot;Debug&quot;</code>. Callers comfortable with the BCL surface can keep calling <code>services.Configure&lt;LoggingOptions&gt;(section)</code> directly — the helper exists purely to keep the call site short.</p>
+<h2 id="how-the-bridge-surfaces-values">How the bridge surfaces values</h2>
+<pre><code>ConfigurationDocument.Load(stream, ParseOptions)
+    ↓ → IniDocumentBase
+document.Resolve(TargetPath, ResolveOptions)
+    ↓ → ConfigurationView
+Flatten to Dictionary&lt;string, string?&gt; (OrdinalIgnoreCase)
+    ↓
+provider.Data → IConfiguration[&quot;key:subkey&quot;]
+</code></pre>
+<p>The file and stream providers assign the flattened map straight to the inherited <code>Data</code> dictionary; only the pre-parsed-document overload (Pattern 5) routes through <code>AddInMemoryCollection</code>. Either way, every key is reachable in the same colon-delimited form <code>IConfiguration</code> consumers already use. The values come from the resolved view, so the EditorConfig glob behaviour, preamble handling, key mapping, and unset-value treatment from <a href="../text-configuration/views-and-resolution.html">Views and resolution</a> all apply.</p>
+<h2 id="source-types">Source types</h2>
+<p>The bridge exposes two source types directly:</p>
+<ul>
+<li><p><strong><code>TextConfigurationSource</code></strong> — extends <code>FileConfigurationSource</code>. Properties:</p>
+<ul>
+<li><code>Path</code>, <code>Optional</code>, <code>ReloadOnChange</code>, <code>FileProvider</code> — inherited from the BCL base.</li>
+<li><code>TargetPath</code> — optional target path for EditorConfig glob anchoring.</li>
+<li><code>ParseOptions</code> — <code>ConfigurationParseOptions?</code> (null defers to defaults).</li>
+<li><code>ResolveOptions</code> — <code>ConfigurationResolveOptions?</code> (null defers to defaults).</li>
+</ul>
+</li>
+<li><p><strong><code>TextStreamConfigurationSource</code></strong> — extends <code>StreamConfigurationSource</code>. Properties:</p>
+<ul>
+<li><code>Stream</code> — inherited from the BCL base; consumed during <code>Build()</code>.</li>
+<li><code>TargetPath</code>, <code>ParseOptions</code>, <code>ResolveOptions</code> — as above.</li>
+</ul>
+</li>
+</ul>
+<p>Both build provider classes — <a class="xref" href="../../api/Bodu.Extensions.Configuration.Text.TextConfigurationProvider.html">TextConfigurationProvider</a> (a <code>FileConfigurationProvider</code>) and <a class="xref" href="../../api/Bodu.Extensions.Configuration.Text.TextStreamConfigurationProvider.html">TextStreamConfigurationProvider</a> (a <code>StreamConfigurationProvider</code>) — flatten the resolved view into the inherited <code>Data</code> dictionary. They are public but rarely constructed directly; you configure the source and the provider handles the rest. Each exposes a typed <code>TextSource</code> accessor for diagnostic introspection — locate the provider on <code>IConfigurationRoot.Providers</code> and read back the originating source:</p>
+<pre><code class="lang-csharp">IConfigurationRoot root = builder.Build();
+TextConfigurationProvider? bodu = root.Providers
+    .OfType&lt;TextConfigurationProvider&gt;()
+    .FirstOrDefault();
+
+string? loadedFrom = bodu?.TextSource.Path;
+</code></pre>
+<h2 id="reload-on-change-behaviour">Reload-on-change behaviour</h2>
+<p>When <code>reloadOnChange: true</code> on a file-backed source, the <code>TextConfigurationProvider</code> registers a watcher with the file provider. On change:</p>
+<ol>
+<li>The file is re-read under its original <code>ParseOptions</code>.</li>
+<li>The document is re-resolved through the original <code>ResolveOptions</code> with the same <code>TargetPath</code>.</li>
+<li>The flattened key / value map replaces the previous one.</li>
+<li>The standard <code>IConfiguration.Reload()</code> change-token fires.</li>
+</ol>
+<p>Subscribers to <code>ChangeToken.OnChange(...)</code> see the new values without re-instantiating the configuration root. The reload is atomic from the consumer's perspective — there is no window in which the configuration is half-loaded.</p>
+<p>Reload composes with options binding through the standard monitor surface — <code>IOptionsMonitor&lt;T&gt;</code> re-binds on every reload, where <code>IOptions&lt;T&gt;</code> is a one-shot snapshot taken at first resolution:</p>
+<pre><code class="lang-csharp">public sealed class RequestLogger
+{
+    public RequestLogger(IOptionsMonitor&lt;LoggingOptions&gt; monitor)
+    {
+        // CurrentValue tracks the file: edit appsettings.ini and the next
+        // read reflects the re-parsed, re-resolved values.
+        string level = monitor.CurrentValue.Level;
+
+        monitor.OnChange(updated =&gt; Console.WriteLine($&quot;level → {updated.Level}&quot;));
+    }
+}
+</code></pre>
+<p>Stream and pre-parsed-document sources have no file to watch, so they never reload — re-add the source and rebuild the root to pick up new data.</p>
+<h2 id="layering-with-other-providers">Layering with other providers</h2>
+<p>A Bodu source participates in the standard <code>IConfiguration</code> precedence rules: providers are consulted in registration order, and for any key supplied by more than one source, <strong>the last-registered source wins</strong>. A common shape is a JSON baseline with a Bodu-formatted override file on top:</p>
+<pre><code class="lang-csharp">IConfiguration configuration = new ConfigurationBuilder()
+    .AddJsonFile(&quot;appsettings.json&quot;, optional: false)               // baseline
+    .AddTextConfigurationFile(&quot;overrides.ini&quot;, optional: true)      // wins on conflict
+    .AddEnvironmentVariables()                                      // wins over both
+    .Build();
+
+// appsettings.json:  { &quot;logging&quot;: { &quot;level&quot;: &quot;Information&quot; } }
+// overrides.ini:     logging.level = Debug
+
+configuration[&quot;logging:level&quot;];   // &quot;Debug&quot; — the Bodu source is later
+</code></pre>
+<p>Reverse the order to make the JSON file the override layer. Because both sources flatten to the same colon-delimited key space, no key translation is needed — a <code>logging.level</code> INI entry and a nested <code>&quot;logging&quot;: { &quot;level&quot;: … }</code> JSON property occupy the same key, <code>&quot;logging:level&quot;</code>.</p>
+<h2 id="aspnet-core-and-the-generic-host">ASP.NET Core and the Generic Host</h2>
+<p>Because a Bodu source is an ordinary <code>IConfigurationSource</code>, it registers on the
+same <code>IConfigurationBuilder</code> that <code>WebApplicationBuilder</code> and <code>HostBuilder</code>
+already expose — there is no host-specific entry point to learn. The patterns
+above (file, stream, layering, <code>IOptions&lt;T&gt;</code> binding) all apply unchanged inside
+a hosted app; this section shows the wiring that is specific to the host.</p>
+<p><strong>Register on the host's configuration builder.</strong> <code>WebApplicationBuilder.Configuration</code>
+and <code>IHostBuilder.ConfigureAppConfiguration</code> both hand you the builder the host
+will build into:</p>
+<pre><code class="lang-csharp">using Bodu.Extensions.Configuration.Text;
+
+// Minimal hosting (ASP.NET Core / WebApplication)
+var builder = WebApplication.CreateBuilder(args);
+builder.Configuration.AddTextConfigurationFile(
+    &quot;appsettings.boduconfig&quot;, optional: true, reloadOnChange: true);
+
+// Generic Host
+Host.CreateDefaultBuilder(args)
+    .ConfigureAppConfiguration((context, config) =&gt;
+        config.AddTextConfigurationFile(
+            &quot;appsettings.boduconfig&quot;, optional: true, reloadOnChange: true));
+</code></pre>
+<p><strong>Environment-based file selection</strong> mirrors the host's own
+<code>appsettings.{Environment}.json</code> convention — layer a base file with an
+environment overlay, the later source winning on conflict:</p>
+<pre><code class="lang-csharp">var builder = WebApplication.CreateBuilder(args);
+string env = builder.Environment.EnvironmentName;   // &quot;Development&quot;, &quot;Production&quot;, …
+
+builder.Configuration
+    .AddTextConfigurationFile(&quot;appsettings.boduconfig&quot;, optional: true, reloadOnChange: true)
+    .AddTextConfigurationFile($&quot;appsettings.{env}.boduconfig&quot;, optional: true, reloadOnChange: true);
+</code></pre>
+<p><strong>Layering precedence is the host's, not the bridge's.</strong> The host registers its
+own sources (JSON, environment variables, command line) before <code>Program.cs</code>
+runs, so a source you add lands <em>after</em> them and wins on conflicting keys; a
+later <code>AddEnvironmentVariables()</code> would in turn win over the Bodu source. The
+order is the registration order on the builder, exactly as in the
+<a href="#layering-with-other-providers">Layering with other providers</a> section above.</p>
+<p><strong><code>IOptions&lt;T&gt;</code> and <code>IOptionsMonitor&lt;T&gt;</code> binding in a hosted app.</strong> Bind the
+flattened colon-delimited keys onto a typed options class through the host's DI
+container, then inject the bound options where you need them:</p>
+<pre><code class="lang-csharp">builder.Services.AddConfigurationOptions&lt;LoggingOptions&gt;(
+    builder.Configuration, sectionName: &quot;logging&quot;);
+
+WebApplication app = builder.Build();
+</code></pre>
+<pre><code class="lang-csharp">public sealed class RequestLogger
+{
+    private readonly IOptionsMonitor&lt;LoggingOptions&gt; _monitor;
+
+    public RequestLogger(IOptionsMonitor&lt;LoggingOptions&gt; monitor) =&gt;
+        _monitor = monitor;   // CurrentValue tracks the file across reloads
+
+    public void Log(string message) =&gt;
+        Console.WriteLine($&quot;[{_monitor.CurrentValue.Level}] {message}&quot;);
+}
+</code></pre>
+<p>Reload-on-change composes with the host the same way it does outside it: with
+<code>reloadOnChange: true</code> on a file source, the provider re-reads and re-resolves on
+a file edit, the configuration root's change token fires, and
+<code>IOptionsMonitor&lt;T&gt;.CurrentValue</code> re-binds — so a long-lived singleton sees the
+new values without a restart, while <code>IOptions&lt;T&gt;</code> stays the one-shot snapshot
+taken at first resolution. Stream and pre-parsed-document sources have no file to
+watch and never reload, so reserve them for configuration that is fixed for the
+process lifetime.</p>
+<h2 id="when-not-to-use-the-bridge">When <em>not</em> to use the bridge</h2>
+<ul>
+<li><strong>You only need the codec.</strong> Reach for <a href="../formats/ini.html"><code>Bodu.Text.Ini</code></a> for codec-only access without the bridge or the resolve layer.</li>
+<li><strong>You only need the resolved view.</strong> Reach for <a href="../text-configuration/index.html"><code>Bodu.Text.Configuration</code></a> directly — call <code>Resolve()</code> and consume <code>ConfigurationView</code> without the <code>IConfiguration</code> surface.</li>
+<li><strong>You need JSON, environment-variable, or command-line configuration.</strong> Use the standard Microsoft sources — <code>AddJsonFile</code>, <code>AddEnvironmentVariables</code>, <code>AddCommandLine</code>. The Bodu bridge composes with them; sources earlier in the builder chain are overridden by later sources, per the standard <code>IConfiguration</code> rules.</li>
+</ul>
+<h2 id="see-also">See also</h2>
+<ul>
+<li><a href="index.html"><code>Bodu.Extensions.Configuration.Text</code> guides</a> — the member overview for this package.</li>
+<li><a href="../text-configuration/index.html"><code>Bodu.Text.Configuration</code> overview</a> — the underlying parse / view layer.</li>
+<li><a href="../text-configuration/parsing-and-profiles.html">Parsing and profiles</a> — the parse-time options surfaced via <code>ParseOptions</code>.</li>
+<li><a href="../text-configuration/views-and-resolution.html">Views and resolution</a> — the resolve-time options surfaced via <code>ResolveOptions</code> and <code>TargetPath</code>.</li>
+<li><a href="../topics/configuration.html">Configuration topic guides</a> — every guide in the Configuration topic.</li>
+<li><a href="../../docs/topics/configuration.html">Configuration topic overview</a> — the pipeline and package boundaries.</li>
+<li><a class="xref" href="../../api/Bodu.Extensions.Configuration.Text.TextConfigurationSource.html"><code>TextConfigurationSource</code></a> · <a class="xref" href="../../api/Bodu.Extensions.Configuration.Text.TextStreamConfigurationSource.html"><code>TextStreamConfigurationSource</code></a> · <a class="xref" href="../../api/Bodu.Extensions.Configuration.Text.TomlConfigurationExtensions.html"><code>TomlConfigurationExtensions</code></a> · <a class="xref" href="../../api/Bodu.Extensions.Configuration.Text.BencodeConfigurationExtensions.html"><code>BencodeConfigurationExtensions</code></a> · <a class="xref" href="../../api/Bodu.Extensions.Configuration.Text.BencodeConfigurationSource.html"><code>BencodeConfigurationSource</code></a> · <a class="xref" href="../../api/Bodu.Extensions.Configuration.Text.ConfigurationOptionsExtensions.html"><code>ConfigurationOptionsExtensions</code></a></li>
+<li><a class="xref" href="../../api/Bodu.Extensions.Configuration.Text.html"><code>Bodu.Extensions.Configuration.Text</code> API reference</a>.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Namespace Bodu.Extensions | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Namespace Bodu.Extensions | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Extensions">
+
+  <h1 id="Bodu_Extensions" data-uid="Bodu.Extensions" class="text-break">Namespace Bodu.Extensions</h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual">
+<p><img src="../images/hero-core.svg" alt="Bodu.Core"></p>
+<h2 id="purpose">Purpose</h2>
+<p><strong>Bodu.Extensions</strong> is the extension-method surface of <code>Bodu.Core</code>. It carries 15+ static classes covering date / time, numeric, span, array, string, enum, comparable, sequence, and stream operations — the framework-style helpers that keep ceremony out of hot paths in the rest of the Bodu solution and in consumer code.</p>
+<p>This is the single highest-leverage namespace in <code>Bodu.Core</code> by surface area. Reach for it when you need a <code>DateTime</code> calendar / week operation that the BCL doesn't ship, when you need a <code>decimal</code>-aware significant-digit rounding helper, when you need string <code>SliceSafe</code> / <code>Wrap</code> / <code>Quote</code> / <code>ToSlug</code> / case-conversion utilities, or when you need bit / byte rotation and reversal across the unsigned integer types.</p>
+<h2 id="static-documentation">Static documentation</h2>
+<ul>
+<li><strong><a href="../docs/core/index.html">Bodu.Core introduction</a></strong> — <code>Bodu.Extensions</code> summary table.</li>
+<li><strong><a href="../docs/core/getting-started.html">Bodu.Core getting started</a></strong> — date-arithmetic minimal samples.</li>
+</ul>
+<h2 id="key-types-grouped-by-concern">Key types grouped by concern</h2>
+<p><strong>Date and time</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Extensions.DateTimeExtensions.html">DateTimeExtensions</a> — first / last / next / previous day-of-week within month / quarter / year, ISO week-of-year, day name, weekday tests, midday, end-of-day, truncation. 50+ methods.</li>
+<li><a class="xref" href="Bodu.Extensions.DateOnlyExtensions.html">DateOnlyExtensions</a> — <code>DateOnly</code>-specific equivalents plus <code>Age</code> calculation.</li>
+<li><a class="xref" href="Bodu.Globalization.Extensions.DateTimeFormatInfoExtensions.html">DateTimeFormatInfoExtensions</a> — a single helper, <code>LastDayOfWeek(this DateTimeFormatInfo)</code>, giving the day that closes a culture's week (derived from its <code>FirstDayOfWeek</code>). Lives in the sibling <a class="xref" href="Bodu.Globalization.Extensions.html">Bodu.Globalization.Extensions</a> namespace.</li>
+<li><a class="xref" href="Bodu.Extensions.IQuarterDefinitionProvider.html">IQuarterDefinitionProvider</a>, <a class="xref" href="Bodu.Extensions.IWeekendDefinitionProvider.html">IWeekendDefinitionProvider</a>, <a class="xref" href="Bodu.Extensions.IWeekendDefinitionProviderExtensions.html">IWeekendDefinitionProviderExtensions</a> — pluggable calendar-shape providers for non-Gregorian or fiscal quarters and non-Saturday/Sunday weekend conventions.</li>
+<li><a class="xref" href="Bodu.Extensions.FiscalWeekQuarterProvider.html">FiscalWeekQuarterProvider</a> — a built-in <code>IQuarterDefinitionProvider</code> that derives quarters from a fiscal-week pattern (<a class="xref" href="Bodu.Extensions.FiscalWeekPattern.html">FiscalWeekPattern</a>) for 4-4-5 / 4-5-4 / 5-4-4 retail-calendar workloads.</li>
+<li><a class="xref" href="Bodu.Extensions.WorkingDaysOfWeekExtensions.html">WorkingDaysOfWeekExtensions</a>, <a class="xref" href="Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a> — working-day bitmask helpers.</li>
+</ul>
+<p><strong>Calendar-shape enums</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Extensions.CalendarQuarterDefinition.html">CalendarQuarterDefinition</a> — the quarter-year start convention: <code>JanuaryToDecember</code> (calendar year), <code>JulyToJune</code>, <code>AprilToMarch</code>, <code>April6ToApril5</code>, <code>March25ToMarch24</code>, <code>OctoberToSeptember</code>, <code>FebruaryToJanuary</code>, and <code>Custom</code> (supplied through an <code>IQuarterDefinitionProvider</code>).</li>
+<li><a class="xref" href="Bodu.Extensions.DateTimeResolution.html">DateTimeResolution</a> — truncation resolution.</li>
+<li><a class="xref" href="Bodu.Extensions.FiscalWeekPattern.html">FiscalWeekPattern</a> — fiscal-week enumeration.</li>
+<li><a class="xref" href="Bodu.Extensions.WeekOrdinal.html">WeekOrdinal</a> — <code>First</code>, <code>Second</code>, <code>Third</code>, <code>Fourth</code>, <code>Fifth</code>, <code>Last</code>.</li>
+</ul>
+<p><strong>Numeric</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Extensions.NumericExtensions.html">NumericExtensions</a> — <code>Digits</code>, <code>GetBytes</code>, <code>GreatestCommonDivisor</code>, <code>IsPrime</code>, <code>LeastCommonMultiple</code>, <code>ReverseBits</code>, <code>ReverseBytes</code>, <code>ReverseWords</code>, <code>RotateBitsLeft</code> / <code>Right</code>, <code>RoundToSignificantDigits</code>, unchecked arithmetic helpers.</li>
+</ul>
+<p><strong>Span, array, stream, buffer</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Extensions.SpanExtensions.html">SpanExtensions</a> — <code>AsReadOnly</code>, <code>ToReversed</code> (copying; contrast the in-place BCL <code>MemoryExtensions.Reverse</code>).</li>
+<li><a class="xref" href="Bodu.Extensions.ArrayExtensions.html">ArrayExtensions</a> — <code>Clear</code>, <code>Copy</code>, <code>Pad</code>, <code>Reverse</code>, <code>Slice</code>, <code>ToMatrix</code>.</li>
+<li><a class="xref" href="Bodu.Extensions.StreamExtensions.html">StreamExtensions</a> — <code>ReadAllBytes</code> / <code>ReadAllBytesAsync</code> / <code>WriteAllBytes</code> / <code>WriteAllBytesAsync</code>.</li>
+<li><a class="xref" href="Bodu.Extensions.BufferConverter.html">BufferConverter</a> — <code>CopyTo</code>, <code>Read</code>, <code>SwapEndian</code>, <code>ToArray</code> over byte buffers and primitive types.</li>
+</ul>
+<p><strong>Strings</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Extensions.StringExtensions.html">StringExtensions</a> — <code>After</code>, <code>Before</code>, <code>Between</code>, <code>Brace</code>, <code>Bracket</code>, <code>CollapseWhitespace</code>, <code>Contains</code> / <code>EndsWith</code> / <code>StartsWith</code> variants, <code>EnsureEndsWith</code> / <code>EnsureStartsWith</code>, <code>Indent</code>, <code>IsValidIdentifier</code>, <code>Keep</code> / <code>Remove</code> variants, <code>NormalizeLineEndings</code>, <code>Outdent</code>, <code>Parenthesize</code>, <code>Parse</code>, <code>PrefixLines</code>, <code>Quote</code>, <code>RemoveControlCharacters</code>, <code>RemoveDiacritics</code>, <code>SliceSafe</code>, case conversions (<code>ToCamelCase</code>, <code>ToPascalCase</code>, <code>ToSnakeCase</code>, <code>ToKebabCase</code>, …), <code>Truncate</code>, <code>Unwrap</code>, <code>Wrap</code>, slug generation.</li>
+<li><a class="xref" href="Bodu.Extensions.IdentifierCase.html">IdentifierCase</a> — case convention enum used by <code>IsValidIdentifier</code> / case conversions.</li>
+<li><a class="xref" href="Bodu.Extensions.SentenceCaseOptions.html">SentenceCaseOptions</a>, <a class="xref" href="Bodu.Extensions.TitleCaseOptions.html">TitleCaseOptions</a>, <a class="xref" href="Bodu.Extensions.WordCasingOptions.html">WordCasingOptions</a>, <a class="xref" href="Bodu.Extensions.SlugOptions.html">SlugOptions</a> — option flags consumed by the casing helpers.</li>
+</ul>
+<p><strong>Comparable</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Extensions.ComparableExtensions.html">ComparableExtensions</a> — <code>AtLeast</code>, <code>AtMost</code>, <code>Clamp</code>, <code>IsBetween</code>, <code>IsGreaterThan</code>, <code>Max</code>, <code>Min</code>, …</li>
+<li><a class="xref" href="Bodu.Extensions.ComparableHelper.html">ComparableHelper</a> — <code>Coalesce</code>, <code>Max</code>, <code>Min</code> over nullable comparables.</li>
+</ul>
+<p><strong>Enums</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Extensions.EnumExtensions.html">EnumExtensions</a> — flag operations: <code>SetFlag</code>, <code>ClearFlag</code>, <code>HasAllFlags</code>, <code>HasAnyFlag</code>, <code>ToggleFlag</code>, plus bit-conversion helpers between flag enums and their underlying integer representations.</li>
+</ul>
+<h2 id="example">Example</h2>
+<pre><code class="lang-csharp">using Bodu.Extensions;
+
+// Calendar arithmetic — first Monday of July, ISO week, age.
+DateTime monday = new DateTime(2026, 7, 1).FirstDateOfWeekInMonth(DayOfWeek.Monday);
+DateTime endQ   = DateTime.Today.LastDateOfQuarter();
+int isoWeek    = DateTime.Today.IsoWeekOfYear();
+int age        = new DateOnly(1990, 5, 4).Age();
+
+// Numeric — bit operations and rounding.
+uint rotated   = 0xDEADBEEFu.RotateBitsLeft(8);
+uint reversed  = 0x12345678u.ReverseBytes();         // 0x78563412
+decimal scaled = 1234.5678m.RoundToSignificantDigits(3);  // 1230
+
+// Strings — slug, case conversion, between.
+string slug = &quot;Hello, World!&quot;.ToSlug();              // &quot;hello-world&quot;
+string snake = &quot;FirstName&quot;.ToSnakeCase();            // &quot;first_name&quot;
+string url = &quot;https://example.com/a/b?x=1&quot;.Between(&quot;//&quot;, &quot;/&quot;);  // &quot;example.com&quot;
+</code></pre>
+<h2 id="notes">Notes</h2>
+<ul>
+<li><strong>Pure extensions.</strong> Every type here is a static class. There are no instance types and no allocations on the helpers themselves; cost is the work they perform on their arguments.</li>
+<li><strong>Culture-aware where it matters.</strong> Date / time / culture-sensitive string helpers accept an <code>IFormatProvider</code> or <code>CultureInfo</code>. The defaults follow the BCL convention (current culture for parsing, invariant culture for format).</li>
+<li><strong>Argument validation.</strong> All public extension methods go through the centralised <a class="xref" href="Bodu.ThrowHelper.html">ThrowHelper</a> validation surface for null / range / array-length checks.</li>
+<li><strong>Companion namespaces.</strong> Sequence-shaping helpers for <code>IEnumerable&lt;T&gt;</code> / <code>IList&lt;T&gt;</code> live in <a class="xref" href="Bodu.Collections.Extensions.html">Bodu.Collections.Extensions</a> and <a class="xref" href="Bodu.Collections.Generic.Extensions.html">Bodu.Collections.Generic.Extensions</a>. Globalisation-specific date helpers used by the calendar package live in <a class="xref" href="Bodu.Globalization.Extensions.html">Bodu.Globalization.Extensions</a>.</li>
+<li><strong>See also:</strong> the <a href="../docs/core/index.html">Bodu.Core introduction</a>, the <a class="xref" href="Bodu.Extensions.DateTimeExtensions.html"><code>DateTimeExtensions</code></a> / <a class="xref" href="Bodu.Extensions.StringExtensions.html"><code>StringExtensions</code></a> / <a class="xref" href="Bodu.Extensions.NumericExtensions.html"><code>NumericExtensions</code></a> full references.</li>
+</ul>
+</div>
+  <div class="markdown level0 remarks"></div>
+    <h3 id="classes">
+Classes
+</h3>
+      <h4><a class="xref" href="Bodu.Extensions.ArrayExtensions.html">ArrayExtensions</a></h4>
+      <section><p>Provides allocation-aware operations over <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.array">Array</a> instances — clearing, copying, slicing, and reversing
+— that either match the missing primitives on <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.array">Array</a> or supply more ergonomic counterparts to the BCL
+helpers.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Extensions.BufferConverter.html">BufferConverter</a></h4>
+      <section><p>Provides methods for copying and converting between raw byte arrays and arrays of unmanaged types.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Extensions.ComparableExtensions.html">ComparableExtensions</a></h4>
+      <section><p>Provides predicate, clamping, and selection operations over any <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.icomparable-1">IComparable&lt;T&gt;</a> value, turning common
+&quot;is this within the expected window?&quot; and &quot;pick the better candidate&quot; decisions into one-liners that read naturally.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Extensions.ComparableHelper.html">ComparableHelper</a></h4>
+      <section><p>Provides null-tolerant ordering helpers — <code>Min</code>, <code>Max</code>, and <code>Coalesce</code> — for pairs of operands.
+<code>Min</code> and <code>Max</code> require <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.icomparable-1">IComparable&lt;T&gt;</a> operands (reference types may be
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>); <code>Coalesce</code> is unconstrained and additionally accepts <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.nullable-1">Nullable&lt;T&gt;</a> value
+types.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Extensions.DateOnlyExtensions.html">DateOnlyExtensions</a></h4>
+      <section><p>Provides calendar-arithmetic operations over <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a> — age, period anchors, weekday navigation, week
+and quarter numbering, and culture-aware formatting helpers — that complement the small surface shipped with
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a> itself.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Extensions.DateTimeExtensions.html">DateTimeExtensions</a></h4>
+      <section><p>Provides calendar-arithmetic, period-anchoring, ISO-aware, and tick-level operations over <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>
+for code that outgrows the BCL surface — fiscal calendars, ISO 8601 week numbering, weekend rules, and
+high-throughput tick math.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Extensions.EnumExtensions.html">EnumExtensions</a></h4>
+      <section><p>Provides non-boxing bitwise helpers for flag-style enumerations — membership tests and add, remove, and toggle
+operations that work uniformly across every enum underlying type.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Extensions.Enums.html">Enums</a></h4>
+      <section><p>Provides type-level helpers for enumerations: cached value and name lookups, parsing, and resolution of values from
+their <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.componentmodel.descriptionattribute">DescriptionAttribute</a> or <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.componentmodel.dataannotations.displayattribute">DisplayAttribute</a> text.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Extensions.FiscalWeekQuarterProvider.html">FiscalWeekQuarterProvider</a></h4>
+      <section><p>Provides quarter boundary logic for a week-based retail fiscal calendar using a configurable
+<a class="xref" href="Bodu.Extensions.FiscalWeekPattern.html">FiscalWeekPattern</a> (5–4–4, 4–5–4, or 4–4–5 week distribution).</p>
+</section>
+      <h4><a class="xref" href="Bodu.Extensions.IWeekendDefinitionProviderExtensions.html">IWeekendDefinitionProviderExtensions</a></h4>
+      <section><p>Provides conversions from <a class="xref" href="Bodu.Extensions.IWeekendDefinitionProvider.html">IWeekendDefinitionProvider</a> to the canonical <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a>
+value type used by the working-week APIs.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Extensions.NaturalStringComparer.html">NaturalStringComparer</a></h4>
+      <section><p>Provides a numeric-aware (&quot;natural&quot;) string comparer that orders embedded runs of ASCII digits by numeric value
+rather than character by character, so that <code>&quot;file2&quot;</code> sorts before <code>&quot;file10&quot;</code>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Extensions.NotableDateFiscalExtensions.html">NotableDateFiscalExtensions</a></h4>
+      <section><p>Provides fiscal-period working-day extension methods over <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a>, resolving the boundary working
+days of the fiscal year or quarter that contains a date.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Extensions.NotableDateOnlyExtensions.html">NotableDateOnlyExtensions</a></h4>
+      <section><p>Provides working-day, traversal, and notable-date query extension methods over <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a>, resolved
+through an explicit <a class="xref" href="Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a> for a requested territory.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Extensions.NotableDateTimeExtensions.html">NotableDateTimeExtensions</a></h4>
+      <section><p>Provides working-day, traversal, and notable-date query extension methods over <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>, delegating
+to the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a> surface on the date component.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Extensions.NotableDateTimeOffsetExtensions.html">NotableDateTimeOffsetExtensions</a></h4>
+      <section><p>Provides working-day, traversal, and notable-date query extension methods over <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetimeoffset">DateTimeOffset</a>,
+delegating to the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a> surface on the offset-local date component.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Extensions.NumericExtensions.html">NumericExtensions</a></h4>
+      <section><p>Provides bit-level and byte-level transformations over the integral primitive types — endian conversion, byte and
+word swaps, bit reversal and rotation, and unchecked arithmetic helpers — for hashing, serialization, and protocol
+code.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Extensions.SlugOptions.html">SlugOptions</a></h4>
+      <section><p>Supplies separator, casing, diacritic, and length configuration for
+<a class="xref" href="Bodu.Extensions.StringExtensions.ToSlug.html#Bodu_Extensions_StringExtensions_ToSlug_System_String_Bodu_Extensions_SlugOptions_">ToSlug(string, SlugOptions)</a>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Extensions.SpanExtensions.html">SpanExtensions</a></h4>
+      <section><p>Provides span-shaping helpers — read-only conversion and copy-and-reverse operations — for code that already
+operates on <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span&lt;T&gt;</a> or <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan&lt;T&gt;</a>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Extensions.StreamExtensions.html">StreamExtensions</a></h4>
+      <section><p>Provides whole-payload read and write helpers for <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a> — synchronous and asynchronous
+operations that consume or emit an entire byte buffer in a single call.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Extensions.StringExtensions.html">StringExtensions</a></h4>
+      <section><p>Provides ergonomic, allocation-aware extension methods on <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a> that fill gaps in the BCL —
+positive-form null/empty predicates, fluent fallbacks, whitespace and line-ending normalisation, affix management,
+substring windowing, case conversion, identifier sanitisation, and generic parsing.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Extensions.WordCasingOptions.html">WordCasingOptions</a></h4>
+      <section><p>Supplies acronym, minor-word, and culture configuration for the acronym-aware casing converters on
+<a class="xref" href="Bodu.Extensions.StringExtensions.html">StringExtensions</a>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Extensions.WorkingDaysOfWeekExtensions.html">WorkingDaysOfWeekExtensions</a></h4>
+      <section><p>Provides bidirectional conversion between the <a class="xref" href="Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a> enum sugar and the
+<a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> value type.</p>
+</section>
+    <h3 id="interfaces">
+Interfaces
+</h3>
+      <h4><a class="xref" href="Bodu.Extensions.IQuarterDefinitionProvider.html">IQuarterDefinitionProvider</a></h4>
+      <section><p>Defines a provider interface for custom quarter calculation logic based on <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> or
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a> values.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Extensions.IWeekendDefinitionProvider.html">IWeekendDefinitionProvider</a></h4>
+      <section><p>Defines a provider interface for determining whether a given <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a> is considered part of the
+weekend.</p>
+</section>
+    <h3 id="enums">
+Enums
+</h3>
+      <h4><a class="xref" href="Bodu.Extensions.CalendarQuarterDefinition.html">CalendarQuarterDefinition</a></h4>
+      <section><p>Specifies how quarters (Q1–Q4) are defined within a given calendar-based system.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Extensions.DateTimeResolution.html">DateTimeResolution</a></h4>
+      <section><p>Specifies the resolution level for a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> value.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Extensions.FiscalWeekPattern.html">FiscalWeekPattern</a></h4>
+      <section><p>Specifies the week distribution pattern applied across the three fiscal periods within each quarter of a week-based
+retail fiscal calendar.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Extensions.IdentifierCase.html">IdentifierCase</a></h4>
+      <section><p>Identifies which casing convention <a class="xref" href="Bodu.Extensions.StringExtensions.ToIdentifier.html#Bodu_Extensions_StringExtensions_ToIdentifier_System_String_Bodu_Extensions_IdentifierCase_">ToIdentifier(string, IdentifierCase)</a> applies to
+the words detected in the source string after invalid identifier characters have been stripped.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Extensions.SentenceCaseOptions.html">SentenceCaseOptions</a></h4>
+      <section><p>Tunes the behaviour of <a class="xref" href="Bodu.Extensions.StringExtensions.ToSentenceCase.html#Bodu_Extensions_StringExtensions_ToSentenceCase_System_String_Bodu_Extensions_SentenceCaseOptions_">ToSentenceCase(string, SentenceCaseOptions)</a> beyond the plain
+capitalise-first-letter-of-each-sentence default.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Extensions.TitleCaseOptions.html">TitleCaseOptions</a></h4>
+      <section><p>Tunes the behaviour of <a class="xref" href="Bodu.Extensions.StringExtensions.ToTitleCase.html#Bodu_Extensions_StringExtensions_ToTitleCase_System_String_Bodu_Extensions_TitleCaseOptions_">ToTitleCase(string, TitleCaseOptions)</a> beyond the plain
+capitalise-each-word default.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Extensions.WeekOrdinal.html">WeekOrdinal</a></h4>
+      <section><p>Specifies the ordinal position of a weekday within a given month. Commonly used in recurrence rules, such as &quot;the
+second Tuesday of the month&quot;.</p>
+</section>
+
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

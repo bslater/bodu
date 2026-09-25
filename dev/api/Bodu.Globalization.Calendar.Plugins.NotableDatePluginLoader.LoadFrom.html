@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Method LoadFrom | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Method LoadFrom | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Globalization.Calendar.Plugins.NotableDatePluginLoader.LoadFrom*">
+
+
+
+<h1 id="Bodu_Globalization_Calendar_Plugins_NotableDatePluginLoader_LoadFrom_" data-uid="Bodu.Globalization.Calendar.Plugins.NotableDatePluginLoader.LoadFrom*">Method LoadFrom</h1>
+<div class="markdown level0 summary"></div>
+<div class="markdown level0 conceptual"></div>
+
+<a id="Bodu_Globalization_Calendar_Plugins_NotableDatePluginLoader_LoadFrom_" data-uid="Bodu.Globalization.Calendar.Plugins.NotableDatePluginLoader.LoadFrom*"></a>
+<h4 id="Bodu_Globalization_Calendar_Plugins_NotableDatePluginLoader_LoadFrom_System_Reflection_Assembly_Bodu_Globalization_Calendar_Plugins_IPluginTrustPolicy_Microsoft_Extensions_Logging_ILogger_" data-uid="Bodu.Globalization.Calendar.Plugins.NotableDatePluginLoader.LoadFrom(System.Reflection.Assembly,Bodu.Globalization.Calendar.Plugins.IPluginTrustPolicy,Microsoft.Extensions.Logging.ILogger)">LoadFrom(Assembly, IPluginTrustPolicy, ILogger?)</h4>
+<div class="markdown level1 summary"><p>Loads the plugin declared by an already-loaded assembly after a trust check.</p>
+</div>
+<div class="markdown level1 conceptual"></div>
+<h5 class="declaration">Declaration</h5>
+<div class="codewrapper">
+  <pre><code class="lang-csharp hljs">[RequiresUnreferencedCode(&quot;Plugin loading inspects assemblies via reflection; plugin types and their algorithm implementations cannot be statically discovered by the trimmer.&quot;)]
+[RequiresDynamicCode(&quot;Plugin loading executes assemblies discovered at run time, which native AOT cannot compile ahead of time. The AOT-compatible alternative is shipping rules as data (see the calendar rule-pack roadmap).&quot;)]
+public static INotableDatePlugin LoadFrom(Assembly assembly, IPluginTrustPolicy trustPolicy, ILogger? logger = null)</code></pre>
+</div>
+<h5 class="parameters">Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.reflection.assembly">Assembly</a></td>
+      <td><span class="parametername">assembly</span></td>
+      <td><p>The assembly declaring the plugin via <a class="xref" href="Bodu.Globalization.Calendar.Plugins.NotableDatePluginAttribute.html">NotableDatePluginAttribute</a>.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="Bodu.Globalization.Calendar.Plugins.IPluginTrustPolicy.html">IPluginTrustPolicy</a></td>
+      <td><span class="parametername">trustPolicy</span></td>
+      <td><p>The policy that must trust the assembly before its plugin is activated.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.ilogger">ILogger</a></td>
+      <td><span class="parametername">logger</span></td>
+      <td><p>The logger that receives diagnostics for the load. <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> selects
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.abstractions.nulllogger.instance">Instance</a>.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="returns">Returns</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="Bodu.Globalization.Calendar.Plugins.INotableDatePlugin.html">INotableDatePlugin</a></td>
+      <td><p>The activated plugin.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 id="Bodu_Globalization_Calendar_Plugins_NotableDatePluginLoader_LoadFrom_System_Reflection_Assembly_Bodu_Globalization_Calendar_Plugins_IPluginTrustPolicy_Microsoft_Extensions_Logging_ILogger__remarks">Remarks</h5>
+<div class="markdown level1 remarks"><p>
+This overload offers a weaker guarantee than the path-based
+<a class="xref" href="Bodu.Globalization.Calendar.Plugins.NotableDatePluginLoader.LoadFrom.html#Bodu_Globalization_Calendar_Plugins_NotableDatePluginLoader_LoadFrom_System_String_Bodu_Globalization_Calendar_Plugins_IPluginTrustPolicy_Microsoft_Extensions_Logging_ILogger_">LoadFrom(string, IPluginTrustPolicy, ILogger?)</a> and must not be used for untrusted input. The
+assembly is <b>already loaded</b> when the trust policy runs, so any module initializer or type-load side effect
+it carries has had the opportunity to execute <i>before</i> the trust check — a rejection here cannot prevent
+code that ran at load time.
+</p>
+<p>
+The <a class="xref" href="Bodu.Globalization.Calendar.Plugins.PluginTrustContext.FileHash.html#Bodu_Globalization_Calendar_Plugins_PluginTrustContext_FileHash">FileHash</a> supplied to the policy is computed by re-reading
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.reflection.assembly.location">Location</a> from disk, not from the bytes that were actually loaded, so it does not close
+the time-of-check/time-of-use gap that the path-based overload avoids by hashing the in-memory image it maps.
+For untrusted assemblies, load through the path-based overload instead.
+</p>
+</div>
+<h5 class="exceptions">Exceptions</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Condition</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></td>
+      <td><p><code class="paramref">assembly</code> or <code class="paramref">trustPolicy</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="Bodu.Globalization.Calendar.Plugins.PluginNotTrustedException.html">PluginNotTrustedException</a></td>
+      <td><p>The trust policy rejected the assembly.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="Bodu.Globalization.Calendar.Plugins.PluginMissingAttributeException.html">PluginMissingAttributeException</a></td>
+      <td><p>The assembly does not declare a plugin attribute.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="Bodu.Globalization.Calendar.Plugins.PluginActivationException.html">PluginActivationException</a></td>
+      <td><p>The plugin type could not be activated or is not a plugin.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<a id="Bodu_Globalization_Calendar_Plugins_NotableDatePluginLoader_LoadFrom_" data-uid="Bodu.Globalization.Calendar.Plugins.NotableDatePluginLoader.LoadFrom*"></a>
+<h4 id="Bodu_Globalization_Calendar_Plugins_NotableDatePluginLoader_LoadFrom_System_String_Bodu_Globalization_Calendar_Plugins_IPluginTrustPolicy_Microsoft_Extensions_Logging_ILogger_" data-uid="Bodu.Globalization.Calendar.Plugins.NotableDatePluginLoader.LoadFrom(System.String,Bodu.Globalization.Calendar.Plugins.IPluginTrustPolicy,Microsoft.Extensions.Logging.ILogger)">LoadFrom(string, IPluginTrustPolicy, ILogger?)</h4>
+<div class="markdown level1 summary"><p>Loads the plugin declared by an assembly at a file path, into a dedicated load context, after a trust check.</p>
+</div>
+<div class="markdown level1 conceptual"></div>
+<h5 class="declaration">Declaration</h5>
+<div class="codewrapper">
+  <pre><code class="lang-csharp hljs">[RequiresUnreferencedCode(&quot;Plugin loading inspects assemblies via reflection; plugin types and their algorithm implementations cannot be statically discovered by the trimmer.&quot;)]
+[RequiresDynamicCode(&quot;Plugin loading executes assemblies discovered at run time, which native AOT cannot compile ahead of time. The AOT-compatible alternative is shipping rules as data (see the calendar rule-pack roadmap).&quot;)]
+public static INotableDatePlugin LoadFrom(string assemblyPath, IPluginTrustPolicy trustPolicy, ILogger? logger = null)</code></pre>
+</div>
+<h5 class="parameters">Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+      <td><span class="parametername">assemblyPath</span></td>
+      <td><p>The file path of the plugin assembly.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="Bodu.Globalization.Calendar.Plugins.IPluginTrustPolicy.html">IPluginTrustPolicy</a></td>
+      <td><span class="parametername">trustPolicy</span></td>
+      <td><p>The policy that must trust the assembly before its plugin is activated.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.ilogger">ILogger</a></td>
+      <td><span class="parametername">logger</span></td>
+      <td><p>The logger that receives diagnostics for the load. <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> selects
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.abstractions.nulllogger.instance">Instance</a>.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="returns">Returns</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="Bodu.Globalization.Calendar.Plugins.INotableDatePlugin.html">INotableDatePlugin</a></td>
+      <td><p>The activated plugin.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="exceptions">Exceptions</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Condition</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></td>
+      <td><p><code class="paramref">assemblyPath</code> or <code class="paramref">trustPolicy</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></td>
+      <td><p><code class="paramref">assemblyPath</code> is empty.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.filenotfoundexception">FileNotFoundException</a></td>
+      <td><p>No file exists at <code class="paramref">assemblyPath</code>.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.directorynotfoundexception">DirectoryNotFoundException</a></td>
+      <td><p>A directory component of <code class="paramref">assemblyPath</code> does not exist.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.unauthorizedaccessexception">UnauthorizedAccessException</a></td>
+      <td><p>The file cannot be read.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="Bodu.Globalization.Calendar.Plugins.NotableDatePluginException.html">NotableDatePluginException</a></td>
+      <td><p>The file is not a valid managed assembly image.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="Bodu.Globalization.Calendar.Plugins.PluginNotTrustedException.html">PluginNotTrustedException</a></td>
+      <td><p>The trust policy rejected the assembly.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="Bodu.Globalization.Calendar.Plugins.PluginMissingAttributeException.html">PluginMissingAttributeException</a></td>
+      <td><p>The assembly does not declare a plugin attribute.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="Bodu.Globalization.Calendar.Plugins.PluginActivationException.html">PluginActivationException</a></td>
+      <td><p>The plugin type could not be loaded or activated, or is not a plugin.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

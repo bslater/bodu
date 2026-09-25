@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Multiset | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Multiset | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="multiset">Multiset</h1>
+
+<p><a class="xref" href="../../api/Bodu.Collections.Generic.Multiset-1.html">Multiset&lt;T&gt;</a> (a <em>bag</em>) is a set that retains duplicates as <strong>multiplicity</strong> rather than discarding them. Adding an element that is already present increments its count instead of being rejected. It is the right tool for frequency counting, inventory-style tallies, and multiset algebra (sum, union, intersection, difference) where the number of copies matters.</p>
+<p>Equality is governed by an <code>IEqualityComparer&lt;T&gt;</code> supplied at construction, so counting can be case-insensitive or structural. The element type is constrained to <code>notnull</code>; storage is a <code>Dictionary&lt;T, int&gt;</code> from each distinct element to its count.</p>
+<h2 id="pattern-1--counting-occurrences">Pattern 1 — counting occurrences</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Collections.Generic;
+
+var words = new Multiset&lt;string&gt;();
+
+foreach (string token in &quot;the cat sat on the mat&quot;.Split(' '))
+    words.Add(token);
+
+int the   = words.CountOf(&quot;the&quot;);   // → 2
+int total = words.Count;            // → 6 — includes multiplicity
+int kinds = words.DistinctCount;    // → 5 — distinct elements only
+</code></pre>
+<p><code>Count</code> reports the total number of elements including duplicates; <code>DistinctCount</code> reports the number of <em>distinct</em> elements. <code>CountOf</code> returns <code>0</code> for an absent element — no exception, no <code>TryGetValue</code> dance:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">var histogram = new Multiset&lt;char&gt;(&quot;mississippi&quot;);
+
+Console.WriteLine(histogram.Count);          // → 11
+Console.WriteLine(histogram.DistinctCount);  // → 4
+Console.WriteLine(histogram.CountOf('s'));   // → 4
+Console.WriteLine(histogram.CountOf('z'));   // → 0 — absent elements report zero
+</code></pre>
+<p>The <code>IEnumerable&lt;T&gt;</code> constructor seeds the bag with one count per source element, so any sequence becomes a histogram in one line.</p>
+<h2 id="pattern-2--adding-and-removing-with-explicit-multiplicity">Pattern 2 — adding and removing with explicit multiplicity</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">var inventory = new Multiset&lt;string&gt;();
+
+inventory.Add(&quot;widget&quot;, count: 10);   // add ten at once
+inventory.Add(&quot;widget&quot;);              // now 11
+
+bool removedOne = inventory.Remove(&quot;widget&quot;);     // removes a single copy → 10
+bool removedAll = inventory.RemoveAll(&quot;widget&quot;);  // removes every copy → 0, returns true
+</code></pre>
+<p><code>Remove</code> removes a single copy and returns <code>false</code> when the element is absent; <code>RemoveAll</code> removes every copy of the element at once. An element whose count reaches zero leaves the bag entirely — <code>Contains</code> becomes <code>false</code> and the element no longer appears in <code>Distinct()</code> or <code>Frequencies()</code>. <code>Add(item, count)</code> throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a> when <code>count</code> is zero or negative.</p>
+<h2 id="pattern-3--enumerating-distinct-values-and-frequencies">Pattern 3 — enumerating distinct values and frequencies</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">var bag = new Multiset&lt;char&gt; { 'a', 'a', 'b', 'c', 'c', 'c' };
+
+foreach (char distinct in bag.Distinct().OrderBy(c =&gt; c))
+    Console.Write(distinct);                          // → abc
+
+foreach (KeyValuePair&lt;char, int&gt; freq in bag.Frequencies().OrderBy(p =&gt; p.Key))
+    Console.WriteLine($&quot;{freq.Key} × {freq.Value}&quot;);
+// → a × 2
+// → b × 1
+// → c × 3
+</code></pre>
+<p>Enumerating the multiset directly (<code>foreach (var item in bag)</code>) yields each element repeated according to its count. <code>Distinct()</code> and <code>Frequencies()</code> run in O(<code>DistinctCount</code>) and do not expand multiplicity; their order is <strong>not guaranteed</strong> (apply <code>OrderBy</code> as above when stable output matters). Both are fail-fast: mutating the bag mid-enumeration throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a>.</p>
+<p>A typical reporting shape — top-N most frequent:</p>
+<pre><code class="lang-csharp">var top2 = bag.Frequencies()
+    .OrderByDescending(p =&gt; p.Value)
+    .ThenBy(p =&gt; p.Key)
+    .Take(2);
+
+Console.WriteLine(string.Join(&quot;, &quot;, top2.Select(p =&gt; $&quot;{p.Key}×{p.Value}&quot;)));
+// → c×3, a×2
+</code></pre>
+<h2 id="pattern-4--multiset-algebra">Pattern 4 — multiset algebra</h2>
+<p>Multiset operations combine counts rather than just membership. Each returns a new <code>Multiset&lt;T&gt;</code> (using the left operand's comparer) and mutates neither operand:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">var a = new Multiset&lt;int&gt; { 1, 1, 2, 3 };
+var b = new Multiset&lt;int&gt; { 1, 2, 2, 4 };
+
+static void Dump(Multiset&lt;int&gt; m) =&gt;
+    Console.WriteLine(string.Join(&quot;, &quot;,
+        m.Frequencies().OrderBy(p =&gt; p.Key).Select(p =&gt; $&quot;{p.Key}×{p.Value}&quot;)));
+
+Dump(a.Sum(b));        // → 1×3, 2×3, 3×1, 4×1
+Dump(a.Union(b));      // → 1×2, 2×2, 3×1, 4×1
+Dump(a.Intersect(b));  // → 1×1, 2×1
+Dump(a.Except(b));     // → 1×1, 3×1
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Resulting count of each element</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Sum</code></td>
+<td>sum of the two counts</td>
+</tr>
+<tr>
+<td><code>Union</code></td>
+<td>maximum of the two counts</td>
+</tr>
+<tr>
+<td><code>Intersect</code></td>
+<td>minimum of the two counts</td>
+</tr>
+<tr>
+<td><code>Except</code></td>
+<td>left count minus right count (floored at zero)</td>
+</tr>
+</tbody>
+</table>
+<p>The operations are well defined only when both operands use equivalent comparers — combining a case-sensitive bag with a case-insensitive one produces comparer-dependent results.</p>
+<h2 id="pattern-5--case-insensitive-counting">Pattern 5 — case-insensitive counting</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">var tally = new Multiset&lt;string&gt;(StringComparer.OrdinalIgnoreCase);
+tally.Add(&quot;Error&quot;);
+tally.Add(&quot;ERROR&quot;);
+int errors = tally.CountOf(&quot;error&quot;);   // → 2
+</code></pre>
+<h2 id="complexity">Complexity</h2>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Cost</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Add</code> / <code>Remove</code> / <code>RemoveAll</code></td>
+<td>O(1) average</td>
+<td>Hash insert / update on the backing <code>Dictionary&lt;T, int&gt;</code>.</td>
+</tr>
+<tr>
+<td><code>Contains</code> / <code>CountOf</code></td>
+<td>O(1) average</td>
+<td>Single hash lookup.</td>
+</tr>
+<tr>
+<td><code>Count</code> / <code>DistinctCount</code></td>
+<td>O(1)</td>
+<td>Maintained incrementally.</td>
+</tr>
+<tr>
+<td><code>Distinct()</code> / <code>Frequencies()</code></td>
+<td>O(d)</td>
+<td>d = <code>DistinctCount</code>; multiplicity is not expanded.</td>
+</tr>
+<tr>
+<td>Full enumeration / <code>CopyTo</code></td>
+<td>O(n)</td>
+<td>n = <code>Count</code>; each element yielded once per occurrence.</td>
+</tr>
+<tr>
+<td><code>Sum</code> / <code>Union</code></td>
+<td>O(d₁ + d₂)</td>
+<td>Distinct counts of both operands.</td>
+</tr>
+<tr>
+<td><code>Intersect</code> / <code>Except</code></td>
+<td>O(d₁)</td>
+<td>Iterates the left operand's distinct elements only.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="when-not-to-use-it">When <em>not</em> to use it</h2>
+<ul>
+<li><strong>A hand-rolled <code>Dictionary&lt;T, int&gt;</code> is enough</strong> when a single method only increments and reads counts. <code>Multiset&lt;T&gt;</code> earns its keep once you also need the total <code>Count</code> alongside <code>DistinctCount</code>, removal that automatically drops zero-count entries, multiplicity-aware enumeration and <code>CopyTo</code>, <code>ICollection&lt;T&gt;</code> interop, or the algebra operations — all of which the hand-rolled dictionary forces you to re-implement (and keep consistent) yourself.</li>
+<li><strong>Duplicates should be rejected, not counted.</strong> Use <code>HashSet&lt;T&gt;</code>, or <a href="ordered-sets.html"><code>IndexedSet&lt;T&gt;</code> / <code>OrderedSet&lt;T&gt;</code></a> when insertion order matters.</li>
+<li><strong>Sorted frequency order is needed continuously.</strong> The bag is hash-ordered; a <code>SortedDictionary&lt;T, int&gt;</code> keeps keys sorted on every read instead of paying an <code>OrderBy</code> per query.</li>
+<li><strong><code>null</code> elements.</strong> The element type is constrained to <code>notnull</code>; a bag cannot count <code>null</code>.</li>
+<li><strong>Concurrent writers.</strong> The type is not thread-safe; synchronize externally, or use <code>ConcurrentDictionary&lt;T, int&gt;</code> with interlocked updates when contention is the dominant concern.</li>
+</ul>
+<h2 id="api-summary">API summary</h2>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Multiset()</code> / <code>Multiset(IEqualityComparer&lt;T&gt;?)</code></td>
+<td>Empty bag with default or explicit comparer.</td>
+</tr>
+<tr>
+<td><code>Multiset(IEnumerable&lt;T&gt;[, IEqualityComparer&lt;T&gt;?])</code></td>
+<td>Seeds the bag from a sequence, one count per element.</td>
+</tr>
+<tr>
+<td><code>Add(T)</code> / <code>Add(T, int)</code></td>
+<td>Adds one, or a given count, of an element.</td>
+</tr>
+<tr>
+<td><code>Remove(T)</code></td>
+<td>Removes a single copy; returns <code>false</code> if absent.</td>
+</tr>
+<tr>
+<td><code>RemoveAll(T)</code></td>
+<td>Removes every copy of an element.</td>
+</tr>
+<tr>
+<td><code>Contains(T)</code></td>
+<td>Whether the element is present at least once.</td>
+</tr>
+<tr>
+<td><code>CountOf(T)</code></td>
+<td>The multiplicity of a specific element (<code>0</code> if absent).</td>
+</tr>
+<tr>
+<td><code>Count</code></td>
+<td>Total element count including duplicates.</td>
+</tr>
+<tr>
+<td><code>DistinctCount</code></td>
+<td>Number of distinct elements.</td>
+</tr>
+<tr>
+<td><code>Distinct()</code></td>
+<td>Enumerates the distinct elements.</td>
+</tr>
+<tr>
+<td><code>Frequencies()</code></td>
+<td>Enumerates <code>(element, count)</code> pairs.</td>
+</tr>
+<tr>
+<td><code>Sum</code> / <code>Union</code> / <code>Intersect</code> / <code>Except</code></td>
+<td>Multiset algebra returning a new <code>Multiset&lt;T&gt;</code>.</td>
+</tr>
+<tr>
+<td><code>Comparer</code></td>
+<td>The active <code>IEqualityComparer&lt;T&gt;</code>.</td>
+</tr>
+<tr>
+<td><code>Clear()</code> / <code>CopyTo(T[], int)</code></td>
+<td>Standard collection surface.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="see-also">See also</h2>
+<ul>
+<li><a href="ordered-sets.html">Indexed and ordered sets</a> — when duplicates should be <em>rejected</em> rather than counted.</li>
+<li><a href="choosing-a-collection.html">Choosing a collection</a> — the full decision guide.</li>
+<li><a href="../topics/core-foundations.html">Core Foundations guides</a> — every guide in this topic.</li>
+<li><a href="../../docs/topics/core-foundations.html">Core Foundations topic overview</a> — package map and install command.</li>
+<li><a href="../../docs/collections/index.html">Bodu.Collections introduction</a> — namespaces, headline types, scenarios.</li>
+<li><a class="xref" href="../../api/Bodu.Collections.Generic.Multiset-1.html"><code>Multiset&lt;T&gt;</code> API reference</a></li>
+<li><a class="xref" href="../../api/Bodu.Collections.Generic.html"><code>Bodu.Collections.Generic</code> namespace landing</a></li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

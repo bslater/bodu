@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Method GetEnum | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Method GetEnum | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Text.Configuration.ConfigurationView.GetEnum*">
+
+
+
+<h1 id="Bodu_Text_Configuration_ConfigurationView_GetEnum_" data-uid="Bodu.Text.Configuration.ConfigurationView.GetEnum*">Method GetEnum</h1>
+<div class="markdown level0 summary"></div>
+<div class="markdown level0 conceptual"></div>
+
+<a id="Bodu_Text_Configuration_ConfigurationView_GetEnum_" data-uid="Bodu.Text.Configuration.ConfigurationView.GetEnum*"></a>
+<h4 id="Bodu_Text_Configuration_ConfigurationView_GetEnum__1_System_String_" data-uid="Bodu.Text.Configuration.ConfigurationView.GetEnum``1(System.String)">GetEnum&lt;TEnum&gt;(string)</h4>
+<div class="markdown level1 summary"><p>Gets the value for <code class="paramref">key</code> as an enum of type <code class="typeparamref">TEnum</code>.</p>
+</div>
+<div class="markdown level1 conceptual"></div>
+<h5 class="declaration">Declaration</h5>
+<div class="codewrapper">
+  <pre><code class="lang-csharp hljs">public TEnum GetEnum&lt;TEnum&gt;(string key) where TEnum : struct, Enum</code></pre>
+</div>
+<h5 class="parameters">Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+      <td><span class="parametername">key</span></td>
+      <td><p>The configuration key.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="returns">Returns</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span class="xref">TEnum</span></td>
+      <td><p>The parsed enum value.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="typeParameters">Type Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span class="parametername">TEnum</span></td>
+      <td><p>The enum type.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 id="Bodu_Text_Configuration_ConfigurationView_GetEnum__1_System_String__remarks">Remarks</h5>
+<div class="markdown level1 remarks"><p>Enum names are parsed case-insensitively. Numeric values are accepted only when they correspond to a declared
+enum member — undefined integers (e.g. <code>severity = 99</code> for a three-member enum) are rejected with
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a> rather than producing a synthetic value.</p>
+<p>
+Combined values for <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.flagsattribute">FlagsAttribute</a>-decorated enums are also rejected unless the combined value
+itself is a declared member — the underlying <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.enum.isdefined#system-enum-isdefined(system-type-system-object)">IsDefined(Type, object)</a> guard treats
+<code>Read, Write</code> as undefined when only the individual flags are declared. Callers who need combined-flag
+parsing should call <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.enum.parse#system-enum-parse(system-type-system-string-system-boolean)">Parse(Type, string, bool)</a> against
+<a class="xref" href="Bodu.Text.Configuration.ConfigurationView.GetString.html#Bodu_Text_Configuration_ConfigurationView_GetString_System_String_">GetString(string)</a> instead.
+</p>
+<example>
+<pre><code class="lang-csharp">ConfigurationView view = ConfigurationDocument.Parse(text).Resolve("src/Foo.cs");
+
+// Names parse case-insensitively; undefined integers are rejected.
+LogLevel level = view.GetEnum&lt;LogLevel&gt;("logging:level");
+
+// Fall back when the key is absent (a malformed value still throws).
+LogLevel effective = view.GetEnum("logging:level", LogLevel.Information);</code></pre>
+</example>
+</div>
+<h5 class="exceptions">Exceptions</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Condition</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keynotfoundexception">KeyNotFoundException</a></td>
+      <td><p>The key is absent.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></td>
+      <td><p>The value cannot be parsed as the enum.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<a id="Bodu_Text_Configuration_ConfigurationView_GetEnum_" data-uid="Bodu.Text.Configuration.ConfigurationView.GetEnum*"></a>
+<h4 id="Bodu_Text_Configuration_ConfigurationView_GetEnum__1_System_String___0_" data-uid="Bodu.Text.Configuration.ConfigurationView.GetEnum``1(System.String,``0)">GetEnum&lt;TEnum&gt;(string, TEnum)</h4>
+<div class="markdown level1 summary"><p>Gets the value for <code class="paramref">key</code> as an enum of type <code class="typeparamref">TEnum</code>, returning
+<code class="paramref">fallback</code> when the key is absent. Present-but-malformed values still throw
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a>.</p>
+</div>
+<div class="markdown level1 conceptual"></div>
+<h5 class="declaration">Declaration</h5>
+<div class="codewrapper">
+  <pre><code class="lang-csharp hljs">public TEnum GetEnum&lt;TEnum&gt;(string key, TEnum fallback) where TEnum : struct, Enum</code></pre>
+</div>
+<h5 class="parameters">Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+      <td><span class="parametername">key</span></td>
+      <td><p>The configuration key.</p>
+</td>
+    </tr>
+    <tr>
+      <td><span class="xref">TEnum</span></td>
+      <td><span class="parametername">fallback</span></td>
+      <td><p>The value to return when the key is absent.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="returns">Returns</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span class="xref">TEnum</span></td>
+      <td><p>The parsed enum value, or <code class="paramref">fallback</code> when the key is absent.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="typeParameters">Type Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span class="parametername">TEnum</span></td>
+      <td><p>The enum type.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="exceptions">Exceptions</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Condition</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></td>
+      <td><p><code class="paramref">key</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></td>
+      <td><p>The value is present but cannot be parsed as <code class="typeparamref">TEnum</code>.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

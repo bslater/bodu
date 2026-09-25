@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class ExcelWorksheet | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class ExcelWorksheet | BODU ">
+    
+    <meta name="description" content="Provides a materialized, randomly addressable view over the populated cells of a single worksheet.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Formats.Excel.ExcelWorksheet">
+
+
+
+  <h1 id="Bodu_Formats_Excel_ExcelWorksheet" data-uid="Bodu.Formats.Excel.ExcelWorksheet" class="text-break">Class ExcelWorksheet</h1>
+  <div class="markdown level0 summary"><p>Provides a materialized, randomly addressable view over the populated cells of a single worksheet.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><span class="xref">ExcelWorksheet</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Formats.html">Formats</a>.<a class="xref" href="Bodu.Formats.Excel.html">Excel</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Formats.Excel.Binary.dll</h6>
+  <h5 id="Bodu_Formats_Excel_ExcelWorksheet_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class ExcelWorksheet</code></pre>
+  </div>
+  <h5 id="Bodu_Formats_Excel_ExcelWorksheet_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>Unlike the forward-only <a class="xref" href="Bodu.Formats.Excel.ExcelWorksheetReader.html">ExcelWorksheetReader</a> surface, a worksheet buffers every populated cell once,
+exposing them by position through <a class="xref" href="Bodu.Formats.Excel.ExcelWorksheet.TryGetCell.html#Bodu_Formats_Excel_ExcelWorksheet_TryGetCell_System_Int32_System_Int32_Bodu_Formats_Excel_ExcelCell__">TryGetCell(int, int, out ExcelCell)</a> and grouped into
+<a class="xref" href="Bodu.Formats.Excel.ExcelWorksheet.Rows.html#Bodu_Formats_Excel_ExcelWorksheet_Rows">Rows</a>. Absent cells are omitted, so both surfaces are sparse.</p>
+<example>
+<pre><code class="lang-csharp">using Bodu.Formats.Excel;
+
+using var workbook = ExcelBinaryWorkbook.OpenRead("report.xls");
+ExcelWorksheet sheet = workbook.ReadWorksheet(0);
+
+// Random access by position.
+if (sheet.TryGetCell(0, 0, out ExcelCell header))
+    Console.WriteLine($"A1 = {header.StringValue}");
+
+// Iterate the populated rows and their cells.
+foreach (ExcelRow row in sheet.Rows)
+    foreach (ExcelCell cell in row.Cells)
+        Console.WriteLine($"R{cell.RowIndex} C{cell.ColumnIndex}: {cell.Kind}");</code></pre>
+</example>
+</div>
+  <h3 id="properties">Properties
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Formats_Excel_ExcelWorksheet_Cells" data-uid="Bodu.Formats.Excel.ExcelWorksheet.Cells">
+          <a class="xref" href="Bodu.Formats.Excel.ExcelWorksheet.Cells.html#Bodu_Formats_Excel_ExcelWorksheet_Cells">Cells</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the populated cells of the worksheet, in row-major order.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Formats_Excel_ExcelWorksheet_Dimensions" data-uid="Bodu.Formats.Excel.ExcelWorksheet.Dimensions">
+          <a class="xref" href="Bodu.Formats.Excel.ExcelWorksheet.Dimensions.html#Bodu_Formats_Excel_ExcelWorksheet_Dimensions">Dimensions</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the used range declared by the worksheet's <code>DIMENSIONS</code> record.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Formats_Excel_ExcelWorksheet_Index" data-uid="Bodu.Formats.Excel.ExcelWorksheet.Index">
+          <a class="xref" href="Bodu.Formats.Excel.ExcelWorksheet.Index.html#Bodu_Formats_Excel_ExcelWorksheet_Index">Index</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the zero-based position of the worksheet within the workbook.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Formats_Excel_ExcelWorksheet_Name" data-uid="Bodu.Formats.Excel.ExcelWorksheet.Name">
+          <a class="xref" href="Bodu.Formats.Excel.ExcelWorksheet.Name.html#Bodu_Formats_Excel_ExcelWorksheet_Name">Name</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the worksheet name.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Formats_Excel_ExcelWorksheet_Rows" data-uid="Bodu.Formats.Excel.ExcelWorksheet.Rows">
+          <a class="xref" href="Bodu.Formats.Excel.ExcelWorksheet.Rows.html#Bodu_Formats_Excel_ExcelWorksheet_Rows">Rows</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the populated rows of the worksheet, in ascending row order.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Formats_Excel_ExcelWorksheet_TryGetCell_System_Int32_System_Int32_Bodu_Formats_Excel_ExcelCell__" data-uid="Bodu.Formats.Excel.ExcelWorksheet.TryGetCell(System.Int32,System.Int32,Bodu.Formats.Excel.ExcelCell@)">
+          <a class="xref" href="Bodu.Formats.Excel.ExcelWorksheet.TryGetCell.html#Bodu_Formats_Excel_ExcelWorksheet_TryGetCell_System_Int32_System_Int32_Bodu_Formats_Excel_ExcelCell__">TryGetCell(int, int, out ExcelCell)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to get the cell at the specified position.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

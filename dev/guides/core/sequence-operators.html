@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Sequence operators and generators | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Sequence operators and generators | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="sequence-operators-and-generators">Sequence operators and generators</h1>
+
+<p><code>Bodu.Core</code> adds the LINQ operators that <code>System.Linq</code> leaves out — batching, windowing, adjacent-pair and run-length operators, combinatorics, hierarchical flattening with traversal control, shuffling — plus a small set of <code>IList&lt;T&gt;</code> / <code>IDictionary&lt;TKey,TValue&gt;</code> helpers and a <code>SequenceGenerator</code> for arithmetic and mathematical sequences. Four static classes are involved:</p>
+<table>
+<thead>
+<tr>
+<th>Class</th>
+<th>Namespace</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html">IEnumerableExtensions</a></td>
+<td><code>Bodu.Collections.Generic.Extensions</code></td>
+<td>The operator catalogue on <code>IEnumerable&lt;T&gt;</code>.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Extensions.IListExtensions.html">IListExtensions</a> / <a class="xref" href="../../api/Bodu.Collections.Generic.Extensions.IDictionaryExtensions.html">IDictionaryExtensions</a></td>
+<td><code>Bodu.Collections.Generic.Extensions</code></td>
+<td>Predicate index search, replace, swap/move; <code>GetOrAdd</code> / <code>AddOrUpdate</code>.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.ShuffleHelpers.html">ShuffleHelpers</a></td>
+<td><code>Bodu.Collections.Generic</code></td>
+<td>In-place and yielding Fisher–Yates shuffles over an <a class="xref" href="../../api/Bodu.IRandomGenerator.html">IRandomGenerator</a>.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Sequences.SequenceGenerator.html">SequenceGenerator</a></td>
+<td><code>Bodu.Sequences</code></td>
+<td>Ranges, iterated functions, and named mathematical sequences.</td>
+</tr>
+</tbody>
+</table>
+<p>Every <code>IEnumerable&lt;T&gt;</code> operator follows the LINQ convention: argument validation is eager (a <code>null</code> source or an invalid size throws at the call), and the work is deferred until enumeration. The catalogue below marks which operators stream the source lazily and which must <strong>buffer</strong> it (fully or partially) before they can yield.</p>
+<h2 id="pattern-1--batching-batch-versus-batchpooled">Pattern 1 — batching: <code>Batch</code> versus <code>BatchPooled</code></h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Collections.Generic.Extensions;
+
+var source = Enumerable.Range(1, 7);
+
+foreach (IEnumerable&lt;string&gt; batch in source.Batch(3, x =&gt; $&quot;#{x}&quot;))
+    Console.WriteLine(string.Join(&quot;, &quot;, batch));          // #1, #2, #3 / #4, #5, #6 / #7
+
+// BatchPooled: one rented buffer, every batch aliases it — copy before the loop advances.
+var retained = new List&lt;int[]&gt;();
+foreach (ReadOnlyMemory&lt;int&gt; batch in source.BatchPooled(3))
+    retained.Add(batch.ToArray());                        // 3 batches; the last is [7]
+
+// Anti-pattern: ToList() over BatchPooled keeps windows over recycled memory.
+var wrong = source.BatchPooled(3).ToList();
+string stale = string.Join(&quot;, &quot;, wrong[0].ToArray());     // &quot;7, 5, 6&quot; — not &quot;1, 2, 3&quot;
+</code></pre>
+<p><code>Batch(size, selector)</code> projects each element (with an index-aware overload) and yields independently owned batches; for unprojected batching the BCL's <code>Enumerable.Chunk</code> already exists. <code>BatchPooled(size)</code> / <code>BatchPooled(size, selector)</code> rent <strong>one</strong> <code>ArrayPool&lt;T&gt;</code> buffer of <code>size</code> elements per enumeration and yield <code>ReadOnlyMemory&lt;T&gt;</code> windows over it — nothing is allocated per batch, but:</p>
+<div class="WARNING">
+<h5>Warning</h5>
+<p>A <code>BatchPooled</code> batch is valid only until the enumerator advances or is disposed. The buffer is overwritten by the next step and returned to the pool when enumeration ends (the <code>finally</code> of the iterator, so <code>break</code> and exceptions return it too). Consume it with <code>foreach</code>, copy with <code>.ToArray()</code> if you need to keep a batch, and never <code>ToList()</code> the returned sequence.</p>
+</div>
+<h2 id="pattern-2--cache-enumerate-an-expensive-source-once">Pattern 2 — <code>Cache</code>: enumerate an expensive source once</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Collections.Generic.Extensions;
+
+int pulls = 0;
+IEnumerable&lt;int&gt; expensive = Enumerable.Range(1, 5).Select(x =&gt; { pulls++; return x * x; });
+
+IEnumerable&lt;int&gt; cached = expensive.Cache();
+string first = string.Join(&quot;, &quot;, cached.Take(2));   // &quot;1, 4&quot; — pulls only what is needed
+string all   = string.Join(&quot;, &quot;, cached);           // &quot;1, 4, 9, 16, 25&quot;
+string again = string.Join(&quot;, &quot;, cached);           // served from the cache
+int total = pulls;                                  // 5 — the source ran exactly once
+</code></pre>
+<p><code>Cache()</code> wraps the source in a lazily filled, append-only buffer: the first enumerator pulls from the source on demand and every enumerator — including concurrent ones on other threads — reads from the shared buffer. The wrapper implements <code>IDisposable</code>; disposing it (via a cast) releases the source enumerator and the cached items and re-arms the wrapper for a fresh pass, while live enumerators observe <code>ObjectDisposedException</code>. It is the one operator in this catalogue that is safe to enumerate from several threads at once.</p>
+<h2 id="pattern-3--combinatorics">Pattern 3 — combinatorics</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Collections.Generic.Extensions;
+
+var letters = new[] { 'a', 'b', 'c' };
+
+var pairs = letters.Combinations(2);      // [a, b], [a, c], [b, c]      — k-subsets, source order within a row
+var perms = letters.Permutations();       // 6 rows: [a, b, c], [a, c, b], [b, a, c], [b, c, a], [c, a, b], [c, b, a]
+var kPerm = letters.Permutations(2);      // 6 rows: [a, b], [a, c], [b, a], [b, c], [c, a], [c, b]
+var cross = new[] { 1, 2 }.CartesianProduct(letters);                    // (1, a), (1, b), (1, c), (2, a), (2, b), (2, c)
+var named = new[] { 1, 2 }.CartesianProduct(letters, (n, c) =&gt; $&quot;{c}{n}&quot;); // a1, b1, c1, a2, b2, c2
+</code></pre>
+<p><code>Combinations</code> and <code>Permutations</code> buffer the source in full when enumeration begins (they need random access), then yield rows lazily; each row is an independent <code>IReadOnlyList&lt;T&gt;</code> snapshot, and elements are treated positionally, so duplicate values produce duplicate rows. <code>CartesianProduct</code> streams <code>first</code> and buffers <code>second</code> — so <code>first</code> may be infinite, <code>second</code> must not be.</p>
+<h2 id="pattern-4--adjacent-element-operators">Pattern 4 — adjacent-element operators</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Collections.Generic.Extensions;
+
+var readings = new[] { 1, 1, 2, 3, 3, 3, 10, 11 };
+
+var pairs   = readings.Pairwise();                                // (1, 1), (1, 2), (2, 3), (3, 3), (3, 3), (3, 10), (10, 11)
+var deltas  = readings.Pairwise((p, c) =&gt; c - p);                 // 0, 1, 1, 0, 0, 7, 1
+var runs    = readings.RunLengthEncode();                         // (1, 2), (2, 1), (3, 3), (10, 1), (11, 1)
+var chunks  = readings.SplitWhen((p, c) =&gt; c - p &gt; 1);            // [1, 1, 2, 3, 3, 3], [10, 11]
+var groups  = readings.ChunkBy(x =&gt; x &lt; 5);                       // (True, [1, 1, 2, 3, 3, 3]), (False, [10, 11])
+var sums    = readings.Windowed(3).Select(w =&gt; w.Sum());          // 4, 6, 8, 9, 16, 24
+var running = readings.Scan(0, (acc, x) =&gt; acc + x);              // 1, 2, 4, 7, 10, 13, 23, 34
+</code></pre>
+<p>All seven stream the source lazily. <code>Pairwise</code>, <code>RunLengthEncode</code>, and <code>Scan</code> hold O(1) state; <code>Windowed(size)</code> holds the last <code>size</code> elements and yields only <em>complete</em> windows; <code>SplitWhen</code> and <code>ChunkBy</code> hold the current chunk until its boundary is seen. Every yielded window, chunk, or group is a stable snapshot that later iteration does not modify. <code>RunLengthEncode</code> and <code>ChunkBy</code> take an optional <code>IEqualityComparer&lt;T&gt;</code> / <code>IEqualityComparer&lt;TKey&gt;</code>.</p>
+<h2 id="pattern-5--zipping-interleaving-indexing-and-null-filtering">Pattern 5 — zipping, interleaving, indexing, and null filtering</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Collections.Generic.Extensions;
+
+var a = new[] { 1, 2, 3 };
+var b = new[] { &quot;x&quot;, &quot;y&quot; };
+
+var padded   = a.ZipLongest(b);                          // (1, x), (2, y), (3, null)
+var defaults = a.ZipLongest(b, -1, &quot;?&quot;);                 // (1, x), (2, y), (3, ?)
+var joined   = a.ZipLongest(b, -1, &quot;?&quot;, (n, s) =&gt; $&quot;{n}{s}&quot;);   // 1x, 2y, 3?
+var woven    = a.Interleave(b.Select(s =&gt; s.Length), new[] { 100, 200, 300, 400 });   // 1, 1, 100, 2, 1, 200, 3, 300, 400
+var indexed  = b.Index();                                // (0, x), (1, y)
+var refs     = new string?[] { &quot;a&quot;, null, &quot;b&quot; }.WhereNotNull();   // a, b        (reference types)
+var values   = new int?[] { 1, null, 3 }.WhereNotNull();          // 1, 3        (Nullable&lt;T&gt; unwrapped)
+bool hasAll  = a.ContainsAll(new[] { 1, 3 });            // true
+bool hasAny  = a.ContainsAny(new[] { 9, 3 });            // true
+bool empty   = ((int[]?)null).IsNullOrEmpty();           // true
+a.ForEach(x =&gt; Console.Write(x * 10 + &quot; &quot;));             // 10 20 30
+</code></pre>
+<p><code>ZipLongest</code> continues until <em>both</em> sequences are exhausted, padding with <code>default</code> or the supplied fill values; <code>Interleave</code> takes one element from each sequence in turn and drops sequences as they run out. <code>Index</code> is the <code>(Index, Item)</code> tuple form of <code>Select((x, i) =&gt; …)</code>, and <code>source.Index()</code> binds cleanly on every framework this package targets. That is worth a note, because it did not use to. .NET 9 added <code>System.Linq.Enumerable.Index&lt;TSource&gt;</code> with the same signature as Bodu's, so while the package targeted <code>net8.0</code> alone, a consumer on .NET 9 or later resolved the <code>net8.0</code> asset — which <em>contains</em> Bodu's overload, because the polyfill is compiled out only from <code>net9.0</code> upward — and ended up with both in scope and an ambiguous call (<code>CS0121</code>), for which this guide used to recommend a fully-qualified static call. Multi-targeting removes the collision at the source: a consumer on .NET 10 resolves the <code>net10.0</code> asset, where the polyfill is absent and the BCL's overload is the only candidate, and a consumer on .NET 8 resolves the <code>net8.0</code> asset, where Bodu's is. Exactly one exists on either side, so the extension form is unambiguous and the fully-qualified workaround is no longer needed — it would in fact fail to compile against <code>net10.0</code>. <code>ContainsAll</code> / <code>ContainsAny</code> buffer <code>items</code> into a set and stream <code>source</code>; <code>IsNullOrEmpty</code> pulls at most one element.</p>
+<h2 id="pattern-6--multi-accumulator-aggregate">Pattern 6 — multi-accumulator <code>Aggregate</code></h2>
+<p>The <code>Aggregate</code> overloads fold two or three accumulators in a single pass, optionally with the element index, and optionally project the final tuple through a result selector:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Collections.Generic.Extensions;
+
+var values = new[] { 4.0, 8.0, 15.0, 16.0, 23.0, 42.0 };
+
+var (min, max) = values.Aggregate(double.MaxValue, double.MinValue, Math.Min, Math.Max);        // 4, 42
+double mean    = values.Aggregate(0.0, 0, (s, x) =&gt; s + x, (n, _) =&gt; n + 1, (s, n) =&gt; s / n);     // 18
+int weighted   = new[] { 5, 6, 7 }.Aggregate(0, (acc, x, i) =&gt; acc + (x * i));                   // 20 — index-aware fold
+</code></pre>
+<h2 id="pattern-7--recursiveselect-and-recursiveselectcontrol">Pattern 7 — <code>RecursiveSelect</code> and <code>RecursiveSelectControl</code></h2>
+<p><code>RecursiveSelect</code> flattens a hierarchy depth-first, pre-order, using a child selector. The projecting overloads receive the element, its index among its siblings, and its depth; the fullest overload also takes a <strong>control</strong> delegate that decides, per node, whether to yield it, descend into it, stop its siblings, or abandon the whole walk.</p>
+<pre><code class="lang-csharp">using Bodu.Collections.Extensions;
+using Bodu.Collections.Generic.Extensions;
+
+public sealed record Node(string Name, List&lt;Node&gt; Children)
+{
+    public Node(string name, params Node[] children) : this(name, children.ToList()) { }
+}
+</code></pre>
+<pre><code class="lang-csharp">using Bodu.Collections.Extensions;
+using Bodu.Collections.Generic.Extensions;
+
+var root = new Node(&quot;root&quot;,
+    new Node(&quot;src&quot;, new Node(&quot;a.cs&quot;), new Node(&quot;b.cs&quot;)),
+    new Node(&quot;bin&quot;, new Node(&quot;app.dll&quot;)),
+    new Node(&quot;README.md&quot;));
+
+var all = new[] { root }.RecursiveSelect(n =&gt; n.Children).Select(n =&gt; n.Name);
+// root, src, a.cs, b.cs, bin, app.dll, README.md
+
+var outline = new[] { root }.RecursiveSelect(n =&gt; n.Children, (n, index, depth) =&gt; $&quot;{new string(' ', depth * 2)}{n.Name}&quot;);
+// &quot;root&quot;, &quot;  src&quot;, &quot;    a.cs&quot;, &quot;    b.cs&quot;, &quot;  bin&quot;, &quot;    app.dll&quot;, &quot;  README.md&quot;
+
+// Yield only files, and do not descend into &quot;bin&quot;.
+var files = new[] { root }.RecursiveSelect(
+    n =&gt; n.Children,
+    (n, index, depth) =&gt; n.Name,
+    n =&gt; n.Name == &quot;bin&quot; ? RecursiveSelectControl.SkipOnly
+       : n.Children.Count &gt; 0 ? RecursiveSelectControl.RecurseOnly
+       : RecursiveSelectControl.YieldOnly);
+// a.cs, b.cs, README.md
+
+// Stop everything at the first .dll.
+var untilDll = new[] { root }.RecursiveSelect(
+    n =&gt; n.Children,
+    (n, index, depth) =&gt; n.Name,
+    n =&gt; n.Name.EndsWith(&quot;.dll&quot;) ? RecursiveSelectControl.YieldAndExit : RecursiveSelectControl.YieldAndRecurse);
+// root, src, a.cs, b.cs, bin, app.dll
+</code></pre>
+<p><a class="xref" href="../../api/Bodu.Collections.Extensions.RecursiveSelectControl.html">RecursiveSelectControl</a> is a <code>[Flags]</code> enum of five primitives plus the named combinations you will actually return:</p>
+<table>
+<thead>
+<tr>
+<th>Primitive flag</th>
+<th>Effect on the current node</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Yield</code></td>
+<td>Include the node in the output.</td>
+</tr>
+<tr>
+<td><code>Recurse</code></td>
+<td>Descend into the node's children.</td>
+</tr>
+<tr>
+<td><code>Skip</code></td>
+<td>Do not yield the node; overrides <code>Yield</code> when both are set.</td>
+</tr>
+<tr>
+<td><code>Break</code></td>
+<td>Stop visiting the node's remaining <strong>siblings</strong> (the walk continues at the parent's level).</td>
+</tr>
+<tr>
+<td><code>Exit</code></td>
+<td>Terminate the entire traversal immediately.</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Combination</th>
+<th>Flags</th>
+<th>Use when</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>None</code></td>
+<td>—</td>
+<td>Drop the node and its subtree.</td>
+</tr>
+<tr>
+<td><code>YieldOnly</code></td>
+<td><code>Yield</code></td>
+<td>Emit a leaf (or treat the node as one).</td>
+</tr>
+<tr>
+<td><code>RecurseOnly</code></td>
+<td><code>Recurse</code></td>
+<td>Pass through a container without emitting it.</td>
+</tr>
+<tr>
+<td><code>YieldAndRecurse</code></td>
+<td><code>Yield \| Recurse</code></td>
+<td>The default behaviour of the control-free overloads.</td>
+</tr>
+<tr>
+<td><code>SkipOnly</code></td>
+<td><code>Skip</code></td>
+<td>Same as <code>None</code>; explicit.</td>
+</tr>
+<tr>
+<td><code>SkipAndRecurse</code></td>
+<td><code>Skip \| Recurse</code></td>
+<td>Same as <code>RecurseOnly</code>; explicit.</td>
+</tr>
+<tr>
+<td><code>YieldAndBreak</code> / <code>SkipAndBreak</code></td>
+<td><code>… \| Break</code></td>
+<td>Emit (or not) then stop the remaining siblings.</td>
+</tr>
+<tr>
+<td><code>YieldAndExit</code> / <code>SkipAndExit</code></td>
+<td><code>… \| Exit</code></td>
+<td>Emit (or not) then end the walk.</td>
+</tr>
+</tbody>
+</table>
+<p>The walk is iterative (an explicit stack), so deep hierarchies do not overflow the call stack; the child selector must not return <code>null</code>.</p>
+<h2 id="pattern-8--randomization-randomize-shufflehelpers-and-irandomgenerator">Pattern 8 — randomization: <code>Randomize</code>, <code>ShuffleHelpers</code>, and <code>IRandomGenerator</code></h2>
+<p>All randomness flows through <a class="xref" href="../../api/Bodu.IRandomGenerator.html">IRandomGenerator</a> — one method, <code>int Next(int maxValue)</code> — so tests can substitute a deterministic source. Two implementations ship: <a class="xref" href="../../api/Bodu.XorShiftRandom.html">XorShiftRandom</a> (fast, seedable, derives from <code>System.Random</code>; <strong>not</strong> thread-safe) and <a class="xref" href="../../api/Bodu.Collections.Generic.Extensions.SystemRandomAdapter.html">SystemRandomAdapter</a> (wraps any <code>System.Random</code>, including the thread-safe <code>Random.Shared</code>).</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu;
+using Bodu.Collections.Generic;
+using Bodu.Collections.Generic.Extensions;
+
+var deck = Enumerable.Range(1, 10).ToArray();
+IRandomGenerator rng = new XorShiftRandom(seed: 42);       // deterministic; not thread-safe
+
+var sample  = deck.Randomize(RandomizationMode.ReservoirSample, rng, count: 3);   // 3 items, e.g. 10, 1, 8
+var stream  = deck.Randomize(RandomizationMode.StreamWindowed, rng);              // all 10, locally shuffled
+var lazy    = deck.Randomize(RandomizationMode.LazyShuffle, rng, count: 4);       // 4 items
+
+int[] copy = deck.ToArray();
+ShuffleHelpers.Shuffle(copy, rng);                          // in place, full Fisher–Yates; deck untouched
+var three = ShuffleHelpers.ShuffleAndYield(deck, rng, count: 3);   // lazy partial shuffle of a copy
+
+IRandomGenerator shared = new SystemRandomAdapter(Random.Shared);  // adapter over System.Random
+int count = ShuffleHelpers.ShuffleAndYield(deck, shared).Count();  // 10
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Need</th>
+<th>Use</th>
+<th>Buffers?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A fixed-size random subset of a stream, single pass</td>
+<td><code>Randomize(RandomizationMode.ReservoirSample, rng, count)</code></td>
+<td>O(<code>count</code>) reservoir; <code>count</code> required</td>
+</tr>
+<tr>
+<td>A locally shuffled stream in bounded memory</td>
+<td><code>Randomize(RandomizationMode.StreamWindowed, rng[, count])</code></td>
+<td>a sliding window</td>
+</tr>
+<tr>
+<td>A reservoir sample that is then shuffled and yielded</td>
+<td><code>Randomize(RandomizationMode.LazyShuffle, rng, count)</code></td>
+<td>O(<code>count</code>); <code>count</code> required</td>
+</tr>
+<tr>
+<td>Shuffle an array, span, or memory in place</td>
+<td><code>ShuffleHelpers.Shuffle(target, rng)</code></td>
+<td>none (in place)</td>
+</tr>
+<tr>
+<td>A shuffled copy, or the first <code>count</code> of one, as a lazy sequence</td>
+<td><code>ShuffleHelpers.ShuffleAndYield(source, rng[, count])</code></td>
+<td>copies the source (or buffers an <code>IEnumerable&lt;T&gt;</code>)</td>
+</tr>
+</tbody>
+</table>
+<p><code>Randomize</code> validates its arguments eagerly: a negative <code>count</code>, an undefined <a class="xref" href="../../api/Bodu.Collections.Generic.Extensions.RandomizationMode.html">RandomizationMode</a>, or a missing <code>count</code> for the two modes that need one all throw at the call; a <code>count</code> larger than the source is detected during enumeration.</p>
+<h2 id="pattern-9--ilistt-and-idictionarytkeytvalue-helpers">Pattern 9 — <code>IList&lt;T&gt;</code> and <code>IDictionary&lt;TKey,TValue&gt;</code> helpers</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Collections.Generic.Extensions;
+
+var list = new List&lt;string&gt; { &quot;alpha&quot;, &quot;beta&quot;, &quot;gamma&quot;, &quot;beta&quot; };
+
+int firstG   = list.IndexOf(s =&gt; s.StartsWith('g'));        // 2
+int lastBeta = list.LastIndexOf(s =&gt; s == &quot;beta&quot;);          // 3
+int replaced = list.ReplaceAll(&quot;beta&quot;, &quot;b&quot;);                // 2 — occurrences replaced in place
+bool swapped = list.TrySwap(0, 2);                          // true  → gamma, b, alpha, b
+bool moved   = list.TryMove(3, 0);                          // true  → b, gamma, b, alpha
+bool ignored = list.TryMove(9, 0);                          // false — out of range, no throw
+
+var counts = new Dictionary&lt;string, int&gt;();
+counts.AddOrUpdate(&quot;a&quot;, 1);
+counts.AddOrUpdate(&quot;a&quot;, 2);                                 // replaces
+int fromFactory = counts.GetOrAdd(&quot;b&quot;, key =&gt; key.Length * 10);   // 10 — factory runs once
+int existing    = counts.GetOrAdd(&quot;a&quot;, 99);                       // 2  — present, value ignored
+</code></pre>
+<p><code>IndexOf</code> / <code>LastIndexOf</code> take an optional start index and count; <code>ReplaceAll</code> has value, comparer, and predicate forms. The dictionary helpers perform <strong>no synchronization</strong> — <code>GetOrAdd</code>'s lookup and insert are two operations, so on a shared dictionary use <code>ConcurrentDictionary&lt;TKey,TValue&gt;</code> instead.</p>
+<h2 id="pattern-10--sequencegenerator">Pattern 10 — <code>SequenceGenerator</code></h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Sequences;
+
+var up      = SequenceGenerator.Range(1, 5);                 // 1, 2, 3, 4, 5
+var down    = SequenceGenerator.Range(5, 1);                 // 5, 4, 3, 2, 1 — direction inferred from the endpoints
+var stepped = SequenceGenerator.Range(0, 10, 3);             // 0, 3, 6, 9  — inclusive stop, explicit step
+var wide    = SequenceGenerator.Range(4_000_000_000L, 3);    // 4000000000, 4000000001, 4000000002 — 64-bit, count-based
+
+var powers  = SequenceGenerator.NextWhile(1, x =&gt; x &lt; 100, x =&gt; x * 2);          // 1, 2, 4, 8, 16, 32, 64
+var indexed = SequenceGenerator.NextWhile(1, x =&gt; x &lt; 100, (x, i) =&gt; x + i);     // 1, 1, 2, 4, 7, 11, 16, …, 92
+var facts   = SequenceGenerator.NextWhile((n: 0, f: 1), s =&gt; s.n &lt; 5, s =&gt; (s.n + 1, s.f * (s.n + 1)), s =&gt; s.f);   // 1, 1, 2, 6, 24
+
+var fib     = SequenceGenerator.Fibonacci(10, 100);          // 13, 21, 34, 55, 89 — values in [min, max)
+var farey   = SequenceGenerator.Farey(4);                    // 0/1, 1/4, 1/3, 1/2, 2/3, 3/4, 1/1
+var leibniz = SequenceGenerator.Leibniz(0.1, 1.5);           // 1, -1/3, 1/5, -1/7, 1/9 — |term| in [min, max)
+var conway  = SequenceGenerator.LookAndSay(5);               // 1, 11, 21, 1211, 111221
+var thue    = SequenceGenerator.ThueMorse(8);                // 0, 1, 1, 0, 1, 0, 0, 1
+
+IEnumerable&lt;Guid&gt; ids = SequenceGenerator.Factory(() =&gt; Enumerable.Range(0, 2).Select(_ =&gt; Guid.NewGuid()).GetEnumerator());
+int twoFresh = ids.Count();                                  // 2 — re-enumerable, a fresh enumerator each pass
+
+// NextWhile is open-ended: a predicate that never fails runs forever, so bound it.
+var unbounded = SequenceGenerator.NextWhile(1L, _ =&gt; true, x =&gt; x * 3).Take(6);   // 1, 3, 9, 27, 81, 243
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Yields</th>
+<th>Finite?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Range(int start, int stop)</code></td>
+<td>consecutive integers from <code>start</code> to <code>stop</code> inclusive, ascending or descending</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>Range(int start, int stop, int step)</code></td>
+<td><code>start</code>, <code>start + step</code>, … while within <code>stop</code></td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>Range(long start, int count)</code></td>
+<td><code>count</code> consecutive 64-bit integers</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>NextWhile(initial, condition, successor)</code> (+ index-aware and custom-state overloads)</td>
+<td><code>initial</code>, then <code>successor(previous)</code> while <code>condition</code> holds</td>
+<td><strong>only if <code>condition</code> eventually fails</strong> — the one open-ended member; bound with <code>Take</code></td>
+</tr>
+<tr>
+<td><code>Factory(Func&lt;IEnumerator&lt;T&gt;&gt;)</code></td>
+<td>whatever the factory's enumerator yields, fresh per enumeration</td>
+<td>as finite as the enumerator you supply</td>
+</tr>
+<tr>
+<td><code>Fibonacci(long min, long max)</code></td>
+<td>Fibonacci numbers in <code>[min, max)</code></td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>Farey(int order)</code></td>
+<td>the Farey sequence Fₙ as <code>(Numerator, Denominator)</code> in lowest terms</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>Leibniz(double min, double max)</code></td>
+<td>terms <code>(−1)ⁿ / (2n + 1)</code> whose magnitude lies in <code>[min, max)</code>, in signed order</td>
+<td>yes when <code>min &gt; 0</code>; <code>min == 0</code> never terminates — bound with <code>Take</code></td>
+</tr>
+<tr>
+<td><code>LookAndSay(int count)</code></td>
+<td>the first <code>count</code> terms of Conway's look-and-say sequence, from <code>&quot;1&quot;</code></td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>ThueMorse(int count)</code></td>
+<td>the first <code>count</code> Thue–Morse digits</td>
+<td>yes</td>
+</tr>
+</tbody>
+</table>
+<p>Note that <code>Leibniz</code> compares the <em>first</em> term's magnitude (1.0) against the exclusive <code>max</code> too, so <code>Leibniz(0.1, 1.0)</code> yields nothing — start <code>max</code> above 1 to include the leading term.</p>
+<h2 id="laziness-at-a-glance">Laziness at a glance</h2>
+<table>
+<thead>
+<tr>
+<th>Streams the source lazily (O(1) or O(window) state)</th>
+<th>Buffers the source (fully or in part) before yielding</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Batch</code>, <code>BatchPooled</code>, <code>Cache</code> (fills on demand), <code>Pairwise</code>, <code>RunLengthEncode</code>, <code>Scan</code>, <code>Windowed</code>, <code>SplitWhen</code>, <code>ChunkBy</code>, <code>ZipLongest</code>, <code>Interleave</code>, <code>Index</code>, <code>WhereNotNull</code>, <code>ForEach</code>, <code>Aggregate</code>, <code>IsNullOrEmpty</code>, <code>RecursiveSelect</code>, <code>Randomize(StreamWindowed)</code>, every <code>SequenceGenerator</code> member</td>
+<td><code>Combinations</code>, <code>Permutations</code> (whole source), <code>CartesianProduct</code> (<code>second</code> only), <code>ContainsAll</code> / <code>ContainsAny</code> (<code>items</code> only), <code>Randomize(ReservoirSample)</code> / <code>Randomize(LazyShuffle)</code> (a <code>count</code>-sized reservoir), <code>ShuffleHelpers.ShuffleAndYield</code> (a copy of the source)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="tree.html">N-ary tree</a> — <code>Tree&lt;T&gt;</code>, when the hierarchy should be a first-class structure rather than a child selector.</li>
+<li><a href="choosing-a-collection.html">Choosing a collection</a> — the collection catalogue these operators feed.</li>
+<li><a href="../../docs/core/index.html">Bodu.Core introduction</a> — the package's namespaces and headline types.</li>
+<li><a class="xref" href="../../api/Bodu.Collections.Generic.Extensions.html"><code>Bodu.Collections.Generic.Extensions</code> API reference</a> · <a class="xref" href="../../api/Bodu.Sequences.html"><code>Bodu.Sequences</code> API reference</a></li>
+<li><strong><a href="../topics/core-foundations.html">Core Foundations guides</a></strong> — every guide in this topic.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Natural string comparer | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Natural string comparer | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="natural-string-comparer">Natural string comparer</h1>
+
+<p><em>Natural</em> (numeric-aware) ordering compares the digit runs embedded in strings by numeric value instead of character by character, so <code>file2</code> sorts before <code>file10</code> — the ordering Windows Explorer (<code>StrCmpLogicalW</code>) and Python's <code>natsort</code> produce. <a class="xref" href="../../api/Bodu.Extensions.NaturalStringComparer.html">NaturalStringComparer</a> packages that behaviour as a stateless, thread-safe comparer with the same factory shape as <code>StringComparer</code>: <code>Ordinal</code>, <code>OrdinalIgnoreCase</code>, <code>CurrentCulture</code>, <code>CurrentCultureIgnoreCase</code>, and <code>Create(CultureInfo, bool)</code>.</p>
+<p>A few contract points worth keeping in mind:</p>
+<ul>
+<li><strong>Digit runs never overflow.</strong> Runs are compared by trimmed length and then digit by digit — they are never parsed into a bounded integer — so a 30-digit serial number compares correctly against a 29-digit one.</li>
+<li><strong>The order is total.</strong> Two runs with equal numeric value but different zero padding are <em>not</em> equal: when the strings are otherwise equal, the run with fewer leading zeros sorts first (<code>7</code> before <code>07</code>), keeping sorts deterministic.</li>
+<li><strong>Only ASCII digits <code>0</code>–<code>9</code> are numeric.</strong> Other Unicode digit classes are ordinary text, a <code>-</code> is just a character (no sign parsing), and there is no decimal, thousands-separator, or version-sort dotted-tuple handling — <code>.</code> merely separates adjacent runs.</li>
+<li><strong>Null and prefix ordering follow BCL conventions.</strong> <code>null</code> sorts before any string, the empty string before any non-empty one, and a strict prefix before the longer string (<code>file</code> before <code>file1</code>). At the same position a digit run sorts before non-digit text.</li>
+<li><strong>Equality and hashing agree.</strong> <code>Equals(x, y)</code> is exactly <code>Compare(x, y) == 0</code>, and <code>GetHashCode</code> assigns equal hashes to equal strings (culture-aware modes trade some hash distribution for that guarantee).</li>
+</ul>
+<h2 id="pattern-1--sort-file-style-names">Pattern 1 — Sort file-style names</h2>
+<p>Use the <code>Ordinal</code> instance wherever an <code>IComparer&lt;string&gt;</code> is accepted:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Extensions;
+
+var names = new[] { &quot;file10&quot;, &quot;file2&quot;, &quot;file1&quot; };
+
+Array.Sort(names, NaturalStringComparer.Ordinal);
+// names is now [&quot;file1&quot;, &quot;file2&quot;, &quot;file10&quot;]
+
+var ordered = names.OrderBy(n =&gt; n, NaturalStringComparer.OrdinalIgnoreCase);
+</code></pre>
+<p><code>OrdinalIgnoreCase</code> folds case the way <code>StringComparer.OrdinalIgnoreCase</code> does while still comparing digit runs numerically, so <code>FILE2</code> sorts before <code>file10</code>.</p>
+<h2 id="pattern-2--culture-aware-text-numeric-digits">Pattern 2 — Culture-aware text, numeric digits</h2>
+<p>The culture modes compare the non-digit segments with the culture's collation rules and leave digit-run handling unchanged. <code>CurrentCulture</code> and <code>CurrentCultureIgnoreCase</code> read <code>CultureInfo.CurrentCulture</code> at compare time (mirroring <code>StringComparer.CurrentCulture</code>); <code>Create</code> captures a specific culture:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Globalization;
+using Bodu.Extensions;
+
+var german = NaturalStringComparer.Create(CultureInfo.GetCultureInfo(&quot;de-DE&quot;), ignoreCase: false);
+
+german.Compare(&quot;ä2&quot;, &quot;b10&quot;);                       // &lt; 0 — &quot;ä&quot; collates with &quot;a&quot;, and 2 &lt; 10
+NaturalStringComparer.Ordinal.Compare(&quot;ä2&quot;, &quot;b10&quot;); // &gt; 0 — ordinal compares code points
+</code></pre>
+<p>Because the comparer also implements <code>IEqualityComparer&lt;string?&gt;</code>, any instance can key a <code>HashSet&lt;string&gt;</code> or <code>Dictionary&lt;string, T&gt;</code> — for example to deduplicate names that differ only by case under <code>OrdinalIgnoreCase</code>.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a class="xref" href="../../api/Bodu.Extensions.NaturalStringComparer.html">NaturalStringComparer</a> — the full API surface, including the exact tiebreak and hashing contracts.</li>
+<li><a href="week-pattern.html">WeekPattern</a> — another small, framework-style value primitive in <code>Bodu.Core</code>.</li>
+<li><a href="../topics/core-foundations.html">Core foundations</a> — the wider <code>Bodu.Core</code> toolbox.</li>
+<li><a href="../../docs/core/index.html">Core documentation</a> — concepts and getting started for <code>Bodu.Core</code>.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

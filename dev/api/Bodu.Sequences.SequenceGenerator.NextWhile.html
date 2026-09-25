@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Method NextWhile | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Method NextWhile | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Sequences.SequenceGenerator.NextWhile*">
+
+
+
+<h1 id="Bodu_Sequences_SequenceGenerator_NextWhile_" data-uid="Bodu.Sequences.SequenceGenerator.NextWhile*">Method NextWhile</h1>
+<div class="markdown level0 summary"></div>
+<div class="markdown level0 conceptual"></div>
+
+<a id="Bodu_Sequences_SequenceGenerator_NextWhile_" data-uid="Bodu.Sequences.SequenceGenerator.NextWhile*"></a>
+<h4 id="Bodu_Sequences_SequenceGenerator_NextWhile__1___0_System_Func___0_System_Boolean__System_Func___0___0__" data-uid="Bodu.Sequences.SequenceGenerator.NextWhile``1(``0,System.Func{``0,System.Boolean},System.Func{``0,``0})">NextWhile&lt;TResult&gt;(TResult, Func&lt;TResult, bool&gt;, Func&lt;TResult, TResult&gt;)</h4>
+<div class="markdown level1 summary"><p>Yields a value-driven sequence by repeatedly applying a successor function as long as a predicate continues to
+hold.</p>
+</div>
+<div class="markdown level1 conceptual"></div>
+<h5 class="declaration">Declaration</h5>
+<div class="codewrapper">
+  <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TResult&gt; NextWhile&lt;TResult&gt;(TResult initialValue, Func&lt;TResult, bool&gt; conditionHandler, Func&lt;TResult, TResult&gt; resultSelector)</code></pre>
+</div>
+<h5 class="parameters">Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span class="xref">TResult</span></td>
+      <td><span class="parametername">initialValue</span></td>
+      <td><p>The seed value emitted as the first element of the sequence.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;TResult, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>&gt;</td>
+      <td><span class="parametername">conditionHandler</span></td>
+      <td><p>A predicate evaluated against the current value before each emission. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;TResult, TResult&gt;</td>
+      <td><span class="parametername">resultSelector</span></td>
+      <td><p>A function that derives the next value from the current value. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="returns">Returns</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;TResult&gt;</td>
+      <td><p>A lazily evaluated sequence terminating on the first iteration where <code class="paramref">conditionHandler</code>
+returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="typeParameters">Type Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span class="parametername">TResult</span></td>
+      <td><p>The element type produced by the sequence.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 id="Bodu_Sequences_SequenceGenerator_NextWhile__1___0_System_Func___0_System_Boolean__System_Func___0___0___remarks">Remarks</h5>
+<div class="markdown level1 remarks"><p>
+Use this overload when the next value depends only on the current one — classic recurrence relations such as
+<code>x ↦ 2·x</code> or <code>x ↦ x / 2</code>. Reach for the indexed overload when the position matters, and the
+state-based overload when more than one variable must be tracked across iterations.
+</p>
+<p>
+The condition is checked before each yield, so the sequence terminates as soon as the predicate fails —
+including on the very first element, which produces an empty sequence. Behavior is fully deterministic provided
+<code class="paramref">conditionHandler</code> and <code class="paramref">resultSelector</code> are themselves pure.
+</p>
+<p>
+The sequence may be infinite if the predicate never fails; bound it with <code>Take</code> or <code>TakeWhile</code> when an
+upper limit is required. Iteration is deferred and allocates only the iterator state and a single boxed state
+slot.
+</p>
+</div>
+<h5 id="Bodu_Sequences_SequenceGenerator_NextWhile__1___0_System_Func___0_System_Boolean__System_Func___0___0___examples">Examples</h5>
+<pre><code class="lang-csharp">// Halving sequence — terminates when the value drops to zero.
+var halves = SequenceGenerator.NextWhile(64, v =&gt; v &gt; 0, v =&gt; v / 2); // =&gt; 64, 32, 16, 8, 4, 2, 1
+
+// Empty result when the seed already fails the predicate.
+var none = SequenceGenerator.NextWhile(0, v =&gt; v &gt; 0, v =&gt; v - 1); // =&gt; (empty)</code></pre>
+
+<h5 class="exceptions">Exceptions</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Condition</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></td>
+      <td><p>Thrown when <code class="paramref">conditionHandler</code> or <code class="paramref">resultSelector</code> is
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<a id="Bodu_Sequences_SequenceGenerator_NextWhile_" data-uid="Bodu.Sequences.SequenceGenerator.NextWhile*"></a>
+<h4 id="Bodu_Sequences_SequenceGenerator_NextWhile__1___0_System_Func___0_System_Boolean__System_Func___0_System_Int32___0__" data-uid="Bodu.Sequences.SequenceGenerator.NextWhile``1(``0,System.Func{``0,System.Boolean},System.Func{``0,System.Int32,``0})">NextWhile&lt;TResult&gt;(TResult, Func&lt;TResult, bool&gt;, Func&lt;TResult, int, TResult&gt;)</h4>
+<div class="markdown level1 summary"><p>Yields a value-driven sequence whose successor function additionally receives the zero-based index of the
+current element.</p>
+</div>
+<div class="markdown level1 conceptual"></div>
+<h5 class="declaration">Declaration</h5>
+<div class="codewrapper">
+  <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TResult&gt; NextWhile&lt;TResult&gt;(TResult initialValue, Func&lt;TResult, bool&gt; conditionHandler, Func&lt;TResult, int, TResult&gt; resultSelector)</code></pre>
+</div>
+<h5 class="parameters">Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span class="xref">TResult</span></td>
+      <td><span class="parametername">initialValue</span></td>
+      <td><p>The seed value emitted as the first element of the sequence.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;TResult, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>&gt;</td>
+      <td><span class="parametername">conditionHandler</span></td>
+      <td><p>A predicate evaluated against the current value before each emission. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-3">Func</a>&lt;TResult, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>, TResult&gt;</td>
+      <td><span class="parametername">resultSelector</span></td>
+      <td><p>A function that derives the next value from the current value and its zero-based index. The index passed in for
+the very first call to the selector is <code>0</code>. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="returns">Returns</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;TResult&gt;</td>
+      <td><p>A lazily evaluated sequence terminating on the first iteration where <code class="paramref">conditionHandler</code>
+returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="typeParameters">Type Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span class="parametername">TResult</span></td>
+      <td><p>The element type produced by the sequence.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 id="Bodu_Sequences_SequenceGenerator_NextWhile__1___0_System_Func___0_System_Boolean__System_Func___0_System_Int32___0___remarks">Remarks</h5>
+<div class="markdown level1 remarks"><p>
+Choose this overload over
+<a class="xref" href="Bodu.Sequences.SequenceGenerator.NextWhile.html#Bodu_Sequences_SequenceGenerator_NextWhile__1___0_System_Func___0_System_Boolean__System_Func___0___0__">NextWhile&lt;TResult&gt;(TResult, Func&lt;TResult, bool&gt;, Func&lt;TResult, TResult&gt;)</a> when the transformation
+depends on its position — for example, accumulating sums of <code>i</code>, generating polynomial terms, or scaling by
+a power of the current index.
+</p>
+<p>
+The index increments after the selector returns, so the seed is index <code>0</code>, the value passed to the first
+selector call is index <code>0</code>, and the value emitted next sits at index <code>1</code>. Iteration is deferred and
+the index is held internally; it cannot overflow a single iteration but will wrap to <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32.minvalue">MinValue</a>
+after <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32.maxvalue">MaxValue</a> elements.
+</p>
+</div>
+<h5 id="Bodu_Sequences_SequenceGenerator_NextWhile__1___0_System_Func___0_System_Boolean__System_Func___0_System_Int32___0___examples">Examples</h5>
+<pre><code class="lang-csharp">// Triangular numbers up to 100: 0, 1, 3, 6, 10, 15, 21, 28, 36, 45, 55, 66, 78, 91.
+var triangular = SequenceGenerator.NextWhile(0, v =&gt; v &lt;= 100, (v, i) =&gt; v + (i + 1));</code></pre>
+
+<h5 class="exceptions">Exceptions</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Condition</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></td>
+      <td><p>Thrown when <code class="paramref">conditionHandler</code> or <code class="paramref">resultSelector</code> is
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<a id="Bodu_Sequences_SequenceGenerator_NextWhile_" data-uid="Bodu.Sequences.SequenceGenerator.NextWhile*"></a>
+<h4 id="Bodu_Sequences_SequenceGenerator_NextWhile__2___0_System_Func___0_System_Boolean__System_Func___0___0__System_Func___0___1__" data-uid="Bodu.Sequences.SequenceGenerator.NextWhile``2(``0,System.Func{``0,System.Boolean},System.Func{``0,``0},System.Func{``0,``1})">NextWhile&lt;TState, TResult&gt;(TState, Func&lt;TState, bool&gt;, Func&lt;TState, TState&gt;, Func&lt;TState, TResult&gt;)</h4>
+<div class="markdown level1 summary"><p>Yields a sequence projected from a custom state object that is advanced on each iteration.</p>
+</div>
+<div class="markdown level1 conceptual"></div>
+<h5 class="declaration">Declaration</h5>
+<div class="codewrapper">
+  <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TResult&gt; NextWhile&lt;TState, TResult&gt;(TState initialState, Func&lt;TState, bool&gt; conditionHandler, Func&lt;TState, TState&gt; iterateFunction, Func&lt;TState, TResult&gt; resultSelector)</code></pre>
+</div>
+<h5 class="parameters">Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span class="xref">TState</span></td>
+      <td><span class="parametername">initialState</span></td>
+      <td><p>The initial state used as the iteration seed.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;TState, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>&gt;</td>
+      <td><span class="parametername">conditionHandler</span></td>
+      <td><p>A predicate evaluated against the current state before each emission. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;TState, TState&gt;</td>
+      <td><span class="parametername">iterateFunction</span></td>
+      <td><p>A function that produces the next state from the current state. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;TState, TResult&gt;</td>
+      <td><span class="parametername">resultSelector</span></td>
+      <td><p>A function that projects the current state into the emitted element. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="returns">Returns</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;TResult&gt;</td>
+      <td><p>A lazily evaluated sequence whose elements are produced by projecting each state visited by the iteration.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="typeParameters">Type Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span class="parametername">TState</span></td>
+      <td><p>The shape of the iteration state.</p>
+</td>
+    </tr>
+    <tr>
+      <td><span class="parametername">TResult</span></td>
+      <td><p>The element type produced by the sequence.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 id="Bodu_Sequences_SequenceGenerator_NextWhile__2___0_System_Func___0_System_Boolean__System_Func___0___0__System_Func___0___1___remarks">Remarks</h5>
+<div class="markdown level1 remarks"><p>
+This is the most general <code>NextWhile</code> form. Use it when each iteration needs to track several variables —
+for example, a pair of counters, a running accumulator, or a parser state — that cannot be folded into a single
+value.
+</p>
+<p>
+The state object is opaque to <a class="xref" href="Bodu.Sequences.SequenceGenerator.html">SequenceGenerator</a>: if <code class="typeparamref">TState</code> is mutable the
+caller is responsible for the mutation discipline, and if it is a struct each call to
+<code class="paramref">iterateFunction</code> may need to return an updated copy. Iteration is deferred and produces no
+allocations beyond the iterator state itself.
+</p>
+<p>
+As with the other overloads, the predicate is evaluated before each emission, the sequence may be infinite if it
+never fails, and behavior is deterministic provided the supplied delegates are pure with respect to the state.
+</p>
+</div>
+<h5 id="Bodu_Sequences_SequenceGenerator_NextWhile__2___0_System_Func___0_System_Boolean__System_Func___0___0__System_Func___0___1___examples">Examples</h5>
+<pre><code class="lang-csharp">// Fibonacci numbers below 100, tracked through a (prev, curr) state record.
+var fib = SequenceGenerator.NextWhile(
+    initialState: (Prev: 0, Curr: 1),
+    conditionHandler: s =&gt; s.Curr &lt; 100,
+    iterateFunction: s =&gt; (s.Curr, s.Prev + s.Curr),
+    resultSelector: s =&gt; s.Curr); // =&gt; 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89</code></pre>
+
+<h5 class="exceptions">Exceptions</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Condition</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></td>
+      <td><p>Thrown when <code class="paramref">conditionHandler</code>, <code class="paramref">iterateFunction</code>, or
+<code class="paramref">resultSelector</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

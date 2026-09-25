@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Options, results, and eithers | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Options, results, and eithers | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="options-results-and-eithers">Options, results, and eithers</h1>
+
+<p>The <code>Bodu.Functional</code> railway primitives make the <em>shape</em> of an outcome part of a signature: <a class="xref" href="../../api/Bodu.Functional.Option-1.html">Option&lt;T&gt;</a> for a value that may be absent, <a class="xref" href="../../api/Bodu.Functional.Result-1.html">Result&lt;T&gt;</a> (and the void <a class="xref" href="../../api/Bodu.Functional.Result.html">Result</a>) for an operation that succeeds with a value or fails with a described error, and <a class="xref" href="../../api/Bodu.Functional.Either-2.html">Either&lt;TLeft, TRight&gt;</a> for a value that is exactly one of two things. All three are <code>readonly struct</code>s — no allocation on the happy path — and compose through <code>Map</code> / <code>Bind</code> / <code>Match</code> chains instead of <code>null</code> checks and <code>try</code>/<code>catch</code> control flow.</p>
+<p>A few contract points worth keeping in mind:</p>
+<ul>
+<li><strong>Present values are never <code>null</code>.</strong> <code>Option&lt;T&gt;.Some</code>, <code>Result.Success&lt;T&gt;</code>, and the <code>Either</code> factories all reject <code>null</code> with <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a>. Absence is expressed by the type (<code>None</code>, <code>Failure</code>, or the other side), never by a smuggled null.</li>
+<li><strong>The lenient lift is explicit.</strong> Converting a <code>T?</code> to an <code>Option&lt;T&gt;</code> implicitly maps <code>null</code> to <code>None</code>; <code>Option.FromNullable</code> does the same for nullable value types. Only the strict <code>Some</code> factory throws.</li>
+<li><strong>Each type documents its <code>default</code>.</strong> <code>default(Option&lt;T&gt;)</code> <strong>is</strong> <code>None</code>; <code>default(Result)</code> / <code>default(Result&lt;T&gt;)</code> <strong>are</strong> failures carrying an empty <a class="xref" href="../../api/Bodu.Functional.ResultError.html">ResultError</a>; <code>default(Either&lt;,&gt;)</code> is an explicit <em>uninitialized</em> state — neither <code>IsLeft</code> nor <code>IsRight</code>, and side-requiring operations throw <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a> (there is no honest side to default to).</li>
+<li><strong><code>Result&lt;T&gt;</code> owns the railway bias.</strong> <code>Either&lt;TLeft,TRight&gt;</code> is deliberately symmetric — <code>MapLeft</code> / <code>MapRight</code>, no unqualified <code>Map</code> or <code>Bind</code> — so a disjoint union is never mistaken for a success/failure pipeline.</li>
+</ul>
+<h2 id="pattern-1--replacing-null-returns-with-optiont">Pattern 1 — replacing null returns with <code>Option&lt;T&gt;</code></h2>
+<pre><code class="lang-csharp">using Bodu.Functional;
+
+Option&lt;Customer&gt; FindCustomer(string id) =&gt;
+    _store.TryGetValue(id, out var customer) ? Option.Some(customer) : Option.None&lt;Customer&gt;();
+
+var greeting = FindCustomer(&quot;42&quot;)
+    .Map(c =&gt; c.DisplayName)
+    .Filter(name =&gt; name.Length &gt; 0)
+    .Match(name =&gt; $&quot;Hello, {name}!&quot;, () =&gt; &quot;Hello, guest!&quot;);
+</code></pre>
+<h2 id="pattern-2--a-successfailure-pipeline-with-resultt">Pattern 2 — a success/failure pipeline with <code>Result&lt;T&gt;</code></h2>
+<pre><code class="lang-csharp">using Bodu.Functional;
+
+Result&lt;Order&gt; ParseOrder(string json) =&gt;
+    TryParse(json, out var order)
+        ? Result.Success(order)
+        : Result.Failure&lt;Order&gt;(ResultError.FromMessage(&quot;The payload is not a valid order.&quot;, code: &quot;ORD001&quot;));
+
+var confirmation = ParseOrder(payload)
+    .Bind(Validate)                 // Result&lt;Order&gt; -&gt; Result&lt;Order&gt;
+    .Map(o =&gt; o.ConfirmationNumber) // failure skips the projection
+    .TapError(e =&gt; _log.Warn(e.Message))
+    .GetValueOrDefault(&quot;(none)&quot;);
+</code></pre>
+<p><code>GetValueOrThrow()</code> converts the failure rail back into an exception at the boundary of railway code: it throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a> carrying the error's message, with <code>ResultError.Exception</code> (when present) attached as <code>InnerException</code> — the captured exception is never rethrown directly, so its stack trace stays intact.</p>
+<h2 id="pattern-3--a-true-disjoint-union-with-eithertlefttright">Pattern 3 — a true disjoint union with <code>Either&lt;TLeft,TRight&gt;</code></h2>
+<pre><code class="lang-csharp">using Bodu.Functional;
+
+Either&lt;StreetAddress, PostOfficeBox&gt; destination = useBox
+    ? Either&lt;StreetAddress, PostOfficeBox&gt;.Right(box)
+    : Either&lt;StreetAddress, PostOfficeBox&gt;.Left(address);
+
+var label = destination.Match(
+    a =&gt; a.ToPostalLabel(),
+    b =&gt; $&quot;PO Box {b.Number}&quot;);
+</code></pre>
+<h2 id="crossing-between-the-types">Crossing between the types</h2>
+<p><code>Option&lt;T&gt;.ToResult(error)</code> upgrades absence to a described failure, and <code>Result&lt;T&gt;.ToOption()</code> discards the error when only presence matters:</p>
+<pre><code class="lang-csharp">var result = FindCustomer(&quot;42&quot;).ToResult(ResultError.FromMessage(&quot;Unknown customer.&quot;, code: &quot;CUST404&quot;));
+var option = ParseOrder(payload).ToOption();
+</code></pre>
+<h2 id="async-composition">Async composition</h2>
+<p><code>OptionAsyncExtensions</code> and <code>ResultAsyncExtensions</code> provide Task-based <code>MapAsync</code> / <code>BindAsync</code> / <code>MatchAsync</code> (plus <code>TapAsync</code> / <code>TapErrorAsync</code> for results) over both <code>Task&lt;Option&lt;T&gt;&gt;</code> / <code>Task&lt;Result&lt;T&gt;&gt;</code> sources and sync sources with async selectors. Guards throw synchronously at the call site, selectors are never invoked on the empty/failure rail, and every await uses <code>ConfigureAwait(false)</code>. The combinators take no <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a> — they perform no I/O of their own; cancellation belongs inside the caller's delegates.</p>
+<pre><code class="lang-csharp">var name = await LoadCustomerAsync(id)      // Task&lt;Option&lt;Customer&gt;&gt;
+    .MapAsync(c =&gt; c.DisplayName)
+    .MatchAsync(n =&gt; n, () =&gt; &quot;guest&quot;);
+</code></pre>
+<p>When you need memoization rather than outcome modelling, see <a href="memoization.html">Memoization</a>; for collection-shaped absence (lookups that return collections), the <a href="choosing-a-collection.html">choosing-a-collection</a> guide covers the dictionary surfaces.</p>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

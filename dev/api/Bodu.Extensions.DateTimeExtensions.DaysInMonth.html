@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Method DaysInMonth | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Method DaysInMonth | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Extensions.DateTimeExtensions.DaysInMonth*">
+
+
+
+<h1 id="Bodu_Extensions_DateTimeExtensions_DaysInMonth_" data-uid="Bodu.Extensions.DateTimeExtensions.DaysInMonth*">Method DaysInMonth</h1>
+<div class="markdown level0 summary"></div>
+<div class="markdown level0 conceptual"></div>
+
+<a id="Bodu_Extensions_DateTimeExtensions_DaysInMonth_" data-uid="Bodu.Extensions.DateTimeExtensions.DaysInMonth*"></a>
+<h4 id="Bodu_Extensions_DateTimeExtensions_DaysInMonth_System_DateTime_" data-uid="Bodu.Extensions.DateTimeExtensions.DaysInMonth(System.DateTime)">DaysInMonth(DateTime)</h4>
+<div class="markdown level1 summary"><p>Returns the number of days in the calendar month of the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>, using the proleptic
+Gregorian calendar.</p>
+</div>
+<div class="markdown level1 conceptual"></div>
+<h5 class="declaration">Declaration</h5>
+<div class="codewrapper">
+  <pre><code class="lang-csharp hljs">public static int DaysInMonth(this DateTime dateTime)</code></pre>
+</div>
+<h5 class="parameters">Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a></td>
+      <td><span class="parametername">dateTime</span></td>
+      <td><p>The date and time value whose year and month are used to determine the result.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="returns">Returns</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></td>
+      <td><p>The total number of days in the specified month and year of <code class="paramref">dateTime</code>, based on the
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.gregoriancalendar">GregorianCalendar</a>.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 id="Bodu_Extensions_DateTimeExtensions_DaysInMonth_System_DateTime__remarks">Remarks</h5>
+<div class="markdown level1 remarks"><p>
+This overload always evaluates the result using the proleptic Gregorian calendar, regardless of the current
+culture or calendar settings. For culture-specific results, use the
+<a class="xref" href="Bodu.Extensions.DateTimeExtensions.DaysInMonth.html#Bodu_Extensions_DateTimeExtensions_DaysInMonth_System_DateTime_System_Globalization_CultureInfo_">DaysInMonth(DateTime, CultureInfo?)</a> or <a class="xref" href="Bodu.Extensions.DateTimeExtensions.DaysInMonth.html#Bodu_Extensions_DateTimeExtensions_DaysInMonth_System_DateTime_System_Globalization_Calendar_">DaysInMonth(DateTime, Calendar?)</a> overload.
+</p>
+</div>
+<a id="Bodu_Extensions_DateTimeExtensions_DaysInMonth_" data-uid="Bodu.Extensions.DateTimeExtensions.DaysInMonth*"></a>
+<h4 id="Bodu_Extensions_DateTimeExtensions_DaysInMonth_System_DateTime_System_Globalization_CultureInfo_" data-uid="Bodu.Extensions.DateTimeExtensions.DaysInMonth(System.DateTime,System.Globalization.CultureInfo)">DaysInMonth(DateTime, CultureInfo?)</h4>
+<div class="markdown level1 summary"><p>Returns the number of days in the calendar month of the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>, using the calendar
+associated with the supplied culture.</p>
+</div>
+<div class="markdown level1 conceptual"></div>
+<h5 class="declaration">Declaration</h5>
+<div class="codewrapper">
+  <pre><code class="lang-csharp hljs">public static int DaysInMonth(this DateTime dateTime, CultureInfo? culture)</code></pre>
+</div>
+<h5 class="parameters">Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a></td>
+      <td><span class="parametername">dateTime</span></td>
+      <td><p>The date and time value whose year and month are used to determine the result.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.cultureinfo">CultureInfo</a></td>
+      <td><span class="parametername">culture</span></td>
+      <td><p>An optional <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.cultureinfo">CultureInfo</a> that supplies the calendar. If <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>,
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.cultureinfo.currentculture">CurrentCulture</a> is used.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="returns">Returns</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></td>
+      <td><p>The total number of days in the specified month and year of <code class="paramref">dateTime</code>, based on the calendar
+of <code class="paramref">culture</code>.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 id="Bodu_Extensions_DateTimeExtensions_DaysInMonth_System_DateTime_System_Globalization_CultureInfo__remarks">Remarks</h5>
+<div class="markdown level1 remarks"><p>
+This overload retrieves the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.calendar">Calendar</a> from the culture's
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.datetimeformatinfo.calendar">Calendar</a> property and returns the number of days in the month of that
+calendar's own year/month reckoning that contains <code class="paramref">dateTime</code>, i.e.
+<code>calendar.GetDaysInMonth(calendar.GetYear(dateTime), calendar.GetMonth(dateTime))</code>.
+</p>
+<p>
+This is useful when working with cultures that use non-Gregorian calendars such as <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.hebrewcalendar">HebrewCalendar</a>
+or <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.hijricalendar">HijriCalendar</a>. If the calendar supports leap months or eras, this method does not account for
+them explicitly. For precise control, use the overload that accepts a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.calendar">Calendar</a> directly.
+</p>
+</div>
+<a id="Bodu_Extensions_DateTimeExtensions_DaysInMonth_" data-uid="Bodu.Extensions.DateTimeExtensions.DaysInMonth*"></a>
+<h4 id="Bodu_Extensions_DateTimeExtensions_DaysInMonth_System_DateTime_System_Globalization_Calendar_" data-uid="Bodu.Extensions.DateTimeExtensions.DaysInMonth(System.DateTime,System.Globalization.Calendar)">DaysInMonth(DateTime, Calendar?)</h4>
+<div class="markdown level1 summary"><p>Returns the number of days in the calendar month of the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>, using the supplied or
+current culture's calendar.</p>
+</div>
+<div class="markdown level1 conceptual"></div>
+<h5 class="declaration">Declaration</h5>
+<div class="codewrapper">
+  <pre><code class="lang-csharp hljs">public static int DaysInMonth(this DateTime dateTime, Calendar? calendar)</code></pre>
+</div>
+<h5 class="parameters">Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a></td>
+      <td><span class="parametername">dateTime</span></td>
+      <td><p>The date and time value whose year and month are used to determine the result.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.calendar">Calendar</a></td>
+      <td><span class="parametername">calendar</span></td>
+      <td><p>An optional <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.calendar">Calendar</a> instance used to evaluate the result. If <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, the
+calendar of <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.cultureinfo.currentculture">CurrentCulture</a> is used.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="returns">Returns</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></td>
+      <td><p>The total number of days in the specified month and year of <code class="paramref">dateTime</code>, based on the rules of
+the supplied or current calendar.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 id="Bodu_Extensions_DateTimeExtensions_DaysInMonth_System_DateTime_System_Globalization_Calendar__remarks">Remarks</h5>
+<div class="markdown level1 remarks"><p>
+This overload supports calendar-aware computations for systems such as <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.hebrewcalendar">HebrewCalendar</a>,
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.hijricalendar">HijriCalendar</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.japanesecalendar">JapaneseCalendar</a>, and others supported by .NET.
+<code class="paramref">dateTime</code> is first projected into the target calendar, so the result is equivalent to
+<code>calendar.GetDaysInMonth(calendar.GetYear(dateTime), calendar.GetMonth(dateTime))</code> — the length of the
+calendar's own month containing the date, not the Gregorian month. The current culture's calendar is used if
+<code class="paramref">calendar</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.
+</p>
+<p>
+This method does not account for leap months. For calendars that support leap months or multiple eras, consider
+using <code>GetDaysInMonth(year, month, era)</code> instead.
+</p>
+</div>
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

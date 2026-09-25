@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Office format nuances | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Office format nuances | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="office-format-nuances">Office format nuances</h1>
+
+<p>The OLE2 / Compound File Binary (CFB) container that
+<a class="xref" href="../../api/Bodu.IO.Compound.CompoundFile.html"><code>CompoundFile</code></a> reads is the
+structured-storage envelope behind the <em>legacy</em> binary Microsoft Office
+formats — Excel <code>.xls</code>, Word <code>.doc</code>, PowerPoint <code>.ppt</code>, and Outlook
+<code>.msg</code>. Each of these is a compound file whose root storage holds one or
+more well-known named streams and storages. The file extension tells you
+nothing the container does not; the <em>names of the entries</em> are what
+identify the format.</p>
+<p>This guide maps the well-known stream and storage names to the formats
+that use them, and shows how to identify a format by walking the root
+storage. One boundary up front:
+<a href="reading-compound-files.html"><code>Bodu.IO.Compound</code> exposes the envelope only</a> —
+it gives you the named streams as raw bytes and does not interpret any
+application format. Parsing the BIFF / Word / PowerPoint / MAPI payloads
+inside those streams is a separate concern; for <code>.xls</code> specifically, point
+the workbook stream at
+<a class="xref" href="../../api/Bodu.Formats.Excel.ExcelBinaryWorkbook.html"><code>Bodu.Formats.Excel.Binary</code></a>.</p>
+<h2 id="the-well-known-entries-per-format">The well-known entries per format</h2>
+<p>Every legacy Office file is a compound file. What distinguishes them is the
+set of entries directly under the root storage:</p>
+<table>
+<thead>
+<tr>
+<th>Format</th>
+<th>Extension</th>
+<th>Distinguishing root entry</th>
+<th>Kind</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Excel workbook</td>
+<td><code>.xls</code></td>
+<td><code>Workbook</code> (older files: <code>Book</code>)</td>
+<td>Stream — BIFF8 record sequence</td>
+</tr>
+<tr>
+<td>Word document</td>
+<td><code>.doc</code></td>
+<td><code>WordDocument</code> (+ <code>0Table</code> / <code>1Table</code>, <code>Data</code>)</td>
+<td>Stream(s)</td>
+</tr>
+<tr>
+<td>PowerPoint</td>
+<td><code>.ppt</code></td>
+<td><code>PowerPoint Document</code> (+ <code>Current User</code>, <code>Pictures</code>)</td>
+<td>Stream(s)</td>
+</tr>
+<tr>
+<td>Outlook message</td>
+<td><code>.msg</code></td>
+<td><code>__substg1.0_*</code>, <code>__attach_*</code>, <code>__recip_*</code>, <code>__properties_version1.0</code></td>
+<td>Streams + storages</td>
+</tr>
+</tbody>
+</table>
+<p>Notes that matter when probing:</p>
+<ul>
+<li><strong>Excel</strong> keeps its entire workbook in a single <code>Workbook</code> stream — a
+flat BIFF8 record sequence. Very old files name it <code>Book</code>. Both are
+direct children of the root storage.</li>
+<li><strong>Word</strong> stores the main text in <code>WordDocument</code> and its formatting
+tables in <code>0Table</code> or <code>1Table</code> (the active one is selected by a flag
+inside <code>WordDocument</code>), with document properties in <code>Data</code>.</li>
+<li><strong>PowerPoint</strong> uses <code>PowerPoint Document</code> for the slide stream, plus a
+<code>Current User</code> stream and a <code>Pictures</code> stream.</li>
+<li><strong>Outlook <code>.msg</code></strong> is the most structured: it nests MAPI properties as a
+tree of storages. Property <em>values</em> live in <code>__substg1.0_&lt;id&gt;&lt;type&gt;</code>
+streams, attachments in <code>__attach_version1.0_#xxxxxxxx</code> storages,
+recipients in <code>__recip_version1.0_#xxxxxxxx</code> storages, and the
+fixed-size property block in <code>__properties_version1.0</code>.</li>
+</ul>
+<p>All four also typically carry the summary-information property-set streams
+(<code>\x05SummaryInformation</code> and <code>\x05DocumentSummaryInformation</code>); see
+<a href="property-sets.html">Reading property sets</a> for those.</p>
+<h2 id="identifying-a-format-from-the-root-storage">Identifying a format from the root storage</h2>
+<p>Because the format is defined by entry names, identification is just a walk
+of the root storage's direct children. <code>EnumerateEntries</code> yields a
+<a class="xref" href="../../api/Bodu.IO.Compound.CompoundEntryInfo.html"><code>CompoundEntryInfo</code></a> snapshot
+(carrying <code>Name</code>, <code>EntryType</code>, and <code>Length</code>) for every child — storage
+<em>and</em> stream:</p>
+<pre><code class="lang-csharp">using Bodu.IO.Compound;
+
+static string IdentifyOfficeFormat(CompoundFile file)
+{
+    var names = new HashSet&lt;string&gt;(StringComparer.Ordinal);
+    foreach (CompoundEntryInfo entry in file.RootStorage.EnumerateEntries())
+        names.Add(entry.Name);
+
+    if (names.Contains(&quot;Workbook&quot;) || names.Contains(&quot;Book&quot;))
+        return &quot;Excel (.xls)&quot;;
+
+    if (names.Contains(&quot;WordDocument&quot;))
+        return &quot;Word (.doc)&quot;;
+
+    if (names.Contains(&quot;PowerPoint Document&quot;))
+        return &quot;PowerPoint (.ppt)&quot;;
+
+    // .msg uses prefixed entries rather than one fixed name.
+    if (names.Any(n =&gt; n.StartsWith(&quot;__substg1.0_&quot;, StringComparison.Ordinal))
+        || names.Contains(&quot;__properties_version1.0&quot;))
+        return &quot;Outlook message (.msg)&quot;;
+
+    return &quot;Unknown compound file&quot;;
+}
+</code></pre>
+<p>Note that compound-file names are matched case-insensitively by the
+container itself; the <code>HashSet</code> above uses ordinal comparison only because
+the well-known names have a fixed canonical casing. Probe the container
+first so you do not pay an open on a non-compound file:</p>
+<pre><code class="lang-csharp">using Bodu.IO.Compound;
+
+using FileStream source = File.OpenRead(path);
+if (!CompoundFile.IsCompoundFile(source))
+    return;   // not an OLE2 file at all — e.g. a .xlsx (ZIP) or plain text
+
+using CompoundFile file = CompoundFile.Open(source, leaveOpen: true);
+Console.WriteLine(IdentifyOfficeFormat(file));
+</code></pre>
+<p><code>IsCompoundFile</code> inspects only the eight-byte OLE2 signature and restores
+the stream position, so it is cheap to call ahead of a full open. A
+modern <code>.xlsx</code> / <code>.docx</code> / <code>.pptx</code> is a ZIP archive, <strong>not</strong> a compound
+file, and returns <code>false</code> here — these formats are out of scope for
+<code>Bodu.IO.Compound</code>.</p>
+<h2 id="walking-a-msg-storage-tree">Walking a <code>.msg</code> storage tree</h2>
+<p>Outlook messages are the one format whose interesting data is nested below
+the root, so they exercise <code>EnumerateStorages</code> and the <code>TryOpenStorage</code> /
+<code>TryOpenStream</code> pair on
+<a class="xref" href="../../api/Bodu.IO.Compound.CompoundStorage.html"><code>CompoundStorage</code></a>. Attachments and
+recipients are child storages; their property values are
+<code>__substg1.0_*</code> streams within them:</p>
+<pre><code class="lang-csharp">using Bodu.IO.Compound;
+
+using CompoundFile msg = CompoundFile.OpenRead(&quot;message.msg&quot;);
+
+// Subject is property 0x0037, stored as Unicode text (type 001F).
+if (msg.RootStorage.TryOpenStream(&quot;__substg1.0_0037001F&quot;, out CompoundStream? subject))
+    using (subject)
+        Console.WriteLine($&quot;Subject is {subject.ReadAllBytes().Length} UTF-16 bytes&quot;);
+
+// Attachments are child storages named __attach_version1.0_#xxxxxxxx.
+foreach (CompoundStorage attach in msg.RootStorage.EnumerateStorages())
+{
+    if (!attach.Name.StartsWith(&quot;__attach_version1.0_&quot;, StringComparison.Ordinal))
+        continue;
+
+    // 0x3704 is the attachment file name; 0x3701 the attachment data.
+    if (attach.TryOpenStream(&quot;__substg1.0_3704001F&quot;, out CompoundStream? name))
+        using (name)
+            Console.WriteLine($&quot;attachment name stream: {name.ReadAllBytes().Length} bytes&quot;);
+}
+</code></pre>
+<p>The <code>__substg1.0_</code> suffix encodes the MAPI property tag: the first four hex
+digits are the property id and the last four the property type (<code>001F</code> =
+Unicode string, <code>0102</code> = binary, and so on). <code>Bodu.IO.Compound</code> hands you
+those streams as bytes — decoding the MAPI property model from them is the
+caller's job.</p>
+<h2 id="reading-an-xls-workbook">Reading an <code>.xls</code> workbook</h2>
+<p>For <code>.xls</code> you <em>can</em> open the <code>Workbook</code> stream directly and read its BIFF8
+records yourself, but you do not have to — that is exactly what
+<a class="xref" href="../../api/Bodu.Formats.Excel.ExcelBinaryWorkbook.html"><code>Bodu.Formats.Excel.Binary</code></a>
+exists for. It builds on <code>Bodu.IO.Compound</code>, locates the <code>Workbook</code>
+stream, and exposes worksheet cell values without you touching the record
+layer:</p>
+<pre><code class="lang-csharp">using Bodu.Formats.Excel;
+
+using ExcelBinaryWorkbook workbook = ExcelBinaryWorkbook.OpenRead(&quot;book.xls&quot;);
+foreach (ExcelWorksheetInfo sheet in workbook.Worksheets)
+    Console.WriteLine($&quot;{sheet.Index}: {sheet.Name}&quot;);
+</code></pre>
+<p>Reach into the raw <code>Workbook</code> stream through <code>Bodu.IO.Compound</code> only when
+you need bytes the higher-level reader does not surface; for ordinary cell
+extraction, the Excel package is the right entry point. See
+<a href="reading-compound-files.html">Reading compound files</a> for the byte-level
+stream access pattern.</p>
+<h2 id="see-also">See also</h2>
+<ul>
+<li><a href="reading-compound-files.html">Reading compound files</a> — opening a container, walking the hierarchy, and reading a stream's bytes.</li>
+<li><a href="streaming-and-buffering.html">Buffered vs streaming access</a> — the <code>CompoundStream</code> cursor for large payloads.</li>
+<li><a href="property-sets.html">Reading property sets</a> — the <code>\x05SummaryInformation</code> streams these formats carry.</li>
+<li>API reference — <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFile.html">CompoundFile</a>, <a class="xref" href="../../api/Bodu.IO.Compound.CompoundStorage.html">CompoundStorage</a>, <a class="xref" href="../../api/Bodu.IO.Compound.CompoundEntryInfo.html">CompoundEntryInfo</a>, and <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelBinaryWorkbook.html">ExcelBinaryWorkbook</a> for <code>.xls</code>.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

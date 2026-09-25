@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class Blowfish | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class Blowfish | BODU ">
+    
+    <meta name="description" content="Provides a managed implementation of the Blowfish symmetric block cipher. This class cannot be inherited.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Security.Cryptography.Blowfish">
+
+
+
+  <h1 id="Bodu_Security_Cryptography_Blowfish" data-uid="Bodu.Security.Cryptography.Blowfish" class="text-break">Class Blowfish</h1>
+  <div class="markdown level0 summary"><p>Provides a managed implementation of the Blowfish symmetric block cipher. This class cannot be inherited.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm">SymmetricAlgorithm</a></div>
+    <div class="level2"><a class="xref" href="Bodu.Security.Cryptography.ExtendedSymmetricAlgorithm.html">ExtendedSymmetricAlgorithm</a></div>
+    <div class="level3"><span class="xref">Blowfish</span></div>
+  </div>
+  <div class="implements">
+    <h5>Implements</h5>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.ExtendedSymmetricAlgorithm.BlockMode.html#Bodu_Security_Cryptography_ExtendedSymmetricAlgorithm_BlockMode">ExtendedSymmetricAlgorithm.BlockMode</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.ExtendedSymmetricAlgorithm.BlockPadding.html#Bodu_Security_Cryptography_ExtendedSymmetricAlgorithm_BlockPadding">ExtendedSymmetricAlgorithm.BlockPadding</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.ExtendedSymmetricAlgorithm.Padding.html#Bodu_Security_Cryptography_ExtendedSymmetricAlgorithm_Padding">ExtendedSymmetricAlgorithm.Padding</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.ExtendedSymmetricAlgorithm.Mode.html#Bodu_Security_Cryptography_ExtendedSymmetricAlgorithm_Mode">ExtendedSymmetricAlgorithm.Mode</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm.clear">SymmetricAlgorithm.Clear()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm.create#system-security-cryptography-symmetricalgorithm-create(system-string)">SymmetricAlgorithm.Create(string)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm.createdecryptor#system-security-cryptography-symmetricalgorithm-createdecryptor">SymmetricAlgorithm.CreateDecryptor()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm.createencryptor#system-security-cryptography-symmetricalgorithm-createencryptor">SymmetricAlgorithm.CreateEncryptor()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm.decryptcbc#system-security-cryptography-symmetricalgorithm-decryptcbc(system-byte()-system-byte()-system-security-cryptography-paddingmode)">SymmetricAlgorithm.DecryptCbc(byte[], byte[], PaddingMode)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm.decryptcbc#system-security-cryptography-symmetricalgorithm-decryptcbc(system-readonlyspan((system-byte))-system-readonlyspan((system-byte))-system-security-cryptography-paddingmode)">SymmetricAlgorithm.DecryptCbc(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;, PaddingMode)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm.decryptcbc#system-security-cryptography-symmetricalgorithm-decryptcbc(system-readonlyspan((system-byte))-system-readonlyspan((system-byte))-system-span((system-byte))-system-security-cryptography-paddingmode)">SymmetricAlgorithm.DecryptCbc(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, PaddingMode)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm.decryptcfb#system-security-cryptography-symmetricalgorithm-decryptcfb(system-byte()-system-byte()-system-security-cryptography-paddingmode-system-int32)">SymmetricAlgorithm.DecryptCfb(byte[], byte[], PaddingMode, int)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm.decryptcfb#system-security-cryptography-symmetricalgorithm-decryptcfb(system-readonlyspan((system-byte))-system-readonlyspan((system-byte))-system-security-cryptography-paddingmode-system-int32)">SymmetricAlgorithm.DecryptCfb(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;, PaddingMode, int)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm.decryptcfb#system-security-cryptography-symmetricalgorithm-decryptcfb(system-readonlyspan((system-byte))-system-readonlyspan((system-byte))-system-span((system-byte))-system-security-cryptography-paddingmode-system-int32)">SymmetricAlgorithm.DecryptCfb(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, PaddingMode, int)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm.decryptecb#system-security-cryptography-symmetricalgorithm-decryptecb(system-byte()-system-security-cryptography-paddingmode)">SymmetricAlgorithm.DecryptEcb(byte[], PaddingMode)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm.decryptecb#system-security-cryptography-symmetricalgorithm-decryptecb(system-readonlyspan((system-byte))-system-security-cryptography-paddingmode)">SymmetricAlgorithm.DecryptEcb(ReadOnlySpan&lt;byte&gt;, PaddingMode)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm.decryptecb#system-security-cryptography-symmetricalgorithm-decryptecb(system-readonlyspan((system-byte))-system-span((system-byte))-system-security-cryptography-paddingmode)">SymmetricAlgorithm.DecryptEcb(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, PaddingMode)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm.dispose#system-security-cryptography-symmetricalgorithm-dispose">SymmetricAlgorithm.Dispose()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm.encryptcbc#system-security-cryptography-symmetricalgorithm-encryptcbc(system-byte()-system-byte()-system-security-cryptography-paddingmode)">SymmetricAlgorithm.EncryptCbc(byte[], byte[], PaddingMode)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm.encryptcbc#system-security-cryptography-symmetricalgorithm-encryptcbc(system-readonlyspan((system-byte))-system-readonlyspan((system-byte))-system-security-cryptography-paddingmode)">SymmetricAlgorithm.EncryptCbc(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;, PaddingMode)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm.encryptcbc#system-security-cryptography-symmetricalgorithm-encryptcbc(system-readonlyspan((system-byte))-system-readonlyspan((system-byte))-system-span((system-byte))-system-security-cryptography-paddingmode)">SymmetricAlgorithm.EncryptCbc(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, PaddingMode)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm.encryptcfb#system-security-cryptography-symmetricalgorithm-encryptcfb(system-byte()-system-byte()-system-security-cryptography-paddingmode-system-int32)">SymmetricAlgorithm.EncryptCfb(byte[], byte[], PaddingMode, int)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm.encryptcfb#system-security-cryptography-symmetricalgorithm-encryptcfb(system-readonlyspan((system-byte))-system-readonlyspan((system-byte))-system-security-cryptography-paddingmode-system-int32)">SymmetricAlgorithm.EncryptCfb(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;, PaddingMode, int)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm.encryptcfb#system-security-cryptography-symmetricalgorithm-encryptcfb(system-readonlyspan((system-byte))-system-readonlyspan((system-byte))-system-span((system-byte))-system-security-cryptography-paddingmode-system-int32)">SymmetricAlgorithm.EncryptCfb(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, PaddingMode, int)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm.encryptecb#system-security-cryptography-symmetricalgorithm-encryptecb(system-byte()-system-security-cryptography-paddingmode)">SymmetricAlgorithm.EncryptEcb(byte[], PaddingMode)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm.encryptecb#system-security-cryptography-symmetricalgorithm-encryptecb(system-readonlyspan((system-byte))-system-security-cryptography-paddingmode)">SymmetricAlgorithm.EncryptEcb(ReadOnlySpan&lt;byte&gt;, PaddingMode)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm.encryptecb#system-security-cryptography-symmetricalgorithm-encryptecb(system-readonlyspan((system-byte))-system-span((system-byte))-system-security-cryptography-paddingmode)">SymmetricAlgorithm.EncryptEcb(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, PaddingMode)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm.getciphertextlengthcbc">SymmetricAlgorithm.GetCiphertextLengthCbc(int, PaddingMode)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm.getciphertextlengthcfb">SymmetricAlgorithm.GetCiphertextLengthCfb(int, PaddingMode, int)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm.getciphertextlengthecb">SymmetricAlgorithm.GetCiphertextLengthEcb(int, PaddingMode)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm.trydecryptcbc">SymmetricAlgorithm.TryDecryptCbc(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, out int, PaddingMode)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm.trydecryptcfb">SymmetricAlgorithm.TryDecryptCfb(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, out int, PaddingMode, int)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm.trydecryptecb">SymmetricAlgorithm.TryDecryptEcb(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, PaddingMode, out int)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm.tryencryptcbc">SymmetricAlgorithm.TryEncryptCbc(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, out int, PaddingMode)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm.tryencryptcfb">SymmetricAlgorithm.TryEncryptCfb(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, out int, PaddingMode, int)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm.tryencryptecb">SymmetricAlgorithm.TryEncryptEcb(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, PaddingMode, out int)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm.validkeysize">SymmetricAlgorithm.ValidKeySize(int)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm.blocksize">SymmetricAlgorithm.BlockSize</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm.feedbacksize">SymmetricAlgorithm.FeedbackSize</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm.iv">SymmetricAlgorithm.IV</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm.key">SymmetricAlgorithm.Key</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm.keysize">SymmetricAlgorithm.KeySize</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm.legalblocksizes">SymmetricAlgorithm.LegalBlockSizes</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm.legalkeysizes">SymmetricAlgorithm.LegalKeySizes</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Security.html">Security</a>.<a class="xref" href="Bodu.Security.Cryptography.html">Cryptography</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Security.Cryptography.dll</h6>
+  <h5 id="Bodu_Security_Cryptography_Blowfish_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class Blowfish : ExtendedSymmetricAlgorithm, IDisposable</code></pre>
+  </div>
+  <h5 id="Bodu_Security_Cryptography_Blowfish_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+Blowfish is a symmetric-key block cipher designed by Bruce Schneier in 1993. It operates on 64-bit (8-byte) blocks
+and accepts a variable-length key of between 32 and 448 bits (4 to 56 bytes). The cipher applies a 16-round Feistel
+network using four 256-entry S-boxes and an 18-entry P-array, all initialized from the hexadecimal digits of pi (π).
+The key schedule is computationally intensive by design, making brute-force attacks significantly more expensive.
+</p>
+<p>
+This class integrates with the .NET <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm">SymmetricAlgorithm</a> framework and supports standard block cipher
+modes via the <a class="xref" href="Bodu.Security.Cryptography.ExtendedSymmetricAlgorithm.BlockMode.html#Bodu_Security_Cryptography_ExtendedSymmetricAlgorithm_BlockMode">BlockMode</a> property. The default mode is
+<a class="xref" href="Bodu.Security.Cryptography.CipherModeKind.html#Bodu_Security_Cryptography_CipherModeKind_CBC">CBC</a> with <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.paddingmode#system-security-cryptography-paddingmode-pkcs7">PKCS7</a> padding.
+</p>
+<p>
+For further details on the algorithm, see <a href="https://www.schneier.com/academic/blowfish/">
+https://www.schneier.com/academic/blowfish/</a>.
+</p>
+<p>
+<strong>Parameters at a glance.</strong>
+</p>
+<ul><li>Block size: 64 bits (8 bytes).</li><li>Key size: variable, 32–448 bits (4–56 bytes).</li><li>16-round Feistel network with key-dependent S-boxes initialized from the digits of π.</li><li>
+Default mode: <a class="xref" href="Bodu.Security.Cryptography.CipherModeKind.html#Bodu_Security_Cryptography_CipherModeKind_CBC">CBC</a>; default padding: <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.paddingmode#system-security-cryptography-paddingmode-pkcs7">PKCS7</a>.
+</li></ul>
+<p>
+<strong>When to choose Blowfish.</strong> Pick Blowfish only for interoperability with legacy systems that already
+use it — its 64-bit block size invites SWEET32 birthday-bound attacks once roughly 32 GiB has been encrypted under
+one key. For new designs use <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.aes">Aes</a>; bcrypt-style password hashing schemes
+that derive from Blowfish are not in scope of this class.
+</p>
+<div class="IMPORTANT"><h5>important</h5><p> Blowfish has a 64-bit block size, which makes it vulnerable to birthday-bound attacks
+(SWEET32) when large volumes of data are encrypted under the same key. For new applications, a cipher with a 128-bit
+or larger block size (such as AES) should be preferred. </p></div>
+<p>
+The underlying block-cipher implementation is constant-time in its control flow, but the four key-dependent S-boxes
+are read at data-dependent indices on every round. As such, it is <b>not</b> hardened against timing or cache-based
+side-channel attacks.
+</p>
+</div>
+  <h5 id="Bodu_Security_Cryptography_Blowfish_examples"><strong>Examples</strong></h5>
+  <pre><code class="lang-csharp">using System.Security.Cryptography;
+using Bodu.Security.Cryptography;
+using Bodu.Security.Cryptography.Extensions;
+
+// Legacy interop only.
+using var blowfish = new Blowfish();
+blowfish.Key = legacyKeyMaterial; // 4–56 bytes
+blowfish.IV = RandomNumberGenerator.GetBytes(8); // matches the 64-bit block
+byte[] ciphertext = blowfish.Encrypt(legacyPlaintext);</code></pre>
+
+  <h3 id="constructors">Constructors
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Security_Cryptography_Blowfish__ctor" data-uid="Bodu.Security.Cryptography.Blowfish.#ctor">
+          <a class="xref" href="Bodu.Security.Cryptography.Blowfish.-ctor.html#Bodu_Security_Cryptography_Blowfish__ctor">Blowfish()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Security.Cryptography.Blowfish.html">Blowfish</a> class with default parameters.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Security_Cryptography_Blowfish_Create" data-uid="Bodu.Security.Cryptography.Blowfish.Create">
+          <a class="xref" href="Bodu.Security.Cryptography.Blowfish.Create.html#Bodu_Security_Cryptography_Blowfish_Create">Create()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates a new <a class="xref" href="Bodu.Security.Cryptography.Blowfish.html">Blowfish</a> instance with default parameters.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_Blowfish_CreateDecryptor_System_Byte___System_Byte___" data-uid="Bodu.Security.Cryptography.Blowfish.CreateDecryptor(System.Byte[],System.Byte[])">
+          <a class="xref" href="Bodu.Security.Cryptography.Blowfish.CreateDecryptor.html#Bodu_Security_Cryptography_Blowfish_CreateDecryptor_System_Byte___System_Byte___">CreateDecryptor(byte[], byte[]?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates a symmetric <a class="xref" href="Bodu.Security.Cryptography.Blowfish.html">Blowfish</a> decryptor using the specified key and initialization vector.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_Blowfish_CreateEncryptor_System_Byte___System_Byte___" data-uid="Bodu.Security.Cryptography.Blowfish.CreateEncryptor(System.Byte[],System.Byte[])">
+          <a class="xref" href="Bodu.Security.Cryptography.Blowfish.CreateEncryptor.html#Bodu_Security_Cryptography_Blowfish_CreateEncryptor_System_Byte___System_Byte___">CreateEncryptor(byte[], byte[]?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates a symmetric <a class="xref" href="Bodu.Security.Cryptography.Blowfish.html">Blowfish</a> encryptor using the specified key and initialization vector.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_Blowfish_Dispose_System_Boolean_" data-uid="Bodu.Security.Cryptography.Blowfish.Dispose(System.Boolean)">
+          <a class="xref" href="Bodu.Security.Cryptography.Blowfish.Dispose.html#Bodu_Security_Cryptography_Blowfish_Dispose_System_Boolean_">Dispose(bool)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Releases the unmanaged resources used by the <a class="xref" href="Bodu.Security.Cryptography.Blowfish.html">Blowfish</a> instance and, optionally, the managed
+resources.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_Blowfish_GenerateIV" data-uid="Bodu.Security.Cryptography.Blowfish.GenerateIV">
+          <a class="xref" href="Bodu.Security.Cryptography.Blowfish.GenerateIV.html#Bodu_Security_Cryptography_Blowfish_GenerateIV">GenerateIV()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Generates a cryptographically random initialization vector (<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm.iv">IV</a>) suitable for
+use with the Blowfish algorithm.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_Blowfish_GenerateKey" data-uid="Bodu.Security.Cryptography.Blowfish.GenerateKey">
+          <a class="xref" href="Bodu.Security.Cryptography.Blowfish.GenerateKey.html#Bodu_Security_Cryptography_Blowfish_GenerateKey">GenerateKey()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Generates a cryptographically random key for use with the Blowfish algorithm using the currently configured
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm.keysize">KeySize</a>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.SymmetricAlgorithmExtensions.Decrypt.html#Bodu_Security_Cryptography_Extensions_SymmetricAlgorithmExtensions_Decrypt_System_Security_Cryptography_SymmetricAlgorithm_System_Byte___">SymmetricAlgorithmExtensions.Decrypt(SymmetricAlgorithm, byte[])</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.SymmetricAlgorithmExtensions.Decrypt.html#Bodu_Security_Cryptography_Extensions_SymmetricAlgorithmExtensions_Decrypt_System_Security_Cryptography_SymmetricAlgorithm_System_Byte___System_Int32_">SymmetricAlgorithmExtensions.Decrypt(SymmetricAlgorithm, byte[], int)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.SymmetricAlgorithmExtensions.Decrypt.html#Bodu_Security_Cryptography_Extensions_SymmetricAlgorithmExtensions_Decrypt_System_Security_Cryptography_SymmetricAlgorithm_System_Byte___System_Int32_System_Int32_">SymmetricAlgorithmExtensions.Decrypt(SymmetricAlgorithm, byte[], int, int)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.SymmetricAlgorithmExtensions.Decrypt.html#Bodu_Security_Cryptography_Extensions_SymmetricAlgorithmExtensions_Decrypt_System_Security_Cryptography_SymmetricAlgorithm_System_IO_Stream_System_IO_Stream_">SymmetricAlgorithmExtensions.Decrypt(SymmetricAlgorithm, Stream, Stream)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.SymmetricAlgorithmExtensions.Decrypt.html#Bodu_Security_Cryptography_Extensions_SymmetricAlgorithmExtensions_Decrypt_System_Security_Cryptography_SymmetricAlgorithm_System_IO_Stream_System_IO_Stream_System_Int32_">SymmetricAlgorithmExtensions.Decrypt(SymmetricAlgorithm, Stream, Stream, int)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.SymmetricAlgorithmExtensions.Decrypt.html#Bodu_Security_Cryptography_Extensions_SymmetricAlgorithmExtensions_Decrypt_System_Security_Cryptography_SymmetricAlgorithm_System_ReadOnlyMemory_System_Byte__">SymmetricAlgorithmExtensions.Decrypt(SymmetricAlgorithm, ReadOnlyMemory&lt;byte&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.SymmetricAlgorithmExtensions.Decrypt.html#Bodu_Security_Cryptography_Extensions_SymmetricAlgorithmExtensions_Decrypt_System_Security_Cryptography_SymmetricAlgorithm_System_ReadOnlySpan_System_Byte__">SymmetricAlgorithmExtensions.Decrypt(SymmetricAlgorithm, ReadOnlySpan&lt;byte&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.SymmetricAlgorithmExtensions.DecryptAsync.html#Bodu_Security_Cryptography_Extensions_SymmetricAlgorithmExtensions_DecryptAsync_System_Security_Cryptography_SymmetricAlgorithm_System_IO_Stream_System_IO_Stream_System_Int32_System_Threading_CancellationToken_">SymmetricAlgorithmExtensions.DecryptAsync(SymmetricAlgorithm, Stream, Stream, int, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.SymmetricAlgorithmExtensions.DecryptAsync.html#Bodu_Security_Cryptography_Extensions_SymmetricAlgorithmExtensions_DecryptAsync_System_Security_Cryptography_SymmetricAlgorithm_System_IO_Stream_System_IO_Stream_System_Threading_CancellationToken_">SymmetricAlgorithmExtensions.DecryptAsync(SymmetricAlgorithm, Stream, Stream, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.SymmetricAlgorithmExtensions.Encrypt.html#Bodu_Security_Cryptography_Extensions_SymmetricAlgorithmExtensions_Encrypt_System_Security_Cryptography_SymmetricAlgorithm_System_Byte___">SymmetricAlgorithmExtensions.Encrypt(SymmetricAlgorithm, byte[])</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.SymmetricAlgorithmExtensions.Encrypt.html#Bodu_Security_Cryptography_Extensions_SymmetricAlgorithmExtensions_Encrypt_System_Security_Cryptography_SymmetricAlgorithm_System_Byte___System_Int32_">SymmetricAlgorithmExtensions.Encrypt(SymmetricAlgorithm, byte[], int)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.SymmetricAlgorithmExtensions.Encrypt.html#Bodu_Security_Cryptography_Extensions_SymmetricAlgorithmExtensions_Encrypt_System_Security_Cryptography_SymmetricAlgorithm_System_Byte___System_Int32_System_Int32_">SymmetricAlgorithmExtensions.Encrypt(SymmetricAlgorithm, byte[], int, int)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.SymmetricAlgorithmExtensions.Encrypt.html#Bodu_Security_Cryptography_Extensions_SymmetricAlgorithmExtensions_Encrypt_System_Security_Cryptography_SymmetricAlgorithm_System_IO_Stream_System_IO_Stream_">SymmetricAlgorithmExtensions.Encrypt(SymmetricAlgorithm, Stream, Stream)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.SymmetricAlgorithmExtensions.Encrypt.html#Bodu_Security_Cryptography_Extensions_SymmetricAlgorithmExtensions_Encrypt_System_Security_Cryptography_SymmetricAlgorithm_System_IO_Stream_System_IO_Stream_System_Int32_">SymmetricAlgorithmExtensions.Encrypt(SymmetricAlgorithm, Stream, Stream, int)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.SymmetricAlgorithmExtensions.Encrypt.html#Bodu_Security_Cryptography_Extensions_SymmetricAlgorithmExtensions_Encrypt_System_Security_Cryptography_SymmetricAlgorithm_System_ReadOnlyMemory_System_Byte__">SymmetricAlgorithmExtensions.Encrypt(SymmetricAlgorithm, ReadOnlyMemory&lt;byte&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.SymmetricAlgorithmExtensions.Encrypt.html#Bodu_Security_Cryptography_Extensions_SymmetricAlgorithmExtensions_Encrypt_System_Security_Cryptography_SymmetricAlgorithm_System_ReadOnlySpan_System_Byte__">SymmetricAlgorithmExtensions.Encrypt(SymmetricAlgorithm, ReadOnlySpan&lt;byte&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.SymmetricAlgorithmExtensions.EncryptAsync.html#Bodu_Security_Cryptography_Extensions_SymmetricAlgorithmExtensions_EncryptAsync_System_Security_Cryptography_SymmetricAlgorithm_System_IO_Stream_System_IO_Stream_System_Int32_System_Threading_CancellationToken_">SymmetricAlgorithmExtensions.EncryptAsync(SymmetricAlgorithm, Stream, Stream, int, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.SymmetricAlgorithmExtensions.EncryptAsync.html#Bodu_Security_Cryptography_Extensions_SymmetricAlgorithmExtensions_EncryptAsync_System_Security_Cryptography_SymmetricAlgorithm_System_IO_Stream_System_IO_Stream_System_Threading_CancellationToken_">SymmetricAlgorithmExtensions.EncryptAsync(SymmetricAlgorithm, Stream, Stream, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.SymmetricAlgorithmExtensions.TryCreateDecryptor.html#Bodu_Security_Cryptography_Extensions_SymmetricAlgorithmExtensions_TryCreateDecryptor_System_Security_Cryptography_SymmetricAlgorithm_System_Byte___System_Byte___System_Security_Cryptography_ICryptoTransform__">SymmetricAlgorithmExtensions.TryCreateDecryptor(SymmetricAlgorithm, byte[], byte[], out ICryptoTransform?)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.SymmetricAlgorithmExtensions.TryCreateDecryptor.html#Bodu_Security_Cryptography_Extensions_SymmetricAlgorithmExtensions_TryCreateDecryptor_System_Security_Cryptography_SymmetricAlgorithm_System_Security_Cryptography_ICryptoTransform__">SymmetricAlgorithmExtensions.TryCreateDecryptor(SymmetricAlgorithm, out ICryptoTransform?)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.SymmetricAlgorithmExtensions.TryCreateEncryptor.html#Bodu_Security_Cryptography_Extensions_SymmetricAlgorithmExtensions_TryCreateEncryptor_System_Security_Cryptography_SymmetricAlgorithm_System_Byte___System_Byte___System_Security_Cryptography_ICryptoTransform__">SymmetricAlgorithmExtensions.TryCreateEncryptor(SymmetricAlgorithm, byte[], byte[], out ICryptoTransform?)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.SymmetricAlgorithmExtensions.TryCreateEncryptor.html#Bodu_Security_Cryptography_Extensions_SymmetricAlgorithmExtensions_TryCreateEncryptor_System_Security_Cryptography_SymmetricAlgorithm_System_Security_Cryptography_ICryptoTransform__">SymmetricAlgorithmExtensions.TryCreateEncryptor(SymmetricAlgorithm, out ICryptoTransform?)</a>
+  </div>
+  <h3 id="seealso">See Also</h3>
+  <div class="seealso">
+      <div><span><a href="../guides/cryptography/blowfish.html">Using Blowfish (guide with full encrypt / decrypt examples)</a></span></div>
+      <div><span><a href="../guides/cryptography/encryption-basics.html">Encryption basics</a></span></div>
+      <div><span><a href="../guides/cryptography/cipher-modes.html">Cipher block modes</a></span></div>
+      <div><span><a href="../guides/cryptography/padding.html">Padding</a></span></div>
+  </div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

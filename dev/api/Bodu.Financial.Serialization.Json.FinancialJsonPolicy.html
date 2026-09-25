@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Enum FinancialJsonPolicy | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Enum FinancialJsonPolicy | BODU ">
+    
+    <meta name="description" content="Selects the JSON serialization shape and parsing strictness applied by the  JSON converters.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Financial.Serialization.Json.FinancialJsonPolicy">
+
+
+
+
+  <h1 id="Bodu_Financial_Serialization_Json_FinancialJsonPolicy" data-uid="Bodu.Financial.Serialization.Json.FinancialJsonPolicy" class="text-break">Enum FinancialJsonPolicy</h1>
+  <div class="markdown level0 summary"><p>Selects the JSON serialization shape and parsing strictness applied by the <a class="xref" href="Bodu.Financial.html">Bodu.Financial</a> JSON
+converters.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Financial.html">Financial</a>.<a class="xref" href="Bodu.Financial.Serialization.html">Serialization</a>.<a class="xref" href="Bodu.Financial.Serialization.Json.html">Json</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Financial.Serialization.Json.dll</h6>
+  <h5 id="Bodu_Financial_Serialization_Json_FinancialJsonPolicy_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public enum FinancialJsonPolicy</code></pre>
+  </div>
+  <h5 id="Bodu_Financial_Serialization_Json_FinancialJsonPolicy_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+The policy is supplied either by constructing a converter directly (e.g.
+<code>new MoneyOfTCurrencyJsonConverter&lt;USD&gt;(FinancialJsonPolicy.Compact)</code>) or, more commonly, through
+<a class="xref" href="Bodu.Financial.Serialization.Json.FinancialJsonSerializerOptionsExtensions.AddFinancialJsonConverters.html#Bodu_Financial_Serialization_Json_FinancialJsonSerializerOptionsExtensions_AddFinancialJsonConverters_System_Text_Json_JsonSerializerOptions_Bodu_Financial_Serialization_Json_FinancialJsonPolicy_">AddFinancialJsonConverters(JsonSerializerOptions, FinancialJsonPolicy)</a> which registers a coherent set of
+converters on a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.json.jsonserializeroptions">JsonSerializerOptions</a>.
+</p>
+<p>
+The core <code>Bodu.Financial</code> types carry no <code>[JsonConverter]</code> attribute — the library is
+serialization-agnostic — so registration through
+<a class="xref" href="Bodu.Financial.Serialization.Json.FinancialJsonSerializerOptionsExtensions.AddFinancialJsonConverters.html#Bodu_Financial_Serialization_Json_FinancialJsonSerializerOptionsExtensions_AddFinancialJsonConverters_System_Text_Json_JsonSerializerOptions_Bodu_Financial_Serialization_Json_FinancialJsonPolicy_">AddFinancialJsonConverters(JsonSerializerOptions, FinancialJsonPolicy)</a> is required; converters
+constructed without an explicit policy default to <a class="xref" href="Bodu.Financial.Serialization.Json.FinancialJsonPolicy.html#Bodu_Financial_Serialization_Json_FinancialJsonPolicy_Strict">Strict</a>.
+</p>
+</div>
+  <h3 id="fields">Fields
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    <thead>
+    </thead></thead><tbody>
+      <tr>
+        <td id="Bodu_Financial_Serialization_Json_FinancialJsonPolicy_Strict">Strict</td>
+        <td><p>Canonical JSON shape suitable for ledger, persistence, and audit data: monetary values serialize as objects with
+<code>&quot;amount&quot;</code> and <code>&quot;currency&quot;</code> properties; <a class="xref" href="Bodu.Financial.MoneyBag.html">MoneyBag</a> serializes as an object
+containing a <code>&quot;balances&quot;</code> map. Property names compare case-insensitively, duplicate properties are
+rejected, unknown properties are ignored, and a currency code that does not match <code>TCurrency.IsoCode</code> is
+rejected.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_Serialization_Json_FinancialJsonPolicy_Lenient">Lenient</td>
+        <td><p>Same on-the-wire shape as <a class="xref" href="Bodu.Financial.Serialization.Json.FinancialJsonPolicy.html#Bodu_Financial_Serialization_Json_FinancialJsonPolicy_Strict">Strict</a>, but additionally normalizes lowercase ISO currency codes to
+uppercase and trims surrounding whitespace before validation. Intended for import workflows that ingest data
+from external feeds and spreadsheets. Not suitable as a canonical storage shape.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_Serialization_Json_FinancialJsonPolicy_Compact">Compact</td>
+        <td><p>Compact JSON shape: <a class="xref" href="Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a> and <a class="xref" href="Bodu.Financial.Money.html">Money</a>
+serialize as a single JSON string of the form <code>&quot;&lt;amount&gt; &lt;ISO&gt;&quot;</code> (for example
+<code>&quot;19.99 USD&quot;</code>); <a class="xref" href="Bodu.Financial.MoneyBag.html">MoneyBag</a> serializes as a flat object mapping ISO codes to
+amounts (for example <code>{ &quot;USD&quot;: 19.99, &quot;EUR&quot;: 12.34 }</code>). Reads accept either ISO-prefix or ISO-suffix string
+forms and reuse the type's <code>TryParse</code> path for the numeric component.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Bodu.Extensions.BufferConverter.CopyTo.html#Bodu_Extensions_BufferConverter_CopyTo__1___0_System_Byte___System_Int32_">BufferConverter.CopyTo&lt;FinancialJsonPolicy&gt;(FinancialJsonPolicy, byte[], int)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;FinancialJsonPolicy&gt;(FinancialJsonPolicy, FinancialJsonPolicy, IComparer&lt;FinancialJsonPolicy&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;FinancialJsonPolicy&gt;(FinancialJsonPolicy, FinancialJsonPolicy, IComparer&lt;FinancialJsonPolicy&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Clamp.html#Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.Clamp&lt;FinancialJsonPolicy&gt;(FinancialJsonPolicy, FinancialJsonPolicy?, FinancialJsonPolicy?, IComparer&lt;FinancialJsonPolicy&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsBetween.html#Bodu_Extensions_ComparableExtensions_IsBetween__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsBetween&lt;FinancialJsonPolicy&gt;(FinancialJsonPolicy, FinancialJsonPolicy?, FinancialJsonPolicy?, IComparer&lt;FinancialJsonPolicy&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;FinancialJsonPolicy&gt;(FinancialJsonPolicy, FinancialJsonPolicy, IComparer&lt;FinancialJsonPolicy&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThanOrEqual&lt;FinancialJsonPolicy&gt;(FinancialJsonPolicy, FinancialJsonPolicy?, IComparer&lt;FinancialJsonPolicy&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThan.html#Bodu_Extensions_ComparableExtensions_IsGreaterThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThan&lt;FinancialJsonPolicy&gt;(FinancialJsonPolicy, FinancialJsonPolicy?, IComparer&lt;FinancialJsonPolicy&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThanOrEqual&lt;FinancialJsonPolicy&gt;(FinancialJsonPolicy, FinancialJsonPolicy?, IComparer&lt;FinancialJsonPolicy&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThan.html#Bodu_Extensions_ComparableExtensions_IsLessThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThan&lt;FinancialJsonPolicy&gt;(FinancialJsonPolicy, FinancialJsonPolicy?, IComparer&lt;FinancialJsonPolicy&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsOutside.html#Bodu_Extensions_ComparableExtensions_IsOutside__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsOutside&lt;FinancialJsonPolicy&gt;(FinancialJsonPolicy, FinancialJsonPolicy?, FinancialJsonPolicy?, IComparer&lt;FinancialJsonPolicy&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;FinancialJsonPolicy&gt;(FinancialJsonPolicy, FinancialJsonPolicy, IComparer&lt;FinancialJsonPolicy&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;FinancialJsonPolicy&gt;(FinancialJsonPolicy, FinancialJsonPolicy, IComparer&lt;FinancialJsonPolicy&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.EnumExtensions.ClearFlag.html#Bodu_Extensions_EnumExtensions_ClearFlag__1___0___0_">EnumExtensions.ClearFlag&lt;FinancialJsonPolicy&gt;(FinancialJsonPolicy, FinancialJsonPolicy)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.EnumExtensions.GetDescription.html#Bodu_Extensions_EnumExtensions_GetDescription__1___0_">EnumExtensions.GetDescription&lt;FinancialJsonPolicy&gt;(FinancialJsonPolicy)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.EnumExtensions.GetDisplayName.html#Bodu_Extensions_EnumExtensions_GetDisplayName__1___0_">EnumExtensions.GetDisplayName&lt;FinancialJsonPolicy&gt;(FinancialJsonPolicy)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.EnumExtensions.HasAllFlags.html#Bodu_Extensions_EnumExtensions_HasAllFlags__1___0___0_">EnumExtensions.HasAllFlags&lt;FinancialJsonPolicy&gt;(FinancialJsonPolicy, FinancialJsonPolicy)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.EnumExtensions.HasAnyFlag.html#Bodu_Extensions_EnumExtensions_HasAnyFlag__1___0___0_">EnumExtensions.HasAnyFlag&lt;FinancialJsonPolicy&gt;(FinancialJsonPolicy, FinancialJsonPolicy)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.EnumExtensions.SetFlag.html#Bodu_Extensions_EnumExtensions_SetFlag__1___0___0_">EnumExtensions.SetFlag&lt;FinancialJsonPolicy&gt;(FinancialJsonPolicy, FinancialJsonPolicy)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.EnumExtensions.ToggleFlag.html#Bodu_Extensions_EnumExtensions_ToggleFlag__1___0___0_">EnumExtensions.ToggleFlag&lt;FinancialJsonPolicy&gt;(FinancialJsonPolicy, FinancialJsonPolicy)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.EnumExtensions.TryGetDescription.html#Bodu_Extensions_EnumExtensions_TryGetDescription__1___0_System_String__">EnumExtensions.TryGetDescription&lt;FinancialJsonPolicy&gt;(FinancialJsonPolicy, out string)</a>
+  </div>
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

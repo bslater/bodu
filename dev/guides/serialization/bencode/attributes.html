@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Mapping attributes | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Mapping attributes | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../../images/favicon.svg">
+      <link rel="stylesheet" href="../../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../../styles/docfx.css">
+      <link rel="stylesheet" href="../../../styles/main.css">
+      <meta property="docfx:navrel" content="../../../toc.html">
+      <meta property="docfx:tocrel" content="../../toc.html">
+    
+    <meta property="docfx:rel" content="../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../../index.html">
+                <img id="logo" class="svg" src="../../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="mapping-attributes">Mapping attributes</h1>
+
+<p>The Bencode serializer honours the attribute family from the shared <a class="xref" href="../../../api/Bodu.Text.Serialization.html">Bodu.Text.Serialization</a> package for shaping how a type maps to the wire — every one derives <a class="xref" href="../../../api/Bodu.Text.Serialization.SerializationAttribute.html">SerializationAttribute</a>. The sibling <a href="../toml/index.html">TOML</a> and <a href="../yaml/index.html">YAML</a> serializers honour the very same attributes (there is no per-format prefix); the patterns transfer directly. Each pattern below shows the Bencode form and the dictionary entry it writes.</p>
+<h2 id="pattern-1--rename-a-member">Pattern 1 — Rename a member</h2>
+<p><a class="xref" href="../../../api/Bodu.Text.Serialization.PropertyNameAttribute.html">PropertyNameAttribute</a> pins the serialized key for one member, beating any naming policy:</p>
+<pre><code class="lang-csharp">public sealed class Profile
+{
+    [PropertyName(&quot;display-name&quot;)]
+    public string DisplayName { get; set; } = &quot;Ada&quot;;
+}
+</code></pre>
+<p>This writes the dictionary entry <code>12:display-name3:Ada</code>.</p>
+<h2 id="pattern-2--apply-a-naming-policy-per-type">Pattern 2 — Apply a naming policy per type</h2>
+<p><a class="xref" href="../../../api/Bodu.Text.Serialization.NamingPolicyAttribute.html">NamingPolicyAttribute</a> overrides the options-level <code>PropertyNamingPolicy</code> for one type:</p>
+<pre><code class="lang-csharp">[NamingPolicy(KnownNamingPolicy.SnakeCaseLower)]
+public sealed class RetryPolicy
+{
+    public int MaxRetryCount { get; set; } = 5;
+}
+
+// → d15:max_retry_counti5ee
+</code></pre>
+<p>A member carrying <code>[PropertyName]</code> is unaffected — the explicit name always wins. <code>KnownNamingPolicy.Unspecified</code> defers back to the options.</p>
+<h2 id="pattern-3--exclude-members">Pattern 3 — Exclude members</h2>
+<p><a class="xref" href="../../../api/Bodu.Text.Serialization.IgnoreAttribute.html">IgnoreAttribute</a> drops a member unconditionally, or under a condition:</p>
+<pre><code class="lang-csharp">public sealed class Account
+{
+    public string Name { get; set; } = &quot;svc&quot;;
+
+    [Ignore]
+    public string? Secret { get; set; }
+
+    [Ignore(Condition = IgnoreCondition.WhenWritingNull)]
+    public string? Comment { get; set; }
+}
+
+// → d4:Name3:svce
+</code></pre>
+<p><code>Secret</code> is never written; <code>Comment</code> appears only when non-null. <code>WhenWritingDefault</code> extends the rule to default value-type values.</p>
+<h2 id="pattern-4--force-a-member-in">Pattern 4 — Force a member in</h2>
+<p><a class="xref" href="../../../api/Bodu.Text.Serialization.IncludeAttribute.html">IncludeAttribute</a> binds non-public property accessors and surfaces public fields without turning on <code>IncludeFields</code> for the whole options:</p>
+<pre><code class="lang-csharp">public sealed class Counter
+{
+    [Include]
+    public int Total { get; private set; }
+
+    [Include]
+    public int Retries;
+}
+</code></pre>
+<p>Both members now round-trip — the private setter is assigned on read, and the field participates like a property, following the same naming, ordering, ignore, required, and converter rules.</p>
+<h2 id="pattern-5--control-write-order">Pattern 5 — Control write order</h2>
+<p><a class="xref" href="../../../api/Bodu.Text.Serialization.PropertyOrderAttribute.html">PropertyOrderAttribute</a> reorders the order members are presented to the writer; members without the attribute default to order zero and keep declaration order:</p>
+<pre><code class="lang-csharp">public sealed class Manifest
+{
+    [PropertyOrder(2)]
+    public string Name { get; set; } = &quot;demo&quot;;
+
+    [PropertyOrder(1)]
+    public int Version { get; set; } = 3;
+}
+</code></pre>
+<div class="NOTE">
+<h5>Note</h5>
+<p>The attribute governs only the order members are <em>presented to the writer</em> — the writer re-sorts dictionary entries into canonical ascending key order when the dictionary closes, so the example above still emits <code>d4:Name4:demo7:Versioni3ee</code> regardless of <code>[PropertyOrder]</code>. The attribute matters when a custom converter walks members in presentation order.</p>
+</div>
+<h2 id="pattern-6--require-a-key">Pattern 6 — Require a key</h2>
+<p><a class="xref" href="../../../api/Bodu.Text.Serialization.RequiredAttribute.html">RequiredAttribute</a> makes deserialization fail when the key is absent, with the same effect as declaring the member with the C# <code>required</code> keyword:</p>
+<pre><code class="lang-csharp">public sealed class ServerConfig
+{
+    [Required]
+    public string Host { get; set; } = string.Empty;
+}
+
+// Input without a &quot;Host&quot; key throws BencodeSerializationException.
+</code></pre>
+<h2 id="pattern-7--pick-the-deserialization-constructor">Pattern 7 — Pick the deserialization constructor</h2>
+<p>When a type declares more than one constructor, <a class="xref" href="../../../api/Bodu.Text.Serialization.ConstructorAttribute.html">ConstructorAttribute</a> resolves the ambiguity:</p>
+<pre><code class="lang-csharp">public sealed class Endpoint
+{
+    [Constructor]
+    public Endpoint(string host, int port) =&gt; (Host, Port) = (host, port);
+
+    public Endpoint(Uri uri) : this(uri.Host, uri.Port) { }
+
+    public string Host { get; }
+    public int Port { get; }
+}
+</code></pre>
+<p>Without the attribute the serializer resolves the constructor in this order: a constructor carrying <code>[Constructor]</code>, then a public parameterless constructor (or, for a value type, default construction), then the public constructor with the most parameters. The chosen constructor's parameters are bound to members by matching parameter name to member name <strong>case-insensitively</strong>, so a <code>host</code>/<code>port</code> constructor binds the <code>Host</code>/<code>Port</code> members above.</p>
+<h2 id="pattern-8--capture-unknown-keys">Pattern 8 — Capture unknown keys</h2>
+<p><a class="xref" href="../../../api/Bodu.Text.Serialization.ExtensionDataAttribute.html">ExtensionDataAttribute</a> designates one member that collects every key that maps to no other member, and writes the collected entries back out on serialization:</p>
+<pre><code class="lang-csharp">public sealed class ServerConfig
+{
+    public int Port { get; set; }
+
+    [ExtensionData]
+    public Dictionary&lt;string, BencodeNode&gt;? Extra { get; set; }
+}
+</code></pre>
+<p>The member must be a <a class="xref" href="../../../api/Bodu.Text.Bencode.Nodes.BencodeObject.html">BencodeObject</a>, an <code>IDictionary&lt;string, BencodeNode&gt;</code>, or a <code>Dictionary&lt;string, BencodeNode&gt;</code>, and a type may declare at most one. Because the writer re-sorts dictionary entries on close, the captured extension keys merge into the correct canonical position alongside the mapped members on the way back out.</p>
+<h2 id="pattern-9--reject-unknown-keys">Pattern 9 — Reject unknown keys</h2>
+<p><a class="xref" href="../../../api/Bodu.Text.Serialization.UnmappedMemberHandlingAttribute.html">UnmappedMemberHandlingAttribute</a> chooses, per type, between skipping a key that maps to no member (the default) and failing:</p>
+<pre><code class="lang-csharp">[UnmappedMemberHandling(UnmappedMemberHandling.Disallow)]
+public sealed class StrictConfig
+{
+    public int Port { get; set; }
+}
+
+// Input containing an unrecognised key throws BencodeSerializationException.
+</code></pre>
+<p>A type with an extension-data member (Pattern 8) still captures unmapped keys into that member regardless of this setting.</p>
+<h2 id="pattern-10--populate-instead-of-replace">Pattern 10 — Populate instead of replace</h2>
+<p><a class="xref" href="../../../api/Bodu.Text.Serialization.ObjectCreationHandlingAttribute.html">ObjectCreationHandlingAttribute</a> controls whether deserialization replaces a member's value with a fresh instance or populates the instance already held — useful for get-only collection properties:</p>
+<pre><code class="lang-csharp">public sealed class Pipeline
+{
+    [ObjectCreationHandling(ObjectCreationHandling.Populate)]
+    public List&lt;string&gt; Steps { get; } = new() { &quot;restore&quot; };
+}
+</code></pre>
+<p>Deserialized entries are appended to the existing list instead of replacing it. The attribute applies to a member or a whole type; member beats type, and both beat the options-level <code>PreferredObjectCreationHandling</code>.</p>
+<h2 id="pattern-11--choose-a-converter">Pattern 11 — Choose a converter</h2>
+<p><a class="xref" href="../../../api/Bodu.Text.Serialization.ConverterAttribute.html">ConverterAttribute</a> selects the converter for a member, or for every use of a type:</p>
+<pre><code class="lang-csharp">public sealed class Stamped
+{
+    [Converter(typeof(UnixSecondsConverter))]
+    public DateTimeOffset CreatedAt { get; set; }
+}
+
+// → d9:CreatedAti1700000000ee
+</code></pre>
+<p>The referenced type must derive from <a class="xref" href="../../../api/Bodu.Text.Bencode.Serialization.BencodeConverter-1.html">BencodeConverter&lt;T&gt;</a> (or its factory) and expose a public parameterless constructor. Writing converters — including the factory pattern and resolution order — is covered in <a href="converters.html">Writing converters</a>.</p>
+<h2 id="pattern-12--name-enum-members">Pattern 12 — Name enum members</h2>
+<p><a class="xref" href="../../../api/Bodu.Text.Serialization.StringEnumMemberNameAttribute.html">StringEnumMemberNameAttribute</a> renames an individual enumeration member when the enum is serialized by name:</p>
+<pre><code class="lang-csharp">[Converter(typeof(BencodeStringEnumConverter&lt;Status&gt;))]
+public enum Status
+{
+    Active,
+
+    [StringEnumMemberName(&quot;on-hold&quot;)]
+    OnHold,
+}
+
+// Status.OnHold serializes as the byte string 7:on-hold
+</code></pre>
+<p>The attribute applies only to by-name serialization (the default enum handling, or an explicit string-enum converter); it is a no-op when the enum is written as an integer.</p>
+<h2 id="precedence-at-a-glance">Precedence at a glance</h2>
+<p>When several settings could govern the same member, the closest one wins:</p>
+<ol>
+<li>a member-level attribute (<code>[PropertyName]</code>, <code>[Ignore]</code>, <code>[Converter]</code>, <code>[ObjectCreationHandling]</code>, …);</li>
+<li>a type-level attribute (<code>[NamingPolicy]</code>, <code>[Converter]</code>, <code>[UnmappedMemberHandling]</code>, <code>[ObjectCreationHandling]</code>);</li>
+<li>the serializer options (<code>PropertyNamingPolicy</code>, <code>PropertyNameCaseInsensitive</code>, <code>Converters</code>, <code>DefaultIgnoreCondition</code>, <code>UnmappedMemberHandling</code>, <code>PreferredObjectCreationHandling</code>, <code>IncludeFields</code>).</li>
+</ol>
+<p>A member with no explicit <code>[Ignore]</code> falls back to the options-level <code>DefaultIgnoreCondition</code> (default <code>Never</code>); an absent <code>[NamingPolicy]</code> falls back to <code>PropertyNamingPolicy</code>. The <code>[PropertyName]</code> name always wins over every policy at any level.</p>
+<h2 id="see-also">See also</h2>
+<ul>
+<li><strong><a href="using.html">Using Bencode</a></strong> — the format walk-through these attributes shape.</li>
+<li><strong><a href="converters.html">Writing converters</a></strong> — <code>[Converter]</code> placement and the resolution order in detail.</li>
+<li><strong><a href="index.html">Bencode guides</a></strong> — the full guide index for the Bencode serializer.</li>
+<li><strong><a href="../../topics/text-and-serialization.html">Text &amp; Serialization guides</a></strong> — every guide in this topic, across Bodu.Text.Encoding, Bodu.Text.Formats, and the serializers.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Bodu.Globalization.Calendar.Caching — Core concepts | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Bodu.Globalization.Calendar.Caching — Core concepts | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="boduglobalizationcalendarcaching--core-concepts">Bodu.Globalization.Calendar.Caching — Core concepts</h1>
+
+<p>This page is the vocabulary the rest of the caching documentation assumes. Read it once before the
+<a href="getting-started.html">getting-started samples</a> or the <a href="../../guides/calendar/caching/notable-date-caching.html">caching guide</a>,
+and refer back whenever a term feels imprecise.</p>
+<p>Part of the <strong><a href="../topics/globalization-and-calendars.html">Globalization &amp; Calendars</a></strong> topic.</p>
+<p>For the high-level shape of the library, start with the <a href="index.html">introduction</a>.</p>
+<h2 id="decorator-vs-service">Decorator vs service</h2>
+<p>The <strong>service</strong> is any <a class="xref" href="../../api/Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a> — the engine's
+<a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateService.html">NotableDateService</a>, a data pack's <code>CreateService(...)</code> result, or the reloadable
+<a class="xref" href="../../api/Bodu.Globalization.Calendar.ReloadableNotableDateService.html">ReloadableNotableDateService</a>. It is a pure computer: given a resource, a territory,
+and a year, it resolves the same occurrences every time and knows nothing about caching.</p>
+<p>The <strong>decorator</strong> is <a class="xref" href="../../api/Bodu.Globalization.Calendar.Caching.CachingNotableDateService.html">CachingNotableDateService</a>. It implements the same
+interface, holds the wrapped service as its <em>inner</em> service, and answers each query from an
+<a class="xref" href="../../api/Bodu.Globalization.Calendar.Caching.INotableDateCache.html">INotableDateCache</a> — calling the inner service only on a miss. Because the
+two share a contract, consumers never know which one they hold. Under dependency injection,
+<code>AddCachedNotableDateService</code> swaps the decorator into the container's <code>INotableDateService</code> slot and makes the
+previous registration the inner service.</p>
+<p>The decorator is not a second engine. Every observable behavior of the wrapped service — inverted-range handling,
+filter semantics, discovery methods — is delegated or reproduced exactly; caching only changes <em>when</em> a year is
+computed.</p>
+<h2 id="cache-key-and-cache-unit">Cache key and cache unit</h2>
+<p>The <strong>cache unit</strong> is one territory's occurrences for one whole civil (Gregorian) year, represented by a
+<a class="xref" href="../../api/Bodu.Globalization.Calendar.Caching.NotableDateCacheEntry.html">NotableDateCacheEntry</a>. The <strong>cache key</strong> is the triple
+<code>(territory, year, resourceVersion)</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Key component</th>
+<th>Normalization</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Territory</td>
+<td>Trimmed and upper-cased with the invariant culture, so <code>us</code>, <code>US </code>, and <code>US</code> address one entry. <code>AU-NSW</code> and <code>AU</code> are distinct — a subdivision query inherits its parent's rules inside the engine, not inside the cache.</td>
+</tr>
+<tr>
+<td>Year</td>
+<td>The civil year, <code>1</code>–<code>9999</code>.</td>
+</tr>
+<tr>
+<td>Resource version</td>
+<td>An ordinal string token (see <a href="#time-to-live-vs-resource-version">below</a>).</td>
+</tr>
+</tbody>
+</table>
+<p>A query is always decomposed into whole years. A single day, a sub-year range, and a multi-year range all resolve
+through the same per-year entries; the assembled occurrences are then clipped to the requested window by their
+emitted <code>Date</code>. The unit is deliberately coarse: resolving one year is a pure function of resource, territory, and
+year, and a single-day query for a cached year costs a cache read rather than a recompute. A year that yields no
+occurrences is still a valid, cacheable entry — it records that the year <em>was</em> computed.</p>
+<p>A <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateFilter.html">NotableDateFilter</a> is never part of the key. The filtered <code>Resolve</code> overloads
+apply the filter to the assembled unfiltered result, so every filter shares the same cached years.</p>
+<h2 id="hit-miss-coalesced-flight-and-refresh-ahead">Hit, miss, coalesced flight, and refresh-ahead</h2>
+<table>
+<thead>
+<tr>
+<th>Event</th>
+<th>What happens</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Hit</strong></td>
+<td><code>GetYear</code> returns a fresh, version-matching entry. The occurrences are served as-is (the cached list itself for a whole-year query), logged at <code>CacheHitLogLevel</code>, and counted on the <code>hits</code> meter.</td>
+</tr>
+<tr>
+<td><strong>Miss</strong></td>
+<td><code>GetYear</code> returns <code>null</code>. The decorator resolves the <em>whole</em> civil year through the inner service, writes it back with <code>StoreYear</code>, logs at <code>CacheMissLogLevel</code>, and counts on the <code>misses</code> meter.</td>
+</tr>
+<tr>
+<td><strong>Coalesced flight</strong></td>
+<td>A second caller misses the same <code>(territory, year, version)</code> while the first computation is still running. It joins the in-flight computation (a <code>Lazy&lt;T&gt;</code> per key) instead of starting its own, so <em>N</em> concurrent cold callers cost one engine computation. A faulted computation is not memoized — the next caller retries fresh.</td>
+</tr>
+<tr>
+<td><strong>Refresh-ahead</strong></td>
+<td>With <code>RefreshAheadFraction</code> above <code>0</code>, a hit whose entry is older than that fraction of the effective time-to-live is still served immediately and additionally schedules one background recompute of the year. At most one recompute per key is pending at a time; a failing recompute is logged and swallowed, and the next aged hit retries. Because the fraction is below <code>1</code>, a continuously hot territory never surfaces a miss.</td>
+</tr>
+</tbody>
+</table>
+<p>Refresh-ahead is access-triggered — no timers run, and only a year that was actually served can schedule a
+recompute. Disposing the decorator prevents new recomputes and abandons pending ones without draining them.</p>
+<h2 id="time-to-live-vs-resource-version">Time-to-live vs resource version</h2>
+<p>Freshness has two independent triggers, and the <strong>cache</strong> — not the decorator — evaluates both on every call, using
+the <code>ttl</code> and <code>asOf</code> arguments it is handed.</p>
+<p><strong>Time-to-live</strong> (<code>NotableDateCachingOptions.Ttl</code>, default 30 days) expires an entry a fixed duration after its
+<code>ComputedAtUtc</code>. The comparison is strict: an entry exactly one time-to-live old is stale. Because notable-date
+resolution is deterministic for a given resource, this trigger is a safety net against drift rather than the primary
+invalidation mechanism; there is no upper bound, and an extreme duration effectively disables it. Two refinements
+shape it:</p>
+<ul>
+<li><strong>Jitter</strong> (<code>TtlJitter</code>, default <code>0</code>, range <code>[0, 1)</code>) deterministically shaves up to that fraction off a territory's
+effective time-to-live, derived from a stable hash of the normalized territory — never from randomness — so
+territories warmed together do not all expire at the same instant, and a given territory behaves identically
+across processes and under test. Jitter only ever shortens the duration.</li>
+<li><strong>Refresh-ahead</strong> (<code>RefreshAheadFraction</code>, default <code>0</code>, range <code>[0, 1)</code>) is described above.</li>
+</ul>
+<p><strong>Resource version</strong> is the ordinal token every entry is keyed by. An entry is served only when its
+<code>ResourceVersion</code> equals the requested one, and a <code>StoreYear</code> drops every existing entry whose version differs from
+the one being written — so a version change invalidates a territory's cache wholesale, regardless of the
+time-to-live. The token comes from one of two places:</p>
+<table>
+<thead>
+<tr>
+<th>Decorator constructed with</th>
+<th>Token</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>An <a class="xref" href="../../api/Bodu.Globalization.Calendar.INotableDateResourceProvider.html">INotableDateResourceProvider</a> (<code>versionSource</code>)</td>
+<td><code>&quot;&lt;ResourceId&gt;\|&lt;SchemaVersion&gt;\|&lt;generation&gt;&quot;</code>, where the generation increments every time the provider's <code>Current</code> reference changes. A <a class="xref" href="../../api/Bodu.Globalization.Calendar.MutableNotableDateResourceProvider.html">MutableNotableDateResourceProvider</a><code>.Reload(...)</code> therefore invalidates every cached year on the next query, even when the new resource carries the same identifier. Under DI this provider is picked up automatically when <code>AddReloadableNotableDateService</code> registered it.</td>
+</tr>
+<tr>
+<td>No provider</td>
+<td><code>NotableDateCachingOptions.ResourceVersion</code>, or a built-in default token when that is <code>null</code>. Set it to the data version of the resource and bump it after a data update.</td>
+</tr>
+</tbody>
+</table>
+<p>Validity is a third, silent check: an entry with a null territory or version, a year outside <code>1</code>–<code>9999</code>, or a
+<code>ComputedAtUtc</code> more than one minute ahead of <code>asOf</code> (clock skew tolerance) is treated as absent on read and dropped
+on write, so a tampered or malformed store never surfaces a nonsensical result.</p>
+<h2 id="warm-up">Warm-up</h2>
+<p>A <strong>warm-up</strong> pre-pays the year computations a cold cache would otherwise charge to the first user requests. It goes
+through the normal read-through path — cold years compute and store, already-cached years cost only a cache read — so
+it is safe to repeat.</p>
+<ul>
+<li><code>CachingNotableDateService.Warm(territories, firstYear, lastYear)</code> warms an inclusive span of civil years for each
+territory in turn, synchronously. A territory whose resolution fails is logged (<code>EventId 4607</code>, <code>Warning</code>) and
+skipped; the return value is the number of territories warmed.</li>
+<li><code>AddNotableDateCacheWarmup(...)</code> registers a hosted service that calls <code>Warm</code> after the host has started, one
+territory at a time, without ever blocking or crashing the host. The span comes from
+<a class="xref" href="../../api/Bodu.Globalization.Calendar.Caching.NotableDateCacheWarmupOptions.html">NotableDateCacheWarmupOptions</a>: a rolling window of <code>YearsBehind</code>
+(default <code>0</code>) and <code>YearsAhead</code> (default <code>1</code>) around the current UTC year — recomputed on every run, so a long-lived
+deployment stays current across restarts — with either bound pinned by <code>FirstYear</code> / <code>LastYear</code>. <code>Territories</code>
+must be non-empty, or startup validation fails. When the registered <code>INotableDateService</code> is not the caching
+decorator, the run logs <code>EventId 4625</code> and no-ops; register <code>AddCachedNotableDateService</code> first.</li>
+</ul>
+<h2 id="write-status">Write status</h2>
+<p><a class="xref" href="../../api/Bodu.Globalization.Calendar.Caching.NotableDateCacheWriteStatus.html">NotableDateCacheWriteStatus</a> is what <code>StoreYear</code> returns, so a caller can
+tell whether the computed year actually landed:</p>
+<table>
+<thead>
+<tr>
+<th>Status</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Stored</code></td>
+<td>The entry was persisted and is durable for the backend's lifetime (an in-memory write counts, for the instance's lifetime).</td>
+</tr>
+<tr>
+<td><code>Skipped</code></td>
+<td>The cache intentionally stores nothing — <a class="xref" href="../../api/Bodu.Globalization.Calendar.Caching.NullNotableDateCache.html">NullNotableDateCache</a> — so nothing was persisted and nothing was expected to be.</td>
+</tr>
+<tr>
+<td><code>Failed</code></td>
+<td>A storage error was swallowed under the best-effort policy; nothing was persisted, and the next lookup for that year recomputes rather than trusting a write that never happened.</td>
+</tr>
+</tbody>
+</table>
+<p>The decorator itself ignores the status — its result is already computed — but a custom backend or a diagnostic
+wrapper can act on it.</p>
+<h2 id="storage-failure-policy">Storage failure policy</h2>
+<p>Every shipped backend is <strong>best-effort</strong> by default: a read that fails returns an empty result (a miss), a write that
+fails returns <code>Failed</code>, and <code>Clear</code> swallows faults. The exceptions treated as storage failures are
+<code>IOException</code> and <code>UnauthorizedAccessException</code> for the file caches, <code>SqliteException</code> and <code>IOException</code> for SQLite,
+and any non-cancellation exception for the distributed cache. Row-level corruption — an unreadable occurrence blob, a
+malformed TOML or JSON file — is data damage rather than a storage failure: the affected rows are skipped, the file is
+reported (<code>EventId 4604</code>), and the next successful write repairs it.</p>
+<p>Two switches on <a class="xref" href="../../api/Bodu.Globalization.Calendar.Caching.NotableDateCacheOptions.html">NotableDateCacheOptions</a> tighten the policy:</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Default</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ThrowOnStorageFailure</code></td>
+<td><code>false</code></td>
+<td>Rethrow the underlying storage exception as the store produced it, instead of degrading. Which of <code>IOException</code> / <code>UnauthorizedAccessException</code> a fault yields varies by platform, so catch both.</td>
+</tr>
+<tr>
+<td><code>ValidateStorageOnStart</code></td>
+<td><code>false</code></td>
+<td>Probe the store eagerly. A directly constructed file cache creates its directory; a SQLite cache opens and initializes the database; under DI the SQLite and distributed registrations run the probe through <code>ValidateOnStart</code>, so a misconfigured store fails the host start rather than the first lookup. Independent of <code>ThrowOnStorageFailure</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>Argument validation always throws regardless of either switch.</p>
+<h2 id="backend-classes">Backend classes</h2>
+<p>The shipped backends share two layers of mechanism so they differ only in how they read and write bytes:</p>
+<table>
+<thead>
+<tr>
+<th>Class</th>
+<th>Layer</th>
+<th>Contributes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.Caching.NotableDateCacheBase-1.html">NotableDateCacheBase&lt;TOptions&gt;</a> (<code>TOptions : NotableDateCacheOptions</code>)</td>
+<td>Storage-agnostic</td>
+<td>Territory normalization; the read-time freshness, validity, and version filter in <code>GetYear</code>; the read-merge-write sequence in <code>StoreYear</code> under a striped per-territory lock; the batch read the decorator uses for multi-year ranges. Derived types implement <code>ReadEntries(territory)</code>, <code>WriteEntries(territory, entries)</code>, and <code>Clear()</code>. <code>GetYear</code> is virtual so a keyed store can read one row instead of a whole territory.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.Caching.FileNotableDateCacheBase.html">FileNotableDateCacheBase</a> (over <a class="xref" href="../../api/Bodu.Globalization.Calendar.Caching.FileNotableDateCacheOptions.html">FileNotableDateCacheOptions</a>)</td>
+<td>File mechanism</td>
+<td>One file per territory named after the sanitized territory code under <code>CacheDirectory</code> (default: <code>bodu-notable-dates</code> under the system temp path); atomic temp-and-move writes; a bounded last-write-time parse memo so an unchanged file is not re-parsed; best-effort degradation. Derived types supply the file extension and the serialization.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.Caching.InMemoryNotableDateCache.html">InMemoryNotableDateCache</a></td>
+<td>Backend</td>
+<td>A concurrent dictionary of territory → entry list.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.Caching.TomlNotableDateCache.html">TomlNotableDateCache</a>, <a class="xref" href="../../api/Bodu.Globalization.Calendar.Caching.JsonNotableDateCache.html">JsonNotableDateCache</a></td>
+<td>Backend</td>
+<td>The TOML (<code>Bodu.Text.Toml</code>) and JSON (<code>System.Text.Json</code>) serializations of the shared <a class="xref" href="../../api/Bodu.Globalization.Calendar.Caching.NotableDateCacheFile.html">NotableDateCacheFile</a> document.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.Caching.SqliteNotableDateCache.html">SqliteNotableDateCache</a></td>
+<td>Backend (<code>…Caching.Sqlite</code>)</td>
+<td>A <code>notable_dates</code> table with primary key <code>(territory, year, version)</code>, <code>computed_at</code> as invariant round-trip text, and <code>occurrences</code> as a JSON blob; WAL and <code>busy_timeout</code> pragmas per <a class="xref" href="../../api/Bodu.Globalization.Calendar.Caching.SqliteNotableDateCacheOptions.html">SqliteNotableDateCacheOptions</a>.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.Caching.DistributedNotableDateCache.html">DistributedNotableDateCache</a></td>
+<td>Backend (<code>…Caching.Distributed</code>)</td>
+<td>One JSON blob per territory under <code>&lt;KeyPrefix&gt;notable-dates:&lt;TERRITORY&gt;</code> in an <code>IDistributedCache</code>, stamped with a server-side absolute expiration of <code>ttl + EntryExpirationMargin</code>.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.Caching.NullNotableDateCache.html">NullNotableDateCache</a></td>
+<td>Backend</td>
+<td>Implements the interface directly; stores nothing.</td>
+</tr>
+</tbody>
+</table>
+<p>The abstract storage seam (<code>ReadEntries</code> / <code>WriteEntries</code>) is <code>protected internal</code>, opened to the companion SQLite
+and distributed packages. A backend outside the family implements the public
+<a class="xref" href="../../api/Bodu.Globalization.Calendar.Caching.INotableDateCache.html">INotableDateCache</a> contract directly, as
+<code>NullNotableDateCache</code> does — see <a href="getting-started.html#implement-a-custom-cache">Getting started</a>.</p>
+<h2 id="observability">Observability</h2>
+<p><strong>Logs.</strong> The decorator logs each hit and miss at the levels set on
+<a class="xref" href="../../api/Bodu.Globalization.Calendar.Caching.NotableDateCachingOptions.html">NotableDateCachingOptions</a> — <code>CacheHitLogLevel</code> and <code>CacheMissLogLevel</code>,
+both defaulting to <code>Information</code> (set them to <code>Debug</code> in production once the cache is trusted). Every message
+carries a stable event id:</p>
+<table>
+<thead>
+<tr>
+<th>EventId</th>
+<th>Level</th>
+<th>Event</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4601 / 4602</td>
+<td><code>CacheHitLogLevel</code> / <code>CacheMissLogLevel</code></td>
+<td>Year served from the cache / year recomputed on a miss and cached</td>
+</tr>
+<tr>
+<td>4603</td>
+<td><code>Warning</code></td>
+<td>File-cache storage failure swallowed (rate-limited, with the count suppressed since the previous warning)</td>
+</tr>
+<tr>
+<td>4604</td>
+<td><code>Warning</code></td>
+<td>Corrupt cache file treated as empty</td>
+</tr>
+<tr>
+<td>4605 / 4606</td>
+<td><code>CacheMissLogLevel</code> / <code>Warning</code></td>
+<td>Refresh-ahead recomputed a year / refresh-ahead failed and was swallowed</td>
+</tr>
+<tr>
+<td>4607</td>
+<td><code>Warning</code></td>
+<td>Warm-up of one territory failed and was skipped</td>
+</tr>
+<tr>
+<td>4611</td>
+<td><code>Warning</code></td>
+<td>SQLite storage failure swallowed</td>
+</tr>
+<tr>
+<td>4621</td>
+<td><code>Warning</code></td>
+<td>Distributed storage failure swallowed</td>
+</tr>
+<tr>
+<td>4622 / 4623</td>
+<td><code>Information</code></td>
+<td>Startup warm-up started / completed</td>
+</tr>
+<tr>
+<td>4624 / 4625</td>
+<td><code>Warning</code></td>
+<td>Startup warm-up failed and was abandoned / skipped because the registered service is not the caching decorator</td>
+</tr>
+</tbody>
+</table>
+<p>Storage-failure warnings are rate-limited to one per minute per cache instance; the swallowed-failure <em>counters</em> are
+not, so sustained degradation stays measurable while its logging is throttled.</p>
+<p><strong>Metrics.</strong> Counters are published through <code>System.Diagnostics.Metrics</code>; with no listener attached an add is a no-op
+branch. Tag values are normalized territory codes and fixed operation literals, so cardinality stays bounded.</p>
+<table>
+<thead>
+<tr>
+<th>Meter</th>
+<th>Instrument</th>
+<th>Tags</th>
+<th>Counts</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Bodu.Globalization.Calendar.Caching</code></td>
+<td><code>bodu.calendar.notable_date_cache.hits</code></td>
+<td><code>territory</code></td>
+<td>Years served from the cache</td>
+</tr>
+<tr>
+<td></td>
+<td><code>bodu.calendar.notable_date_cache.misses</code></td>
+<td><code>territory</code></td>
+<td>Years recomputed on a miss</td>
+</tr>
+<tr>
+<td></td>
+<td><code>bodu.calendar.notable_date_cache.coalesced_flights</code></td>
+<td><code>territory</code></td>
+<td>Callers that joined an in-flight computation (approximate under race)</td>
+</tr>
+<tr>
+<td></td>
+<td><code>bodu.calendar.notable_date_cache.refresh_ahead</code></td>
+<td><code>territory</code>, <code>outcome</code> (<code>success</code> / <code>failed</code>)</td>
+<td>Background refresh-ahead recomputes</td>
+</tr>
+<tr>
+<td></td>
+<td><code>bodu.calendar.notable_date_cache.storage_failures</code></td>
+<td><code>operation</code></td>
+<td>Swallowed file-cache storage failures</td>
+</tr>
+<tr>
+<td><code>Bodu.Globalization.Calendar.Caching.Sqlite</code></td>
+<td><code>bodu.calendar.notable_date_cache.sqlite.storage_failures</code></td>
+<td><code>operation</code></td>
+<td>Swallowed SQLite storage failures</td>
+</tr>
+<tr>
+<td><code>Bodu.Globalization.Calendar.Caching.Distributed</code></td>
+<td><code>bodu.calendar.notable_date_cache.distributed.storage_failures</code></td>
+<td><code>operation</code></td>
+<td>Swallowed distributed storage failures</td>
+</tr>
+</tbody>
+</table>
+<h2 id="thread-safety-and-lifetime">Thread safety and lifetime</h2>
+<p><strong>Decorator.</strong> <a class="xref" href="../../api/Bodu.Globalization.Calendar.Caching.CachingNotableDateService.html">CachingNotableDateService</a> is safe for concurrent use: the
+single-flight map coalesces concurrent misses, the version token is a volatile read with a lock taken only when the
+observed resource reference changes, and refresh-ahead registrations are published before their worker starts. It is
+<code>IDisposable</code>; disposal stops new refresh-ahead work and disposes the cache only when constructed with
+<code>ownsCache: true</code> (the DI registration passes <code>true</code> exactly when it created the default TOML cache itself).</p>
+<p><strong>Backends.</strong> Reads are lock-free; <code>StoreYear</code> runs its read-merge-write under a per-territory lock, so concurrent
+writes to one territory in one process cannot interleave and lose a year. Across processes the guarantees are the
+backend's: the file caches write atomically (a reader never sees a partial file) and re-parse a file another process
+changed; SQLite serializes writers through its own locking with the configured <code>BusyTimeout</code>; the distributed cache
+has no atomic read-modify-write, so cross-process writes to the same territory are last-write-wins — acceptable for a
+best-effort cache whose entries are recomputable.</p>
+<p><strong>Lifetime.</strong> Every cache is designed to live as long as the service it backs — a singleton under DI. The SQLite cache
+holds a keep-alive connection (so a shared in-memory database survives between operations) and must be disposed;
+the container disposes it when it created it. The in-memory cache's contents die with the instance. Time is taken
+from an injected <code>TimeProvider</code> (<code>TimeProvider.System</code> by default), so freshness is testable with a synthetic clock.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="getting-started.html">Getting started</a></strong> — install and runnable minimal samples.</li>
+<li><strong><a href="index.html">Introduction</a></strong> — the package family, headline types, and scenario index.</li>
+<li><strong><a href="../../guides/calendar/caching/notable-date-caching.html">Caching notable dates guide</a></strong> — worked patterns and troubleshooting.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Globalization.Calendar.Caching.html">Bodu.Globalization.Calendar.Caching API reference</a></strong> — full type-by-type docs.</li>
+<li><strong><a href="../topics/globalization-and-calendars.html">Globalization &amp; Calendars topic</a></strong> — the runtime and its companions; the <a href="../topics/globalization-and-calendars-concepts.html">topic concepts</a> page collects the shared vocabulary.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

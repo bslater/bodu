@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Struct Utf8YamlWriter | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Struct Utf8YamlWriter | BODU ">
+    
+    <meta name="description" content="Provides a forward-only writer that emits a YAML document in block style to a UTF-8 buffer, in the manner of .">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Text.Yaml.Writer.Utf8YamlWriter">
+
+
+
+  <h1 id="Bodu_Text_Yaml_Writer_Utf8YamlWriter" data-uid="Bodu.Text.Yaml.Writer.Utf8YamlWriter" class="text-break">Struct Utf8YamlWriter</h1>
+  <div class="markdown level0 summary"><p>Provides a forward-only writer that emits a YAML document in block style to a UTF-8 buffer, in the manner of
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.json.utf8jsonwriter">Utf8JsonWriter</a>.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetype.equals">ValueType.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetype.gethashcode">ValueType.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetype.tostring">ValueType.ToString()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Yaml.html">Yaml</a>.<a class="xref" href="Bodu.Text.Yaml.Writer.html">Writer</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Text.Yaml.dll</h6>
+  <h5 id="Bodu_Text_Yaml_Writer_Utf8YamlWriter_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ref struct Utf8YamlWriter</code></pre>
+  </div>
+  <h5 id="Bodu_Text_Yaml_Writer_Utf8YamlWriter_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+The writer emits block mappings and sequences with configurable indentation, choosing the most compact safe scalar
+presentation for each value (plain when unambiguous, otherwise double-quoted). Empty mappings and sequences are
+emitted in the flow forms <code>{}</code> and <code>[]</code> so they round-trip as empty collections rather than null.
+</p>
+<p>
+The writer is a <code>ref struct</code> and cannot be boxed, stored on the heap, or captured by a lambda. Its
+mutable state lives behind a single shared reference, so passing the writer by value hands the callee the same
+in-progress document rather than an independent copy.
+</p>
+</div>
+  <h3 id="constructors">Constructors
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Text_Yaml_Writer_Utf8YamlWriter__ctor_System_Buffers_IBufferWriter_System_Byte__" data-uid="Bodu.Text.Yaml.Writer.Utf8YamlWriter.#ctor(System.Buffers.IBufferWriter{System.Byte})">
+          <a class="xref" href="Bodu.Text.Yaml.Writer.Utf8YamlWriter.-ctor.html#Bodu_Text_Yaml_Writer_Utf8YamlWriter__ctor_System_Buffers_IBufferWriter_System_Byte__">Utf8YamlWriter(IBufferWriter&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Text.Yaml.Writer.Utf8YamlWriter.html">Utf8YamlWriter</a> struct.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Yaml_Writer_Utf8YamlWriter__ctor_System_Buffers_IBufferWriter_System_Byte__Bodu_Text_Yaml_Writer_YamlWriterOptions_" data-uid="Bodu.Text.Yaml.Writer.Utf8YamlWriter.#ctor(System.Buffers.IBufferWriter{System.Byte},Bodu.Text.Yaml.Writer.YamlWriterOptions)">
+          <a class="xref" href="Bodu.Text.Yaml.Writer.Utf8YamlWriter.-ctor.html#Bodu_Text_Yaml_Writer_Utf8YamlWriter__ctor_System_Buffers_IBufferWriter_System_Byte__Bodu_Text_Yaml_Writer_YamlWriterOptions_">Utf8YamlWriter(IBufferWriter&lt;byte&gt;, YamlWriterOptions)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Text.Yaml.Writer.Utf8YamlWriter.html">Utf8YamlWriter</a> struct with options.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Text_Yaml_Writer_Utf8YamlWriter_WriteBoolean_System_Boolean_" data-uid="Bodu.Text.Yaml.Writer.Utf8YamlWriter.WriteBoolean(System.Boolean)">
+          <a class="xref" href="Bodu.Text.Yaml.Writer.Utf8YamlWriter.WriteBoolean.html#Bodu_Text_Yaml_Writer_Utf8YamlWriter_WriteBoolean_System_Boolean_">WriteBoolean(bool)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes a boolean scalar value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Yaml_Writer_Utf8YamlWriter_WriteDouble_System_Double_" data-uid="Bodu.Text.Yaml.Writer.Utf8YamlWriter.WriteDouble(System.Double)">
+          <a class="xref" href="Bodu.Text.Yaml.Writer.Utf8YamlWriter.WriteDouble.html#Bodu_Text_Yaml_Writer_Utf8YamlWriter_WriteDouble_System_Double_">WriteDouble(double)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes a floating-point scalar value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Yaml_Writer_Utf8YamlWriter_WriteEndMapping" data-uid="Bodu.Text.Yaml.Writer.Utf8YamlWriter.WriteEndMapping">
+          <a class="xref" href="Bodu.Text.Yaml.Writer.Utf8YamlWriter.WriteEndMapping.html#Bodu_Text_Yaml_Writer_Utf8YamlWriter_WriteEndMapping">WriteEndMapping()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Ends the current block mapping.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Yaml_Writer_Utf8YamlWriter_WriteEndSequence" data-uid="Bodu.Text.Yaml.Writer.Utf8YamlWriter.WriteEndSequence">
+          <a class="xref" href="Bodu.Text.Yaml.Writer.Utf8YamlWriter.WriteEndSequence.html#Bodu_Text_Yaml_Writer_Utf8YamlWriter_WriteEndSequence">WriteEndSequence()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Ends the current block sequence.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Yaml_Writer_Utf8YamlWriter_WriteInteger_System_Int64_" data-uid="Bodu.Text.Yaml.Writer.Utf8YamlWriter.WriteInteger(System.Int64)">
+          <a class="xref" href="Bodu.Text.Yaml.Writer.Utf8YamlWriter.WriteInteger.html#Bodu_Text_Yaml_Writer_Utf8YamlWriter_WriteInteger_System_Int64_">WriteInteger(long)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes an integer scalar value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Yaml_Writer_Utf8YamlWriter_WriteNull" data-uid="Bodu.Text.Yaml.Writer.Utf8YamlWriter.WriteNull">
+          <a class="xref" href="Bodu.Text.Yaml.Writer.Utf8YamlWriter.WriteNull.html#Bodu_Text_Yaml_Writer_Utf8YamlWriter_WriteNull">WriteNull()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes a null scalar value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Yaml_Writer_Utf8YamlWriter_WritePropertyName_System_String_" data-uid="Bodu.Text.Yaml.Writer.Utf8YamlWriter.WritePropertyName(System.String)">
+          <a class="xref" href="Bodu.Text.Yaml.Writer.Utf8YamlWriter.WritePropertyName.html#Bodu_Text_Yaml_Writer_Utf8YamlWriter_WritePropertyName_System_String_">WritePropertyName(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes a mapping key. The next write supplies its value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Yaml_Writer_Utf8YamlWriter_WriteStartMapping" data-uid="Bodu.Text.Yaml.Writer.Utf8YamlWriter.WriteStartMapping">
+          <a class="xref" href="Bodu.Text.Yaml.Writer.Utf8YamlWriter.WriteStartMapping.html#Bodu_Text_Yaml_Writer_Utf8YamlWriter_WriteStartMapping">WriteStartMapping()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Begins a block mapping at the current value position.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Yaml_Writer_Utf8YamlWriter_WriteStartSequence" data-uid="Bodu.Text.Yaml.Writer.Utf8YamlWriter.WriteStartSequence">
+          <a class="xref" href="Bodu.Text.Yaml.Writer.Utf8YamlWriter.WriteStartSequence.html#Bodu_Text_Yaml_Writer_Utf8YamlWriter_WriteStartSequence">WriteStartSequence()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Begins a block sequence at the current value position.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Yaml_Writer_Utf8YamlWriter_WriteString_System_String_" data-uid="Bodu.Text.Yaml.Writer.Utf8YamlWriter.WriteString(System.String)">
+          <a class="xref" href="Bodu.Text.Yaml.Writer.Utf8YamlWriter.WriteString.html#Bodu_Text_Yaml_Writer_Utf8YamlWriter_WriteString_System_String_">WriteString(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes a string scalar value.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

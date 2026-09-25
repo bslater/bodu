@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Bodu.Numerics — Getting started | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Bodu.Numerics — Getting started | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="bodunumerics--getting-started">Bodu.Numerics — Getting started</h1>
+
+<h2 id="install">Install</h2>
+<pre><code class="lang-bash">dotnet add package Bodu.Numerics
+</code></pre>
+<p>Targets <code>net8.0</code>. No external runtime dependencies — <code>Bodu.Numerics</code> references only <code>Bodu.Core</code> for shared argument validation.</p>
+<h2 id="minimal-samples">Minimal samples</h2>
+<h3 id="exact-rational-arithmetic-fractiont">Exact rational arithmetic (<code>Fraction&lt;T&gt;</code>)</h3>
+<pre><code class="lang-csharp">using Bodu.Numerics;
+
+Fraction&lt;int&gt; third = Fraction&lt;int&gt;.Create(1, 3);
+Fraction&lt;int&gt; half  = Fraction&lt;int&gt;.Create(1, 2);
+
+Fraction&lt;int&gt; sum = third + half;          // 5/6 — exact, no float drift
+Fraction&lt;int&gt; product = third * half;      // 1/6
+Fraction&lt;int&gt; ratio = sum / Fraction&lt;int&gt;.Create(7, 12);  // 10/7
+</code></pre>
+<p>The constructor reduces to canonical form: <code>Fraction&lt;int&gt;.Create(2, 4)</code> and <code>Fraction&lt;int&gt;.Create(1, 2)</code> are indistinguishable after construction. Negative denominators are flipped so the sign always lives on the numerator.</p>
+<h3 id="arbitrary-precision-fractionbiginteger">Arbitrary precision (<code>Fraction&lt;BigInteger&gt;</code>)</h3>
+<pre><code class="lang-csharp">using System.Numerics;
+using Bodu.Numerics;
+
+Fraction&lt;BigInteger&gt; principal = Fraction&lt;BigInteger&gt;.Create(1_000_000, 1);
+Fraction&lt;BigInteger&gt; monthlyRate = Fraction&lt;BigInteger&gt;.Create(5, 1200);  // 5% / 12 months
+Fraction&lt;BigInteger&gt; growth = Fraction&lt;BigInteger&gt;.One + monthlyRate;
+
+Fraction&lt;BigInteger&gt; balance = principal;
+for (int i = 0; i &lt; 360; i++) balance *= growth;     // exact 30-year amortization, no rounding drift
+</code></pre>
+<p>Backed by <code>BigInteger</code>, intermediate results never overflow. Reach for <code>Fraction&lt;BigInteger&gt;</code> whenever a calculation chains several multiplications or divisions and you need a single, deferred rounding boundary.</p>
+<div class="TIP">
+<h5>Tip</h5>
+<p>Three construction calls have defined failure modes worth knowing up front: <code>Create(n, 0)</code> throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dividebyzeroexception">DivideByZeroException</a>; a canonical result that does not fit a fixed-width <code>T</code> throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.overflowexception">OverflowException</a>; and <code>FromDouble(double.NaN)</code> (or any non-finite <code>double</code>) throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a>. Each has a non-throwing partner — <code>TryCreate</code>, <code>TryFromBigInteger</code>, <code>TryFromDouble</code>, <code>TryFromDecimal</code> — that reports the same condition with a <code>false</code> return.</p>
+</div>
+<h3 id="exact-versus-best-fit-conversion-from-double">Exact versus best-fit conversion from <code>double</code></h3>
+<p><code>FromDouble</code> is exact in the IEEE-754 sense — it decomposes the <code>double</code>'s mantissa and exponent, so a value that looks &quot;round&quot; in base 10 can produce a fraction with an enormous denominator:</p>
+<pre><code class="lang-csharp">Fraction&lt;BigInteger&gt;.FromDouble(0.1);
+// 3602879701896397/36028797018963968 — the exact bits of the double 0.1, not 1/10
+</code></pre>
+<p>When you want the <em>intended</em> rational rather than the bit-exact one, reach for <code>Approximate</code> with a denominator bound (below), which recovers <code>1/10</code> from <code>0.1</code>.</p>
+<h3 id="best-rational-approximation">Best rational approximation</h3>
+<pre><code class="lang-csharp">Fraction&lt;int&gt; piApprox = Fraction&lt;int&gt;.Approximate(Math.PI, maxDenominator: 1000);
+// 355/113 — the Zǔ Chōngzhī approximation, accurate to ~6×10⁻⁷
+</code></pre>
+<p><code>Approximate</code> uses convergents of the continued-fraction expansion to find the best rational below a denominator bound.</p>
+<h3 id="mixed-number-and-unicode-formatting">Mixed-number and Unicode formatting</h3>
+<pre><code class="lang-csharp">var seven_thirds = Fraction&lt;int&gt;.Create(7, 3);
+
+seven_thirds.ToString(&quot;G&quot;);   // &quot;7/3&quot;
+seven_thirds.ToString(&quot;M&quot;);   // &quot;2 1/3&quot;
+seven_thirds.ToString(&quot;U&quot;);   // &quot;2⅓&quot;
+seven_thirds.ToString(&quot;P&quot;);   // &quot;700/3%&quot; (percentage = value × 100, re-reduced)
+
+Fraction&lt;int&gt;.Parse(&quot;2 1/3&quot;);                 // 7/3
+Fraction&lt;int&gt;.Parse(&quot;⅗&quot;);                     // 3/5
+Fraction&lt;int&gt;.Parse(&quot;75%&quot;);                   // 3/4
+</code></pre>
+<p><code>Parse</code> and <code>TryParse</code> accept integers, ratios, mixed numbers, the 18 Unicode vulgar-fraction glyphs the library ships, and percentage syntax. See <a href="../../guides/numerics/formatting-and-parsing.html">Formatting and parsing <code>Fraction&lt;T&gt;</code></a> for the full table.</p>
+<h3 id="json">JSON</h3>
+<p>JSON support ships in the companion <strong><code>Bodu.Numerics.Serialization.Json</code></strong> package — the core library is serialization-agnostic. Register the converters on a <code>JsonSerializerOptions</code> with <code>AddNumericsJsonConverters</code>; the default (<code>Strict</code>) wire shape is the canonical object form, and <code>NumericsJsonPolicy.Compact</code> selects the <code>&quot;3/4&quot;</code> string:</p>
+<pre><code class="lang-csharp">using System.Text.Json;
+using Bodu.Numerics;
+using Bodu.Numerics.Serialization.Json;
+
+var options = new JsonSerializerOptions().AddNumericsJsonConverters();
+
+string json = JsonSerializer.Serialize(new Fraction&lt;int&gt;(3, 4), options);
+// {&quot;numerator&quot;:3,&quot;denominator&quot;:4}
+
+Fraction&lt;int&gt; roundTrip = JsonSerializer.Deserialize&lt;Fraction&lt;int&gt;&gt;(json, options);
+
+// Compact policy — the single-string form.
+var compact = new JsonSerializerOptions().AddNumericsJsonConverters(NumericsJsonPolicy.Compact);
+JsonSerializer.Serialize(new Fraction&lt;int&gt;(3, 4), compact);   // &quot;3/4&quot;
+</code></pre>
+<h3 id="bounded-intervals-intervalt">Bounded intervals (<code>Interval&lt;T&gt;</code>)</h3>
+<p><code>Interval&lt;T&gt;</code> packs a range — lower endpoint, upper endpoint, and the inclusivity of each side — into a single immutable value over any <code>INumber&lt;T&gt;</code> endpoint type. The set algebra (membership, containment, intersection, union, overlap, adjacency) is defined on the type.</p>
+<pre><code class="lang-csharp">using Bodu.Numerics;
+
+Interval&lt;int&gt; period = Interval&lt;int&gt;.ClosedOpen(0, 100);   // [0, 100)
+Interval&lt;int&gt; window = Interval&lt;int&gt;.Closed(50, 200);      // [50, 200]
+
+bool overlap = period.Overlaps(window);                    // True
+Interval&lt;int&gt; shared = period.Intersect(window);           // [50, 100)
+bool joined = period.TryUnion(window, out var u);          // True; u = [0, 200]
+
+period.Contains(50);                                       // True
+period.Contains(100);                                      // False — upper exclusive
+</code></pre>
+<h4 id="inferring-the-endpoint-type">Inferring the endpoint type</h4>
+<p>The non-generic <code>Interval</code> helper class mirrors every factory on <code>Interval&lt;T&gt;</code> but lets the compiler infer <code>T</code> from the arguments — useful when the endpoint type is obvious from literals or locals:</p>
+<pre><code class="lang-csharp">var span    = Interval.Closed(1.5, 2.5);            // Interval&lt;double&gt;
+var prices  = Interval.OpenClosed(1000m, 10_000m);  // Interval&lt;decimal&gt;
+var ints    = Interval.ClosedOpen(0, 100);          // Interval&lt;int&gt;
+</code></pre>
+<h4 id="scheduling-detect-a-clash-and-trim-it">Scheduling: detect a clash and trim it</h4>
+<p>The closed-open shape <code>[a, b)</code> is the natural choice for time slots — adjacent slots share a single boundary without double-counting it.</p>
+<pre><code class="lang-csharp">var morning = Interval&lt;int&gt;.ClosedOpen(9,  12);   // [9, 12) — 9am–noon
+var meeting = Interval&lt;int&gt;.ClosedOpen(11, 13);   // [11, 13) — overlapping meeting
+
+if (morning.Overlaps(meeting))
+{
+    var clash = morning.Intersect(meeting);       // [11, 12)
+    Console.WriteLine($&quot;Clash: {clash}&quot;);          // &quot;Clash: [11, 12)&quot;
+}
+</code></pre>
+<h4 id="validation-predicate">Validation predicate</h4>
+<p>A <code>Closed</code> interval doubles as a &quot;valid input&quot; predicate that documents its own bounds:</p>
+<pre><code class="lang-csharp">var percentage = Interval&lt;double&gt;.Closed(0.0, 100.0);
+
+double Sanitize(double value) =&gt;
+    percentage.Contains(value) ? value : throw new ArgumentOutOfRangeException(nameof(value));
+
+Sanitize(99.5);   // 99.5
+Sanitize(100.0);  // 100.0 — closed upper
+Sanitize(101.0);  // throws
+</code></pre>
+<h4 id="partitioning-a-span-into-adjacent-buckets">Partitioning a span into adjacent buckets</h4>
+<p>Adjacent half-open intervals partition a range cleanly with no overlap and no gap. Together they cover the whole span and exactly one of them contains any given value.</p>
+<pre><code class="lang-csharp">var q1 = Interval&lt;int&gt;.ClosedOpen(0,   90);
+var q2 = Interval&lt;int&gt;.ClosedOpen(90,  181);
+var q3 = Interval&lt;int&gt;.ClosedOpen(181, 273);
+var q4 = Interval&lt;int&gt;.ClosedOpen(273, 365);
+
+int BucketOf(int dayOfYear) =&gt;
+    q1.Contains(dayOfYear) ? 1 :
+    q2.Contains(dayOfYear) ? 2 :
+    q3.Contains(dayOfYear) ? 3 :
+    q4.Contains(dayOfYear) ? 4 :
+    throw new ArgumentOutOfRangeException(nameof(dayOfYear));
+
+BucketOf(0);    // 1 — closed lower of q1
+BucketOf(90);   // 2 — q1 ends before 90; q2 includes it
+BucketOf(364);  // 4 — q4 contains [273, 365)
+</code></pre>
+<h4 id="formatting-and-parsing">Formatting and parsing</h4>
+<p><code>Interval&lt;T&gt;</code> formats using ISO 31-11 bracket notation and parses the same syntax. The empty interval renders as the U+2205 EMPTY SET glyph (<code>∅</code>).</p>
+<pre><code class="lang-csharp">using System.Globalization;
+
+Interval&lt;int&gt;.Closed(1, 5).ToString();       // &quot;[1, 5]&quot;
+Interval&lt;int&gt;.ClosedOpen(0, 100).ToString(); // &quot;[0, 100)&quot;
+Interval&lt;int&gt;.Empty.ToString();              // &quot;∅&quot;
+
+Interval&lt;double&gt;
+    .Closed(1.5, 2.75)
+    .ToString(&quot;F2&quot;, CultureInfo.InvariantCulture);   // &quot;[1.50, 2.75]&quot;
+
+Interval&lt;int&gt; parsed = Interval&lt;int&gt;.Parse(&quot;(0, 100]&quot;, CultureInfo.InvariantCulture);
+Interval&lt;int&gt;.TryParse(&quot;∅&quot;, CultureInfo.InvariantCulture, out var none);  // none = Empty
+</code></pre>
+<p><code>Interval&lt;T&gt;</code> implements <code>ISpanFormattable</code> and <code>IUtf8SpanFormattable</code>, plus <code>ISpanParsable&lt;Interval&lt;T&gt;&gt;</code> and <code>IUtf8SpanParsable&lt;Interval&lt;T&gt;&gt;</code>, so the same text round-trips through character and UTF-8 byte buffers without allocation in both directions.</p>
+<h4 id="json-1">JSON</h4>
+<p><code>Interval&lt;T&gt;</code> serializes through the companion <code>Bodu.Numerics.Serialization.Json</code> package. Register the converters with <code>AddNumericsJsonConverters</code>; the default policy is <code>Strict</code> and produces an explicit object shape (with <code>lowerUnbounded</code> / <code>upperUnbounded</code> markers for infinite sides), while <code>NumericsJsonPolicy.Compact</code> selects the bracket-notation string form.</p>
+<pre><code class="lang-csharp">using System.Text.Json;
+using Bodu.Numerics;
+using Bodu.Numerics.Serialization.Json;
+
+// Default (Strict) — explicit object shape, both bounded sides required on read.
+JsonSerializerOptions options = new JsonSerializerOptions().AddNumericsJsonConverters();
+string json = JsonSerializer.Serialize(Interval&lt;int&gt;.ClosedOpen(0, 100), options);
+// {&quot;lower&quot;:0,&quot;upper&quot;:100,&quot;lowerInclusive&quot;:true,&quot;upperInclusive&quot;:false}
+
+Interval&lt;int&gt; roundTrip = JsonSerializer.Deserialize&lt;Interval&lt;int&gt;&gt;(json, options);
+
+// Compact policy — string form using ISO 31-11 bracket notation.
+JsonSerializerOptions compactOptions = new JsonSerializerOptions()
+    .AddNumericsJsonConverters(NumericsJsonPolicy.Compact);
+
+string compact = JsonSerializer.Serialize(Interval&lt;int&gt;.ClosedOpen(0, 100), compactOptions);
+// &quot;[0, 100)&quot;
+</code></pre>
+<p>The empty interval serializes to <code>{&quot;empty&quot;:true}</code> under <code>Strict</code> and <code>Lenient</code>, and to <code>&quot;∅&quot;</code> under <code>Compact</code>.</p>
+<h4 id="the-empty-interval-is-unique">The empty interval is unique</h4>
+<p>Any inverted-bounds or equal-bounds-with-open-endpoint interval compares equal to <code>Interval&lt;T&gt;.Empty</code> regardless of the bounds used to construct it. A default-constructed value is empty too, so <code>Interval&lt;T&gt;</code> fields never carry a malformed default.</p>
+<pre><code class="lang-csharp">var none      = Interval&lt;int&gt;.Empty;
+var inverted  = new Interval&lt;int&gt;(5, 1, true, true);
+var collapsed = new Interval&lt;int&gt;(0, 0, false, false);
+Interval&lt;int&gt; defaulted = default;
+
+none == inverted &amp;&amp; none == collapsed &amp;&amp; none == defaulted;  // True
+</code></pre>
+<h4 id="unbounded-ranges-difference-and-operators">Unbounded ranges, difference, and operators</h4>
+<p>A side of an interval can be unbounded, and the set algebra includes difference and operators:</p>
+<pre><code class="lang-csharp">Interval&lt;double&gt; nonNegative = Interval&lt;double&gt;.AtLeast(0.0);   // [0, +∞)
+Interval&lt;double&gt; capped      = Interval&lt;double&gt;.AtMost(100.0);  // (-∞, 100]
+
+nonNegative.Contains(1e300);                 // True
+Interval&lt;double&gt; band = nonNegative &amp; capped;   // &amp; is Intersect → [0, 100]
+
+// Difference yields at most two pieces (an IntervalPair&lt;T&gt;).
+IntervalPair&lt;int&gt; gap = Interval&lt;int&gt;.Closed(0, 10).Difference(Interval&lt;int&gt;.Closed(3, 5));
+gap.Count;                                    // 2
+foreach (var piece in gap)
+    Console.WriteLine(piece);                 // &quot;[0, 3)&quot; then &quot;(5, 10]&quot;
+
+// | is the contiguous union; it throws on a gapped pair.
+var merged = Interval&lt;int&gt;.ClosedOpen(1, 5) | Interval&lt;int&gt;.Closed(5, 10);   // [1, 10]
+</code></pre>
+<h4 id="disconnected-sets-intervalsett">Disconnected sets (<code>IntervalSet&lt;T&gt;</code>)</h4>
+<p>When a result can be an arbitrary union of disjoint ranges, use <code>IntervalSet&lt;T&gt;</code>:</p>
+<pre><code class="lang-csharp">IntervalSet&lt;int&gt; set = IntervalSet&lt;int&gt;.Of(
+    Interval&lt;int&gt;.Closed(1, 3),
+    Interval&lt;int&gt;.Closed(2, 5),
+    Interval&lt;int&gt;.Closed(8, 9));   // coalesces to [1, 5] ∪ [8, 9]
+
+set.Contains(4);                    // True
+set.Except(Interval&lt;int&gt;.Closed(4, 4));   // [1, 4) ∪ (4, 5] ∪ [8, 9]
+set.Complement();                   // (-∞, 1) ∪ (5, 8) ∪ (9, +∞)
+</code></pre>
+<h4 id="discrete-integer-intervals-discreteintervalt">Discrete integer intervals (<code>DiscreteInterval&lt;T&gt;</code>)</h4>
+<p><code>Interval&lt;T&gt;</code> is continuous; <code>DiscreteInterval&lt;T&gt;</code> models the set of representable integers, so an open interval over consecutive integers is empty and successor-adjacent runs merge:</p>
+<pre><code class="lang-csharp">DiscreteInterval&lt;int&gt;.Open(1, 2).IsEmpty;   // True — no integer strictly between 1 and 2
+
+var a = DiscreteInterval&lt;int&gt;.Closed(1, 2);
+var b = DiscreteInterval&lt;int&gt;.Closed(3, 4);
+a.TryUnion(b, out var run);                  // run = [1, 4] — 2 and 3 are successors
+
+DiscreteInterval&lt;int&gt;.Closed(1, 10).Count;   // 10
+</code></pre>
+<h3 id="cross-package-fraction-backed-monetary-arithmetic">Cross-package: Fraction-backed monetary arithmetic</h3>
+<p><code>Bodu.Financial.Money&lt;TCurrency&gt;</code> round-trips through <code>Fraction&lt;BigInteger&gt;</code> for exact intermediate calculations:</p>
+<pre><code class="lang-csharp">using Bodu.Financial;
+using Bodu.Financial.Currencies;
+using Bodu.Numerics;
+using System.Numerics;
+
+Money&lt;USD&gt; principal = new Money&lt;USD&gt;(1000m);
+Fraction&lt;BigInteger&gt; growth = Fraction&lt;BigInteger&gt;.One + Fraction&lt;BigInteger&gt;.Create(5, 1200);
+
+Fraction&lt;BigInteger&gt; exact = principal.ToFraction();
+for (int i = 0; i &lt; 24; i++) exact *= growth;
+
+Money&lt;USD&gt; balance = Money&lt;USD&gt;.FromFraction(exact);   // one rounding event
+</code></pre>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="index.html">Bodu.Numerics introduction</a></strong> — namespaces, headline types, scenarios.</li>
+<li><strong><a href="../../guides/numerics/fraction.html">Working with <code>Fraction&lt;T&gt;</code></a></strong> — construction, arithmetic, parsing/formatting, continued fractions, rational approximation.</li>
+<li><strong><a href="../../guides/numerics/interval.html">Working with <code>Interval&lt;T&gt;</code></a></strong> — endpoint inclusivity, membership, intersection, union, adjacency.</li>
+<li><strong><a href="../../guides/numerics/interval-algebra.html">Interval algebra</a></strong> — unbounded endpoints, difference / symmetric difference, operators, and <code>IntervalSet&lt;T&gt;</code>.</li>
+<li><strong><a href="../../guides/numerics/discrete-intervals.html">Discrete integer intervals</a></strong> — the integer-domain <code>DiscreteInterval&lt;T&gt;</code>.</li>
+<li><strong><a href="../financial/getting-started.html">Bodu.Financial getting started</a></strong> — for monetary primitives built on <code>Fraction&lt;BigInteger&gt;</code>.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Numerics.html">Bodu.Numerics API reference</a></strong> — full type-by-type docs.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

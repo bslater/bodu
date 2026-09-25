@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class Interval | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class Interval | BODU ">
+    
+    <meta name="description" content="Provides type-inferring factory methods for .">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Numerics.Interval">
+
+
+
+  <h1 id="Bodu_Numerics_Interval" data-uid="Bodu.Numerics.Interval" class="text-break">Class Interval</h1>
+  <div class="markdown level0 summary"><p>Provides type-inferring factory methods for <a class="xref" href="Bodu.Numerics.Interval-1.html">Interval&lt;T&gt;</a>.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><span class="xref">Interval</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Numerics.html">Numerics</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Numerics.dll</h6>
+  <h5 id="Bodu_Numerics_Interval_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class Interval</code></pre>
+  </div>
+  <h5 id="Bodu_Numerics_Interval_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+The methods on this class mirror the static factories declared on <a class="xref" href="Bodu.Numerics.Interval-1.html">Interval&lt;T&gt;</a> but accept the endpoint
+values directly, letting the compiler infer the endpoint type from the arguments. This avoids the need to repeat the
+generic parameter at the call site: <code>Interval.Closed(1, 5)</code> compiles to a <a class="xref" href="Bodu.Numerics.Interval-1.html">Interval&lt;T&gt;</a> over
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a> without an explicit type argument, and <code>Interval.ClosedOpen(0m, 100m)</code> picks
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a> from the literal suffixes.
+</p>
+<p>
+Prefer the non-generic helpers when the endpoint type is obvious from the arguments — typical for literals, local
+variables, and expressions that already carry the type — and use <a class="xref" href="Bodu.Numerics.Interval-1.html">Interval&lt;T&gt;</a>'s own static factories
+(e.g. <a class="xref" href="Bodu.Numerics.Interval-1.Closed.html#Bodu_Numerics_Interval_1_Closed__0__0_">Closed(T, T)</a>) when the call site needs an explicit type to disambiguate, when the
+endpoint type comes from a generic context, or when the factory is being held as a method group.
+</p>
+</div>
+  <h5 id="Bodu_Numerics_Interval_examples"><strong>Examples</strong></h5>
+  <pre><code class="lang-csharp">using Bodu.Numerics;
+
+// Type inferred from the int literals.
+var ints = Interval.ClosedOpen(0, 100);           // Interval&lt;int&gt;
+
+// Type inferred from the decimal-suffixed literals.
+var prices = Interval.OpenClosed(1000m, 10_000m); // Interval&lt;decimal&gt;
+
+// Type inferred from the local variable.
+double low = 1.5, high = 2.5;
+var span = Interval.Closed(low, high);            // Interval&lt;double&gt;</code></pre>
+
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Numerics_Interval_AtLeast__1___0_" data-uid="Bodu.Numerics.Interval.AtLeast``1(``0)">
+          <a class="xref" href="Bodu.Numerics.Interval.AtLeast.html#Bodu_Numerics_Interval_AtLeast__1___0_">AtLeast&lt;T&gt;(T)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates the lower-bounded interval <code>[lower, +∞)</code> with <code class="typeparamref">T</code> inferred from the
+argument.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Interval_AtMost__1___0_" data-uid="Bodu.Numerics.Interval.AtMost``1(``0)">
+          <a class="xref" href="Bodu.Numerics.Interval.AtMost.html#Bodu_Numerics_Interval_AtMost__1___0_">AtMost&lt;T&gt;(T)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates the upper-bounded interval <code>(-∞, upper]</code> with <code class="typeparamref">T</code> inferred from the
+argument.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Interval_ClosedOpen__1___0___0_" data-uid="Bodu.Numerics.Interval.ClosedOpen``1(``0,``0)">
+          <a class="xref" href="Bodu.Numerics.Interval.ClosedOpen.html#Bodu_Numerics_Interval_ClosedOpen__1___0___0_">ClosedOpen&lt;T&gt;(T, T)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates a closed-open interval <code>[lower, upper)</code> with <code class="typeparamref">T</code> inferred from the arguments.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Interval_Closed__1___0___0_" data-uid="Bodu.Numerics.Interval.Closed``1(``0,``0)">
+          <a class="xref" href="Bodu.Numerics.Interval.Closed.html#Bodu_Numerics_Interval_Closed__1___0___0_">Closed&lt;T&gt;(T, T)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates a closed-closed interval <code>[lower, upper]</code> with <code class="typeparamref">T</code> inferred from the
+arguments.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Interval_GreaterThan__1___0_" data-uid="Bodu.Numerics.Interval.GreaterThan``1(``0)">
+          <a class="xref" href="Bodu.Numerics.Interval.GreaterThan.html#Bodu_Numerics_Interval_GreaterThan__1___0_">GreaterThan&lt;T&gt;(T)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates the lower-bounded interval <code>(lower, +∞)</code> with <code class="typeparamref">T</code> inferred from the
+argument.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Interval_LessThan__1___0_" data-uid="Bodu.Numerics.Interval.LessThan``1(``0)">
+          <a class="xref" href="Bodu.Numerics.Interval.LessThan.html#Bodu_Numerics_Interval_LessThan__1___0_">LessThan&lt;T&gt;(T)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates the upper-bounded interval <code>(-∞, upper)</code> with <code class="typeparamref">T</code> inferred from the
+argument.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Interval_OpenClosed__1___0___0_" data-uid="Bodu.Numerics.Interval.OpenClosed``1(``0,``0)">
+          <a class="xref" href="Bodu.Numerics.Interval.OpenClosed.html#Bodu_Numerics_Interval_OpenClosed__1___0___0_">OpenClosed&lt;T&gt;(T, T)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates an open-closed interval <code>(lower, upper]</code> with <code class="typeparamref">T</code> inferred from the
+arguments.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Interval_Open__1___0___0_" data-uid="Bodu.Numerics.Interval.Open``1(``0,``0)">
+          <a class="xref" href="Bodu.Numerics.Interval.Open.html#Bodu_Numerics_Interval_Open__1___0___0_">Open&lt;T&gt;(T, T)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates an open-open interval <code>(lower, upper)</code> with <code class="typeparamref">T</code> inferred from the arguments.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Interval_Singleton__1___0_" data-uid="Bodu.Numerics.Interval.Singleton``1(``0)">
+          <a class="xref" href="Bodu.Numerics.Interval.Singleton.html#Bodu_Numerics_Interval_Singleton__1___0_">Singleton&lt;T&gt;(T)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates a degenerate single-point interval <code>[value, value]</code> with <code class="typeparamref">T</code> inferred from
+the argument.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

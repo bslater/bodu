@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Method BatchPooled | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Method BatchPooled | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.BatchPooled*">
+
+
+
+<h1 id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_BatchPooled_" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.BatchPooled*">Method BatchPooled</h1>
+<div class="markdown level0 summary"></div>
+<div class="markdown level0 conceptual"></div>
+
+<a id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_BatchPooled_" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.BatchPooled*"></a>
+<h4 id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_BatchPooled__2_System_Collections_Generic_IEnumerable___0__System_Int32_System_Func___0_System_Int32___1__" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.BatchPooled``2(System.Collections.Generic.IEnumerable{``0},System.Int32,System.Func{``0,System.Int32,``1})">BatchPooled&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, int, Func&lt;TSource, int, TResult&gt;)</h4>
+<div class="markdown level1 summary"><p>Batches and transforms a sequence using a pooled array to reduce allocations.</p>
+</div>
+<div class="markdown level1 conceptual"></div>
+<h5 class="declaration">Declaration</h5>
+<div class="codewrapper">
+  <pre><code class="lang-csharp hljs">public static IEnumerable&lt;ReadOnlyMemory&lt;TResult&gt;&gt; BatchPooled&lt;TSource, TResult&gt;(this IEnumerable&lt;TSource&gt; source, int size, Func&lt;TSource, int, TResult&gt; selector)</code></pre>
+</div>
+<h5 class="parameters">Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;TSource&gt;</td>
+      <td><span class="parametername">source</span></td>
+      <td><p>The source sequence to batch.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></td>
+      <td><span class="parametername">size</span></td>
+      <td><p>The maximum number of items per batch.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-3">Func</a>&lt;TSource, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>, TResult&gt;</td>
+      <td><span class="parametername">selector</span></td>
+      <td><p>A projection function that receives the source item and its index.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="returns">Returns</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlymemory-1">ReadOnlyMemory</a>&lt;TResult&gt;&gt;</td>
+      <td><p>An <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable&lt;T&gt;</a> of <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlymemory-1">ReadOnlyMemory&lt;T&gt;</a> batches that alias a single pooled
+buffer, so a full enumeration allocates nothing per batch.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="typeParameters">Type Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span class="parametername">TSource</span></td>
+      <td><p>The type of elements in the source sequence.</p>
+</td>
+    </tr>
+    <tr>
+      <td><span class="parametername">TResult</span></td>
+      <td><p>The type of transformed result.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_BatchPooled__2_System_Collections_Generic_IEnumerable___0__System_Int32_System_Func___0_System_Int32___1___remarks">Remarks</h5>
+<div class="markdown level1 remarks"><p>
+Every yielded batch is a window over the <em>same</em> pooled buffer, which is overwritten by the next iteration
+step and returned to the pool when enumeration ends. A batch is therefore valid only until the enumerator
+advances (or is disposed): to retain one, copy it with <code>.ToArray()</code> before advancing. Retaining the
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlymemory-1">ReadOnlyMemory&lt;T&gt;</a> values themselves — for example via <code>ToList()</code> on the returned sequence —
+observes overwritten or recycled data. For independently owned batches, use
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.linq.enumerable.chunk">Chunk&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, int)</a> or the projecting
+<a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Batch.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Batch__2_System_Collections_Generic_IEnumerable___0__System_Int32_System_Func___0___1__">Batch&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, int, Func&lt;TSource, TResult&gt;)</a> overload instead.
+</p>
+<p>
+This method should be consumed via <code>foreach</code>. Each enumeration rents one buffer of <code class="paramref">size</code>
+elements for its duration.
+</p>
+</div>
+<h5 id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_BatchPooled__2_System_Collections_Generic_IEnumerable___0__System_Int32_System_Func___0_System_Int32___1___examples">Examples</h5>
+<pre><code class="lang-csharp">// Input:  Enumerable.Range(1, 10)
+// Batch size: 4
+// Selector: (x, i) =&gt; $"Item {i}: {x}"
+
+// Expected output:
+// Batch 1: "Item 0: 1", "Item 1: 2", "Item 2: 3", "Item 3: 4"
+// Batch 2: "Item 4: 5", "Item 5: 6", "Item 6: 7", "Item 7: 8"
+// Batch 3: "Item 8: 9", "Item 9: 10"
+var source = Enumerable.Range(1, 10);
+foreach (var batch in source.BatchPooled(4, (x, i) =&gt; $"Item {i}: {x}"))
+{
+    Console.WriteLine($"[{string.Join(", ", batch.ToArray())}]");
+}</code></pre>
+
+<h5 class="exceptions">Exceptions</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Condition</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></td>
+      <td><p>Thrown when <code class="paramref">source</code> or <code class="paramref">selector</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></td>
+      <td><p>Thrown when <code class="paramref">size</code> is less than or equal to 0.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<a id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_BatchPooled_" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.BatchPooled*"></a>
+<h4 id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_BatchPooled__1_System_Collections_Generic_IEnumerable___0__System_Int32_" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.BatchPooled``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">BatchPooled&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, int)</h4>
+<div class="markdown level1 summary"><p>Batches a sequence using a pooled array to reduce allocations.</p>
+</div>
+<div class="markdown level1 conceptual"></div>
+<h5 class="declaration">Declaration</h5>
+<div class="codewrapper">
+  <pre><code class="lang-csharp hljs">public static IEnumerable&lt;ReadOnlyMemory&lt;TSource&gt;&gt; BatchPooled&lt;TSource&gt;(this IEnumerable&lt;TSource&gt; source, int size)</code></pre>
+</div>
+<h5 class="parameters">Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;TSource&gt;</td>
+      <td><span class="parametername">source</span></td>
+      <td><p>The source sequence to batch.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></td>
+      <td><span class="parametername">size</span></td>
+      <td><p>The maximum number of items per batch.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="returns">Returns</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlymemory-1">ReadOnlyMemory</a>&lt;TSource&gt;&gt;</td>
+      <td><p>An <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable&lt;T&gt;</a> of <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlymemory-1">ReadOnlyMemory&lt;T&gt;</a> batches that alias a single pooled
+buffer, so a full enumeration allocates nothing per batch.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="typeParameters">Type Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span class="parametername">TSource</span></td>
+      <td><p>The type of elements in the source sequence.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_BatchPooled__1_System_Collections_Generic_IEnumerable___0__System_Int32__remarks">Remarks</h5>
+<div class="markdown level1 remarks"><p>This overload returns untransformed batches of the original element type. Each batch is valid only until the
+enumerator advances — see
+<a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.BatchPooled.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_BatchPooled__2_System_Collections_Generic_IEnumerable___0__System_Int32_System_Func___0_System_Int32___1__">BatchPooled&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, int, Func&lt;TSource, int, TResult&gt;)</a> for the full
+lifetime contract and for a variant that applies a projection.</p>
+</div>
+<h5 id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_BatchPooled__1_System_Collections_Generic_IEnumerable___0__System_Int32__examples">Examples</h5>
+<pre><code class="lang-csharp">// Input:  Enumerable.Range(1, 9)
+// Batch size: 3
+
+// Expected output:
+// Batch 1: 1, 2, 3
+// Batch 2: 4, 5, 6
+// Batch 3: 7, 8, 9
+
+var source = Enumerable.Range(1, 9);
+foreach (var batch in source.BatchPooled(3))
+{
+    Console.WriteLine(string.Join(", ", batch.ToArray()));
+}</code></pre>
+
+<h5 class="exceptions">Exceptions</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Condition</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></td>
+      <td><p>Thrown when <code class="paramref">source</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></td>
+      <td><p>Thrown when <code class="paramref">size</code> is less than or equal to 0.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

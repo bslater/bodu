@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class ConcurrentEvictingDictionary&lt;TKey, TValue&gt; | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class ConcurrentEvictingDictionary&lt;TKey, TValue&gt; | BODU ">
+    
+    <meta name="description" content="Provides a thread-safe, fixed-capacity dictionary that automatically removes entries based on a chosen eviction policy, such as First-In-First-Out (FirstInFirstOut), Least Recently Used (LeastRecentlyUsed), or Least Frequently Used (LeastFrequentlyUsed).">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2">
+
+
+
+  <h1 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2" class="text-break">Class ConcurrentEvictingDictionary&lt;TKey, TValue&gt;</h1>
+  <div class="markdown level0 summary"><p>Provides a thread-safe, fixed-capacity dictionary that automatically removes entries based on a chosen eviction
+policy, such as First-In-First-Out (FirstInFirstOut), Least Recently Used (LeastRecentlyUsed), or Least Frequently
+Used (LeastFrequentlyUsed).</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><span class="xref">ConcurrentEvictingDictionary&lt;TKey, TValue&gt;</span></div>
+  </div>
+  <div class="implements">
+    <h5>Implements</h5>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.icollection">ICollection</a></div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.idictionary-2">IDictionary</a>&lt;TKey, TValue&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icollection-1">ICollection</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keyvaluepair-2">KeyValuePair</a>&lt;TKey, TValue&gt;&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlydictionary-2">IReadOnlyDictionary</a>&lt;TKey, TValue&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlycollection-1">IReadOnlyCollection</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keyvaluepair-2">KeyValuePair</a>&lt;TKey, TValue&gt;&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keyvaluepair-2">KeyValuePair</a>&lt;TKey, TValue&gt;&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerable">IEnumerable</a></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Collections.html">Collections</a>.<a class="xref" href="Bodu.Collections.Generic.html">Generic</a>.<a class="xref" href="Bodu.Collections.Generic.Concurrent.html">Concurrent</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Collections.Concurrent.dll</h6>
+  <h5 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class ConcurrentEvictingDictionary&lt;TKey, TValue&gt; : ICollection, IDictionary&lt;TKey, TValue&gt;, ICollection&lt;KeyValuePair&lt;TKey, TValue&gt;&gt;, IReadOnlyDictionary&lt;TKey, TValue&gt;, IReadOnlyCollection&lt;KeyValuePair&lt;TKey, TValue&gt;&gt;, IEnumerable&lt;KeyValuePair&lt;TKey, TValue&gt;&gt;, IEnumerable where TKey : notnull</code></pre>
+  </div>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">TKey</span></td>
+        <td><p>Specifies the type of keys in the dictionary (constraint: <code>where TKey : notnull</code>).</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="parametername">TValue</span></td>
+        <td><p>Specifies the type of values in the dictionary.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+<a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html">ConcurrentEvictingDictionary&lt;TKey, TValue&gt;</a> is the thread-safe variant of
+<a class="xref" href="Bodu.Collections.Generic.EvictingDictionary-2.html">EvictingDictionary&lt;TKey, TValue&gt;</a>. It partitions its capacity across a fixed number of internal <em>segments</em>,
+each guarded by its own monitor: the key comparer's hash routes every key to exactly one segment, so operations on
+keys owned by different segments proceed in parallel. Reads are writes in an evicting cache — a lookup repositions
+the key for recency-tracked policies — so even <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.TryGetValue.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_TryGetValue__0__1__">TryGetValue(TKey, out TValue)</a> takes its segment's lock; the striping
+keeps that contention local.
+</p>
+<p>
+Eviction order is <em>exact within a segment and approximate globally</em>: each segment runs the configured
+<a class="xref" href="Bodu.Collections.Generic.EvictingDictionaryPolicy.html">EvictingDictionaryPolicy</a> over its own slice of the capacity, so a heavily used segment may evict
+while other segments still have free slots. The sum of the segment slices equals <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.Capacity.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Capacity">Capacity</a> exactly, so
+the dictionary never stores more than <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.Capacity.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Capacity">Capacity</a> entries. Use the internal concurrency-level
+constructor (or a capacity of 1) to obtain a single segment whose eviction sequence matches the non-concurrent type
+exactly.
+</p>
+<p>
+The single-key operations — <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.Add.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Add__0__1_">Add(TKey, TValue)</a>, <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.TryAdd.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_TryAdd__0__1_">TryAdd(TKey, TValue)</a>,
+<a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.TryGetValue.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_TryGetValue__0__1__">TryGetValue(TKey, out TValue)</a>, <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.ContainsKey.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_ContainsKey__0_">ContainsKey(TKey)</a>, <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.Touch.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Touch__0_">Touch(TKey)</a>, <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.TryRemove.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_TryRemove__0__1__">TryRemove(TKey, out TValue)</a>, the indexer,
+and <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.GetOrAdd.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_GetOrAdd__0__1_">GetOrAdd(TKey, TValue)</a> — are each individually atomic and lock only the owning segment.
+<a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.Count.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Count">Count</a>, <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.IsEmpty.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_IsEmpty">IsEmpty</a>, <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.Clear.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Clear">Clear()</a>, <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.ToArray.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_ToArray">ToArray()</a>, and the snapshot
+properties acquire every segment lock and therefore observe a coherent point-in-time state;
+<a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.ApproximateCount.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_ApproximateCount">ApproximateCount</a> is lock-free.
+</p>
+<p>
+Enumeration iterates over a true snapshot captured when the enumerator is created (via <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.ToArray.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_ToArray">ToArray()</a>) and
+does not reflect subsequent changes. Unlike enumerators on non-concurrent collections, it never throws
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a> because of concurrent modification. The order of enumerated entries is
+unspecified.
+</p>
+<p>
+Supplying an <a class="xref" href="Bodu.Collections.Generic.EvictingDictionaryExpiration.html">EvictingDictionaryExpiration</a> at construction adds time-based expiry orthogonal to the
+capacity policy, with the same lazy-purge model as the non-concurrent type: expired entries are invisible to lookups
+and enumeration before they are physically removed, capacity pressure purges a segment's expired entries ahead of a
+policy eviction, and <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.Count.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Count">Count</a> reports the raw stored count <em>including</em> expired-but-unpurged
+entries — call <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.RemoveExpired.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_RemoveExpired">RemoveExpired()</a> to reconcile. Without an expiration configuration the dictionary
+performs no clock reads.
+</p>
+<p>
+Unlike <a class="xref" href="Bodu.Collections.Generic.EvictingDictionary-2.html">EvictingDictionary&lt;TKey, TValue&gt;</a>, this type exposes only the post-commit
+<a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.ItemEvicted.html">ItemEvicted</a> event: under concurrency an eviction has already been committed by the time a handler
+could observe it, so a pre-removal event could not be honored. Handlers run after the segment lock has been released
+and their exceptions are suppressed (except <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.outofmemoryexception">OutOfMemoryException</a>) — see the event's documentation.
+</p>
+</div>
+  <h5 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_examples"><strong>Examples</strong></h5>
+  <pre><code class="lang-csharp">var cache = new ConcurrentEvictingDictionary&lt;string, byte[]&gt;(
+    capacity: 1024, EvictingDictionaryPolicy.LeastRecentlyUsed);
+
+Parallel.ForEach(requests, request =&gt;
+{
+    byte[] payload = cache.GetOrAdd(request.Key, key =&gt; LoadPayload(key));
+    Serve(request, payload);
+});</code></pre>
+
+  <h3 id="constructors">Constructors
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2__ctor" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.#ctor">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.-ctor.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2__ctor">ConcurrentEvictingDictionary()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html">ConcurrentEvictingDictionary&lt;TKey, TValue&gt;</a> class, with the
+default capacity and eviction policy.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2__ctor_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair__0__1___" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.#ctor(System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{`0,`1}})">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.-ctor.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2__ctor_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair__0__1___">ConcurrentEvictingDictionary(IEnumerable&lt;KeyValuePair&lt;TKey, TValue&gt;&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html">ConcurrentEvictingDictionary&lt;TKey, TValue&gt;</a> class, with elements
+copied from the specified sequence, using the default capacity and eviction policy.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2__ctor_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair__0__1___Bodu_Collections_Generic_EvictingDictionaryPolicy_" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.#ctor(System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{`0,`1}},Bodu.Collections.Generic.EvictingDictionaryPolicy)">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.-ctor.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2__ctor_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair__0__1___Bodu_Collections_Generic_EvictingDictionaryPolicy_">ConcurrentEvictingDictionary(IEnumerable&lt;KeyValuePair&lt;TKey, TValue&gt;&gt;, EvictingDictionaryPolicy)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html">ConcurrentEvictingDictionary&lt;TKey, TValue&gt;</a> class, with elements
+copied from the specified sequence, using the default capacity and the specified eviction policy.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2__ctor_System_Int32_" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.#ctor(System.Int32)">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.-ctor.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2__ctor_System_Int32_">ConcurrentEvictingDictionary(int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html">ConcurrentEvictingDictionary&lt;TKey, TValue&gt;</a> class, with the
+specified capacity and the default eviction policy.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2__ctor_System_Int32_Bodu_Collections_Generic_EvictingDictionaryExpiration_" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.#ctor(System.Int32,Bodu.Collections.Generic.EvictingDictionaryExpiration)">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.-ctor.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2__ctor_System_Int32_Bodu_Collections_Generic_EvictingDictionaryExpiration_">ConcurrentEvictingDictionary(int, EvictingDictionaryExpiration?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html">ConcurrentEvictingDictionary&lt;TKey, TValue&gt;</a> class, with the
+specified capacity and time-based expiration, using the default eviction policy and key comparer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2__ctor_System_Int32_Bodu_Collections_Generic_EvictingDictionaryPolicy_" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.#ctor(System.Int32,Bodu.Collections.Generic.EvictingDictionaryPolicy)">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.-ctor.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2__ctor_System_Int32_Bodu_Collections_Generic_EvictingDictionaryPolicy_">ConcurrentEvictingDictionary(int, EvictingDictionaryPolicy)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html">ConcurrentEvictingDictionary&lt;TKey, TValue&gt;</a> class, with the
+specified capacity and eviction policy.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2__ctor_System_Int32_Bodu_Collections_Generic_EvictingDictionaryPolicy_Bodu_Collections_Generic_EvictingDictionaryExpiration_" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.#ctor(System.Int32,Bodu.Collections.Generic.EvictingDictionaryPolicy,Bodu.Collections.Generic.EvictingDictionaryExpiration)">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.-ctor.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2__ctor_System_Int32_Bodu_Collections_Generic_EvictingDictionaryPolicy_Bodu_Collections_Generic_EvictingDictionaryExpiration_">ConcurrentEvictingDictionary(int, EvictingDictionaryPolicy, EvictingDictionaryExpiration?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html">ConcurrentEvictingDictionary&lt;TKey, TValue&gt;</a> class, with the
+specified capacity, eviction policy, and time-based expiration, using the default key comparer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2__ctor_System_Int32_Bodu_Collections_Generic_EvictingDictionaryPolicy_System_Collections_Generic_IEqualityComparer__0__" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.#ctor(System.Int32,Bodu.Collections.Generic.EvictingDictionaryPolicy,System.Collections.Generic.IEqualityComparer{`0})">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.-ctor.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2__ctor_System_Int32_Bodu_Collections_Generic_EvictingDictionaryPolicy_System_Collections_Generic_IEqualityComparer__0__">ConcurrentEvictingDictionary(int, EvictingDictionaryPolicy, IEqualityComparer&lt;TKey&gt;?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html">ConcurrentEvictingDictionary&lt;TKey, TValue&gt;</a> class, with the
+specified capacity, eviction policy, and key comparer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2__ctor_System_Int32_Bodu_Collections_Generic_EvictingDictionaryPolicy_System_Collections_Generic_IEqualityComparer__0__Bodu_Collections_Generic_EvictingDictionaryExpiration_" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.#ctor(System.Int32,Bodu.Collections.Generic.EvictingDictionaryPolicy,System.Collections.Generic.IEqualityComparer{`0},Bodu.Collections.Generic.EvictingDictionaryExpiration)">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.-ctor.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2__ctor_System_Int32_Bodu_Collections_Generic_EvictingDictionaryPolicy_System_Collections_Generic_IEqualityComparer__0__Bodu_Collections_Generic_EvictingDictionaryExpiration_">ConcurrentEvictingDictionary(int, EvictingDictionaryPolicy, IEqualityComparer&lt;TKey&gt;?, EvictingDictionaryExpiration?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html">ConcurrentEvictingDictionary&lt;TKey, TValue&gt;</a> class, with the
+specified capacity, eviction policy, key comparer, and time-based expiration.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2__ctor_System_Int32_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair__0__1___" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.#ctor(System.Int32,System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{`0,`1}})">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.-ctor.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2__ctor_System_Int32_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair__0__1___">ConcurrentEvictingDictionary(int, IEnumerable&lt;KeyValuePair&lt;TKey, TValue&gt;&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html">ConcurrentEvictingDictionary&lt;TKey, TValue&gt;</a> class, with elements
+copied from the specified sequence, using the specified capacity and the default eviction policy.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2__ctor_System_Int32_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair__0__1___Bodu_Collections_Generic_EvictingDictionaryPolicy_" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.#ctor(System.Int32,System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{`0,`1}},Bodu.Collections.Generic.EvictingDictionaryPolicy)">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.-ctor.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2__ctor_System_Int32_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair__0__1___Bodu_Collections_Generic_EvictingDictionaryPolicy_">ConcurrentEvictingDictionary(int, IEnumerable&lt;KeyValuePair&lt;TKey, TValue&gt;&gt;, EvictingDictionaryPolicy)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html">ConcurrentEvictingDictionary&lt;TKey, TValue&gt;</a> class, with elements
+copied from the specified sequence, using the specified capacity and eviction policy.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2__ctor_System_Int32_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair__0__1___Bodu_Collections_Generic_EvictingDictionaryPolicy_System_Collections_Generic_IEqualityComparer__0__" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.#ctor(System.Int32,System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{`0,`1}},Bodu.Collections.Generic.EvictingDictionaryPolicy,System.Collections.Generic.IEqualityComparer{`0})">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.-ctor.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2__ctor_System_Int32_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair__0__1___Bodu_Collections_Generic_EvictingDictionaryPolicy_System_Collections_Generic_IEqualityComparer__0__">ConcurrentEvictingDictionary(int, IEnumerable&lt;KeyValuePair&lt;TKey, TValue&gt;&gt;, EvictingDictionaryPolicy, IEqualityComparer&lt;TKey&gt;?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html">ConcurrentEvictingDictionary&lt;TKey, TValue&gt;</a> class, with elements
+copied from the specified sequence, using the specified capacity, eviction policy, and key comparer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2__ctor_System_Int32_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair__0__1___Bodu_Collections_Generic_EvictingDictionaryPolicy_System_Collections_Generic_IEqualityComparer__0__Bodu_Collections_Generic_EvictingDictionaryExpiration_" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.#ctor(System.Int32,System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{`0,`1}},Bodu.Collections.Generic.EvictingDictionaryPolicy,System.Collections.Generic.IEqualityComparer{`0},Bodu.Collections.Generic.EvictingDictionaryExpiration)">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.-ctor.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2__ctor_System_Int32_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair__0__1___Bodu_Collections_Generic_EvictingDictionaryPolicy_System_Collections_Generic_IEqualityComparer__0__Bodu_Collections_Generic_EvictingDictionaryExpiration_">ConcurrentEvictingDictionary(int, IEnumerable&lt;KeyValuePair&lt;TKey, TValue&gt;&gt;, EvictingDictionaryPolicy, IEqualityComparer&lt;TKey&gt;?, EvictingDictionaryExpiration?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html">ConcurrentEvictingDictionary&lt;TKey, TValue&gt;</a> class, with elements
+copied from the specified sequence, using the specified capacity, eviction policy, key comparer, and time-based
+expiration.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2__ctor_System_Int32_System_Collections_Generic_IEqualityComparer__0__" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.#ctor(System.Int32,System.Collections.Generic.IEqualityComparer{`0})">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.-ctor.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2__ctor_System_Int32_System_Collections_Generic_IEqualityComparer__0__">ConcurrentEvictingDictionary(int, IEqualityComparer&lt;TKey&gt;?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html">ConcurrentEvictingDictionary&lt;TKey, TValue&gt;</a> class, with the
+specified capacity, using the default eviction policy and the specified key comparer.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_ApproximateCount" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.ApproximateCount">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.ApproximateCount.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_ApproximateCount">ApproximateCount</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets an approximate entry count without acquiring any segment lock.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Capacity" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.Capacity">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.Capacity.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Capacity">Capacity</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the maximum number of items that can be stored in the dictionary before eviction occurs.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Comparer" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.Comparer">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.Comparer.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Comparer">Comparer</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the equality comparer used for key identity, hash-table lookup, and segment routing.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Count" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.Count">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.Count.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Count">Count</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the number of key/value pairs physically stored in the dictionary.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_EvictionCount" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.EvictionCount">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.EvictionCount.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_EvictionCount">EvictionCount</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the total number of items evicted from the dictionary since creation, whether by capacity pressure or
+time-based expiry.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Expiration" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.Expiration">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.Expiration.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Expiration">Expiration</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the time-based expiration configuration for this dictionary, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when expiration is
+disabled.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_IsEmpty" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.IsEmpty">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.IsEmpty.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_IsEmpty">IsEmpty</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a value indicating whether the dictionary is empty, observed as an exact point-in-time snapshot.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_IsReadOnly" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.IsReadOnly">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.IsReadOnly.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_IsReadOnly">IsReadOnly</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a value indicating whether the dictionary is read-only.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Item__0_" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.Item(`0)">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.Item.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Item__0_">this[TKey]</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets or sets the value associated with the specified key.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Keys" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.Keys">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.Keys.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Keys">Keys</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a point-in-time snapshot of the dictionary's live keys.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Policy" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.Policy">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.Policy.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Policy">Policy</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the eviction policy configured for this dictionary.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_TotalTouches" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.TotalTouches">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.TotalTouches.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_TotalTouches">TotalTouches</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the total number of times any key has been successfully accessed or touched.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Values" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.Values">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.Values.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Values">Values</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a point-in-time snapshot of the dictionary's live values.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Add__0__1_" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.Add(`0,`1)">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.Add.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Add__0__1_">Add(TKey, TValue)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Adds the specified key and value to the dictionary, or replaces the value if the key already exists. If the
+owning segment has reached its capacity slice and the key is new, an existing entry is evicted according to the
+configured <a class="xref" href="Bodu.Collections.Generic.EvictingDictionaryPolicy.html">EvictingDictionaryPolicy</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Add__0__1_System_TimeSpan_" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.Add(`0,`1,System.TimeSpan)">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.Add.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Add__0__1_System_TimeSpan_">Add(TKey, TValue, TimeSpan)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Adds the specified key and value to the dictionary with an explicit time-to-live, or replaces the value and
+restarts the lifetime if the key already exists.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_AddOrUpdate__0_System_Func__0__1__System_Func__0__1__1__" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.AddOrUpdate(`0,System.Func{`0,`1},System.Func{`0,`1,`1})">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.AddOrUpdate.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_AddOrUpdate__0_System_Func__0__1__System_Func__0__1__1__">AddOrUpdate(TKey, Func&lt;TKey, TValue&gt;, Func&lt;TKey, TValue, TValue&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Adds a key/value pair produced by <code class="paramref">addValueFactory</code> if the key does not already exist, or
+updates an existing entry by applying <code class="paramref">updateValueFactory</code> to its current value, and returns
+the resulting value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_AddOrUpdate__0__1_System_Func__0__1__1__" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.AddOrUpdate(`0,`1,System.Func{`0,`1,`1})">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.AddOrUpdate.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_AddOrUpdate__0__1_System_Func__0__1__1__">AddOrUpdate(TKey, TValue, Func&lt;TKey, TValue, TValue&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Adds a key/value pair if the key does not already exist, or updates an existing entry by applying
+<code class="paramref">updateValueFactory</code> to its current value, and returns the resulting value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Clear" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.Clear">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.Clear.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Clear">Clear()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Removes all entries from the dictionary and resets the <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.TotalTouches.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_TotalTouches">TotalTouches</a> and
+<a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.EvictionCount.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_EvictionCount">EvictionCount</a> counters.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Contains_System_Collections_Generic_KeyValuePair__0__1__" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.Contains(System.Collections.Generic.KeyValuePair{`0,`1})">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.Contains.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Contains_System_Collections_Generic_KeyValuePair__0__1__">Contains(KeyValuePair&lt;TKey, TValue&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether the dictionary contains a live entry equal to the specified key/value pair.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_ContainsKey__0_" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.ContainsKey(`0)">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.ContainsKey.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_ContainsKey__0_">ContainsKey(TKey)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether the dictionary contains a live entry for the specified key.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_CopyTo_System_Collections_Generic_KeyValuePair__0__1____System_Int32_" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.CopyTo(System.Collections.Generic.KeyValuePair{`0,`1}[],System.Int32)">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.CopyTo.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_CopyTo_System_Collections_Generic_KeyValuePair__0__1____System_Int32_">CopyTo(KeyValuePair&lt;TKey, TValue&gt;[], int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Copies the dictionary's live entries into a point-in-time snapshot written to the specified array, starting at
+the specified index.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_GetEnumerator" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.GetEnumerator">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.GetEnumerator.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_GetEnumerator">GetEnumerator()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns an enumerator that iterates over a point-in-time snapshot of the dictionary's live entries.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_GetOrAdd__0_System_Func__0__1__" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.GetOrAdd(`0,System.Func{`0,`1})">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.GetOrAdd.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_GetOrAdd__0_System_Func__0__1__">GetOrAdd(TKey, Func&lt;TKey, TValue&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Adds a key/value pair to the dictionary by using the specified value factory if the key does not already exist,
+and returns either the existing or the newly created value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_GetOrAdd__0_System_Func__0__1__System_TimeSpan_" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.GetOrAdd(`0,System.Func{`0,`1},System.TimeSpan)">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.GetOrAdd.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_GetOrAdd__0_System_Func__0__1__System_TimeSpan_">GetOrAdd(TKey, Func&lt;TKey, TValue&gt;, TimeSpan)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Adds a key/value pair produced by the specified value factory with an explicit time-to-live if the key does not
+already exist, and returns either the existing or the newly created value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_GetOrAdd__0__1_" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.GetOrAdd(`0,`1)">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.GetOrAdd.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_GetOrAdd__0__1_">GetOrAdd(TKey, TValue)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Adds a key/value pair to the dictionary if the key does not already exist, and returns either the existing or
+the newly added value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_GetOrAdd__0__1_System_TimeSpan_" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.GetOrAdd(`0,`1,System.TimeSpan)">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.GetOrAdd.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_GetOrAdd__0__1_System_TimeSpan_">GetOrAdd(TKey, TValue, TimeSpan)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Adds a key/value pair with an explicit time-to-live if the key does not already exist, and returns either the
+existing or the newly added value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Remove_System_Collections_Generic_KeyValuePair__0__1__" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.Remove(System.Collections.Generic.KeyValuePair{`0,`1})">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.Remove.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Remove_System_Collections_Generic_KeyValuePair__0__1__">Remove(KeyValuePair&lt;TKey, TValue&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Removes the entry equal to the specified key/value pair.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Remove__0_" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.Remove(`0)">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.Remove.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Remove__0_">Remove(TKey)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Removes the entry with the specified key.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_RemoveExpired" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.RemoveExpired">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.RemoveExpired.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_RemoveExpired">RemoveExpired()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Removes every expired entry from the dictionary and returns the number of entries removed.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_ToArray" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.ToArray">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.ToArray.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_ToArray">ToArray()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Copies the dictionary's live entries into a new array.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Touch__0_" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.Touch(`0)">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.Touch.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Touch__0_">Touch(TKey)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Marks the specified key as recently accessed without retrieving its value. If the eviction policy involves usage
+tracking, this updates the internal usage metadata.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_TryAdd__0__1_" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.TryAdd(`0,`1)">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.TryAdd.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_TryAdd__0__1_">TryAdd(TKey, TValue)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to add the specified key and value to the dictionary, without replacing an existing live entry.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_TryAdd__0__1_System_TimeSpan_" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.TryAdd(`0,`1,System.TimeSpan)">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.TryAdd.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_TryAdd__0__1_System_TimeSpan_">TryAdd(TKey, TValue, TimeSpan)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to add the specified key and value to the dictionary with an explicit time-to-live, without replacing
+an existing live entry.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_TryGetValue__0__1__" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.TryGetValue(`0,`1@)">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.TryGetValue.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_TryGetValue__0__1__">TryGetValue(TKey, out TValue)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to retrieve the value associated with the specified key.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_TryRemove__0__1__" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.TryRemove(`0,`1@)">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.TryRemove.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_TryRemove__0__1__">TryRemove(TKey, out TValue)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to remove the entry with the specified key, returning the removed value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_TryUpdate__0__1__1_" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.TryUpdate(`0,`1,`1)">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.TryUpdate.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_TryUpdate__0__1__1_">TryUpdate(TKey, TValue, TValue)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Atomically updates the value associated with <code class="paramref">key</code> to <code class="paramref">newValue</code> only when
+its current value equals <code class="paramref">comparisonValue</code>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="events">Events
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_ItemEvicted" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.ItemEvicted">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.ItemEvicted.html">ItemEvicted</a>
+        </td>
+        <td class="markdown level1 summary"><p>Occurs immediately <b>after</b> an entry has been evicted because of capacity pressure or time-based expiry.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IDictionaryExtensions.AddOrUpdate.html#Bodu_Collections_Generic_Extensions_IDictionaryExtensions_AddOrUpdate__2_System_Collections_Generic_IDictionary___0___1____0___1_">IDictionaryExtensions.AddOrUpdate&lt;TKey, TValue&gt;(IDictionary&lt;TKey, TValue&gt;, TKey, TValue)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IDictionaryExtensions.GetOrAdd.html#Bodu_Collections_Generic_Extensions_IDictionaryExtensions_GetOrAdd__2_System_Collections_Generic_IDictionary___0___1____0_System_Func___0___1__">IDictionaryExtensions.GetOrAdd&lt;TKey, TValue&gt;(IDictionary&lt;TKey, TValue&gt;, TKey, Func&lt;TKey, TValue&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IDictionaryExtensions.GetOrAdd.html#Bodu_Collections_Generic_Extensions_IDictionaryExtensions_GetOrAdd__2_System_Collections_Generic_IDictionary___0___1____0___1_">IDictionaryExtensions.GetOrAdd&lt;TKey, TValue&gt;(IDictionary&lt;TKey, TValue&gt;, TKey, TValue)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__2_System_Collections_Generic_IEnumerable___0____1_System_Func___1___0_System_Int32___1__">IEnumerableExtensions.Aggregate&lt;TSource, TAccumulate&gt;(IEnumerable&lt;TSource&gt;, TAccumulate, Func&lt;TAccumulate, TSource, int, TAccumulate&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__3_System_Collections_Generic_IEnumerable___0____1___2_System_Func___1___0_System_Int32___1__System_Func___2___0_System_Int32___2__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2&gt;(IEnumerable&lt;TSource&gt;, T1, T2, Func&lt;T1, TSource, int, T1&gt;, Func&lt;T2, TSource, int, T2&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__3_System_Collections_Generic_IEnumerable___0____1___2_System_Func___1___0___1__System_Func___2___0___2__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2&gt;(IEnumerable&lt;TSource&gt;, T1, T2, Func&lt;T1, TSource, T1&gt;, Func&lt;T2, TSource, T2&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__3_System_Collections_Generic_IEnumerable___0____1_System_Func___1___0_System_Int32___1__System_Func___1___2__">IEnumerableExtensions.Aggregate&lt;TSource, TAccumulate, TResult&gt;(IEnumerable&lt;TSource&gt;, TAccumulate, Func&lt;TAccumulate, TSource, int, TAccumulate&gt;, Func&lt;TAccumulate, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__4_System_Collections_Generic_IEnumerable___0____1___2_System_Func___1___0_System_Int32___1__System_Func___2___0_System_Int32___2__System_Func___1___2___3__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2, TResult&gt;(IEnumerable&lt;TSource&gt;, T1, T2, Func&lt;T1, TSource, int, T1&gt;, Func&lt;T2, TSource, int, T2&gt;, Func&lt;T1, T2, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__4_System_Collections_Generic_IEnumerable___0____1___2_System_Func___1___0___1__System_Func___2___0___2__System_Func___1___2___3__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2, TResult&gt;(IEnumerable&lt;TSource&gt;, T1, T2, Func&lt;T1, TSource, T1&gt;, Func&lt;T2, TSource, T2&gt;, Func&lt;T1, T2, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__4_System_Collections_Generic_IEnumerable___0____1___2___3_System_Func___1___0_System_Int32___1__System_Func___2___0_System_Int32___2__System_Func___3___0_System_Int32___3__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2, T3&gt;(IEnumerable&lt;TSource&gt;, T1, T2, T3, Func&lt;T1, TSource, int, T1&gt;, Func&lt;T2, TSource, int, T2&gt;, Func&lt;T3, TSource, int, T3&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__4_System_Collections_Generic_IEnumerable___0____1___2___3_System_Func___1___0___1__System_Func___2___0___2__System_Func___3___0___3__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2, T3&gt;(IEnumerable&lt;TSource&gt;, T1, T2, T3, Func&lt;T1, TSource, T1&gt;, Func&lt;T2, TSource, T2&gt;, Func&lt;T3, TSource, T3&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__5_System_Collections_Generic_IEnumerable___0____1___2___3_System_Func___1___0_System_Int32___1__System_Func___2___0_System_Int32___2__System_Func___3___0_System_Int32___3__System_Func___1___2___3___4__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2, T3, TResult&gt;(IEnumerable&lt;TSource&gt;, T1, T2, T3, Func&lt;T1, TSource, int, T1&gt;, Func&lt;T2, TSource, int, T2&gt;, Func&lt;T3, TSource, int, T3&gt;, Func&lt;T1, T2, T3, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__5_System_Collections_Generic_IEnumerable___0____1___2___3_System_Func___1___0___1__System_Func___2___0___2__System_Func___3___0___3__System_Func___1___2___3___4__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2, T3, TResult&gt;(IEnumerable&lt;TSource&gt;, T1, T2, T3, Func&lt;T1, TSource, T1&gt;, Func&lt;T2, TSource, T2&gt;, Func&lt;T3, TSource, T3&gt;, Func&lt;T1, T2, T3, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.BatchPooled.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_BatchPooled__1_System_Collections_Generic_IEnumerable___0__System_Int32_">IEnumerableExtensions.BatchPooled&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, int)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.BatchPooled.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_BatchPooled__2_System_Collections_Generic_IEnumerable___0__System_Int32_System_Func___0_System_Int32___1__">IEnumerableExtensions.BatchPooled&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, int, Func&lt;TSource, int, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Batch.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Batch__2_System_Collections_Generic_IEnumerable___0__System_Int32_System_Func___0_System_Int32___1__">IEnumerableExtensions.Batch&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, int, Func&lt;TSource, int, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Batch.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Batch__2_System_Collections_Generic_IEnumerable___0__System_Int32_System_Func___0___1__">IEnumerableExtensions.Batch&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, int, Func&lt;TSource, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Cache.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Cache__1_System_Collections_Generic_IEnumerable___0__">IEnumerableExtensions.Cache&lt;T&gt;(IEnumerable&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.CartesianProduct.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_CartesianProduct__2_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1__">IEnumerableExtensions.CartesianProduct&lt;TFirst, TSecond&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.CartesianProduct.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_CartesianProduct__3_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1__System_Func___0___1___2__">IEnumerableExtensions.CartesianProduct&lt;TFirst, TSecond, TResult&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;, Func&lt;TFirst, TSecond, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ChunkBy.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ChunkBy__2_System_Collections_Generic_IEnumerable___0__System_Func___0___1__">IEnumerableExtensions.ChunkBy&lt;TSource, TKey&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TKey&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ChunkBy.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ChunkBy__2_System_Collections_Generic_IEnumerable___0__System_Func___0___1__System_Collections_Generic_IEqualityComparer___1__">IEnumerableExtensions.ChunkBy&lt;TSource, TKey&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TKey&gt;, IEqualityComparer&lt;TKey&gt;?)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Combinations.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Combinations__1_System_Collections_Generic_IEnumerable___0__System_Int32_">IEnumerableExtensions.Combinations&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, int)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ContainsAll.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ContainsAll__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEqualityComparer___0__">IEnumerableExtensions.ContainsAll&lt;T&gt;(IEnumerable&lt;T&gt;, IEnumerable&lt;T&gt;, IEqualityComparer&lt;T&gt;?)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ContainsAny.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ContainsAny__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEqualityComparer___0__">IEnumerableExtensions.ContainsAny&lt;T&gt;(IEnumerable&lt;T&gt;, IEnumerable&lt;T&gt;, IEqualityComparer&lt;T&gt;?)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ForEach.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ForEach__1_System_Collections_Generic_IEnumerable___0__System_Action___0__">IEnumerableExtensions.ForEach&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Action&lt;TSource&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Index.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Index__1_System_Collections_Generic_IEnumerable___0__">IEnumerableExtensions.Index&lt;TSource&gt;(IEnumerable&lt;TSource&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Interleave.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Interleave__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0____">IEnumerableExtensions.Interleave&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, params IEnumerable&lt;TSource&gt;[])</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.IsNullOrEmpty.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_IsNullOrEmpty__1_System_Collections_Generic_IEnumerable___0__">IEnumerableExtensions.IsNullOrEmpty&lt;TSource&gt;(IEnumerable&lt;TSource&gt;?)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Pairwise.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Pairwise__1_System_Collections_Generic_IEnumerable___0__">IEnumerableExtensions.Pairwise&lt;TSource&gt;(IEnumerable&lt;TSource&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Pairwise.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Pairwise__2_System_Collections_Generic_IEnumerable___0__System_Func___0___0___1__">IEnumerableExtensions.Pairwise&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TSource, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Permutations.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Permutations__1_System_Collections_Generic_IEnumerable___0__">IEnumerableExtensions.Permutations&lt;TSource&gt;(IEnumerable&lt;TSource&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Permutations.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Permutations__1_System_Collections_Generic_IEnumerable___0__System_Int32_">IEnumerableExtensions.Permutations&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, int)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Randomize.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Randomize__1_System_Collections_Generic_IEnumerable___0__Bodu_Collections_Generic_Extensions_RandomizationMode_Bodu_IRandomGenerator_System_Nullable_System_Int32__">IEnumerableExtensions.Randomize&lt;T&gt;(IEnumerable&lt;T&gt;, RandomizationMode, IRandomGenerator, int?)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RecursiveSelect__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Collections_Generic_IEnumerable___0___">IEnumerableExtensions.RecursiveSelect&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, IEnumerable&lt;TSource&gt;&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RecursiveSelect__2_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Collections_Generic_IEnumerable___0___System_Func___0_System_Int32_System_Int32___1__">IEnumerableExtensions.RecursiveSelect&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, IEnumerable&lt;TSource&gt;&gt;, Func&lt;TSource, int, int, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RecursiveSelect__2_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Collections_Generic_IEnumerable___0___System_Func___0_System_Int32_System_Int32___1__System_Func___0_Bodu_Collections_Extensions_RecursiveSelectControl__">IEnumerableExtensions.RecursiveSelect&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, IEnumerable&lt;TSource&gt;&gt;, Func&lt;TSource, int, int, TResult&gt;, Func&lt;TSource, RecursiveSelectControl&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RecursiveSelect__2_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Collections_Generic_IEnumerable___0___System_Func___0_System_Int32___1__">IEnumerableExtensions.RecursiveSelect&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, IEnumerable&lt;TSource&gt;&gt;, Func&lt;TSource, int, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RecursiveSelect__2_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Collections_Generic_IEnumerable___0___System_Func___0___1__">IEnumerableExtensions.RecursiveSelect&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, IEnumerable&lt;TSource&gt;&gt;, Func&lt;TSource, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RunLengthEncode.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RunLengthEncode__1_System_Collections_Generic_IEnumerable___0__">IEnumerableExtensions.RunLengthEncode&lt;TSource&gt;(IEnumerable&lt;TSource&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RunLengthEncode.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RunLengthEncode__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEqualityComparer___0__">IEnumerableExtensions.RunLengthEncode&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, IEqualityComparer&lt;TSource&gt;?)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Scan.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Scan__2_System_Collections_Generic_IEnumerable___0____1_System_Func___1___0___1__">IEnumerableExtensions.Scan&lt;TSource, TAccumulate&gt;(IEnumerable&lt;TSource&gt;, TAccumulate, Func&lt;TAccumulate, TSource, TAccumulate&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Scan.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Scan__3_System_Collections_Generic_IEnumerable___0____1_System_Func___1___0___1__System_Func___1___2__">IEnumerableExtensions.Scan&lt;TSource, TAccumulate, TResult&gt;(IEnumerable&lt;TSource&gt;, TAccumulate, Func&lt;TAccumulate, TSource, TAccumulate&gt;, Func&lt;TAccumulate, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.SplitWhen.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_SplitWhen__1_System_Collections_Generic_IEnumerable___0__System_Func___0___0_System_Boolean__">IEnumerableExtensions.SplitWhen&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TSource, bool&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Windowed.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Windowed__1_System_Collections_Generic_IEnumerable___0__System_Int32_">IEnumerableExtensions.Windowed&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, int)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Windowed.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Windowed__2_System_Collections_Generic_IEnumerable___0__System_Int32_System_Func_System_Collections_Generic_IReadOnlyList___0____1__">IEnumerableExtensions.Windowed&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, int, Func&lt;IReadOnlyList&lt;TSource&gt;, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ZipLongest.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ZipLongest__2_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1__">IEnumerableExtensions.ZipLongest&lt;TFirst, TSecond&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ZipLongest.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ZipLongest__2_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1____0___1_">IEnumerableExtensions.ZipLongest&lt;TFirst, TSecond&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;, TFirst, TSecond)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ZipLongest.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ZipLongest__3_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1____0___1_System_Func___0___1___2__">IEnumerableExtensions.ZipLongest&lt;TFirst, TSecond, TResult&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;, TFirst, TSecond, Func&lt;TFirst, TSecond, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.CountOrDefault.html#Bodu_Collections_Extensions_IEnumerableExtensions_CountOrDefault_System_Collections_IEnumerable_">IEnumerableExtensions.CountOrDefault(IEnumerable)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_Generic_IEnumerable_System_Object___System_Func_System_Object_System_Int32_System_Int32_System_Object__">IEnumerableExtensions.RecursiveSelect(IEnumerable, Func&lt;object, IEnumerable&lt;object&gt;&gt;, Func&lt;object, int, int, object&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_Generic_IEnumerable_System_Object___System_Func_System_Object_System_Int32_System_Int32_System_Object__System_Func_System_Object_Bodu_Collections_Extensions_RecursiveSelectControl__">IEnumerableExtensions.RecursiveSelect(IEnumerable, Func&lt;object, IEnumerable&lt;object&gt;&gt;, Func&lt;object, int, int, object&gt;, Func&lt;object, RecursiveSelectControl&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_Generic_IEnumerable_System_Object___System_Func_System_Object_System_Int32_System_Object__">IEnumerableExtensions.RecursiveSelect(IEnumerable, Func&lt;object, IEnumerable&lt;object&gt;&gt;, Func&lt;object, int, object&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_Generic_IEnumerable_System_Object___System_Func_System_Object_System_Object__">IEnumerableExtensions.RecursiveSelect(IEnumerable, Func&lt;object, IEnumerable&lt;object&gt;&gt;, Func&lt;object, object&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_IEnumerable__">IEnumerableExtensions.RecursiveSelect(IEnumerable, Func&lt;object, IEnumerable&gt;)</a>
+  </div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

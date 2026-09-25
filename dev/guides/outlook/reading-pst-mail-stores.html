@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Reading .pst mail stores | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Reading .pst mail stores | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="reading-pst-mail-stores">Reading <code>.pst</code> mail stores</h1>
+
+<p><a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookMailStore.html">OutlookMailStore</a> is the session type for a personal-folders file: open it over a path or a stream, walk the folder hierarchy down from <code>RootFolder</code>, read each message through the conveniences or the raw property surface, and dispose it when done. The session owns the <a class="xref" href="../../api/Bodu.IO.Pst.PstFile.html">PstFile</a> container beneath it and, unless you opt out with <code>leaveOpen</code>, the source stream. Every folder, message, recipient, and attachment you obtain is a view bound to the session's lifetime — members called after <code>Dispose</code> throw <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a>.</p>
+<p>Reads are lazy throughout. Opening parses only the container header; folder enumerations stream the hierarchy and contents tables one row block at a time; each object's properties decode once, on first access. The session is single-threaded — do not call its members, or those of any view, concurrently.</p>
+<p>The samples below run against the two fixtures the <a href="../../samples/io-pst.html">runnable PST sample</a> ships — <code>sample1.pst</code> (Unicode format) copied as <code>archive.pst</code>, and <code>sample2.pst</code> (ANSI format) copied as <code>legacy.pst</code>. The quoted output is what they print.</p>
+<h2 id="open-a-store-and-read-the-store-object">Open a store and read the store object</h2>
+<pre><code class="lang-csharp">using Bodu.Formats.Outlook;
+
+using var store = OutlookMailStore.OpenRead(&quot;archive.pst&quot;);
+
+Console.WriteLine(store.DisplayName);                       // PidTagDisplayName of the store object
+Console.WriteLine(store.RootFolder.HasSubfolders);
+
+foreach (OutlookMailFolder folder in store.RootFolder.EnumerateSubfolders())
+    Console.WriteLine($&quot;{folder.DisplayName} [{folder.ContainerClass ?? &quot;-&quot;}]&quot;);
+
+// sample1
+// True
+// Top of Outlook data file [-]
+// Search Root [-]
+</code></pre>
+<p>Three factories open a session: <code>OpenRead(path)</code> owns the file it opens; <code>OpenRead(stream, leaveOpen)</code> reads from the stream's current position; <code>Open(stream, options, leaveOpen)</code> additionally takes an <a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookMailStoreReaderOptions.html">OutlookMailStoreReaderOptions</a> (see <a href="reader-options-and-limits.html">Reader options and resource limits</a>). The stream must be readable <strong>and</strong> seekable — the container seeks on demand and never buffers the file whole — and a stream that is not throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a>.</p>
+<p><code>Properties</code> is the store object's tag-addressed <a class="xref" href="../../api/Bodu.Formats.Outlook.MapiPropertyCollection.html">MapiPropertyCollection</a>, decoded on first access; <code>DisplayName</code> is its <code>PidTagDisplayName</code>. The store's own code page, resolved from those properties, is the encoding every folder inherits unless it declares one of its own.</p>
+<h2 id="sniff-before-opening">Sniff before opening</h2>
+<pre><code class="lang-csharp">using Bodu.Formats.Outlook;
+using Bodu.IO.Pst;
+
+using FileStream stream = File.OpenRead(&quot;maybe-a-store.bin&quot;);
+if (!OutlookMailStore.IsPstFile(stream))
+    return;
+
+var options = new OutlookMailStoreReaderOptions { ValidationLevel = PstValidationLevel.Strict };
+using var store = OutlookMailStore.Open(stream, options, leaveOpen: true);
+Console.WriteLine(store.DisplayName);
+</code></pre>
+<p><code>IsPstFile</code> checks only the <code>!BDN</code> magic and restores the stream position, so it is cheap to call ahead of a full open. It answers <code>true</code> for <em>any</em> PST variant: Unicode and ANSI files then open, while the 4 KiB-page OST variant is rejected by the container with <a class="xref" href="../../api/Bodu.IO.Pst.PstUnsupportedFormatException.html">PstUnsupportedFormatException</a>.</p>
+<h2 id="pattern-1--inventory-a-store">Pattern 1 — inventory a store</h2>
+<p><code>RootFolder</code> is structural: the folders a user sees hang beneath <em>Top of Outlook data file</em> (the IPM subtree), and the search root sits beside it. Walk <code>EnumerateSubfolders</code> recursively and print what each folder declares about itself.</p>
+<pre><code class="lang-csharp">using Bodu.Formats.Outlook;
+
+using var store = OutlookMailStore.OpenRead(&quot;archive.pst&quot;);
+
+Console.WriteLine(store.DisplayName);
+Inventory(store.RootFolder, depth: 0);
+
+static void Inventory(OutlookMailFolder folder, int depth)
+{
+    string pad = new(' ', depth * 2);
+    Console.WriteLine($&quot;{pad}{folder.DisplayName ?? &quot;(unnamed)&quot;} [{folder.ContainerClass ?? &quot;-&quot;}] &quot; +
+        $&quot;messages={folder.MessageCount?.ToString() ?? &quot;?&quot;} unread={folder.UnreadCount?.ToString() ?? &quot;?&quot;} &quot; +
+        $&quot;subfolders={folder.HasSubfolders}&quot;);
+
+    foreach (OutlookMailFolder child in folder.EnumerateSubfolders())
+        Inventory(child, depth + 1);
+}
+
+// sample1
+//  [-] messages=0 unread=0 subfolders=True
+//   Top of Outlook data file [-] messages=0 unread=0 subfolders=True
+//     Deleted Items [-] messages=0 unread=0 subfolders=False
+//     Sample1 [IPF.Note] messages=1 unread=0 subfolders=False
+//   Search Root [-] messages=0 unread=0 subfolders=False
+</code></pre>
+<p><code>MessageCount</code>, <code>UnreadCount</code>, and <code>HasSubfolders</code> are the values the folder <em>declares</em> (<code>PidTagContentCount</code>, <code>PidTagContentUnreadCount</code>, <code>PidTagSubfolders</code>), not counts of enumerated rows — a writer that skipped the bookkeeping leaves them <code>null</code> (or <code>false</code>). <code>ContainerClass</code> is <code>PidTagContainerClass</code> (<code>IPF.Note</code> for a mail folder, <code>IPF.Contact</code>, <code>IPF.Appointment</code>, …) and is typically absent on the structural folders. A folder whose hierarchy or contents table node is missing enumerates empty rather than failing, matching real-world stores that omit empty tables.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Search folders are Outlook runtime state, not archive content: <code>EnumerateSubfolders</code> skips them at every validation level, so the <em>SPAM Search Folder</em> and <em>ItemProcSearch</em> entries that the container's raw hierarchy table lists (see <a href="../io-pst/reading-nodes-and-tables.html">Reading nodes and tables</a>) never appear here.</p>
+</div>
+<h2 id="pattern-2--export-every-messages-headers">Pattern 2 — export every message's headers</h2>
+<p>The later patterns want every message in the store, so start with a depth-first helper. Enumeration is streaming: the helper yields each message as its table row is read, and nothing is buffered ahead.</p>
+<pre><code class="lang-csharp">// Every message beneath a folder, depth first
+static IEnumerable&lt;OutlookMailMessage&gt; AllMessages(OutlookMailFolder folder)
+{
+    foreach (OutlookMailMessage message in folder.EnumerateMessages())
+        yield return message;
+
+    foreach (OutlookMailFolder child in folder.EnumerateSubfolders())
+    {
+        foreach (OutlookMailMessage message in AllMessages(child))
+            yield return message;
+    }
+}
+</code></pre>
+<p><code>TransportMessageHeaders</code> is <code>PidTagTransportMessageHeaders</code> — the RFC 5322 header block exactly as the message was received. Messages that never crossed a transport (drafts, items created locally) do not carry it, so fall back to the MAPI scalars.</p>
+<pre><code class="lang-csharp">using Bodu.Formats.Outlook;
+
+using var store = OutlookMailStore.OpenRead(&quot;archive.pst&quot;);
+using var output = new StreamWriter(&quot;headers.txt&quot;);
+
+foreach (OutlookMailMessage message in AllMessages(store.RootFolder))
+{
+    if (message.TransportMessageHeaders is string headers)
+    {
+        output.WriteLine(headers.TrimEnd());   // the RFC 5322 header block as received
+    }
+    else
+    {
+        // Messages that never crossed SMTP (drafts, items created locally) carry no
+        // transport headers; synthesize the essentials from the MAPI properties.
+        output.WriteLine($&quot;Message-ID: {message.InternetMessageId ?? &quot;(none)&quot;}&quot;);
+        output.WriteLine($&quot;From: {message.SenderName} &lt;{message.SenderEmailAddress}&gt;&quot;);
+        output.WriteLine($&quot;Subject: {message.Subject}&quot;);
+        output.WriteLine($&quot;Date: {message.SentTime ?? message.ReceivedTime:R}&quot;);
+    }
+
+    output.WriteLine($&quot;X-Message-Class: {message.MessageClass}&quot;);
+    output.WriteLine();
+}
+
+// headers.txt (excerpt):
+// Received: from TK5EX14MBXC114.redmond.corp.microsoft.com ([169.254.3.48]) by
+//  TK5EX14MLTC103.redmond.corp.microsoft.com ([157.54.79.174]) with mapi; Mon,
+//  15 Mar 2010 10:12:07 -0700
+// From: Terry Mahaffey &lt;terrymah@microsoft.com&gt;
+// Subject: Here is a sample message
+// Date: Mon, 15 Mar 2010 10:12:05 -0700
+// Message-ID: &lt;B2FDDB8BE384C94794441DB4A7F3D8B804AE624B@TK5EX14MBXC114.redmond.corp.microsoft.com&gt;
+// ...
+// X-Message-Class: IPM.Note
+</code></pre>
+<p>The scalar conveniences on <a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookMailMessage.html">OutlookMailMessage</a> are all nullable views over <code>Properties</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Convenience</th>
+<th>Property</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Subject</code></td>
+<td><code>PidTagSubject</code></td>
+<td>The MS-PST subject-prefix marker (U+0001 plus a length byte) is stripped; the raw value stays in <code>Properties</code>.</td>
+</tr>
+<tr>
+<td><code>SenderName</code> / <code>SenderEmailAddress</code></td>
+<td><code>PidTagSenderName</code> / <code>PidTagSenderEmailAddress</code></td>
+<td>The address is often an X.500 DN for Exchange-originated mail.</td>
+</tr>
+<tr>
+<td><code>MessageClass</code></td>
+<td><code>PidTagMessageClass</code></td>
+<td><code>IPM.Note</code>, <code>IPM.Contact</code>, <code>IPM.Appointment</code>, …</td>
+</tr>
+<tr>
+<td><code>InternetMessageId</code></td>
+<td><code>PidTagInternetMessageId</code></td>
+<td>The RFC 5322 <code>Message-ID</code>.</td>
+</tr>
+<tr>
+<td><code>TransportMessageHeaders</code></td>
+<td><code>PidTagTransportMessageHeaders</code></td>
+<td>Absent on messages that never crossed a transport.</td>
+</tr>
+<tr>
+<td><code>SentTime</code></td>
+<td><code>PidTagClientSubmitTime</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>ReceivedTime</code></td>
+<td><code>PidTagMessageDeliveryTime</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>EmbeddedDepth</code></td>
+<td>—</td>
+<td><code>0</code> for a folder-level message, one more per <code>OpenMessage()</code> level.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="bodies">Bodies</h2>
+<pre><code class="lang-csharp">using Bodu.Formats.Outlook;
+
+using var store = OutlookMailStore.OpenRead(&quot;archive.pst&quot;);
+
+foreach (OutlookMailMessage message in AllMessages(store.RootFolder))
+{
+    string? text = message.BodyText;                  // PidTagBody
+    string? html = message.BodyHtml;                  // PidTagHtml, decoded through the internet code page
+    string? rtf = message.BodyRtf;                    // PidTagRtfCompressed, decompressed per MS-OXRTFCP
+
+    Console.WriteLine($&quot;{message.Subject}: text={text?.Length.ToString() ?? &quot;-&quot;} html={html?.Length.ToString() ?? &quot;-&quot;} rtf={rtf?.Length.ToString() ?? &quot;-&quot;}&quot;);
+    Console.WriteLine((text ?? html ?? rtf ?? &quot;(no body)&quot;).ReplaceLineEndings(&quot; &quot;).Trim());
+}
+
+// Here is a sample message: text=79 html=1701 rtf=-
+// With a sample attachment. It’s my daughter and our puppy. Aren’t they cute?
+</code></pre>
+<p><code>BodyHtml</code> and <code>BodyRtf</code> are decoded once and cached on the view. <code>BodyRtf</code> returns <code>null</code> when the property is absent <em>or</em> when <a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookMailStoreReaderOptions.DecompressRtf.html#Bodu_Formats_Outlook_OutlookMailStoreReaderOptions_DecompressRtf">DecompressRtf</a> is <code>false</code>; a compressed payload that is malformed, fails its checksum, or would decompress past <code>MaxDecompressedRtfBytes</code> throws <a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookPstFormatException.html">OutlookPstFormatException</a>.</p>
+<h2 id="recipients">Recipients</h2>
+<p>Recipients are row-resident: each recipient-table row decodes directly into an <a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookRecipient.html">OutlookRecipient</a> — the same type the <code>.msg</code> reader hands out — in table order.</p>
+<pre><code class="lang-csharp">using Bodu.Formats.Outlook;
+
+using var store = OutlookMailStore.OpenRead(&quot;archive.pst&quot;);
+
+foreach (OutlookMailMessage message in AllMessages(store.RootFolder))
+{
+    Console.WriteLine($&quot;{message.Subject} from {message.SenderName} &lt;{message.SenderEmailAddress}&gt;&quot;);
+    foreach (OutlookRecipient recipient in message.Recipients)
+        Console.WriteLine($&quot;  {recipient.RecipientType}: {recipient.DisplayName} &lt;{recipient.EmailAddress}&gt; ({recipient.AddressType})&quot;);
+}
+
+// Here is a sample message from Terry Mahaffey &lt;/O=MICROSOFT/OU=NORTHAMERICA/CN=RECIPIENTS/CN=TERRYMAH1&gt;
+//   To: Terry Mahaffey &lt;/O=MICROSOFT/OU=Northamerica/cn=Recipients/cn=terrymah1&gt; (EX)
+</code></pre>
+<h2 id="pattern-3--extract-attachments-recursively">Pattern 3 — extract attachments recursively</h2>
+<p><a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookMailAttachment.html">OutlookMailAttachment</a> exposes <code>Method</code>, <code>FileName</code> (the long form, falling back to the short), <code>ContentId</code>, <code>MimeTag</code>, and <code>Size</code>, plus two content accessors that are method-specific: <code>OpenContentStream()</code> serves a by-value payload and <code>OpenMessage()</code> serves an embedded message. Each throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a> for the other method kinds, so branch on <code>Method</code> first.</p>
+<pre><code class="lang-csharp">using Bodu.Formats.Outlook;
+
+using var store = OutlookMailStore.OpenRead(&quot;archive.pst&quot;);
+Directory.CreateDirectory(&quot;attachments&quot;);
+
+foreach (OutlookMailMessage message in AllMessages(store.RootFolder))
+    Extract(message);
+
+static void Extract(OutlookMailMessage message)
+{
+    foreach (OutlookMailAttachment attachment in message.Attachments)
+    {
+        switch (attachment.Method)
+        {
+            case OutlookAttachmentMethod.ByValue:
+                string name = Path.GetFileName(attachment.FileName ?? $&quot;attachment-{Guid.NewGuid():N}.bin&quot;);
+                using (Stream content = attachment.OpenContentStream())
+                using (FileStream target = File.Create(Path.Combine(&quot;attachments&quot;, name)))
+                    content.CopyTo(target);
+                Console.WriteLine($&quot;{message.Subject}: saved {name} ({attachment.Size} bytes, {attachment.MimeTag ?? &quot;no MIME tag&quot;})&quot;);
+                break;
+
+            case OutlookAttachmentMethod.EmbeddedMessage:
+                OutlookMailMessage nested = attachment.OpenMessage();
+                Console.WriteLine($&quot;{message.Subject}: embedded '{nested.Subject}' at depth {nested.EmbeddedDepth}&quot;);
+                Extract(nested);   // MaxEmbeddedMessageDepth bounds the recursion
+                break;
+
+            default:
+                Console.WriteLine($&quot;{message.Subject}: {attachment.Method} attachment {attachment.FileName} has no payload in the store&quot;);
+                break;
+        }
+    }
+}
+
+// Here is a sample message: saved leah_thumper.jpg (96808 bytes, no MIME tag)
+</code></pre>
+<p>A few contracts worth knowing:</p>
+<ul>
+<li><strong><code>Size</code> is what the writer recorded.</strong> It reports <code>PidTagAttachSize</code> when present and only falls back to the payload length otherwise — and <code>PidTagAttachSize</code> conventionally counts the whole attachment object, not just the bytes. The sample's <code>leah_thumper.jpg</code> declares 96,808 bytes while <code>OpenContentStream()</code> yields 93,142. Measure the stream (<code>Length</code>) when the exact payload size matters; the fallback reads the store's index structures, so a deferred payload is never materialized to price it.</li>
+<li><strong>Large payloads never sit in memory whole.</strong> A by-value payload at or below <a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookMailStoreReaderOptions.MaxInlineAttachmentBytes.html#Bodu_Formats_Outlook_OutlookMailStoreReaderOptions_MaxInlineAttachmentBytes">MaxInlineAttachmentBytes</a> (1 MiB by default) is decoded into <code>Properties</code> and served from those bytes; a larger one stays in the store and <code>OpenContentStream()</code> reads it block by block. The stream is bound to the session — dispose it before the session.</li>
+<li><strong><code>Method</code> is inferred when the writer omitted it.</strong> An attachment without <code>PidTagAttachMethod</code> reports <code>ByValue</code> when it carries a by-value payload and <code>None</code> otherwise; an undefined value throws <a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookPstFormatException.html">OutlookPstFormatException</a> under strict validation.</li>
+<li><strong>Embedded messages inherit their code page.</strong> <code>OpenMessage()</code> returns a view over the attachment's message-typed subnode whose <code>String8</code> properties decode with the attachment's encoding — which in turn inherited from the message, the folder, and the store, each level overriding only when it declares a code page of its own. <code>EmbeddedDepth</code> is one more than the owner's; opening past <code>MaxEmbeddedMessageDepth</code> throws <a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookPstFormatException.html">OutlookPstFormatException</a> at every validation level.</li>
+</ul>
+<h2 id="folder-associated-messages">Folder-associated messages</h2>
+<p>Folders also hold <em>associated</em> items — hidden folder-associated-information (FAI) messages such as view settings, rules, and category lists. They are excluded from <code>EnumerateMessages</code> and reachable through <code>EnumerateAssociatedMessages</code>, which streams the folder's associated-contents table the same way.</p>
+<pre><code class="lang-csharp">using Bodu.Formats.Outlook;
+
+using var store = OutlookMailStore.OpenRead(&quot;archive.pst&quot;);
+
+foreach (OutlookMailFolder folder in AllFolders(store.RootFolder))
+{
+    foreach (OutlookMailMessage item in folder.EnumerateAssociatedMessages())
+        Console.WriteLine($&quot;{folder.DisplayName}: {item.MessageClass} — {item.Subject ?? &quot;(no subject)&quot;}&quot;);
+}
+
+static IEnumerable&lt;OutlookMailFolder&gt; AllFolders(OutlookMailFolder folder)
+{
+    yield return folder;
+    foreach (OutlookMailFolder child in folder.EnumerateSubfolders())
+    {
+        foreach (OutlookMailFolder descendant in AllFolders(child))
+            yield return descendant;
+    }
+}
+</code></pre>
+<p>(The sample store carries none, so this prints nothing.)</p>
+<h2 id="pattern-4--find-messages-by-named-property">Pattern 4 — find messages by named property</h2>
+<p>Identifiers at or above <code>0x8000</code> are assigned per file, so the durable identity — a property-set GUID plus a number or a name — has to be resolved to <em>this</em> store's identifier first. The mapping lives in one name-to-id map node per store, so <a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookMailStore.html">OutlookMailStore</a> resolves it store-wide and one lookup serves every message and attachment of the session.</p>
+<pre><code class="lang-csharp">using Bodu.Formats.Outlook;
+
+using var store = OutlookMailStore.OpenRead(&quot;archive.pst&quot;);
+
+// PS_PUBLIC_STRINGS &quot;Keywords&quot; — the category list Outlook shows as color categories.
+var keywords = new MapiNamedProperty(new Guid(&quot;00020329-0000-0000-C000-000000000046&quot;), &quot;Keywords&quot;);
+
+if (!store.TryGetNamedPropertyId(keywords, out ushort id))
+{
+    Console.WriteLine(&quot;This store never assigned an identifier to Keywords.&quot;);
+    return;
+}
+
+Console.WriteLine($&quot;Keywords is 0x{id:X4} in this store&quot;);
+
+foreach (OutlookMailMessage message in AllMessages(store.RootFolder))
+{
+    string[]? categories = message.Properties.GetStringArray(id);
+    Console.WriteLine($&quot;{message.Subject}: {(categories is { Length: &gt; 0 } ? string.Join(&quot;, &quot;, categories) : &quot;(no categories)&quot;)}&quot;);
+}
+
+// Keywords is 0x8012 in this store
+// Here is a sample message: Green Category, Blue Category
+</code></pre>
+<p>The reverse direction answers &quot;what does this named tag mean in this file?&quot;:</p>
+<pre><code class="lang-csharp">using Bodu.Formats.Outlook;
+
+using var store = OutlookMailStore.OpenRead(&quot;archive.pst&quot;);
+
+var tag = new MapiPropertyTag(0x8000, MapiPropertyType.Unicode);
+if (store.TryGetPropertyName(tag, out MapiNamedProperty name))
+    Console.WriteLine($&quot;{tag} is {name}&quot;);
+
+// 0x8000001F is {00062002-0000-0000-c000-000000000046}:0x00008205
+</code></pre>
+<p>The whole property surface — typed accessors, tags, wire types, multi-valued properties — is covered in <a href="properties-and-named-properties.html">Properties and named properties</a>; it is identical on both readers.</p>
+<h2 id="ansi-and-unicode-stores">ANSI and Unicode stores</h2>
+<p>The mail store opens both PST formats through the same call, and nothing on its surface changes between them. What differs is beneath: an ANSI file (<code>wVer</code> 14/15) uses 32-bit structures and typically stores strings as code-page (<code>String8</code>) values rather than UTF-16, so the reader decodes them through the object's resolved code page — <code>PidTagMessageCodepage</code>, then <code>PidTagInternetCodepage</code>, then the inherited encoding, then Windows-1252. The session does not expose the format itself; when you need it, ask the container.</p>
+<pre><code class="lang-csharp">using Bodu.Formats.Outlook;
+using Bodu.IO.Pst;
+
+using FileStream stream = File.OpenRead(&quot;legacy.pst&quot;);
+
+PstFileFormat format;
+using (PstFile container = PstFile.OpenRead(stream, leaveOpen: true))
+    format = container.Format;                                  // Unicode or Ansi
+stream.Position = 0;
+
+using var store = OutlookMailStore.OpenRead(stream);
+Console.WriteLine($&quot;{format}: {store.DisplayName}&quot;);
+
+foreach (OutlookMailMessage message in AllMessages(store.RootFolder))
+{
+    int? codePage = message.Properties.GetInt32(MapiPropertyIds.MessageCodepage);
+    Console.WriteLine($&quot;  {message.Subject} — {message.SenderName} (code page {codePage?.ToString() ?? &quot;inherited&quot;})&quot;);
+}
+
+// Ansi: sample2
+//   Here is a sample message — Terry Mahaffey (code page 1252)
+</code></pre>
+<p>The Windows code pages that dominate real-world mail are available on every platform because the reader registers <code>CodePagesEncodingProvider</code> — that is what the <code>System.Text.Encoding.CodePages</code> dependency is for.</p>
+<h2 id="errors-two-families-not-one">Errors: two families, not one</h2>
+<p>The <code>.pst</code> reader reports failures through two unrelated exception hierarchies, and — unlike the <code>.msg</code> reader, which wraps container faults — it lets the container's exceptions propagate <strong>unwrapped</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Exception</th>
+<th>Raised for</th>
+<th>Where</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Pst.PstFileFormatException.html">PstFileFormatException</a></td>
+<td>The stream is not structurally a PST file, or a page, block, tree, heap, or context is malformed; <code>Error</code> carries the <a class="xref" href="../../api/Bodu.IO.Pst.PstFileError.html">PstFileError</a> category. Also <code>LimitExceeded</code> when a node payload exceeds <code>MaxNodeDataLength</code>.</td>
+<td><code>Open</code>, and any property, folder, message, or attachment read.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Pst.PstUnsupportedFormatException.html">PstUnsupportedFormatException</a></td>
+<td>The 4 KiB-page OST variant, or Windows Information Protection encryption.</td>
+<td><code>Open</code>.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Pst.PstFileException.html">PstFileException</a> (base)</td>
+<td>Catch-all for the container family.</td>
+<td>Everywhere the two above apply.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookPstFormatException.html">OutlookPstFormatException</a></td>
+<td>A messaging-level violation of MS-PST: under strict validation a hierarchy, contents, recipient, or attachment row that references no valid node, an undecodable property value, an undefined attachment method, or a malformed name-to-id map; at every level a missing by-value payload or embedded-message subnode, a tripped embedded-message depth, or a malformed / oversized compressed-RTF body.</td>
+<td>Folder and message enumeration, <code>Properties</code>, <code>Method</code>, <code>OpenContentStream</code>, <code>OpenMessage</code>, <code>BodyRtf</code>.</td>
+</tr>
+<tr>
+<td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></td>
+<td>A content accessor that does not match the attachment's <code>Method</code>.</td>
+<td><code>OpenContentStream</code>, <code>OpenMessage</code>.</td>
+</tr>
+<tr>
+<td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></td>
+<td>Any member after the session is disposed.</td>
+<td>Everywhere.</td>
+</tr>
+<tr>
+<td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></td>
+<td>The stream is not readable and seekable.</td>
+<td><code>Open</code> / <code>OpenRead(stream)</code>.</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-csharp">using Bodu.Formats.Outlook;
+using Bodu.IO.Pst;
+
+try
+{
+    using var store = OutlookMailStore.OpenRead(&quot;suspect.pst&quot;);
+    foreach (OutlookMailFolder folder in store.RootFolder.EnumerateSubfolders())
+        Console.WriteLine(folder.DisplayName);
+}
+catch (PstUnsupportedFormatException)
+{
+    Console.WriteLine(&quot;A recognized but unsupported PST variant (the 4 KiB-page OST).&quot;);
+}
+catch (PstFileException ex)
+{
+    Console.WriteLine($&quot;Container corruption: {ex.Error} — {ex.Message}&quot;);
+}
+catch (OutlookPstFormatException ex)
+{
+    Console.WriteLine($&quot;Messaging-level violation: {ex.Message}&quot;);
+}
+
+// With a Word document renamed to suspect.pst:
+// Container corruption: InvalidHeader — The stream does not begin with a valid PST header.
+</code></pre>
+<div class="TIP">
+<h5>Tip</h5>
+<p>Under the default <code>Compatible</code> level the reader is forgiving: a malformed property is omitted, a table row that references no valid node is skipped, and an undefined attachment method is inferred. Reach for <code>Strict</code> when you are validating a corpus and want those conditions to surface as <code>OutlookPstFormatException</code> instead — see <a href="reader-options-and-limits.html">Reader options and resource limits</a>.</p>
+</div>
+<h2 id="api-summary">API summary</h2>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Members</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookMailStore.html">OutlookMailStore</a></td>
+<td><code>OpenRead(path)</code> · <code>OpenRead(stream, leaveOpen)</code> · <code>Open(stream, options, leaveOpen)</code> · <code>IsPstFile(stream)</code> · <code>Properties</code> · <code>DisplayName</code> · <code>RootFolder</code> · <code>TryGetNamedPropertyId</code> · <code>TryGetPropertyName</code> · <code>Dispose</code></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookMailFolder.html">OutlookMailFolder</a></td>
+<td><code>Properties</code> · <code>DisplayName</code> · <code>ContainerClass</code> · <code>MessageCount</code> · <code>UnreadCount</code> · <code>HasSubfolders</code> · <code>EnumerateSubfolders()</code> · <code>EnumerateMessages()</code> · <code>EnumerateAssociatedMessages()</code></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookMailMessage.html">OutlookMailMessage</a></td>
+<td><code>Properties</code> · <code>Subject</code> · <code>SenderName</code> · <code>SenderEmailAddress</code> · <code>MessageClass</code> · <code>InternetMessageId</code> · <code>TransportMessageHeaders</code> · <code>SentTime</code> · <code>ReceivedTime</code> · <code>BodyText</code> · <code>BodyHtml</code> · <code>BodyRtf</code> · <code>Recipients</code> · <code>Attachments</code> · <code>EmbeddedDepth</code></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookMailAttachment.html">OutlookMailAttachment</a></td>
+<td><code>Properties</code> · <code>Method</code> · <code>FileName</code> · <code>ContentId</code> · <code>MimeTag</code> · <code>Size</code> · <code>OpenContentStream()</code> · <code>OpenMessage()</code></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookRecipient.html">OutlookRecipient</a></td>
+<td><code>RecipientType</code> · <code>DisplayName</code> · <code>EmailAddress</code> · <code>AddressType</code> · <code>Properties</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="reader-options-and-limits.html">Reader options and resource limits</a> — every option on both readers, what <code>Strict</code> changes, and what surfaces when a limit trips.</li>
+<li><a href="properties-and-named-properties.html">Properties and named properties</a> — the raw property surface, typed accessors, and tags; identical on both readers.</li>
+<li><a href="reading-msg-files.html">Reading .msg files</a> — the single-message reader that shares this value model.</li>
+<li><a href="../../docs/outlook/concepts.html">Bodu.Formats.Outlook core concepts</a> — sessions and views, code pages, compressed RTF, and the resource limits.</li>
+<li><a href="../io-pst/index.html">Bodu.IO.Pst guides</a> — the node database beneath the mail store, for when you need raw nodes and tables.</li>
+<li><a href="../../samples/io-pst.html">Runnable PST sample</a> — the fixtures these samples ran against.</li>
+<li><a href="index.html">Bodu.Formats.Outlook guides</a> — every guide in this topic.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

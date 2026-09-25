@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Method ZipLongest | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Method ZipLongest | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ZipLongest*">
+
+
+
+<h1 id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ZipLongest_" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ZipLongest*">Method ZipLongest</h1>
+<div class="markdown level0 summary"></div>
+<div class="markdown level0 conceptual"></div>
+
+<a id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ZipLongest_" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ZipLongest*"></a>
+<h4 id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ZipLongest__2_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1__" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ZipLongest``2(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``1})">ZipLongest&lt;TFirst, TSecond&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;)</h4>
+<div class="markdown level1 summary"><p>Zips two sequences into <code>(First, Second)</code> tuples, continuing until both are exhausted and padding the
+shorter sequence with <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/default">default</a> values.</p>
+</div>
+<div class="markdown level1 conceptual"></div>
+<h5 class="declaration">Declaration</h5>
+<div class="codewrapper">
+  <pre><code class="lang-csharp hljs">public static IEnumerable&lt;(TFirst First, TSecond Second)&gt; ZipLongest&lt;TFirst, TSecond&gt;(this IEnumerable&lt;TFirst&gt; first, IEnumerable&lt;TSecond&gt; second)</code></pre>
+</div>
+<h5 class="parameters">Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;TFirst&gt;</td>
+      <td><span class="parametername">first</span></td>
+      <td><p>The first sequence to zip.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;TSecond&gt;</td>
+      <td><span class="parametername">second</span></td>
+      <td><p>The second sequence to zip.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="returns">Returns</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;(TFirst <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetuple---0,--1-.first">First</a>, TSecond <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetuple---0,--1-.second">Second</a>)&gt;</td>
+      <td><p>A sequence of <code>(First, Second)</code> tuples whose length equals the longer of the two inputs. Once one sequence
+is exhausted its side is filled with <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/default">default</a> until the other is exhausted.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="typeParameters">Type Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span class="parametername">TFirst</span></td>
+      <td><p>The type of elements in the first sequence.</p>
+</td>
+    </tr>
+    <tr>
+      <td><span class="parametername">TSecond</span></td>
+      <td><p>The type of elements in the second sequence.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ZipLongest__2_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1___remarks">Remarks</h5>
+<div class="markdown level1 remarks"><p>
+This method uses deferred execution and enumerates each sequence exactly once, disposing both enumerators.
+Unlike <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.linq.enumerable.zip#system-linq-enumerable-zip-2(system-collections-generic-ienumerable((-0))-system-collections-generic-ienumerable((-1)))">Zip&lt;TFirst, TSecond&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;)</a>,
+which stops at the shorter input, this method continues until both inputs are exhausted.
+</p>
+<p>
+This overload pads with <code>default(TFirst)</code> and <code>default(TSecond)</code>, which is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for
+reference types. Use the overload that accepts explicit defaults to control the padding value.
+</p>
+<p>
+If one input is infinite, the result is infinite; bound it with
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.linq.enumerable.take#system-linq-enumerable-take-1(system-collections-generic-ienumerable((-0))-system-int32)">Take&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, int)</a> when zipping an unbounded source.
+</p>
+</div>
+<h5 id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ZipLongest__2_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1___examples">Examples</h5>
+<pre><code class="lang-csharp">// Zip continues to the longer input; the exhausted side is padded with default(T).
+foreach (var (number, letter) in new[] { 1, 2, 3 }.ZipLongest(new[] { "a" }))
+    Console.WriteLine($"{number}:{letter ?? "&lt;null&gt;"}");
+// =&gt; 1:a
+// =&gt; 2:&lt;null&gt;
+// =&gt; 3:&lt;null&gt;</code></pre>
+
+<h5 class="exceptions">Exceptions</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Condition</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></td>
+      <td><p>Thrown when <code class="paramref">first</code> or <code class="paramref">second</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<a id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ZipLongest_" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ZipLongest*"></a>
+<h4 id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ZipLongest__2_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1____0___1_" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ZipLongest``2(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``1},``0,``1)">ZipLongest&lt;TFirst, TSecond&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;, TFirst, TSecond)</h4>
+<div class="markdown level1 summary"><p>Zips two sequences into <code>(First, Second)</code> tuples, continuing until both are exhausted and padding the
+shorter sequence with the supplied default values.</p>
+</div>
+<div class="markdown level1 conceptual"></div>
+<h5 class="declaration">Declaration</h5>
+<div class="codewrapper">
+  <pre><code class="lang-csharp hljs">public static IEnumerable&lt;(TFirst First, TSecond Second)&gt; ZipLongest&lt;TFirst, TSecond&gt;(this IEnumerable&lt;TFirst&gt; first, IEnumerable&lt;TSecond&gt; second, TFirst firstDefault, TSecond secondDefault)</code></pre>
+</div>
+<h5 class="parameters">Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;TFirst&gt;</td>
+      <td><span class="parametername">first</span></td>
+      <td><p>The first sequence to zip.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;TSecond&gt;</td>
+      <td><span class="parametername">second</span></td>
+      <td><p>The second sequence to zip.</p>
+</td>
+    </tr>
+    <tr>
+      <td><span class="xref">TFirst</span></td>
+      <td><span class="parametername">firstDefault</span></td>
+      <td><p>The value substituted for the first side once <code class="paramref">first</code> is exhausted.</p>
+</td>
+    </tr>
+    <tr>
+      <td><span class="xref">TSecond</span></td>
+      <td><span class="parametername">secondDefault</span></td>
+      <td><p>The value substituted for the second side once <code class="paramref">second</code> is exhausted.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="returns">Returns</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;(TFirst <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetuple---0,--1-.first">First</a>, TSecond <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetuple---0,--1-.second">Second</a>)&gt;</td>
+      <td><p>A sequence of <code>(First, Second)</code> tuples whose length equals the longer of the two inputs, padding the
+exhausted side with the corresponding supplied default.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="typeParameters">Type Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span class="parametername">TFirst</span></td>
+      <td><p>The type of elements in the first sequence.</p>
+</td>
+    </tr>
+    <tr>
+      <td><span class="parametername">TSecond</span></td>
+      <td><p>The type of elements in the second sequence.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ZipLongest__2_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1____0___1__remarks">Remarks</h5>
+<div class="markdown level1 remarks"><p>This method uses deferred execution and enumerates each sequence exactly once, disposing both enumerators.</p>
+</div>
+<h5 id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ZipLongest__2_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1____0___1__examples">Examples</h5>
+<pre><code class="lang-csharp">// Supply explicit padding values used once a side is exhausted.
+var result = new[] { 1 }.ZipLongest(new[] { "a", "b" }, firstDefault: -1, secondDefault: "?").ToArray();
+// =&gt; result == [ (1, "a"), (-1, "b") ]</code></pre>
+
+<h5 class="exceptions">Exceptions</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Condition</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></td>
+      <td><p>Thrown when <code class="paramref">first</code> or <code class="paramref">second</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<a id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ZipLongest_" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ZipLongest*"></a>
+<h4 id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ZipLongest__3_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1____0___1_System_Func___0___1___2__" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ZipLongest``3(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``1},``0,``1,System.Func{``0,``1,``2})">ZipLongest&lt;TFirst, TSecond, TResult&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;, TFirst, TSecond, Func&lt;TFirst, TSecond, TResult&gt;)</h4>
+<div class="markdown level1 summary"><p>Zips two sequences with a projection, continuing until both are exhausted and padding the shorter sequence with
+the supplied default values.</p>
+</div>
+<div class="markdown level1 conceptual"></div>
+<h5 class="declaration">Declaration</h5>
+<div class="codewrapper">
+  <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TResult&gt; ZipLongest&lt;TFirst, TSecond, TResult&gt;(this IEnumerable&lt;TFirst&gt; first, IEnumerable&lt;TSecond&gt; second, TFirst firstDefault, TSecond secondDefault, Func&lt;TFirst, TSecond, TResult&gt; selector)</code></pre>
+</div>
+<h5 class="parameters">Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;TFirst&gt;</td>
+      <td><span class="parametername">first</span></td>
+      <td><p>The first sequence to zip.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;TSecond&gt;</td>
+      <td><span class="parametername">second</span></td>
+      <td><p>The second sequence to zip.</p>
+</td>
+    </tr>
+    <tr>
+      <td><span class="xref">TFirst</span></td>
+      <td><span class="parametername">firstDefault</span></td>
+      <td><p>The value substituted for the first side once <code class="paramref">first</code> is exhausted.</p>
+</td>
+    </tr>
+    <tr>
+      <td><span class="xref">TSecond</span></td>
+      <td><span class="parametername">secondDefault</span></td>
+      <td><p>The value substituted for the second side once <code class="paramref">second</code> is exhausted.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-3">Func</a>&lt;TFirst, TSecond, TResult&gt;</td>
+      <td><span class="parametername">selector</span></td>
+      <td><p>A projection applied to each pair of first and second elements.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="returns">Returns</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;TResult&gt;</td>
+      <td><p>A sequence containing the result of <code class="paramref">selector</code> applied to each pair, whose length equals the
+longer of the two inputs, padding the exhausted side with the corresponding supplied default.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="typeParameters">Type Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span class="parametername">TFirst</span></td>
+      <td><p>The type of elements in the first sequence.</p>
+</td>
+    </tr>
+    <tr>
+      <td><span class="parametername">TSecond</span></td>
+      <td><p>The type of elements in the second sequence.</p>
+</td>
+    </tr>
+    <tr>
+      <td><span class="parametername">TResult</span></td>
+      <td><p>The type of the projected result.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ZipLongest__3_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1____0___1_System_Func___0___1___2___remarks">Remarks</h5>
+<div class="markdown level1 remarks"><p>This method uses deferred execution and enumerates each sequence exactly once, disposing both enumerators.
+<code class="paramref">selector</code> is invoked once per emitted element.</p>
+</div>
+<h5 class="exceptions">Exceptions</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Condition</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></td>
+      <td><p>Thrown when <code class="paramref">first</code>, <code class="paramref">second</code>, or <code class="paramref">selector</code> is
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

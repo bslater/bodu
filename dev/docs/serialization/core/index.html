@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Bodu.Text.Serialization — Introduction | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Bodu.Text.Serialization — Introduction | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../../images/favicon.svg">
+      <link rel="stylesheet" href="../../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../../styles/docfx.css">
+      <link rel="stylesheet" href="../../../styles/main.css">
+      <meta property="docfx:navrel" content="../../../toc.html">
+      <meta property="docfx:tocrel" content="../../toc.html">
+    
+    <meta property="docfx:rel" content="../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../../index.html">
+                <img id="logo" class="svg" src="../../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+
+
+<p><img src="../../../images/hero-text-serialization.svg" alt="Bodu.Text.Serialization"></p>
+<h1 id="bodutextserialization">Bodu.Text.Serialization</h1>
+<p><strong>Bodu.Text.Serialization</strong> is the shared, format-agnostic core that every Bodu text serializer builds on. It contains no parser and no writer — only the <em>vocabulary</em> a model declares once and every serializer honors: the attribute family, the naming policies, the ignore / object-creation / unmapped-member enums, and the four serialization-callback interfaces. Six packages reference it — the three <code>System.Text.Json</code>-shaped serializers, <a href="../bencode/index.html">Bodu.Text.Bencode</a>, <a href="../toml/index.html">Bodu.Text.Toml</a>, and <a href="../yaml/index.html">Bodu.Text.Yaml</a>, and the three <a href="../../formats/index.html">line formats</a>, <a href="../../formats/delimited/index.html">Bodu.Text.Delimited</a>, <a href="../../formats/dotenv/index.html">Bodu.Text.DotEnv</a>, and <a href="../../formats/ini/index.html">Bodu.Text.Ini</a>.</p>
+<p>Part of the <strong><a href="../../topics/text-and-serialization.html">Text &amp; Serialization</a></strong> topic.</p>
+<h2 id="why-a-separate-package">Why a separate package</h2>
+<p>A model annotated with <code>[PropertyName]</code>, <code>[Ignore]</code>, or <code>[Required]</code> is making a statement about its <em>wire shape</em>, not about any one format. Keeping those declarations in a package that depends only on <code>Bodu.Core</code> means:</p>
+<ul>
+<li><strong>Annotate once, serialize anywhere.</strong> The same DTO round-trips through <code>TomlSerializer</code>, <code>YamlSerializer</code>, <code>BencodeSerializer</code>, <code>IniSerializer</code>, <code>DotEnvSerializer</code>, or <code>DelimitedSerializer</code> with no per-format attributes.</li>
+<li><strong>Model libraries stay format-free.</strong> A project that only <em>declares</em> DTOs references <code>Bodu.Text.Serialization</code> alone; the application that chooses TOML today and YAML tomorrow references the format package. The model assembly never takes a dependency on a reader or writer it does not use.</li>
+<li><strong>One precedence story.</strong> Member attribute beats type attribute beats options — the same rule in every serializer, documented once in <a href="concepts.html">Core concepts</a>.</li>
+</ul>
+<h2 id="the-attribute-family">The attribute family</h2>
+<p>Every attribute derives from the abstract <a class="xref" href="../../../api/Bodu.Text.Serialization.SerializationAttribute.html">SerializationAttribute</a>, so the family can be discovered as a unit. All live in the <code>Bodu.Text.Serialization</code> namespace; add <code>using Bodu.Text.Serialization;</code> to the model file.</p>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Applies to</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../../api/Bodu.Text.Serialization.PropertyNameAttribute.html">PropertyNameAttribute</a></td>
+<td>property, field</td>
+<td>Pins the wire key for one member, overriding the CLR name and any naming policy.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../../api/Bodu.Text.Serialization.IgnoreAttribute.html">IgnoreAttribute</a></td>
+<td>property, field</td>
+<td>Excludes the member — unconditionally (<code>Condition</code> defaults to <code>Always</code>) or only when writing <code>null</code> / the default value.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../../api/Bodu.Text.Serialization.IncludeAttribute.html">IncludeAttribute</a></td>
+<td>property, field</td>
+<td>Forces a member in: binds non-public accessors (<code>{ get; private set; }</code>, <code>{ get; init; }</code>) and surfaces a public field even when <code>IncludeFields</code> is off.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../../api/Bodu.Text.Serialization.PropertyOrderAttribute.html">PropertyOrderAttribute</a></td>
+<td>property, field</td>
+<td>Sets the relative order in which members are presented to the writer (ascending; unannotated members are <code>0</code> and keep declaration order).</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../../api/Bodu.Text.Serialization.RequiredAttribute.html">RequiredAttribute</a></td>
+<td>property, field</td>
+<td>Fails deserialization when the key is absent — the same effect as the C# <code>required</code> keyword.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../../api/Bodu.Text.Serialization.ConverterAttribute.html">ConverterAttribute</a></td>
+<td>property, field, class, struct, enum</td>
+<td>Names the converter type for a member (governs that member) or a type (governs every use).</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../../api/Bodu.Text.Serialization.ExtensionDataAttribute.html">ExtensionDataAttribute</a></td>
+<td>property, field</td>
+<td>Marks the one dictionary-shaped member that captures keys mapping to no other member, and writes them back out.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../../api/Bodu.Text.Serialization.ConstructorAttribute.html">ConstructorAttribute</a></td>
+<td>constructor</td>
+<td>Selects the constructor used during deserialization when a type declares more than one.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../../api/Bodu.Text.Serialization.NamingPolicyAttribute.html">NamingPolicyAttribute</a></td>
+<td>class, struct, interface</td>
+<td>Applies one of the built-in policies to the annotated type's members, overriding the options-level policy.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../../api/Bodu.Text.Serialization.UnmappedMemberHandlingAttribute.html">UnmappedMemberHandlingAttribute</a></td>
+<td>class, struct, interface</td>
+<td>Chooses, per type, whether an unknown key is skipped or rejected.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../../api/Bodu.Text.Serialization.ObjectCreationHandlingAttribute.html">ObjectCreationHandlingAttribute</a></td>
+<td>class, struct, interface, property, field</td>
+<td>Chooses whether a collection member is replaced with a new instance or populated in place.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../../api/Bodu.Text.Serialization.StringEnumMemberNameAttribute.html">StringEnumMemberNameAttribute</a></td>
+<td>enum field</td>
+<td>Sets the string written for one enumeration member when the enum is serialized by name.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="naming-policies">Naming policies</h2>
+<p><a class="xref" href="../../../api/Bodu.Text.Serialization.NamingPolicy.html">NamingPolicy</a> is the abstract base with a single <code>ConvertName(string)</code> method and five ready-made singletons: <code>CamelCase</code>, <code>SnakeCaseLower</code>, <code>SnakeCaseUpper</code>, <code>KebabCaseLower</code>, and <code>KebabCaseUpper</code>. Assign one to a serializer's <code>PropertyNamingPolicy</code> option, or select it declaratively on a type through <code>[NamingPolicy(KnownNamingPolicy.…)]</code> — the <a class="xref" href="../../../api/Bodu.Text.Serialization.KnownNamingPolicy.html">KnownNamingPolicy</a> enum names each singleton (plus <code>Unspecified</code>). Subclass <code>NamingPolicy</code> for a convention of your own.</p>
+<pre><code class="lang-csharp">NamingPolicy.SnakeCaseUpper.ConvertName(&quot;MaxRetryCount&quot;);   // &quot;MAX_RETRY_COUNT&quot;
+NamingPolicy.KebabCaseLower.ConvertName(&quot;HTTPServerPort&quot;);   // &quot;http-server-port&quot;
+</code></pre>
+<p>The separator policies split at a lowercase-to-uppercase boundary and at the end of an acronym, so <code>HTTPServer</code> becomes <code>http_server</code>, not <code>h_t_t_p_server</code>. <code>CamelCase</code> lowercases only the first character.</p>
+<h2 id="behavior-enums">Behavior enums</h2>
+<table>
+<thead>
+<tr>
+<th>Enum</th>
+<th>Values</th>
+<th>Read through</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../../api/Bodu.Text.Serialization.IgnoreCondition.html">IgnoreCondition</a></td>
+<td><code>Never</code>, <code>Always</code>, <code>WhenWritingDefault</code>, <code>WhenWritingNull</code></td>
+<td><code>[Ignore(Condition = …)]</code> on a member, or the options-level <code>DefaultIgnoreCondition</code>.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../../api/Bodu.Text.Serialization.ObjectCreationHandling.html">ObjectCreationHandling</a></td>
+<td><code>Replace</code>, <code>Populate</code></td>
+<td><code>[ObjectCreationHandling(…)]</code> on a member or type, or the options-level <code>PreferredObjectCreationHandling</code>.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../../api/Bodu.Text.Serialization.UnmappedMemberHandling.html">UnmappedMemberHandling</a></td>
+<td><code>Skip</code>, <code>Disallow</code></td>
+<td><code>[UnmappedMemberHandling(…)]</code> on a type, or the options-level <code>UnmappedMemberHandling</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>There is deliberately <strong>no number-handling enum</strong> in this package: how a numeric scalar is written is a per-format decision (YAML, for example, has its own <code>YamlNumberHandling</code> option), and the line formats carry every value as text.</p>
+<h2 id="serialization-callbacks">Serialization callbacks</h2>
+<p>Four interfaces give a type a hook at each edge of the mapping pipeline: <a class="xref" href="../../../api/Bodu.Text.Serialization.IOnSerializing.html">IOnSerializing</a> (before members are written), <a class="xref" href="../../../api/Bodu.Text.Serialization.IOnSerialized.html">IOnSerialized</a> (after), <a class="xref" href="../../../api/Bodu.Text.Serialization.IOnDeserializing.html">IOnDeserializing</a> (after construction, before members are assigned), and <a class="xref" href="../../../api/Bodu.Text.Serialization.IOnDeserialized.html">IOnDeserialized</a> (after every member is assigned — the natural place for cross-member validation). Each has one parameterless <code>void</code> method; implement them explicitly to keep the hooks off the type's public surface. The exact position of each hook is tabulated in <a href="concepts.html#callback-order">Core concepts</a>.</p>
+<h2 id="who-uses-what">Who uses what</h2>
+<p>The package is consumed in two distinct ways, and knowing which one your serializer takes explains which attributes it honors.</p>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Bencode · TOML · YAML</th>
+<th>Delimited · DotEnv · INI</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>[PropertyName]</code>, <code>[Ignore]</code>, <code>[PropertyOrder]</code></td>
+<td>yes</td>
+<td>yes (Delimited honors <code>[Ignore]</code> unconditionally; DotEnv and INI also honor the conditional forms and <code>DefaultIgnoreCondition</code>)</td>
+</tr>
+<tr>
+<td><code>[Required]</code> / C# <code>required</code></td>
+<td>yes</td>
+<td>DotEnv and INI (<code>[Required]</code>); not Delimited</td>
+</tr>
+<tr>
+<td>Options-level <code>PropertyNamingPolicy</code>, <code>PropertyNameCaseInsensitive</code>, <code>IncludeFields</code></td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+<tr>
+<td>Type-level <code>[NamingPolicy]</code></td>
+<td>yes</td>
+<td>no</td>
+</tr>
+<tr>
+<td><code>[Include]</code>, <code>[Constructor]</code>, <code>[ExtensionData]</code>, <code>[UnmappedMemberHandling]</code>, <code>[ObjectCreationHandling]</code></td>
+<td>yes</td>
+<td>no</td>
+</tr>
+<tr>
+<td><code>[Converter]</code>, custom converters, <code>[StringEnumMemberName]</code></td>
+<td>yes</td>
+<td>no — scalars are strings converted with the invariant culture</td>
+</tr>
+<tr>
+<td>The four callback interfaces</td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+</tbody>
+</table>
+<p>The <strong>structured serializers</strong> (Bencode, TOML, YAML) compile the recursive converter engine — the metadata resolver, the object / collection / dictionary / nullable / enum converter factories, and the options-resolution partial — from this package's <code>shared/**</code> source tree under a per-format symbol. That engine is what reads the full attribute family, selects constructors, captures extension data, and resolves converters. The <strong>line formats</strong> reference only the compiled assembly: their wire is string-only, so each ships a small serializer-local binder that reads the attributes and naming policy and converts scalars with <code>InvariantCulture</code> — there is no converter pipeline to plug into.</p>
+<h2 id="headline-types">Headline types</h2>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../../api/Bodu.Text.Serialization.SerializationAttribute.html">SerializationAttribute</a></td>
+<td>Abstract base of the whole attribute family.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../../api/Bodu.Text.Serialization.PropertyNameAttribute.html">PropertyNameAttribute</a> / <a class="xref" href="../../../api/Bodu.Text.Serialization.IgnoreAttribute.html">IgnoreAttribute</a> / <a class="xref" href="../../../api/Bodu.Text.Serialization.RequiredAttribute.html">RequiredAttribute</a> / <a class="xref" href="../../../api/Bodu.Text.Serialization.PropertyOrderAttribute.html">PropertyOrderAttribute</a></td>
+<td>The member-shaping attributes every serializer honors.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../../api/Bodu.Text.Serialization.NamingPolicy.html">NamingPolicy</a> / <a class="xref" href="../../../api/Bodu.Text.Serialization.KnownNamingPolicy.html">KnownNamingPolicy</a> / <a class="xref" href="../../../api/Bodu.Text.Serialization.NamingPolicyAttribute.html">NamingPolicyAttribute</a></td>
+<td>Wire-name conventions: the policy base and singletons, the enum that names them, and the type-level selector.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../../api/Bodu.Text.Serialization.IgnoreCondition.html">IgnoreCondition</a> / <a class="xref" href="../../../api/Bodu.Text.Serialization.ObjectCreationHandling.html">ObjectCreationHandling</a> / <a class="xref" href="../../../api/Bodu.Text.Serialization.UnmappedMemberHandling.html">UnmappedMemberHandling</a></td>
+<td>The behavior enums shared by the attributes and the per-format options.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../../api/Bodu.Text.Serialization.IOnSerializing.html">IOnSerializing</a> / <a class="xref" href="../../../api/Bodu.Text.Serialization.IOnSerialized.html">IOnSerialized</a> / <a class="xref" href="../../../api/Bodu.Text.Serialization.IOnDeserializing.html">IOnDeserializing</a> / <a class="xref" href="../../../api/Bodu.Text.Serialization.IOnDeserialized.html">IOnDeserialized</a></td>
+<td>The lifecycle callbacks.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../../api/Bodu.Text.Serialization.ConverterAttribute.html">ConverterAttribute</a> / <a class="xref" href="../../../api/Bodu.Text.Serialization.ConstructorAttribute.html">ConstructorAttribute</a> / <a class="xref" href="../../../api/Bodu.Text.Serialization.ExtensionDataAttribute.html">ExtensionDataAttribute</a> / <a class="xref" href="../../../api/Bodu.Text.Serialization.IncludeAttribute.html">IncludeAttribute</a></td>
+<td>The structural attributes read by the recursive engine.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="concepts.html">Core concepts</a></strong> — precedence, naming-policy order, required members and constructor binding, extension data, callbacks, options freezing, converter resolution.</li>
+<li><strong><a href="getting-started.html">Getting started</a></strong> — install, one DTO serialized by two serializers, a callback, a naming policy.</li>
+<li><strong><a href="../index.html">Bodu serializers introduction</a></strong> — the three structured serializers that compile the shared engine.</li>
+<li><strong><a href="../../formats/index.html">Line formats introduction</a></strong> — the three string-wire formats that reference this package.</li>
+<li><strong>Per-format attribute guides</strong> — <a href="../../../guides/serialization/toml/attributes.html">TOML</a>, <a href="../../../guides/serialization/bencode/attributes.html">Bencode</a>, <a href="../../../guides/serialization/yaml/attributes.html">YAML</a>.</li>
+<li><strong>API reference</strong> — <a class="xref" href="../../../api/Bodu.Text.Serialization.html">Bodu.Text.Serialization</a>.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../styles/main.js"></script>
+  </body>
+</html>

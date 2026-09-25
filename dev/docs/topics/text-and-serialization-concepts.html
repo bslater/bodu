@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Text &amp; Serialization — Concepts | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Text &amp; Serialization — Concepts | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="text--serialization--concepts">Text &amp; Serialization — Concepts</h1>
+
+<p>The packages in this topic — <code>Bodu.Text.Encoding</code>, <code>Bodu.Text.Filtering</code>, <code>Bodu.Text.Formats</code>, <code>Bodu.Text.Bencode</code>, <code>Bodu.Text.Toml</code>, and <code>Bodu.Text.Yaml</code> — share a small set of cross-cutting ideas. This page defines them once at the topic level; each package's own concepts page (linked at the bottom) carries the full per-package vocabulary.</p>
+<h2 id="codec-format-serializer">Codec, format, serializer</h2>
+<p>The three jobs preserve different things, and that difference drives every API decision in the topic:</p>
+<ul>
+<li>A <strong>binary-to-text codec</strong> (Base16 / Base32 / Base64 / Base58 / Base85 and friends) preserves the <strong>byte sequence</strong>. It maps raw bytes onto a printable alphabet and back; it attaches no meaning to the bytes, adds no structure, and is exactly invertible — <code>Decode(Encode(bytes))</code> is the identical input. Its vocabulary is alphabets, variants, padding, and decoration.</li>
+<li>A <strong>document format</strong> (Delimited, DotEnv, INI) preserves the <strong>document</strong>. Parsing produces a typed value model — rows and fields, ordered entries, sections — and formatting writes the model back. Every format keeps entry order, and INI's mutable DOM additionally preserves comments, so a parse–edit–write cycle round-trips faithfully. Its vocabulary is value models, readers / writers, and round-trip rules.</li>
+<li>An <strong>object serializer</strong> (Bencode, TOML, YAML) preserves the <strong>object graph</strong>. <code>Serialize&lt;T&gt;</code> maps your types, members, and collections onto the format; <code>Deserialize&lt;T&gt;</code> binds the format back. The document is a means, not the subject — converters, attributes, and naming policies control the mapping. Its vocabulary is converters, options, DOMs, and readers / writers.</li>
+</ul>
+<p>A practical test: if you would be satisfied getting <code>byte[]</code> back, you want a codec; if you would be satisfied getting a generic document tree back, you want a format or a DOM; if you want <em>your</em> type back, you want a serializer.</p>
+<h2 id="the-tier-model">The tier model</h2>
+<p>All three serializers layer the same four surfaces over their format, and choosing a tier is choosing how much machinery you want between you and the bytes:</p>
+<table>
+<thead>
+<tr>
+<th>Tier</th>
+<th>Bencode / TOML / YAML types</th>
+<th>Reach for it when</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Serializer</strong></td>
+<td><code>BencodeSerializer</code> / <code>TomlSerializer</code> / <code>YamlSerializer</code></td>
+<td>You have a model type. The default tier.</td>
+</tr>
+<tr>
+<td><strong>Mutable DOM</strong></td>
+<td><code>BencodeNode</code> / <code>TomlNode</code> / <code>YamlNode</code> trees</td>
+<td>You need to parse, index, edit, and write back without a model.</td>
+</tr>
+<tr>
+<td><strong>Read-only DOM</strong></td>
+<td><code>BencodeDocument</code> / <code>TomlDocument</code> / <code>YamlDocument</code></td>
+<td>You need to inspect a parsed buffer with minimal allocation.</td>
+</tr>
+<tr>
+<td><strong>Utf8 reader / writer</strong></td>
+<td><code>Utf8BencodeReader</code> / <code>Utf8BencodeWriter</code>, <code>Utf8TomlReader</code> / <code>Utf8TomlWriter</code>, <code>Utf8YamlReader</code> / <code>Utf8YamlWriter</code></td>
+<td>You process tokens by hand — forward-only, allocation-free <code>ref struct</code> machines.</td>
+</tr>
+</tbody>
+</table>
+<p>The tiers nest: the serializer is built on the reader / writer pair, and every custom converter receives that pair directly. Each <code>Bodu.Text.Formats</code> line format follows the same layering — a <code>Utf8*Reader</code> / <code>Utf8*Writer</code> pair, a <code>*Serializer</code>, and both DOMs — but wires every scalar as a string, so scalar conversion stays local to each format's serializer rather than adopting the shared converter engine.</p>
+<h2 id="framing-and-self-describing-documents">Framing and self-describing documents</h2>
+<p>A <strong>self-framing</strong> (self-describing) format carries its structure inline in the bytes: Bencode's length-prefixed strings and <code>d…e</code> / <code>l…e</code> containers, TOML's tables and key syntax, INI's section headers, CSV's delimiters and quotes. A reader can walk the document without an external schema. Binary-to-text encodings are the opposite — a Base64 string is structureless payload, and any framing must come from the surrounding context. This is why the codecs expose <code>OperationStatus</code>-style streaming over raw spans, while the formats and serializers expose token readers and typed models.</p>
+<h2 id="canonical-output">Canonical output</h2>
+<p>Where a format admits several spellings of the same data, the libraries pick one and emit it consistently. Bencode is the strict case: the specification requires dictionary keys in ascending bytewise order, and <code>BencodeSerializer</code> always writes them that way, so equal inputs produce byte-identical output — a property torrent-style infohashing depends on. The document formats state their round-trip rules instead: INI re-emits comments and ordering as parsed, DotEnv re-emits ordering and the <code>export</code> flag, and Delimited output is canonical per the configured quoting policy.</p>
+<h2 id="text-wire-vs-binary-wire">Text wire vs. binary wire</h2>
+<p>Not everything under the <code>Bodu.Text.*</code> prefix is text on the wire. TOML is a text format — its natural serialized form is a <code>string</code>, and <code>TomlSerializer</code> offers <code>string</code> overloads alongside the UTF-8 ones. Bencode (BEP 3) is a <strong>binary</strong> format — length-prefixed byte strings with no character-escaping layer — so <code>BencodeSerializer</code> works in <code>byte[]</code>, <code>ReadOnlySpan&lt;byte&gt;</code>, <code>IBufferWriter&lt;byte&gt;</code>, and <code>Stream</code>, never <code>string</code>. The distinction also shapes the value models: a Bencode &quot;string&quot; is a byte string that happens to often hold UTF-8, which is why <code>byte[]</code> maps to it natively, whereas TOML represents <code>byte[]</code> as an integer array or a Base64 string depending on its <code>ByteArrayHandling</code> setting — the latter being a small in-document use of exactly the codec job <code>Bodu.Text.Encoding</code> does standalone.</p>
+<h2 id="round-trip-fidelity">Round-trip fidelity</h2>
+<p>Each job comes with its own round-trip promise, and knowing which one you are owed prevents most surprises:</p>
+<ul>
+<li><strong>Codecs</strong> promise <em>byte fidelity</em>: decode-of-encode is the identical byte sequence, always.</li>
+<li><strong>Formats</strong> promise <em>document fidelity</em> to the extent the format defines it: INI preserves comments and ordering through a parse–edit–write cycle, DotEnv preserves ordering and the <code>export</code> flag; Delimited re-emits canonically per its quoting policy rather than byte-for-byte.</li>
+<li><strong>Serializers</strong> promise <em>graph fidelity for representable values</em>: what the format can express round-trips through <code>Serialize</code> / <code>Deserialize&lt;T&gt;</code>, and what it cannot express fails loudly (or is delegated to a registered converter) rather than degrading silently — Bencode, for example, has no native boolean, floating-point, or date-time form.</li>
+</ul>
+<h2 id="strict-vs-lenient-parsing">Strict vs. lenient parsing</h2>
+<p>Every package in the topic treats strictness as an explicit, opt-in policy rather than a global mood:</p>
+<ul>
+<li><strong>Codecs</strong> parse strictly by default and loosen per call via <code>BaseFormatStyles</code> flags — <code>IgnoreWhitespace</code>, <code>AllowPrefix</code>, <code>AllowMissingPadding</code>.</li>
+<li><strong>Line formats</strong> centralize policy on their options types (<code>DelimitedReaderOptions</code>, <code>DotEnvReaderOptions</code>, <code>IniReaderOptions</code> / <code>IniDocumentOptions</code>) — quoting strictness, field-count and malformed-record handling, duplicate-key and duplicate-section policies.</li>
+<li><strong>Serializers</strong> reject malformed documents with a format-specific parse exception (<code>BencodeFormatException</code>, <code>TomlFormatException</code>, <code>YamlFormatException</code>) and binding failures with a serialization exception; tolerance for unmapped members, missing values, and type shapes is configured on <code>…SerializerOptions</code> and the attribute family, never silently assumed.</li>
+</ul>
+<p>The shared rule across the family: the default path validates, and every relaxation is visible at the call site.</p>
+<h2 id="options-as-the-unit-of-configuration">Options as the unit of configuration</h2>
+<p>The serializers concentrate configuration on a single reusable object: <code>BencodeSerializerOptions</code> / <code>TomlSerializerOptions</code> / <code>YamlSerializerOptions</code> hold the converter list, the property naming policy, ignore conditions, unmapped-member policy, and maximum depth. An options instance becomes read-only the first time it is used and then caches its resolved converters and type metadata — so the intended pattern is one configured instance reused across many operations, not a fresh options object per call. The formats apply the same instinct one tier down: the <code>*ReaderOptions</code> / <code>*WriterOptions</code> pairs (and <code>IniDocumentOptions</code>) hold each direction's dialect policy, so a document read under a dialect is written back under the matching one.</p>
+<h2 id="per-package-concept-pages">Per-package concept pages</h2>
+<table>
+<thead>
+<tr>
+<th>Package</th>
+<th>Full vocabulary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Bodu.Text.Encoding</code></td>
+<td><a href="../text-encoding/concepts.html">Core concepts</a> — alphabet, variant, terminal quantum, padding, shortcut, decoration.</td>
+</tr>
+<tr>
+<td><code>Bodu.Text.Formats</code></td>
+<td><a href="../formats/concepts.html">Core concepts</a> — self-framing format, value model, codec, round-trip rules, format exception.</td>
+</tr>
+<tr>
+<td><code>Bodu.Text.Bencode</code></td>
+<td><a href="../serialization/bencode/concepts.html">Core concepts</a> — the serializer, options, converters and resolution, the DOMs, value mapping, errors.</td>
+</tr>
+<tr>
+<td><code>Bodu.Text.Toml</code></td>
+<td><a href="../serialization/toml/concepts.html">Core concepts</a> — the serializer, options, converters and resolution, the DOMs, value mapping, errors.</td>
+</tr>
+<tr>
+<td><code>Bodu.Text.Yaml</code></td>
+<td><a href="../serialization/yaml/concepts.html">Core concepts</a> — the serializer, options, converters and resolution, the DOMs, value mapping, multi-document streams, errors.</td>
+</tr>
+</tbody>
+</table>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

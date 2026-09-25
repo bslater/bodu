@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Text &amp; Serialization — Guides | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Text &amp; Serialization — Guides | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="text--serialization--guides">Text &amp; Serialization — Guides</h1>
+
+<p>Recipe-style walk-throughs for the text family — the <code>Bodu.Text.Encoding</code> binary-to-text codecs, the <code>Bodu.Text.Filtering</code> include/exclude filtering engine, the <code>Bodu.Text.Formats</code> document formats, and the <code>Bodu.Text.Bencode</code> / <code>Bodu.Text.Toml</code> object serializers. Four different jobs, four guide sections; this page is the topic-level map.</p>
+<p>If you are unsure which package does the job you have, start with the <a href="../../docs/topics/text-and-serialization.html">topic overview</a> — it leads with the codec / format / serializer disambiguation — and the <a href="../../docs/topics/text-and-serialization-concepts.html">topic concepts</a> for the shared vocabulary.</p>
+<h2 id="bodutextencoding--binary-to-text-codecs">Bodu.Text.Encoding — binary-to-text codecs</h2>
+<p>Bytes ⇄ printable text. Base16 through Base85 with every common variant, plus Base45, Base62, and Bech32.</p>
+<div class="bodu-cards">
+<div class="bodu-card">
+  <h3><a href="../text-encoding/index.html">Overview</a></h3>
+  <p>The encoding family at a glance — payload expansion, variants, the choose-an-encoding table, and the shared API shape.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="../text-encoding/base64.html">Using Base64</a></h3>
+  <p>Standard / URL-safe / MIME variants, JWT decoding, and 76-character line wrapping.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="../text-encoding/base32.html">Using Base32</a></h3>
+  <p>Standard / HexExtended / Crockford / Z-Base-32 variants, TOTP secrets, and padding control.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="../text-encoding/bech32.html">Using Bech32</a></h3>
+  <p>Bech32 / Bech32m (BIP 173 / 350) — human-readable part, separator, 5-bit data, and the six-symbol checksum.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="../text-encoding/binary-encodings-interface.html">The IBinaryEncoding interface</a></h3>
+  <p>Runtime-selected encoding choice via <code>BinaryEncodings.Get(name)</code> and the unified <code>IBinaryEncoding</code> contract.</p>
+</div>
+</div>
+<h2 id="bodutextfiltering--includeexclude-filtering">Bodu.Text.Filtering — include/exclude filtering</h2>
+<p>Selecting values by pattern. Glob and regex patterns compiled into one cost-tiered matcher, with set or ordered-rule semantics and built-in telemetry.</p>
+<div class="bodu-cards">
+<div class="bodu-card">
+  <h3><a href="../text-filtering/index.html">Overview</a></h3>
+  <p>How the engine works — compile-once filters, cost-tier classification, and the guide map.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="../text-filtering/patterns-and-globs.html">Patterns and globs</a></h3>
+  <p>The full glob grammar — classes, <code>{a,b}</code> alternation, escapes — and when to reach for regex.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="../text-filtering/evaluation-modes.html">Evaluation modes</a></h3>
+  <p><code>AnyMatch</code> sets vs <code>LastMatchWins</code> ordered rules, allowlists, and gitignore-convention parsing.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="../text-filtering/telemetry-and-tuning.html">Telemetry and tuning</a></h3>
+  <p>Statistics, per-pattern hit counts, the observer hook, cost tiers, and fail-safe regex timeouts.</p>
+</div>
+</div>
+<h2 id="bodutextformats--document-formats">Bodu.Text.Formats — document formats</h2>
+<p>Parse, edit, and write structured documents — typed value models with streaming readers and writers.</p>
+<div class="bodu-cards">
+<div class="bodu-card">
+  <h3><a href="../formats/index.html">Overview</a></h3>
+  <p>The three format families, the namespace map, and where each guide fits.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="../formats/delimited.html">Using delimited (CSV / TSV)</a></h3>
+  <p>RFC 4180 quoting, delimiter selection, header handling, and the streaming <code>Utf8DelimitedReader</code> / <code>Utf8DelimitedWriter</code>.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="../formats/dotenv.html">Using DotEnv</a></h3>
+  <p><code>KEY=VALUE</code> parsing, quoting and escape rules, the <code>export</code> prefix, and inline-comment handling.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="../formats/ini.html">Using INI</a></h3>
+  <p>Section / entry model, comment trivia, duplicate policies, and comment-preserving edits through the mutable <code>IniNode</code> DOM (the read-only <code>IniDocument</code> is for inspection).</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="../formats/streaming.html">Streams and async I/O</a></h3>
+  <p>The forward-only <code>Utf8*Reader</code> / <code>Utf8*Writer</code> token surfaces and the typed record-streaming serializer overloads.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="../formats/choosing-a-format.html">Choosing a text format</a></h3>
+  <p>Delimited vs. DotEnv vs. INI — the shape of data each format suits and how to pick between them.</p>
+</div>
+</div>
+<h2 id="bodutextbencode-bodutexttoml-and-bodutextyaml--object-serializers">Bodu.Text.Bencode, Bodu.Text.Toml, and Bodu.Text.Yaml — object serializers</h2>
+<p>POCO ⇄ wire format, <code>System.Text.Json</code>-shaped. The three libraries share an architecture and vocabulary — everything learned for one transfers to the next by swapping the prefix. Each has its own guide set.</p>
+<div class="bodu-cards">
+<div class="bodu-card">
+  <h3><a href="../serialization/index.html">Overview</a></h3>
+  <p>The three libraries, the shared tiers (serializer, DOMs, reader / writer), how to choose a format, and the per-library guide hubs.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="../serialization/toml/index.html">TOML guides</a></h3>
+  <p><code>TomlSerializer</code> — type mapping, spec-version selection, both DOMs, the full attribute family, converters, callbacks, and the built-in catalog.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="../serialization/bencode/index.html">Bencode guides</a></h3>
+  <p><code>BencodeSerializer</code> — byte strings, canonical key ordering, the kinds Bencode cannot represent, attributes, converters, callbacks, and the catalog.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="../serialization/yaml/index.html">YAML guides</a></h3>
+  <p><code>YamlSerializer</code> — type mapping, the 1.2 core schema, both DOMs, multi-document streams, the shared <code>Bodu.Text.Serialization</code> attributes, custom converters, and the catalog.</p>
+</div>
+</div>
+<h2 id="suggested-reading-path">Suggested reading path</h2>
+<ol>
+<li><strong><a href="../../docs/topics/text-and-serialization.html">Topic overview</a></strong> — settle which of the three jobs you have.</li>
+<li>The matching <strong>overview guide</strong> — <a href="../text-encoding/index.html">encodings</a>, <a href="../formats/index.html">formats</a>, or <a href="../serialization/index.html">serializers</a>.</li>
+<li>The <strong>per-type walk-through</strong> for your format or encoding — e.g. <a href="../text-encoding/base64.html">Base64</a>, <a href="../formats/ini.html">INI</a>, or <a href="../serialization/toml/using.html">Using TOML</a>.</li>
+<li>For the serializers, the customization guides — e.g. TOML's <strong><a href="../serialization/toml/attributes.html">attributes</a></strong>, then <strong><a href="../serialization/toml/converters.html">converters</a></strong> (Bencode and YAML carry the same guides under their own hubs).</li>
+</ol>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="../../docs/topics/text-and-serialization.html">Text &amp; Serialization topic overview</a> — the disambiguation triangle, package table, and decision table.</li>
+<li><a href="../../docs/topics/text-and-serialization-concepts.html">Topic concepts</a> — codec vs. format vs. serializer, the tier model, framing, canonical output, strictness.</li>
+<li>Package introductions — <a href="../../docs/text-encoding/index.html">Bodu.Text.Encoding</a>, <a href="../../docs/text-filtering/index.html">Bodu.Text.Filtering</a>, <a href="../../docs/formats/index.html">Bodu.Text.Formats</a>, <a href="../../docs/serialization/index.html">Bodu serializers</a>.</li>
+<li><strong>Complete guide indexes</strong> (this page shows the highlights; each index lists every guide for its package): <a href="../text-encoding/index.html">Bodu.Text.Encoding</a> · <a href="../text-filtering/index.html">Bodu.Text.Filtering</a> · <a href="../formats/index.html">Bodu.Text.Formats</a> · <a href="../serialization/index.html">Bodu serializers</a>.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

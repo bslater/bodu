@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>ASCON hashing — AsconHash256 and AsconHashA256 | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="ASCON hashing — AsconHash256 and AsconHashA256 | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="ascon-hashing--asconhash256-and-asconhasha256">ASCON hashing — AsconHash256 and AsconHashA256</h1>
+
+<p><code>ASCON-HASH256</code> and <code>ASCON-HASHA256</code> are the two fixed-output hash algorithms in the ASCON
+family, standardized in NIST SP 800-232. Both are sponge constructions built on a 320-bit
+internal state with an 8-byte (64-bit) absorption rate, and both produce a <strong>256-bit (32-byte)
+digest</strong>. The family was designed for constrained hardware — but the same properties that make
+it attractive there (compact state, simple round function, well-studied security margin) make it
+a sound choice in software as well.</p>
+<p><strong>Bodu.Security.Cryptography</strong> ships two concrete types:</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Algorithm name</th>
+<th>Absorption rounds</th>
+<th>Squeeze rounds</th>
+<th>Characteristics</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.AsconHash256.html">AsconHash256</a></td>
+<td><code>ASCON-HASH256</code></td>
+<td>12 (Ascon-p12)</td>
+<td>12</td>
+<td>Maximum security margin — the conservative default.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.AsconHashA256.html">AsconHashA256</a></td>
+<td><code>ASCON-HASHA256</code></td>
+<td>8 (Ascon-p8)</td>
+<td>12</td>
+<td>Higher throughput — reduced, but still substantial, absorption-phase margin.</td>
+</tr>
+</tbody>
+</table>
+<p>Both derive from <a class="xref" href="../../api/Bodu.Security.Cryptography.AsconHash.html">AsconHash</a>, which sits on <a class="xref" href="../../api/Bodu.Security.Cryptography.BlockHashAlgorithm.html">BlockHashAlgorithm</a> and, through it, on
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a>, so they slot
+into any API that accepts a standard .NET hash algorithm.</p>
+<h2 id="fixed-parameters-at-a-glance">Fixed parameters at a glance</h2>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>State size</td>
+<td>320 bits (40 bytes)</td>
+<td>Fixed by the ASCON specification.</td>
+</tr>
+<tr>
+<td>Rate (absorption block)</td>
+<td>64 bits (8 bytes)</td>
+<td>Bytes consumed per permutation call.</td>
+</tr>
+<tr>
+<td>Output</td>
+<td>256 bits (32 bytes)</td>
+<td>Fixed; no truncation variants.</td>
+</tr>
+<tr>
+<td>Absorption rounds — <code>AsconHash256</code></td>
+<td>12 per block</td>
+<td>Conservative margin throughout.</td>
+</tr>
+<tr>
+<td>Absorption rounds — <code>AsconHashA256</code></td>
+<td>8 per block</td>
+<td>Reduced absorption work; squeeze unchanged.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="pattern-1--one-shot-hash-with-ascon-hash256">Pattern 1 — one-shot hash with ASCON-HASH256</h2>
+<p><code>AsconHash256</code> is the conservative choice. It uses 12 permutation rounds at every stage, giving
+the widest cryptanalytic margin in the family.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Text;
+using Bodu.Security.Cryptography;
+
+byte[] data    = Encoding.UTF8.GetBytes(&quot;the quick brown fox&quot;);
+using var hash = new AsconHash256();
+byte[] digest  = hash.ComputeHash(data);    // 32 bytes
+string hex     = Convert.ToHexString(digest);
+</code></pre>
+<p><code>CanReuseTransform</code> is <code>true</code> on both types, so the same instance can hash multiple independent
+messages without being recreated — <code>ComputeHash</code> resets the state automatically.</p>
+<h2 id="pattern-2--ascon-hasha256-for-throughput-sensitive-paths">Pattern 2 — ASCON-HASHA256 for throughput-sensitive paths</h2>
+<p><code>AsconHashA256</code> uses 8 permutation rounds per absorbed block instead of 12. The API is
+identical; only the round count (and therefore the throughput and absorption-phase margin) differs.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Text;
+using Bodu.Security.Cryptography;
+
+byte[] data    = Encoding.UTF8.GetBytes(&quot;the quick brown fox&quot;);
+using var hash = new AsconHashA256();
+byte[] digest  = hash.ComputeHash(data);
+</code></pre>
+<p><code>AlgorithmName</code> reports <code>&quot;ASCON-HASHA256&quot;</code> automatically, so logs and manifests carry the
+variant name without any extra bookkeeping.</p>
+<h2 id="pattern-3--choosing-between-the-two-variants">Pattern 3 — choosing between the two variants</h2>
+<p>Both variants share the same state size, output width, padding rule, and API shape. The only
+difference is the number of Ascon-p rounds applied per absorbed 8-byte block.</p>
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+
+// Conservative — 12 absorption rounds.
+// Prefer for signatures, long-lived commitments, content-addressing,
+// or wherever throughput is not the primary constraint.
+using var conservative = new AsconHash256();
+
+// Performance — 8 absorption rounds.
+// Prefer when hashing many inputs in a hot path (deduplication,
+// per-request cache-key generation) and the throughput difference matters.
+using var performance = new AsconHashA256();
+
+Console.WriteLine(conservative.AlgorithmName);    // &quot;ASCON-HASH256&quot;
+Console.WriteLine(performance.AlgorithmName);     // &quot;ASCON-HASHA256&quot;
+</code></pre>
+<p>The 12-round variant applies 50 % more permutation work per absorbed block, giving deeper
+cryptanalytic margin. The 8-round variant reduces absorption work in exchange for higher
+throughput; the squeeze phase retains 12 rounds in both cases, so finalization is equally strong
+in both variants.</p>
+<p>When in doubt, use <code>AsconHash256</code>. Switch to <code>AsconHashA256</code> only when profiling shows the
+difference is measurable in your workload.</p>
+<h2 id="pattern-4--streaming-a-file">Pattern 4 — streaming a file</h2>
+<p>Both types inherit <code>ComputeHash(Stream)</code> from
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a>:</p>
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+
+using var hash   = new AsconHash256();
+using var stream = File.OpenRead(&quot;document.pdf&quot;);
+byte[]    digest = hash.ComputeHash(stream);
+</code></pre>
+<p>For a block-by-block pipeline, drive the standard BCL <code>TransformBlock</code> / <code>TransformFinalBlock</code>
+contract directly:</p>
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+
+using var hash   = new AsconHash256();
+byte[]    buffer = new byte[8192];
+int       read;
+
+using (var stream = File.OpenRead(&quot;document.pdf&quot;))
+{
+    while ((read = stream.Read(buffer, 0, buffer.Length)) &gt; 0)
+        hash.TransformBlock(buffer, 0, read, null, 0);
+}
+
+hash.TransformFinalBlock([], 0, 0);
+byte[] digest = hash.Hash!;
+</code></pre>
+<p><code>CanReuseTransform</code> being <code>true</code> means the instance resets automatically at the next
+<code>ComputeHash</code> call, or you can call <code>Initialize()</code> explicitly between messages.</p>
+<h2 id="pattern-5--hashing-multiple-messages-with-one-instance">Pattern 5 — hashing multiple messages with one instance</h2>
+<p>Because <code>CanReuseTransform</code> is <code>true</code>, a single instance can be reused across a batch:</p>
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+
+byte[][] messages = GetMessageBatch();
+byte[][] digests  = new byte[messages.Length][];
+
+using var hash = new AsconHash256();
+for (int i = 0; i &lt; messages.Length; i++)
+    digests[i] = hash.ComputeHash(messages[i]);
+</code></pre>
+<p>Each <code>ComputeHash</code> call resets the internal state before processing the next message.</p>
+<h2 id="pattern-6--verifying-a-digest-in-constant-time">Pattern 6 — verifying a digest in constant time</h2>
+<p>Always compare digests in constant time. Use the BCL's
+<code>CryptographicOperations.FixedTimeEquals</code> directly, or the
+<code>VerifyHash</code> extension method from <code>Bodu.Security.Cryptography.Extensions</code>:</p>
+<pre><code class="lang-csharp">using System.Security.Cryptography;
+using Bodu.Security.Cryptography;
+
+byte[] expected = LoadExpectedDigest();
+byte[] computed;
+
+using var hash = new AsconHash256();
+computed = hash.ComputeHash(fileBytes);
+
+bool ok = CryptographicOperations.FixedTimeEquals(computed, expected);
+</code></pre>
+<p>A plain <code>SequenceEqual</code> or <code>==</code> comparison leaks timing information and is unsafe whenever the
+comparison result drives an authentication or integrity decision.</p>
+<h2 id="pattern-7--reading-the-algorithm-name-at-runtime">Pattern 7 — reading the algorithm name at runtime</h2>
+<p>Both types report their canonical NIST algorithm identifier through the <code>AlgorithmName</code> property:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+
+using var h256  = new AsconHash256();
+using var ha256 = new AsconHashA256();
+
+Console.WriteLine(h256.AlgorithmName);     // &quot;ASCON-HASH256&quot;
+Console.WriteLine(ha256.AlgorithmName);    // &quot;ASCON-HASHA256&quot;
+</code></pre>
+<p>This is useful for constructing audit log entries, manifest files, or HTTP response headers that
+need to identify the algorithm used.</p>
+<h2 id="when-to-use-ascon-hashing">When to use ASCON hashing</h2>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Recommendation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Standards-backed 256-bit digest</td>
+<td><code>AsconHash256</code> — NIST SP 800-232 approved</td>
+</tr>
+<tr>
+<td>Content addressing or deduplication</td>
+<td>Either; 256-bit output gives strong collision resistance</td>
+</tr>
+<tr>
+<td>Constrained hardware, no SHA-2 acceleration</td>
+<td><code>AsconHashA256</code> — efficient software permutation</td>
+</tr>
+<tr>
+<td>High-throughput pipeline on x86-64 with SHA extensions</td>
+<td>Prefer <code>SHA256</code> (BCL, hardware-accelerated); fall back to <code>AsconHashA256</code> if ASCON is required</td>
+</tr>
+<tr>
+<td>Long-lived commitment (signatures, audit trails)</td>
+<td><code>AsconHash256</code> — 12-round margin throughout</td>
+</tr>
+</tbody>
+</table>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="ascon.html">ASCON overview</a> — the full family and which algorithm to pick.</li>
+<li><a href="ascon-xof.html">ASCON XOF</a> — for variable-length output (<code>AsconXof128</code>, <code>AsconCxof128</code>).</li>
+<li><a href="ascon-aead.html">ASCON AEAD</a> — for authenticated encryption (<code>AsconAead128</code>).</li>
+<li><a href="hashing.html">Hashing overview</a> — how ASCON sits alongside SipHash, Tiger, CubeHash, and the non-cryptographic families.</li>
+<li>API reference: <a class="xref" href="../../api/Bodu.Security.Cryptography.AsconHash256.html">AsconHash256</a> · <a class="xref" href="../../api/Bodu.Security.Cryptography.AsconHashA256.html">AsconHashA256</a></li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

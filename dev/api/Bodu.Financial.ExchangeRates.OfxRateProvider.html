@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class OfxRateProvider | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class OfxRateProvider | BODU ">
+    
+    <meta name="description" content="Serves OFX (ofx.com) exchange rates as  values, implementing the Bodu.Financial provider contracts over the OFX public spot-rate-history JSON REST service.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Financial.ExchangeRates.OfxRateProvider">
+
+
+
+  <h1 id="Bodu_Financial_ExchangeRates_OfxRateProvider" data-uid="Bodu.Financial.ExchangeRates.OfxRateProvider" class="text-break">Class OfxRateProvider</h1>
+  <div class="markdown level0 summary"><p>Serves OFX (ofx.com) exchange rates as <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.html">ExchangeRate</a> values, implementing the Bodu.Financial provider
+contracts over the OFX public spot-rate-history JSON REST service.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.html">WebRateProvider</a></div>
+    <div class="level2"><a class="xref" href="Bodu.Financial.ExchangeRates.PairWebRateProvider-1.html">PairWebRateProvider</a>&lt;<a class="xref" href="Bodu.Financial.ExchangeRates.OfxSeriesInfo.html">OfxSeriesInfo</a>&gt;</div>
+    <div class="level3"><span class="xref">OfxRateProvider</span></div>
+  </div>
+  <div class="implements">
+    <h5>Implements</h5>
+    <div><a class="xref" href="Bodu.Financial.ExchangeRates.IDatedRateProvider.html">IDatedRateProvider</a></div>
+    <div><a class="xref" href="Bodu.Financial.ExchangeRates.IRateProvider.html">IRateProvider</a></div>
+    <div><a class="xref" href="Bodu.Financial.ExchangeRates.IPairRateLoader.html">IPairRateLoader</a></div>
+    <div><a class="xref" href="Bodu.Financial.ExchangeRates.IHistoricalRateProvider.html">IHistoricalRateProvider</a></div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.PairWebRateProvider-1.HistoryAvailability.html#Bodu_Financial_ExchangeRates_PairWebRateProvider_1_HistoryAvailability">PairWebRateProvider&lt;OfxSeriesInfo&gt;.HistoryAvailability</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.PairWebRateProvider-1.GetAvailablePairs.html#Bodu_Financial_ExchangeRates_PairWebRateProvider_1_GetAvailablePairs">PairWebRateProvider&lt;OfxSeriesInfo&gt;.GetAvailablePairs()</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.GetRate.html#Bodu_Financial_ExchangeRates_WebRateProvider_GetRate_System_String_System_String_Bodu_Financial_ExchangeRates_RateLookupOptions_">WebRateProvider.GetRate(string, string, RateLookupOptions)</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.GetRate.html#Bodu_Financial_ExchangeRates_WebRateProvider_GetRate_System_String_System_String_System_DateOnly_Bodu_Financial_ExchangeRates_RateLookupOptions_">WebRateProvider.GetRate(string, string, DateOnly, RateLookupOptions)</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.TryGetRate.html#Bodu_Financial_ExchangeRates_WebRateProvider_TryGetRate_System_String_System_String_System_DateOnly_Bodu_Financial_ExchangeRates_RateLookupOptions_Bodu_Financial_ExchangeRates_RateLookupResult__">WebRateProvider.TryGetRate(string, string, DateOnly, RateLookupOptions, out RateLookupResult)</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.GetRates.html#Bodu_Financial_ExchangeRates_WebRateProvider_GetRates_System_String_System_String_System_DateOnly_System_DateOnly_">WebRateProvider.GetRates(string, string, DateOnly, DateOnly)</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.GetRateAsync.html#Bodu_Financial_ExchangeRates_WebRateProvider_GetRateAsync_System_String_System_String_Bodu_Financial_ExchangeRates_RateLookupOptions_System_Threading_CancellationToken_">WebRateProvider.GetRateAsync(string, string, RateLookupOptions, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.GetRateAsync.html#Bodu_Financial_ExchangeRates_WebRateProvider_GetRateAsync_System_String_System_String_System_DateOnly_Bodu_Financial_ExchangeRates_RateLookupOptions_System_Threading_CancellationToken_">WebRateProvider.GetRateAsync(string, string, DateOnly, RateLookupOptions, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.GetRatesAsync.html#Bodu_Financial_ExchangeRates_WebRateProvider_GetRatesAsync_System_String_System_String_System_DateOnly_System_DateOnly_System_Threading_CancellationToken_">WebRateProvider.GetRatesAsync(string, string, DateOnly, DateOnly, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.LoadPairAsync.html#Bodu_Financial_ExchangeRates_WebRateProvider_LoadPairAsync_System_String_System_String_System_DateOnly_System_DateOnly_System_Threading_CancellationToken_">WebRateProvider.LoadPairAsync(string, string, DateOnly, DateOnly, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.GetLoadedPairs.html#Bodu_Financial_ExchangeRates_WebRateProvider_GetLoadedPairs">WebRateProvider.GetLoadedPairs()</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.GetLoadedBook.html#Bodu_Financial_ExchangeRates_WebRateProvider_GetLoadedBook">WebRateProvider.GetLoadedBook()</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.GetLoadedSnapshot.html#Bodu_Financial_ExchangeRates_WebRateProvider_GetLoadedSnapshot">WebRateProvider.GetLoadedSnapshot()</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.Dispose.html#Bodu_Financial_ExchangeRates_WebRateProvider_Dispose">WebRateProvider.Dispose()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Financial.html">Financial</a>.<a class="xref" href="Bodu.Financial.ExchangeRates.html">ExchangeRates</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Financial.ExchangeRates.Ofx.dll</h6>
+  <h5 id="Bodu_Financial_ExchangeRates_OfxRateProvider_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class OfxRateProvider : PairWebRateProvider&lt;OfxSeriesInfo&gt;, IDatedRateProvider, IRateProvider, IPairRateLoader, IHistoricalRateProvider, IDisposable</code></pre>
+  </div>
+  <h5 id="Bodu_Financial_ExchangeRates_OfxRateProvider_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+The provider derives from <a class="xref" href="Bodu.Financial.ExchangeRates.PairWebRateProvider-1.html">PairWebRateProvider&lt;TSeries&gt;</a>, which supplies the per-pair coverage
+tracking, single-flight coalescing, fetch-and-accumulate orchestration, and diagnostic logging shared by every
+pair-based web source; this type contributes only the OFX identity and the OFX-specific exception text. OFX serves
+arbitrary pairs through its spot-rate-history endpoint, so any pair of ISO codes can be requested directly. Use
+<a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.LoadPairAsync.html#Bodu_Financial_ExchangeRates_WebRateProvider_LoadPairAsync_System_String_System_String_System_DateOnly_System_DateOnly_System_Threading_CancellationToken_">LoadPairAsync(string, string, DateOnly, DateOnly, CancellationToken)</a> to warm a pair's in-memory store.
+</p>
+<p>
+<strong>HttpClient ownership.</strong> The constructor that takes only options builds and owns an
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.net.http.httpclient">HttpClient</a> configured with the options' <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.UserAgent.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_UserAgent">UserAgent</a> and
+<a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.HttpTimeout.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_HttpTimeout">HttpTimeout</a> (the OFX endpoint rejects requests without a recognizable user
+agent), disposing it with the provider. The constructor that takes an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.net.http.httpclient">HttpClient</a> uses the
+caller-supplied client as-is, leaving its configuration and lifetime to the caller; this is the path the
+dependency-injection package uses.
+</p>
+</div>
+  <h5 id="Bodu_Financial_ExchangeRates_OfxRateProvider_examples"><strong>Examples</strong></h5>
+  <pre><code class="lang-csharp">using var ofx = new OfxRateProvider(new OfxRateProviderOptions());
+await ofx.LoadPairAsync("USD", "AUD", new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 31));
+
+RateLookupResult aud = ofx.GetRate("USD", "AUD", new DateOnly(2023, 1, 3));</code></pre>
+
+  <h3 id="constructors">Constructors
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Financial_ExchangeRates_OfxRateProvider__ctor_Bodu_Financial_ExchangeRates_OfxRateProviderOptions_Microsoft_Extensions_Logging_ILogger_System_TimeProvider_" data-uid="Bodu.Financial.ExchangeRates.OfxRateProvider.#ctor(Bodu.Financial.ExchangeRates.OfxRateProviderOptions,Microsoft.Extensions.Logging.ILogger,System.TimeProvider)">
+          <a class="xref" href="Bodu.Financial.ExchangeRates.OfxRateProvider.-ctor.html#Bodu_Financial_ExchangeRates_OfxRateProvider__ctor_Bodu_Financial_ExchangeRates_OfxRateProviderOptions_Microsoft_Extensions_Logging_ILogger_System_TimeProvider_">OfxRateProvider(OfxRateProviderOptions, ILogger?, TimeProvider?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Financial.ExchangeRates.OfxRateProvider.html">OfxRateProvider</a> class backed by an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.net.http.httpclient">HttpClient</a>
+the provider creates and owns, configured from the supplied options.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_ExchangeRates_OfxRateProvider__ctor_System_Net_Http_HttpClient_Bodu_Financial_ExchangeRates_OfxRateProviderOptions_Microsoft_Extensions_Logging_ILogger_System_TimeProvider_" data-uid="Bodu.Financial.ExchangeRates.OfxRateProvider.#ctor(System.Net.Http.HttpClient,Bodu.Financial.ExchangeRates.OfxRateProviderOptions,Microsoft.Extensions.Logging.ILogger,System.TimeProvider)">
+          <a class="xref" href="Bodu.Financial.ExchangeRates.OfxRateProvider.-ctor.html#Bodu_Financial_ExchangeRates_OfxRateProvider__ctor_System_Net_Http_HttpClient_Bodu_Financial_ExchangeRates_OfxRateProviderOptions_Microsoft_Extensions_Logging_ILogger_System_TimeProvider_">OfxRateProvider(HttpClient, OfxRateProviderOptions, ILogger?, TimeProvider?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Financial.ExchangeRates.OfxRateProvider.html">OfxRateProvider</a> class backed by the OFX endpoint, queried with
+the caller-supplied HTTP client. The caller owns the client's configuration and lifetime.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="fields">Fields
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Financial_ExchangeRates_OfxRateProvider_ProviderName" data-uid="Bodu.Financial.ExchangeRates.OfxRateProvider.ProviderName">
+          <a class="xref" href="Bodu.Financial.ExchangeRates.OfxRateProvider.ProviderName.html">ProviderName</a>
+        </td>
+        <td class="markdown level1 summary"><p>The provider identifier stamped on every rate this provider produces.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Financial_ExchangeRates_OfxRateProvider_ProviderId" data-uid="Bodu.Financial.ExchangeRates.OfxRateProvider.ProviderId">
+          <a class="xref" href="Bodu.Financial.ExchangeRates.OfxRateProvider.ProviderId.html#Bodu_Financial_ExchangeRates_OfxRateProvider_ProviderId">ProviderId</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the provider identifier stamped on every rate this provider produces.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Financial_ExchangeRates_OfxRateProvider_FormatRateNotFound_System_String_System_String_System_DateOnly_" data-uid="Bodu.Financial.ExchangeRates.OfxRateProvider.FormatRateNotFound(System.String,System.String,System.DateOnly)">
+          <a class="xref" href="Bodu.Financial.ExchangeRates.OfxRateProvider.FormatRateNotFound.html#Bodu_Financial_ExchangeRates_OfxRateProvider_FormatRateNotFound_System_String_System_String_System_DateOnly_">FormatRateNotFound(string, string, DateOnly)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Formats the message for the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keynotfoundexception">KeyNotFoundException</a> thrown when a single-rate lookup fails. Derived
+types may override to use a feed-specific resource string.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Bodu.Financial.Extensions.DatedRateProviderExtensions.ToFixedProviderAsync.html#Bodu_Financial_Extensions_DatedRateProviderExtensions_ToFixedProviderAsync_Bodu_Financial_ExchangeRates_IDatedRateProvider_System_Collections_Generic_IEnumerable_Bodu_Financial_ExchangeRates_CurrencyPair__System_DateOnly_System_DateOnly_System_Threading_CancellationToken_">DatedRateProviderExtensions.ToFixedProviderAsync(IDatedRateProvider, IEnumerable&lt;CurrencyPair&gt;, DateOnly, DateOnly, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

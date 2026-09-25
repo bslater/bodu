@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Bodu.Financial — Core concepts | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Bodu.Financial — Core concepts | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="bodufinancial--core-concepts">Bodu.Financial — Core concepts</h1>
+
+<p>This page is the vocabulary the rest of the documentation assumes. Read it once before the <a href="getting-started.html">getting-started samples</a> or the <a href="../../guides/financial/index.html">guides</a>, and refer back whenever a term feels imprecise.</p>
+<p>For the high-level shape of the library and the namespace map, start with the <a href="index.html">introduction</a>. <code>Bodu.Financial</code> is part of the <strong><a href="../topics/numerics-and-financial.html">Numerics &amp; Financial</a></strong> topic; the <a href="../topics/numerics-and-financial-concepts.html">topic concepts page</a> covers the vocabulary shared across both libraries.</p>
+<h2 id="currency-tag">Currency tag</h2>
+<p>A <strong>currency tag</strong> is a sealed class in <code>Bodu.Financial.Currencies</code> (one per ISO 4217 code) that implements <a class="xref" href="../../api/Bodu.Financial.Currencies.ICurrency.html">ICurrency</a>. Tags exist solely to parameterise <a class="xref" href="../../api/Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a> and to carry the currency's static metadata. They are never instantiated — every shipped tag declares a <code>private</code> constructor and exposes only <code>static</code> members.</p>
+<p>Tags use C# 11 static-abstract members, so metadata is accessed through the type itself (<code>USD.IsoCode</code>, <code>USD.MinorUnits</code>) and through <code>TCurrency.IsoCode</code> from generic code constrained by <code>where TCurrency : ICurrency</code>. <code>IsoCode</code> and <code>MinorUnits</code> are required; <code>CashRoundingIncrement</code>, <code>IsHistoric</code>, <code>DemonetizedOn</code>, and <code>SuccessorIsoCode</code> are <code>static virtual</code> with sensible defaults so existing custom tags compile unchanged.</p>
+<h2 id="moneytcurrency-vs-money"><code>Money&lt;TCurrency&gt;</code> vs. <code>Money</code></h2>
+<p><a class="xref" href="../../api/Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a> is <strong>compile-time-typed</strong>: the currency is the type parameter. <code>Money&lt;USD&gt;</code> and <code>Money&lt;JPY&gt;</code> are distinct types, and adding them is a compile error. Use it whenever the currency is known at the call site.</p>
+<p><a class="xref" href="../../api/Bodu.Financial.Money.html">Money</a> is <strong>runtime-tagged</strong>: it carries the currency as a <a class="xref" href="../../api/Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a> enum value (exposed through its <code>Code</code> property). Cross-currency arithmetic surfaces as <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a> at runtime rather than at build time. Use it when the currency is data — deserialised payloads, generic invoicing engines, configuration-driven accounting — and convert to typed money with <code>Money.As&lt;T&gt;()</code> or <code>TryAs</code> at the boundary where the currency becomes known.</p>
+<p>Both types are immutable, value-equatable readonly structs and both round on construction.</p>
+<h2 id="cross-currency-safety">Cross-currency safety</h2>
+<blockquote>
+<p><strong>Fails the build, not at runtime.</strong></p>
+</blockquote>
+<p>Because the currency is in the type system, the compiler rejects the entire class of &quot;added the wrong currencies&quot; defects without a single runtime check:</p>
+<pre><code class="lang-csharp">Money&lt;USD&gt; a = new(100m);
+Money&lt;JPY&gt; b = new(2500m);
+var oops = a + b;                  // CS0019 — operator '+' cannot be applied
+Money&lt;EUR&gt; c = a;                  // CS0029 — cannot implicitly convert
+bool eq = (a == new Money&lt;JPY&gt;(0m)); // CS0019 — comparison disallowed
+</code></pre>
+<p>Cross-currency conversion is available only through the explicit <code>Money&lt;T&gt;.Convert&lt;TTarget&gt;(decimal, MidpointRounding)</code> call, which forces the caller to supply the rate and the destination currency together.</p>
+<h2 id="iso-4217">ISO 4217</h2>
+<p>The international standard for currency codes. Every <a class="xref" href="../../api/Bodu.Financial.Currencies.ICurrency.html">ICurrency</a> tag carries the standard's three-letter alphabetic code (<code>USD</code>, <code>EUR</code>, <code>JPY</code>, <code>BHD</code>) and its declared minor-unit count. Validation throughout the library matches the standard's shape: codes are exactly three uppercase ASCII letters, and any value outside that shape is rejected at the boundary.</p>
+<h2 id="minor-unit">Minor unit</h2>
+<p>The smallest commonly-issued denomination of a currency, expressed as the number of fractional digits its major unit subdivides into:</p>
+<table>
+<thead>
+<tr>
+<th><code>MinorUnits</code></th>
+<th>Examples</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>0</code></td>
+<td><code>JPY</code>, <code>KRW</code>, <code>CLP</code>, <code>ISK</code>, <code>VND</code>, <code>XAF</code>, <code>XOF</code></td>
+</tr>
+<tr>
+<td><code>2</code></td>
+<td><code>USD</code>, <code>EUR</code>, <code>GBP</code>, <code>AUD</code>, <code>CAD</code>, <code>CHF</code>, and most others</td>
+</tr>
+<tr>
+<td><code>3</code></td>
+<td><code>BHD</code>, <code>IQD</code>, <code>JOD</code>, <code>KWD</code>, <code>LYD</code>, <code>OMR</code>, <code>TND</code></td>
+</tr>
+</tbody>
+</table>
+<p>Construction of <a class="xref" href="../../api/Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a> rounds to this precision; <code>Money&lt;T&gt;.FromMinorUnits(long)</code> and <code>Money&lt;T&gt;.ToMinorUnits()</code> bridge to integer minor-unit storage used by ledgers and wire formats.</p>
+<h2 id="cash-rounding-increment">Cash rounding increment</h2>
+<p>A coin-or-note-aligned coarser denomination some currencies use for physical cash totals. CHF rounds to five rappen (<code>0.05m</code>), AUD and CAD cash totals round to five cents (<code>0.05m</code>), SEK / NOK / ISK round to the whole krona. <a class="xref" href="../../api/Bodu.Financial.Currencies.ICurrency.CashRoundingIncrement.html#Bodu_Financial_Currencies_ICurrency_CashRoundingIncrement">CashRoundingIncrement</a> exposes the value; <code>Money&lt;T&gt;.RoundToCash()</code> snaps to it.</p>
+<p>Cash rounding is a presentation choice for physical payments, not a storage rule. Electronic transactions retain full minor-unit precision; call <code>RoundToCash()</code> only at the point a total becomes a cash payment. The default of <code>0m</code> means &quot;no special cash rounding&quot;, and <code>RoundToCash()</code> is a no-op for those currencies.</p>
+<h2 id="bankers-rounding">Banker's rounding</h2>
+<p>Construction and arithmetic default to <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.midpointrounding#system-midpointrounding-toeven">ToEven</a> — midpoint values round toward the nearer even final digit. <code>new Money&lt;USD&gt;(1.225m)</code> stores as <code>1.22m</code>; <code>new Money&lt;USD&gt;(1.235m)</code> stores as <code>1.24m</code>. This matches the .NET <code>decimal</code> and IEEE 754 default and avoids the upward statistical bias of <code>AwayFromZero</code>. Every API that rounds accepts a <code>MidpointRounding</code> argument so callers can opt into a different rule when a regulator or accounting policy demands one.</p>
+<h2 id="sub-minor-unit-precision">Sub-minor-unit precision</h2>
+<p><a class="xref" href="../../api/Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a> is settlement-grade — every operation rounds to <a class="xref" href="../../api/Bodu.Financial.Currencies.ICurrency.MinorUnits.html#Bodu_Financial_Currencies_ICurrency_MinorUnits">MinorUnits</a>. Calculation chains where each step's rounding would compound (compound interest, percentage-of-percentage, unit-rate products) need an exact intermediate representation.</p>
+<p><code>Money&lt;T&gt;.ToFraction()</code> returns a <a class="xref" href="../../api/Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a> over <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.biginteger">BigInteger</a>, and <code>Money&lt;T&gt;.FromFraction(...)</code> snaps a fraction back to settlement precision in one rounding event. <code>Money&lt;T&gt;.MultiplyExact(Fraction&lt;BigInteger&gt;)</code> is the single-step shortcut. Use it for amortisation schedules, multi-rate FX chains, and any compound calculation where drift across hundreds of rounding events is unacceptable.</p>
+<h2 id="calculatedmoney"><code>CalculatedMoney</code></h2>
+<p><a class="xref" href="../../api/Bodu.Financial.CalculatedMoney.html">CalculatedMoney</a> is the middle precision tier between settlement-grade <a class="xref" href="../../api/Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a> and exact <a class="xref" href="../../api/Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a>. It is a runtime-tagged <code>readonly struct</code> that carries the full <code>decimal</code> precision (28–29 significant digits) through <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, and the named <code>Multiply</code> / <code>Divide</code>, deferring rounding until <code>RoundToMoney()</code> settles it to a <a class="xref" href="../../api/Bodu.Financial.Money.html">Money</a> in a single event. <code>ToCalculated()</code> materialises one from either money type; mixing two currencies throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a> at runtime. Reach for it when <code>decimal</code> precision is enough and a full <code>Fraction</code> round-trip is heavier than the calculation warrants.</p>
+<h2 id="monetarycontext"><code>MonetaryContext</code></h2>
+<p><a class="xref" href="../../api/Bodu.Financial.MonetaryContext.html">MonetaryContext</a> bundles the rounding strategy (<a class="xref" href="../../api/Bodu.Financial.IRoundingStrategy.html">IRoundingStrategy</a>), the <a class="xref" href="../../api/Bodu.Financial.ScalePolicy.html">ScalePolicy</a>, the <a class="xref" href="../../api/Bodu.Financial.CashRoundingPolicy.html">CashRoundingPolicy</a>, the <a class="xref" href="../../api/Bodu.Financial.AllocationPolicy.html">AllocationPolicy</a>, and the <a class="xref" href="../../api/Bodu.Financial.ConversionRoundingPolicy.html">ConversionRoundingPolicy</a> into one immutable record, so a settlement regime can be configured once and carried by name through the DI container. It governs <em>operation</em> boundaries — multiplication, division, conversion, and <code>CalculatedMoney.RoundToMoney()</code> — not allocation residual distribution, which is fixed. <code>MonetaryContext.Default</code> is banker's rounding at currency minor-unit scale.</p>
+<h2 id="fair-allocation">Fair allocation</h2>
+<p>Splitting <code>$1.00</code> into three shares cannot return <code>[0.33, 0.33, 0.33]</code> — that loses a cent. <code>Money&lt;T&gt;.Allocate(int parts)</code> distributes the residual minor units one per share from the start of the array so the sum equals the original exactly:</p>
+<pre><code class="lang-csharp">new Money&lt;USD&gt;(0.10m).Allocate(3);   // [0.04, 0.03, 0.03]
+new Money&lt;USD&gt;(-10m).Allocate(3);    // [-3.34, -3.33, -3.33]
+</code></pre>
+<p><code>Money&lt;T&gt;.Allocate(ReadOnlySpan&lt;decimal&gt; ratios)</code> weights shares proportionally and uses the <strong>largest-remainder (Hamilton) method</strong> to distribute the residual: each slot receives one extra minor unit in descending order of its fractional remainder, with ties broken by stable input order. Zero-ratio slots never receive residual. The algorithm is deterministic, sign-preserving, and round-trip-stable across runs.</p>
+<h2 id="currency-catalogue">Currency catalogue</h2>
+<p><code>Bodu.Financial.Currencies</code> ships 184 sealed <code>ICurrency</code> tag classes — one per ISO 4217 code — split between active and historic:</p>
+<ul>
+<li><strong>Active</strong> (155 codes): USD, EUR, GBP, JPY, AUD, CAD, CHF, CNY, INR, BRL, MXN, ZAR, …</li>
+<li><strong>Historic</strong> (29 codes): the Euro-zone predecessors (ATS, BEF, CYP, DEM, EEK, ESP, FIM, FRF, GRD, HRK, IEP, ITL, LTL, LUF, LVL, MTL, NLG, PTE, SIT, SKK) plus other notable replacements (AZM, GHC, MZM, ROL, SRG, TMM, VEB, VEF, ZWL). Each historic tag declares <code>IsHistoric =&gt; true</code>, the <code>DemonetizedOn</code> date, and the <code>SuccessorIsoCode</code>.</li>
+</ul>
+<p>Tag types are source-generated from <code>currencies.json</code>, and the runtime catalogue is built from the same generated data — no runtime reflection scans the assembly. The <a class="xref" href="../../api/Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a> enum carries the same 184 codes plus a <code>None = 0</code> sentinel; <code>CurrencyCode.GetStatus()</code> / <code>IsActive()</code> / <code>IsHistoric()</code> read the per-member <a class="xref" href="../../api/Bodu.Financial.Currencies.CurrencyStatus.html">CurrencyStatus</a> tag.</p>
+<h2 id="currencyregistry"><code>CurrencyRegistry</code></h2>
+<p><a class="xref" href="../../api/Bodu.Financial.Currencies.CurrencyRegistry.html">CurrencyRegistry</a> is the read-only runtime catalogue of <a class="xref" href="../../api/Bodu.Financial.Currencies.CurrencyInfo.html">CurrencyInfo</a> records — the runtime-shape counterpart of an <code>ICurrency</code> tag. It backs <a class="xref" href="../../api/Bodu.Financial.Money.html">Money</a> rounding and <a class="xref" href="../../api/Bodu.Financial.MoneyBag.html">MoneyBag</a> conversions, which resolve a currency's metadata at runtime.</p>
+<p>The catalogue is closed: it is fixed to the shipped ISO 4217 set (active and historic) and exposes no runtime registration seam, so a currency outside it cannot be constructed as a runtime <a class="xref" href="../../api/Bodu.Financial.Money.html">Money</a>. For a generic amount in a unit outside ISO 4217 (a commodity, an in-game token), declare your own <code>ICurrency</code> tag and use <code>Money&lt;TCurrency&gt;</code>; to substitute or restrict the metadata used for the <em>shipped</em> currencies, install a custom <code>ICurrencyLookup</code> through <a class="xref" href="../../api/Bodu.Financial.Currencies.CurrencyResolution.html">CurrencyResolution</a>.</p>
+<h2 id="exchangerate"><code>ExchangeRate</code></h2>
+<p><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.ExchangeRate.html">ExchangeRate</a> is an immutable record-struct describing a single observation: the source and destination currencies (<code>From</code> / <code>To</code>, both <a class="xref" href="../../api/Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a>), the observation <code>Date</code>, the strictly-positive <code>Rate</code> multiplier, the publishing <code>Provider</code> name, an <code>IsInverted</code> flag indicating whether the rate was derived from the reverse pair, and an optional <code>FetchedAtUtc</code> instant. It is the unit returned by providers and embedded in <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateLookupResult.html">RateLookupResult</a>; it deliberately does not round, so the destination currency's minor-unit precision applies only at the money boundary.</p>
+<h2 id="currencypair"><code>CurrencyPair</code></h2>
+<p><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.CurrencyPair.html">CurrencyPair</a> is the strongly-typed key for FX lookups — an immutable record-struct constructed as <code>new CurrencyPair(CurrencyCode from, CurrencyCode to)</code> and exposing <code>From</code> and <code>To</code>, validating both codes at construction. Preferred over <code>(string, string)</code> tuples wherever a directional currency pair is used as a dictionary key or method argument; the named properties make the direction obvious and centralise validation. <code>Inverse()</code> returns the reverse-direction pair.</p>
+<h2 id="rateseries"><code>RateSeries</code></h2>
+<p><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateSeries.html">RateSeries</a> stores every observation for one <code>(pair, provider)</code> combination in two parallel sorted arrays — day numbers (<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly.daynumber">DayNumber</a>) and rates — so resolution is allocation-free and runs in <code>O(log n)</code> over the day-number array via <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.array.binarysearch#system-array-binarysearch-1(-0()-0)">BinarySearch&lt;T&gt;(T[], T)</a>. The two-array layout improves cache locality compared to a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.sorteddictionary-2">SortedDictionary&lt;TKey, TValue&gt;</a>, and instances are safe to share across threads after construction. Public APIs continue to accept and return <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a>; conversion to and from the internal day-number representation happens at the boundary.</p>
+<p>The series is <strong>immutable</strong>. Use the companion <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateSeriesBuilder.html">RateSeriesBuilder</a> to construct or edit observations imperatively, or the copy-on-write helpers <code>RateSeries.WithRate(date, rate)</code> and <code>RateSeries.WithoutRate(date)</code> for single-edit return-new patterns. <code>RateSeries.GetObservations()</code> yields the observations as an <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateObservation.html">RateObservation</a> sequence in strictly ascending date order, and <code>RateSeries.ToBuilder()</code> returns a fresh builder pre-populated from the snapshot.</p>
+<h2 id="rateobservation"><code>RateObservation</code></h2>
+<p><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateObservation.html">RateObservation</a> is the lightweight <code>(Date, Rate)</code> <code>readonly record struct</code> used as the transport shape for series enumeration, builder mutation, and bulk-import APIs. Unlike <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.ExchangeRate.html">ExchangeRate</a> it does not carry provider or inversion metadata — those are owned by the enclosing series. The type itself does not validate <code>Rate</code>; the surrounding series and builder reject zero or negative values at the boundary.</p>
+<h2 id="rateseriesbuilder"><code>RateSeriesBuilder</code></h2>
+<p><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateSeriesBuilder.html">RateSeriesBuilder</a> is the mutable companion to <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateSeries.html">RateSeries</a>. It maintains strictly ascending unique observation dates and strictly positive rates while supporting single-observation edits and bulk import. The public surface distinguishes intent through three explicit shapes — <code>Add</code> (throws on duplicate), <code>Set</code> (throws on missing), and <code>Upsert</code> (insert-or-replace) — plus their <code>Try</code>-prefixed boolean siblings. Bulk import uses <code>AddRange</code> (rejects duplicates) and <code>UpsertRange</code> (replaces existing dates, rejects in-batch duplicates) with atomic-rollback semantics: a mid-batch validation failure leaves the builder unchanged. <code>ToSeries()</code> produces an immutable <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateSeries.html">RateSeries</a> snapshot; further builder mutations do not affect previously produced snapshots, and vice versa. Instances are not thread-safe.</p>
+<h2 id="rateserieskey-and-ratetablebuilder"><code>RateSeriesKey</code> and <code>RateTableBuilder</code></h2>
+<p><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateSeriesKey.html">RateSeriesKey</a> is a <code>readonly record struct</code> carrying a <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.CurrencyPair.html">CurrencyPair</a> and the publishing provider's identifier — the natural dictionary key when the same pair has rates from multiple sources.</p>
+<p><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateTableBuilder.html">RateTableBuilder</a> is the higher-level mutable collection that owns one <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateSeriesBuilder.html">RateSeriesBuilder</a> per <code>(pair, provider)</code> key. It exposes <code>GetOrAddSeries</code>, <code>Upsert(pair, provider, date, rate)</code>, <code>TryGetBuilder</code> (returns the mutable builder), <code>TryGetSeries</code> (returns an immutable snapshot), and <code>ToSeries()</code> (snapshots every non-empty series). Use it for import workflows that ingest rate observations across many currency pairs and providers before producing immutable snapshots for production lookup. Like the builder it is not thread-safe.</p>
+<h2 id="timeless-vs-dated-provider">Timeless vs. dated provider</h2>
+<p><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.IRateProvider.html">IRateProvider</a> exposes a single <code>GetRate(from, to)</code> method returning a <code>decimal</code>. It is the right abstraction when the rate is &quot;current&quot; — a static table for unit tests, a daily snapshot, or a live mid-market ticker.</p>
+<p><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.IDatedRateProvider.html">IDatedRateProvider</a> takes a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a> and <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateLookupOptions.html">RateLookupOptions</a> and returns an <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateLookupResult.html">RateLookupResult</a>. It is the right abstraction for ledger postings, tax reports, and any workflow where the <em>date</em> of the rate is part of the audit trail. Both <code>GetRate</code> (throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keynotfoundexception">KeyNotFoundException</a>) and <code>TryGetRate</code> (returns <code>bool</code>) shapes are required by the contract.</p>
+<h2 id="provenance">Provenance</h2>
+<p>A dated lookup returns an <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateLookupResult.html">RateLookupResult</a> — a <code>readonly record struct</code> with five properties — plus a family of derived convenience members. The properties:</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Rate</code></td>
+<td>The resolved <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.ExchangeRate.html">ExchangeRate</a>: <code>Rate.Provider</code>, <code>Rate.Date</code> (the observed date, may differ from the request), <code>Rate.Rate</code> (the multiplier), and <code>Rate.IsInverted</code> (derived from the reverse-direction pair).</td>
+</tr>
+<tr>
+<td><code>RequestedDate</code></td>
+<td>The date the caller originally asked for.</td>
+</tr>
+<tr>
+<td><code>Resolution</code></td>
+<td>The <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateDateResolution.html">RateDateResolution</a> policy that fired (<code>Exact</code>, <code>PreviousOnOrBefore</code>, <code>NextOnOrAfter</code>, <code>Nearest</code>, <code>NearestPreferPrevious</code>, <code>NearestPreferNext</code>).</td>
+</tr>
+<tr>
+<td><code>OffsetDays</code></td>
+<td>Absolute day distance between <code>RequestedDate</code> and <code>Rate.Date</code>.</td>
+</tr>
+<tr>
+<td><code>Provenance</code></td>
+<td>The <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateProvenance.html">RateProvenance</a> — provider, <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateOrigin.html">RateOrigin</a> (<code>Live</code> / <code>Cache</code>), backend label, and cache age when served from a cache.</td>
+</tr>
+</tbody>
+</table>
+<p>The derived members live on <a class="xref" href="../../api/Bodu.Financial.Extensions.html">Bodu.Financial.Extensions</a> rather than on the record — <code>ResolvedDate</code> (<code>== Rate.Date</code>), <code>SignedOffsetDays</code> (negative when the resolved date is earlier), <code>IsExactDate</code> (<code>OffsetDays == 0</code>), <code>IsPreviousDate</code>, and <code>IsFutureDate</code> — emitted as C# extension <em>properties</em> or classic extension <em>methods</em> depending on the build. That set is what lets accounting and tax workflows answer &quot;which observed rate produced this number, and how far off the requested date was it?&quot; without re-querying the table.</p>
+<h2 id="aggregating-provider">Aggregating provider</h2>
+<p>Grouping several FX sources behind one entry point is no longer part of core <code>Bodu.Financial</code> — it lives in the <code>Bodu.Financial.ExchangeRates.Caching</code> package as <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider.html"><code>AggregatingRateProvider</code></a>. It wraps a set of named child providers and combines their results through a pluggable <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.IRateAggregationStrategy.html"><code>IRateAggregationStrategy</code></a>:</p>
+<ul>
+<li><code>PriorityFallbackStrategy</code> resolves every lookup with a deterministic first-available strategy — child providers are consulted in order and the first successful result is returned. This is the direct successor to the old composite stack, keeping fallback behaviour explicit and auditable, useful for stacking a primary ECB feed over an OANDA backup over a static last-known-good table.</li>
+<li><code>AverageStrategy</code> returns the mean of all contributing providers for the pair.</li>
+</ul>
+<p>Strategies are expressed through <code>IRateAggregationStrategy</code> (PriorityFallback / Average / custom) rather than a fixed enum, and the aggregator supports optional per-FX-pair routing so different pairs can resolve through different child providers.</p>
+<h2 id="in-memory-providers">In-memory providers</h2>
+<p><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.FixedRateTable.html">FixedRateTable</a> implements the timeless <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.IRateProvider.html">IRateProvider</a> from a fixed <code>(from, to) → rate</code> dictionary. Same-currency lookups return <code>1m</code> without consulting the table, and a missing pair triggers an inverse-pair fallback that returns <code>1 / rate</code> — the convention most FX feeds use to keep the table minimal.</p>
+<p><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.FixedDatedRateProvider.html">FixedDatedRateProvider</a> implements the dated <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.IDatedRateProvider.html">IDatedRateProvider</a> from a flat sequence of <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.ExchangeRate.html">ExchangeRate</a> observations grouped into one <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateSeries.html">RateSeries</a> per pair. Each pair is described by exactly one series and therefore one provider, so composing rates from multiple publishing sources is done by stacking several tables behind an <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider.html"><code>AggregatingRateProvider</code></a> (in <code>Bodu.Financial.ExchangeRates.Caching</code>) rather than mixing providers in a single table. Identity (same-currency) results carry the well-known <code>FixedDatedRateProvider.IdentityProviderName</code> label so audit consumers can filter by it.</p>
+<h2 id="moneyconversionresulttsource-ttarget"><code>MoneyConversionResult&lt;TSource, TTarget&gt;</code></h2>
+<p><a class="xref" href="../../api/Bodu.Financial.MoneyConversionResult-2.html">MoneyConversionResult&lt;TSource, TTarget&gt;</a> is the audit record returned by the <code>ConvertTo&lt;TTarget&gt;(IDatedRateProvider, …)</code> extension methods on <code>Money&lt;T&gt;</code>, <code>Money</code>, and <code>MoneyBag</code>. It bundles the original source amount, the rounded target amount, and the full <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateLookupResult.html">RateLookupResult</a> that produced it — so the consumer sees both the answer and the provenance of the rate in a single value, without a second lookup.</p>
+<h2 id="moneybag"><code>MoneyBag</code></h2>
+<p><a class="xref" href="../../api/Bodu.Financial.MoneyBag.html">MoneyBag</a> is an immutable mixed-currency portfolio — a snapshot of balances across multiple ISO codes. Mutators return new instances; zero balances are pruned automatically on every operation; enumeration yields one <a class="xref" href="../../api/Bodu.Financial.Money.html">Money</a> per non-zero currency in lexicographic ISO order, so iteration is stable and reproducible across runs.</p>
+<p>The bag is the type that models the <strong>aggregate-then-convert</strong> pattern: accumulate per-currency balances during a batch, then convert the entire bag to a single target currency once at the boundary via <code>MoneyBag.ConvertTo&lt;TTarget&gt;(IRateProvider)</code> or its dated counterpart. Compared to converting each amount on the way in, aggregate-then-convert needs one FX lookup per source currency instead of one per posting.</p>
+<h2 id="json-policies">JSON policies</h2>
+<p><a class="xref" href="../../api/Bodu.Financial.Serialization.Json.FinancialJsonPolicy.html">FinancialJsonPolicy</a> (from the companion <code>Bodu.Financial.Serialization.Json</code> package) selects the wire shape and parsing strictness used by the <code>System.Text.Json</code> converters:</p>
+<table>
+<thead>
+<tr>
+<th>Policy</th>
+<th>Shape</th>
+<th>Use case</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Strict</code> (default)</td>
+<td><code>{ &quot;amount&quot;: 19.99, &quot;currency&quot;: &quot;USD&quot; }</code> for money; <code>{ &quot;balances&quot;: { … } }</code> for bags. Property names compare case-insensitively, duplicate properties are rejected, unknown properties are ignored, and a <code>currency</code> that does not match <code>TCurrency.IsoCode</code> is rejected.</td>
+<td>Canonical ledger, persistence, audit.</td>
+</tr>
+<tr>
+<td><code>Lenient</code></td>
+<td>Same shape as <code>Strict</code>, but also normalises lowercase ISO codes to uppercase and trims surrounding whitespace before validation.</td>
+<td>Import workflows that ingest spreadsheets and external feeds. Not suitable as a canonical storage shape.</td>
+</tr>
+<tr>
+<td><code>Compact</code></td>
+<td>Single JSON string <code>&quot;19.99 USD&quot;</code> for money; flat object <code>{ &quot;USD&quot;: 19.99, &quot;EUR&quot;: 12.34 }</code> for bags. Reads accept either ISO-prefix or ISO-suffix string forms.</td>
+<td>Wire-size-sensitive APIs and human-readable logs.</td>
+</tr>
+</tbody>
+</table>
+<p>Register a policy via <code>options.AddFinancialJsonConverters(policy)</code>; this installs the six financial converters — for <code>Money&lt;TCurrency&gt;</code> (through a <code>JsonConverterFactory</code>), <code>Money</code>, <a class="xref" href="../../api/Bodu.Financial.CalculatedMoney.html">CalculatedMoney</a> (written at full unrounded precision), <code>MoneyBag</code>, <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.ExchangeRate.html">ExchangeRate</a>, and <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.CurrencyPair.html">CurrencyPair</a>. Registration is required — the core types carry no <code>[JsonConverter]</code> attribute, and the core library is serialization-agnostic.</p>
+<h2 id="demonetisation">Demonetisation</h2>
+<p>Historic currency metadata travels with the tag, so legacy data still round-trips through arithmetic and formatting. An <code>ICurrency</code> reports the state through three members:</p>
+<ul>
+<li><code>IsHistoric</code> — <code>true</code> when the currency is no longer in active circulation.</li>
+<li><code>DemonetizedOn</code> — the withdrawal date as a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a>, or <code>null</code> when unknown.</li>
+<li><code>SuccessorIsoCode</code> — the ISO code of the replacement currency, when one exists.</li>
+</ul>
+<p>For example, <code>DEM.IsHistoric =&gt; true</code>, <code>DEM.DemonetizedOn =&gt; 2002-02-28</code>, <code>DEM.SuccessorIsoCode =&gt; &quot;EUR&quot;</code>. Historic currencies participate fully in arithmetic and serialisation; the metadata exists for filtering, reporting, and migration tooling, not to gate behaviour.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="index.html">Introduction</a></strong> — the high-level shape of the library.</li>
+<li><strong><a href="getting-started.html">Getting started</a></strong> — install + runnable minimal samples for every concept above.</li>
+<li><strong><a href="../../guides/financial/index.html">Bodu.Financial guides</a></strong> — deep-dive walk-throughs for typed money, allocation, FX, and serialisation.</li>
+<li><strong><a href="../topics/numerics-and-financial.html">Numerics &amp; Financial topic overview</a></strong> — how this package and <code>Bodu.Numerics</code> fit together.</li>
+<li><strong><a href="../topics/numerics-and-financial-concepts.html">Numerics &amp; Financial topic concepts</a></strong> — the vocabulary shared across both libraries.</li>
+<li><strong><a href="../numerics/index.html">Bodu.Numerics introduction</a></strong> — the rational-arithmetic library that backs <code>Money&lt;T&gt;.ToFraction()</code>.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

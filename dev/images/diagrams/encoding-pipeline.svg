@@ -1,0 +1,129 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 320" role="img" aria-labelledby="ep-t ep-d">
+  <title id="ep-t">Bodu.Text.Encoding — encode/decode pipeline</title>
+  <desc id="ep-d">Every encoding follows the same four-stage pipeline. Encoding takes raw binary bytes, packs them into N-bit symbols (Base16, Base32, Base64) or performs big-integer divmod (Base58) or 4-byte block packing (Base85), applies variant transforms (alphabet swap, padding, shortcut), and optionally adds decorations (case folding, prefix, spacing, line breaks). The result is encoded text. Decoding is the same path in reverse: strip decorations, apply alphabet lookup, then bit-stream unpack, divmod, or block expansion. The bottom row labels the strategy each radix family uses.</desc>
+
+  <defs>
+    <style>
+      .bg    { fill: #0F172A; }
+      .pan   { fill: #1E293B; stroke: #334155; stroke-width: 1; }
+      .hdr   { fill: #111827; stroke: #334155; stroke-width: 1; }
+      .ttl   { fill: #F8FAFC; font: 700 15px/1 "Segoe UI",Arial,sans-serif; }
+      .lbl   { fill: #F8FAFC; font: 700 12px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .sub   { fill: #CBD5E1; font: 400 11px/1.25 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .mut   { fill: #94A3B8; font: 400 10px/1.25 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .ttag  { fill: #94A3B8; font: 700 9px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; letter-spacing: 1px; }
+      .row   { fill: #2DD4BF; font: 700 11px/1 "Segoe UI",Arial,sans-serif; text-anchor: start; }
+      .rowd  { fill: #A78BFA; font: 700 11px/1 "Segoe UI",Arial,sans-serif; text-anchor: start; }
+      .src   { fill: #0D3331; stroke: #2DD4BF; stroke-width: 1.5; }
+      .mid   { fill: #1E3A5F; stroke: #60A5FA; stroke-width: 1.5; }
+      .dec   { fill: #2A1B54; stroke: #A78BFA; stroke-width: 1.5; }
+      .out   { fill: #431407; stroke: #FBBF24; stroke-width: 1.5; }
+      .wt    { stroke: #2DD4BF; stroke-width: 1.6; fill: none; }
+      .wp    { stroke: #A78BFA; stroke-width: 1.6; fill: none; }
+      .legend{ fill: #94A3B8; font: 400 10px/1.25 "Segoe UI",Arial,sans-serif; }
+    </style>
+    <marker id="ept-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#2DD4BF"/>
+    </marker>
+    <marker id="epd-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#A78BFA"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" width="820" height="320"/>
+
+  <g transform="translate(10 10)">
+    <rect class="pan" width="800" height="300" rx="8"/>
+    <rect class="hdr" width="800" height="30" rx="8"/>
+    <rect class="hdr" y="22" width="800" height="8"/>
+    <text class="ttl" x="16" y="20">Bodu.Text.Encoding — encode/decode pipeline</text>
+
+    <!-- ===== Top row — ENCODE (left-to-right, teal) ===== -->
+    <text class="row" x="20" y="58">ENCODE  ▸ binary bytes → encoded text</text>
+
+    <g transform="translate(20 70)">
+      <rect class="src" width="160" height="56" rx="6"/>
+      <text class="lbl" fill="#2DD4BF" x="80" y="22">Binary bytes</text>
+      <text class="mut" x="80" y="38">ReadOnlySpan&lt;byte&gt;</text>
+      <text class="mut" x="80" y="50">byte[]</text>
+    </g>
+
+    <line class="wt" x1="180" y1="98" x2="220" y2="98" marker-end="url(#ept-a)"/>
+
+    <g transform="translate(220 70)">
+      <rect class="mid" width="160" height="56" rx="6"/>
+      <text class="lbl" x="80" y="20">Radix conversion</text>
+      <text class="mut" x="80" y="35">bit-stream pack · divmod</text>
+      <text class="mut" x="80" y="49">4-byte block → 5 chars</text>
+    </g>
+
+    <line class="wt" x1="380" y1="98" x2="420" y2="98" marker-end="url(#ept-a)"/>
+
+    <g transform="translate(420 70)">
+      <rect class="dec" width="160" height="56" rx="6"/>
+      <text class="lbl" fill="#C4B5FD" x="80" y="20">Variant transform</text>
+      <text class="mut" x="80" y="35">alphabet · padding</text>
+      <text class="mut" x="80" y="49">shortcut · decoration</text>
+    </g>
+
+    <line class="wt" x1="580" y1="98" x2="620" y2="98" marker-end="url(#ept-a)"/>
+
+    <g transform="translate(620 70)">
+      <rect class="out" width="160" height="56" rx="6"/>
+      <text class="lbl" fill="#FBBF24" x="80" y="22">Encoded text</text>
+      <text class="mut" x="80" y="38">string · char[]</text>
+      <text class="mut" x="80" y="50">UTF-8 bytes</text>
+    </g>
+
+    <!-- ===== Middle separator ===== -->
+    <line x1="20" y1="142" x2="780" y2="142" stroke="#334155" stroke-width="1"/>
+
+    <!-- ===== Bottom row — DECODE (left-to-right, purple) ===== -->
+    <text class="rowd" x="20" y="164">DECODE  ▸ encoded text → binary bytes</text>
+
+    <g transform="translate(20 176)">
+      <rect class="out" width="160" height="56" rx="6"/>
+      <text class="lbl" fill="#FBBF24" x="80" y="22">Encoded text</text>
+      <text class="mut" x="80" y="38">string · char[]</text>
+      <text class="mut" x="80" y="50">UTF-8 bytes</text>
+    </g>
+
+    <line class="wp" x1="180" y1="204" x2="220" y2="204" marker-end="url(#epd-a)"/>
+
+    <g transform="translate(220 176)">
+      <rect class="dec" width="160" height="56" rx="6"/>
+      <text class="lbl" fill="#C4B5FD" x="80" y="20">Strip decoration</text>
+      <text class="mut" x="80" y="35">whitespace · prefix</text>
+      <text class="mut" x="80" y="49">case-fold to alphabet</text>
+    </g>
+
+    <line class="wp" x1="380" y1="204" x2="420" y2="204" marker-end="url(#epd-a)"/>
+
+    <g transform="translate(420 176)">
+      <rect class="mid" width="160" height="56" rx="6"/>
+      <text class="lbl" x="80" y="20">Radix inversion</text>
+      <text class="mut" x="80" y="35">bit-stream unpack · divmod</text>
+      <text class="mut" x="80" y="49">5-char block → 4 bytes</text>
+    </g>
+
+    <line class="wp" x1="580" y1="204" x2="620" y2="204" marker-end="url(#epd-a)"/>
+
+    <g transform="translate(620 176)">
+      <rect class="src" width="160" height="56" rx="6"/>
+      <text class="lbl" fill="#2DD4BF" x="80" y="22">Binary bytes</text>
+      <text class="mut" x="80" y="38">byte[] · Span&lt;byte&gt;</text>
+      <text class="mut" x="80" y="50">OperationStatus</text>
+    </g>
+
+    <!-- ===== Strategy-by-family legend ===== -->
+    <g transform="translate(20 250)">
+      <text class="lbl" x="0" y="0" style="text-anchor: start">Radix strategy by family</text>
+
+      <g font-family="'Segoe UI',Arial,sans-serif" font-size="10.5">
+        <text class="legend" x="0"   y="20" style="text-anchor: start"><tspan fill="#F8FAFC" font-weight="700">Base16 / Base32 / Base64</tspan>  ▸  bit-stream pack into N-bit symbols   <tspan fill="#64748B">(4 / 5 / 6 bits)</tspan></text>
+        <text class="legend" x="0"   y="36" style="text-anchor: start"><tspan fill="#F8FAFC" font-weight="700">Base58</tspan>  ▸  non-power-of-two radix; big-integer divmod by 58; preserves leading zero bytes</text>
+        <text class="legend" x="0"   y="52" style="text-anchor: start"><tspan fill="#F8FAFC" font-weight="700">Base85</tspan>  ▸  4-byte block packed into uint32; four divisions by 85; emits five characters per block</text>
+      </g>
+    </g>
+  </g>
+</svg>

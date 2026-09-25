@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Namespace Bodu.Financial.ExchangeRates.Caching | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Namespace Bodu.Financial.ExchangeRates.Caching | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Financial.ExchangeRates.Caching">
+
+  <h1 id="Bodu_Financial_ExchangeRates_Caching" data-uid="Bodu.Financial.ExchangeRates.Caching" class="text-break">Namespace Bodu.Financial.ExchangeRates.Caching</h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual">
+<p><img src="../images/hero-fx-caching.svg" alt="Bodu.Financial.ExchangeRates.Caching"></p>
+<h1 id="bodufinancialexchangeratescaching">Bodu.Financial.ExchangeRates.Caching</h1>
+<h2 id="purpose">Purpose</h2>
+<p><strong>Bodu.Financial.ExchangeRates.Caching</strong> is the caching and composition layer for the <a href="../apidoc/Bodu.Financial.md"><code>Bodu.Financial</code></a> exchange-rate provider stack. Rather than building caching or grouping into each provider, it ships two orthogonal pieces that each implement the same <a class="xref" href="Bodu.Financial.ExchangeRates.IDatedRateProvider.html">IDatedRateProvider</a> contract (and the timeless <a class="xref" href="Bodu.Financial.ExchangeRates.IRateProvider.html">IRateProvider</a>), so they drop in anywhere a provider is expected:</p>
+<ul>
+<li><strong>A read-through cache, one cache per provider.</strong> <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachingRateProvider.html">CachingRateProvider</a> wraps exactly one inner source over one single-provider cache. It serves fresh cached rates and delegates to the source only on a miss, then caches what the source returns.</li>
+<li><strong>An aggregator that groups many providers.</strong> <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider.html">AggregatingRateProvider</a> groups named children behind one entry point, combining them through a pluggable strategy with optional per-currency-pair routing.</li>
+</ul>
+<p><img src="../images/exchange-rate-caching-architecture.svg" alt="The caller talks to an AggregatingRateProvider, which routes each FX pair to a CachingRateProvider; each caching provider reads through its own cache (SQLite, in-memory, …) and calls its concrete source only on a miss."></p>
+<p>The cache owns expiry: each provider has its own caching duration with a global default, the cache returns only fresh rows, and it prunes stale rows on write. Both single-date lookups and range lookups (<code>GetRatesAsync</code>) flow through the cache.</p>
+<p>Alongside the in-memory, TOML-file, and JSON-file caches, two persistent backends now live in this same namespace: <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.SqliteRateCache.html">SqliteRateCache</a> (a SQLite database) and <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.DistributedRateCache.html">DistributedRateCache</a> (any <code>Microsoft.Extensions.Caching.Distributed.IDistributedCache</code>, including Redis). Both are behaviourally identical to the built-in caches — the same freshness, merge, coverage, and validation semantics, taken from the shared public <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheRules.html">RateCacheRules</a> — so each drops in anywhere an <code>IRateCache</code> is expected, behind a <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachingRateProvider.html">CachingRateProvider</a>. Each cache stays bound to one provider, but several single-provider SQLite caches may share one database file — the leading <code>provider</code> key column keeps their series partitioned — and caching providers can be stacked (a fast in-memory tier over a durable SQLite one); see the guide.</p>
+<p>All dependency-injection registration lives in the <code>Bodu.Financial.ExchangeRates</code> namespace, so a single <code>using Bodu.Financial.ExchangeRates;</code> makes <code>AddCachedRateProvider</code>, <code>AddAggregatedRateProvider</code>, <code>AddSqliteRateCache</code>, <code>AddDistributedRateCache</code>, and <code>AddRedisRateCache</code> available. The SQLite and distributed backends ship their registration inside their own runtime packages; there are no separate <code>*.DependencyInjection</code> packages.</p>
+<h2 id="static-documentation">Static documentation</h2>
+<ul>
+<li><strong><a href="../guides/financial/exchange-rate-caching.html">Caching and aggregating exchange rates guide</a></strong> — the cache cascade, one-cache-per-provider read-through, the aggregator's strategies and per-pair routing, the on-disk TOML and JSON formats, file layouts and date partitioning, custom storage, and dependency injection.</li>
+</ul>
+<h2 id="key-types">Key types</h2>
+<p><strong>Storage (a cache is bound to one provider)</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.IRateCache.html">IRateCache</a> — the single-provider cache contract: a bound <code>Provider</code>, and <code>GetRates</code>/<code>Store</code> keyed by currency pair.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheBase-1.html">RateCacheBase&lt;TOptions&gt;</a> — the storage-agnostic core behind the in-box caches: read-time freshness filtering and write-time merge-and-prune, prescribing no physical layout. Its storage seam is <code>internal</code>, so it is not a public subclassing point — to back the cache with a store of your own, implement <code>IRateCache</code> directly and delegate the freshness, merge, and coverage rules to <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheRules.html">RateCacheRules</a>, as the SQLite and distributed backends do.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.IFileRateCache.html">IFileRateCache</a>, <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.FileRateCacheBase-1.html">FileRateCacheBase&lt;TOptions&gt;</a> — the file-storage seam and the plumbing behind the TOML and JSON leaves: layout-driven directory and file-name resolution, optional date partitioning, and best-effort IO. The base exposes <code>ResolveFilePath</code>, <code>ResolveDirectory</code>, and <code>ResolvePartitionPath</code>, but its serialization seam is likewise not public — a new file format is another <code>IRateCache</code> implementation.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheRules.html">RateCacheRules</a> — the shared, public freshness, validity, merge, and coverage rules every backend applies, so a custom <code>IRateCache</code> stays behaviourally identical to the in-box caches.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.TomlFileRateCache.html">TomlFileRateCache</a> — the sealed TOML leaf (<code>&lt;directory&gt;/&lt;provider&gt;/&lt;from&gt;&lt;to&gt;.toml</code> by default; decimals quoted for lossless round-trips; a self-describing <code>Provider</code>/<code>From</code>/<code>To</code> header).</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.JsonFileRateCache.html">JsonFileRateCache</a> — the sealed JSON leaf (<code>&lt;directory&gt;/&lt;provider&gt;/&lt;from&gt;&lt;to&gt;.json</code> by default; decimals as JSON numbers; the same self-describing header). Both file leaves honour the configured layout, including date partitioning.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheFileLayout.html">RateCacheFileLayout</a> — describes where a pair's rows are stored: the folder hierarchy, the file name, and (through its partition strategy) whether the rows split across files by date. Built-ins <code>SingleFile</code> (default), <code>Yearly</code>, <code>Monthly</code>, <code>Daily</code>, plus <code>Create(strategy, directoryFunc?, fileNameFunc?)</code> for custom folder and file-name rules.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCachePartitionStrategy.html">RateCachePartitionStrategy</a> — decides how a pair's rows split across files by date: <code>Single</code>, <code>Yearly</code>, <code>Monthly</code>, <code>Daily</code>, or <code>Custom(keySelector, rangeSelector)</code> for arbitrary periods.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheDirectoryContext.html">RateCacheDirectoryContext</a>, <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheFileContext.html">RateCacheFileContext</a> — the inputs passed to a custom layout's directory and file-name delegates.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.InMemoryRateCache.html">InMemoryRateCache</a> — an in-memory cache reusing the same expiry mechanism; nothing is persisted.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.SqliteRateCache.html">SqliteRateCache</a>, <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.SqliteRateCacheOptions.html">SqliteRateCacheOptions</a> — a persistent SQLite-backed cache (one provider's rates and coverage windows in a SQLite database) and its options (bound <code>Provider</code>, <code>DatabaseFilePath</code>). Registered with <code>AddSqliteRateCache</code>.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.DistributedRateCache.html">DistributedRateCache</a>, <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.DistributedRateCacheOptions.html">DistributedRateCacheOptions</a> — a shared cache over any <code>IDistributedCache</code> (Redis-capable), so several application instances share one warm cache, and its options (bound <code>Provider</code>, key-prefix settings). Registered with <code>AddDistributedRateCache</code> or the Redis convenience <code>AddRedisRateCache</code>.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.NullRateCache.html">NullRateCache</a> — the no-op cache (<code>NullRateCache.Create(provider)</code>), for when caching is disabled.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheOptions.html">RateCacheOptions</a>, <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.FileRateCacheOptions.html">FileRateCacheOptions</a> — the storage-agnostic options (bound <code>Provider</code>) and the file options (adds <code>CacheDirectory</code> and the <code>Layout</code>).</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachedRate.html">CachedRate</a> — one cached row: observation <code>Date</code>, <code>Rate</code>, and the <code>CachedAtUtc</code> instant that drives expiry.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheEntry.html">RateCacheEntry</a> — the serializable on-disk row model: observation <code>Date</code>, <code>Rate</code>, <code>CachedAtUtc</code>, and optional <code>ObservedAtUtc</code>.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheCoverageEntry.html">RateCacheCoverageEntry</a> — a persisted coverage window: the inclusive <code>Start</code> / <code>End</code> dates fetched and the <code>FetchedAtUtc</code> instant they were retrieved.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheFile.html">RateCacheFile</a> — the file document the file backends serialize: a self-describing <code>Provider</code>/<code>From</code>/<code>To</code> header plus an <code>Entries</code> list of rows and a <code>Coverage</code> list of fetched windows.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheWriteStatus.html">RateCacheWriteStatus</a> — the outcome of a cache write (<code>Stored</code>, <code>Skipped</code>, <code>Failed</code>).</li>
+</ul>
+<p><strong>Read-through caching decorator</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachingRateProvider.html">CachingRateProvider</a> — wraps one inner source over one cache; implements both the dated and timeless surfaces.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachingRateProviderBase.html">CachingRateProviderBase</a> — the abstract base holding the read-through, staleness, and range logic; derived types supply the wrapped inner provider.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.html">CachingRateOptions</a> — cache location (<code>CacheDirectory</code>), <code>DefaultExpiry</code>, the per-provider <code>ProviderExpiry</code> overrides, the per-event log levels, and <code>DefaultLookupOptions</code> for the timeless surface.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheWarmupOptions.html">RateCacheWarmupOptions</a>, <a class="xref" href="Bodu.Financial.ExchangeRates.RateCacheWarmupExtensions.html">RateCacheWarmupExtensions</a> — the startup warm-up: the pairs (<code>&quot;XXX/YYY&quot;</code>), <code>LookbackDays</code> or explicit <code>StartDate</code> / <code>EndDate</code> window, and optional provider filter, registered on the <code>IFinancialServiceBuilder</code> with <code>AddRateCacheWarmup(...)</code> (default configuration section <code>Financial:RateCacheWarmup</code>) as a hosted service that pre-fetches through every registered caching provider.</li>
+</ul>
+<p><strong>Aggregation (group many providers)</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider.html">AggregatingRateProvider</a> — groups named children, applies a strategy and per-pair routing, and exposes <code>TryGetProvider</code> for direct access to a named child.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.IRateAggregationStrategy.html">IRateAggregationStrategy</a> — the strategy seam; implement it for weighted, median, or first-non-stale combination.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.PriorityFallbackStrategy.html">PriorityFallbackStrategy</a> — first child that resolves wins (the default; successor to the former composite provider).</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.AverageStrategy.html">AverageStrategy</a> — arithmetic mean of every child that resolves, tagged with a synthetic provider label.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CurrencyPairRoute.html">CurrencyPairRoute</a>, <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateAggregationOptions.html">RateAggregationOptions</a> — a per-pair ordered child list (with an optional pair-specific strategy) and the aggregator options that hold the default strategy, default order, and the route map.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.NamedDatedRateProvider.html">NamedDatedRateProvider</a> — pairs a child provider with the name it is referenced by in routing and diagnostics.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.IAggregatedRateBuilder.html">IAggregatedRateBuilder</a> — the fluent builder surface for composing an aggregator in DI: <code>AddCachedChild</code> (by provider type or factory), <code>UseDefaultStrategy</code>, and <code>MapPair</code> for per-pair provider ordering and optional pair-specific strategies.</li>
+</ul>
+<h2 id="minimal-sample">Minimal sample</h2>
+<pre><code class="lang-csharp">using Bodu.Financial;
+using Bodu.Financial.ExchangeRates.Caching;
+
+var options = new CachingRateOptions
+{
+    CacheDirectory = &quot;/var/cache/fx&quot;,
+    DefaultExpiry = TimeSpan.FromHours(12),
+};
+options.ProviderExpiry[&quot;RBA&quot;] = TimeSpan.FromDays(7);
+
+// One cache per provider — the provider is storage-agnostic, so you pick the cache.
+var rbaCached = new CachingRateProvider(
+    rba, new TomlFileRateCache(new FileRateCacheOptions { Provider = &quot;RBA&quot;, CacheDirectory = &quot;/var/cache/fx&quot; }), options);
+var ecbCached = new CachingRateProvider(
+    ecb, new TomlFileRateCache(new FileRateCacheOptions { Provider = &quot;ECB&quot;, CacheDirectory = &quot;/var/cache/fx&quot; }), options);
+
+// Group them with per-FX-pair routing.
+var aggregation = new RateAggregationOptions();
+aggregation.Routes[new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD)] = new CurrencyPairRoute(new[] { &quot;RBA&quot;, &quot;ECB&quot; });
+aggregation.Routes[new CurrencyPair(CurrencyCode.USD, CurrencyCode.GBP)] = new CurrencyPairRoute(new[] { &quot;ECB&quot;, &quot;RBA&quot; });
+
+IDatedRateProvider provider = new AggregatingRateProvider(
+    new[]
+    {
+        new NamedDatedRateProvider(&quot;RBA&quot;, rbaCached),
+        new NamedDatedRateProvider(&quot;ECB&quot;, ecbCached),
+    },
+    aggregation);
+
+RateLookupResult today = provider.GetRate(&quot;AUD&quot;, &quot;USD&quot;, new DateOnly(2024, 1, 3));
+</code></pre>
+<p>For dependency-injection wiring, add <code>using Bodu.Financial.ExchangeRates;</code> and call <code>AddCachedRateProvider</code>, <code>AddAggregatedRateProvider</code>, <code>AddSqliteRateCache</code>, <code>AddDistributedRateCache</code>, or <code>AddRedisRateCache</code>. See the <a href="../guides/financial/exchange-rate-caching.html">caching guide</a> for the full walkthrough.</p>
+</div>
+  <div class="markdown level0 remarks"></div>
+    <h3 id="classes">
+Classes
+</h3>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider.html">AggregatingRateProvider</a></h4>
+      <section><p>Groups several named <a class="xref" href="Bodu.Financial.ExchangeRates.IDatedRateProvider.html">IDatedRateProvider</a> children behind a single entry point, combining them through
+a configurable <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.IRateAggregationStrategy.html">IRateAggregationStrategy</a> with optional per-currency-pair routing.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.AverageStrategy.html">AverageStrategy</a></h4>
+      <section><p>An <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.IRateAggregationStrategy.html">IRateAggregationStrategy</a> that returns the arithmetic mean of every candidate that can resolve the
+request, tagged with a synthetic provider label.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.html">CachingRateOptions</a></h4>
+      <section><p>Configures a <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachingRateProvider.html">CachingRateProvider</a>: the on-disk cache location, the default time a cached rate stays
+fresh, and per-provider overrides of that default.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachingRateProvider.html">CachingRateProvider</a></h4>
+      <section><p>A caching provider that wraps a single inner <a class="xref" href="Bodu.Financial.ExchangeRates.IDatedRateProvider.html">IDatedRateProvider</a> over a single-provider
+<a class="xref" href="Bodu.Financial.ExchangeRates.Caching.IRateCache.html">IRateCache</a>, serving fresh rates from the cache and delegating to the inner provider only on a miss.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachingRateProviderBase.html">CachingRateProviderBase</a></h4>
+      <section><p>Provides the shared caching mechanism for a provider that wraps a single inner <a class="xref" href="Bodu.Financial.ExchangeRates.IDatedRateProvider.html">IDatedRateProvider</a>
+over a single-provider <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.IRateCache.html">IRateCache</a>: it serves fresh rates from the cache and delegates to the inner
+provider only on a miss, caching what the inner provider returns. Derived types supply the wrapped inner provider.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CurrencyPairRoute.html">CurrencyPairRoute</a></h4>
+      <section><p>Describes how an <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider.html">AggregatingRateProvider</a> resolves a specific currency pair: the ordered child
+provider names to consult and, optionally, the strategy to combine them.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.DistributedRateCache.html">DistributedRateCache</a></h4>
+      <section><p>An <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.IRateCache.html">IRateCache</a> that persists a single provider's rates and fetch-coverage windows in an injected
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.caching.distributed.idistributedcache">IDistributedCache</a> — for example a Redis cache — expiring them through the same freshness mechanism as
+the in-memory, TOML, and SQLite caches.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.DistributedRateCacheOptions.html">DistributedRateCacheOptions</a></h4>
+      <section><p>Configures a distributed-cache-backed <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.IRateCache.html">IRateCache</a>: the single provider inherited from
+<a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheOptions.html">RateCacheOptions</a> together with an optional key prefix applied to every entry the cache writes to the
+backing <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.caching.distributed.idistributedcache">IDistributedCache</a>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.FileRateCacheBase-1.html">FileRateCacheBase&lt;TOptions&gt;</a></h4>
+      <section><p>Provides the file-storage mechanism for an <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.IRateCache.html">IRateCache</a>: layout-driven directory and file-name
+resolution, optional date partitioning, and best-effort file read and write. Derived types supply only the
+serialization format.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.FileRateCacheOptions.html">FileRateCacheOptions</a></h4>
+      <section><p>Configures a file-backed <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.IRateCache.html">IRateCache</a>: the single provider inherited from
+<a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheOptions.html">RateCacheOptions</a> together with the directory its cache files are written under.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.InMemoryRateCache.html">InMemoryRateCache</a></h4>
+      <section><p>An <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.IRateCache.html">IRateCache</a> that stores a single provider's rates in memory for the lifetime of the instance,
+expiring them through the same freshness mechanism as the file caches.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.JsonFileRateCache.html">JsonFileRateCache</a></h4>
+      <section><p>An <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.IRateCache.html">IRateCache</a> that persists a provider's rates as JSON files, one file per currency pair (or, under a
+partitioned layout, per pair and calendar period).</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.NullRateCache.html">NullRateCache</a></h4>
+      <section><p>An <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.IRateCache.html">IRateCache</a> that stores nothing, used when on-disk caching is disabled.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.PriorityFallbackStrategy.html">PriorityFallbackStrategy</a></h4>
+      <section><p>An <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.IRateAggregationStrategy.html">IRateAggregationStrategy</a> that returns the first successful result from the ordered candidates,
+giving deterministic, auditable fallback.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateAggregationOptions.html">RateAggregationOptions</a></h4>
+      <section><p>Configures an <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider.html">AggregatingRateProvider</a>: the default combination strategy, the default child order, and
+per-currency-pair routing overrides.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheBase-1.html">RateCacheBase&lt;TOptions&gt;</a></h4>
+      <section><p>Provides the storage-agnostic mechanism for an <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.IRateCache.html">IRateCache</a>: read-time freshness filtering, write-time
+merge-and-prune, and the recording and pruning of coverage windows for a single provider. Derived types implement
+only the persistence of a <span class="xref">Bodu.Financial.ExchangeRates.Caching.CachePairState</span>; this base prescribes no physical storage structure.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheCoverageEntry.html">RateCacheCoverageEntry</a></h4>
+      <section><p>The mutable serialization shape of one recorded coverage window, distinct from the internal
+<span class="xref">Bodu.Financial.ExchangeRates.Caching.CoverageWindow</span> value so the on-disk format can evolve independently of the in-memory contract.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheEntry.html">RateCacheEntry</a></h4>
+      <section><p>The mutable serialization shape of one cached rate row, distinct from the public <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachedRate.html">CachedRate</a> value so
+the on-disk format can evolve independently of the in-memory contract.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheFile.html">RateCacheFile</a></h4>
+      <section><p>The root TOML table for a cache file, wrapping the array of cached rate rows together with the array of recorded
+coverage windows. TOML requires the document root to be a table, so each collection is nested under a named
+array-of-tables rather than serialized as a bare array.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheFileLayout.html">RateCacheFileLayout</a></h4>
+      <section><p>Describes where a file-backed exchange-rate cache stores a currency pair's rows: the folder that holds the pair's
+file or files, the name of each file, and — through its <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheFileLayout.PartitionStrategy.html#Bodu_Financial_ExchangeRates_Caching_RateCacheFileLayout_PartitionStrategy">PartitionStrategy</a> — whether the rows are
+split across files by date.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheOptions.html">RateCacheOptions</a></h4>
+      <section><p>Provides the storage-agnostic options shared by every <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.IRateCache.html">IRateCache</a>: the single provider a cache
+instance is bound to. Storage-specific option types derive from this base to add their own location settings.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCachePartitionStrategy.html">RateCachePartitionStrategy</a></h4>
+      <section><p>Decides how a pair's cached rows are split across files by date: a single file for the whole pair, or one file per
+calendar year, month, or day, or a caller-supplied scheme.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheRules.html">RateCacheRules</a></h4>
+      <section><p>Provides the storage-agnostic freshness, validity, merge, and coverage rules shared by every
+<a class="xref" href="Bodu.Financial.ExchangeRates.Caching.IRateCache.html">IRateCache</a> implementation, so the in-memory, file, SQLite, and distributed backends apply one
+authoritative policy and differ only in how they read and write their bytes.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheWarmupOptions.html">RateCacheWarmupOptions</a></h4>
+      <section><p>Configures the startup cache warm-up registered through <code>AddRateCacheWarmup</code>: the currency pairs to warm and
+the date window they are warmed over.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.SqliteRateCache.html">SqliteRateCache</a></h4>
+      <section><p>An <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.IRateCache.html">IRateCache</a> that persists a single provider's rates and fetch-coverage windows in a SQLite
+database, expiring them through the same freshness mechanism as the in-memory and TOML caches.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.SqliteRateCacheOptions.html">SqliteRateCacheOptions</a></h4>
+      <section><p>Configures a SQLite-backed <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.IRateCache.html">IRateCache</a>: the provider inherited from <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheOptions.html">RateCacheOptions</a>
+together with the location of the SQLite database its rates and coverage windows are persisted in, and the
+connection-level concurrency settings applied on open.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.TomlFileRateCache.html">TomlFileRateCache</a></h4>
+      <section><p>An <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.IRateCache.html">IRateCache</a> that persists a provider's rates as TOML files, one file per currency pair (or, under a
+partitioned layout, per pair and calendar period).</p>
+</section>
+    <h3 id="structs">
+Structs
+</h3>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachedRate.html">CachedRate</a></h4>
+      <section><p>Represents one cached exchange-rate observation: a dated rate together with the UTC instant it was cached, which
+drives expiry, and the optional UTC instant the upstream data backing it was originally fetched.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.NamedDatedRateProvider.html">NamedDatedRateProvider</a></h4>
+      <section><p>Pairs an <a class="xref" href="Bodu.Financial.ExchangeRates.IDatedRateProvider.html">IDatedRateProvider</a> with the name it is referenced by inside an
+<a class="xref" href="Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider.html">AggregatingRateProvider</a>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheDirectoryContext.html">RateCacheDirectoryContext</a></h4>
+      <section><p>Supplies the inputs a directory resolver needs to choose the folder that holds a currency pair's cache file or
+files: the configured cache root, the bound provider, and the currency pair.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheFileContext.html">RateCacheFileContext</a></h4>
+      <section><p>Supplies the inputs a file-name resolver needs to name a single cache file: the bound provider, the currency pair,
+the partition key, and the format's file extension.</p>
+</section>
+    <h3 id="interfaces">
+Interfaces
+</h3>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.IAggregatedRateBuilder.html">IAggregatedRateBuilder</a></h4>
+      <section><p>Builds the set of named, individually cached children an <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider.html">AggregatingRateProvider</a> groups, together
+with its default strategy and per-currency-pair routing.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.IFileRateCache.html">IFileRateCache</a></h4>
+      <section><p>Specializes <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.IRateCache.html">IRateCache</a> for caches that persist rates as files, exposing the storage directory and the
+file or directory a pair resolves to under the configured layout.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.IRateAggregationStrategy.html">IRateAggregationStrategy</a></h4>
+      <section><p>Decides how an <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider.html">AggregatingRateProvider</a> combines the results of an ordered set of candidate providers
+into a single answer.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.IRateCache.html">IRateCache</a></h4>
+      <section><p>Persists fetched exchange rates for a single provider in a pair-keyed store so they need not be re-fetched while
+fresh.</p>
+</section>
+    <h3 id="enums">
+Enums
+</h3>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheWriteStatus.html">RateCacheWriteStatus</a></h4>
+      <section><p>Reports the outcome of an atomic
+<a class="xref" href="Bodu.Financial.ExchangeRates.Caching.IRateCache.StoreFetchedRange.html#Bodu_Financial_ExchangeRates_Caching_IRateCache_StoreFetchedRange_Bodu_Financial_ExchangeRates_CurrencyPair_System_Collections_Generic_IReadOnlyList_Bodu_Financial_ExchangeRates_Caching_CachedRate__System_DateOnly_System_DateOnly_System_TimeSpan_System_DateTimeOffset_">StoreFetchedRange(CurrencyPair, IReadOnlyList&lt;CachedRate&gt;, DateOnly, DateOnly, TimeSpan, DateTimeOffset)</a>
+write, distinguishing a durable success from a swallowed storage failure and from a deliberate no-op cache.</p>
+</section>
+
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

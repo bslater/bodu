@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Reflection-free binding with the source generator | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Reflection-free binding with the source generator | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="reflection-free-binding-with-the-source-generator">Reflection-free binding with the source generator</h1>
+
+<p><code>Bodu.Text.Formats.Generators</code> emits compile-time factories for <code>[DelimitedRecord]</code> and <code>[IniSection]</code> POCOs so that <code>DelimitedSerializer</code> and <code>IniSerializer</code> can bind without reflection. This guide walks one record type and one section type end to end: annotate, build, use the generated factory with the factory overloads, confirm byte parity with the reflection binder, and read the diagnostics. The reference material — csproj wiring, the full rule list, the diagnostics table, trimming — is on the <a href="../../docs/formats/generators.html">package page</a>.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>The generator is not yet published as a package; reference the project as an analyzer (<code>OutputItemType=&quot;Analyzer&quot; ReferenceOutputAssembly=&quot;false&quot;</code>), together with <code>Bodu.Text.Delimited</code> and/or <code>Bodu.Text.Ini</code> for the marker attributes and factory interfaces.</p>
+</div>
+<h2 id="step-1--annotate-a-partial-poco">Step 1 — annotate a partial POCO</h2>
+<p>The rules that matter: the type is <code>partial</code>, non-generic, has a parameterless constructor, and every mapped member is a public read/write property of a supported scalar type. <code>[PropertyName]</code> renames a column; <code>[Ignore]</code> drops one.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Text.Delimited;
+using Bodu.Text.Serialization;
+
+[DelimitedRecord]
+public sealed partial class Trade
+{
+    public string Symbol { get; set; } = &quot;&quot;;
+    public int Quantity { get; set; }
+    public decimal Price { get; set; }
+
+    [PropertyName(&quot;traded_at&quot;)]
+    public DateTimeOffset TradedAt { get; set; }
+
+    public string? Venue { get; set; }
+
+    [Ignore]
+    public string? Notes { get; set; }
+}
+</code></pre>
+<h2 id="step-2--build-and-look-at-what-was-generated">Step 2 — build, and look at what was generated</h2>
+<p>Building the project adds <code>Trade.DelimitedFactory</code>. Its <code>Headers</code> are the resolved wire names in declaration order — the renamed column and the omitted <code>Notes</code> member are already visible here:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">Trade.DelimitedFactory.Headers   // &quot;Symbol&quot;, &quot;Quantity&quot;, &quot;Price&quot;, &quot;traded_at&quot;, &quot;Venue&quot;
+</code></pre>
+<p>The emitted source (visible with <code>&lt;EmitCompilerGeneratedFiles&gt;true&lt;/EmitCompilerGeneratedFiles&gt;</code>) is a second partial declaration of <code>Trade</code> holding the static property and a private nested implementation. Abridged:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">// &lt;auto-generated/&gt;
+partial class Trade
+{
+    public static global::Bodu.Text.Delimited.IDelimitedRecordFactory&lt;Trade&gt; DelimitedFactory { get; } = new GeneratedDelimitedRecordFactory();
+
+    private sealed class GeneratedDelimitedRecordFactory : global::Bodu.Text.Delimited.IDelimitedRecordFactory&lt;Trade&gt;
+    {
+        private static readonly string[] HeaderNames = new string[] { &quot;Symbol&quot;, &quot;Quantity&quot;, &quot;Price&quot;, &quot;traded_at&quot;, &quot;Venue&quot; };
+
+        public global::System.Collections.Generic.IReadOnlyList&lt;string&gt; Headers =&gt; HeaderNames;
+
+        public string[] GetFields(Trade record)
+        {
+            return new string[]
+            {
+                record.Symbol ?? string.Empty,
+                record.Quantity.ToString(global::System.Globalization.CultureInfo.InvariantCulture),
+                record.Price.ToString(global::System.Globalization.CultureInfo.InvariantCulture),
+                record.TradedAt.ToString(global::System.Globalization.CultureInfo.InvariantCulture),
+                record.Venue ?? string.Empty,
+            };
+        }
+
+        public Trade Create(string[] fields, global::System.Collections.Generic.IReadOnlyList&lt;string&gt; headers)
+        {
+            var result = new Trade();
+            if (headers.Count == 0)
+            {
+                // headerless document: bind positionally in HeaderNames order
+                // …
+                return result;
+            }
+
+            int limit = fields.Length &lt; headers.Count ? fields.Length : headers.Count;
+            for (int i = 0; i &lt; limit; i++)
+                Bind(result, headers[i], fields[i]);
+
+            return result;
+        }
+
+        private static void Bind(Trade result, string name, string value)
+        {
+            switch (name)
+            {
+                case &quot;Quantity&quot;:
+                    result.Quantity = int.Parse(value, global::System.Globalization.CultureInfo.InvariantCulture);
+                    return;
+                // … one case per column, then a case-insensitive fallback …
+            }
+        }
+    }
+}
+</code></pre>
+<p>Every conversion is explicit and invariant-culture; nothing in the file touches <code>System.Reflection</code>.</p>
+<h2 id="step-3--serialize-and-deserialize-through-the-factory">Step 3 — serialize and deserialize through the factory</h2>
+<p>The factory overloads take the factory as an extra argument and are otherwise the same entry points:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Text.Delimited;
+
+var trades = new List&lt;Trade&gt;
+{
+    new() { Symbol = &quot;MSFT&quot;, Quantity = 100, Price = 412.5m, TradedAt = new DateTimeOffset(2026, 3, 2, 9, 30, 0, TimeSpan.Zero), Venue = &quot;XNAS&quot;, Notes = &quot;internal&quot; },
+    new() { Symbol = &quot;AAPL&quot;, Quantity = 25, Price = 189.99m, TradedAt = new DateTimeOffset(2026, 3, 2, 9, 31, 0, TimeSpan.Zero), Venue = null },
+};
+
+string csv = DelimitedSerializer.Serialize(trades, Trade.DelimitedFactory);
+// Symbol,Quantity,Price,traded_at,Venue
+// MSFT,100,412.5,03/02/2026 09:30:00 +00:00,XNAS
+// AAPL,25,189.99,03/02/2026 09:31:00 +00:00,
+
+List&lt;Trade&gt; back = DelimitedSerializer.Deserialize(csv, Trade.DelimitedFactory);
+// back[0].TradedAt → 2026-03-02T09:30:00+00:00; back[1].Venue → null (empty field)
+</code></pre>
+<p>Dialect options apply unchanged — a TSV or headerless variant is one options object away:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">var tsv = new DelimitedSerializerOptions { Delimiter = '\t' };
+string tab = DelimitedSerializer.Serialize(trades, Trade.DelimitedFactory, tsv);
+
+var headerless = new DelimitedSerializerOptions { NoHeader = true };
+List&lt;Trade&gt; positional = DelimitedSerializer.Deserialize(
+    &quot;IBM,10,1.5,2026-01-01T00:00:00+00:00,\n&quot;, Trade.DelimitedFactory, headerless);
+// binds by position in Headers order → Symbol = &quot;IBM&quot;, Quantity = 10
+</code></pre>
+<h2 id="step-4--the-same-for-an-ini-section">Step 4 — the same for an INI section</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Text.Ini;
+using Bodu.Text.Serialization;
+
+[IniSection]
+public sealed partial class ServerSection
+{
+    public string Host { get; set; } = &quot;&quot;;
+    public int Port { get; set; }
+
+    [PropertyName(&quot;use_tls&quot;)]
+    public bool UseTls { get; set; }
+
+    public TimeSpan? Timeout { get; set; }
+}
+</code></pre>
+<!-- compile -->
+<pre><code class="lang-csharp">var server = new ServerSection { Host = &quot;db.example.com&quot;, Port = 5432, UseTls = true, Timeout = TimeSpan.FromSeconds(90) };
+
+string ini = IniSerializer.SerializeSection(&quot;server&quot;, server, ServerSection.IniFactory);
+// [server]
+// Host=db.example.com
+// Port=5432
+// use_tls=true
+// Timeout=00:01:30
+
+ServerSection restored = IniSerializer.DeserializeSection(ini, &quot;server&quot;, ServerSection.IniFactory);
+
+// An empty section name addresses the document's global keys instead of a [section].
+string globals = IniSerializer.SerializeSection(&quot;&quot;, server, ServerSection.IniFactory);
+// Host=db.example.com
+// Port=5432
+// …
+</code></pre>
+<p><code>ServerSection.IniFactory.Keys</code> is <code>Host, Port, use_tls, Timeout</code>. A <code>null</code> nullable writes as an empty value (<code>Timeout=</code>) and an empty value reads back as <code>null</code>. Asking for a section the document does not contain raises <code>IniSerializationException</code>; the configured duplicate-section and duplicate-key policies are applied before the factory sees the entries.</p>
+<h2 id="byte-parity-with-the-reflection-binder">Byte parity with the reflection binder</h2>
+<p>The generated factory is designed to be a drop-in for the reflection path, and the solution's tests pin that: serializing the same records through <code>DelimitedSerializer.Serialize(records)</code> and <code>DelimitedSerializer.Serialize(records, Trade.DelimitedFactory)</code> yields <strong>identical text</strong> — same header names, same column order, same invariant scalar formatting, same quoting. The INI factory writes the same canonical <code>[section]</code> / <code>key=value</code> bytes the reflection binder emits for a section POCO.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">string reflection = DelimitedSerializer.Serialize(trades);                          // [RequiresUnreferencedCode]
+string generated  = DelimitedSerializer.Serialize(trades, Trade.DelimitedFactory);  // no annotations
+bool same = reflection == generated;                                                // true
+</code></pre>
+<p>The one deliberate divergence: a factory's names are fixed at compile time, so <code>PropertyNamingPolicy</code> on the options is ignored by the factory overloads. Use <code>[PropertyName]</code> to pin wire names, and both paths agree.</p>
+<h2 id="diagnostics-walk-through">Diagnostics walk-through</h2>
+<p>The generator reports three diagnostics, all in category <code>Bodu.Text.Formats.Generators</code>.</p>
+<p><strong><code>BTFG001</code> (error) — the type is not partial.</strong> The most common first-run failure: the attribute is present, the <code>partial</code> modifier is not. No factory is generated, so <code>Trade.DelimitedFactory</code> also fails to resolve.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">[DelimitedRecord]
+public sealed class Trade { … }          // BTFG001: … is not declared partial, so no factory is generated
+</code></pre>
+<p>A nested type must have <em>every</em> containing type marked <code>partial</code> too.</p>
+<p><strong><code>BTFG002</code> (warning) — a member type is not a supported scalar.</strong> The factory is still generated; the flagged member is left out of <code>Headers</code> / <code>Keys</code> and never written or read. Either move the value to a supported scalar (for example, format a <code>Uri</code> as a <code>string</code>), or drop the member with <code>[Ignore]</code> to silence the warning deliberately.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">[DelimitedRecord]
+public sealed partial class Order
+{
+    public int Id { get; set; }
+    public List&lt;string&gt; Tags { get; set; } = [];   // BTFG002: type 'List&lt;string&gt;' is not a supported scalar; the generated factory skips it
+}
+</code></pre>
+<p><strong><code>BTFG003</code> (error) — the type is generic.</strong> A static <code>DelimitedFactory</code> property cannot exist on an open generic, and the same applies to a type nested inside a generic type. No source is emitted; close the type over its arguments or write the factory by hand.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">[IniSection]
+public sealed partial class Section&lt;T&gt; { … }   // BTFG003: … is generic (or nested in a generic type), so no factory is generated
+</code></pre>
+<h2 id="when-the-generator-cannot-be-used">When the generator cannot be used</h2>
+<p>Implement <code>IDelimitedRecordFactory&lt;TRecord&gt;</code> or <code>IIniSectionFactory&lt;TSection&gt;</code> yourself — the <a href="../../docs/formats/generators.html#writing-a-factory-by-hand">package page</a> shows a complete hand-written <code>Trade</code> factory that is byte-identical to the generated one. The factory overloads accept any implementation.</p>
+<h2 id="see-also">See also</h2>
+<ul>
+<li><a href="../../docs/formats/generators.html">Bodu.Text.Formats.Generators</a> — the package page: wiring, rules, diagnostics table, trimming and AOT.</li>
+<li><a href="delimited.html">Using delimited (CSV / TSV)</a> and <a href="ini.html">Using INI</a> — the reflection-path patterns the factories mirror.</li>
+<li><a href="streaming.html">Streams and token-level I/O</a> — the <code>Utf8*Reader</code> / <code>Utf8*Writer</code> surface underneath both binders.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

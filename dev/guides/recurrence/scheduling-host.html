@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Hosting schedules | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Hosting schedules | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="hosting-schedules">Hosting schedules</h1>
+
+<p><code>Bodu.Globalization.Recurrence</code> deliberately ships no timer, no poller, no last-run store, and no clock: every query is a pure function of the instants you pass in. That leaves a host with four small jobs — normalise the four schedule forms behind one query surface, decide <em>when</em> to ask, persist what has already run, and convert between wall-clock and zone at its own boundary. This guide shows each one in a shape that stays reproducible in a test, mirroring the repository's <code>Bodu.Globalization.Recurrence.Samples.SchedulingHost</code> sample.</p>
+<p>For the library's own statement of the contract — purity, offsets, and the due-ness recipe — see the <a href="index.html">recurrence overview</a>.</p>
+<h2 id="pattern-1--one-adapter-over-the-four-forms">Pattern 1 — one adapter over the four forms</h2>
+<p>The forms differ in what they need to answer a query: a rule and an interval need a series origin, a cron expression and a set do not. Capturing the origin at configuration time reduces every form to <code>Next(after, inclusive)</code> / <code>Previous(before, inclusive)</code>, which is exactly the pair every form guarantees with identical flag semantics. The adapter is a hosting decision, so the package does not ship one:</p>
+<pre><code class="lang-csharp">using Bodu.Globalization.Recurrence;
+
+/// &lt;summary&gt;A host-side view of any schedule form as two point queries.&lt;/summary&gt;
+public interface ISchedule
+{
+    string Kind { get; }
+    string Text { get; }
+    DateTime? Next(DateTime after, bool inclusive = false);
+    DateTime? Previous(DateTime before, bool inclusive = false);
+}
+
+public sealed class Schedule : ISchedule
+{
+    private readonly Func&lt;DateTime, bool, DateTime?&gt; _next;
+    private readonly Func&lt;DateTime, bool, DateTime?&gt; _previous;
+
+    private Schedule(string kind, string text, Func&lt;DateTime, bool, DateTime?&gt; next, Func&lt;DateTime, bool, DateTime?&gt; previous)
+    {
+        Kind = kind;
+        Text = text;
+        _next = next;
+        _previous = previous;
+    }
+
+    public string Kind { get; }
+    public string Text { get; }
+
+    public DateTime? Next(DateTime after, bool inclusive = false) =&gt; _next(after, inclusive);
+    public DateTime? Previous(DateTime before, bool inclusive = false) =&gt; _previous(before, inclusive);
+
+    /// &lt;summary&gt;Parses &lt;paramref name=&quot;text&quot; /&gt; as the named form, binding the origin where the form needs one.&lt;/summary&gt;
+    public static bool TryCreate(string kind, string text, DateTime origin, out Schedule? schedule, out string? defect)
+    {
+        schedule = null;
+
+        switch (kind)
+        {
+            case &quot;rrule&quot;:
+                if (!RecurrenceRule.TryParse(text, out RecurrenceRule? rule, out defect)) return false;
+                schedule = new Schedule(kind, text,
+                    (from, inclusive) =&gt; rule.GetNextOccurrence(origin, from, inclusive),
+                    (from, inclusive) =&gt; rule.GetPreviousOccurrence(origin, from, inclusive));
+                return true;
+
+            case &quot;cron&quot;:
+                if (!CronExpression.TryParse(text, out CronExpression? cron, out defect)) return false;
+                schedule = new Schedule(kind, text,
+                    (from, inclusive) =&gt; cron.GetNextOccurrence(from, inclusive),
+                    (from, inclusive) =&gt; cron.GetPreviousOccurrence(from, inclusive));
+                return true;
+
+            case &quot;interval&quot;:
+                if (!AnchoredInterval.TryParse(text, out AnchoredInterval? interval, out defect)) return false;
+                schedule = new Schedule(kind, text,
+                    (from, inclusive) =&gt; interval.GetNextOccurrence(origin, from, inclusive),
+                    (from, inclusive) =&gt; interval.GetPreviousOccurrence(origin, from, inclusive));
+                return true;
+
+            case &quot;set&quot;:
+                if (!RecurrenceSet.TryParse(text, out RecurrenceSet? set, out defect)) return false;
+                schedule = new Schedule(kind, text,
+                    (from, inclusive) =&gt; set.GetNextOccurrence(from, inclusive),
+                    (from, inclusive) =&gt; set.GetPreviousOccurrence(from, inclusive));
+                return true;
+
+            default:
+                defect = $&quot;Unknown schedule kind '{kind}'.&quot;;
+                return false;
+        }
+    }
+}
+</code></pre>
+<p>Every <code>TryParse</code> above is the defect-naming overload, so a bad configuration line surfaces its reason verbatim (&quot;The cron field '60' is not valid.&quot;) without exception-driven control flow. Validate all entries and report every defect at start-up rather than failing on the first.</p>
+<h2 id="pattern-2--a-reproducible-catch-up-loop-over-timeprovider">Pattern 2 — a reproducible catch-up loop over <code>TimeProvider</code></h2>
+<p>Because nothing in the library asks what time it is, the host owns the clock. Take a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.timeprovider">TimeProvider</a> (or simply the <code>now</code> instant) as a parameter and the whole loop becomes a pure function you can drive from a test with <code>FakeTimeProvider</code> — no sleeping, no flakiness. Walking <code>Next</code> forward from the last recorded run to <code>now</code> enumerates exactly the missed occurrences; the backward query answers &quot;should something have run?&quot; without walking at all:</p>
+<pre><code class="lang-csharp">using Bodu.Globalization.Recurrence;
+
+public sealed record CatchUpDecision(IReadOnlyList&lt;DateTime&gt; Missed, DateTime? NextDue);
+
+public static class CatchUp
+{
+    /// &lt;summary&gt;Lists the occurrences between the last completed run and now, and the next one after now.&lt;/summary&gt;
+    public static CatchUpDecision Evaluate(ISchedule schedule, DateTime lastCompleted, DateTime now)
+    {
+        var missed = new List&lt;DateTime&gt;();
+        DateTime cursor = lastCompleted;
+
+        while (schedule.Next(cursor) is DateTime next &amp;&amp; next &lt;= now)
+        {
+            missed.Add(next);
+            cursor = next;
+        }
+
+        return new CatchUpDecision(missed, schedule.Next(now));
+    }
+
+    /// &lt;summary&gt;The coalesced form: one boolean, regardless of how many occurrences were missed.&lt;/summary&gt;
+    public static bool IsDue(ISchedule schedule, DateTime lastCompleted, DateTime now) =&gt;
+        lastCompleted &lt; schedule.Previous(now, inclusive: true);
+}
+</code></pre>
+<pre><code class="lang-csharp">using Bodu.Globalization.Recurrence;
+
+var origin    = new DateTime(2026, 1, 1, 0, 0, 0);
+var lastRun   = new DateTime(2026, 3, 9, 18, 0, 0);     // recorded before the host stopped
+var resumedAt = new DateTime(2026, 3, 10, 14, 32, 0);   // TimeProvider.GetUtcNow() on restart, as a DateTime
+
+Schedule.TryCreate(&quot;cron&quot;, &quot;0 2 * * *&quot;, origin, out Schedule? nightly, out _);
+Schedule.TryCreate(&quot;interval&quot;, &quot;PT6H&quot;, origin, out Schedule? probe, out _);
+Schedule.TryCreate(&quot;rrule&quot;, &quot;FREQ=WEEKLY;BYDAY=MO&quot;, origin, out Schedule? weekly, out _);
+
+CatchUpDecision backup = CatchUp.Evaluate(nightly!, lastRun, resumedAt);
+// Missed: [2026-03-10 02:00]                 NextDue: 2026-03-11 02:00
+CatchUpDecision health = CatchUp.Evaluate(probe!, lastRun, resumedAt);
+// Missed: [03-10 00:00, 03-10 06:00, 03-10 12:00]   NextDue: 2026-03-10 18:00
+CatchUpDecision report = CatchUp.Evaluate(weekly!, lastRun, resumedAt);
+// Missed: []                                 NextDue: 2026-03-16 00:00
+
+bool fireNow = CatchUp.IsDue(nightly!, lastRun, resumedAt);   // true — one catch-up run, not a backlog
+</code></pre>
+<p>Whether to replay every missed occurrence (the <code>Missed</code> list) or run once (the due-ness comparison) is a per-job policy: a report that must exist for every period replays; a cache refresh runs once. The library's answer is an instant in both cases, so the choice is yours and is made in code you can test.</p>
+<p>Wire the evaluation into a hosted service by injecting the <code>TimeProvider</code> and polling at a coarse interval. The poll cadence only bounds latency; it never changes <em>which</em> occurrences are due:</p>
+<pre><code class="lang-csharp">using Microsoft.Extensions.Hosting;
+
+public sealed class ScheduleRunner : BackgroundService
+{
+    private readonly IReadOnlyList&lt;(ISchedule Schedule, Func&lt;CancellationToken, Task&gt; Job)&gt; _jobs;
+    private readonly ILastRunStore _lastRuns;
+    private readonly TimeProvider _time;
+
+    public ScheduleRunner(
+        IReadOnlyList&lt;(ISchedule Schedule, Func&lt;CancellationToken, Task&gt; Job)&gt; jobs,
+        ILastRunStore lastRuns,
+        TimeProvider time)
+    {
+        _jobs = jobs;
+        _lastRuns = lastRuns;
+        _time = time;
+    }
+
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        using var poll = new PeriodicTimer(TimeSpan.FromSeconds(30), _time);
+
+        do
+        {
+            DateTime now = _time.GetUtcNow().UtcDateTime;
+
+            foreach ((ISchedule schedule, Func&lt;CancellationToken, Task&gt; job) in _jobs)
+            {
+                DateTime lastCompleted = _lastRuns.Get(schedule.Text) ?? DateTime.MinValue;
+                if (!CatchUp.IsDue(schedule, lastCompleted, now))
+                    continue;
+
+                await job(stoppingToken);
+                _lastRuns.Set(schedule.Text, now);
+            }
+        }
+        while (await poll.WaitForNextTickAsync(stoppingToken));
+    }
+}
+</code></pre>
+<p>The periodic timer takes the same <code>TimeProvider</code>, so a test can advance a <code>FakeTimeProvider</code> past the tick and the run instant together and assert exactly which jobs fired.</p>
+<h2 id="pattern-3--persisting-the-last-run-instant">Pattern 3 — persisting the last-run instant</h2>
+<p>The only state a host needs per schedule is the instant its job last <strong>completed</strong> — the <code>lastCompleted</code> in the due-ness comparison and, for an anchored interval, potentially the anchor itself. Store it as UTC and treat its absence as &quot;never ran&quot;:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">/// &lt;summary&gt;The one piece of scheduling state the host owns: when each job last completed.&lt;/summary&gt;
+public interface ILastRunStore
+{
+    DateTime? Get(string scheduleKey);
+    void Set(string scheduleKey, DateTime completedAtUtc);
+}
+
+public sealed class InMemoryLastRunStore : ILastRunStore
+{
+    private readonly Dictionary&lt;string, DateTime&gt; _completed = new(StringComparer.Ordinal);
+
+    public DateTime? Get(string scheduleKey) =&gt;
+        _completed.TryGetValue(scheduleKey, out DateTime value) ? value : null;
+
+    public void Set(string scheduleKey, DateTime completedAtUtc) =&gt;
+        _completed[scheduleKey] = DateTime.SpecifyKind(completedAtUtc, DateTimeKind.Utc);
+}
+</code></pre>
+<p>Two rules keep this robust:</p>
+<ul>
+<li><strong>Record completion, not start.</strong> A job that crashes mid-run leaves the previous instant in place, so the next evaluation sees it as still due.</li>
+<li><strong>Record <code>now</code>, not the occurrence.</strong> Setting the last-run instant to the evaluation time (as the runner above does) collapses any missed backlog into the single run just performed; setting it to the <em>occurrence</em> instant would replay the backlog one poll at a time. Pick deliberately per job.</li>
+</ul>
+<p>Because every form round-trips through canonical text and compares by value, the schedule text is a good store key: a changed configuration line is a new key and starts fresh, which is usually what you want.</p>
+<h2 id="pattern-4--daylight-saving-and-time-zones-at-the-boundary">Pattern 4 — daylight saving and time zones at the boundary</h2>
+<p>Rule, cron, and set schedules name a <strong>wall-clock</strong> time. The library evaluates them in whatever offset you pass and never consults <code>TimeZoneInfo</code>, so &quot;02:00 every day in Sydney&quot; needs the host to (1) ask for the next wall-clock occurrence, (2) resolve it against the zone, deciding skipped and ambiguous times to its own policy, and (3) wait on the resulting instant. Doing the conversion per evaluation is what keeps the schedule correct across a transition:</p>
+<pre><code class="lang-csharp">using Bodu.Globalization.Recurrence;
+
+public static class ZonedSchedule
+{
+    /// &lt;summary&gt;Next occurrence of a wall-clock schedule in &lt;paramref name=&quot;zone&quot; /&gt;, as an absolute instant.&lt;/summary&gt;
+    public static DateTimeOffset? NextInZone(ISchedule schedule, TimeZoneInfo zone, DateTimeOffset nowUtc)
+    {
+        // 1. Ask in the zone's *current* wall-clock time.
+        DateTime localNow = TimeZoneInfo.ConvertTime(nowUtc, zone).DateTime;
+        DateTime? localNext = schedule.Next(localNow);
+        if (localNext is null)
+            return null;
+
+        DateTime wall = DateTime.SpecifyKind(localNext.Value, DateTimeKind.Unspecified);
+
+        // 2. Decide the transition cases explicitly. Policy here: a skipped time runs at the shifted
+        //    equivalent; an ambiguous time takes the first (standard-time) instant.
+        if (zone.IsInvalidTime(wall))
+            wall = wall.Add(zone.GetAdjustmentRules().Length &gt; 0 ? TimeSpan.FromHours(1) : TimeSpan.Zero);
+
+        TimeSpan offset = zone.IsAmbiguousTime(wall)
+            ? zone.GetAmbiguousTimeOffsets(wall).Max()
+            : zone.GetUtcOffset(wall);
+
+        // 3. The absolute instant to wait on.
+        return new DateTimeOffset(wall, offset);
+    }
+}
+</code></pre>
+<p>An anchored interval has no such problem: it is exact elapsed time, so <code>PT6H</code> is six hours on the spring-forward day too — anchor it in UTC and pass <code>nowUtc</code> as-is. Keep the zone policy in one place like this so it is visible and testable; the library will never silently pick one for you.</p>
+<h2 id="pattern-5--skip-non-working-days-with-the-calendar-package">Pattern 5 — skip non-working days with the calendar package</h2>
+<p>&quot;Every night at 02:00, except on public holidays&quot; is a filter over the occurrence stream, applied from outside: the recurrence package carries no holiday data and takes no dependency on the calendar package. <code>IsNonWorkingDay</code> — the <code>DateTime</code> / <code>DateTimeOffset</code> / <code>DateOnly</code> extension in the <code>Bodu.Extensions</code> namespace of <code>Bodu.Globalization.Calendar</code> — answers <code>true</code> for weekends and for the territory's resolved non-working notable dates, so it is the one predicate to apply. Walk <code>Next</code> until it passes:</p>
+<pre><code class="lang-csharp">using Bodu.Extensions;                    // IsNonWorkingDay
+using Bodu.Globalization.Calendar;
+using Bodu.Globalization.Recurrence;
+
+INotableDateService holidays = AmericasCalendarData.CreateService(&quot;US&quot;);
+CronExpression nightly = CronExpression.Parse(&quot;0 2 * * *&quot;);
+
+DateTime? NextWorkingRun(DateTime after)
+{
+    DateTime cursor = after;
+    while (nightly.GetNextOccurrence(cursor) is DateTime next)
+    {
+        if (!next.IsNonWorkingDay(holidays, &quot;US&quot;))
+            return next;
+        cursor = next;
+    }
+
+    return null;
+}
+
+DateTime? first = NextWorkingRun(new DateTime(2026, 7, 1, 12, 0, 0));   // 2026-07-02 Thu 02:00
+DateTime? second = NextWorkingRun(first!.Value);                        // 2026-07-06 Mon 02:00
+// 3 July 2026 is the observed Independence Day (4 July falls on a Saturday) and is skipped
+// along with the weekend; the observed date comes from the data pack's adjustment rules.
+</code></pre>
+<p>The same predicate works over a windowed <code>GetOccurrences</code> with LINQ's <code>Where</code>, as the <a href="index.html#calendar-aware-filtering-is-composition-not-a-feature">overview</a> shows. Pass a <code>WeekPattern</code> as the optional trailing argument to change the working week, or use <code>IsNotableDate</code> to test the notable dates alone — see <a href="../calendar/working-days.html">Working-day arithmetic</a>.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="rrule.html">RFC 5545 recurrence rules</a></strong>, <strong><a href="cron.html">Cron expressions</a></strong>, <strong><a href="anchored-intervals.html">Anchored intervals</a></strong>, <strong><a href="recurrence-sets.html">Recurrence sets</a></strong> — the per-form references.</li>
+<li><strong><a href="../../samples/recurrence.html">Runnable samples</a></strong> — <code>Bodu.Globalization.Recurrence.Samples.SchedulingHost</code> runs the adapter, configuration validation, offset-aware queries, and the catch-up loop offline.</li>
+<li><strong><a href="../calendar/working-days.html">Working-day arithmetic</a></strong> — everything <code>IsNonWorkingDay</code> and its siblings can do.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Globalization.Recurrence.html">Bodu.Globalization.Recurrence API reference</a></strong></li>
+<li><strong><a href="../topics/globalization-and-calendars.html">Globalization &amp; Calendars guides</a></strong> — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

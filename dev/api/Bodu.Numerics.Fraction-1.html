@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Struct Fraction&lt;T&gt; | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Struct Fraction&lt;T&gt; | BODU ">
+    
+    <meta name="description" content="Represents an immutable exact rational number — a ratio of two integers — backed by an arbitrary  component type.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Numerics.Fraction`1">
+
+
+
+  <h1 id="Bodu_Numerics_Fraction_1" data-uid="Bodu.Numerics.Fraction`1" class="text-break">Struct Fraction&lt;T&gt;</h1>
+  <div class="markdown level0 summary"><p>Represents an immutable exact rational number — a ratio of two integers — backed by an arbitrary
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.ibinaryinteger-1">IBinaryInteger&lt;TSelf&gt;</a> component type.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="implements">
+    <h5>Implements</h5>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.inumber-1">INumber</a>&lt;<a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction</a>&lt;T&gt;&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.icomparisonoperators-3">IComparisonOperators</a>&lt;<a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction</a>&lt;T&gt;, <a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction</a>&lt;T&gt;, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.imodulusoperators-3">IModulusOperators</a>&lt;<a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction</a>&lt;T&gt;, <a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction</a>&lt;T&gt;, <a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction</a>&lt;T&gt;&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.isignednumber-1">ISignedNumber</a>&lt;<a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction</a>&lt;T&gt;&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.inumberbase-1">INumberBase</a>&lt;<a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction</a>&lt;T&gt;&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.ispanformattable">ISpanFormattable</a></div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iformattable">IFormattable</a></div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.iadditionoperators-3">IAdditionOperators</a>&lt;<a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction</a>&lt;T&gt;, <a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction</a>&lt;T&gt;, <a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction</a>&lt;T&gt;&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.iadditiveidentity-2">IAdditiveIdentity</a>&lt;<a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction</a>&lt;T&gt;, <a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction</a>&lt;T&gt;&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.idecrementoperators-1">IDecrementOperators</a>&lt;<a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction</a>&lt;T&gt;&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.idivisionoperators-3">IDivisionOperators</a>&lt;<a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction</a>&lt;T&gt;, <a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction</a>&lt;T&gt;, <a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction</a>&lt;T&gt;&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.iequalityoperators-3">IEqualityOperators</a>&lt;<a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction</a>&lt;T&gt;, <a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction</a>&lt;T&gt;, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.iincrementoperators-1">IIncrementOperators</a>&lt;<a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction</a>&lt;T&gt;&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.imultiplicativeidentity-2">IMultiplicativeIdentity</a>&lt;<a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction</a>&lt;T&gt;, <a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction</a>&lt;T&gt;&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.imultiplyoperators-3">IMultiplyOperators</a>&lt;<a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction</a>&lt;T&gt;, <a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction</a>&lt;T&gt;, <a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction</a>&lt;T&gt;&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.isubtractionoperators-3">ISubtractionOperators</a>&lt;<a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction</a>&lt;T&gt;, <a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction</a>&lt;T&gt;, <a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction</a>&lt;T&gt;&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.iunarynegationoperators-2">IUnaryNegationOperators</a>&lt;<a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction</a>&lt;T&gt;, <a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction</a>&lt;T&gt;&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.iunaryplusoperators-2">IUnaryPlusOperators</a>&lt;<a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction</a>&lt;T&gt;, <a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction</a>&lt;T&gt;&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iutf8spanformattable">IUtf8SpanFormattable</a></div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.icomparable">IComparable</a></div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.icomparable-1">IComparable</a>&lt;<a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction</a>&lt;T&gt;&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction</a>&lt;T&gt;&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.ispanparsable-1">ISpanParsable</a>&lt;<a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction</a>&lt;T&gt;&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iparsable-1">IParsable</a>&lt;<a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction</a>&lt;T&gt;&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iutf8spanparsable-1">IUtf8SpanParsable</a>&lt;<a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction</a>&lt;T&gt;&gt;</div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Numerics.html">Numerics</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Numerics.dll</h6>
+  <h5 id="Bodu_Numerics_Fraction_1_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly struct Fraction&lt;T&gt; : INumber&lt;Fraction&lt;T&gt;&gt;, IComparisonOperators&lt;Fraction&lt;T&gt;, Fraction&lt;T&gt;, bool&gt;, IModulusOperators&lt;Fraction&lt;T&gt;, Fraction&lt;T&gt;, Fraction&lt;T&gt;&gt;, ISignedNumber&lt;Fraction&lt;T&gt;&gt;, INumberBase&lt;Fraction&lt;T&gt;&gt;, ISpanFormattable, IFormattable, IAdditionOperators&lt;Fraction&lt;T&gt;, Fraction&lt;T&gt;, Fraction&lt;T&gt;&gt;, IAdditiveIdentity&lt;Fraction&lt;T&gt;, Fraction&lt;T&gt;&gt;, IDecrementOperators&lt;Fraction&lt;T&gt;&gt;, IDivisionOperators&lt;Fraction&lt;T&gt;, Fraction&lt;T&gt;, Fraction&lt;T&gt;&gt;, IEqualityOperators&lt;Fraction&lt;T&gt;, Fraction&lt;T&gt;, bool&gt;, IIncrementOperators&lt;Fraction&lt;T&gt;&gt;, IMultiplicativeIdentity&lt;Fraction&lt;T&gt;, Fraction&lt;T&gt;&gt;, IMultiplyOperators&lt;Fraction&lt;T&gt;, Fraction&lt;T&gt;, Fraction&lt;T&gt;&gt;, ISubtractionOperators&lt;Fraction&lt;T&gt;, Fraction&lt;T&gt;, Fraction&lt;T&gt;&gt;, IUnaryNegationOperators&lt;Fraction&lt;T&gt;, Fraction&lt;T&gt;&gt;, IUnaryPlusOperators&lt;Fraction&lt;T&gt;, Fraction&lt;T&gt;&gt;, IUtf8SpanFormattable, IComparable, IComparable&lt;Fraction&lt;T&gt;&gt;, IEquatable&lt;Fraction&lt;T&gt;&gt;, ISpanParsable&lt;Fraction&lt;T&gt;&gt;, IParsable&lt;Fraction&lt;T&gt;&gt;, IUtf8SpanParsable&lt;Fraction&lt;T&gt;&gt; where T : IBinaryInteger&lt;T&gt;</code></pre>
+  </div>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">T</span></td>
+        <td><p>The integer type used to store the numerator and denominator.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="Bodu_Numerics_Fraction_1_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+A <a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a> is always held in canonical form: the denominator is strictly positive, the numerator
+carries the sign, and the two components share no common factor other than one. Equal rational values therefore have
+identical components and compare and hash equally.
+</p>
+<p>
+Choose a fixed-width <code class="typeparamref">T</code> such as <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a> or <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a> for compact
+storage, or <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.biginteger">BigInteger</a> for arithmetic that never overflows.
+</p>
+<p>
+Arithmetic is exact. Intermediate results are evaluated with <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.biginteger">BigInteger</a> precision and the canonical
+result is narrowed back to <code class="typeparamref">T</code>; when the narrowed component does not fit a fixed-width
+<code class="typeparamref">T</code> an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.overflowexception">OverflowException</a> is thrown. Selecting <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.biginteger">BigInteger</a> as
+<code class="typeparamref">T</code> removes that limit entirely.
+</p>
+<p>
+When <code class="typeparamref">T</code> is an unsigned integer type, negative rationals cannot be represented; operations
+that would produce a negative component — such as negating a non-zero value — throw an
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.overflowexception">OverflowException</a> at run time.
+</p>
+</div>
+  <h5 id="Bodu_Numerics_Fraction_1_examples"><strong>Examples</strong></h5>
+  <pre><code class="lang-csharp">// Construct from components; the value is reduced to canonical form on creation.
+Fraction&lt;int&gt; oneHalf = new Fraction&lt;int&gt;(2, 4);   // 1/2
+Fraction&lt;int&gt; oneThird = new Fraction&lt;int&gt;(1, 3);
+
+// Exact arithmetic through the operators.
+Fraction&lt;int&gt; sum = oneHalf + oneThird;            // 5/6
+
+// Parse and format round-trip through the invariant "numerator/denominator" form.
+Fraction&lt;int&gt; parsed = Fraction&lt;int&gt;.Parse("3/8");
+string text = parsed.ToString();                   // "3/8"</code></pre>
+
+  <h3 id="constructors">Constructors
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1__ctor__0_" data-uid="Bodu.Numerics.Fraction`1.#ctor(`0)">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.-ctor.html#Bodu_Numerics_Fraction_1__ctor__0_">Fraction(T)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a> struct representing the whole number
+<code class="paramref">value</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1__ctor__0__0_" data-uid="Bodu.Numerics.Fraction`1.#ctor(`0,`0)">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.-ctor.html#Bodu_Numerics_Fraction_1__ctor__0__0_">Fraction(T, T)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a> struct from the specified numerator and
+denominator, reducing the result to canonical form.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_Denominator" data-uid="Bodu.Numerics.Fraction`1.Denominator">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.Denominator.html#Bodu_Numerics_Fraction_1_Denominator">Denominator</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the denominator of the rational value in canonical form.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_IsCanonical" data-uid="Bodu.Numerics.Fraction`1.IsCanonical">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.IsCanonical.html#Bodu_Numerics_Fraction_1_IsCanonical">IsCanonical</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a value indicating whether this rational value is in canonical form.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_IsEvenInteger" data-uid="Bodu.Numerics.Fraction`1.IsEvenInteger">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.IsEvenInteger.html#Bodu_Numerics_Fraction_1_IsEvenInteger">IsEvenInteger</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a value indicating whether this rational value is an even integer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_IsImproper" data-uid="Bodu.Numerics.Fraction`1.IsImproper">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.IsImproper.html#Bodu_Numerics_Fraction_1_IsImproper">IsImproper</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a value indicating whether this rational value is an improper fraction.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_IsInteger" data-uid="Bodu.Numerics.Fraction`1.IsInteger">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.IsInteger.html#Bodu_Numerics_Fraction_1_IsInteger">IsInteger</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a value indicating whether this rational value is an exact integer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_IsNegative" data-uid="Bodu.Numerics.Fraction`1.IsNegative">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.IsNegative.html#Bodu_Numerics_Fraction_1_IsNegative">IsNegative</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a value indicating whether this rational value is negative.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_IsOddInteger" data-uid="Bodu.Numerics.Fraction`1.IsOddInteger">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.IsOddInteger.html#Bodu_Numerics_Fraction_1_IsOddInteger">IsOddInteger</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a value indicating whether this rational value is an odd integer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_IsPositive" data-uid="Bodu.Numerics.Fraction`1.IsPositive">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.IsPositive.html#Bodu_Numerics_Fraction_1_IsPositive">IsPositive</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a value indicating whether this rational value is positive.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_IsProper" data-uid="Bodu.Numerics.Fraction`1.IsProper">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.IsProper.html#Bodu_Numerics_Fraction_1_IsProper">IsProper</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a value indicating whether this rational value is a proper fraction.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_IsReducible" data-uid="Bodu.Numerics.Fraction`1.IsReducible">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.IsReducible.html#Bodu_Numerics_Fraction_1_IsReducible">IsReducible</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a value indicating whether this rational value can be reduced to lower terms.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_IsUnit" data-uid="Bodu.Numerics.Fraction`1.IsUnit">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.IsUnit.html#Bodu_Numerics_Fraction_1_IsUnit">IsUnit</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a value indicating whether this rational value is a unit fraction.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_IsWhole" data-uid="Bodu.Numerics.Fraction`1.IsWhole">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.IsWhole.html#Bodu_Numerics_Fraction_1_IsWhole">IsWhole</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a value indicating whether this rational value is a whole number.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_IsZero" data-uid="Bodu.Numerics.Fraction`1.IsZero">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.IsZero.html#Bodu_Numerics_Fraction_1_IsZero">IsZero</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a value indicating whether this rational value is zero.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_MaxValue" data-uid="Bodu.Numerics.Fraction`1.MaxValue">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.MaxValue.html#Bodu_Numerics_Fraction_1_MaxValue">MaxValue</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the largest finite value a <a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a> backed by <code class="typeparamref">T</code> can represent.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_MinValue" data-uid="Bodu.Numerics.Fraction`1.MinValue">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.MinValue.html#Bodu_Numerics_Fraction_1_MinValue">MinValue</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the smallest finite value a <a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a> backed by <code class="typeparamref">T</code> can represent.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_MinusOne" data-uid="Bodu.Numerics.Fraction`1.MinusOne">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.MinusOne.html#Bodu_Numerics_Fraction_1_MinusOne">MinusOne</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a <a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a> representing the value negative one.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_Numerator" data-uid="Bodu.Numerics.Fraction`1.Numerator">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.Numerator.html#Bodu_Numerics_Fraction_1_Numerator">Numerator</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the numerator of the rational value in canonical form.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_One" data-uid="Bodu.Numerics.Fraction`1.One">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.One.html#Bodu_Numerics_Fraction_1_One">One</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a <a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a> representing the value one.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_Sign" data-uid="Bodu.Numerics.Fraction`1.Sign">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.Sign.html#Bodu_Numerics_Fraction_1_Sign">Sign</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the sign of the rational value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_Zero" data-uid="Bodu.Numerics.Fraction`1.Zero">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.Zero.html#Bodu_Numerics_Fraction_1_Zero">Zero</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a <a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a> representing the value zero.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_Abs" data-uid="Bodu.Numerics.Fraction`1.Abs">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.Abs.html#Bodu_Numerics_Fraction_1_Abs">Abs()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the absolute value of this rational value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_Add_Bodu_Numerics_Fraction__0__Bodu_Numerics_Fraction__0__" data-uid="Bodu.Numerics.Fraction`1.Add(Bodu.Numerics.Fraction{`0},Bodu.Numerics.Fraction{`0})">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.Add.html#Bodu_Numerics_Fraction_1_Add_Bodu_Numerics_Fraction__0__Bodu_Numerics_Fraction__0__">Add(Fraction&lt;T&gt;, Fraction&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Adds two rational values.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_Approximate_System_Decimal__0_" data-uid="Bodu.Numerics.Fraction`1.Approximate(System.Decimal,`0)">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.Approximate.html#Bodu_Numerics_Fraction_1_Approximate_System_Decimal__0_">Approximate(decimal, T)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the closest rational approximation of a decimal value within a denominator bound.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_Approximate_System_Double__0_" data-uid="Bodu.Numerics.Fraction`1.Approximate(System.Double,`0)">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.Approximate.html#Bodu_Numerics_Fraction_1_Approximate_System_Double__0_">Approximate(double, T)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the closest rational approximation of a double-precision value within a denominator bound.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_Approximate_System_String__0_System_IFormatProvider_" data-uid="Bodu.Numerics.Fraction`1.Approximate(System.String,`0,System.IFormatProvider)">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.Approximate.html#Bodu_Numerics_Fraction_1_Approximate_System_String__0_System_IFormatProvider_">Approximate(string, T, IFormatProvider?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the closest rational approximation of a numeric string within a denominator bound.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_As__1" data-uid="Bodu.Numerics.Fraction`1.As``1">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.As.html#Bodu_Numerics_Fraction_1_As__1">As&lt;TOther&gt;()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Converts this rational value to an equivalent <a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a> over a different backing integer type.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_Ceiling" data-uid="Bodu.Numerics.Fraction`1.Ceiling">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.Ceiling.html#Bodu_Numerics_Fraction_1_Ceiling">Ceiling()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the smallest integer rational value greater than or equal to this value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_Clamp_Bodu_Numerics_Fraction__0__Bodu_Numerics_Fraction__0__Bodu_Numerics_Fraction__0__" data-uid="Bodu.Numerics.Fraction`1.Clamp(Bodu.Numerics.Fraction{`0},Bodu.Numerics.Fraction{`0},Bodu.Numerics.Fraction{`0})">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.Clamp.html#Bodu_Numerics_Fraction_1_Clamp_Bodu_Numerics_Fraction__0__Bodu_Numerics_Fraction__0__Bodu_Numerics_Fraction__0__">Clamp(Fraction&lt;T&gt;, Fraction&lt;T&gt;, Fraction&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns <code class="paramref">value</code> constrained to the inclusive range bounded by two rational values.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_Compare_Bodu_Numerics_Fraction__0__Bodu_Numerics_Fraction__0__" data-uid="Bodu.Numerics.Fraction`1.Compare(Bodu.Numerics.Fraction{`0},Bodu.Numerics.Fraction{`0})">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.Compare.html#Bodu_Numerics_Fraction_1_Compare_Bodu_Numerics_Fraction__0__Bodu_Numerics_Fraction__0__">Compare(Fraction&lt;T&gt;, Fraction&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Compares two rational values and indicates their relative order.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_CompareTo_Bodu_Numerics_Fraction__0__" data-uid="Bodu.Numerics.Fraction`1.CompareTo(Bodu.Numerics.Fraction{`0})">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.CompareTo.html#Bodu_Numerics_Fraction_1_CompareTo_Bodu_Numerics_Fraction__0__">CompareTo(Fraction&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Compares this rational value with another and indicates their relative order.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_CompareTo_System_Object_" data-uid="Bodu.Numerics.Fraction`1.CompareTo(System.Object)">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.CompareTo.html#Bodu_Numerics_Fraction_1_CompareTo_System_Object_">CompareTo(object?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Compares this rational value with the specified object and indicates their relative order.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_Create__0__0_" data-uid="Bodu.Numerics.Fraction`1.Create(`0,`0)">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.Create.html#Bodu_Numerics_Fraction_1_Create__0__0_">Create(T, T)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates a canonical <a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a> from the specified numerator and denominator.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_Cubed" data-uid="Bodu.Numerics.Fraction`1.Cubed">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.Cubed.html#Bodu_Numerics_Fraction_1_Cubed">Cubed()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the cube of this rational value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_Deconstruct__0___0__" data-uid="Bodu.Numerics.Fraction`1.Deconstruct(`0@,`0@)">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.Deconstruct.html#Bodu_Numerics_Fraction_1_Deconstruct__0___0__">Deconstruct(out T, out T)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Deconstructs the rational value into its canonical numerator and denominator.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_Deconstruct__0___0___0__" data-uid="Bodu.Numerics.Fraction`1.Deconstruct(`0@,`0@,`0@)">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.Deconstruct.html#Bodu_Numerics_Fraction_1_Deconstruct__0___0___0__">Deconstruct(out T, out T, out T)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Deconstructs this value into its integer part and the numerator and denominator of its fractional part.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_Divide_Bodu_Numerics_Fraction__0__Bodu_Numerics_Fraction__0__" data-uid="Bodu.Numerics.Fraction`1.Divide(Bodu.Numerics.Fraction{`0},Bodu.Numerics.Fraction{`0})">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.Divide.html#Bodu_Numerics_Fraction_1_Divide_Bodu_Numerics_Fraction__0__Bodu_Numerics_Fraction__0__">Divide(Fraction&lt;T&gt;, Fraction&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Divides one rational value by another.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_Equals_Bodu_Numerics_Fraction__0__" data-uid="Bodu.Numerics.Fraction`1.Equals(Bodu.Numerics.Fraction{`0})">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.Equals.html#Bodu_Numerics_Fraction_1_Equals_Bodu_Numerics_Fraction__0__">Equals(Fraction&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether the specified <a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a> is equal to this value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_Equals_System_Object_" data-uid="Bodu.Numerics.Fraction`1.Equals(System.Object)">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.Equals.html#Bodu_Numerics_Fraction_1_Equals_System_Object_">Equals(object?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether the specified object is a <a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a> equal to this value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_Floor" data-uid="Bodu.Numerics.Fraction`1.Floor">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.Floor.html#Bodu_Numerics_Fraction_1_Floor">Floor()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the largest integer rational value less than or equal to this value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_FromBigInteger_System_Numerics_BigInteger_System_Numerics_BigInteger_" data-uid="Bodu.Numerics.Fraction`1.FromBigInteger(System.Numerics.BigInteger,System.Numerics.BigInteger)">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.FromBigInteger.html#Bodu_Numerics_Fraction_1_FromBigInteger_System_Numerics_BigInteger_System_Numerics_BigInteger_">FromBigInteger(BigInteger, BigInteger)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates a canonical <a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a> from a numerator and denominator of arbitrary magnitude.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_FromContinuedFraction__0___" data-uid="Bodu.Numerics.Fraction`1.FromContinuedFraction(`0[])">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.FromContinuedFraction.html#Bodu_Numerics_Fraction_1_FromContinuedFraction__0___">FromContinuedFraction(params T[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reconstructs a rational value from the coefficients of a simple continued fraction.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_FromDecimal_System_Decimal_" data-uid="Bodu.Numerics.Fraction`1.FromDecimal(System.Decimal)">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.FromDecimal.html#Bodu_Numerics_Fraction_1_FromDecimal_System_Decimal_">FromDecimal(decimal)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Converts a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a> to its exact rational representation.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_FromDouble_System_Double_" data-uid="Bodu.Numerics.Fraction`1.FromDouble(System.Double)">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.FromDouble.html#Bodu_Numerics_Fraction_1_FromDouble_System_Double_">FromDouble(double)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Converts a finite <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a> to its exact rational representation.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_FromXml_System_String_" data-uid="Bodu.Numerics.Fraction`1.FromXml(System.String)">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.FromXml.html#Bodu_Numerics_Fraction_1_FromXml_System_String_">FromXml(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Deserializes a <a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a> from the XML element produced by <a class="xref" href="Bodu.Numerics.Fraction-1.ToXml.html#Bodu_Numerics_Fraction_1_ToXml">ToXml()</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_GetFractionalPart" data-uid="Bodu.Numerics.Fraction`1.GetFractionalPart">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.GetFractionalPart.html#Bodu_Numerics_Fraction_1_GetFractionalPart">GetFractionalPart()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the fractional part of this value, carrying the same sign as this value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_GetHashCode" data-uid="Bodu.Numerics.Fraction`1.GetHashCode">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.GetHashCode.html#Bodu_Numerics_Fraction_1_GetHashCode">GetHashCode()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a hash code for this rational value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_GetWholePart" data-uid="Bodu.Numerics.Fraction`1.GetWholePart">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.GetWholePart.html#Bodu_Numerics_Fraction_1_GetWholePart">GetWholePart()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the integer part of this value as a value of the backing type.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_GreatestCommonDivisor__0__0_" data-uid="Bodu.Numerics.Fraction`1.GreatestCommonDivisor(`0,`0)">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.GreatestCommonDivisor.html#Bodu_Numerics_Fraction_1_GreatestCommonDivisor__0__0_">GreatestCommonDivisor(T, T)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Computes the greatest common divisor of two integers.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_Invert" data-uid="Bodu.Numerics.Fraction`1.Invert">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.Invert.html#Bodu_Numerics_Fraction_1_Invert">Invert()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the multiplicative inverse of this rational value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_LeastCommonMultiple__0__0_" data-uid="Bodu.Numerics.Fraction`1.LeastCommonMultiple(`0,`0)">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.LeastCommonMultiple.html#Bodu_Numerics_Fraction_1_LeastCommonMultiple__0__0_">LeastCommonMultiple(T, T)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Computes the least common multiple of two integers.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_LimitDenominator__0_" data-uid="Bodu.Numerics.Fraction`1.LimitDenominator(`0)">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.LimitDenominator.html#Bodu_Numerics_Fraction_1_LimitDenominator__0_">LimitDenominator(T)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the closest rational value whose denominator does not exceed the specified limit.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_Max_Bodu_Numerics_Fraction__0__Bodu_Numerics_Fraction__0__" data-uid="Bodu.Numerics.Fraction`1.Max(Bodu.Numerics.Fraction{`0},Bodu.Numerics.Fraction{`0})">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.Max.html#Bodu_Numerics_Fraction_1_Max_Bodu_Numerics_Fraction__0__Bodu_Numerics_Fraction__0__">Max(Fraction&lt;T&gt;, Fraction&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the larger of two rational values.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_Min_Bodu_Numerics_Fraction__0__Bodu_Numerics_Fraction__0__" data-uid="Bodu.Numerics.Fraction`1.Min(Bodu.Numerics.Fraction{`0},Bodu.Numerics.Fraction{`0})">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.Min.html#Bodu_Numerics_Fraction_1_Min_Bodu_Numerics_Fraction__0__Bodu_Numerics_Fraction__0__">Min(Fraction&lt;T&gt;, Fraction&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the smaller of two rational values.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_Multiply_Bodu_Numerics_Fraction__0__Bodu_Numerics_Fraction__0__" data-uid="Bodu.Numerics.Fraction`1.Multiply(Bodu.Numerics.Fraction{`0},Bodu.Numerics.Fraction{`0})">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.Multiply.html#Bodu_Numerics_Fraction_1_Multiply_Bodu_Numerics_Fraction__0__Bodu_Numerics_Fraction__0__">Multiply(Fraction&lt;T&gt;, Fraction&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Multiplies two rational values.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_Negate" data-uid="Bodu.Numerics.Fraction`1.Negate">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.Negate.html#Bodu_Numerics_Fraction_1_Negate">Negate()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the additive inverse of this rational value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_Parse_System_ReadOnlySpan_System_Byte__System_IFormatProvider_" data-uid="Bodu.Numerics.Fraction`1.Parse(System.ReadOnlySpan{System.Byte},System.IFormatProvider)">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.Parse.html#Bodu_Numerics_Fraction_1_Parse_System_ReadOnlySpan_System_Byte__System_IFormatProvider_">Parse(ReadOnlySpan&lt;byte&gt;, IFormatProvider?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Parses a UTF-8 byte span into a <a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a> using the specified culture.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_Parse_System_ReadOnlySpan_System_Char__System_IFormatProvider_" data-uid="Bodu.Numerics.Fraction`1.Parse(System.ReadOnlySpan{System.Char},System.IFormatProvider)">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.Parse.html#Bodu_Numerics_Fraction_1_Parse_System_ReadOnlySpan_System_Char__System_IFormatProvider_">Parse(ReadOnlySpan&lt;char&gt;, IFormatProvider?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Parses a character span into a <a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a> using the specified culture.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_Parse_System_String_" data-uid="Bodu.Numerics.Fraction`1.Parse(System.String)">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.Parse.html#Bodu_Numerics_Fraction_1_Parse_System_String_">Parse(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Parses a string into a <a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_Parse_System_String_System_IFormatProvider_" data-uid="Bodu.Numerics.Fraction`1.Parse(System.String,System.IFormatProvider)">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.Parse.html#Bodu_Numerics_Fraction_1_Parse_System_String_System_IFormatProvider_">Parse(string, IFormatProvider?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Parses a string into a <a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a> using the specified culture.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_Pow_System_Int32_" data-uid="Bodu.Numerics.Fraction`1.Pow(System.Int32)">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.Pow.html#Bodu_Numerics_Fraction_1_Pow_System_Int32_">Pow(int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Raises this rational value to the specified integer power.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_Reciprocal" data-uid="Bodu.Numerics.Fraction`1.Reciprocal">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.Reciprocal.html#Bodu_Numerics_Fraction_1_Reciprocal">Reciprocal()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the multiplicative inverse of this rational value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_Reduce" data-uid="Bodu.Numerics.Fraction`1.Reduce">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.Reduce.html#Bodu_Numerics_Fraction_1_Reduce">Reduce()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns this rational value reduced to lowest terms.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_Remainder_Bodu_Numerics_Fraction__0__" data-uid="Bodu.Numerics.Fraction`1.Remainder(Bodu.Numerics.Fraction{`0})">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.Remainder.html#Bodu_Numerics_Fraction_1_Remainder_Bodu_Numerics_Fraction__0__">Remainder(Fraction&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the remainder produced by dividing this rational value by another, with the sign of the dividend.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_Round" data-uid="Bodu.Numerics.Fraction`1.Round">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.Round.html#Bodu_Numerics_Fraction_1_Round">Round()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns this value rounded to the nearest integer, resolving a tie to the nearest even integer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_Round_System_MidpointRounding_" data-uid="Bodu.Numerics.Fraction`1.Round(System.MidpointRounding)">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.Round.html#Bodu_Numerics_Fraction_1_Round_System_MidpointRounding_">Round(MidpointRounding)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns this value rounded to the nearest integer using the specified midpoint rule.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_Squared" data-uid="Bodu.Numerics.Fraction`1.Squared">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.Squared.html#Bodu_Numerics_Fraction_1_Squared">Squared()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the square of this rational value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_Subtract_Bodu_Numerics_Fraction__0__Bodu_Numerics_Fraction__0__" data-uid="Bodu.Numerics.Fraction`1.Subtract(Bodu.Numerics.Fraction{`0},Bodu.Numerics.Fraction{`0})">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.Subtract.html#Bodu_Numerics_Fraction_1_Subtract_Bodu_Numerics_Fraction__0__Bodu_Numerics_Fraction__0__">Subtract(Fraction&lt;T&gt;, Fraction&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Subtracts one rational value from another.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_ToBigInteger" data-uid="Bodu.Numerics.Fraction`1.ToBigInteger">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.ToBigInteger.html#Bodu_Numerics_Fraction_1_ToBigInteger">ToBigInteger()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Converts this rational value to a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.biginteger">BigInteger</a>, truncating any fractional component.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_ToContinuedFraction" data-uid="Bodu.Numerics.Fraction`1.ToContinuedFraction">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.ToContinuedFraction.html#Bodu_Numerics_Fraction_1_ToContinuedFraction">ToContinuedFraction()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Expands this rational value into the coefficients of its simple continued fraction.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_ToDecimal" data-uid="Bodu.Numerics.Fraction`1.ToDecimal">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.ToDecimal.html#Bodu_Numerics_Fraction_1_ToDecimal">ToDecimal()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Converts this rational value to the nearest <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_ToDouble" data-uid="Bodu.Numerics.Fraction`1.ToDouble">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.ToDouble.html#Bodu_Numerics_Fraction_1_ToDouble">ToDouble()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Converts this rational value to the nearest <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_ToInteger" data-uid="Bodu.Numerics.Fraction`1.ToInteger">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.ToInteger.html#Bodu_Numerics_Fraction_1_ToInteger">ToInteger()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Converts this rational value to a value of the backing type, truncating any fractional component.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_ToMixedNumberString_System_IFormatProvider_" data-uid="Bodu.Numerics.Fraction`1.ToMixedNumberString(System.IFormatProvider)">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.ToMixedNumberString.html#Bodu_Numerics_Fraction_1_ToMixedNumberString_System_IFormatProvider_">ToMixedNumberString(IFormatProvider?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a string representation of this value as a mixed number.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_ToMixedParts" data-uid="Bodu.Numerics.Fraction`1.ToMixedParts">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.ToMixedParts.html#Bodu_Numerics_Fraction_1_ToMixedParts">ToMixedParts()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Splits this value into its integer part and its signed fractional part.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_ToMixedString_System_IFormatProvider_" data-uid="Bodu.Numerics.Fraction`1.ToMixedString(System.IFormatProvider)">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.ToMixedString.html#Bodu_Numerics_Fraction_1_ToMixedString_System_IFormatProvider_">ToMixedString(IFormatProvider?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a string representation of this value as a mixed number.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_ToPercentString_System_IFormatProvider_" data-uid="Bodu.Numerics.Fraction`1.ToPercentString(System.IFormatProvider)">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.ToPercentString.html#Bodu_Numerics_Fraction_1_ToPercentString_System_IFormatProvider_">ToPercentString(IFormatProvider?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a string representation of this value scaled to a percentage.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_ToSingle" data-uid="Bodu.Numerics.Fraction`1.ToSingle">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.ToSingle.html#Bodu_Numerics_Fraction_1_ToSingle">ToSingle()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Converts this rational value to the nearest <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">float</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_ToString" data-uid="Bodu.Numerics.Fraction`1.ToString">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.ToString.html#Bodu_Numerics_Fraction_1_ToString">ToString()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the default string representation of this rational value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_ToString_System_String_" data-uid="Bodu.Numerics.Fraction`1.ToString(System.String)">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.ToString.html#Bodu_Numerics_Fraction_1_ToString_System_String_">ToString(string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a string representation of this rational value using the specified format.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_ToString_System_String_System_IFormatProvider_" data-uid="Bodu.Numerics.Fraction`1.ToString(System.String,System.IFormatProvider)">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.ToString.html#Bodu_Numerics_Fraction_1_ToString_System_String_System_IFormatProvider_">ToString(string?, IFormatProvider?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a string representation of this rational value using the specified format and culture.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_ToUnicodeString_System_IFormatProvider_" data-uid="Bodu.Numerics.Fraction`1.ToUnicodeString(System.IFormatProvider)">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.ToUnicodeString.html#Bodu_Numerics_Fraction_1_ToUnicodeString_System_IFormatProvider_">ToUnicodeString(IFormatProvider?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a string representation of this value using Unicode vulgar-fraction glyphs where available.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_ToXml" data-uid="Bodu.Numerics.Fraction`1.ToXml">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.ToXml.html#Bodu_Numerics_Fraction_1_ToXml">ToXml()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Serializes this rational value to a self-contained XML element.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_Truncate" data-uid="Bodu.Numerics.Fraction`1.Truncate">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.Truncate.html#Bodu_Numerics_Fraction_1_Truncate">Truncate()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the integer part of this value, discarding any fractional component.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_TryCreate__0__0_Bodu_Numerics_Fraction__0___" data-uid="Bodu.Numerics.Fraction`1.TryCreate(`0,`0,Bodu.Numerics.Fraction{`0}@)">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.TryCreate.html#Bodu_Numerics_Fraction_1_TryCreate__0__0_Bodu_Numerics_Fraction__0___">TryCreate(T, T, out Fraction&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to create a canonical <a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a> from the specified numerator and denominator.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_TryFormat_System_Span_System_Byte__System_Int32__System_ReadOnlySpan_System_Char__System_IFormatProvider_" data-uid="Bodu.Numerics.Fraction`1.TryFormat(System.Span{System.Byte},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.TryFormat.html#Bodu_Numerics_Fraction_1_TryFormat_System_Span_System_Byte__System_Int32__System_ReadOnlySpan_System_Char__System_IFormatProvider_">TryFormat(Span&lt;byte&gt;, out int, ReadOnlySpan&lt;char&gt;, IFormatProvider?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to format this rational value into the provided UTF-8 byte span.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_TryFormat_System_Span_System_Char__System_Int32__System_ReadOnlySpan_System_Char__System_IFormatProvider_" data-uid="Bodu.Numerics.Fraction`1.TryFormat(System.Span{System.Char},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.TryFormat.html#Bodu_Numerics_Fraction_1_TryFormat_System_Span_System_Char__System_Int32__System_ReadOnlySpan_System_Char__System_IFormatProvider_">TryFormat(Span&lt;char&gt;, out int, ReadOnlySpan&lt;char&gt;, IFormatProvider?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to format this rational value into the provided character span.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_TryFromBigInteger_System_Numerics_BigInteger_System_Numerics_BigInteger_Bodu_Numerics_Fraction__0___" data-uid="Bodu.Numerics.Fraction`1.TryFromBigInteger(System.Numerics.BigInteger,System.Numerics.BigInteger,Bodu.Numerics.Fraction{`0}@)">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.TryFromBigInteger.html#Bodu_Numerics_Fraction_1_TryFromBigInteger_System_Numerics_BigInteger_System_Numerics_BigInteger_Bodu_Numerics_Fraction__0___">TryFromBigInteger(BigInteger, BigInteger, out Fraction&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to create a canonical <a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a> from a numerator and denominator.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_TryFromDecimal_System_Decimal_Bodu_Numerics_Fraction__0___" data-uid="Bodu.Numerics.Fraction`1.TryFromDecimal(System.Decimal,Bodu.Numerics.Fraction{`0}@)">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.TryFromDecimal.html#Bodu_Numerics_Fraction_1_TryFromDecimal_System_Decimal_Bodu_Numerics_Fraction__0___">TryFromDecimal(decimal, out Fraction&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to convert a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a> to its exact rational representation.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_TryFromDouble_System_Double_Bodu_Numerics_Fraction__0___" data-uid="Bodu.Numerics.Fraction`1.TryFromDouble(System.Double,Bodu.Numerics.Fraction{`0}@)">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.TryFromDouble.html#Bodu_Numerics_Fraction_1_TryFromDouble_System_Double_Bodu_Numerics_Fraction__0___">TryFromDouble(double, out Fraction&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to convert a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a> to its exact rational representation.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_TryParse_System_ReadOnlySpan_System_Byte__System_IFormatProvider_Bodu_Numerics_Fraction__0___" data-uid="Bodu.Numerics.Fraction`1.TryParse(System.ReadOnlySpan{System.Byte},System.IFormatProvider,Bodu.Numerics.Fraction{`0}@)">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.TryParse.html#Bodu_Numerics_Fraction_1_TryParse_System_ReadOnlySpan_System_Byte__System_IFormatProvider_Bodu_Numerics_Fraction__0___">TryParse(ReadOnlySpan&lt;byte&gt;, IFormatProvider?, out Fraction&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to parse a UTF-8 byte span into a <a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a> using the specified culture.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_TryParse_System_ReadOnlySpan_System_Char__System_IFormatProvider_Bodu_Numerics_Fraction__0___" data-uid="Bodu.Numerics.Fraction`1.TryParse(System.ReadOnlySpan{System.Char},System.IFormatProvider,Bodu.Numerics.Fraction{`0}@)">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.TryParse.html#Bodu_Numerics_Fraction_1_TryParse_System_ReadOnlySpan_System_Char__System_IFormatProvider_Bodu_Numerics_Fraction__0___">TryParse(ReadOnlySpan&lt;char&gt;, IFormatProvider?, out Fraction&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to parse a character span into a <a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a> using the specified culture.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_TryParse_System_String_Bodu_Numerics_Fraction__0___" data-uid="Bodu.Numerics.Fraction`1.TryParse(System.String,Bodu.Numerics.Fraction{`0}@)">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.TryParse.html#Bodu_Numerics_Fraction_1_TryParse_System_String_Bodu_Numerics_Fraction__0___">TryParse(string?, out Fraction&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to parse a string into a <a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_TryParse_System_String_System_IFormatProvider_Bodu_Numerics_Fraction__0___" data-uid="Bodu.Numerics.Fraction`1.TryParse(System.String,System.IFormatProvider,Bodu.Numerics.Fraction{`0}@)">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.TryParse.html#Bodu_Numerics_Fraction_1_TryParse_System_String_System_IFormatProvider_Bodu_Numerics_Fraction__0___">TryParse(string?, IFormatProvider?, out Fraction&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to parse a string into a <a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a> using the specified culture.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_TryToBigInteger_System_Numerics_BigInteger__" data-uid="Bodu.Numerics.Fraction`1.TryToBigInteger(System.Numerics.BigInteger@)">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.TryToBigInteger.html#Bodu_Numerics_Fraction_1_TryToBigInteger_System_Numerics_BigInteger__">TryToBigInteger(out BigInteger)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Converts the integer part of this rational value to a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.biginteger">BigInteger</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_TryToDecimal_System_Decimal__" data-uid="Bodu.Numerics.Fraction`1.TryToDecimal(System.Decimal@)">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.TryToDecimal.html#Bodu_Numerics_Fraction_1_TryToDecimal_System_Decimal__">TryToDecimal(out decimal)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to convert this rational value to the nearest <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_TryToDouble_System_Double__" data-uid="Bodu.Numerics.Fraction`1.TryToDouble(System.Double@)">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.TryToDouble.html#Bodu_Numerics_Fraction_1_TryToDouble_System_Double__">TryToDouble(out double)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to convert this rational value to the nearest <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_TryToInteger__0__" data-uid="Bodu.Numerics.Fraction`1.TryToInteger(`0@)">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.TryToInteger.html#Bodu_Numerics_Fraction_1_TryToInteger__0__">TryToInteger(out T)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Converts the integer part of this rational value to a value of the backing type.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_TryToSingle_System_Single__" data-uid="Bodu.Numerics.Fraction`1.TryToSingle(System.Single@)">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.TryToSingle.html#Bodu_Numerics_Fraction_1_TryToSingle_System_Single__">TryToSingle(out float)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to convert this rational value to the nearest <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">float</a>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="operators">Operators
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_op_Addition_Bodu_Numerics_Fraction__0__Bodu_Numerics_Fraction__0__" data-uid="Bodu.Numerics.Fraction`1.op_Addition(Bodu.Numerics.Fraction{`0},Bodu.Numerics.Fraction{`0})">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.op_Addition.html#Bodu_Numerics_Fraction_1_op_Addition_Bodu_Numerics_Fraction__0__Bodu_Numerics_Fraction__0__">operator +(Fraction&lt;T&gt;, Fraction&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Adds two rational values.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_op_Decrement_Bodu_Numerics_Fraction__0__" data-uid="Bodu.Numerics.Fraction`1.op_Decrement(Bodu.Numerics.Fraction{`0})">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.op_Decrement.html#Bodu_Numerics_Fraction_1_op_Decrement_Bodu_Numerics_Fraction__0__">operator --(Fraction&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the rational value decreased by one.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_op_Division_Bodu_Numerics_Fraction__0__Bodu_Numerics_Fraction__0__" data-uid="Bodu.Numerics.Fraction`1.op_Division(Bodu.Numerics.Fraction{`0},Bodu.Numerics.Fraction{`0})">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.op_Division.html#Bodu_Numerics_Fraction_1_op_Division_Bodu_Numerics_Fraction__0__Bodu_Numerics_Fraction__0__">operator /(Fraction&lt;T&gt;, Fraction&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Divides one rational value by another.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_op_Equality_Bodu_Numerics_Fraction__0__Bodu_Numerics_Fraction__0__" data-uid="Bodu.Numerics.Fraction`1.op_Equality(Bodu.Numerics.Fraction{`0},Bodu.Numerics.Fraction{`0})">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.op_Equality.html#Bodu_Numerics_Fraction_1_op_Equality_Bodu_Numerics_Fraction__0__Bodu_Numerics_Fraction__0__">operator ==(Fraction&lt;T&gt;, Fraction&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether two rational values are equal.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_op_Explicit_Bodu_Numerics_Fraction__0___System_Decimal" data-uid="Bodu.Numerics.Fraction`1.op_Explicit(Bodu.Numerics.Fraction{`0})~System.Decimal">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.op_Explicit.html#Bodu_Numerics_Fraction_1_op_Explicit_Bodu_Numerics_Fraction__0___System_Decimal">explicit operator decimal(Fraction&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Converts a rational value to the nearest <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_op_Explicit_Bodu_Numerics_Fraction__0___System_Double" data-uid="Bodu.Numerics.Fraction`1.op_Explicit(Bodu.Numerics.Fraction{`0})~System.Double">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.op_Explicit.html#Bodu_Numerics_Fraction_1_op_Explicit_Bodu_Numerics_Fraction__0___System_Double">explicit operator double(Fraction&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Converts a rational value to the nearest <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_op_Explicit_Bodu_Numerics_Fraction__0___System_Single" data-uid="Bodu.Numerics.Fraction`1.op_Explicit(Bodu.Numerics.Fraction{`0})~System.Single">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.op_Explicit.html#Bodu_Numerics_Fraction_1_op_Explicit_Bodu_Numerics_Fraction__0___System_Single">explicit operator float(Fraction&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Converts a rational value to the nearest <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">float</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_op_Explicit_System_Decimal__Bodu_Numerics_Fraction__0_" data-uid="Bodu.Numerics.Fraction`1.op_Explicit(System.Decimal)~Bodu.Numerics.Fraction{`0}">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.op_Explicit.html#Bodu_Numerics_Fraction_1_op_Explicit_System_Decimal__Bodu_Numerics_Fraction__0_">explicit operator Fraction&lt;T&gt;(decimal)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Converts a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a> to its exact rational representation.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_op_Explicit_System_Double__Bodu_Numerics_Fraction__0_" data-uid="Bodu.Numerics.Fraction`1.op_Explicit(System.Double)~Bodu.Numerics.Fraction{`0}">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.op_Explicit.html#Bodu_Numerics_Fraction_1_op_Explicit_System_Double__Bodu_Numerics_Fraction__0_">explicit operator Fraction&lt;T&gt;(double)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Converts a finite <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a> to its exact rational representation.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_op_GreaterThan_Bodu_Numerics_Fraction__0__Bodu_Numerics_Fraction__0__" data-uid="Bodu.Numerics.Fraction`1.op_GreaterThan(Bodu.Numerics.Fraction{`0},Bodu.Numerics.Fraction{`0})">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.op_GreaterThan.html#Bodu_Numerics_Fraction_1_op_GreaterThan_Bodu_Numerics_Fraction__0__Bodu_Numerics_Fraction__0__">operator &gt;(Fraction&lt;T&gt;, Fraction&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether one rational value is greater than another.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_op_GreaterThanOrEqual_Bodu_Numerics_Fraction__0__Bodu_Numerics_Fraction__0__" data-uid="Bodu.Numerics.Fraction`1.op_GreaterThanOrEqual(Bodu.Numerics.Fraction{`0},Bodu.Numerics.Fraction{`0})">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.op_GreaterThanOrEqual.html#Bodu_Numerics_Fraction_1_op_GreaterThanOrEqual_Bodu_Numerics_Fraction__0__Bodu_Numerics_Fraction__0__">operator &gt;=(Fraction&lt;T&gt;, Fraction&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether one rational value is greater than or equal to another.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_op_Implicit__0__Bodu_Numerics_Fraction__0_" data-uid="Bodu.Numerics.Fraction`1.op_Implicit(`0)~Bodu.Numerics.Fraction{`0}">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.op_Implicit.html#Bodu_Numerics_Fraction_1_op_Implicit__0__Bodu_Numerics_Fraction__0_">implicit operator Fraction&lt;T&gt;(T)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Converts an integer of the backing type to a whole-number <a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_op_Increment_Bodu_Numerics_Fraction__0__" data-uid="Bodu.Numerics.Fraction`1.op_Increment(Bodu.Numerics.Fraction{`0})">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.op_Increment.html#Bodu_Numerics_Fraction_1_op_Increment_Bodu_Numerics_Fraction__0__">operator ++(Fraction&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the rational value increased by one.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_op_Inequality_Bodu_Numerics_Fraction__0__Bodu_Numerics_Fraction__0__" data-uid="Bodu.Numerics.Fraction`1.op_Inequality(Bodu.Numerics.Fraction{`0},Bodu.Numerics.Fraction{`0})">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.op_Inequality.html#Bodu_Numerics_Fraction_1_op_Inequality_Bodu_Numerics_Fraction__0__Bodu_Numerics_Fraction__0__">operator !=(Fraction&lt;T&gt;, Fraction&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether two rational values are unequal.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_op_LessThan_Bodu_Numerics_Fraction__0__Bodu_Numerics_Fraction__0__" data-uid="Bodu.Numerics.Fraction`1.op_LessThan(Bodu.Numerics.Fraction{`0},Bodu.Numerics.Fraction{`0})">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.op_LessThan.html#Bodu_Numerics_Fraction_1_op_LessThan_Bodu_Numerics_Fraction__0__Bodu_Numerics_Fraction__0__">operator &lt;(Fraction&lt;T&gt;, Fraction&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether one rational value is less than another.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_op_LessThanOrEqual_Bodu_Numerics_Fraction__0__Bodu_Numerics_Fraction__0__" data-uid="Bodu.Numerics.Fraction`1.op_LessThanOrEqual(Bodu.Numerics.Fraction{`0},Bodu.Numerics.Fraction{`0})">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.op_LessThanOrEqual.html#Bodu_Numerics_Fraction_1_op_LessThanOrEqual_Bodu_Numerics_Fraction__0__Bodu_Numerics_Fraction__0__">operator &lt;=(Fraction&lt;T&gt;, Fraction&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether one rational value is less than or equal to another.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_op_Modulus_Bodu_Numerics_Fraction__0__Bodu_Numerics_Fraction__0__" data-uid="Bodu.Numerics.Fraction`1.op_Modulus(Bodu.Numerics.Fraction{`0},Bodu.Numerics.Fraction{`0})">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.op_Modulus.html#Bodu_Numerics_Fraction_1_op_Modulus_Bodu_Numerics_Fraction__0__Bodu_Numerics_Fraction__0__">operator %(Fraction&lt;T&gt;, Fraction&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the remainder produced by dividing one rational value by another, with the sign of the dividend.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_op_Multiply_Bodu_Numerics_Fraction__0__Bodu_Numerics_Fraction__0__" data-uid="Bodu.Numerics.Fraction`1.op_Multiply(Bodu.Numerics.Fraction{`0},Bodu.Numerics.Fraction{`0})">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.op_Multiply.html#Bodu_Numerics_Fraction_1_op_Multiply_Bodu_Numerics_Fraction__0__Bodu_Numerics_Fraction__0__">operator *(Fraction&lt;T&gt;, Fraction&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Multiplies two rational values.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_op_Subtraction_Bodu_Numerics_Fraction__0__Bodu_Numerics_Fraction__0__" data-uid="Bodu.Numerics.Fraction`1.op_Subtraction(Bodu.Numerics.Fraction{`0},Bodu.Numerics.Fraction{`0})">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.op_Subtraction.html#Bodu_Numerics_Fraction_1_op_Subtraction_Bodu_Numerics_Fraction__0__Bodu_Numerics_Fraction__0__">operator -(Fraction&lt;T&gt;, Fraction&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Subtracts one rational value from another.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_op_UnaryNegation_Bodu_Numerics_Fraction__0__" data-uid="Bodu.Numerics.Fraction`1.op_UnaryNegation(Bodu.Numerics.Fraction{`0})">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.op_UnaryNegation.html#Bodu_Numerics_Fraction_1_op_UnaryNegation_Bodu_Numerics_Fraction__0__">operator -(Fraction&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the additive inverse of a rational value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Fraction_1_op_UnaryPlus_Bodu_Numerics_Fraction__0__" data-uid="Bodu.Numerics.Fraction`1.op_UnaryPlus(Bodu.Numerics.Fraction{`0})">
+          <a class="xref" href="Bodu.Numerics.Fraction-1.op_UnaryPlus.html#Bodu_Numerics_Fraction_1_op_UnaryPlus_Bodu_Numerics_Fraction__0__">operator +(Fraction&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the rational value unchanged.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_">ComparableExtensions.AtLeast&lt;T&gt;(T, T)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_">ComparableExtensions.AtMost&lt;T&gt;(T, T)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Clamp.html#Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__">ComparableExtensions.Clamp&lt;T&gt;(T, T?, T?)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Clamp.html#Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.Clamp&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsBetween.html#Bodu_Extensions_ComparableExtensions_IsBetween__1___0___0___0_">ComparableExtensions.IsBetween&lt;T&gt;(T, T?, T?)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsBetween.html#Bodu_Extensions_ComparableExtensions_IsBetween__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsBetween&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual__1___0___0_">ComparableExtensions.IsGreaterThanOrEqual&lt;T&gt;(T, T?)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThan.html#Bodu_Extensions_ComparableExtensions_IsGreaterThan__1___0___0_">ComparableExtensions.IsGreaterThan&lt;T&gt;(T, T?)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThan.html#Bodu_Extensions_ComparableExtensions_IsGreaterThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual__1___0___0_">ComparableExtensions.IsLessThanOrEqual&lt;T&gt;(T, T?)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThan.html#Bodu_Extensions_ComparableExtensions_IsLessThan__1___0___0_">ComparableExtensions.IsLessThan&lt;T&gt;(T, T?)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThan.html#Bodu_Extensions_ComparableExtensions_IsLessThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsOutside.html#Bodu_Extensions_ComparableExtensions_IsOutside__1___0___0___0_">ComparableExtensions.IsOutside&lt;T&gt;(T, T?, T?)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsOutside.html#Bodu_Extensions_ComparableExtensions_IsOutside__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsOutside&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_">ComparableExtensions.Max&lt;T&gt;(T, T)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_">ComparableExtensions.Min&lt;T&gt;(T, T)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.NumericExtensions.GetBytes.html#Bodu_Extensions_NumericExtensions_GetBytes__1___0_System_Boolean_">NumericExtensions.GetBytes&lt;T&gt;(T, bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Numerics.Serialization.Json.FractionJsonExtensions.ToJson.html#Bodu_Numerics_Serialization_Json_FractionJsonExtensions_ToJson__1_Bodu_Numerics_Fraction___0__Bodu_Numerics_Serialization_Json_NumericsJsonPolicy_">FractionJsonExtensions.ToJson&lt;T&gt;(Fraction&lt;T&gt;, NumericsJsonPolicy)</a>
+  </div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

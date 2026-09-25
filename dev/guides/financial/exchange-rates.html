@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Working with exchange rates | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Working with exchange rates | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="working-with-exchange-rates">Working with exchange rates</h1>
+
+<p><code>Bodu.Financial</code> ships a complete foreign-exchange provider stack:
+two contracts (timeless and dated), an immutable observation record,
+a strongly-typed pair key, an <code>O(log n)</code> series store, in-memory
+tables, a date-pinning adapter, and a conversion-audit record. This guide walks the surface
+and the patterns it supports — unit-test rates, ledger postings, tax
+reports, and multi-source feeds that carry their provenance.</p>
+<h2 id="concepts-in-one-minute">Concepts in one minute</h2>
+<ul>
+<li><strong>Rate</strong> — <code>ExchangeRate</code> is an immutable record-struct: <code>From</code> and <code>To</code> (both <code>CurrencyCode</code>), <code>Date</code>, <code>Rate</code>, <code>Provider</code>, <code>IsInverted</code>, and an optional <code>FetchedAtUtc</code>, with a derived <code>Pair</code> and a <code>Convert(amount)</code> helper. Rounding is deferred to the money boundary.</li>
+<li><strong>Pair</strong> — <code>CurrencyPair</code> is the <code>(From, To)</code> key over two <code>CurrencyCode</code> values. Validates both codes at construction; exposes <code>Inverse()</code>.</li>
+<li><strong>Observation</strong> — <code>RateObservation</code> is the lightweight <code>(Date, Rate)</code> carrier used by series enumeration, builder mutation, and bulk-import APIs.</li>
+<li><strong>Series</strong> — <code>RateSeries</code> stores every observation for one <code>(pair, provider)</code> in two parallel sorted arrays. Resolution is <code>O(log n)</code> via <code>Array.BinarySearch</code>, allocation-free. Immutable; use <code>RateSeriesBuilder</code> to construct or edit observations.</li>
+<li><strong>Builder</strong> — <code>RateSeriesBuilder</code> is the mutable companion that maintains strictly ascending unique dates and produces immutable <code>RateSeries</code> snapshots via <code>ToSeries()</code>.</li>
+<li><strong>Table</strong> — <code>RateTableBuilder</code> keys one builder per <code>(pair, provider)</code> for multi-series import workflows.</li>
+<li><strong>Provider</strong> — <code>IRateProvider</code> is timeless; <code>IDatedRateProvider</code> is dated and returns a <code>RateLookupResult</code> with provenance.</li>
+<li><strong>Lookup result</strong> — <code>RateLookupResult</code> carries the rate, requested date, resolution policy, and offset-day distance.</li>
+</ul>
+<p>See the <a href="../../docs/financial/concepts.html">core concepts page</a> for
+the long-form treatment of every <code>RateDateResolution</code> policy,
+the <a href="exchange-types.html">exchange-rate types catalogue</a> for a
+scenario-driven map of every type below, and
+<a href="exchange-rate-lookups.html">Exchange-rate lookups on a known dataset</a>
+for a worked results matrix showing how each lookup option changes the
+answer.</p>
+<h2 id="a-minimal-in-memory-provider">A minimal in-memory provider</h2>
+<p>For unit tests, fixtures, and &quot;current rate&quot; lookups,
+<code>FixedRateTable</code> backed by a flat dictionary is the smallest
+implementation:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Financial;
+using Bodu.Financial.Currencies;
+using Bodu.Financial.ExchangeRates;
+
+Dictionary&lt;(string From, string To), decimal&gt; rates = new()
+{
+    { (&quot;USD&quot;, &quot;EUR&quot;), 0.93m },
+};
+FixedRateTable table = new(rates);
+
+table.GetRate(&quot;USD&quot;, &quot;EUR&quot;);  // 0.93
+table.GetRate(&quot;EUR&quot;, &quot;USD&quot;);  // 1 / 0.93   (inverse fallback)
+table.GetRate(&quot;USD&quot;, &quot;USD&quot;);  // 1m         (identity)
+
+Money&lt;EUR&gt; eur = new Money&lt;USD&gt;(100m).Convert&lt;EUR&gt;(table.GetRate(&quot;USD&quot;, &quot;EUR&quot;));
+</code></pre>
+<p>The table short-circuits same-currency lookups to <code>1m</code> and tries the
+inverse pair (returning <code>1 / rate</code>) when only the reverse direction
+is present. Missing pairs (and their inverse) throw
+<code>KeyNotFoundException</code>.</p>
+<h2 id="timeless-vs-dated-lookup">Timeless vs. dated lookup</h2>
+<p>Reach for <code>IRateProvider</code> when the date of the rate is not
+part of what you record — a unit-test fixture, a daily snapshot, a
+live ticker. Conversion is a single multiplication.</p>
+<p>Reach for <code>IDatedRateProvider</code> when the date <em>is</em> part of the
+audit trail — ledger postings, tax reports, regulatory filings. It
+returns a <code>RateLookupResult</code> carrying the provider name, the
+actual observation date used, the offset-day distance, the
+resolution policy, and the inversion flag. The dated side ships
+paired <code>GetRate</code> (throws) and <code>TryGetRate</code> (allocation-free <code>bool</code>);
+the timeless contract has only the throwing form.</p>
+<h2 id="dated-lookup-with-provenance">Dated lookup with provenance</h2>
+<p><code>FixedDatedRateProvider</code> accepts a flat sequence of
+<code>ExchangeRate</code> observations and groups them into one
+<code>RateSeries</code> per <code>(pair, provider)</code>. Every observation for a
+pair must carry the same provider name; to group rates from multiple
+sources, see <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider.html"><code>AggregatingRateProvider</code></a>
+in <code>Bodu.Financial.ExchangeRates.Caching</code>.</p>
+<pre><code class="lang-csharp">ExchangeRate[] observations =
+{
+    new(CurrencyCode.USD, CurrencyCode.EUR, new DateOnly(2024, 6, 14), 0.928m, &quot;ECB&quot;),
+    new(CurrencyCode.USD, CurrencyCode.EUR, new DateOnly(2024, 6, 17), 0.931m, &quot;ECB&quot;),
+    new(CurrencyCode.USD, CurrencyCode.EUR, new DateOnly(2024, 6, 18), 0.930m, &quot;ECB&quot;),
+};
+FixedDatedRateProvider table = new(observations);
+
+RateLookupResult lookup = table.GetRate(
+    &quot;USD&quot;, &quot;EUR&quot;,
+    new DateOnly(2024, 6, 15),                  // Saturday — no observation
+    RateLookupOptions.PreviousWithin(3));
+
+lookup.Rate.Rate;      // 0.928m
+lookup.Rate.Date;      // 2024-06-14 — observation date actually used
+lookup.Rate.Provider;  // &quot;ECB&quot;
+lookup.RequestedDate;  // 2024-06-15
+lookup.Resolution;     // PreviousOnOrBefore
+lookup.OffsetDays;     // 1   (lookup.IsExactDate =&gt; false)
+</code></pre>
+<p>Same-currency lookups return a synthetic identity rate tagged with
+<code>FixedDatedRateProvider.IdentityProviderName</code> (<code>&quot;Identity&quot;</code>), so
+audit consumers can filter pass-throughs without a magic-string.</p>
+<h3 id="lookup-options">Lookup options</h3>
+<p><code>RateLookupOptions</code> carries the resolution policy and a
+tolerance window. Use the static factories for the common shapes:</p>
+<table>
+<thead>
+<tr>
+<th>Factory</th>
+<th>Resolution</th>
+<th>Use case</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Exact</code></td>
+<td><code>Exact</code></td>
+<td>Strict-match audit; fail fast when missing.</td>
+</tr>
+<tr>
+<td><code>PreviousWithin(int)</code></td>
+<td><code>PreviousOnOrBefore</code></td>
+<td>Accounting and tax — never selects a future rate.</td>
+</tr>
+<tr>
+<td><code>NextWithin(int)</code></td>
+<td><code>NextOnOrAfter</code></td>
+<td>Forward-looking pricing.</td>
+</tr>
+<tr>
+<td><code>NearestWithin(int)</code></td>
+<td><code>NearestPreferPrevious</code></td>
+<td>General convenience; ties prefer the earlier date.</td>
+</tr>
+</tbody>
+</table>
+<p>For finer control, construct the record directly with
+<code>RateDateResolution.Nearest</code> (rejects ties),
+<code>NearestPreferPrevious</code>, or <code>NearestPreferNext</code>. <code>AllowInverse</code> and
+<code>AllowSameCurrencyIdentityRate</code> (both default <code>true</code>) disable the
+reverse-pair fallback and identity short-circuit.</p>
+<h2 id="building-a-series-imperatively">Building a series imperatively</h2>
+<p><code>RateSeries</code> is immutable, so the construction path for series
+that aren't shipped as a one-shot literal is <code>RateSeriesBuilder</code>.
+Use it for manual data entry, streaming imports, and merge-with-history
+flows. Three explicit shapes distinguish caller intent:</p>
+<ul>
+<li><code>Add(date, rate)</code> — throws if the date is already present (the data
+is wrong if you see this).</li>
+<li><code>Set(date, rate)</code> — throws if the date is missing (you expected an
+observation to be there).</li>
+<li><code>Upsert(date, rate)</code> — insert-or-replace; the right shape for merge
+semantics.</li>
+</ul>
+<p>Each has a <code>Try</code>-prefixed <code>bool</code> sibling. Bulk import uses <code>AddRange</code>
+(rejects duplicates outright) and <code>UpsertRange</code> (replaces existing
+dates; rejects in-batch duplicates). Both apply atomic rollback: a
+mid-batch validation failure leaves the builder unchanged.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">CurrencyPair pair = new(CurrencyCode.USD, CurrencyCode.AUD);
+RateSeriesBuilder builder = new(pair, &quot;RBA&quot;);
+
+builder.Add(new DateOnly(2026, 6, 1), 1.50m);
+builder.AddRange(new[]
+{
+    new RateObservation(new DateOnly(2026, 6, 2), 1.51m),
+    new RateObservation(new DateOnly(2026, 6, 3), 1.52m),
+});
+builder.Upsert(new DateOnly(2026, 6, 3), 1.53m);  // replaces 1.52m
+
+RateSeries snapshot = builder.ToSeries();
+</code></pre>
+<p><code>ToSeries()</code> produces a fresh immutable <code>RateSeries</code> that is
+isolated from further builder mutations. Calling <code>ToSeries()</code> on an
+empty builder throws <code>InvalidOperationException</code> because the immutable
+series contract requires at least one observation.</p>
+<h3 id="copy-on-write-edits-on-an-existing-series">Copy-on-write edits on an existing series</h3>
+<p>When the source of truth is already a <code>RateSeries</code> snapshot,
+the copy-on-write helpers wrap the builder roundtrip for the common
+single-edit case:</p>
+<pre><code class="lang-csharp">RateSeries withUpdate = original.WithRate(new DateOnly(2026, 6, 3), 1.55m);
+RateSeries withRemoval = original.WithoutRate(new DateOnly(2026, 6, 3));
+
+foreach (var observation in original.GetObservations())
+{
+    // observation.Date / observation.Rate
+}
+</code></pre>
+<p><code>original</code> is unchanged in both cases. <code>ToBuilder()</code> returns a fresh
+builder seeded from the snapshot for multi-edit workflows.</p>
+<h2 id="editing-across-many-pairs-and-providers">Editing across many pairs and providers</h2>
+<p>When import data arrives flat — many pairs from many providers — keep
+the builder bookkeeping in <code>RateTableBuilder</code>. It owns one
+<code>RateSeriesBuilder</code> per <code>(pair, provider)</code> key and exposes
+both lazy creation and a multi-series snapshot operation:</p>
+<pre><code class="lang-csharp">RateTableBuilder table = new();
+
+table.Upsert(new CurrencyPair(CurrencyCode.USD, CurrencyCode.AUD), &quot;RBA&quot;, new DateOnly(2026, 6, 1), 1.50m);
+table.Upsert(new CurrencyPair(CurrencyCode.USD, CurrencyCode.JPY), &quot;BoJ&quot;, new DateOnly(2026, 6, 1), 110m);
+
+// Reach for the underlying builder if you need bulk operations on one series.
+RateSeriesBuilder rba = table.GetOrAddSeries(new CurrencyPair(CurrencyCode.USD, CurrencyCode.AUD), &quot;RBA&quot;);
+rba.AddRange(/* observations */);
+
+// Snapshot every non-empty series in one pass.
+IReadOnlyList&lt;RateSeries&gt; snapshots = table.ToSeries();
+</code></pre>
+<p><code>TryGetSeries</code> returns a fresh immutable snapshot when the series
+exists and is non-empty; <code>TryGetBuilder</code> returns the mutable builder
+directly. Empty builders are skipped by <code>ToSeries()</code> because an
+immutable series cannot be empty. The table is not thread-safe; use
+external synchronisation for concurrent edits.</p>
+<h2 id="grouping-providers-with-fallback">Grouping providers with fallback</h2>
+<p>Grouping several providers behind one entry point — prioritised fallback,
+averaging, or per-FX-pair routing — lives in the
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.html"><code>Bodu.Financial.ExchangeRates.Caching</code></a>
+package as <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider.html"><code>AggregatingRateProvider</code></a>.
+It wraps an ordered set of <strong>named</strong> dated providers; the default
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.PriorityFallbackStrategy.html"><code>PriorityFallbackStrategy</code></a>
+consults them in order and returns the first success.</p>
+<pre><code class="lang-csharp">IDatedRateProvider stack = new AggregatingRateProvider(new[]
+{
+    new NamedDatedRateProvider(&quot;ECB&quot;, new FixedDatedRateProvider(ecbObservations)),
+    new NamedDatedRateProvider(&quot;OANDA&quot;, new FixedDatedRateProvider(oandaObservations)),
+});
+
+RateLookupResult lookup = stack.GetRate(
+    &quot;USD&quot;, &quot;GBP&quot;,
+    new DateOnly(2024, 6, 15),
+    RateLookupOptions.PreviousWithin(7));
+
+// lookup.Rate.Provider identifies which underlying provider answered.
+</code></pre>
+<p>Priority fallback never re-orders results — if the primary returns a
+four-day-old rate before the backup is consulted, that result wins. Other
+strategies (averaging, or a custom
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.IRateAggregationStrategy.html"><code>IRateAggregationStrategy</code></a>)
+and per-FX-pair routing are covered in the
+<a href="exchange-rate-caching.html">caching and aggregating guide</a>.</p>
+<h2 id="pinning-a-date-to-a-dated-provider">Pinning a date to a dated provider</h2>
+<p><code>DatedRateProviderAdapter</code> exposes a dated provider through
+the timeless <code>IRateProvider</code> surface by pinning a fixed
+valuation date and options. Reach for it when an existing consumer
+accepts only the timeless contract — for example
+<code>MoneyBag.ConvertTo&lt;TTarget&gt;(IRateProvider)</code> — but the rates
+should still come from a dated source:</p>
+<pre><code class="lang-csharp">IRateProvider periodEnd = new DatedRateProviderAdapter(
+    inner:   datedProvider,
+    date:    new DateOnly(2024, 6, 30),
+    options: RateLookupOptions.PreviousWithin(7));
+
+Money&lt;USD&gt; totalUsd = wallet.ConvertTo&lt;USD&gt;(periodEnd);
+</code></pre>
+<p>The adapter delegates to the inner provider and returns only the raw
+rate. To preserve provenance, call the dated provider directly.</p>
+<h2 id="direction-typed-rates-exchangeratetbase-tquote">Direction-typed rates: <code>ExchangeRate&lt;TBase, TQuote&gt;</code></h2>
+<p>When both ends of a conversion are known at the call site, the
+compile-time-typed <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.ExchangeRate-2.html">ExchangeRate&lt;TBase, TQuote&gt;</a> encodes the
+direction in its type parameters, so applying a rate the wrong way
+round is a build error rather than a runtime surprise. It pairs with
+the typed <code>Money&lt;TCurrency&gt;.Convert&lt;TQuote&gt;(ExchangeRate&lt;TCurrency, TQuote&gt;)</code>
+overload:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Financial;
+using Bodu.Financial.Currencies;
+using Bodu.Financial.ExchangeRates;
+
+var typed = new ExchangeRate&lt;USD, EUR&gt;(0.928m, new DateOnly(2024, 6, 14), &quot;ECB&quot;);
+
+Money&lt;EUR&gt; eur = new Money&lt;USD&gt;(100m).Convert(typed);   // EUR 92.80
+ExchangeRate&lt;EUR, USD&gt; reverse = typed.Inverse();       // reciprocal, still typed
+
+ExchangeRate runtime = typed.ToRuntime();               // erase to the runtime form
+var back = ExchangeRate&lt;USD, EUR&gt;.FromRuntime(runtime); // throws on ISO mismatch
+</code></pre>
+<p><code>Convert(Money&lt;USD&gt;)</code> on the typed rate and <code>Money&lt;USD&gt;.Convert(typed)</code>
+are equivalent; both round to the destination minor-unit precision
+(<code>MidpointRounding.ToEven</code> by default).</p>
+<h2 id="audit-grade-conversion-through-moneytcurrency">Audit-grade conversion through <code>Money&lt;TCurrency&gt;</code></h2>
+<p><code>Money&lt;T&gt;.Convert&lt;TTarget&gt;(decimal)</code> is the lowest-level conversion
+(supply the rate, it rounds to the destination minor-unit precision).
+When the rate comes from a dated provider and provenance matters,
+prefer the extension methods on <code>Money&lt;T&gt;</code> and <code>Money</code>. They
+resolve the rate, apply it, and return either the converted amount
+(<code>ConvertTo</code>) or the full audit record (<code>ConvertToWithRate</code>):</p>
+<pre><code class="lang-csharp">Money&lt;USD&gt; price = new(100m);
+
+MoneyConversionResult&lt;USD, EUR&gt; audited = price.ConvertToWithRate&lt;USD, EUR&gt;(
+    provider, new DateOnly(2024, 6, 15),
+    RateLookupOptions.PreviousWithin(3));
+
+audited.SourceAmount;                // Money&lt;USD&gt; 100.00
+audited.TargetAmount;                // Money&lt;EUR&gt;  92.80
+audited.ExchangeRate.Rate.Provider;  // &quot;ECB&quot;
+audited.ExchangeRate.OffsetDays;     // 1
+</code></pre>
+<p><code>Money</code> has analogous <code>ConvertTo</code> and <code>ConvertToWithRate</code>
+extension methods for runtime-tagged amounts. For bags, see
+<code>MoneyBag.ConvertToWithAudit&lt;TTarget&gt;(...)</code>, which returns one
+<code>MoneyBagConversionLine</code> per source currency alongside the total.</p>
+<h2 id="common-patterns">Common patterns</h2>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Reach for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Unit-test rates; &quot;current rate&quot; caches</td>
+<td><code>FixedRateTable</code></td>
+</tr>
+<tr>
+<td>In-memory table where the date matters</td>
+<td><code>FixedDatedRateProvider</code> + <code>RateLookupOptions.PreviousWithin(...)</code></td>
+</tr>
+<tr>
+<td>Primary feed plus fallbacks</td>
+<td><code>AggregatingRateProvider</code> (in <code>Bodu.Financial.ExchangeRates.Caching</code>) over multiple dated providers</td>
+</tr>
+<tr>
+<td>Reporting period that pins one date everywhere</td>
+<td><code>DatedRateProviderAdapter</code> over the period-end date</td>
+</tr>
+<tr>
+<td>Ledger entry that records the rate provenance</td>
+<td><code>Money&lt;T&gt;.ConvertToWithRate&lt;,&gt;(provider, date, options)</code> returning <code>MoneyConversionResult&lt;,&gt;</code></td>
+</tr>
+<tr>
+<td>Runtime-tagged amount via a dated provider</td>
+<td><code>MoneyExchangeRateExtensions.ConvertToWithRate(...)</code></td>
+</tr>
+<tr>
+<td>Aggregate-then-convert a bag with per-line provenance</td>
+<td><code>MoneyBag.ConvertToWithAudit&lt;TTarget&gt;(provider, date, options)</code></td>
+</tr>
+<tr>
+<td>Build a new series imperatively, or merge incoming observations into an existing one</td>
+<td><code>RateSeriesBuilder</code> + <code>Add</code> / <code>Upsert</code> / <code>AddRange</code> / <code>UpsertRange</code></td>
+</tr>
+<tr>
+<td>Single insert/replace/remove that returns a fresh immutable series</td>
+<td><code>RateSeries.WithRate(date, rate)</code> / <code>WithoutRate(date)</code></td>
+</tr>
+<tr>
+<td>Import flat rate data across many <code>(pair, provider)</code> combinations before producing immutable snapshots</td>
+<td><code>RateTableBuilder</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="see-also">See also</h2>
+<ul>
+<li><a href="../../docs/financial/index.html">Bodu.Financial introduction</a>, <a href="../../docs/financial/concepts.html">Core concepts</a>, <a href="money.html">Working with <code>Money&lt;TCurrency&gt;</code></a></li>
+<li>Contracts — <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.IRateProvider.html"><code>IRateProvider</code></a>, <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.IDatedRateProvider.html"><code>IDatedRateProvider</code></a></li>
+<li>Values — <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.ExchangeRate.html"><code>ExchangeRate</code></a>, <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.CurrencyPair.html"><code>CurrencyPair</code></a>, <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateObservation.html"><code>RateObservation</code></a>, <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateSeries.html"><code>RateSeries</code></a></li>
+<li>Editing — <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateSeriesBuilder.html"><code>RateSeriesBuilder</code></a>, <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateSeriesKey.html"><code>RateSeriesKey</code></a>, <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateTableBuilder.html"><code>RateTableBuilder</code></a>, <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateBook.html"><code>RateBook</code></a></li>
+<li>Providers — <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.FixedRateTable.html"><code>FixedRateTable</code></a>, <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.FixedDatedRateProvider.html"><code>FixedDatedRateProvider</code></a>, <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.DatedRateProviderAdapter.html"><code>DatedRateProviderAdapter</code></a>; grouping via <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider.html"><code>AggregatingRateProvider</code></a></li>
+<li>Lookup metadata — <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateLookupOptions.html"><code>RateLookupOptions</code></a>, <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateLookupResult.html"><code>RateLookupResult</code></a>, <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateDateResolution.html"><code>RateDateResolution</code></a>, <a class="xref" href="../../api/Bodu.Financial.MoneyConversionResult-2.html"><code>MoneyConversionResult&lt;TSource, TTarget&gt;</code></a></li>
+<li><strong><a href="../topics/numerics-and-financial.html">Numerics &amp; Financial guides</a></strong> — every guide in this topic, across Bodu.Numerics and Bodu.Financial.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

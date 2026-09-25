@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class Poly1305AeadTransform | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class Poly1305AeadTransform | BODU ">
+    
+    <meta name="description" content="Provides the common  implementation shared by the extended-nonce Poly1305 AEAD constructions — argument validation, buffer-overlap rules, single-use lifecycle, and secure clearing of retained key material. Derived types supply the keystream engine and, when required, an alternative framing.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Security.Cryptography.Poly1305AeadTransform">
+
+
+
+  <h1 id="Bodu_Security_Cryptography_Poly1305AeadTransform" data-uid="Bodu.Security.Cryptography.Poly1305AeadTransform" class="text-break">Class Poly1305AeadTransform</h1>
+  <div class="markdown level0 summary"><p>Provides the common <a class="xref" href="Bodu.Security.Cryptography.IStreamAeadTransform.html">IStreamAeadTransform</a> implementation shared by the extended-nonce Poly1305 AEAD
+constructions — argument validation, buffer-overlap rules, single-use lifecycle, and secure clearing of retained key
+material. Derived types supply the keystream engine and, when required, an alternative framing.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><span class="xref">Poly1305AeadTransform</span></div>
+      <div class="level2"><a class="xref" href="Bodu.Security.Cryptography.XChaCha20Poly1305.html">XChaCha20Poly1305</a></div>
+      <div class="level2"><a class="xref" href="Bodu.Security.Cryptography.XSalsa20Poly1305.html">XSalsa20Poly1305</a></div>
+      <div class="level2"><a class="xref" href="Bodu.Security.Cryptography.XSalsa20Poly1305Aead.html">XSalsa20Poly1305Aead</a></div>
+  </div>
+  <div class="implements">
+    <h5>Implements</h5>
+    <div><a class="xref" href="Bodu.Security.Cryptography.IStreamAeadTransform.html">IStreamAeadTransform</a></div>
+    <div><a class="xref" href="Bodu.Security.Cryptography.IAeadTransform.html">IAeadTransform</a></div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Security.html">Security</a>.<a class="xref" href="Bodu.Security.Cryptography.html">Cryptography</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Security.Cryptography.dll</h6>
+  <h5 id="Bodu_Security_Cryptography_Poly1305AeadTransform_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public abstract class Poly1305AeadTransform : IStreamAeadTransform, IAeadTransform, IDisposable</code></pre>
+  </div>
+  <h5 id="Bodu_Security_Cryptography_Poly1305AeadTransform_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+All constructions in this family bind a 256-bit key and a 192-bit nonce and emit a 128-bit tag, with the wire format
+<code>ciphertext ‖ tag</code>. Associated data is passed directly to <a class="xref" href="Bodu.Security.Cryptography.Poly1305AeadTransform.Encrypt.html#Bodu_Security_Cryptography_Poly1305AeadTransform_Encrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_ReadOnlySpan_System_Byte__">Encrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a> / <a class="xref" href="Bodu.Security.Cryptography.Poly1305AeadTransform.Decrypt.html#Bodu_Security_Cryptography_Poly1305AeadTransform_Decrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_ReadOnlySpan_System_Byte__">Decrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a> and
+defaults to empty; there is no separate associated-data step. By default the transform applies the RFC 8439 framing
+(<a class="xref" href="Bodu.Security.Cryptography.IStreamCipher.html">SealRfc8439(IStreamCipher, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a> / <a class="xref" href="Bodu.Security.Cryptography.IStreamCipher.html">OpenRfc8439(IStreamCipher, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a>); a derived type may
+override <a class="xref" href="Bodu.Security.Cryptography.Poly1305AeadTransform.SealCore.html#Bodu_Security_Cryptography_Poly1305AeadTransform_SealCore_Bodu_Security_Cryptography_IStreamCipher_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">SealCore(IStreamCipher, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a> and <a class="xref" href="Bodu.Security.Cryptography.Poly1305AeadTransform.OpenCore.html#Bodu_Security_Cryptography_Poly1305AeadTransform_OpenCore_Bodu_Security_Cryptography_IStreamCipher_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">OpenCore(IStreamCipher, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a> to substitute a different framing, as the NaCl
+<code>crypto_secretbox</code> construction does.
+</p>
+<p>
+Instances are stateful, not thread-safe, and single-use per message. A second call to <a class="xref" href="Bodu.Security.Cryptography.Poly1305AeadTransform.Encrypt.html#Bodu_Security_Cryptography_Poly1305AeadTransform_Encrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_ReadOnlySpan_System_Byte__">Encrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a> or
+<a class="xref" href="Bodu.Security.Cryptography.Poly1305AeadTransform.Decrypt.html#Bodu_Security_Cryptography_Poly1305AeadTransform_Decrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_ReadOnlySpan_System_Byte__">Decrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a> — including after a tag-mismatch failure — throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a>.
+</p>
+<p>
+<strong>Buffer overlap.</strong> Exact in-place operation is supported: the plaintext (or ciphertext) may begin at
+the same location as the output. Any other (partial) overlap is rejected with <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a>.
+</p>
+</div>
+  <h3 id="constructors">Constructors
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Security_Cryptography_Poly1305AeadTransform__ctor_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.Poly1305AeadTransform.#ctor(System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.Security.Cryptography.Poly1305AeadTransform.-ctor.html#Bodu_Security_Cryptography_Poly1305AeadTransform__ctor_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__">Poly1305AeadTransform(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Security.Cryptography.Poly1305AeadTransform.html">Poly1305AeadTransform</a> class with the specified key and nonce.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Security_Cryptography_Poly1305AeadTransform_Key" data-uid="Bodu.Security.Cryptography.Poly1305AeadTransform.Key">
+          <a class="xref" href="Bodu.Security.Cryptography.Poly1305AeadTransform.Key.html#Bodu_Security_Cryptography_Poly1305AeadTransform_Key">Key</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the retained secret key.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_Poly1305AeadTransform_Nonce" data-uid="Bodu.Security.Cryptography.Poly1305AeadTransform.Nonce">
+          <a class="xref" href="Bodu.Security.Cryptography.Poly1305AeadTransform.Nonce.html#Bodu_Security_Cryptography_Poly1305AeadTransform_Nonce">Nonce</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the retained nonce.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_Poly1305AeadTransform_SupportsAssociatedData" data-uid="Bodu.Security.Cryptography.Poly1305AeadTransform.SupportsAssociatedData">
+          <a class="xref" href="Bodu.Security.Cryptography.Poly1305AeadTransform.SupportsAssociatedData.html#Bodu_Security_Cryptography_Poly1305AeadTransform_SupportsAssociatedData">SupportsAssociatedData</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a value indicating whether this construction authenticates associated data.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_Poly1305AeadTransform_TagSize" data-uid="Bodu.Security.Cryptography.Poly1305AeadTransform.TagSize">
+          <a class="xref" href="Bodu.Security.Cryptography.Poly1305AeadTransform.TagSize.html#Bodu_Security_Cryptography_Poly1305AeadTransform_TagSize">TagSize</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the authentication-tag size, in bits.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Security_Cryptography_Poly1305AeadTransform_CreateEngine" data-uid="Bodu.Security.Cryptography.Poly1305AeadTransform.CreateEngine">
+          <a class="xref" href="Bodu.Security.Cryptography.Poly1305AeadTransform.CreateEngine.html#Bodu_Security_Cryptography_Poly1305AeadTransform_CreateEngine">CreateEngine()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates the keystream engine for a single message, positioned at block counter 0.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_Poly1305AeadTransform_Decrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.Poly1305AeadTransform.Decrypt(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.Security.Cryptography.Poly1305AeadTransform.Decrypt.html#Bodu_Security_Cryptography_Poly1305AeadTransform_Decrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_ReadOnlySpan_System_Byte__">Decrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Verifies the authentication tag of <code class="paramref">ciphertextWithTag</code> against
+<code class="paramref">associatedData</code> and writes the recovered plaintext to <code class="paramref">output</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_Poly1305AeadTransform_Dispose" data-uid="Bodu.Security.Cryptography.Poly1305AeadTransform.Dispose">
+          <a class="xref" href="Bodu.Security.Cryptography.Poly1305AeadTransform.Dispose.html#Bodu_Security_Cryptography_Poly1305AeadTransform_Dispose">Dispose()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Releases the resources used by this instance and clears the retained key and nonce from memory.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_Poly1305AeadTransform_Encrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.Poly1305AeadTransform.Encrypt(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.Security.Cryptography.Poly1305AeadTransform.Encrypt.html#Bodu_Security_Cryptography_Poly1305AeadTransform_Encrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_ReadOnlySpan_System_Byte__">Encrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Encrypts <code class="paramref">plaintext</code>, authenticates it together with <code class="paramref">associatedData</code>, and
+writes the ciphertext followed by the authentication tag to <code class="paramref">output</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_Poly1305AeadTransform_OpenCore_Bodu_Security_Cryptography_IStreamCipher_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__System_Span_System_Byte__" data-uid="Bodu.Security.Cryptography.Poly1305AeadTransform.OpenCore(Bodu.Security.Cryptography.IStreamCipher,System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte},System.Span{System.Byte})">
+          <a class="xref" href="Bodu.Security.Cryptography.Poly1305AeadTransform.OpenCore.html#Bodu_Security_Cryptography_Poly1305AeadTransform_OpenCore_Bodu_Security_Cryptography_IStreamCipher_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">OpenCore(IStreamCipher, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Verifies and decrypts a message. The default implementation applies the RFC 8439 framing.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_Poly1305AeadTransform_SealCore_Bodu_Security_Cryptography_IStreamCipher_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__System_Span_System_Byte__" data-uid="Bodu.Security.Cryptography.Poly1305AeadTransform.SealCore(Bodu.Security.Cryptography.IStreamCipher,System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte},System.Span{System.Byte})">
+          <a class="xref" href="Bodu.Security.Cryptography.Poly1305AeadTransform.SealCore.html#Bodu_Security_Cryptography_Poly1305AeadTransform_SealCore_Bodu_Security_Cryptography_IStreamCipher_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">SealCore(IStreamCipher, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Encrypts and authenticates a message. The default implementation applies the RFC 8439 framing.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_Poly1305AeadTransform_ThrowIfDisposed" data-uid="Bodu.Security.Cryptography.Poly1305AeadTransform.ThrowIfDisposed">
+          <a class="xref" href="Bodu.Security.Cryptography.Poly1305AeadTransform.ThrowIfDisposed.html#Bodu_Security_Cryptography_Poly1305AeadTransform_ThrowIfDisposed">ThrowIfDisposed()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a> if this instance has been disposed.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.AeadTransformExtensions.Decrypt.html#Bodu_Security_Cryptography_Extensions_AeadTransformExtensions_Decrypt_Bodu_Security_Cryptography_IAeadTransform_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__">AeadTransformExtensions.Decrypt(IAeadTransform, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.AeadTransformExtensions.Encrypt.html#Bodu_Security_Cryptography_Extensions_AeadTransformExtensions_Encrypt_Bodu_Security_Cryptography_IAeadTransform_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__">AeadTransformExtensions.Encrypt(IAeadTransform, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

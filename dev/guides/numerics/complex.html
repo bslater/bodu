@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Working with Complex&lt;T&gt; | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Working with Complex&lt;T&gt; | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="working-with-complext">Working with <code>Complex&lt;T&gt;</code></h1>
+
+<p><a class="xref" href="../../api/Bodu.Numerics.Complex-1.html">Complex&lt;T&gt;</a> is an immutable complex number — a real and an imaginary component — generic over any IEEE 754 floating-point component type. It is the generic counterpart of <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.complex">Complex</a>, which is fixed to <code>double</code>: <code>Complex&lt;double&gt;</code> reproduces the BCL type's arithmetic and elementary functions, while <code>Complex&lt;float&gt;</code> and <code>Complex&lt;Half&gt;</code> give the same surface at half and quarter the storage.</p>
+<p>The type parameter is constrained to <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.ifloatingpointieee754-1">IFloatingPointIeee754&lt;TSelf&gt;</a>, so <code>float</code>, <code>double</code>, <code>Half</code>, and any conforming user-defined type qualify. <code>Complex&lt;T&gt;</code> itself implements <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.inumberbase-1">INumberBase&lt;TSelf&gt;</a> and <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.isignednumber-1">ISignedNumber&lt;TSelf&gt;</a> — not <code>INumber&lt;T&gt;</code>, because complex numbers have no total order — together with the <code>IEquatable</code>, formatting, and parsing interfaces (string, <code>char</code> span, and UTF-8) that back the members shown below.</p>
+<p>Every value in the comments of this guide was produced by running the sample; the function table in <a href="#pattern-4--elementary-functions-pinned-against-systemnumericscomplex">Pattern 4</a> was pinned against <code>System.Numerics.Complex</code> on the same inputs.</p>
+<h2 id="pattern-1--construction">Pattern 1 — construction</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Globalization;
+using Bodu.Numerics;
+
+var a = new Complex&lt;double&gt;(3, 4);                      // 3 + 4i
+var b = Complex&lt;double&gt;.Create(1, -2);                  // 1 - 2i
+Complex&lt;double&gt; real = 5.0;                             // implicit lift from T: 5 + 0i
+var polar = Complex&lt;double&gt;.FromPolarCoordinates(2, Math.PI / 2);   // ~0 + 2i
+var (re, im) = a;                                       // Deconstruct
+
+Console.WriteLine(a);                                   // &lt;3; 4&gt;
+Console.WriteLine(b);                                   // &lt;1; -2&gt;
+Console.WriteLine(real);                                // &lt;5; 0&gt;
+Console.WriteLine(polar.ToString(&quot;F3&quot;, CultureInfo.InvariantCulture)); // &lt;0.000; 2.000&gt;
+Console.WriteLine(Complex&lt;double&gt;.Zero + &quot; &quot; + Complex&lt;double&gt;.One + &quot; &quot; + Complex&lt;double&gt;.ImaginaryOne);   // &lt;0; 0&gt; &lt;1; 0&gt; &lt;0; 1&gt;
+Console.WriteLine(Complex&lt;float&gt;.NaN + &quot; &quot; + Complex&lt;double&gt;.Infinity);   // &lt;NaN; NaN&gt; &lt;∞; ∞&gt;
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>new Complex&lt;T&gt;(real, imaginary)</code> / <code>Create(real, imaginary)</code></td>
+<td>Component constructor and its static twin (useful as a method-group argument).</td>
+</tr>
+<tr>
+<td><code>implicit operator Complex&lt;T&gt;(T)</code></td>
+<td>Places a real value on the real axis. This is the <em>only</em> implicit conversion — a type parameter cannot carry the per-primitive conversions <code>System.Numerics.Complex</code> has, so lift <code>int</code> or <code>decimal</code> inputs to <code>T</code> first.</td>
+</tr>
+<tr>
+<td><code>FromPolarCoordinates(magnitude, phase)</code></td>
+<td><code>magnitude · (cos φ + i sin φ)</code>.</td>
+</tr>
+<tr>
+<td><code>Real</code>, <code>Imaginary</code></td>
+<td>The components.</td>
+</tr>
+<tr>
+<td><code>Deconstruct(out real, out imaginary)</code></td>
+<td>Tuple-style deconstruction.</td>
+</tr>
+<tr>
+<td><code>Zero</code>, <code>One</code>, <code>ImaginaryOne</code>, <code>NaN</code>, <code>Infinity</code></td>
+<td>Well-known values; <code>NaN</code> and <code>Infinity</code> set both components.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="pattern-2--arithmetic-and-operators">Pattern 2 — arithmetic and operators</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Numerics;
+
+var a = new Complex&lt;double&gt;(3, 4);
+var b = new Complex&lt;double&gt;(1, -2);
+
+Complex&lt;double&gt; sum  = a + b;    // &lt;4; 2&gt;
+Complex&lt;double&gt; diff = a - b;    // &lt;2; 6&gt;
+Complex&lt;double&gt; prod = a * b;    // &lt;11; -2&gt;
+Complex&lt;double&gt; quot = a / b;    // &lt;-1; 2&gt;
+Complex&lt;double&gt; neg  = -a;       // &lt;-3; -4&gt;
+bool equal = a == new Complex&lt;double&gt;(3, 4);   // true — component-wise equality
+
+var c = a;
+c++;                             // &lt;4; 4&gt; — ++ and -- act on the real part
+
+bool sameAsOperator = Complex&lt;double&gt;.Add(a, b) == a + b;   // true — Add/Subtract/Multiply/Divide/Negate mirror the operators
+</code></pre>
+<p>Multiplication uses the direct four-multiply form and division uses Smith's algorithm — the same choices as <code>System.Numerics.Complex</code> — so results and non-finite behaviour match the BCL bit for bit (see Pattern 4). <code>Complex&lt;T&gt;</code> also satisfies the generic-math operator interfaces, so it works in code written against <code>INumberBase&lt;TSelf&gt;</code>:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Numerics;
+using Bodu.Numerics;
+
+static T SumOfSquares&lt;T&gt;(IEnumerable&lt;T&gt; values) where T : INumberBase&lt;T&gt;
+{
+    T total = T.Zero;
+    foreach (T v in values) total += v * v;
+    return total;
+}
+
+var values = new[] { new Complex&lt;double&gt;(1, 1), new Complex&lt;double&gt;(2, -1) };
+Complex&lt;double&gt; result = SumOfSquares(values);   // &lt;5; -2&gt;
+</code></pre>
+<h2 id="pattern-3--magnitude-phase-conjugate-reciprocal">Pattern 3 — magnitude, phase, conjugate, reciprocal</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Numerics;
+
+var a = new Complex&lt;double&gt;(3, 4);
+
+double magnitude = a.Magnitude;                        // 5
+double abs       = Complex&lt;double&gt;.Abs(a);             // 5 — same value, static form
+double phase     = a.Phase;                            // 0.9272952180016122 (radians, atan2(4, 3))
+Complex&lt;double&gt; conj  = Complex&lt;double&gt;.Conjugate(a);  // &lt;3; -4&gt;
+Complex&lt;double&gt; recip = Complex&lt;double&gt;.Reciprocal(a); // &lt;0.12; -0.16&gt;
+Complex&lt;double&gt; zeroRecip = Complex&lt;double&gt;.Reciprocal(Complex&lt;double&gt;.Zero);   // &lt;0; 0&gt; — mirrors System.Numerics.Complex
+
+bool finite = Complex&lt;double&gt;.IsFinite(a);                        // true
+bool nan    = Complex&lt;double&gt;.IsNaN(Complex&lt;double&gt;.NaN);         // true
+bool inf    = Complex&lt;double&gt;.IsInfinity(Complex&lt;double&gt;.Infinity);   // true
+</code></pre>
+<p><code>Magnitude</code> is computed with a scaled hypotenuse, so it does not overflow for components near <code>T.MaxValue</code>. <code>Reciprocal(Zero)</code> returning <code>Zero</code> rather than infinity is a deliberate BCL-compatibility choice.</p>
+<h2 id="pattern-4--elementary-functions-pinned-against-systemnumericscomplex">Pattern 4 — elementary functions, pinned against <code>System.Numerics.Complex</code></h2>
+<p><code>Complex{T}.Functions.cs</code> supplies <code>Sqrt</code>, <code>Exp</code>, <code>Log</code>, <code>Log(value, baseValue)</code>, <code>Log10</code>, <code>Pow(Complex)</code>, <code>Pow(T)</code>, the six trigonometric and hyperbolic functions, and the three inverse trigonometric functions. The sample below evaluates each on <code>0.5 − 1.25i</code> with both types and reports whether the <code>double</code> results are bit-identical:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Numerics;
+using SysComplex = System.Numerics.Complex;
+
+var z = new Complex&lt;double&gt;(0.5, -1.25);
+var s = new SysComplex(0.5, -1.25);
+
+void Pin(string name, Complex&lt;double&gt; ours, SysComplex theirs)
+{
+    bool same = ours.Real == theirs.Real &amp;&amp; ours.Imaginary == theirs.Imaginary;
+    double err = Math.Max(Math.Abs(ours.Real - theirs.Real), Math.Abs(ours.Imaginary - theirs.Imaginary));
+    Console.WriteLine($&quot;{name,-8} {ours,-44} {(same ? &quot;bit-identical&quot; : $&quot;max |diff| = {err:E1}&quot;)}&quot;);
+}
+
+Pin(&quot;Sqrt&quot;, Complex&lt;double&gt;.Sqrt(z), SysComplex.Sqrt(s));
+Pin(&quot;Exp&quot;, Complex&lt;double&gt;.Exp(z), SysComplex.Exp(s));
+Pin(&quot;Log&quot;, Complex&lt;double&gt;.Log(z), SysComplex.Log(s));
+Pin(&quot;Pow&quot;, Complex&lt;double&gt;.Pow(z, new Complex&lt;double&gt;(2, 1)), SysComplex.Pow(s, new SysComplex(2, 1)));
+Pin(&quot;Sin&quot;, Complex&lt;double&gt;.Sin(z), SysComplex.Sin(s));
+Pin(&quot;Acos&quot;, Complex&lt;double&gt;.Acos(z), SysComplex.Acos(s));
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th><code>Complex&lt;double&gt;</code> result on <code>0.5 − 1.25i</code></th>
+<th>Versus <code>System.Numerics.Complex</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Sqrt</code></td>
+<td><code>&lt;0.9608046632337985; -0.6504964265019547&gt;</code></td>
+<td>bit-identical</td>
+</tr>
+<tr>
+<td><code>Exp</code></td>
+<td><code>&lt;0.5198786860084937; -1.5646111274988195&gt;</code></td>
+<td>bit-identical</td>
+</tr>
+<tr>
+<td><code>Log</code></td>
+<td><code>&lt;0.2973535538733465; -1.1902899496825317&gt;</code></td>
+<td>≤ 1.7 × 10⁻¹⁶</td>
+</tr>
+<tr>
+<td><code>Log10</code></td>
+<td><code>&lt;0.1291390076215157; -0.5169363570120227&gt;</code></td>
+<td>≤ 2.1 × 10⁻¹⁵</td>
+</tr>
+<tr>
+<td><code>Log(z, 2)</code></td>
+<td><code>&lt;0.4289904975637862; -1.7172254076269622&gt;</code></td>
+<td>≤ 2.2 × 10⁻¹⁶</td>
+</tr>
+<tr>
+<td><code>Pow(z, 2+i)</code></td>
+<td><code>&lt;-2.9219531216676917; -5.194090304070759&gt;</code></td>
+<td>≤ 2.7 × 10⁻¹⁵</td>
+</tr>
+<tr>
+<td><code>Pow(z, 3.0)</code></td>
+<td><code>&lt;-2.218750000000001; 1.0156249999999998&gt;</code></td>
+<td>≤ 8.9 × 10⁻¹⁶</td>
+</tr>
+<tr>
+<td><code>Sin</code>, <code>Cos</code>, <code>Tan</code></td>
+<td><code>&lt;0.9053586344209573; -1.4058162504314684&gt;</code>, …</td>
+<td>bit-identical</td>
+</tr>
+<tr>
+<td><code>Sinh</code>, <code>Cosh</code>, <code>Tanh</code></td>
+<td><code>&lt;0.16431300276137265; -1.0700996973668526&gt;</code>, …</td>
+<td>bit-identical</td>
+</tr>
+<tr>
+<td><code>Asin</code>, <code>Acos</code></td>
+<td><code>&lt;0.3079813715721185; -1.0855765577207788&gt;</code>, <code>&lt;1.262814955222778; 1.0855765577207788&gt;</code></td>
+<td>≤ 2.2 × 10⁻¹⁶</td>
+</tr>
+<tr>
+<td><code>Atan</code></td>
+<td><code>&lt;1.1265564408348223; -0.708303336014054&gt;</code></td>
+<td>bit-identical</td>
+</tr>
+<tr>
+<td><code>Sqrt(−1)</code></td>
+<td><code>&lt;0; 1&gt;</code></td>
+<td>bit-identical</td>
+</tr>
+<tr>
+<td><code>Reciprocal</code>, <code>*</code>, <code>/</code>, <code>FromPolarCoordinates</code></td>
+<td>—</td>
+<td>bit-identical</td>
+</tr>
+</tbody>
+</table>
+<p>The logarithm and power family differ from the BCL by a few units in the last place because they are evaluated through the generic <code>T.Log</code> / <code>T.Atan2</code> members rather than the <code>double</code>-specialized intrinsics the BCL calls; the arithmetic, square root, trigonometric, and hyperbolic functions reproduce the BCL exactly.</p>
+<h2 id="pattern-5--parsing-and-formatting">Pattern 5 — parsing and formatting</h2>
+<p>The canonical text form is <code>&lt;real; imaginary&gt;</code> — the same bracketed, semicolon-separated shape <code>System.Numerics.Complex.ToString()</code> produces. The separator is <code>;</code> regardless of culture so that a decimal comma (<code>de-DE</code>, <code>fr-FR</code>) cannot collide with it; the components themselves honour the supplied format and culture.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Globalization;
+using System.Text;
+using Bodu.Numerics;
+
+var z = new Complex&lt;double&gt;(3.5, -4.25);
+
+string s1 = z.ToString();                                         // &quot;&lt;3.5; -4.25&gt;&quot;
+string s2 = z.ToString(&quot;F1&quot;);                                     // &quot;&lt;3.5; -4.3&gt;&quot;
+string s3 = z.ToString(&quot;E2&quot;, CultureInfo.InvariantCulture);       // &quot;&lt;3.50E+000; -4.25E+000&gt;&quot;
+string s4 = z.ToString(null, CultureInfo.GetCultureInfo(&quot;de-DE&quot;));// &quot;&lt;3,5; -4,25&gt;&quot; — separator stays ';'
+
+Complex&lt;double&gt; p1 = Complex&lt;double&gt;.Parse(&quot;&lt;3.5; -4.25&gt;&quot;);                                 // &lt;3.5; -4.25&gt;
+Complex&lt;double&gt; p2 = Complex&lt;double&gt;.Parse(&quot;&lt;3,5; -4,25&gt;&quot;, CultureInfo.GetCultureInfo(&quot;de-DE&quot;));
+Complex&lt;double&gt; p3 = Complex&lt;double&gt;.Parse(&quot;7&quot;);                                            // &lt;7; 0&gt; — a bare real is accepted
+bool notAccepted   = Complex&lt;double&gt;.TryParse(&quot;3+4i&quot;, out _);                               // false — a+bi notation is not accepted
+bool ok            = Complex&lt;double&gt;.TryParse(&quot;&lt;1; 2&gt;&quot;, CultureInfo.InvariantCulture, out var p4);   // true
+
+Span&lt;char&gt; chars = stackalloc char[32];
+if (z.TryFormat(chars, out int written, &quot;F2&quot;, CultureInfo.InvariantCulture))
+    Console.WriteLine(chars[..written].ToString());                                         // &lt;3.50; -4.25&gt;
+
+Span&lt;byte&gt; utf8 = stackalloc byte[32];
+if (z.TryFormat(utf8, out int bytes, default, CultureInfo.InvariantCulture))
+    Console.WriteLine(Encoding.UTF8.GetString(utf8[..bytes]));                              // &lt;3.5; -4.25&gt;
+
+Complex&lt;double&gt; fromUtf8 = Complex&lt;double&gt;.Parse(&quot;&lt;1; 2&gt;&quot;u8, CultureInfo.InvariantCulture); // UTF-8 parse
+</code></pre>
+<p>Accepted input forms are exactly two: the bracketed <code>&lt;real; imaginary&gt;</code> pair, and a bare real number (placed on the real axis). Each component is parsed with <code>T.Parse</code> under the supplied provider (current culture when <code>null</code>), so anything <code>T</code> accepts — exponents, <code>NaN</code>, <code>∞</code>, <code>-Infinity</code> — round-trips through the same text.</p>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Overloads</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ToString()</code> / <code>ToString(format)</code> / <code>ToString(format, provider)</code></td>
+<td>Format and provider apply to each component.</td>
+</tr>
+<tr>
+<td><code>TryFormat(Span&lt;char&gt;, out charsWritten, format, provider)</code></td>
+<td><code>ISpanFormattable</code>.</td>
+</tr>
+<tr>
+<td><code>TryFormat(Span&lt;byte&gt;, out bytesWritten, format, provider)</code></td>
+<td><code>IUtf8SpanFormattable</code>.</td>
+</tr>
+<tr>
+<td><code>Parse(string)</code> / <code>Parse(string, provider)</code> / <code>Parse(ReadOnlySpan&lt;char&gt;, provider)</code> / <code>Parse(ReadOnlySpan&lt;byte&gt;, provider)</code></td>
+<td>Throw <code>FormatException</code> on malformed text.</td>
+</tr>
+<tr>
+<td><code>TryParse(string?, out result)</code> / <code>TryParse(string?, provider, out result)</code> / span and UTF-8 forms</td>
+<td>Non-throwing.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="pattern-6--float-and-half-components">Pattern 6 — <code>float</code> and <code>Half</code> components</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Numerics;
+
+var f = new Complex&lt;float&gt;(1.5f, 2.5f);
+var h = new Complex&lt;Half&gt;((Half)0.25, (Half)(-1));
+
+Complex&lt;float&gt; f2 = f * f;                                   // &lt;-4; 7.5&gt;
+Complex&lt;Half&gt;  h2 = h + h;                                   // &lt;0.5; -2&gt;
+Complex&lt;float&gt; root = Complex&lt;float&gt;.Sqrt(new Complex&lt;float&gt;(-4, 0));   // &lt;0; 2&gt;
+string magnitudeType = f.Magnitude.GetType().Name;           // &quot;Single&quot; — Magnitude, Phase, and Abs return T
+</code></pre>
+<p><code>Magnitude</code>, <code>Phase</code>, and <code>Abs</code> return <code>T</code>, so a <code>Complex&lt;Half&gt;</code> never silently widens to <code>double</code>. Choose <code>Half</code> only for storage-bound workloads: its functions run in <code>Half</code> arithmetic and inherit its ~3-decimal-digit precision.</p>
+<h2 id="pattern-7--json">Pattern 7 — JSON</h2>
+<p><code>Bodu.Numerics.Serialization.Json</code> ships <a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.ComplexJsonConverter-1.html">ComplexJsonConverter&lt;T&gt;</a> and the open-generic <a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.ComplexJsonConverterFactory.html">ComplexJsonConverterFactory</a>, registered by <code>AddNumericsJsonConverters()</code> alongside the other numeric converters:</p>
+<pre><code class="lang-csharp">using System.Text.Json;
+using Bodu.Numerics;
+using Bodu.Numerics.Serialization.Json;
+
+var strict  = new JsonSerializerOptions().AddNumericsJsonConverters();
+var compact = new JsonSerializerOptions().AddNumericsJsonConverters(NumericsJsonPolicy.Compact);
+var z = new Complex&lt;double&gt;(3, 4);
+
+string obj = JsonSerializer.Serialize(z, strict);                    // {&quot;real&quot;:3,&quot;imaginary&quot;:4}
+string str = JsonSerializer.Serialize(z, compact);                   // &quot;&lt;3; 4&gt;&quot; — the default encoder escapes '&lt;' and '&gt;'
+string nan = JsonSerializer.Serialize(Complex&lt;double&gt;.NaN, strict);  // {&quot;real&quot;:&quot;NaN&quot;,&quot;imaginary&quot;:&quot;NaN&quot;}
+
+Complex&lt;double&gt; back  = JsonSerializer.Deserialize&lt;Complex&lt;double&gt;&gt;(&quot;{\&quot;real\&quot;:3,\&quot;imaginary\&quot;:4}&quot;, strict);   // &lt;3; 4&gt;
+Complex&lt;float&gt;  small = JsonSerializer.Deserialize&lt;Complex&lt;float&gt;&gt;(&quot;\&quot;&lt;1.5; -2&gt;\&quot;&quot;, compact);                  // &lt;1.5; -2&gt;
+</code></pre>
+<p>Under <code>Strict</code> and <code>Lenient</code> the wire shape is the object <code>{ &quot;real&quot;, &quot;imaginary&quot; }</code> with finite components as JSON numbers and non-finite ones as the strings <code>&quot;NaN&quot;</code>, <code>&quot;Infinity&quot;</code>, <code>&quot;-Infinity&quot;</code>; under <code>Compact</code> it is the <code>&lt;real; imaginary&gt;</code> string, parsed and formatted under the invariant culture. <code>System.Text.Json</code>'s default encoder writes <code>&lt;</code> and <code>&gt;</code> as <code>&lt;</code> / <code>&gt;</code> — harmless for round-tripping, but pass <code>JavaScriptEncoder.UnsafeRelaxedJsonEscaping</code> if the payload should read as <code>&quot;&lt;3; 4&gt;&quot;</code>. The policies and registration are described in full in <a href="json-serialization.html">JSON serialization</a>.</p>
+<h2 id="relationship-to-systemnumericscomplex">Relationship to <code>System.Numerics.Complex</code></h2>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th><code>System.Numerics.Complex</code></th>
+<th><code>Complex&lt;T&gt;</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Component type</td>
+<td><code>double</code> only</td>
+<td>any <code>IFloatingPointIeee754&lt;T&gt;</code></td>
+</tr>
+<tr>
+<td>Implicit conversions</td>
+<td>from every built-in numeric type</td>
+<td>from <code>T</code> only</td>
+</tr>
+<tr>
+<td>Arithmetic and non-finite rules</td>
+<td>four-multiply product, Smith division, <code>Reciprocal(0) == 0</code></td>
+<td>identical</td>
+</tr>
+<tr>
+<td>Text form</td>
+<td><code>&lt;real; imaginary&gt;</code></td>
+<td>identical, plus a bare-real convenience on parse, and UTF-8 parse/format</td>
+</tr>
+<tr>
+<td>Generic-math interfaces</td>
+<td><code>INumberBase&lt;Complex&gt;</code>, <code>ISignedNumber&lt;Complex&gt;</code></td>
+<td><code>INumberBase&lt;Complex&lt;T&gt;&gt;</code>, <code>ISignedNumber&lt;Complex&lt;T&gt;&gt;</code></td>
+</tr>
+<tr>
+<td><code>Magnitude</code> / <code>Phase</code> type</td>
+<td><code>double</code></td>
+<td><code>T</code></td>
+</tr>
+<tr>
+<td>JSON</td>
+<td>none built in</td>
+<td><code>ComplexJsonConverter&lt;T&gt;</code> via <code>AddNumericsJsonConverters</code></td>
+</tr>
+</tbody>
+</table>
+<p>There is no built-in conversion between the two types; when interoperating with an API that takes <code>System.Numerics.Complex</code>, construct it from <code>Real</code> and <code>Imaginary</code> (both <code>double</code> for <code>Complex&lt;double&gt;</code>).</p>
+<h2 id="when-not-to-use-it">When not to use it</h2>
+<ul>
+<li><strong>You only ever need <code>double</code>.</strong> <code>System.Numerics.Complex</code> is the same algorithms with a wider set of implicit conversions; <code>Complex&lt;double&gt;</code> earns its keep when the surrounding code is already generic over <code>T</code> or when JSON support matters.</li>
+<li><strong>Ordering or comparison.</strong> There is no <code>&lt;</code> on complex numbers and <code>Complex&lt;T&gt;</code> does not pretend otherwise; compare <code>Magnitude</code> explicitly.</li>
+<li><strong>Exact arithmetic.</strong> Components are floating point; for exact rational values use <a href="fraction.html"><code>Fraction&lt;T&gt;</code></a>.</li>
+</ul>
+<h2 id="see-also">See also</h2>
+<ul>
+<li><a class="xref" href="../../api/Bodu.Numerics.Complex-1.html"><code>Complex&lt;T&gt;</code> API reference</a></li>
+<li><a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.ComplexJsonConverter-1.html"><code>ComplexJsonConverter&lt;T&gt;</code> API reference</a> · <a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.ComplexJsonConverterFactory.html"><code>ComplexJsonConverterFactory</code></a></li>
+<li><a href="json-serialization.html">JSON serialization</a> — every policy and wire shape across the numeric types.</li>
+<li><a href="generic-math-constraints.html">Generic math constraints</a> — writing code over <code>INumberBase&lt;T&gt;</code> that accepts <code>Complex&lt;T&gt;</code>.</li>
+<li><a href="fraction.html"><code>Fraction&lt;T&gt;</code> guide</a> — the exact-rational sibling.</li>
+<li><strong><a href="../topics/numerics-and-financial.html">Numerics &amp; Financial guides</a></strong> — every guide in this topic, across Bodu.Numerics and Bodu.Financial.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

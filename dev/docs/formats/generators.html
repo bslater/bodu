@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Bodu.Text.Formats.Generators — Reflection-free binding | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Bodu.Text.Formats.Generators — Reflection-free binding | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="bodutextformatsgenerators--reflection-free-binding">Bodu.Text.Formats.Generators — Reflection-free binding</h1>
+
+<p><strong>Bodu.Text.Formats.Generators</strong> is an incremental Roslyn source generator that removes reflection from the <a href="delimited/index.html">Delimited</a> and <a href="ini/index.html">INI</a> serializer paths. Annotate a <code>partial</code> POCO with <code>[DelimitedRecord]</code> or <code>[IniSection]</code> and the generator emits, at build time, an <code>IDelimitedRecordFactory&lt;TRecord&gt;</code> or <code>IIniSectionFactory&lt;TSection&gt;</code> implementation exposed as a static <code>DelimitedFactory</code> / <code>IniFactory</code> property on the type. Pass that factory to the serializer's factory overloads and the reflection binder is never entered — which is what makes the path safe for trimming and ahead-of-time compilation.</p>
+<p>Part of the <strong><a href="../topics/text-and-serialization.html">Text &amp; Serialization</a></strong> topic, alongside the <a href="index.html">line formats</a>.</p>
+<div class="IMPORTANT">
+<h5>Important</h5>
+<p>The package is <strong>Preview</strong> and <strong>not yet packable</strong> (<code>IsPackable=false</code>): it builds and tests as a Roslyn component inside the solution and is consumed by <strong>project reference</strong> today. It targets <code>netstandard2.0</code> and pins <code>Microsoft.CodeAnalysis.CSharp</code> 4.8.0 as a private, build-time dependency. Packaging follows in a later release wave; nothing in the generated code or the consuming API will change when it does.</p>
+</div>
+<h2 id="what-the-generator-emits">What the generator emits</h2>
+<p>For every annotated type the generator adds one file, <code>&lt;Namespace&gt;.&lt;Type&gt;.Delimited.g.cs</code> or <code>&lt;Namespace&gt;.&lt;Type&gt;.Ini.g.cs</code>, containing a second declaration of the partial type with:</p>
+<ul>
+<li>a public static property — <code>DelimitedFactory</code> of type <a class="xref" href="../../api/Bodu.Text.Delimited.IDelimitedRecordFactory-1.html">IDelimitedRecordFactory&lt;TRecord&gt;</a>, or <code>IniFactory</code> of type <a class="xref" href="../../api/Bodu.Text.Ini.IIniSectionFactory-1.html">IIniSectionFactory&lt;TSection&gt;</a> — holding a singleton;</li>
+<li>a private nested class implementing the interface: a static array of the resolved wire names in declaration order (<code>Headers</code> / <code>Keys</code>), a <code>GetFields</code> / <code>GetEntries</code> method that formats each member, a <code>Create</code> method that constructs the instance and binds decoded strings back, and a <code>Bind</code> helper that matches names ordinally first and case-insensitively as a fallback.</li>
+</ul>
+<p>The factory maps the type's <strong>public read/write instance properties in declaration order</strong>, honors <code>[PropertyName]</code> for the wire name, skips members annotated <code>[Ignore]</code> (with the default <code>IgnoreCondition.Always</code>), formats and parses scalars with <code>InvariantCulture</code>, and maps a <code>Nullable&lt;T&gt;</code> member to and from the empty string — mirroring the runtime reflection binders so the two paths are interchangeable.</p>
+<h2 id="wiring-the-generator-into-a-project">Wiring the generator into a project</h2>
+<p>Reference the generator project as an <strong>analyzer</strong>, not as a runtime assembly, and reference the format package(s) whose marker attributes and factory interfaces the POCO uses:</p>
+<pre><code class="lang-xml">&lt;ItemGroup&gt;
+  &lt;ProjectReference Include=&quot;..\Bodu.Text.Delimited\src\Bodu.Text.Delimited.csproj&quot; /&gt;
+  &lt;ProjectReference Include=&quot;..\Bodu.Text.Ini\src\Bodu.Text.Ini.csproj&quot; /&gt;
+  &lt;ProjectReference Include=&quot;..\Bodu.Text.Formats.Generators\src\Bodu.Text.Formats.Generators.csproj&quot;
+                    OutputItemType=&quot;Analyzer&quot;
+                    ReferenceOutputAssembly=&quot;false&quot; /&gt;
+&lt;/ItemGroup&gt;
+</code></pre>
+<p><code>OutputItemType=&quot;Analyzer&quot;</code> makes the compiler load the generator into the consuming compilation; <code>ReferenceOutputAssembly=&quot;false&quot;</code> keeps the generator out of the consumer's runtime references (the solution's own test project omits the second attribute only because its driver-based diagnostic tests instantiate the generator at runtime). Once the package ships, the conventional analyzer <code>PackageReference</code> form (<code>PrivateAssets=&quot;all&quot;</code>) replaces the project reference; the generated code is identical.</p>
+<p>To inspect the emitted source, set <code>&lt;EmitCompilerGeneratedFiles&gt;true&lt;/EmitCompilerGeneratedFiles&gt;</code> and look under <code>obj/…/generated/Bodu.Text.Formats.Generators/</code>.</p>
+<h2 id="rules-a-poco-must-satisfy">Rules a POCO must satisfy</h2>
+<table>
+<thead>
+<tr>
+<th>Rule</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Annotated with <a class="xref" href="../../api/Bodu.Text.Delimited.DelimitedRecordAttribute.html">DelimitedRecordAttribute</a> or <a class="xref" href="../../api/Bodu.Text.Ini.IniSectionAttribute.html">IniSectionAttribute</a> (a class, struct, record, or record struct).</td>
+<td>The generator keys on the attribute's metadata name.</td>
+</tr>
+<tr>
+<td>Every declaration of the type — <strong>and of every containing type</strong> — is <code>partial</code>.</td>
+<td>The factory is added as a second partial declaration (<code>BTFG001</code> otherwise).</td>
+</tr>
+<tr>
+<td>Not generic, and not nested inside a generic type.</td>
+<td>A static factory property cannot be expressed for an open type (<code>BTFG003</code> otherwise).</td>
+</tr>
+<tr>
+<td>Constructible with <code>new T()</code> — a parameterless constructor reachable from inside the type.</td>
+<td><code>Create</code> instantiates the type before binding; the nested factory can reach a private constructor.</td>
+</tr>
+<tr>
+<td>Mapped members are <strong>public instance properties with a public getter and a public, non-<code>init</code> setter</strong>.</td>
+<td>Static members, indexers, non-public accessors, <code>init</code>-only setters, and fields are not mapped (silently).</td>
+</tr>
+<tr>
+<td>Each mapped property's type is a supported scalar or its <code>Nullable&lt;T&gt;</code>: <code>string</code>, <code>bool</code>, <code>char</code>, <code>sbyte</code>/<code>byte</code>/<code>short</code>/<code>ushort</code>/<code>int</code>/<code>uint</code>/<code>long</code>/<code>ulong</code>, <code>float</code>/<code>double</code>/<code>decimal</code>, <code>Guid</code>, <code>DateTime</code>, <code>DateTimeOffset</code>, <code>TimeSpan</code>, or any enum.</td>
+<td>Anything else — <code>Uri</code>, collections, nested objects — is skipped with <code>BTFG002</code>; the factory is still generated for the remaining members.</td>
+</tr>
+<tr>
+<td><code>[Ignore]</code> with the default condition excludes a member; <code>[Ignore(Condition = …)]</code> with any <em>other</em> condition leaves it mapped.</td>
+<td>The factory has no write-time conditional path — the wire is string-only.</td>
+</tr>
+</tbody>
+</table>
+<p>Two behaviors differ from the reflection binder by design: the options-level <code>PropertyNamingPolicy</code> is <strong>not</strong> applied by a factory (its header and key names are fixed at compile time, so pin names with <code>[PropertyName]</code>), and <code>IncludeFields</code> has no effect (fields are never mapped).</p>
+<h2 id="diagnostics">Diagnostics</h2>
+<p>All three diagnostics share the category <code>Bodu.Text.Formats.Generators</code> and are enabled by default.</p>
+<table>
+<thead>
+<tr>
+<th>Id</th>
+<th>Severity</th>
+<th>Message</th>
+<th>Cause</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BTFG001</code></td>
+<td>Error</td>
+<td>The type '{0}' is annotated with [{1}] but it (or a containing type) is not declared partial, so no factory is generated</td>
+<td>The annotated type, or one of the types it is nested in, lacks the <code>partial</code> modifier. No source is emitted.</td>
+</tr>
+<tr>
+<td><code>BTFG002</code></td>
+<td>Warning</td>
+<td>The property '{0}' on '{1}' has type '{2}', which is not a supported scalar; the generated factory skips it</td>
+<td>A public read/write property has a type outside the scalar set above. The factory is emitted without that member.</td>
+</tr>
+<tr>
+<td><code>BTFG003</code></td>
+<td>Error</td>
+<td>The type '{0}' is annotated with [{1}] but is generic (or nested in a generic type), so no factory is generated</td>
+<td>The annotated type has type parameters, or a containing type does. No source is emitted.</td>
+</tr>
+</tbody>
+</table>
+<p>Because <code>BTFG001</code> and <code>BTFG003</code> are errors, the missing <code>DelimitedFactory</code> / <code>IniFactory</code> property surfaces as a compile error at the call site as well; fix the declaration rather than suppressing the diagnostic.</p>
+<h2 id="the-serializer-overloads-that-consume-a-factory">The serializer overloads that consume a factory</h2>
+<p>The factory overloads are exact counterparts of the reflection entry points, with the factory as an extra parameter, and carry <strong>no</strong> trimming annotations:</p>
+<table>
+<thead>
+<tr>
+<th>Serializer</th>
+<th>Factory overloads</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Text.Delimited.DelimitedSerializer.html">DelimitedSerializer</a></td>
+<td><code>Serialize&lt;TRecord&gt;(IEnumerable&lt;TRecord&gt; records, IDelimitedRecordFactory&lt;TRecord&gt; factory, DelimitedSerializerOptions? options = null)</code> → <code>string</code>; <code>Serialize&lt;TRecord&gt;(IBufferWriter&lt;byte&gt; destination, IEnumerable&lt;TRecord&gt; records, IDelimitedRecordFactory&lt;TRecord&gt; factory, …)</code>; <code>Deserialize&lt;TRecord&gt;(string text, IDelimitedRecordFactory&lt;TRecord&gt; factory, …)</code>, <code>Deserialize&lt;TRecord&gt;(ReadOnlySpan&lt;byte&gt; utf8Delimited, …)</code>, and <code>Deserialize&lt;TRecord&gt;(Stream source, …)</code> → <code>List&lt;TRecord&gt;</code>.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Text.Ini.IniSerializer.html">IniSerializer</a></td>
+<td><code>SerializeSection&lt;TSection&gt;(string sectionName, TSection value, IIniSectionFactory&lt;TSection&gt; factory, IniSerializerOptions? options = null)</code> → <code>string</code>; <code>SerializeSection&lt;TSection&gt;(IBufferWriter&lt;byte&gt; destination, string sectionName, TSection value, IIniSectionFactory&lt;TSection&gt; factory, …)</code>; <code>DeserializeSection&lt;TSection&gt;(string text, string sectionName, IIniSectionFactory&lt;TSection&gt; factory, …)</code> and <code>DeserializeSection&lt;TSection&gt;(ReadOnlySpan&lt;byte&gt; utf8Ini, string sectionName, …)</code> → <code>TSection</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>Dialect options still apply on the factory path — <code>Delimiter</code>, <code>Quote</code>, and <code>NoHeader</code> for Delimited (a headerless document binds <strong>positionally</strong> in <code>Headers</code> order), and the duplicate-section / duplicate-key policies for INI (merging runs before the factory sees the entries). An empty INI section name writes or binds the document's <strong>global keys</strong>; a section that is absent from the input raises <a class="xref" href="../../api/Bodu.Text.Ini.IniSerializationException.html">IniSerializationException</a>. <code>DotEnvSerializer</code> has no factory surface — it remains reflection-only.</p>
+<h2 id="writing-a-factory-by-hand">Writing a factory by hand</h2>
+<p>The interfaces are small enough to implement directly when the generator cannot be used — a type you do not own, a non-scalar column, or a build that cannot host analyzers. The contract for Delimited: <code>Headers</code> (column names in field order), <code>GetFields(record)</code> (values in <code>Headers</code> order), and <code>Create(fields, headers)</code> where <code>headers</code> is the document's header row, or <strong>empty</strong> for a headerless document, in which case bind positionally.</p>
+<pre><code class="lang-csharp">using System.Globalization;
+using Bodu.Text.Delimited;
+
+public sealed class TradeFactory : IDelimitedRecordFactory&lt;Trade&gt;
+{
+    private static readonly string[] s_headers = [&quot;Symbol&quot;, &quot;Quantity&quot;, &quot;Price&quot;, &quot;traded_at&quot;, &quot;Venue&quot;];
+
+    public IReadOnlyList&lt;string&gt; Headers =&gt; s_headers;
+
+    public string[] GetFields(Trade record) =&gt;
+    [
+        record.Symbol,
+        record.Quantity.ToString(CultureInfo.InvariantCulture),
+        record.Price.ToString(CultureInfo.InvariantCulture),
+        record.TradedAt.ToString(CultureInfo.InvariantCulture),
+        record.Venue ?? string.Empty,
+    ];
+
+    public Trade Create(string[] fields, IReadOnlyList&lt;string&gt; headers)
+    {
+        var trade = new Trade();
+        IReadOnlyList&lt;string&gt; names = headers.Count == 0 ? s_headers : headers;
+        for (int i = 0; i &lt; fields.Length &amp;&amp; i &lt; names.Count; i++)
+        {
+            switch (names[i])
+            {
+                case &quot;Symbol&quot;: trade.Symbol = fields[i]; break;
+                case &quot;Quantity&quot;: trade.Quantity = int.Parse(fields[i], CultureInfo.InvariantCulture); break;
+                case &quot;Price&quot;: trade.Price = decimal.Parse(fields[i], CultureInfo.InvariantCulture); break;
+                case &quot;traded_at&quot;: trade.TradedAt = DateTimeOffset.Parse(fields[i], CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind); break;
+                case &quot;Venue&quot;: trade.Venue = fields[i].Length == 0 ? null : fields[i]; break;
+            }
+        }
+
+        return trade;
+    }
+}
+</code></pre>
+<p>Format with <code>InvariantCulture</code> on the way out and parse with it on the way in, and the hand-written factory produces byte-identical output to both the generated factory and the reflection binder. The INI contract is the same shape over key/value pairs: <code>Keys</code>, <code>GetEntries(section)</code> returning <code>IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;</code>, and <code>Create(entries)</code>.</p>
+<h2 id="trimming-and-aot">Trimming and AOT</h2>
+<p>The reflection entry points of all three line-format serializers are annotated: <code>DelimitedSerializer.Serialize&lt;T&gt;</code> / <code>Deserialize&lt;TRecord&gt;</code> / <code>SerializeAsync</code> / <code>DeserializeAsyncEnumerableAsync</code>, <code>IniSerializer.Serialize&lt;T&gt;</code> / <code>Deserialize&lt;T&gt;</code> and their stream and async variants, and every <code>DotEnvSerializer</code> entry point carry <code>[RequiresUnreferencedCode]</code> <strong>and</strong> <code>[RequiresDynamicCode]</code>. A project that publishes trimmed or native-AOT therefore reports <code>IL2026</code> / <code>IL3050</code> at each reflection call site. The factory overloads carry neither attribute, so routing Delimited and INI binding through a generated (or hand-written) factory is the supported way to publish trimmed or AOT-compiled binaries with these packages. The structured serializers are annotated as well — <code>TomlSerializer</code> with both attributes, <code>YamlSerializer</code> with <code>[RequiresUnreferencedCode]</code> — and have no reflection-free path today.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="../../guides/formats/source-generator.html">Source generator guide</a></strong> — the end-to-end walk-through: POCO, generated factory, both serializers, parity, diagnostics.</li>
+<li><strong><a href="index.html">Line formats introduction</a></strong>, <strong><a href="concepts.html">Core concepts</a></strong>, and <strong><a href="getting-started.html">Getting started</a></strong> — the umbrella trio.</li>
+<li><strong><a href="delimited/index.html">Bodu.Text.Delimited</a></strong> and <strong><a href="ini/index.html">Bodu.Text.Ini</a></strong> — the two packages whose serializers accept a factory.</li>
+<li><strong><a href="../package-matrix.html">Package matrix</a></strong> — status and dependencies.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

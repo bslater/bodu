@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Numerics &amp; Financial — Concepts | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Numerics &amp; Financial — Concepts | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="numerics--financial--concepts">Numerics &amp; Financial — Concepts</h1>
+
+<p>The shared vocabulary for the <a href="numerics-and-financial.html">Numerics &amp; Financial topic</a> — the terms that cross the boundary between <a href="../numerics/index.html"><code>Bodu.Numerics</code></a> and <a href="../financial/index.html"><code>Bodu.Financial</code></a>. Each member library has its own deeper concepts page (linked in the closing table); this page covers only what you need to navigate both at once.</p>
+<h2 id="canonical-form-and-gcd-reduction">Canonical form and GCD reduction</h2>
+<p>Every <a class="xref" href="../../api/Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a> is held in <strong>canonical form</strong>: numerator and denominator share no common factor other than one, the denominator is strictly positive, and the sign rides on the numerator. <strong>Reduction</strong> — dividing both components by their greatest common divisor — happens once, on construction: <code>Fraction&lt;int&gt;.Create(2, 4)</code> and <code>Fraction&lt;int&gt;.Create(1, 2)</code> both leave the factory as <code>1/2</code> and are indistinguishable from that point on. Canonical form makes equality, comparison, and hashing structural; there is no unreduced representation to leak out.</p>
+<h2 id="exactness-vs-deferred-rounding">Exactness vs deferred rounding</h2>
+<p>The discipline both libraries are built around: <strong>compute exactly, round once at the boundary</strong>. A <code>Fraction&lt;T&gt;</code> carries the true rational value through an entire calculation chain; nothing is lost mid-stream. <a class="xref" href="../../api/Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a>, by contrast, is settlement-grade — every operation rounds to the currency's minor units, which is correct for ledger postings but compounds across long chains.</p>
+<p>The bridge is explicit: <code>Money&lt;T&gt;.ToFraction()</code> escapes to <code>Fraction&lt;BigInteger&gt;</code>, the chain evaluates without loss, and <code>Money&lt;T&gt;.FromFraction(...)</code> (or the one-step <code>MultiplyExact(...)</code>) snaps back to settlement precision in a single rounding event. That single event is where the rounding rule — banker's <code>ToEven</code> by default, or an explicit <code>MidpointRounding</code> — applies, and the one place an audit needs to examine.</p>
+<h2 id="biginteger-promotion"><code>BigInteger</code> promotion</h2>
+<p>Arithmetic on <code>Fraction&lt;T&gt;</code> <strong>promotes</strong> both operands to <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.biginteger">BigInteger</a>, evaluates exactly, reduces to canonical form, and <strong>narrows</strong> back to <code>T</code>. Intermediate magnitudes can exceed <code>T</code>'s range without truncation; only the final canonical components must fit. When they do not, the narrowing step throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.overflowexception">OverflowException</a> — never a silent wrap, saturation, or truncation. <code>Fraction&lt;BigInteger&gt;</code> eliminates the narrowing step entirely, which is why it backs the monetary escape hatch.</p>
+<h2 id="interval-endpoints--closed-open-half-open">Interval endpoints — closed, open, half-open</h2>
+<p>An <a class="xref" href="../../api/Bodu.Numerics.Interval-1.html">Interval&lt;T&gt;</a> endpoint is either <strong>closed</strong> (the boundary value belongs to the set — <code>[</code>, <code>]</code>) or <strong>open</strong> (it does not — <code>(</code>, <code>)</code>), tracked independently on each side. One immutable value therefore expresses all four conventional shapes:</p>
+<table>
+<thead>
+<tr>
+<th>Shape</th>
+<th>Notation</th>
+<th>Factory</th>
+<th>Typical use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Closed-closed</td>
+<td><code>[a, b]</code></td>
+<td><code>Interval&lt;T&gt;.Closed(a, b)</code></td>
+<td>Ranges whose boundary values are valid members — a percentage <code>[0, 100]</code>.</td>
+</tr>
+<tr>
+<td>Open-open</td>
+<td><code>(a, b)</code></td>
+<td><code>Interval&lt;T&gt;.Open(a, b)</code></td>
+<td>Strict inequalities — <code>0 &lt; rate &lt; 1</code>.</td>
+</tr>
+<tr>
+<td>Closed-open</td>
+<td><code>[a, b)</code></td>
+<td><code>Interval&lt;T&gt;.ClosedOpen(a, b)</code></td>
+<td>Spans, slices, scheduling windows — adjacent half-open intervals partition cleanly.</td>
+</tr>
+<tr>
+<td>Open-closed</td>
+<td><code>(a, b]</code></td>
+<td><code>Interval&lt;T&gt;.OpenClosed(a, b)</code></td>
+<td>Billing tiers and histogram bins that own their upper edge.</td>
+</tr>
+</tbody>
+</table>
+<p>All empty constructions — inverted bounds, or equal bounds with an open endpoint — compare equal to the single <code>Interval&lt;T&gt;.Empty</code>, honouring the mathematical fact that there is one empty set.</p>
+<h2 id="minor-unit">Minor unit</h2>
+<p>The smallest commonly-issued denomination of a currency, expressed as the number of fractional digits its major unit subdivides into: <code>0</code> for <code>JPY</code> and <code>KRW</code>, <code>2</code> for <code>USD</code> and <code>EUR</code> and most others, <code>3</code> for <code>BHD</code> and <code>KWD</code>. Construction of <code>Money&lt;TCurrency&gt;</code> rounds to this precision, and <code>FromMinorUnits</code> / <code>ToMinorUnits</code> bridge to the integer minor-unit storage that ledgers and wire formats use. The value travels on the <a class="xref" href="../../api/Bodu.Financial.Currencies.ICurrency.html">ICurrency</a> tag, so generic code reads it as <code>TCurrency.MinorUnits</code>.</p>
+<h2 id="cash-rounding-increment">Cash-rounding increment</h2>
+<p>A coarser, coin-aligned denomination some currencies apply to physical cash totals — CHF rounds to five rappen, AUD and CAD cash totals to five cents. <code>ICurrency.CashRoundingIncrement</code> exposes the value and <code>Money&lt;T&gt;.RoundToCash()</code> snaps to it. Cash rounding is a presentation choice for physical payments, not a storage rule: electronic amounts retain full minor-unit precision, and <code>RoundToCash()</code> is a no-op for currencies whose increment is <code>0m</code>.</p>
+<h2 id="allocation-without-losing-pennies">Allocation without losing pennies</h2>
+<p>Splitting <code>$1.00</code> three ways cannot return <code>[0.33, 0.33, 0.33]</code> — a cent vanishes. <code>Money&lt;T&gt;.Allocate(int parts)</code> distributes the residual minor units one per share from the start of the array so the shares always sum to the original exactly:</p>
+<pre><code class="lang-csharp">new Money&lt;USD&gt;(0.10m).Allocate(3);   // [0.04, 0.03, 0.03]
+new Money&lt;USD&gt;(-10m).Allocate(3);    // [-3.34, -3.33, -3.33]
+</code></pre>
+<p>The ratio overload <code>Allocate(ReadOnlySpan&lt;decimal&gt; ratios)</code> weights shares proportionally and distributes the residual by the <strong>largest-remainder (Hamilton) method</strong> — deterministic, sign-preserving, and stable across runs. Naive per-share multiplication-and-rounding is the bug this API exists to eliminate.</p>
+<h2 id="multi-currency-bag">Multi-currency bag</h2>
+<p><a class="xref" href="../../api/Bodu.Financial.MoneyBag.html">MoneyBag</a> is an immutable portfolio of balances across multiple ISO codes — the type behind the <strong>aggregate-then-convert</strong> pattern. Accumulate per-currency balances during a batch, then convert the whole bag to a target currency once at the boundary: one FX lookup per source currency instead of one per posting. Zero balances are pruned on every operation and enumeration is in lexicographic ISO order, so equality and iteration are stable across insertion order and serialization round trips.</p>
+<h2 id="dated-fx-lookup-and-provenance">Dated FX lookup and provenance</h2>
+<p><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.IRateProvider.html">IRateProvider</a> answers &quot;what is the rate now&quot;; <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.IDatedRateProvider.html">IDatedRateProvider</a> answers &quot;what was the rate on this date&quot; — the contract for ledger postings and tax reports where the date is part of the audit trail. A dated lookup returns an <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateLookupResult.html">RateLookupResult</a> carrying <strong>provenance</strong>: the publishing provider's name, the date the returned rate was actually observed, the offset-day distance from the requested date, the resolution policy that fired, and an inversion flag. That set is what lets an accounting workflow answer &quot;which observed rate produced this number?&quot; without re-querying the table. Grouping several sources behind one entry point with deterministic first-available fallback (or averaging, or per-FX-pair routing) lives in the <code>Bodu.Financial.ExchangeRates.Caching</code> package as <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider.html"><code>AggregatingRateProvider</code></a>.</p>
+<h2 id="going-deeper">Going deeper</h2>
+<table>
+<thead>
+<tr>
+<th>Concept area</th>
+<th>Where it is covered in full</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Reduction, overflow on narrow, <code>IBinaryInteger&lt;T&gt;</code> backing, formatting specifiers, continued fractions, interval set algebra</td>
+<td><a href="../numerics/concepts.html">Bodu.Numerics — Core concepts</a></td>
+</tr>
+<tr>
+<td>Currency tags, cross-currency safety, banker's rounding, the currency catalogue, exchange-rate series and builders, JSON policies, demonetisation</td>
+<td><a href="../financial/concepts.html">Bodu.Financial — Core concepts</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="see-also">See also</h2>
+<ul>
+<li><strong><a href="numerics-and-financial.html">Numerics &amp; Financial overview</a></strong> — the topic landing page.</li>
+<li><strong><a href="../../guides/topics/numerics-and-financial.html">Numerics &amp; Financial guides</a></strong> — recipe-style walk-throughs across the topic.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f93ddad · Built: 2026-09-24 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>
