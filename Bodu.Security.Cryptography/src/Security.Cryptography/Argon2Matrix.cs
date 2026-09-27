@@ -4,32 +4,57 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Runtime.InteropServices;
+
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Owns the memory matrix of one Argon2 derivation — its blocks of 128 64-bit words — and clears it when released.
+/// Owns the memory matrix of one Argon2 derivation — its blocks of 128 64-bit words — in native memory, and clears it
+/// when released.
 /// </summary>
 /// <remarks>
-/// Every block of a derivation is written before anything reads it (RFC 9106 fills the first two columns from <c>H'</c>
-/// and every later block before it can be referenced), so a matrix is never required to start zeroed. It is always
-/// cleared on release, because every word in it is derived from the password.
+/// <para>
+/// The matrix lives outside the collected heap, in a buffer taken from <see cref="Argon2MatrixPool" />, so a derivation
+/// neither allocates a large managed array nor leaves one for a gen2 collection. On disposal every block the derivation
+/// could have written is cleared before the buffer goes back to the pool, which is what keeps every pooled buffer all
+/// zero.
+/// </para>
+/// <para>
+/// Every block of a derivation is written before anything reads it: RFC 9106 fills the first two columns from <c>H'</c>
+/// and every later block before it can be referenced. A matrix therefore never needs to start zeroed, and a freshly
+/// allocated, uninitialized buffer is as good as a pooled one.
+/// </para>
 /// </remarks>
-internal sealed class Argon2Matrix
+internal sealed unsafe class Argon2Matrix
     : IDisposable
 {
     /// <summary>The number of 64-bit words in a 1024-byte memory block.</summary>
     internal const int WordsPerBlock = 128;
 
+    /// <summary>The number of bytes in a memory block.</summary>
+    private const int BlockBytes = WordsPerBlock * sizeof(ulong);
+
+    /// <summary>The pool the buffer came from and returns to.</summary>
+    private readonly Argon2MatrixPool _pool;
+
+    /// <summary>The size of the buffer, in bytes, which may exceed the blocks in use.</summary>
+    private readonly nuint _capacity;
+
     /// <summary>The matrix words, or <see langword="null" /> once the matrix has been released.</summary>
-    private ulong[]? _words;
+    private ulong* _words;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Argon2Matrix" /> class with the specified number of blocks.
+    /// Initializes a new instance of the <see cref="Argon2Matrix" /> class over a buffer taken from a pool.
     /// </summary>
-    /// <param name="blockCount">The number of 1024-byte blocks.</param>
-    private Argon2Matrix(int blockCount)
+    /// <param name="pool">The pool the buffer came from.</param>
+    /// <param name="words">The buffer.</param>
+    /// <param name="capacity">The buffer's size, in bytes.</param>
+    /// <param name="blockCount">The number of blocks in use.</param>
+    private Argon2Matrix(Argon2MatrixPool pool, ulong* words, nuint capacity, int blockCount)
     {
-        _words = new ulong[blockCount * WordsPerBlock];
+        _pool = pool;
+        _words = words;
+        _capacity = capacity;
         BlockCount = blockCount;
     }
 
@@ -39,38 +64,66 @@ internal sealed class Argon2Matrix
     internal int BlockCount { get; }
 
     /// <summary>
-    /// Obtains a matrix of the specified number of blocks for one derivation.
+    /// Obtains a matrix of the specified number of blocks from the shared pool.
     /// </summary>
     /// <param name="blockCount">The number of 1024-byte blocks, <c>m'</c>.</param>
     /// <returns>A matrix the caller owns and must dispose.</returns>
+    /// <exception cref="OutOfMemoryException">The matrix cannot be allocated.</exception>
     internal static Argon2Matrix Rent(int blockCount) =>
-        new(blockCount);
+        Rent(blockCount, Argon2MatrixPool.Shared);
+
+    /// <summary>
+    /// Obtains a matrix of the specified number of blocks from the specified pool.
+    /// </summary>
+    /// <param name="blockCount">The number of 1024-byte blocks, <c>m'</c>.</param>
+    /// <param name="pool">The pool to take the buffer from and return it to.</param>
+    /// <returns>A matrix the caller owns and must dispose.</returns>
+    /// <exception cref="OutOfMemoryException">The matrix cannot be allocated.</exception>
+    internal static Argon2Matrix Rent(int blockCount, Argon2MatrixPool pool)
+    {
+        byte* buffer = pool.Rent((nuint)blockCount * BlockBytes, out nuint capacity);
+        return new Argon2Matrix(pool, (ulong*)buffer, capacity, blockCount);
+    }
 
     /// <summary>
     /// Returns a reference to the first word of the block at the specified absolute index.
     /// </summary>
     /// <param name="index">The zero-based absolute block index (<c>lane * laneLength + column</c>).</param>
     /// <returns>A reference to the block's first word; the block's 128 words follow it contiguously.</returns>
-    internal ref ulong Block(int index) =>
-        ref _words![index * WordsPerBlock];
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is outside the matrix.</exception>
+    /// <remarks>
+    /// The index is checked even though the fill only computes valid ones: the matrix is native memory, so a wrong
+    /// index must fail rather than read or write outside it.
+    /// </remarks>
+    internal ref ulong Block(int index)
+    {
+        ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual((uint)index, (uint)BlockCount, nameof(index));
+
+        return ref _words[(nuint)(uint)index * WordsPerBlock];
+    }
 
     /// <summary>
     /// Returns the 128 words of the block at the specified absolute index.
     /// </summary>
     /// <param name="index">The zero-based absolute block index.</param>
     /// <returns>The block's words.</returns>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is outside the matrix.</exception>
     internal Span<ulong> BlockSpan(int index) =>
-        _words.AsSpan(index * WordsPerBlock, WordsPerBlock);
+        MemoryMarshal.CreateSpan(ref Block(index), WordsPerBlock);
 
     /// <summary>
-    /// Clears every word of the matrix and releases it.
+    /// Clears every block in use and returns the buffer to its pool.
     /// </summary>
     public void Dispose()
     {
-        if (_words is null)
+        ulong* words = _words;
+        if (words is null)
             return;
 
-        CryptographyHelper.Clear(_words);
         _words = null;
+
+        // Only the blocks in use can hold anything; the rest of a larger pooled buffer is still zero from its last use.
+        Argon2MatrixPool.Clear((byte*)words, (nuint)BlockCount * BlockBytes);
+        _pool.Return((byte*)words, _capacity);
     }
 }

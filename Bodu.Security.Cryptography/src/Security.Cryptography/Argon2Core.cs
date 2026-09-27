@@ -5,7 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Buffers.Binary;
-using System.Security.Cryptography;
+using System.Runtime.CompilerServices;
 
 namespace Bodu.Security.Cryptography;
 
@@ -26,6 +26,7 @@ namespace Bodu.Security.Cryptography;
 /// its own stack slots are beyond the library's reach.
 /// </para>
 /// </remarks>
+[SkipLocalsInit]
 internal static partial class Argon2Core
 {
     /// <summary>The number of 64-bit words in a 1024-byte memory block.</summary>
@@ -48,9 +49,7 @@ internal static partial class Argon2Core
     /// <param name="password">The password / message <c>P</c>.</param>
     /// <param name="salt">The salt / nonce <c>S</c>.</param>
     /// <param name="tag">The destination buffer; its length must equal <c>parameters.TagLength</c>.</param>
-    /// <exception cref="CryptographicException">
-    /// The requested memory size cannot be represented as a single managed array.
-    /// </exception>
+    /// <exception cref="OutOfMemoryException">The memory matrix cannot be allocated.</exception>
     internal static void DeriveTag(
         Argon2Type type,
         Argon2Parameters parameters,
@@ -60,15 +59,54 @@ internal static partial class Argon2Core
     {
         var geometry = new Geometry(type, parameters);
 
-        if ((long)geometry.MemoryBlocks * WordsPerBlock > Array.MaxLength)
-            throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_KdfMemoryExceedsLimit);
-
         using Argon2Matrix matrix = Argon2Matrix.Rent(geometry.MemoryBlocks);
+        DeriveTag(geometry, parameters, password, salt, tag, matrix);
+    }
+
+    /// <summary>
+    /// Derives an Argon2 tag into <paramref name="tag" /> using a caller-supplied memory matrix.
+    /// </summary>
+    /// <param name="type">The Argon2 variant selecting the reference-indexing strategy.</param>
+    /// <param name="parameters">The validated cost and auxiliary parameters.</param>
+    /// <param name="password">The password / message <c>P</c>.</param>
+    /// <param name="salt">The salt / nonce <c>S</c>.</param>
+    /// <param name="tag">The destination buffer; its length must equal <c>parameters.TagLength</c>.</param>
+    /// <param name="matrix">The matrix to fill; at least <c>m'</c> blocks, whatever their contents.</param>
+    /// <remarks>
+    /// The derivation writes every block it reads, so the matrix's prior contents cannot affect the tag; the tests
+    /// prove that by lending a matrix filled with garbage. The caller keeps ownership and disposes the matrix.
+    /// </remarks>
+    internal static void DeriveTag(
+        Argon2Type type,
+        Argon2Parameters parameters,
+        ReadOnlySpan<byte> password,
+        ReadOnlySpan<byte> salt,
+        Span<byte> tag,
+        Argon2Matrix matrix) =>
+        DeriveTag(new Geometry(type, parameters), parameters, password, salt, tag, matrix);
+
+    /// <summary>
+    /// Derives an Argon2 tag into <paramref name="tag" />: H0, the first two columns, the fill, and the finalization.
+    /// </summary>
+    /// <param name="geometry">The shape of the matrix, including the variant.</param>
+    /// <param name="parameters">The validated cost and auxiliary parameters.</param>
+    /// <param name="password">The password / message <c>P</c>.</param>
+    /// <param name="salt">The salt / nonce <c>S</c>.</param>
+    /// <param name="tag">The destination buffer; its length must equal <c>parameters.TagLength</c>.</param>
+    /// <param name="matrix">The matrix to fill; at least <c>m'</c> blocks.</param>
+    private static void DeriveTag(
+        in Geometry geometry,
+        Argon2Parameters parameters,
+        ReadOnlySpan<byte> password,
+        ReadOnlySpan<byte> salt,
+        Span<byte> tag,
+        Argon2Matrix matrix)
+    {
         Span<byte> h0 = stackalloc byte[Argon2Blake2b.MaxDigestBytes];
 
         try
         {
-            ComputeH0(type, parameters, password, salt, h0);
+            ComputeH0(geometry.Type, parameters, password, salt, h0);
             InitializeBlocks(matrix, h0, geometry);
             FillMemory<ScalarKernel>(matrix, geometry);
             Finalize(matrix, geometry, tag);

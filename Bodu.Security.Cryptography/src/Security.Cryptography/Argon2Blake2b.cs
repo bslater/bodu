@@ -29,6 +29,7 @@ namespace Bodu.Security.Cryptography;
 /// one buffer. Every buffer that holds input or state is cleared before it is released.
 /// </para>
 /// </remarks>
+[SkipLocalsInit]
 internal static partial class Argon2Blake2b
 {
     /// <summary>The BLAKE2b block size, in bytes.</summary>
