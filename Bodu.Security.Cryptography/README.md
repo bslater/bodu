@@ -121,7 +121,7 @@ Static, span-based, and built on the BCL one-shot HMAC (`OtpHashAlgorithm` selec
 
 ## Hardware acceleration
 
-`Blake2b`, `Blake2s`, `Blake3`, `Threefish256` / `Threefish512` / `Threefish1024`, and `CubeHash` ship an AVX-512 vectorised path alongside a scalar reference implementation, and dispatch to it automatically when the host CPU supports it. The two produce bit-identical output.
+`Blake2b`, `Blake2s`, `Blake3`, `Threefish256` / `Threefish512` / `Threefish1024`, and `CubeHash` ship an AVX-512 vectorised path alongside a scalar reference implementation, and dispatch to it automatically when the host CPU supports it. `Argon2d` / `Argon2i` / `Argon2id` compress blocks with AVX2, else SSSE3 on x64 or AdvSimd on ARM64, and also divide a derivation's lanes among threads once they reach about 1 MiB each (bounded per instance by `MaxDegreeOfParallelism`). Every path produces bit-identical output.
 
 Set the process-wide feature switch **`Bodu.Security.Cryptography.DisableSimd`** to `true` to force the scalar path — useful for reproducibility, differential testing, or audit. It is read once, before first use of any accelerated primitive, so set it via `runtimeconfig.json` / a `<RuntimeHostConfigurationOption>` item or an early `AppContext.SetSwitch(...)`. The paths are equivalent (BLAKE2/3 and Threefish are ARX and constant-time in both forms); the switch is not a security control. See the [hardware-acceleration guide](https://github.com/bodu/bodu) for details.
 

@@ -3,7 +3,8 @@
 Review gates for the asymmetric algorithms (`X25519`, `Ed25519`, `MLKem*`, `MLDsa*`) and the
 HPKE protocol surface. Apply this checklist when adding or changing any asymmetric algorithm,
 key codec, or protocol. Each gate names the property to verify and where it is currently
-enforced; a new algorithm is not "done" until every applicable row is satisfied.
+enforced; a new algorithm is not "done" until every applicable row is satisfied. Section 7 is the
+exception in scope: it applies to every vectorized kernel in the package, whatever the primitive.
 
 > The review tooling is a checklist by design. Per the forensic review, ordinary line-coverage
 > numbers do not prove much for this code; what matters is that each structural property below has
@@ -71,3 +72,30 @@ Every public `Import*` method is a trust boundary and must reject malformed inpu
       (`AsymmetricAlgorithmTests.KeySize_WhenReassignedAcrossKeyStates_*`).
 - [ ] **Unsupported members.** Every unsupported inherited member throws a deliberate, documented
       exception with a test.
+
+## 7. Vector kernels (every primitive)
+
+Applies when adding or changing any SIMD kernel — the AVX-512 kernels, the carry-less GHASH /
+POLYVAL multiply, and Argon2's AVX2, SSSE3 and AdvSimd kernels.
+
+- [ ] **Data-independent.** The kernel uses arithmetic, rotations, XORs and shuffles by constant
+      indices only — no branch on, and no memory access indexed by, the data. Anything the algorithm
+      itself makes data-dependent (Argon2's reference-block choice) happens outside the kernel
+      (`Argon2Core.IArgon2Kernel` and `IVector128Isa` remarks).
+- [ ] **Bit-identical to the scalar reference.** A differential test compares the kernel with the
+      scalar path on seeded random inputs (`Argon2CoreTests.FillBlock_*`,
+      `GaloisField128Tests.MultiplyClmul_*`).
+- [ ] **Every kernel meets the published vectors.** The vector corpus runs through each kernel the
+      host supports, not only the one dispatch picks
+      (`Argon2CoreTests.DeriveTag_WhenEachSupportedKernelFillsTheMatrix_*`), and
+      `Bodu.Security.Cryptography.Simd.Test` holds the scalar path to the same vectors.
+- [ ] **Gated and switchable.** Dispatch goes through a `SimdCapabilities` gate that honours the
+      `DisableSimd` switch, and `SimdOptOutTests` asserts the gate is closed under it.
+- [ ] **Architecture-only code runs somewhere.** Every shim operation has a test against its scalar
+      definition (`Argon2CoreTests.*_ForEachIsa_*`), and ARM64-only files (`*.AdvSimd.cs`) run in
+      `build-test.yml`'s ARM64 job, which `SimdCapabilitiesTests.AdvSimd_WhenProcessIsArm64_*`
+      fails if the gate is closed there.
+- [ ] **Scratch is cleared.** Scratch holding secret-derived words is cleared when the kernel's
+      caller finishes with it (Argon2's per-segment scratch, H0 and the matrix;
+      `Argon2CoreTests.DeriveTag_WhenMatrixStartsWithGarbage_*` shows the matrix needs no
+      zeroing before use).

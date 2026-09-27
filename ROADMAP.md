@@ -671,6 +671,16 @@ Forward-looking:
   dedicated SIMD-off test assembly. Because the paths are ARX and
   bit-identical, the switch is for determinism / reproducibility / audit,
   not leakage.
+- **A faster Argon2 has landed (1.1.0).** ✅ Raised by FallbackPlan's
+  requirements and planned in `plans/argon2-performance.md`: a derivation
+  divides its lanes among threads by default (bounded by the additive
+  `maxDegreeOfParallelism` constructor and `Verify` overload), compresses
+  blocks with AVX2, SSSE3 or AdvSimd kernels behind new `SimdCapabilities`
+  gates, and holds its matrix in pooled, cleared native memory, so it no
+  longer allocates the matrix on the managed heap or provokes a gen2
+  collection. The output is pinned three ways — RFC 9106, the reference
+  implementation's vectors, and a corpus recorded from 1.0.0 — and the
+  AdvSimd kernel runs on ARM64 hardware in CI.
 - **One-time-password codes have landed.** ✅ `Hotp` (RFC 4226) and `Totp`
   (RFC 6238) ship as static, span-based surfaces over the BCL one-shot
   HMAC, with constant-time verification, HOTP resync / TOTP drift windows,
