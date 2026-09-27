@@ -167,17 +167,20 @@ public sealed class CtsModeTransform
     {
         int blockSize = _cipher.BlockSize / 8;
         Span<byte> block = stackalloc byte[blockSize];
+        Span<byte> ciphertext = stackalloc byte[blockSize];
 
         for (int offset = 0; offset < input.Length; offset += blockSize)
         {
             ReadOnlySpan<byte> inBlock = input.Slice(offset, blockSize);
             Span<byte> outBlock = output.Slice(offset, blockSize);
 
+            // Keep the ciphertext block for the chain: decrypting in place overwrites it below.
+            inBlock.CopyTo(ciphertext);
             _cipher.Decrypt(inBlock, block);
             for (int i = 0; i < blockSize; i++)
                 outBlock[i] = (byte)(block[i] ^ _currentIv[i]);
 
-            inBlock.CopyTo(_currentIv);
+            ciphertext.CopyTo(_currentIv);
         }
 
         return input.Length;
