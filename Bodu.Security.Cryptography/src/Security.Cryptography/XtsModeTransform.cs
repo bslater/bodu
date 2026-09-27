@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Buffers.Binary;
 using System.Globalization;
 
 namespace Bodu.Security.Cryptography;
@@ -209,16 +210,16 @@ public sealed class XtsModeTransform
     /// <param name="t1">The 16-byte tweak block to double in GF(2<sup>128</sup>); updated in place.</param>
     private static void GfDouble(Span<byte> t1)
     {
-        // Left-shift the 128-bit little-endian value. Carry propagates from byte[0] upward.
-        int carry = 0;
-        for (int i = 0; i < t1.Length; i++)
-        {
-            int t = t1[i];
-            t1[i] = (byte)((t << 1) | carry);
-            carry = t >> 7;
-        }
+        ulong low = BinaryPrimitives.ReadUInt64LittleEndian(t1);
+        ulong high = BinaryPrimitives.ReadUInt64LittleEndian(t1[8..]);
 
-        // If the MSB of byte[15] was set (= x^127 coefficient), reduce by 0x87 (= x^7+x^2+x+1).
-        if (carry != 0) t1[0] ^= 0x87;
+        // Shift the 128-bit little-endian value left one bit. When the x^127 coefficient shifts out, reduce by 0x87
+        // (= x^7+x^2+x+1); the reduction is masked rather than branched on, so the cost does not depend on the tweak.
+        ulong reduction = 0x87UL & (0UL - (high >> 63));
+        high = (high << 1) | (low >> 63);
+        low = (low << 1) ^ reduction;
+
+        BinaryPrimitives.WriteUInt64LittleEndian(t1, low);
+        BinaryPrimitives.WriteUInt64LittleEndian(t1[8..], high);
     }
 }
