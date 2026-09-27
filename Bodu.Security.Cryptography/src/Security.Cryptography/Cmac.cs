@@ -85,7 +85,7 @@ internal ref struct Cmac
     /// Appends the next piece of the message.
     /// </summary>
     /// <param name="data">The piece to append; may be empty.</param>
-    internal void Append(ReadOnlySpan<byte> data)
+    internal void Append(scoped ReadOnlySpan<byte> data)
     {
         if (data.IsEmpty)
             return;
@@ -116,7 +116,7 @@ internal ref struct Cmac
     /// Completes the MAC with the held-back last block.
     /// </summary>
     /// <param name="mac">Receives the 16-byte MAC; may be the state buffer itself.</param>
-    internal void Finish(Span<byte> mac)
+    internal void Finish(scoped Span<byte> mac)
     {
         if (_pendingLength == BlockBytes)
         {

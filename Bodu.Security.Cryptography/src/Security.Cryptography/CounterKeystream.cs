@@ -1,8 +1,11 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CounterKeystream.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
+
+using System.Buffers.Binary;
+using System.Runtime.CompilerServices;
 
 namespace Bodu.Security.Cryptography;
 
@@ -52,5 +55,55 @@ internal static class CounterKeystream
     {
         cipher.EncryptBlocks(counters, keystream[..counters.Length]);
         CryptographyHelper.Xor(input, keystream, output);
+    }
+
+    /// <summary>
+    /// Applies the CTR keystream of a 128-bit block cipher whose counter blocks start at
+    /// <paramref name="initialCounter" /> and increment as a big-endian 128-bit integer, modulo <c>2¹²⁸</c> — the
+    /// counter of EAX and SIV.
+    /// </summary>
+    /// <param name="cipher">The cipher whose encrypt primitive produces the keystream.</param>
+    /// <param name="initialCounter">The 16-byte first counter block.</param>
+    /// <param name="input">The input to combine with the keystream.</param>
+    /// <param name="output">
+    /// The destination, at least as long as <paramref name="input" />; may be the same memory.
+    /// </param>
+    [SkipLocalsInit]
+    internal static void TransformBigEndian128(IBlockCipher cipher, ReadOnlySpan<byte> initialCounter, ReadOnlySpan<byte> input, Span<byte> output)
+    {
+        const int BlockBytes = 16;
+        Span<byte> counters = stackalloc byte[BatchBytes];
+        Span<byte> keystream = stackalloc byte[BatchBytes];
+        ulong high = BinaryPrimitives.ReadUInt64BigEndian(initialCounter);
+        ulong low = BinaryPrimitives.ReadUInt64BigEndian(initialCounter.Slice(8));
+        int used = 0;
+
+        try
+        {
+            int offset = 0;
+            while (offset < input.Length)
+            {
+                int length = Math.Min(BatchBytes, input.Length - offset);
+                int filled = (length + BlockBytes - 1) & ~(BlockBytes - 1);
+                for (int position = 0; position < filled; position += BlockBytes)
+                {
+                    BinaryPrimitives.WriteUInt64BigEndian(counters.Slice(position), high);
+                    BinaryPrimitives.WriteUInt64BigEndian(counters.Slice(position + 8), low);
+
+                    // Big-endian increment across both words, wrapping at 2^128.
+                    if (++low == 0)
+                        high++;
+                }
+
+                // Widen the extent to clear before the cipher writes keystream, so a throwing cipher leaves none behind.
+                used = Math.Max(used, filled);
+                Apply(cipher, counters[..filled], keystream, input.Slice(offset, length), output.Slice(offset, length));
+                offset += length;
+            }
+        }
+        finally
+        {
+            CryptographyHelper.Clear(keystream[..used]);
+        }
     }
 }
