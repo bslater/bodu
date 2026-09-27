@@ -163,10 +163,11 @@ public sealed partial class Threefish512Cipher
     /// Thrown if <paramref name="input" /> or <paramref name="output" /> is not 64 bytes.
     /// </exception>
     /// <remarks>
-    /// Dispatches to an AVX-512F vectorised implementation when supported by the host, falling back to a scalar
-    /// register-resident implementation otherwise. Dispatch is gated by <see cref="SimdCapabilities.Avx512F" />, which
-    /// combines the hardware intrinsic with the process-wide SIMD opt-out; on hosts without AVX-512 it still folds to a
-    /// compile-time constant that removes the branch, otherwise it reduces to a single cached-boolean load.
+    /// Dispatches to an AVX-512 vectorised implementation when supported by the host, falling back to a scalar
+    /// register-resident implementation otherwise. Dispatch is gated by <see cref="SimdCapabilities.Avx512FVL" /> — the
+    /// kernel rotates 256-bit vectors, which needs the VL extensions — combining the hardware intrinsic with the
+    /// process-wide SIMD opt-out; on hosts without AVX-512 it still folds to a compile-time constant that removes the
+    /// branch, otherwise it reduces to a single cached-boolean load.
     /// </remarks>
     public override void Decrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
@@ -177,7 +178,7 @@ public sealed partial class Threefish512Cipher
                 string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_BlockLength, 64));
         }
 
-        if (SimdCapabilities.Avx512F)
+        if (SimdCapabilities.Avx512FVL)
         {
             DecryptAvx512(input, output);
             return;
@@ -309,10 +310,11 @@ public sealed partial class Threefish512Cipher
     /// Thrown if <paramref name="input" /> or <paramref name="output" /> is not 64 bytes.
     /// </exception>
     /// <remarks>
-    /// Dispatches to an AVX-512F vectorised implementation when supported by the host, falling back to a scalar
-    /// register-resident implementation otherwise. Dispatch is gated by <see cref="SimdCapabilities.Avx512F" />, which
-    /// combines the hardware intrinsic with the process-wide SIMD opt-out; on hosts without AVX-512 it still folds to a
-    /// compile-time constant that removes the branch, otherwise it reduces to a single cached-boolean load.
+    /// Dispatches to an AVX-512 vectorised implementation when supported by the host, falling back to a scalar
+    /// register-resident implementation otherwise. Dispatch is gated by <see cref="SimdCapabilities.Avx512FVL" /> — the
+    /// kernel rotates 256-bit vectors, which needs the VL extensions — combining the hardware intrinsic with the
+    /// process-wide SIMD opt-out; on hosts without AVX-512 it still folds to a compile-time constant that removes the
+    /// branch, otherwise it reduces to a single cached-boolean load.
     /// </remarks>
     public override void Encrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
@@ -323,7 +325,7 @@ public sealed partial class Threefish512Cipher
                 string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_BlockLength, 64));
         }
 
-        if (SimdCapabilities.Avx512F)
+        if (SimdCapabilities.Avx512FVL)
         {
             EncryptAvx512(input, output);
             return;
