@@ -133,9 +133,11 @@ public sealed class CtrModeTransform
 
                 if (filled > 0)
                 {
+                    // Widen the extent to clear before the cipher writes keystream, so a throwing cipher leaves none
+                    // behind.
                     int length = Math.Min(filled, input.Length - offset);
-                    CounterKeystream.Apply(_cipher, counters[..filled], keystream, input.Slice(offset, length), output.Slice(offset, length));
                     used = Math.Max(used, filled);
+                    CounterKeystream.Apply(_cipher, counters[..filled], keystream, input.Slice(offset, length), output.Slice(offset, length));
                     offset += length;
                 }
 
@@ -212,7 +214,7 @@ public sealed class CtrModeTransform
         while (filled < limit && !_counterWrapped)
         {
             BinaryPrimitives.WriteUInt64BigEndian(destination[filled..], high);
-            BinaryPrimitives.WriteUInt64BigEndian(destination[(filled + 8)..], low);
+            BinaryPrimitives.WriteUInt64BigEndian(destination.Slice(filled + 8), low);
             filled += 16;
 
             // Big-endian increment across both words; carrying out of the high word is the full 2^128 rollover.
