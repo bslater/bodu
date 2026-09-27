@@ -18,9 +18,9 @@ namespace Bodu.Security.Cryptography;
 /// <remarks>
 /// <para>
 /// The adapter encrypts and decrypts exactly one 16-byte block per call, in ECB mode with no padding, delegating to the
-/// BCL's hardware-accelerated <see cref="Aes" /> implementation. Key scheduling is performed once on construction and
-/// the resulting ECB transforms are cached, so per-block calls reuse the expanded key schedule rather than rebuilding a
-/// cipher context each time.
+/// BCL's hardware-accelerated <see cref="Aes" /> implementation. The ECB encryptor is created on construction and the
+/// decryptor on the first decryption, and both are cached, so per-block calls reuse the expanded key schedule rather
+/// than rebuilding a cipher context each time, and an instance that only encrypts never builds a decryptor.
 /// </para>
 /// <para>
 /// <see cref="AesBlockCipher" /> is not intended for direct encryption of user data. Wrap it in one of the
@@ -64,7 +64,7 @@ public sealed class AesBlockCipher
     /// <summary>The cached ECB encryptor, created once so its key schedule is reused across every single-block call. Nulled on disposal.</summary>
     private ICryptoTransform? _encryptor;
 
-    /// <summary>The cached ECB decryptor, created once so its key schedule is reused across every single-block call. Nulled on disposal.</summary>
+    /// <summary>The cached ECB decryptor, created on the first decryption so an instance that only encrypts — as the cipher of every counter-based mode does — never pays for one. Nulled on disposal.</summary>
     private ICryptoTransform? _decryptor;
 
     /// <summary>Reusable single-block scratch buffer for the byte-array-based <see cref="ICryptoTransform" /> surface.</summary>
@@ -96,11 +96,10 @@ public sealed class AesBlockCipher
             aes.Mode = CipherMode.ECB;
             aes.Padding = PaddingMode.None;
 
-            // Create the ECB transforms once. ECB is stateless between blocks, so a single cached transform can
-            // process every subsequent single-block call without re-deriving the key schedule per call (the cost the
-            // one-shot EncryptEcb/DecryptEcb API pays on every invocation).
+            // Create the ECB encryptor once. ECB is stateless between blocks, so a single cached transform can process
+            // every subsequent call without re-deriving the key schedule per call (the cost the one-shot
+            // EncryptEcb/DecryptEcb API pays on every invocation). The decryptor is created on first use.
             _encryptor = aes.CreateEncryptor();
-            _decryptor = aes.CreateDecryptor();
         }
         catch
         {
@@ -119,6 +118,12 @@ public sealed class AesBlockCipher
     /// Gets the size, in bits, of the key this instance was created with: 128, 192, or 256.
     /// </summary>
     internal int KeySize => _aes.KeySize;
+
+    /// <summary>
+    /// Gets the cached ECB decryptor, creating it on first use.
+    /// </summary>
+    private ICryptoTransform Decryptor =>
+        _decryptor ??= _aes.CreateDecryptor();
 
     /// <inheritdoc />
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
@@ -164,7 +169,7 @@ public sealed class AesBlockCipher
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockSizeBits / 8);
         ThrowIfDisposed();
 
-        TransformSingleBlock(_decryptor!, input, output);
+        TransformSingleBlock(Decryptor, input, output);
     }
 
     /// <inheritdoc />
@@ -186,7 +191,7 @@ public sealed class AesBlockCipher
         CryptographyThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf(input, BlockSizeBits / 8, throwIfZero: false);
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, input.Length);
 
-        TransformBlocks(_encryptor!, input, output);
+        TransformBlocks(encrypt: true, input, output);
     }
 
     /// <inheritdoc />
@@ -206,23 +211,25 @@ public sealed class AesBlockCipher
         CryptographyThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf(input, BlockSizeBits / 8, throwIfZero: false);
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, input.Length);
 
-        TransformBlocks(_decryptor!, input, output);
+        TransformBlocks(encrypt: false, input, output);
     }
 
     /// <summary>
-    /// Runs a whole number of blocks through the supplied cached ECB transform, a chunk of up to
+    /// Runs a whole number of blocks through the cached ECB encryptor or decryptor, a chunk of up to
     /// <see cref="BulkChunkBytes" /> at a time through scratch borrowed from the shared array pool for the call.
     /// </summary>
-    /// <param name="transform">The cached ECB encryptor or decryptor.</param>
+    /// <param name="encrypt">
+    /// <see langword="true" /> to encrypt the blocks; <see langword="false" /> to decrypt them.
+    /// </param>
     /// <param name="input">The blocks to transform.</param>
     /// <param name="output">The destination; at least as long as <paramref name="input" />, and may alias it.</param>
-    private void TransformBlocks(ICryptoTransform transform, ReadOnlySpan<byte> input, Span<byte> output)
+    private void TransformBlocks(bool encrypt, ReadOnlySpan<byte> input, Span<byte> output)
     {
         // A long run amortizes the one-shot call's cipher-context setup and needs no copies, so it goes straight to the
         // platform; shorter runs go through the cached transform, whose setup is already paid.
         if (input.Length >= OneShotThresholdBytes)
         {
-            if (ReferenceEquals(transform, _encryptor))
+            if (encrypt)
                 _aes.EncryptEcb(input, output[..input.Length], PaddingMode.None);
             else
                 _aes.DecryptEcb(input, output[..input.Length], PaddingMode.None);
@@ -232,6 +239,8 @@ public sealed class AesBlockCipher
 
         if (input.Length == 0)
             return;
+
+        ICryptoTransform transform = encrypt ? _encryptor! : Decryptor;
 
         // Borrow the scratch for this call only, so an instance created per message allocates none and no instance
         // keeps a run's plaintext, ciphertext, or keystream between calls. The first half takes each chunk in, the
