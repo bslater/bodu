@@ -1,6 +1,6 @@
 # Implementation plan: faster primitives across Bodu.Security.Cryptography
 
-**Status:** In progress on `claude/argon2-prototype-co27tu` · **Source:** the assessment run on
+**Status:** In progress on `claude/argon2-prototype-co27tu` (W0–W2c done, §10) · **Source:** the assessment run on
 2026-09-27 after the Argon2 work (§1) · **Target:** `Bodu.Security.Cryptography`, next lock-step release
 
 The Argon2 work ([`argon2-performance.md`](argon2-performance.md)) used four techniques: a
@@ -475,4 +475,90 @@ none depends on a later one.
 
 ## 10. Results
 
-Filled in as each workstream lands.
+Filled in as each workstream lands. Measured with the crypto harness
+(`Bodu.Security.Cryptography.Benchmarks --crypto-harness`) on the §1 machine: 4 vCPUs,
+x64 with AVX-512, .NET 10 unless noted, the median of five rounds. Run-to-run noise on
+this machine is about ±5–10%.
+
+### W0 — correctness and hygiene (done)
+
+- AES-256-GCM-SIV derives a 256-bit message-encryption key, as RFC 8452 §4 specifies.
+  The C.2 and C.3 vectors are pinned, and the test that proved the bug was committed
+  first. Output made by earlier AES-256-GCM-SIV versions does not decrypt (§7).
+- The coverage script and the docs name both runtimes' AVX-512 switches:
+  `DOTNET_EnableAVX512F` on .NET 8 and `DOTNET_EnableAVX512` on .NET 10.
+- XTS doubles its tweak with a mask instead of a branch. Fifteen IEEE 1619-2007
+  whole-block vectors are pinned; the previous vectors never doubled the tweak.
+- Threefish-512's kernel is gated on AVX-512VL, which it uses.
+
+### W1 — Keccak (done)
+
+| Measure | Baseline | Result | Target |
+|---|---|---|---|
+| SHAKE128, 1 MiB | 35.2 MiB/s | 263.1 MiB/s | ≥ 200 MiB/s — met |
+| SHAKE256, 1 MiB | 29.6 MiB/s | 178.0 MiB/s | — |
+| SHAKE128, 64-byte input | 4.59 µs | 0.70 µs (BCL: 1.21 µs) | — |
+| ML-KEM-768 keygen / encaps / decaps | 289 / 306 / 326 µs | 103 / 138 / 139 µs | ≤ 150 / ≤ 180 µs — met |
+| ML-DSA-65 keygen / sign / verify | 1.14 / 3.31 / 1.04 ms | 0.33 / 2.24 / 0.30 ms | verify ≤ 0.5 ms — met |
+
+On .NET 8: SHAKE128 goes from 36.4 to 269.9 MiB/s, ML-KEM-768 encaps / decaps from
+290 / 416 to 114 / 162 µs, and ML-DSA-65 verify from 1.01 to 0.33 ms.
+
+### W2 — AES modes, GHASH and POLYVAL (W2a–c done; W2d next)
+
+| Measure | Baseline | Result | Target |
+|---|---|---|---|
+| AES-128-CTR, 1 MiB | 54.8 MiB/s | 1,665.8 MiB/s | ≥ 1 GiB/s — met |
+| AES-128-GCM, 1 MiB | 54.9 MiB/s | 1,095.2 MiB/s, 240 B allocated | ≥ 800 MiB/s — met |
+| AES-128-GCM, 64 bytes | 1.81 µs | 1.04 µs | — |
+| AES-128-GCM, scalar GHASH kernel | 4.1 MiB/s | 208.9 MiB/s | ≥ 40 MiB/s — met |
+| AES-128-GCM-SIV, 1 MiB | 38.8 MiB/s, 1,496 B | 1,154.5 MiB/s, 848 B | ≥ 5× — met (30×) |
+| AES-128-GCM-SIV, 64 bytes | 10.47 µs | 5.09 µs | — |
+| Threefish-512-CTR / Twofish-CTR | 244 / 83.7 MiB/s | 338 / 89.4 MiB/s | — |
+
+How it was done, and where it departs from the design above:
+
+- **Counter modes** lay out a 4 KiB run of counter blocks and encrypt it with one
+  `EncryptBlocks` call (`CounterKeystream`). A run stops after the block the per-block
+  loop would have stopped at, so a counter-wrap exception leaves exactly the output the
+  old loop left. New tests pin CTR to a block-at-a-time reference, GCM to the platform's
+  `AesGcm`, and GCM-SIV to a block-at-a-time reference built from RFC 8452's own
+  definition of POLYVAL.
+- **`AesBlockCipher.EncryptBlocks`** was measured both ways, in MiB/s:
+
+  | Run | One-shot `EncryptEcb` | Cached transform |
+  |---|---|---|
+  | 256 B | 120 | 732 |
+  | 1 KiB | 446 | 2,046 |
+  | 4 KiB | 1,075 | 3,839 |
+  | 16 KiB | 2,891 | 4,253 |
+  | 64 KiB | 3,575 | 4,383 |
+  | 1 MiB | 4,177 | 4,555 |
+
+  The one-shot call rebuilds a platform cipher context on every call, about 2 µs.
+  Runs go through the cached transform up to 64 KiB, in 4 KiB chunks through scratch
+  rented from the array pool for the call. From 64 KiB the one-shot call is used,
+  because it avoids the chunk copies. The decryptor is now created on first use, which
+  saves 1.8 µs for every cipher that only encrypts — GCM-SIV creates one per message.
+- **GHASH and POLYVAL** live in a new internal `Ghash` module instead of a multi-block
+  update on `GaloisField128`:
+  - A key is prepared once as `Ghash.Key`, holding H to H⁴ for the carry-less kernels.
+  - One kernel serves both functions, written against the `IClmulIsa` shim with
+    PCLMULQDQ and PMULL implementations.
+  - The scalar kernel is BearSSL's `ghash_ctmul64`, which builds 64-bit carry-less
+    products from integer multiplications with masked carries: 50 times the old
+    byte-wise loop.
+  - `GaloisField128` keeps only `Double`. Its multiply moved into the tests as the
+    bit-serial reference.
+- **GCM-SIV** folds the associated data into the POLYVAL state as it arrives, and
+  derives both keys in one multi-block call.
+- **ARM64.** Under qemu ARM64 emulation the PMULL shim's operations, the GHASH suite, and
+  the GCM and GCM-SIV suites pass; that check is functional only, not timed. The ARM64 CI
+  job runs on master pushes and pull requests, not on this branch.
+- **The remaining GCM gap.** The platform's `AesGcm` runs at 4.5 GiB/s because it
+  interleaves AES-NI and PCLMULQDQ in one pass. This library makes two passes and moves
+  the counter blocks through `ICryptoTransform` copies. Closing the gap needs a managed
+  AES round, which §9 rules out.
+
+W2d baselines, measured after W2c: CCM 26.6, EAX 27.4 (3.67 MB and 15 gen2 collections
+per message), OCB 49.7, SIV 26.0 (3.67 MB), CBC decrypt 50.4, and XTS 59.7 MiB/s.
