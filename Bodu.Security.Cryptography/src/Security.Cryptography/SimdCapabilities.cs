@@ -17,9 +17,10 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// Several primitives dispatch to a vector kernel when the host supports it and fall back to a scalar reference
 /// implementation otherwise: BLAKE2b, BLAKE2s, BLAKE3, Threefish-256/512/1024, and CubeHash to AVX-512; GHASH and
-/// POLYVAL to the carry-less multiply; and Argon2 to AVX2, to SSSE3 on other x64 hosts, or to AdvSimd on ARM64. The
-/// properties here replace a bare <c>IsSupported</c> check at each dispatch site so a caller can force the scalar paths
-/// for the whole process by enabling the <see cref="DisableSimdSwitchName" /> feature switch.
+/// POLYVAL to the carry-less multiply on x64 or the polynomial multiply on ARM64; and Argon2 to AVX2, to SSSE3 on other
+/// x64 hosts, or to AdvSimd on ARM64. The properties here replace a bare <c>IsSupported</c> check at each dispatch site
+/// so a caller can force the scalar paths for the whole process by enabling the <see cref="DisableSimdSwitchName" />
+/// feature switch.
 /// </para>
 /// <para>
 /// The switch exists for <strong>determinism, reproducibility, and audit</strong> — pinning execution to the single
@@ -133,5 +134,25 @@ internal static class SimdCapabilities
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => System.Runtime.Intrinsics.Arm.AdvSimd.Arm64.IsSupported && !s_disabled;
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether the ARM64 polynomial-multiply <c>GF(2¹²⁸)</c> code paths (GHASH / POLYVAL)
+    /// should run.
+    /// </summary>
+    /// <value>
+    /// <see langword="true" /> if <see cref="System.Runtime.Intrinsics.Arm.Aes.IsSupported" /> and
+    /// <see cref="System.Runtime.Intrinsics.Arm.AdvSimd.Arm64.IsSupported" /> and the disable switch is off; otherwise,
+    /// <see langword="false" />.
+    /// </value>
+    /// <remarks>
+    /// The 64 × 64-bit polynomial multiply (<c>PMULL</c> / <c>PMULL2</c>) belongs to the ARMv8 cryptography extension,
+    /// which .NET exposes on <see cref="System.Runtime.Intrinsics.Arm.Aes" />. Most ARM64 processors have it; some that
+    /// do not, such as the Cortex-A72 in the Raspberry Pi 4, run the scalar kernel.
+    /// </remarks>
+    internal static bool Pmull
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => System.Runtime.Intrinsics.Arm.Aes.IsSupported && System.Runtime.Intrinsics.Arm.AdvSimd.Arm64.IsSupported && !s_disabled;
     }
 }

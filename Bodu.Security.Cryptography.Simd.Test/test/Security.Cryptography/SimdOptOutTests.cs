@@ -27,6 +27,7 @@ public sealed class SimdOptOutTests
         Assert.IsFalse(SimdCapabilities.Avx2, "Expected the disable switch to force Avx2 off.");
         Assert.IsFalse(SimdCapabilities.Ssse3, "Expected the disable switch to force Ssse3 off.");
         Assert.IsFalse(SimdCapabilities.AdvSimd, "Expected the disable switch to force AdvSimd off.");
+        Assert.IsFalse(SimdCapabilities.Pmull, "Expected the disable switch to force the polynomial-multiply GHASH gate off.");
     }
 
     /// <summary>
@@ -37,6 +38,16 @@ public sealed class SimdOptOutTests
     public void Argon2CoreSelectKernel_WhenSimdDisabled_ShouldReturnTheScalarKernel()
     {
         Assert.AreEqual(Argon2Core.KernelKind.Scalar, Argon2Core.SelectKernel());
+    }
+
+    /// <summary>
+    /// Verifies that with SIMD disabled, GHASH and POLYVAL keys are prepared for the scalar kernel whatever the processor
+    /// supports, so every consumer of the module runs that kernel in this assembly.
+    /// </summary>
+    [TestMethod]
+    public void GhashSelectKernel_WhenSimdDisabled_ShouldReturnTheScalarKernel()
+    {
+        Assert.AreEqual(Ghash.KernelKind.Scalar, Ghash.SelectKernel());
     }
 
     /// <summary>
