@@ -61,6 +61,14 @@ internal static class Argon2Harness
         Measure("p = 4", () => Argon2id.DeriveKey(Password, Salt, parameters));
         Measure("p = 1", () => Argon2id.DeriveKey(Password, Salt, parameters with { Parallelism = 1 }));
         MeasureConcurrent("p = 4, four at once", () => Argon2id.DeriveKey(Password, Salt, parameters));
+#if !BODU_CRYPTO_BASELINE
+
+        // The published package has no bound; these rows show what a caller that confines each derivation to its own
+        // thread gets.
+        var oneThread = new Argon2id(parameters, maxDegreeOfParallelism: 1);
+        Measure("p = 4, one thread", () => oneThread.GetBytes(Password, Salt));
+        MeasureConcurrent("p = 4, one thread, 4 at once", () => oneThread.GetBytes(Password, Salt));
+#endif
     }
 
     /// <summary>
@@ -116,7 +124,7 @@ internal static class Argon2Harness
 
         Console.WriteLine(string.Create(
             CultureInfo.InvariantCulture,
-            $"{name,-22} wall {walls[walls.Count / 2],7:F1} ms   cpu {cpu,7:F1} ms   cores {cpu / (total.Elapsed.TotalMilliseconds / RunCount),4:F2}   allocated {allocatedKiB,9:F1} KiB   gen2 {gen2,4:F2}   pause {pause,4:F1} ms"));
+            $"{name,-28} wall {walls[walls.Count / 2],7:F1} ms   cpu {cpu,7:F1} ms   cores {cpu / (total.Elapsed.TotalMilliseconds / RunCount),4:F2}   allocated {allocatedKiB,9:F1} KiB   gen2 {gen2,4:F2}   pause {pause,4:F1} ms"));
     }
 
     /// <summary>
@@ -166,6 +174,6 @@ internal static class Argon2Harness
 
         Console.WriteLine(string.Create(
             CultureInfo.InvariantCulture,
-            $"{name,-22} {derivations} in {total.Elapsed.TotalMilliseconds,6:F0} ms   {total.Elapsed.TotalMilliseconds / derivations,6:F1} ms each   cpu {cpu,7:F1} ms each   gen2 {gen2,4:F2}"));
+            $"{name,-28} {derivations} in {total.Elapsed.TotalMilliseconds,6:F0} ms   {total.Elapsed.TotalMilliseconds / derivations,6:F1} ms each   cpu {cpu,7:F1} ms each   gen2 {gen2,4:F2}"));
     }
 }

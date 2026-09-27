@@ -6,6 +6,7 @@
 
 using System.Buffers.Binary;
 using System.Runtime.CompilerServices;
+using System.Runtime.ExceptionServices;
 
 namespace Bodu.Security.Cryptography;
 
@@ -49,18 +50,42 @@ internal static partial class Argon2Core
     /// <param name="password">The password / message <c>P</c>.</param>
     /// <param name="salt">The salt / nonce <c>S</c>.</param>
     /// <param name="tag">The destination buffer; its length must equal <c>parameters.TagLength</c>.</param>
+    /// <param name="maxDegreeOfParallelism">
+    /// The greatest number of threads the derivation may use, the calling thread included; <c>-1</c> lets the library
+    /// choose.
+    /// </param>
     /// <exception cref="OutOfMemoryException">The memory matrix cannot be allocated.</exception>
     internal static void DeriveTag(
         Argon2Type type,
         Argon2Parameters parameters,
         ReadOnlySpan<byte> password,
         ReadOnlySpan<byte> salt,
-        Span<byte> tag)
+        Span<byte> tag,
+        int maxDegreeOfParallelism) =>
+        DeriveTag(type, parameters, password, salt, tag, new FillOptions(maxDegreeOfParallelism));
+
+    /// <summary>
+    /// Derives an Argon2 tag into <paramref name="tag" />, filling the matrix as <paramref name="options" /> describe.
+    /// </summary>
+    /// <param name="type">The Argon2 variant selecting the reference-indexing strategy.</param>
+    /// <param name="parameters">The validated cost and auxiliary parameters.</param>
+    /// <param name="password">The password / message <c>P</c>.</param>
+    /// <param name="salt">The salt / nonce <c>S</c>.</param>
+    /// <param name="tag">The destination buffer; its length must equal <c>parameters.TagLength</c>.</param>
+    /// <param name="options">How the matrix is filled.</param>
+    /// <exception cref="OutOfMemoryException">The memory matrix cannot be allocated.</exception>
+    internal static void DeriveTag(
+        Argon2Type type,
+        Argon2Parameters parameters,
+        ReadOnlySpan<byte> password,
+        ReadOnlySpan<byte> salt,
+        Span<byte> tag,
+        FillOptions options)
     {
         var geometry = new Geometry(type, parameters);
 
         using Argon2Matrix matrix = Argon2Matrix.Rent(geometry.MemoryBlocks);
-        DeriveTag(geometry, parameters, password, salt, tag, matrix);
+        DeriveTag(geometry, parameters, password, salt, tag, matrix, options);
     }
 
     /// <summary>
@@ -72,6 +97,7 @@ internal static partial class Argon2Core
     /// <param name="salt">The salt / nonce <c>S</c>.</param>
     /// <param name="tag">The destination buffer; its length must equal <c>parameters.TagLength</c>.</param>
     /// <param name="matrix">The matrix to fill; at least <c>m'</c> blocks, whatever their contents.</param>
+    /// <param name="options">How the matrix is filled.</param>
     /// <remarks>
     /// The derivation writes every block it reads, so the matrix's prior contents cannot affect the tag; the tests
     /// prove that by lending a matrix filled with garbage. The caller keeps ownership and disposes the matrix.
@@ -82,8 +108,9 @@ internal static partial class Argon2Core
         ReadOnlySpan<byte> password,
         ReadOnlySpan<byte> salt,
         Span<byte> tag,
-        Argon2Matrix matrix) =>
-        DeriveTag(new Geometry(type, parameters), parameters, password, salt, tag, matrix);
+        Argon2Matrix matrix,
+        FillOptions options) =>
+        DeriveTag(new Geometry(type, parameters), parameters, password, salt, tag, matrix, options);
 
     /// <summary>
     /// Derives an Argon2 tag into <paramref name="tag" />: H0, the first two columns, the fill, and the finalization.
@@ -94,13 +121,15 @@ internal static partial class Argon2Core
     /// <param name="salt">The salt / nonce <c>S</c>.</param>
     /// <param name="tag">The destination buffer; its length must equal <c>parameters.TagLength</c>.</param>
     /// <param name="matrix">The matrix to fill; at least <c>m'</c> blocks.</param>
+    /// <param name="options">How the matrix is filled.</param>
     private static void DeriveTag(
         in Geometry geometry,
         Argon2Parameters parameters,
         ReadOnlySpan<byte> password,
         ReadOnlySpan<byte> salt,
         Span<byte> tag,
-        Argon2Matrix matrix)
+        Argon2Matrix matrix,
+        FillOptions options)
     {
         Span<byte> h0 = stackalloc byte[Argon2Blake2b.MaxDigestBytes];
 
@@ -108,12 +137,83 @@ internal static partial class Argon2Core
         {
             ComputeH0(geometry.Type, parameters, password, salt, h0);
             InitializeBlocks(matrix, h0, geometry);
-            FillMemory<ScalarKernel>(matrix, geometry);
+            FillMemory<ScalarKernel>(matrix, geometry, options.ResolveWorkers(geometry.Lanes, geometry.SegmentLength));
             Finalize(matrix, geometry, tag);
         }
         finally
         {
             CryptographyHelper.Clear(h0);
+        }
+    }
+
+    /// <summary>
+    /// Fills every block after the first two columns: pass by pass, and slice by slice (RFC 9106, Section 3.4).
+    /// </summary>
+    /// <typeparam name="TKernel">The compression kernel.</typeparam>
+    /// <param name="matrix">The memory matrix, its first two columns already filled.</param>
+    /// <param name="geometry">The shape of the matrix.</param>
+    /// <param name="workers">The number of threads that fill each slice, the calling thread included.</param>
+    private static void FillMemory<TKernel>(Argon2Matrix matrix, in Geometry geometry, int workers)
+        where TKernel : struct, IArgon2Kernel
+    {
+        if (workers > 1)
+        {
+            FillMemoryInParallel<TKernel>(matrix, geometry, workers);
+            return;
+        }
+
+        for (int pass = 0; pass < geometry.Passes; pass++)
+        {
+            for (int slice = 0; slice < SyncPoints; slice++)
+            {
+                for (int lane = 0; lane < geometry.Lanes; lane++)
+                    FillSegment<TKernel>(matrix, geometry, pass, slice, lane);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Fills every block after the first two columns, dividing the segments of each slice among threads.
+    /// </summary>
+    /// <typeparam name="TKernel">The compression kernel.</typeparam>
+    /// <param name="matrix">The memory matrix, its first two columns already filled.</param>
+    /// <param name="geometry">The shape of the matrix.</param>
+    /// <param name="workers">The number of threads that fill each slice, the calling thread included.</param>
+    /// <remarks>
+    /// <para>
+    /// Each slice is a fork over its lanes and a join. The join is RFC 9106's synchronization point: no segment reads
+    /// another lane's block from an unfinished slice, and completing the loop publishes the slice's blocks to the next
+    /// slice's readers on every memory model.
+    /// </para>
+    /// <para>
+    /// The calling thread fills lanes too, and fills them all if no worker arrives, so a starved thread pool slows a
+    /// derivation down but never stalls it. The default scheduler is named explicitly so a scheduler the caller runs
+    /// under is never used. A fault in a segment surfaces as itself rather than wrapped in an
+    /// <see cref="AggregateException" />, and only after every worker has stopped, so the matrix is never released
+    /// while a worker could still write to it.
+    /// </para>
+    /// </remarks>
+    private static void FillMemoryInParallel<TKernel>(Argon2Matrix matrix, Geometry geometry, int workers)
+        where TKernel : struct, IArgon2Kernel
+    {
+        var options = new ParallelOptions { MaxDegreeOfParallelism = workers, TaskScheduler = TaskScheduler.Default };
+
+        for (int pass = 0; pass < geometry.Passes; pass++)
+        {
+            for (int slice = 0; slice < SyncPoints; slice++)
+            {
+                int currentPass = pass;
+                int currentSlice = slice;
+
+                try
+                {
+                    Parallel.For(0, geometry.Lanes, options, lane => FillSegment<TKernel>(matrix, geometry, currentPass, currentSlice, lane));
+                }
+                catch (AggregateException ex) when (ex.InnerExceptions.Count > 0)
+                {
+                    ExceptionDispatchInfo.Capture(ex.InnerExceptions[0]).Throw();
+                }
+            }
         }
     }
 

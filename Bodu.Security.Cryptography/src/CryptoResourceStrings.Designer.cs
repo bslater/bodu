@@ -1196,9 +1196,9 @@ namespace Bodu {
         /// <summary>
         ///   Looks up a localized string similar to The degree of parallelism must be -1 or a positive number of workers, but was {0}..
         /// </summary>
-        internal static string Arg_OutOfRange_MerkleParallelism {
+        internal static string Arg_OutOfRange_DegreeOfParallelism {
             get {
-                return ResourceManager.GetString("Arg_OutOfRange_MerkleParallelism", resourceCulture);
+                return ResourceManager.GetString("Arg_OutOfRange_DegreeOfParallelism", resourceCulture);
             }
         }
         

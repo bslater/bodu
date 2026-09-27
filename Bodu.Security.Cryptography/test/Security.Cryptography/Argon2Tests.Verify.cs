@@ -80,6 +80,90 @@ public partial class Argon2Tests
     }
 
     /// <summary>
+    /// Verifies that a password verifies against its PHC string whatever bound is placed on the derivation's threads,
+    /// including bounds that divide the lanes among threads and one that confines them to the calling thread.
+    /// </summary>
+    /// <param name="maxDegreeOfParallelism">The bound on the derivation's threads.</param>
+    [TestMethod]
+    [DataRow(-1)]
+    [DataRow(1)]
+    [DataRow(2)]
+    [DataRow(4)]
+    [DataRow(64)]
+    public void Verify_WhenBoundIsGiven_ShouldReturnTrueForTheMatchingPassword(int maxDegreeOfParallelism)
+    {
+        byte[] secret = Repeat(0x09, 16);
+        byte[] password = Encoding.UTF8.GetBytes("hunter2");
+        string encoded = Argon2id.Hash(password, Repeat(0x07, 16), ThreadedParameters() with { Secret = secret });
+
+        Assert.IsTrue(Argon2.Verify(encoded, password, secret, maxDegreeOfParallelism));
+    }
+
+    /// <summary>
+    /// Verifies that a wrong password does not verify when a bound is placed on the derivation's threads.
+    /// </summary>
+    /// <param name="maxDegreeOfParallelism">The bound on the derivation's threads.</param>
+    [TestMethod]
+    [DataRow(-1)]
+    [DataRow(1)]
+    [DataRow(4)]
+    public void Verify_WhenBoundIsGivenAndPasswordDoesNotMatch_ShouldReturnFalse(int maxDegreeOfParallelism)
+    {
+        string encoded = Argon2id.Hash(Encoding.UTF8.GetBytes("hunter2"), Repeat(0x07, 16), ThreadedParameters());
+
+        Assert.IsFalse(Argon2.Verify(encoded, Encoding.UTF8.GetBytes("hunter3"), [], maxDegreeOfParallelism));
+    }
+
+    /// <summary>
+    /// Verifies that the bounded overload dispatches on the variant named in the string, as the unbounded one does.
+    /// </summary>
+    /// <param name="variant">The variant that produced the string.</param>
+    [TestMethod]
+    [DataRow("d")]
+    [DataRow("i")]
+    [DataRow("id")]
+    public void Verify_WhenBoundIsGiven_ShouldVerifyEveryVariant(string variant)
+    {
+        byte[] password = Encoding.UTF8.GetBytes("hunter2");
+        string encoded = Create(variant, FastParameters(), 1).Hash(password, Repeat(0x07, 16));
+
+        Assert.IsTrue(Argon2.Verify(encoded, password, [], 2));
+    }
+
+    /// <summary>
+    /// Verifies that the bounded overload rejects a bound of zero or below <c>-1</c>, naming the parameter, before it
+    /// reads the string.
+    /// </summary>
+    /// <param name="maxDegreeOfParallelism">The invalid bound.</param>
+    [TestMethod]
+    [DataRow(0)]
+    [DataRow(-2)]
+    [DataRow(int.MinValue)]
+    public void Verify_WhenBoundIsInvalid_ShouldThrowArgumentOutOfRangeException(int maxDegreeOfParallelism)
+    {
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = Argon2.Verify("not-a-phc-string", "password"u8, [], maxDegreeOfParallelism);
+        });
+
+        Assert.AreEqual("maxDegreeOfParallelism", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that the bounded overload rejects a null string, naming the parameter.
+    /// </summary>
+    [TestMethod]
+    public void Verify_WhenBoundIsGivenAndEncodedIsNull_ShouldThrowArgumentNullException()
+    {
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = Argon2.Verify(null!, "password"u8, [], 1);
+        });
+
+        Assert.AreEqual("encoded", ex.ParamName);
+    }
+
+    /// <summary>
     /// Verifies that a PHC string whose algorithm field is not a recognized Argon2 variant is rejected.
     /// </summary>
     [TestMethod]

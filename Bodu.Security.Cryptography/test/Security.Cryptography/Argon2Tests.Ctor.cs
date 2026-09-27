@@ -35,4 +35,60 @@ public partial class Argon2Tests
 
         Assert.AreEqual("MemoryKiB", ex.ParamName);
     }
+
+    /// <summary>
+    /// Verifies that each variant's bounded constructor rejects a bound of zero or below <c>-1</c>, naming the
+    /// parameter.
+    /// </summary>
+    /// <param name="variant">The variant constructed.</param>
+    /// <param name="maxDegreeOfParallelism">The invalid bound.</param>
+    [TestMethod]
+    [DataRow("id", 0)]
+    [DataRow("id", -2)]
+    [DataRow("id", int.MinValue)]
+    [DataRow("i", 0)]
+    [DataRow("i", -2)]
+    [DataRow("d", 0)]
+    [DataRow("d", -2)]
+    public void Constructor_WhenMaxDegreeOfParallelismIsInvalid_ShouldThrowArgumentOutOfRangeException(string variant, int maxDegreeOfParallelism)
+    {
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = Create(variant, FastParameters(), maxDegreeOfParallelism);
+        });
+
+        Assert.AreEqual("maxDegreeOfParallelism", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that each variant's bounded constructor rejects null parameters, naming the parameter.
+    /// </summary>
+    /// <param name="variant">The variant constructed.</param>
+    [TestMethod]
+    [DataRow("id")]
+    [DataRow("i")]
+    [DataRow("d")]
+    public void Constructor_WhenParametersIsNullAndBoundIsGiven_ShouldThrowArgumentNullException(string variant)
+    {
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = Create(variant, null!, 1);
+        });
+
+        Assert.AreEqual("parameters", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that the bounded constructor still validates the cost parameters.
+    /// </summary>
+    [TestMethod]
+    public void Constructor_WhenBoundIsGivenAndMemoryBelowFloor_ShouldThrowArgumentOutOfRangeException()
+    {
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = new Argon2id(new Argon2Parameters { MemoryKiB = 4, Iterations = 1, Parallelism = 4 }, 2);
+        });
+
+        Assert.AreEqual("MemoryKiB", ex.ParamName);
+    }
 }

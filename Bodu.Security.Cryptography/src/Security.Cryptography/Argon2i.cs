@@ -26,8 +26,40 @@ public sealed class Argon2i
     /// <exception cref="ArgumentOutOfRangeException">
     /// A cost parameter in <paramref name="parameters" /> falls outside the range permitted by RFC 9106.
     /// </exception>
+    /// <exception cref="ArgumentException">
+    /// The version code in <paramref name="parameters" /> is neither 0x10 nor 0x13.
+    /// </exception>
+    /// <remarks>
+    /// Each derivation may use up to <see cref="Argon2Parameters.Parallelism" /> threads, bounded by the processor
+    /// count, when its lanes are large enough to be worth dividing; see <see cref="Argon2.MaxDegreeOfParallelism" />.
+    /// </remarks>
     public Argon2i(Argon2Parameters parameters)
         : base(parameters)
+    { }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Argon2i" /> class with the specified cost parameters and bound on
+    /// the threads each derivation may use.
+    /// </summary>
+    /// <param name="parameters">The cost and auxiliary parameters governing the derivation.</param>
+    /// <param name="maxDegreeOfParallelism">
+    /// The greatest number of threads one derivation may use, the calling thread included; <c>-1</c> lets the library
+    /// choose.
+    /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="parameters" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// A cost parameter in <paramref name="parameters" /> falls outside the range permitted by RFC 9106, or
+    /// <paramref name="maxDegreeOfParallelism" /> is zero or less than <c>-1</c>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// The version code in <paramref name="parameters" /> is neither 0x10 nor 0x13.
+    /// </exception>
+    /// <remarks>
+    /// <c>1</c> confines every derivation to the calling thread, which suits a service that already runs many
+    /// derivations at once; a larger value caps the threads. The tag never depends on the bound.
+    /// </remarks>
+    public Argon2i(Argon2Parameters parameters, int maxDegreeOfParallelism)
+        : base(parameters, maxDegreeOfParallelism)
     { }
 
     /// <inheritdoc />

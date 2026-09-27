@@ -111,6 +111,28 @@ internal static partial class CryptographyThrowHelper
     }
 
     /// <summary>
+    /// Throws an <see cref="ArgumentOutOfRangeException" /> when a degree of parallelism is neither <c>-1</c> nor a
+    /// positive count.
+    /// </summary>
+    /// <param name="maxDegreeOfParallelism">The value to validate.</param>
+    /// <param name="paramName">The name of the parameter. Supplied automatically by the compiler.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="maxDegreeOfParallelism" /> is zero or is less than <c>-1</c>.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void ThrowIfDegreeOfParallelismInvalid(
+        int maxDegreeOfParallelism,
+        [CallerArgumentExpression(nameof(maxDegreeOfParallelism))] string? paramName = null)
+    {
+        if (maxDegreeOfParallelism == 0 || maxDegreeOfParallelism < -1)
+        {
+            throw new ArgumentOutOfRangeException(
+                paramName,
+                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Arg_OutOfRange_DegreeOfParallelism, maxDegreeOfParallelism));
+        }
+    }
+
+    /// <summary>
     /// Throws a <see cref="CryptographicException" /> when <paramref name="success" /> is <see langword="false" />,
     /// indicating that <see cref="HashAlgorithm.TryComputeHash" /> failed because the destination buffer was too small.
     /// </summary>

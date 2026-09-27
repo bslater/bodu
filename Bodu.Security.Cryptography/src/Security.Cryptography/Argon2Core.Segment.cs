@@ -15,26 +15,6 @@ internal static partial class Argon2Core
     private const int ScratchBlocks = 6;
 
     /// <summary>
-    /// Fills every block after the first two columns: pass by pass, slice by slice, and segment by segment within a
-    /// slice (RFC 9106, Section 3.4).
-    /// </summary>
-    /// <typeparam name="TKernel">The compression kernel.</typeparam>
-    /// <param name="matrix">The memory matrix, its first two columns already filled.</param>
-    /// <param name="geometry">The shape of the matrix.</param>
-    private static void FillMemory<TKernel>(Argon2Matrix matrix, in Geometry geometry)
-        where TKernel : struct, IArgon2Kernel
-    {
-        for (int pass = 0; pass < geometry.Passes; pass++)
-        {
-            for (int slice = 0; slice < SyncPoints; slice++)
-            {
-                for (int lane = 0; lane < geometry.Lanes; lane++)
-                    FillSegment<TKernel>(matrix, geometry, pass, slice, lane);
-            }
-        }
-    }
-
-    /// <summary>
     /// Computes one segment (the intersection of a lane and a slice) of the memory matrix.
     /// </summary>
     /// <typeparam name="TKernel">The compression kernel.</typeparam>

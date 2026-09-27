@@ -22,6 +22,10 @@ namespace Bodu.Security.Cryptography.Benchmarks;
 /// (<c>DOTNET_EnableHWIntrinsic=0</c>) takes the scalar path. On ARM64, <c>NoAvx2</c> is the same as <c>Default</c>.
 /// </para>
 /// <para>
+/// The <c>OnOneThread</c> rows confine each derivation to its calling thread with a bound of one, as 1.0.0 always ran;
+/// they are absent when the class is built against a published package that has no bound.
+/// </para>
+/// <para>
 /// A 64 MiB derivation costs tens to hundreds of milliseconds, so BenchmarkDotNet's default iteration counts make this
 /// class slow; filter it (<c>--filter *Argon2Benchmarks*</c>) and consider <c>--job short</c> for a quick look. The
 /// allocation column is the one ARG-N-004 is judged by, and the four-at-once rows report the time per derivation.
@@ -37,6 +41,9 @@ public class Argon2Benchmarks
     private readonly byte[] _password = "correct horse battery staple"u8.ToArray();
     private readonly byte[] _salt = "0123456789abcdef"u8.ToArray();
     private Argon2Parameters _parameters = null!;
+#if !BODU_CRYPTO_BASELINE
+    private Argon2id _oneThread = null!;
+#endif
 
     /// <summary>The memory cost, in KiB: a small size, and RFC 9106's 64 MiB.</summary>
     [Params(256, 65536)]
@@ -46,8 +53,13 @@ public class Argon2Benchmarks
     /// Builds the parameters for the selected memory cost.
     /// </summary>
     [GlobalSetup]
-    public void Setup() =>
+    public void Setup()
+    {
         _parameters = new Argon2Parameters { MemoryKiB = MemoryKiB, Iterations = 3, Parallelism = 4, TagLength = 32 };
+#if !BODU_CRYPTO_BASELINE
+        _oneThread = new Argon2id(_parameters, maxDegreeOfParallelism: 1);
+#endif
+    }
 
     /// <summary>
     /// Derives one tag on the calling thread's behalf, as an interactive unlock does.
@@ -63,6 +75,23 @@ public class Argon2Benchmarks
     [Benchmark(OperationsPerInvoke = Concurrency)]
     public void FourAtOnce() =>
         Parallel.For(0, Concurrency, new ParallelOptions { MaxDegreeOfParallelism = Concurrency }, _ => Argon2id.DeriveKey(_password, _salt, _parameters));
+#if !BODU_CRYPTO_BASELINE
+
+    /// <summary>
+    /// Derives one tag confined to the calling thread.
+    /// </summary>
+    /// <returns>The derived tag.</returns>
+    [Benchmark]
+    public byte[] OneAtATimeOnOneThread() =>
+        _oneThread.GetBytes(_password, _salt);
+
+    /// <summary>
+    /// Derives four tags at once, each confined to its calling thread, and reports the time per derivation.
+    /// </summary>
+    [Benchmark(OperationsPerInvoke = Concurrency)]
+    public void FourAtOnceOnOneThreadEach() =>
+        Parallel.For(0, Concurrency, new ParallelOptions { MaxDegreeOfParallelism = Concurrency }, _ => _oneThread.GetBytes(_password, _salt));
+#endif
 
     /// <summary>
     /// Selects the compression path per job through the runtime's hardware-intrinsic switches.
