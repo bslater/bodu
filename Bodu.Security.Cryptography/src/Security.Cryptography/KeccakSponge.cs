@@ -51,6 +51,12 @@ internal struct KeccakSponge
     /// <summary>Domain-separation suffix for the SHAKE extendable-output functions.</summary>
     private const byte ShakeDomainSuffix = 0x1F;
 
+    /// <summary>The SHAKE128 rate, in bytes: one squeeze of this length costs exactly one permutation.</summary>
+    internal const int Shake128RateBytes = 168;
+
+    /// <summary>The SHAKE256 rate, in bytes: one squeeze of this length costs exactly one permutation.</summary>
+    internal const int Shake256RateBytes = 136;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="KeccakSponge" /> struct with the given rate and domain suffix.
     /// </summary>
@@ -84,14 +90,14 @@ internal struct KeccakSponge
     /// </summary>
     /// <returns>A fresh sponge ready to absorb.</returns>
     internal static KeccakSponge CreateShake128() =>
-        new(168, ShakeDomainSuffix);
+        new(Shake128RateBytes, ShakeDomainSuffix);
 
     /// <summary>
     /// Creates a SHAKE256 sponge (rate 136 bytes, 256-bit security).
     /// </summary>
     /// <returns>A fresh sponge ready to absorb.</returns>
     internal static KeccakSponge CreateShake256() =>
-        new(136, ShakeDomainSuffix);
+        new(Shake256RateBytes, ShakeDomainSuffix);
 
     /// <summary>
     /// Computes the 32-byte SHA3-256 digest of <paramref name="input" />.

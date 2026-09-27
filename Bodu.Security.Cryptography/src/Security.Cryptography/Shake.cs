@@ -251,6 +251,16 @@ public sealed class Shake
 
         while (source.Length > 0)
         {
+            // With nothing buffered, absorb whole rate blocks straight from the caller's span; only a partial block
+            // needs the rate buffer.
+            if (_residualBytes == 0 && source.Length >= rateBytes)
+            {
+                XorBlockIntoState(source[..rateBytes], _state, rateBytes);
+                KeccakPermutation.Permute(_state);
+                source = source[rateBytes..];
+                continue;
+            }
+
             int available = rateBytes - _residualBytes;
             int take = Math.Min(available, source.Length);
 

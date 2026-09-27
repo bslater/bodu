@@ -35,20 +35,25 @@ internal static partial class MLKemEngine
         indices[1] = index2;
         sponge.Absorb(indices);
 
-        Span<byte> block = stackalloc byte[3];
+        // FIPS 203 Algorithm 7 reads the XOF three bytes at a time. Squeezing a whole rate block — 56 triples, one
+        // permutation — reads the same byte stream; the bytes left over once the polynomial is full are never used.
+        Span<byte> block = stackalloc byte[KeccakSponge.Shake128RateBytes];
         int count = 0;
         while (count < N)
         {
             sponge.Squeeze(block);
 
-            int d1 = block[0] | ((block[1] & 0x0F) << 8);
-            int d2 = (block[1] >> 4) | (block[2] << 4);
+            for (int offset = 0; offset < block.Length && count < N; offset += 3)
+            {
+                int d1 = block[offset] | ((block[offset + 1] & 0x0F) << 8);
+                int d2 = (block[offset + 1] >> 4) | (block[offset + 2] << 4);
 
-            if (d1 < Q)
-                destination[count++] = d1;
+                if (d1 < Q)
+                    destination[count++] = d1;
 
-            if (d2 < Q && count < N)
-                destination[count++] = d2;
+                if (d2 < Q && count < N)
+                    destination[count++] = d2;
+            }
         }
 
         sponge.Clear();
