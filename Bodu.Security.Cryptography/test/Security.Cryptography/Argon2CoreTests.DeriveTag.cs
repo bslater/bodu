@@ -16,6 +16,13 @@ public sealed partial class Argon2CoreTests
     private const int PoisonedVectorMaxMemoryKiB = 4096;
 
     /// <summary>
+    /// The largest memory, in KiB, of the vectors the kernel and thread sweeps replay. Larger vectors exercise no path
+    /// a 16 MiB one does not, and each kernel meets them anyway: AVX2 through the public vector tests on x64, AdvSimd
+    /// through the same tests on ARM64, and the scalar kernel through the SIMD opt-out assembly.
+    /// </summary>
+    private const int SweepMaxMemoryKiB = 16 * 1024;
+
+    /// <summary>
     /// The bounds the thread sweep applies: the calling thread alone, two to four threads, the processor count, and
     /// more threads than any vector has lanes.
     /// </summary>
@@ -31,28 +38,30 @@ public sealed partial class Argon2CoreTests
             Argon2Tests.RecordedCorpusVectors().Where(row => ((KdfKnownAnswer)row[0]).Memory <= PoisonedVectorMaxMemoryKiB));
 
     /// <summary>
-    /// Gets every vector whose lanes can be divided among threads — RFC 9106's, the reference implementation's version
-    /// 0x10 traces, and the recorded 1.0.0 corpus at every lane count from one to eight.
+    /// Gets every vector of up to 16 MiB whose lanes can be divided among threads — RFC 9106's, the reference
+    /// implementation's with more than one lane, and the recorded 1.0.0 corpus at every lane count from one to eight.
     /// </summary>
     /// <returns>One row per vector, each holding a single <see cref="KdfKnownAnswer" />.</returns>
     public static IEnumerable<object[]> ThreadSweepVectors() =>
         Argon2Tests.Rfc9106Vectors()
             .Concat(Argon2Tests.ReferenceImplementationVectors().Where(row => ((KdfKnownAnswer)row[0]).Parallelism > 1))
-            .Concat(Argon2Tests.RecordedCorpusVectors());
+            .Concat(Argon2Tests.RecordedCorpusVectors())
+            .Where(row => ((KdfKnownAnswer)row[0]).Memory <= SweepMaxMemoryKiB);
 
     /// <summary>
-    /// Gets every vector below 1 GiB: RFC 9106's, the reference implementation's, and the recorded 1.0.0 corpus.
+    /// Gets every vector of up to 16 MiB: RFC 9106's, the reference implementation's, and the recorded 1.0.0 corpus.
     /// </summary>
     /// <returns>One row per vector, each holding a single <see cref="KdfKnownAnswer" />.</returns>
     public static IEnumerable<object[]> KernelSweepVectors() =>
         Argon2Tests.Rfc9106Vectors()
             .Concat(Argon2Tests.ReferenceImplementationVectors())
-            .Concat(Argon2Tests.RecordedCorpusVectors());
+            .Concat(Argon2Tests.RecordedCorpusVectors())
+            .Where(row => ((KdfKnownAnswer)row[0]).Memory <= SweepMaxMemoryKiB);
 
     /// <summary>
     /// Verifies that every compression kernel the processor supports produces the known tag, whichever one dispatch
     /// would select — so an AVX2 host holds the AVX2, SSSE3, and scalar kernels, and an ARM64 host the AdvSimd and
-    /// scalar kernels, to every vector.
+    /// scalar kernels, to every vector of up to 16 MiB.
     /// </summary>
     /// <param name="vector">The vector derived with each kernel.</param>
     [TestMethod]

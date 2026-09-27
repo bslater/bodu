@@ -158,6 +158,25 @@ AVX-512 still cannot execute the intrinsic files, and reporting them as 0% there
 would be wrong. The classification stays for that case; after a dual pass it
 simply never triggers, because neither path is unreachable any more.
 
+### ARM64: the AdvSimd files
+
+Argon2's 128-bit compression kernel is written once over portable `Vector128`
+arithmetic and specialized by a five-member instruction-set shim, so nearly all
+of it runs on x64. On an AVX2 host the kernel-sweep test drives the AVX2, SSSE3
+and scalar kernels explicitly, whichever one dispatch picks, so one native pass
+covers all three. Only the ARM64 shim, `Argon2Core.AdvSimd.cs`, cannot run
+there: each of its members is an AdvSimd instruction.
+
+`tools/New-CoverageMatrix.ps1` therefore treats `*.AdvSimd.cs` as
+hardware-gated whenever no collecting host is ARM64 — judged from the `arch`
+field every collection manifest records — and reports it as `n/a
+(hardware-gated)` rather than 0%. As with the AVX-512 files, the rule applies
+only on positive evidence: a collection with no recorded architecture reports
+the file as measured. The shim is not untested: the ARM64 job in
+`.github/workflows/build-test.yml` runs both cryptography suites on GitHub's
+hosted ARM64 runner, where the shim tests hold each member to its scalar
+definition and the vector corpus runs through the AdvSimd kernel.
+
 ### The switch itself
 
 The dual pass closes the numbers but does not exercise the shipped `DisableSimd`
