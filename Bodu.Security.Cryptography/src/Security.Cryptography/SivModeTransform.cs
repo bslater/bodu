@@ -314,7 +314,7 @@ public sealed class SivModeTransform
 
     /// <summary>
     /// Computes the Synthetic IV using S2V per RFC 5297 Section 2.4. S2V(K, S₁, …, Sₙ) where S₁ = AAD and Sₙ =
-    /// plaintext.
+    /// plaintext; empty associated data contributes no string, so the plaintext is then the only one.
     /// </summary>
     /// <param name="aad">The associated authenticated data.</param>
     /// <param name="plaintext">The plaintext bytes.</param>
@@ -343,15 +343,8 @@ public sealed class SivModeTransform
                 Xor(d, mac, d);
             }
 
-            // Last component = plaintext.
-            if (plaintext.Length == 0)
-            {
-                Dbl(d);
-                d[blockSize - 1] ^= 0x01;
-
-                return ComputeCmac(d);
-            }
-
+            // Last component = plaintext. A plaintext shorter than a block, the empty one included, is padded with
+            // 10* — <one> is only for a call with no strings, which cannot happen here.
             if (plaintext.Length >= blockSize)
             {
                 t = plaintext.ToArray();

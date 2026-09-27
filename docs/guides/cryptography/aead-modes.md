@@ -193,6 +193,11 @@ using (var ctr = new AesBlockCipher(ctrKey))
 
 The `iv` argument is kept for interface compatibility but is not used — SIV derives its synthetic IV from the AAD and plaintext.
 
+The associated data is S2V's one associated-data string when it is non-empty. Empty associated data, or none, contributes no string, because the transform cannot tell the two apart; implementations that always pass the associated data as a string, even an empty one, compute a different synthetic IV for such messages.
+
+> [!IMPORTANT]
+> Earlier releases computed the synthetic IV of an empty plaintext with the wrong padding constant, which does not match RFC 5297. Data they sealed with an empty plaintext does not decrypt with this release; every non-empty plaintext is unchanged.
+
 ## GCM-SIV — the modern replacement for GCM
 
 GCM-SIV (RFC 8452) is a misuse-resistant AEAD with GCM-like performance. It's the preferred choice when you want GCM's speed *and* need to tolerate accidental nonce reuse. The construction uses AES internally, but with a key-derivation step — so the constructor takes a master cipher **and** a factory that produces a new cipher for the derived per-message key.
