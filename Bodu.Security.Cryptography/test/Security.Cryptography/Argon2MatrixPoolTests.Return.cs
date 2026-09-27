@@ -85,4 +85,22 @@ public sealed partial class Argon2MatrixPoolTests
 
         Assert.AreEqual(0, pool.RetainedCount);
     }
+
+    /// <summary>
+    /// Verifies that a buffer returned while the caller has already suppressed execution-context flow is retained and
+    /// starts the idle timer, rather than failing on a second suppression.
+    /// </summary>
+    [TestMethod]
+    public void Return_WhenExecutionContextFlowIsAlreadySuppressed_ShouldStartTheIdleTimer()
+    {
+        var clock = new ManualTimeProvider();
+        Argon2MatrixPool pool = CreatePool(clock);
+        Argon2Matrix matrix = Argon2Matrix.Rent(16, pool);
+
+        using (ExecutionContext.SuppressFlow())
+            matrix.Dispose();
+
+        Assert.AreEqual(1, pool.RetainedCount);
+        Assert.AreEqual(1, clock.TimersCreated);
+    }
 }

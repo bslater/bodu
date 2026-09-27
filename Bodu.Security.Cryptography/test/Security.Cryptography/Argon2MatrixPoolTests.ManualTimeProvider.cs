@@ -30,10 +30,29 @@ public sealed partial class Argon2MatrixPoolTests
             _timestamp;
 
         /// <summary>
+        /// Gets the number of timers created on this clock.
+        /// </summary>
+        public int TimersCreated { get; private set; }
+
+        /// <summary>
         /// Moves the clock forward.
         /// </summary>
         /// <param name="interval">The time to advance by.</param>
         public void Advance(TimeSpan interval) =>
             _timestamp += interval.Ticks;
+
+        /// <summary>
+        /// Creates a timer and counts it. The timer runs in real time, so it fires only after its due time elapses.
+        /// </summary>
+        /// <param name="callback">The callback the timer invokes.</param>
+        /// <param name="state">The state passed to <paramref name="callback" />.</param>
+        /// <param name="dueTime">The delay before the first invocation.</param>
+        /// <param name="period">The interval between invocations.</param>
+        /// <returns>The timer.</returns>
+        public override ITimer CreateTimer(TimerCallback callback, object? state, TimeSpan dueTime, TimeSpan period)
+        {
+            TimersCreated++;
+            return base.CreateTimer(callback, state, dueTime, period);
+        }
     }
 }

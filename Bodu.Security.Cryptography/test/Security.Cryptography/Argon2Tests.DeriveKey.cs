@@ -42,6 +42,29 @@ public partial class Argon2Tests
     }
 
     /// <summary>
+    /// Verifies that deriving into a destination of the tag length writes the tag <see cref="Argon2.GetBytes" />
+    /// returns, for every variant, on the calling thread alone and with the lanes divided among threads.
+    /// </summary>
+    /// <param name="variant">The variant derived.</param>
+    /// <param name="maxDegreeOfParallelism">The bound on the derivation's threads.</param>
+    [TestMethod]
+    [DataRow("d", 1)]
+    [DataRow("i", 1)]
+    [DataRow("id", 1)]
+    [DataRow("id", 4)]
+    public void DeriveKey_WhenDestinationIsTheTagLength_ShouldWriteTheTag(string variant, int maxDegreeOfParallelism)
+    {
+        Argon2 argon2 = Create(variant, ThreadedParameters(), maxDegreeOfParallelism);
+        byte[] password = Repeat(0x31, 20);
+        byte[] salt = Repeat(0x32, 16);
+        byte[] destination = new byte[argon2.Parameters.TagLength];
+
+        argon2.DeriveKey(password, salt, destination);
+
+        CollectionAssert.AreEqual(argon2.GetBytes(password, salt), destination);
+    }
+
+    /// <summary>
     /// Verifies that deriving into a destination whose length differs from the tag length is rejected.
     /// </summary>
     [TestMethod]

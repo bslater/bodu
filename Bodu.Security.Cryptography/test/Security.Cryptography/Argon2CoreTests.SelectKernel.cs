@@ -69,6 +69,15 @@ public sealed partial class Argon2CoreTests
     }
 
     /// <summary>
+    /// Verifies that a value naming no kernel is reported as unsupported.
+    /// </summary>
+    [TestMethod]
+    public void IsSupported_WhenKernelIsUndefined_ShouldReturnFalse()
+    {
+        Assert.IsFalse(Argon2Core.IsSupported((Argon2Core.KernelKind)99));
+    }
+
+    /// <summary>
     /// Verifies that each vector kernel is reported as supported exactly when the processor has its instruction set,
     /// whatever the process's SIMD switch says.
     /// </summary>
