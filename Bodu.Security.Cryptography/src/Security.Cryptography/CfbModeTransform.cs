@@ -119,12 +119,12 @@ public sealed class CfbModeTransform
             }
             else
             {
+                // Take the ciphertext block as the next feedback first: decrypting in place overwrites it below.
+                inBlock.CopyTo(_currentIv);
+
                 // XOR ciphertext with encrypted feedback to produce plaintext
                 for (int i = 0; i < blockSize; i++)
-                    outBlock[i] = (byte)(inBlock[i] ^ feedback[i]);
-
-                // Update IV to current ciphertext block
-                inBlock.CopyTo(_currentIv);
+                    outBlock[i] = (byte)(_currentIv[i] ^ feedback[i]);
             }
         }
 
