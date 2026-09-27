@@ -1,0 +1,414 @@
+﻿// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="CryptoHarness.cs" company="Bodu Pty. Ltd.">
+// Copyright (c) Bodu Pty. Ltd. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+using System.Diagnostics;
+using System.Globalization;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography;
+
+namespace Bodu.Security.Cryptography.Benchmarks;
+
+/// <summary>
+/// Measures throughput, latency, and allocation for the primitives the cross-library performance plan
+/// (<c>plans/crypto-performance.md</c>) targets, next to the BCL and — on Linux — OpenSSL on the same machine.
+/// </summary>
+/// <remarks>
+/// <para>
+/// Run with <c>--crypto-harness</c>, optionally followed by case filters: a case runs when its <c>group/name</c>
+/// contains any filter, ignoring case (for example <c>--crypto-harness SHAKE scrypt</c>). <c>--round &lt;seconds&gt;</c>
+/// sets the length of each of the five measured rounds (0.4 s by default).
+/// </para>
+/// <para>
+/// Each case is warmed up until it has run at least 60 times or for half a second, capped at 1.5 s so the slowest
+/// cases still finish, which is long enough for tiered compilation to promote the hot methods. The reported time is
+/// the median of five rounds; allocation is the process-wide allocation per operation over all five.
+/// </para>
+/// <para>
+/// Built with <c>-p:BoduCryptoBaseline=1.0.0</c>, the same source measures the published package. SIMD tiers are
+/// selected with the runtime's switches: <c>DOTNET_EnableAVX512F=0</c> (.NET 8) or <c>DOTNET_EnableAVX512=0</c>
+/// (.NET 10) removes AVX-512, <c>DOTNET_EnableAVX2=0</c> AVX2, and <c>DOTNET_EnableHWIntrinsic=0</c> every vector
+/// path.
+/// </para>
+/// </remarks>
+internal static class CryptoHarness
+{
+    /// <summary>The number of measured rounds per case; the median is reported.</summary>
+    private const int Rounds = 5;
+
+    /// <summary>The minimum number of warm-up operations per case.</summary>
+    private const int WarmUpOperations = 60;
+
+    /// <summary>The size of the bulk-throughput input.</summary>
+    private const int BulkLength = 1 << 20;
+
+    /// <summary>The size of the small-message input.</summary>
+    private const int SmallLength = 64;
+
+    /// <summary>The case filters from the command line; empty to run every case.</summary>
+    private static string[] s_filters = [];
+
+    /// <summary>The length of each measured round.</summary>
+    private static TimeSpan s_round = TimeSpan.FromSeconds(0.4);
+
+    /// <summary>
+    /// Runs the harness.
+    /// </summary>
+    /// <param name="args">The arguments after <c>--crypto-harness</c>: case filters, and <c>--round &lt;seconds&gt;</c>.</param>
+    internal static void Run(string[] args)
+    {
+        var filters = new List<string>();
+        for (int i = 0; i < args.Length; i++)
+        {
+            if (args[i] == "--round" && i + 1 < args.Length)
+                s_round = TimeSpan.FromSeconds(double.Parse(args[++i], CultureInfo.InvariantCulture));
+            else
+                filters.AddRange(args[i].Split(',', StringSplitOptions.RemoveEmptyEntries));
+        }
+
+        s_filters = [.. filters];
+        Console.WriteLine(Describe());
+
+        RunHashes();
+        RunStreamCiphers();
+        RunAeadsAndModes();
+        RunKeyDerivation();
+        RunPublicKey();
+    }
+
+    /// <summary>
+    /// Measures the hash and XOF cases.
+    /// </summary>
+    private static void RunHashes()
+    {
+        byte[] bulk = Random(BulkLength, 1);
+        byte[] small = Random(SmallLength, 2);
+        byte[] digest = new byte[128];
+
+        foreach ((string name, HashAlgorithm algorithm) in new (string, HashAlgorithm)[]
+        {
+            ("BLAKE2b-512", new Blake2b()),
+            ("BLAKE2s-256", new Blake2s()),
+            ("BLAKE3", new Blake3()),
+            ("Skein-512", new Skein512()),
+            ("CubeHash", new CubeHash()),
+            ("SHAKE128", new Shake(256, 128)),
+            ("SHAKE256", new Shake(512, 256)),
+            ("Whirlpool", new Whirlpool()),
+            ("Tiger", new Tiger()),
+        })
+        {
+            Measure("hash", $"Bodu {name} 1 MiB", BulkLength, () => algorithm.TryComputeHash(bulk, digest, out _));
+            Measure("hash", $"Bodu {name} 64 B", SmallLength, () => algorithm.TryComputeHash(small, digest, out _));
+        }
+
+        Measure("hash", "BCL SHA-256 1 MiB", BulkLength, () => SHA256.HashData(bulk, digest));
+        if (Shake128.IsSupported)
+        {
+            Measure("hash", "BCL SHAKE128 1 MiB", BulkLength, () => Shake128.HashData(bulk, digest.AsSpan(0, 32)));
+            Measure("hash", "BCL SHAKE128 64 B", SmallLength, () => Shake128.HashData(small, digest.AsSpan(0, 32)));
+        }
+
+        if (OpenSsl.TryFetchDigest("BLAKE2B-512", out nint blake2b))
+            Measure("hash", "OpenSSL BLAKE2b-512 1 MiB", BulkLength, () => OpenSsl.Digest(blake2b, bulk, digest));
+        if (OpenSsl.TryFetchDigest("BLAKE2S-256", out nint blake2s))
+            Measure("hash", "OpenSSL BLAKE2s-256 1 MiB", BulkLength, () => OpenSsl.Digest(blake2s, bulk, digest));
+    }
+
+    /// <summary>
+    /// Measures keystream generation for each stream cipher, continuing one transform across operations.
+    /// </summary>
+    private static void RunStreamCiphers()
+    {
+        byte[] bulk = Random(BulkLength, 3);
+        byte[] output = new byte[BulkLength];
+
+        foreach ((string name, SymmetricStreamAlgorithm algorithm) in new (string, SymmetricStreamAlgorithm)[]
+        {
+            ("ChaCha20", new ChaCha20()),
+            ("XChaCha20", new XChaCha20()),
+            ("Salsa20", new Salsa20()),
+            ("XSalsa20", new XSalsa20()),
+            ("HC-128", new Hc128()),
+            ("Rabbit", new Rabbit()),
+        })
+        {
+            ICryptoTransform transform = algorithm.CreateEncryptor();
+            Measure("stream", $"Bodu {name} 1 MiB", BulkLength, () => transform.TransformBlock(bulk, 0, bulk.Length, output, 0));
+        }
+    }
+
+    /// <summary>
+    /// Measures the AEADs, Poly1305, and the block-cipher modes, one message per transform as the modes require.
+    /// </summary>
+    private static void RunAeadsAndModes()
+    {
+        byte[] bulk = Random(BulkLength, 4);
+        byte[] small = Random(SmallLength, 5);
+        byte[] output = new byte[BulkLength + 64];
+        byte[] tag = new byte[16];
+        byte[] digest = new byte[16];
+        byte[] key16 = Random(16, 6);
+        byte[] key32 = Random(32, 7);
+        byte[] nonce12 = Random(12, 8);
+        byte[] nonce24 = Random(24, 9);
+        byte[] iv16 = Random(16, 10);
+
+        Measure("aead", "Bodu XChaCha20-Poly1305 1 MiB", BulkLength, () => { using var aead = new XChaCha20Poly1305(key32, nonce24); aead.Encrypt(bulk, output); });
+        Measure("aead", "Bodu XChaCha20-Poly1305 64 B", SmallLength, () => { using var aead = new XChaCha20Poly1305(key32, nonce24); aead.Encrypt(small, output); });
+        Measure("aead", "Bodu XSalsa20-Poly1305 1 MiB", BulkLength, () => { using var aead = new XSalsa20Poly1305(key32, nonce24); aead.Encrypt(bulk, output); });
+        if (ChaCha20Poly1305.IsSupported)
+        {
+            using var bcl = new ChaCha20Poly1305(key32);
+            Measure("aead", "BCL ChaCha20-Poly1305 1 MiB", BulkLength, () => bcl.Encrypt(nonce12, bulk, output.AsSpan(0, BulkLength), tag));
+            Measure("aead", "BCL ChaCha20-Poly1305 64 B", SmallLength, () => bcl.Encrypt(nonce12, small, output.AsSpan(0, SmallLength), tag));
+        }
+
+        Measure("mac", "Bodu Poly1305 1 MiB", BulkLength, () => { using var mac = new Poly1305(); mac.Key = key32; mac.TryComputeHash(bulk, digest, out _); });
+
+        using (var aes = new AesBlockCipher(key16))
+        using (var aes2 = new AesBlockCipher(key32[..16]))
+        {
+            Measure("aead", "Bodu AES-128-GCM 1 MiB", BulkLength, () => { using var gcm = new GcmModeTransform(aes, nonce12); gcm.Encrypt(bulk, output); });
+            Measure("aead", "Bodu AES-128-GCM 64 B", SmallLength, () => { using var gcm = new GcmModeTransform(aes, nonce12); gcm.Encrypt(small, output); });
+            Measure("aead", "Bodu AES-128-GCM-SIV 1 MiB", BulkLength, () => { using var siv = new GcmSivModeTransform(aes, static k => new AesBlockCipher(k), iv16); siv.Encrypt(bulk, output); });
+            Measure("aead", "Bodu AES-128-CCM 1 MiB", BulkLength, () => { using var ccm = new CcmModeTransform(aes, iv16); ccm.Encrypt(bulk, output); });
+            Measure("aead", "Bodu AES-128-EAX 1 MiB", BulkLength, () => { using var eax = new EaxModeTransform(aes, iv16); eax.Encrypt(bulk, output); });
+            Measure("aead", "Bodu AES-128-OCB 1 MiB", BulkLength, () => { using var ocb = new OcbModeTransform(aes, iv16); ocb.Encrypt(bulk, output); });
+            Measure("aead", "Bodu AES-128-SIV 1 MiB", BulkLength, () => { using var siv = new SivModeTransform(aes, aes2, iv16); siv.Encrypt(bulk, output); });
+            Measure("mode", "Bodu AES-128-CTR 1 MiB", BulkLength, () => { using var ctr = new CtrModeTransform(aes, iv16); ctr.Transform(bulk, output.AsSpan(0, BulkLength), encrypt: true); });
+            Measure("mode", "Bodu AES-128-CBC decrypt 1 MiB", BulkLength, () => { using var cbc = new CbcModeTransform(aes, iv16); cbc.Transform(bulk, output.AsSpan(0, BulkLength), encrypt: false); });
+            Measure("mode", "Bodu AES-128-XTS 1 MiB", BulkLength, () => { using var xts = new XtsModeTransform(aes, aes2, iv16); xts.Transform(bulk, output.AsSpan(0, BulkLength), encrypt: true); });
+            Measure("mode", "Bodu AES-128-ECB bulk 1 MiB", BulkLength, () => aes.EncryptBlocks(bulk, output));
+        }
+
+        using (var bclGcm = new AesGcm(key16, 16))
+            Measure("aead", "BCL AES-128-GCM 1 MiB", BulkLength, () => bclGcm.Encrypt(nonce12, bulk, output.AsSpan(0, BulkLength), tag));
+
+        foreach ((string name, Func<IBlockCipher> create, int ivLength) in new (string, Func<IBlockCipher>, int)[]
+        {
+            ("Serpent-128", () => new Serpent128Cipher(key32), 16),
+            ("Twofish", () => new TwofishBlockCipher(key32), 16),
+            ("Camellia", () => new CamelliaBlockCipher(key32), 16),
+            ("Threefish-512", () => new Threefish512Cipher(Random(64, 11), Random(16, 12)), 64),
+        })
+        {
+            using IBlockCipher cipher = create();
+            byte[] iv = Random(ivLength, 13);
+            Measure("mode", $"Bodu {name}-CTR 1 MiB", BulkLength, () => { using var ctr = new CtrModeTransform(cipher, iv); ctr.Transform(bulk, output.AsSpan(0, BulkLength), encrypt: true); });
+        }
+    }
+
+    /// <summary>
+    /// Measures scrypt at the interactive and OWASP-minimum costs, next to OpenSSL's scrypt, with Argon2id for scale.
+    /// </summary>
+    private static void RunKeyDerivation()
+    {
+        byte[] password = Random(16, 14);
+        byte[] salt = Random(16, 15);
+        byte[] key = new byte[32];
+
+        foreach ((int log2N, int r, int p) in new[] { (14, 8, 1), (14, 8, 4), (17, 8, 1) })
+        {
+            string parameters = $"N=2^{log2N} r={r} p={p}";
+            Measure("kdf", $"Bodu scrypt {parameters}", 0, () => Scrypt.DeriveKey(password, salt, 1 << log2N, r, p, key));
+            if (OpenSsl.IsAvailable)
+                Measure("kdf", $"OpenSSL scrypt {parameters}", 0, () => OpenSsl.Scrypt(password, salt, 1UL << log2N, (ulong)r, (ulong)p, key));
+        }
+
+        var argon2 = new Argon2Parameters { MemoryKiB = 19 * 1024, Iterations = 2, Parallelism = 1 };
+        Measure("kdf", "Bodu Argon2id m=19 MiB t=2 p=1", 0, () => Argon2id.DeriveKey(password, salt, argon2));
+    }
+
+    /// <summary>
+    /// Measures the Curve25519 and post-quantum operations.
+    /// </summary>
+    private static void RunPublicKey()
+    {
+        byte[] message = Random(64, 16);
+
+        using (var alice = new X25519())
+        using (var bob = new X25519())
+        {
+            alice.GenerateKey();
+            bob.GenerateKey();
+            byte[] peer = bob.ExportPublicKey();
+            Measure("asym", "Bodu X25519 shared secret", 0, () => alice.DeriveSharedSecret(peer));
+            Measure("asym", "Bodu X25519 key generation", 0, alice.GenerateKey);
+        }
+
+        using (var ed25519 = new Ed25519())
+        {
+            ed25519.GenerateKey();
+            byte[] signature = ed25519.SignData(message);
+            Measure("asym", "Bodu Ed25519 sign", 0, () => ed25519.SignData(message));
+            Measure("asym", "Bodu Ed25519 verify", 0, () => ed25519.VerifyData(message, signature));
+        }
+
+        using (var kem = new MLKem768())
+        {
+            Measure("pq", "Bodu ML-KEM-768 key generation", 0, kem.GenerateKey);
+            kem.GenerateKey();
+            (byte[] ciphertext, _) = kem.Encapsulate();
+            Measure("pq", "Bodu ML-KEM-768 encapsulate", 0, () => kem.Encapsulate());
+            Measure("pq", "Bodu ML-KEM-768 decapsulate", 0, () => kem.Decapsulate(ciphertext));
+        }
+
+        using (var dsa = new MLDsa65())
+        {
+            Measure("pq", "Bodu ML-DSA-65 key generation", 0, dsa.GenerateKey);
+            dsa.GenerateKey();
+            byte[] signature = dsa.SignData(message);
+            Measure("pq", "Bodu ML-DSA-65 sign", 0, () => dsa.SignData(message));
+            Measure("pq", "Bodu ML-DSA-65 verify", 0, () => dsa.VerifyData(message, signature));
+        }
+    }
+
+    /// <summary>
+    /// Warms one case up, measures it over five rounds, and prints its median time, rate, allocation, and gen2 count.
+    /// </summary>
+    /// <param name="group">The case's group, printed first and matched by the filters.</param>
+    /// <param name="name">The case's name.</param>
+    /// <param name="bytesPerOperation">The bytes each operation processes, or 0 to report operations per second.</param>
+    /// <param name="operation">The operation to measure.</param>
+    private static void Measure(string group, string name, long bytesPerOperation, Action operation)
+    {
+        string label = group + "/" + name;
+        if (s_filters.Length > 0 && !s_filters.Any(filter => label.Contains(filter, StringComparison.OrdinalIgnoreCase)))
+            return;
+
+        var stopwatch = Stopwatch.StartNew();
+        int warmUps = 0;
+        while ((warmUps < WarmUpOperations || stopwatch.Elapsed.TotalSeconds < 0.5) && stopwatch.Elapsed.TotalSeconds < 1.5)
+        {
+            operation();
+            warmUps++;
+        }
+
+        // Tier-1 code is installed on a background thread; give it a moment, then run the promoted code once more.
+        Thread.Sleep(150);
+        for (int i = 0; i < Math.Min(warmUps, 20); i++)
+            operation();
+
+        var perOperation = new double[Rounds];
+        long allocatedBefore = GC.GetTotalAllocatedBytes(precise: true);
+        int gen2Before = GC.CollectionCount(2);
+        long operations = 0;
+        for (int round = 0; round < Rounds; round++)
+        {
+            stopwatch.Restart();
+            int count = 0;
+            while (stopwatch.Elapsed < s_round || count < 2)
+            {
+                operation();
+                count++;
+            }
+
+            perOperation[round] = stopwatch.Elapsed.TotalSeconds / count;
+            operations += count;
+        }
+
+        long allocated = (GC.GetTotalAllocatedBytes(precise: true) - allocatedBefore) / operations;
+        int gen2 = GC.CollectionCount(2) - gen2Before;
+        Array.Sort(perOperation);
+        double median = perOperation[Rounds / 2];
+
+        string time = median >= 1e-3
+            ? string.Create(CultureInfo.InvariantCulture, $"{median * 1e3,9:F2} ms")
+            : string.Create(CultureInfo.InvariantCulture, $"{median * 1e6,9:F2} us");
+        string rate = bytesPerOperation > 0
+            ? string.Create(CultureInfo.InvariantCulture, $"{bytesPerOperation / median / (1 << 20),10:F1} MiB/s")
+            : string.Create(CultureInfo.InvariantCulture, $"{1 / median,10:F0} op/s ");
+        Console.WriteLine(string.Create(CultureInfo.InvariantCulture, $"{group,-7} {name,-40} {time}  {rate}  {allocated,11:N0} B/op  gen2 {gen2}"));
+    }
+
+    /// <summary>
+    /// Returns a deterministic pseudo-random buffer.
+    /// </summary>
+    /// <param name="length">The buffer's length.</param>
+    /// <param name="seed">The generator's seed.</param>
+    /// <returns>The buffer.</returns>
+    private static byte[] Random(int length, int seed)
+    {
+        byte[] buffer = new byte[length];
+        new Random(seed).NextBytes(buffer);
+        return buffer;
+    }
+
+    /// <summary>
+    /// Describes the build and the host the numbers come from.
+    /// </summary>
+    /// <returns>The package version under test, the runtime, the processor count, and the vector sets enabled.</returns>
+    private static string Describe()
+    {
+        string version = typeof(Scrypt).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "unknown";
+        string isa = RuntimeInformation.ProcessArchitecture == Architecture.Arm64
+            ? $"AdvSimd={System.Runtime.Intrinsics.Arm.AdvSimd.Arm64.IsSupported}"
+            : $"AVX-512={System.Runtime.Intrinsics.X86.Avx512F.IsSupported} AVX2={System.Runtime.Intrinsics.X86.Avx2.IsSupported} SSSE3={System.Runtime.Intrinsics.X86.Ssse3.IsSupported}";
+        return $"Bodu.Security.Cryptography {version}; {RuntimeInformation.FrameworkDescription}; {Environment.ProcessorCount} processors; {isa}; OpenSSL references {(OpenSsl.IsAvailable ? "on" : "off")}";
+    }
+
+    /// <summary>
+    /// Calls OpenSSL's <c>libcrypto.so.3</c> for reference measurements on Linux.
+    /// </summary>
+    private static class OpenSsl
+    {
+        /// <summary>The name of the library the references call.</summary>
+        private const string Library = "libcrypto.so.3";
+
+        /// <summary>
+        /// Gets a value indicating whether <c>libcrypto.so.3</c> loads in this process.
+        /// </summary>
+        internal static bool IsAvailable { get; } = OperatingSystem.IsLinux() && NativeLibrary.TryLoad(Library, out _);
+
+        /// <summary>
+        /// Fetches a digest implementation by name.
+        /// </summary>
+        /// <param name="name">The OpenSSL algorithm name.</param>
+        /// <param name="digest">The fetched <c>EVP_MD</c>, or zero.</param>
+        /// <returns><see langword="true" /> if OpenSSL is available and has the algorithm.</returns>
+        internal static bool TryFetchDigest(string name, out nint digest)
+        {
+            digest = IsAvailable ? EVP_MD_fetch(0, name, 0) : 0;
+            return digest != 0;
+        }
+
+        /// <summary>
+        /// Hashes <paramref name="data" /> into <paramref name="digest" /> with a fetched digest.
+        /// </summary>
+        /// <param name="md">The fetched <c>EVP_MD</c>.</param>
+        /// <param name="data">The input.</param>
+        /// <param name="digest">The destination, at least the digest's size.</param>
+        internal static void Digest(nint md, byte[] data, byte[] digest)
+        {
+            if (EVP_Digest(data, (nuint)data.Length, digest, out _, md, 0) != 1) throw new CryptographicException("EVP_Digest failed.");
+        }
+
+        /// <summary>
+        /// Derives a scrypt key with OpenSSL.
+        /// </summary>
+        /// <param name="password">The password.</param>
+        /// <param name="salt">The salt.</param>
+        /// <param name="n">The CPU/memory cost.</param>
+        /// <param name="r">The block size.</param>
+        /// <param name="p">The parallelization.</param>
+        /// <param name="key">The destination key.</param>
+        internal static void Scrypt(byte[] password, byte[] salt, ulong n, ulong r, ulong p, byte[] key)
+        {
+            if (EVP_PBE_scrypt(password, (nuint)password.Length, salt, (nuint)salt.Length, n, r, p, 2UL << 30, key, (nuint)key.Length) != 1)
+                throw new CryptographicException("EVP_PBE_scrypt failed.");
+        }
+
+        [DllImport(Library)]
+        private static extern nint EVP_MD_fetch(nint context, string algorithm, nint properties);
+
+        [DllImport(Library)]
+        private static extern int EVP_Digest(byte[] data, nuint count, byte[] md, out uint size, nint type, nint engine);
+
+        [DllImport(Library)]
+        private static extern int EVP_PBE_scrypt(byte[] pass, nuint passLength, byte[] salt, nuint saltLength, ulong n, ulong r, ulong p, ulong maxMemory, byte[] key, nuint keyLength);
+    }
+}
