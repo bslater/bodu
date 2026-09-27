@@ -9,10 +9,11 @@ namespace Bodu.Security.Cryptography;
 public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
 {
     /// <summary>
-    /// The run lengths, in blocks, the multi-block tests use: a single block, a short run, and runs either side of and
-    /// well past 256 blocks, which is where a 16-byte cipher's 4 KiB bulk chunks divide.
+    /// The run lengths, in blocks, the multi-block tests use: a single block, a short run, runs either side of and
+    /// well past 256 blocks, which is where a 16-byte cipher's 4 KiB bulk chunks divide, and a run past 64 KiB for a
+    /// 16-byte cipher, where <see cref="AesBlockCipher" /> hands the whole run to the platform in one call.
     /// </summary>
-    private static readonly int[] s_blockRunLengths = [1, 3, 255, 256, 257, 520];
+    private static readonly int[] s_blockRunLengths = [1, 3, 255, 256, 257, 520, 4200];
 
     /// <summary>
     /// Verifies that encrypting a run of blocks in one call produces, for every block, what encrypting it on its own

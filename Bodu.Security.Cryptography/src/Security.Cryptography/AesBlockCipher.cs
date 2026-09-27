@@ -51,6 +51,12 @@ public sealed class AesBlockCipher
     /// <summary>Length of the AES block is 128 bits (16 bytes). Internal constant kept for span-length validation; callers should read <see cref="BlockSize" /> instead.</summary>
     private const int BlockSizeBits = 128;
 
+    /// <summary>The largest chunk, in bytes, a multi-block run moves through the cached transforms in one call.</summary>
+    private const int BulkChunkBytes = 4096;
+
+    /// <summary>The run length, in bytes, from which a multi-block run goes through the BCL's one-shot ECB call instead: long enough that the call's per-invocation cipher-context setup is amortized, and the chunk copies are avoided.</summary>
+    private const int OneShotThresholdBytes = 64 * 1024;
+
     /// <summary>The underlying BCL <see cref="Aes" /> instance that owns the expanded key schedule.</summary>
     private readonly Aes _aes;
 
@@ -65,6 +71,12 @@ public sealed class AesBlockCipher
 
     /// <summary>Reusable single-block scratch buffer for the byte-array-based <see cref="ICryptoTransform" /> surface.</summary>
     private readonly byte[] _scratchOut = new byte[BlockSizeBits / 8];
+
+    /// <summary>Reusable scratch for multi-block runs, which cross the byte-array-based <see cref="ICryptoTransform" /> surface a chunk at a time; created on first use and cleared on disposal.</summary>
+    private byte[]? _bulkIn;
+
+    /// <summary>Reusable scratch that receives each transformed chunk of a multi-block run; created on first use and cleared on disposal.</summary>
+    private byte[]? _bulkOut;
 
     /// <summary>Indicates whether the instance has been disposed.</summary>
     private bool _disposed;
@@ -142,6 +154,8 @@ public sealed class AesBlockCipher
             _decryptor = null;
             CryptographyHelper.Clear(_scratchIn);
             CryptographyHelper.Clear(_scratchOut);
+            CryptographyHelper.Clear(_bulkIn);
+            CryptographyHelper.Clear(_bulkOut);
             _disposed = true;
         }
     }
@@ -161,25 +175,78 @@ public sealed class AesBlockCipher
     }
 
     /// <inheritdoc />
+    /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="input" /> is not a whole number of blocks, or <paramref name="output" /> is shorter than
+    /// <paramref name="input" />.
+    /// </exception>
     /// <remarks>
-    /// Processes the whole run through a single BCL one-shot ECB call, so the key schedule is derived once for the run
-    /// rather than once per block.
+    /// Moves the run through the cached ECB encryptor in chunks of up to 4 KiB, one platform call per chunk. The cached
+    /// transform keeps its key schedule, whereas the BCL's one-shot ECB methods rebuild a cipher context on every call
+    /// — which costs about as much as encrypting a kilobyte, so a counter mode handing over a few kilobytes at a time
+    /// would spend most of its time there. <paramref name="output" /> may be the same memory as
+    /// <paramref name="input" />.
     /// </remarks>
     public void EncryptBlocks(ReadOnlySpan<byte> input, Span<byte> output)
     {
         ThrowIfDisposed();
-        _aes.EncryptEcb(input, output[..input.Length], PaddingMode.None);
+        CryptographyThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf(input, BlockSizeBits / 8, throwIfZero: false);
+        ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, input.Length);
+
+        TransformBlocks(_encryptor!, input, output);
     }
 
     /// <inheritdoc />
+    /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="input" /> is not a whole number of blocks, or <paramref name="output" /> is shorter than
+    /// <paramref name="input" />.
+    /// </exception>
     /// <remarks>
-    /// Processes the whole run through a single BCL one-shot ECB call, so the key schedule is derived once for the run
-    /// rather than once per block.
+    /// Moves the run through the cached ECB decryptor, or one one-shot call from 64 KiB, as
+    /// <see cref="EncryptBlocks" /> does. <paramref name="output" /> may be the same memory as
+    /// <paramref name="input" />.
     /// </remarks>
     public void DecryptBlocks(ReadOnlySpan<byte> input, Span<byte> output)
     {
         ThrowIfDisposed();
-        _aes.DecryptEcb(input, output[..input.Length], PaddingMode.None);
+        CryptographyThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf(input, BlockSizeBits / 8, throwIfZero: false);
+        ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, input.Length);
+
+        TransformBlocks(_decryptor!, input, output);
+    }
+
+    /// <summary>
+    /// Runs a whole number of blocks through the supplied cached ECB transform, a chunk of up to
+    /// <see cref="BulkChunkBytes" /> at a time through reusable scratch arrays.
+    /// </summary>
+    /// <param name="transform">The cached ECB encryptor or decryptor.</param>
+    /// <param name="input">The blocks to transform.</param>
+    /// <param name="output">The destination; at least as long as <paramref name="input" />, and may alias it.</param>
+    private void TransformBlocks(ICryptoTransform transform, ReadOnlySpan<byte> input, Span<byte> output)
+    {
+        // A long run amortizes the one-shot call's cipher-context setup and needs no copies, so it goes straight to the
+        // platform; shorter runs go through the cached transform, whose setup is already paid.
+        if (input.Length >= OneShotThresholdBytes)
+        {
+            if (ReferenceEquals(transform, _encryptor))
+                _aes.EncryptEcb(input, output[..input.Length], PaddingMode.None);
+            else
+                _aes.DecryptEcb(input, output[..input.Length], PaddingMode.None);
+
+            return;
+        }
+
+        byte[] bulkIn = _bulkIn ??= new byte[BulkChunkBytes];
+        byte[] bulkOut = _bulkOut ??= new byte[BulkChunkBytes];
+
+        for (int offset = 0; offset < input.Length; offset += BulkChunkBytes)
+        {
+            int length = Math.Min(BulkChunkBytes, input.Length - offset);
+            input.Slice(offset, length).CopyTo(bulkIn);
+            transform.TransformBlock(bulkIn, 0, length, bulkOut, 0);
+            bulkOut.AsSpan(0, length).CopyTo(output.Slice(offset, length));
+        }
     }
 
     /// <summary>
