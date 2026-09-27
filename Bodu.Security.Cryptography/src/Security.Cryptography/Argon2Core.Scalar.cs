@@ -15,7 +15,7 @@ internal static partial class Argon2Core
     /// The portable scalar implementation of the compression function. It runs where no vector instruction set is
     /// available or the process has opted out of SIMD, and it is the reference the vector kernels are tested against.
     /// </summary>
-    private readonly struct ScalarKernel
+    internal readonly struct ScalarKernel
         : IArgon2Kernel
     {
         /// <summary>

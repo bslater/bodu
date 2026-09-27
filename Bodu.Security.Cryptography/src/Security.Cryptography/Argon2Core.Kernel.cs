@@ -23,7 +23,7 @@ internal static partial class Argon2Core
     /// from public values before the kernel runs.
     /// </para>
     /// </remarks>
-    private interface IArgon2Kernel
+    internal interface IArgon2Kernel
     {
         /// <summary>
         /// Computes <c>G(X, Y)</c> for the previous block <c>X</c> held in <paramref name="state" /> and the reference

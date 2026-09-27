@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SimdOptOutTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -7,7 +7,7 @@
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Validates the AVX-512 opt-out. This assembly sets the <c>Bodu.Security.Cryptography.DisableSimd</c> feature switch via
+/// Validates the SIMD opt-out. This assembly sets the <c>Bodu.Security.Cryptography.DisableSimd</c> feature switch via
 /// its <c>runtimeconfig.template.json</c>, so every test here runs with SIMD dispatch forced off; the accelerated
 /// primitives must therefore fall back to their scalar reference paths and still produce the published digests.
 /// </summary>
@@ -16,7 +16,7 @@ public sealed class SimdOptOutTests
 {
     /// <summary>
     /// Verifies that with the disable switch set, the SIMD capability gates report unavailable regardless of the host's
-    /// hardware — the switch overrides the AVX-512 intrinsic check.
+    /// hardware — the switch overrides every intrinsic check.
     /// </summary>
     [TestMethod]
     public void SimdCapabilities_WhenDisableSwitchSet_ShouldReportGatesDisabled()
@@ -24,6 +24,19 @@ public sealed class SimdOptOutTests
         Assert.IsFalse(SimdCapabilities.Avx512F, "Expected the disable switch to force Avx512F off.");
         Assert.IsFalse(SimdCapabilities.Avx512FVL, "Expected the disable switch to force Avx512FVL off.");
         Assert.IsFalse(SimdCapabilities.Pclmulqdq, "Expected the disable switch to force the carry-less GHASH gate off.");
+        Assert.IsFalse(SimdCapabilities.Avx2, "Expected the disable switch to force Avx2 off.");
+        Assert.IsFalse(SimdCapabilities.Ssse3, "Expected the disable switch to force Ssse3 off.");
+        Assert.IsFalse(SimdCapabilities.AdvSimd, "Expected the disable switch to force AdvSimd off.");
+    }
+
+    /// <summary>
+    /// Verifies that with SIMD disabled, Argon2 dispatches to its scalar compression kernel whatever the processor
+    /// supports, so the linked Argon2 vectors in this assembly hold the scalar kernel to them.
+    /// </summary>
+    [TestMethod]
+    public void Argon2CoreSelectKernel_WhenSimdDisabled_ShouldReturnTheScalarKernel()
+    {
+        Assert.AreEqual(Argon2Core.KernelKind.Scalar, Argon2Core.SelectKernel());
     }
 
     /// <summary>

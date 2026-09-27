@@ -41,6 +41,35 @@ public sealed partial class Argon2CoreTests
             .Concat(Argon2Tests.RecordedCorpusVectors());
 
     /// <summary>
+    /// Gets every vector below 1 GiB: RFC 9106's, the reference implementation's, and the recorded 1.0.0 corpus.
+    /// </summary>
+    /// <returns>One row per vector, each holding a single <see cref="KdfKnownAnswer" />.</returns>
+    public static IEnumerable<object[]> KernelSweepVectors() =>
+        Argon2Tests.Rfc9106Vectors()
+            .Concat(Argon2Tests.ReferenceImplementationVectors())
+            .Concat(Argon2Tests.RecordedCorpusVectors());
+
+    /// <summary>
+    /// Verifies that every compression kernel the processor supports produces the known tag, whichever one dispatch
+    /// would select — so an AVX2 host holds the AVX2, SSSE3, and scalar kernels, and an ARM64 host the AdvSimd and
+    /// scalar kernels, to every vector.
+    /// </summary>
+    /// <param name="vector">The vector derived with each kernel.</param>
+    [TestMethod]
+    [TestCategory("Regression")]
+    [DynamicData(nameof(KernelSweepVectors), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void DeriveTag_WhenEachSupportedKernelFillsTheMatrix_ShouldMatchKnownTag(KdfKnownAnswer vector)
+    {
+        foreach (Argon2Core.KernelKind kernel in Enum.GetValues<Argon2Core.KernelKind>())
+        {
+            if (kernel == Argon2Core.KernelKind.Auto || !Argon2Core.IsSupported(kernel))
+                continue;
+
+            Assert.AreEqual(vector.ExpectedHex, DeriveHex(vector, new Argon2Core.FillOptions(-1, kernel: kernel)), kernel.ToString());
+        }
+    }
+
+    /// <summary>
     /// Verifies that a derivation over a matrix pre-filled with garbage still produces the known tag, on the calling
     /// thread alone and with its lanes divided among threads, proving that no block is read before it is written — the
     /// invariant that lets a matrix come uninitialized from native memory or all-zero from the pool.

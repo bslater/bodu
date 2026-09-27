@@ -9,8 +9,8 @@ namespace Bodu.Security.Cryptography;
 internal static partial class Argon2Core
 {
     /// <summary>
-    /// Describes how a derivation fills its matrix: how many threads it may use, and from what segment length a slice
-    /// is worth dividing among them. None of it changes the tag.
+    /// Describes how a derivation fills its matrix: how many threads it may use, from what segment length a slice is
+    /// worth dividing among them, and which compression kernel runs. None of it changes the tag.
     /// </summary>
     internal readonly struct FillOptions
     {
@@ -25,10 +25,18 @@ internal static partial class Argon2Core
         /// are processors.
         /// </param>
         /// <param name="minimumParallelSegmentLength">The shortest segment, in blocks, whose slice is divided.</param>
-        internal FillOptions(int maxDegreeOfParallelism, int minimumParallelSegmentLength = DefaultMinimumParallelSegmentLength)
+        /// <param name="kernel">
+        /// The compression kernel; <see cref="KernelKind.Auto" /> for the one dispatch selects. Any other kind must be
+        /// one the processor supports.
+        /// </param>
+        internal FillOptions(
+            int maxDegreeOfParallelism,
+            int minimumParallelSegmentLength = DefaultMinimumParallelSegmentLength,
+            KernelKind kernel = KernelKind.Auto)
         {
             MaxDegreeOfParallelism = maxDegreeOfParallelism;
             MinimumParallelSegmentLength = minimumParallelSegmentLength;
+            Kernel = kernel;
         }
 
         /// <summary>
@@ -41,6 +49,19 @@ internal static partial class Argon2Core
         /// Gets the shortest segment, in blocks, whose slice is divided among threads.
         /// </summary>
         internal int MinimumParallelSegmentLength { get; }
+
+        /// <summary>
+        /// Gets the compression kernel the fill uses, or <see cref="KernelKind.Auto" /> for the one dispatch selects.
+        /// </summary>
+        internal KernelKind Kernel { get; }
+
+        /// <summary>
+        /// Returns the compression kernel that fills the matrix: the one these options name, or the one dispatch
+        /// selects.
+        /// </summary>
+        /// <returns>A kind other than <see cref="KernelKind.Auto" />.</returns>
+        internal KernelKind ResolveKernel() =>
+            Kernel == KernelKind.Auto ? SelectKernel() : Kernel;
 
         /// <summary>
         /// Returns the number of threads that fill each slice of a matrix of the specified shape.

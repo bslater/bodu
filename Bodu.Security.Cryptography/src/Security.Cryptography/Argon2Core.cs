@@ -137,12 +137,83 @@ internal static partial class Argon2Core
         {
             ComputeH0(geometry.Type, parameters, password, salt, h0);
             InitializeBlocks(matrix, h0, geometry);
-            FillMemory<ScalarKernel>(matrix, geometry, options.ResolveWorkers(geometry.Lanes, geometry.SegmentLength));
+            FillMemory(matrix, geometry, options.ResolveKernel(), options.ResolveWorkers(geometry.Lanes, geometry.SegmentLength));
             Finalize(matrix, geometry, tag);
         }
         finally
         {
             CryptographyHelper.Clear(h0);
+        }
+    }
+
+    /// <summary>
+    /// Selects the widest compression kernel the processor supports and the process allows: AVX2, then AdvSimd on
+    /// ARM64, then SSSE3, then the scalar kernel.
+    /// </summary>
+    /// <returns>The kernel dispatch runs; never <see cref="KernelKind.Auto" />.</returns>
+    /// <remarks>
+    /// Every gate honors the <see cref="SimdCapabilities.DisableSimdSwitchName" /> switch, which pins the scalar
+    /// kernel.
+    /// </remarks>
+    internal static KernelKind SelectKernel()
+    {
+        if (SimdCapabilities.Avx2)
+            return KernelKind.Avx2;
+
+        if (SimdCapabilities.AdvSimd)
+            return KernelKind.AdvSimd;
+
+        return SimdCapabilities.Ssse3 ? KernelKind.Ssse3 : KernelKind.Scalar;
+    }
+
+    /// <summary>
+    /// Determines whether the processor can run the specified compression kernel, whether or not the process allows
+    /// vector code.
+    /// </summary>
+    /// <param name="kernel">The kernel.</param>
+    /// <returns>
+    /// <see langword="true" /> if the processor supports every instruction the kernel uses; otherwise,
+    /// <see langword="false" />.
+    /// </returns>
+    internal static bool IsSupported(KernelKind kernel) => kernel switch
+    {
+        KernelKind.Auto or KernelKind.Scalar => true,
+        KernelKind.Ssse3 => System.Runtime.Intrinsics.X86.Ssse3.IsSupported,
+        KernelKind.AdvSimd => System.Runtime.Intrinsics.Arm.AdvSimd.Arm64.IsSupported,
+        KernelKind.Avx2 => System.Runtime.Intrinsics.X86.Avx2.IsSupported,
+        _ => false,
+    };
+
+    /// <summary>
+    /// Fills every block after the first two columns with the specified compression kernel.
+    /// </summary>
+    /// <param name="matrix">The memory matrix, its first two columns already filled.</param>
+    /// <param name="geometry">The shape of the matrix.</param>
+    /// <param name="kernel">The compression kernel; not <see cref="KernelKind.Auto" />.</param>
+    /// <param name="workers">The number of threads that fill each slice, the calling thread included.</param>
+    /// <remarks>
+    /// The kernel is chosen once per derivation; each branch runs a fill the JIT specializes for its kernel, so no
+    /// block pays for the choice.
+    /// </remarks>
+    private static void FillMemory(Argon2Matrix matrix, in Geometry geometry, KernelKind kernel, int workers)
+    {
+        switch (kernel)
+        {
+            case KernelKind.Avx2:
+                FillMemory<Avx2Kernel>(matrix, geometry, workers);
+                break;
+
+            case KernelKind.AdvSimd:
+                FillMemory<Vector128Kernel<AdvSimdIsa>>(matrix, geometry, workers);
+                break;
+
+            case KernelKind.Ssse3:
+                FillMemory<Vector128Kernel<Ssse3Isa>>(matrix, geometry, workers);
+                break;
+
+            default:
+                FillMemory<ScalarKernel>(matrix, geometry, workers);
+                break;
         }
     }
 

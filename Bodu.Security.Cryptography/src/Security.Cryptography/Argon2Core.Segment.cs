@@ -14,6 +14,12 @@ internal static partial class Argon2Core
     /// <summary>The number of blocks of per-segment scratch: the carried block and its working copy, then the same pair for address generation, then the address block and the address generator's input block.</summary>
     private const int ScratchBlocks = 6;
 
+    /// <summary>The number of bytes in a cache line, the alignment of the per-segment scratch.</summary>
+    private const int CacheLineBytes = 64;
+
+    /// <summary>The number of words in a cache line.</summary>
+    private const int CacheLineWords = CacheLineBytes / sizeof(ulong);
+
     /// <summary>
     /// Computes one segment (the intersection of a lane and a slice) of the memory matrix.
     /// </summary>
@@ -36,7 +42,8 @@ internal static partial class Argon2Core
         bool dataIndependent = geometry.Type == Argon2Type.Argon2i
             || (geometry.Type == Argon2Type.Argon2id && pass == 0 && slice < SyncPoints / 2);
 
-        Span<ulong> scratch = stackalloc ulong[ScratchBlocks * WordsPerBlock];
+        Span<ulong> buffer = stackalloc ulong[(ScratchBlocks * WordsPerBlock) + CacheLineWords];
+        Span<ulong> scratch = AlignToCacheLine(buffer, ScratchBlocks * WordsPerBlock);
         Span<ulong> state = scratch[..WordsPerBlock];
         Span<ulong> addressState = scratch.Slice(2 * WordsPerBlock, 2 * WordsPerBlock);
         Span<ulong> addressBlock = scratch.Slice(4 * WordsPerBlock, WordsPerBlock);
@@ -112,8 +119,30 @@ internal static partial class Argon2Core
         }
         finally
         {
-            CryptographyHelper.Clear(scratch);
+            CryptographyHelper.Clear(buffer);
         }
+    }
+
+    /// <summary>
+    /// Returns the part of a stack buffer that starts on a 64-byte boundary.
+    /// </summary>
+    /// <param name="buffer">
+    /// A stack-allocated buffer at least <see cref="CacheLineWords" /> words longer than required.
+    /// </param>
+    /// <param name="length">The number of words required.</param>
+    /// <returns>
+    /// The first <paramref name="length" /> words of <paramref name="buffer" /> from a 64-byte boundary.
+    /// </returns>
+    /// <remarks>
+    /// The vector kernels load and store the carried block and its working copy many times per block; aligned, no 16-
+    /// or 32-byte access straddles two cache lines. The buffer must be on the stack, which never moves.
+    /// </remarks>
+    private static unsafe Span<ulong> AlignToCacheLine(Span<ulong> buffer, int length)
+    {
+        nuint address = (nuint)Unsafe.AsPointer(ref MemoryMarshal.GetReference(buffer));
+        int offset = (int)((CacheLineBytes - (address % CacheLineBytes)) % CacheLineBytes) / sizeof(ulong);
+
+        return buffer.Slice(offset, length);
     }
 
     /// <summary>

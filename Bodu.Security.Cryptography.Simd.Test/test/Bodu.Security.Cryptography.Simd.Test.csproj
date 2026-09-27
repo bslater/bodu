@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <!--
     Dedicated test assembly that runs the accelerated primitives with the SIMD opt-out engaged. The
@@ -41,6 +41,8 @@
              Link="Security.Cryptography\Blake3Tests.ReferenceKat.cs" />
     <Compile Include="..\..\Bodu.Security.Cryptography\test\Security.Cryptography\SkeinGoldenKatTests.cs"
              Link="Security.Cryptography\SkeinGoldenKatTests.cs" />
+    <Compile Include="..\..\Bodu.Security.Cryptography\test\Security.Cryptography\Argon2Tests.KnownAnswers.cs"
+             Link="Security.Cryptography\Argon2Tests.KnownAnswers.cs" />
   </ItemGroup>
 
   <!--
@@ -55,6 +57,16 @@
                       LogicalName="Bodu.Security.Cryptography.Blake3.test_vectors.json" />
     <EmbeddedResource Include="..\..\Bodu.Security.Cryptography\test\Security.Cryptography\Fixtures\Skein\Skein1_3\skein_golden_kat_short.txt"
                       LogicalName="Bodu.Security.Cryptography.Skein.skein_golden_kat_short.txt" />
+    <EmbeddedResource Include="..\..\Bodu.Security.Cryptography\test\Security.Cryptography\Fixtures\Argon2\PhcReference\test.c"
+                      LogicalName="Bodu.Security.Cryptography.Argon2.test.c" />
+    <EmbeddedResource Include="..\..\Bodu.Security.Cryptography\test\Security.Cryptography\Fixtures\Argon2\PhcReference\argon2d_v16"
+                      LogicalName="Bodu.Security.Cryptography.Argon2.argon2d_v16" />
+    <EmbeddedResource Include="..\..\Bodu.Security.Cryptography\test\Security.Cryptography\Fixtures\Argon2\PhcReference\argon2i_v16"
+                      LogicalName="Bodu.Security.Cryptography.Argon2.argon2i_v16" />
+    <EmbeddedResource Include="..\..\Bodu.Security.Cryptography\test\Security.Cryptography\Fixtures\Argon2\PhcReference\argon2id_v16"
+                      LogicalName="Bodu.Security.Cryptography.Argon2.argon2id_v16" />
+    <EmbeddedResource Include="..\..\Bodu.Security.Cryptography\test\Security.Cryptography\Fixtures\Argon2\Bodu100\argon2-1.0.0-corpus.txt"
+                      LogicalName="Bodu.Security.Cryptography.Argon2.argon2-1.0.0-corpus.txt" />
   </ItemGroup>
 
 </Project>
