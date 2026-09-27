@@ -32,8 +32,9 @@
 # supports AVX-512, and its architecture. Six *.Avx512.cs files in Bodu.Security.Cryptography are
 # hardware-gated: the JIT selects exactly one path per process, so on a host without AVX-512 those
 # files CANNOT be covered and must be reported as 'n/a (hardware-gated)' rather than 0%. The
-# *.AdvSimd.cs files are gated the same way on any host that is not ARM64; the ARM64 job in
-# .github/workflows/build-test.yml runs them. See docs/articles/code-coverage.md.
+# ARM64 instruction-set shims (*.AdvSimd.cs, *.PmullIsa.cs) are gated the same way on any host that
+# is not ARM64; the ARM64 job in .github/workflows/build-test.yml runs them. See
+# docs/articles/code-coverage.md.
 #
 # Exit code: 0 when every selected project collected successfully, 1 otherwise.
 # ---------------------------------------------------------------------------------------------------------------
@@ -52,7 +53,7 @@ list_only=false
 scalar_pass=false
 
 usage() {
-    sed -n '2,39p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
+    sed -n '2,40p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
 }
 
 while [ $# -gt 0 ]; do

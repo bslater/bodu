@@ -21,10 +21,11 @@
          the host packages so the solution total counts it exactly once. See $SharedSourceSets.
 
       3. Hardware-gated paths. The JIT selects exactly one of the AVX-512 or scalar implementations
-         per process, so a single run cannot cover both, and the AdvSimd implementations run only on
-         ARM64. Files that the collecting host could not possibly execute - *.Avx512.cs on a host
-         without AVX-512, *.AdvSimd.cs on a host that is not ARM64 - are reported as n/a and excluded
-         from the denominator rather than as 0%.
+         per process, so a single run cannot cover both, and the ARM64 implementations (the AdvSimd
+         and PMULL instruction-set shims) run only on ARM64. Files that the collecting host could not
+         possibly execute - *.Avx512.cs on a host without AVX-512, *.AdvSimd.cs and *.PmullIsa.cs on a
+         host that is not ARM64 - are reported as n/a and excluded from the denominator rather than as
+         0%.
 
 .PARAMETER ReportPath
     Merged Cobertura report. Default: artifacts/coverage/report/Cobertura.xml.
@@ -135,10 +136,10 @@ if ($manifests.Count -gt 0) {
     elseif ($manifests | Where-Object { $_.avx512Supported -eq 'false' }) { $avx512 = 'false' }
 }
 
-# The AdvSimd implementations need an ARM64 host; the manifests record each collecting host's 'uname -m'.
+# The ARM64 implementations need an ARM64 host; the manifests record each collecting host's 'uname -m'.
 $arm64 = 'unknown'
 if ($manifests.Count -gt 0) {
-    # Any shard collected on ARM64 means the AdvSimd paths were reachable in this collection.
+    # Any shard collected on ARM64 means the ARM64 paths were reachable in this collection.
     if ($manifests | Where-Object { $_.arch -in @('aarch64', 'arm64') }) { $arm64 = 'true' }
     elseif ($manifests | Where-Object { $_.arch }) { $arm64 = 'false' }
 }
@@ -345,7 +346,7 @@ foreach ($relative in @($files.Keys)) {
 # Hardware-gated files
 #
 # When the collecting host lacks AVX-512 the intrinsic implementations cannot execute, so they are
-# reported as n/a; so are the AdvSimd implementations when no collecting host is ARM64.
+# reported as n/a; so are the ARM64 implementations when no collecting host is ARM64.
 # Bodu.Security.Cryptography.Simd.Test forces the SIMD feature switch off in its own process, so when
 # it is part of the collection the scalar fallbacks are covered regardless.
 # ---------------------------------------------------------------------------------------------------------------
@@ -360,11 +361,11 @@ elseif ($avx512 -ne 'true') {
 }
 
 if ($arm64 -eq 'false') {
-    $hardwareGated += @($files.Keys | Where-Object { $_ -like '*.AdvSimd.cs' })
+    $hardwareGated += @($files.Keys | Where-Object { $_ -like '*.AdvSimd.cs' -or $_ -like '*.PmullIsa.cs' })
 }
 elseif ($arm64 -ne 'true') {
     # The same rule: exclude only on positive evidence that no collecting host was ARM64.
-    Write-Warning 'The collecting architecture could not be determined from the collection manifests; the AdvSimd implementations are reported as measured rather than excluded.'
+    Write-Warning 'The collecting architecture could not be determined from the collection manifests; the ARM64 implementations are reported as measured rather than excluded.'
 }
 
 # ---------------------------------------------------------------------------------------------------------------
@@ -549,7 +550,7 @@ if ($hardwareGated.Count -gt 0) {
     [void]$sb.AppendLine('### Hardware-gated files excluded from the denominator')
     [void]$sb.AppendLine()
     [void]$sb.AppendLine('The collecting host could not execute these implementations - AVX-512 code without')
-    [void]$sb.AppendLine('AVX-512, AdvSimd code off ARM64 - so the JIT could not select them. They are exercised by')
+    [void]$sb.AppendLine('AVX-512, ARM64 code off ARM64 - so the JIT could not select them. They are exercised by')
     [void]$sb.AppendLine('the standard known-answer suites on capable hardware, including the ARM64 CI job, and are')
     [void]$sb.AppendLine('**not** a missing-test gap.')
     [void]$sb.AppendLine()

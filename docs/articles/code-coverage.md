@@ -160,7 +160,7 @@ AVX-512 still cannot execute the intrinsic files, and reporting them as 0% there
 would be wrong. The classification stays for that case; after a dual pass it
 simply never triggers, because neither path is unreachable any more.
 
-### ARM64: the AdvSimd files
+### ARM64: the AdvSimd and PMULL files
 
 Argon2's 128-bit compression kernel is written once over portable `Vector128`
 arithmetic and specialized by a five-member instruction-set shim, so nearly all
@@ -169,15 +169,22 @@ and scalar kernels explicitly, whichever one dispatch picks, so one native pass
 covers all three. Only the ARM64 shim, `Argon2Core.AdvSimd.cs`, cannot run
 there: each of its members is an AdvSimd instruction.
 
-`tools/New-CoverageMatrix.ps1` therefore treats `*.AdvSimd.cs` as
-hardware-gated whenever no collecting host is ARM64 — judged from the `arch`
-field every collection manifest records — and reports it as `n/a
-(hardware-gated)` rather than 0%. As with the AVX-512 files, the rule applies
-only on positive evidence: a collection with no recorded architecture reports
-the file as measured. The shim is not untested: the ARM64 job in
+The GHASH and POLYVAL kernel behind GCM follows the same pattern. The carry-less
+kernel is written once against a shim, and the GHASH tests drive every kernel
+the processor supports, so an x64 pass covers the kernel, its PCLMULQDQ shim and
+the scalar kernel. Only the ARM64 shim, `Ghash.PmullIsa.cs`, built on the
+cryptography extension's `PMULL`, cannot run there.
+
+`tools/New-CoverageMatrix.ps1` therefore treats `*.AdvSimd.cs` and
+`*.PmullIsa.cs` as hardware-gated whenever no collecting host is ARM64 — judged
+from the `arch` field every collection manifest records — and reports them as
+`n/a (hardware-gated)` rather than 0%. As with the AVX-512 files, the rule
+applies only on positive evidence: a collection with no recorded architecture
+reports the files as measured. The shims are not untested: the ARM64 job in
 `.github/workflows/build-test.yml` runs both cryptography suites on GitHub's
-hosted ARM64 runner, where the shim tests hold each member to its scalar
-definition and the vector corpus runs through the AdvSimd kernel.
+hosted ARM64 runner, where the Argon2 shim tests hold each member to its scalar
+definition, the vector corpus runs through the AdvSimd kernel, and the GHASH
+tests hold the PMULL kernel to the RFC 8452 values and to a bit-serial reference.
 
 ### The switch itself
 

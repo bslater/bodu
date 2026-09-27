@@ -419,11 +419,12 @@ jobs:
           reporter: dotnet-trx
           fail-on-error: false
 
-  # The job above runs every suite on x64, where the Argon2 AdvSimd kernel cannot execute. This one runs the two
-  # cryptography suites on GitHub's hosted ARM64 runner (free for public repositories), on both frameworks, so the
-  # AdvSimd kernel is held to the same vectors as the x64 ones and the SIMD opt-out is proven on ARM64 too.
-  # SimdCapabilitiesTests fails if the AdvSimd gate is closed here, so the job cannot silently fall back to the
-  # scalar kernel. It proves correctness; performance is measured separately.
+  # The job above runs every suite on x64, where the Argon2 AdvSimd kernel and the GHASH PMULL kernel cannot
+  # execute. This one runs the two cryptography suites on GitHub's hosted ARM64 runner (free for public
+  # repositories), on both frameworks, so both kernels are held to the same vectors as the x64 ones and the SIMD
+  # opt-out is proven on ARM64 too. SimdCapabilitiesTests fails if the AdvSimd gate is closed here, so the job cannot
+  # silently fall back to the scalar Argon2 kernel; the PMULL gate opens wherever the processor lists 'pmull' among
+  # the features the step below reports. It proves correctness; performance is measured separately.
   build-test-arm64:
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 30
