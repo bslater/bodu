@@ -55,6 +55,12 @@
     <EmbeddedResource Include="Security.Cryptography\Fixtures\MLDsa\NistAcvp\ML-DSA-sigGen.txt" LogicalName="Bodu.Security.Cryptography.MLDsa.AcvpSigGen.txt" />
     <EmbeddedResource Include="Security.Cryptography\Fixtures\MLDsa\NistAcvp\ML-DSA-sigVer.txt" LogicalName="Bodu.Security.Cryptography.MLDsa.AcvpSigVer.txt" />
     <EmbeddedResource Include="Security.Cryptography\Fixtures\Hpke\Rfc9180\test-vectors.json" LogicalName="Bodu.Security.Cryptography.Hpke.Rfc9180Vectors.json" />
+    <!-- The Argon2 reference implementation's test.c and version 0x10 traces, and the corpus recorded from 1.0.0. -->
+    <EmbeddedResource Include="Security.Cryptography\Fixtures\Argon2\PhcReference\test.c" LogicalName="Bodu.Security.Cryptography.Argon2.test.c" />
+    <EmbeddedResource Include="Security.Cryptography\Fixtures\Argon2\PhcReference\argon2d_v16" LogicalName="Bodu.Security.Cryptography.Argon2.argon2d_v16" />
+    <EmbeddedResource Include="Security.Cryptography\Fixtures\Argon2\PhcReference\argon2i_v16" LogicalName="Bodu.Security.Cryptography.Argon2.argon2i_v16" />
+    <EmbeddedResource Include="Security.Cryptography\Fixtures\Argon2\PhcReference\argon2id_v16" LogicalName="Bodu.Security.Cryptography.Argon2.argon2id_v16" />
+    <EmbeddedResource Include="Security.Cryptography\Fixtures\Argon2\Bodu100\argon2-1.0.0-corpus.txt" LogicalName="Bodu.Security.Cryptography.Argon2.argon2-1.0.0-corpus.txt" />
   </ItemGroup>
 
   <ItemGroup>
