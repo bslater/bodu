@@ -4,7 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Buffers.Binary;
 using System.Runtime.CompilerServices;
+using System.Runtime.Intrinsics;
 using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
@@ -23,9 +25,9 @@ namespace Bodu.Security.Cryptography;
 /// reflection that makes little-endian processing efficient on modern processors.
 /// </para>
 /// <para>
-/// GCM-SIV derives per-message authentication and encryption keys from the master key and a 12-byte nonce using cipher
-/// calls with little-endian counters (RFC 8452 Section 4). The encryption key is as long as the master key, so a
-/// 128-bit master key takes four calls and a 256-bit one six:
+/// GCM-SIV derives per-message authentication and encryption keys from the master key and a 12-byte nonce by encrypting
+/// blocks that carry little-endian counters (RFC 8452 Section 4). The encryption key is as long as the master key, so a
+/// 128-bit master key takes four blocks and a 256-bit one six, encrypted in one multi-block call:
 /// <code>
 ///<![CDATA[
 /// K_auth = E_K(LE32(0) || nonce)[0..7] || E_K(LE32(1) || nonce)[0..7]                      (16 bytes)
@@ -35,8 +37,11 @@ namespace Bodu.Security.Cryptography;
 /// </code>
 /// </para>
 /// <para>
-/// POLYVAL is computed via the GHASH isomorphism: each field element is reflected (byte-reversed + bit-reversed within
-/// each byte) before GHASH multiplication, and the result is reflected back.
+/// POLYVAL runs on the library's GHASH kernels through RFC 8452 Appendix A's isomorphism with GHASH, folding four
+/// blocks into each reduction on processors with a carry-less multiply (<c>PCLMULQDQ</c> on x64, <c>PMULL</c> on ARM64)
+/// and using a constant-time scalar multiply elsewhere. The associated data is hashed when it is supplied, so only the
+/// 16-byte POLYVAL state is kept until the message is processed, and the keystream is produced a 4 KiB run of counter
+/// blocks at a time.
 /// </para>
 /// <para>
 /// Because GCM-SIV must create a fresh cipher instance keyed with the derived <c>K_enc</c>, a
@@ -87,17 +92,23 @@ public sealed class GcmSivModeTransform
     /// <summary>Length of the AES-GCM-SIV authentication tag is 128 bits (16 bytes). Byte length derived inline via <see cref="TagSizeBits" /> / 8.</summary>
     private const int TagSizeBits = 128;
 
-    /// <summary>The derived authentication key <c>K_auth</c> used as the POLYVAL hash key.</summary>
-    private readonly byte[] _authKey;
+    /// <summary>The block size, in bytes, of the cipher, of POLYVAL, and of a counter block.</summary>
+    private const int BlockBytes = 16;
 
     /// <summary>The block cipher keyed with the derived encryption key <c>K_enc</c>.</summary>
     private readonly IBlockCipher _encCipher;
 
-    /// <summary>The 12-byte nonce used for per-message key derivation and tag computation.</summary>
-    private readonly byte[] _nonce;
+    /// <summary>The derived authentication key <c>K_auth</c>, prepared as the POLYVAL key for the process's GHASH kernel; reset to <see langword="default" /> on disposal.</summary>
+    private Ghash.Key _polyvalKey;
 
-    /// <summary>The buffered associated data to authenticate, or <see langword="null" /> until processed.</summary>
-    private byte[]? _aad;
+    /// <summary>The 12-byte nonce in the first twelve bytes of a block whose last four bytes are zero; reset to <see langword="default" /> on disposal.</summary>
+    private Vector128<byte> _nonceBlock;
+
+    /// <summary>The POLYVAL state after the associated data, which POLYVAL takes first; reset to <see langword="default" /> on disposal.</summary>
+    private Vector128<byte> _aadHash;
+
+    /// <summary>The length, in bytes, of the associated data folded into <see cref="_aadHash" />.</summary>
+    private int _aadLength;
 
     /// <summary>Indicates whether associated data has been processed for this instance.</summary>
     private bool _aadProcessed;
@@ -169,7 +180,7 @@ public sealed class GcmSivModeTransform
     /// </exception>
     /// <remarks>
     /// RFC 8452 defines GCM-SIV for 128- and 256-bit key-generating keys, and derives a message-encryption key of the
-    /// same size: four cipher calls for 128 bits, six for 256. That key is what <paramref name="cipherFactory" />
+    /// same size: four cipher blocks for 128 bits, six for 256. That key is what <paramref name="cipherFactory" />
     /// receives.
     /// </remarks>
     public GcmSivModeTransform(IBlockCipher masterCipher, Func<byte[], IBlockCipher> cipherFactory, byte[] iv, int keySize)
@@ -179,28 +190,34 @@ public sealed class GcmSivModeTransform
         CryptographyThrowHelper.ThrowIfIvLengthInvalid(iv, masterCipher.BlockSize);
         if (keySize != 128 && keySize != 256) throw new ArgumentOutOfRangeException(nameof(keySize), keySize, CryptoResourceStrings.Arg_OutOfRange_GcmSivKeySize);
 
-        _nonce = new byte[NonceSizeBits / 8];
-        iv.AsSpan(0, NonceSizeBits / 8).CopyTo(_nonce);
+        ReadOnlySpan<byte> nonce = iv.AsSpan(0, NonceSizeBits / 8);
+        Span<byte> nonceBlock = stackalloc byte[BlockBytes];
+        nonceBlock.Clear();
+        nonce.CopyTo(nonceBlock);
+        _nonceBlock = Vector128.Create((ReadOnlySpan<byte>)nonceBlock);
 
-        // Derive K_auth and K_enc per RFC 8452 Section 4.
-        // Each call: E_K(LE32(i) || nonce), take first 8 bytes.
-        (byte[]? authKey, byte[]? encKeyMaterial) = DeriveKeys(masterCipher, _nonce, keySize / 8);
+        // Derive K_auth and K_enc per RFC 8452 Section 4. K_enc is handed to the factory, which takes an array.
+        Span<byte> authKey = stackalloc byte[BlockBytes];
+        byte[] encKey = new byte[keySize / 8];
 
         try
         {
-            _authKey = authKey;
-            _encCipher = cipherFactory(encKeyMaterial)
+            DeriveKeys(masterCipher, nonce, authKey, encKey);
+            _polyvalKey = Ghash.Key.ForPolyval(authKey, Ghash.SelectKernel());
+            _encCipher = cipherFactory(encKey)
                 ?? throw new InvalidOperationException(
                     CryptoResourceStrings.Op_Invalid_CipherFactoryReturnedNull);
         }
         catch
         {
-            CryptographyHelper.Clear(authKey);
+            _polyvalKey = default;
+            _nonceBlock = default;
             throw;
         }
         finally
         {
-            CryptographyHelper.Clear(encKeyMaterial);
+            CryptographyHelper.Clear(authKey);
+            CryptographyHelper.Clear(encKey);
         }
     }
 
@@ -227,22 +244,17 @@ public sealed class GcmSivModeTransform
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, plaintextLength);
         EnsureAadProcessed();
 
-        byte[]? receivedTagCopy = null;
-        byte[]? ctrIv = null;
-        byte[]? expectedTag = null;
+        Span<byte> receivedTag = stackalloc byte[TagSizeBits / 8];
+        Span<byte> expectedTag = stackalloc byte[TagSizeBits / 8];
 
         try
         {
-            ReadOnlySpan<byte> ciphertext = ciphertextWithTag[..plaintextLength];
-            ReadOnlySpan<byte> receivedTag = ciphertextWithTag[plaintextLength..];
+            // Copy the tag first: it seeds the counter, and the plaintext may be written over the buffer holding it.
+            ciphertextWithTag[plaintextLength..].CopyTo(receivedTag);
+            ApplyCtr(ciphertextWithTag[..plaintextLength], output[..plaintextLength], receivedTag);
 
-            // Decrypt CTR.
-            receivedTagCopy = receivedTag.ToArray();
-            ctrIv = BuildCtrIv(receivedTagCopy);
-            CtrEncrypt(ciphertext, output[..plaintextLength], ctrIv);
-
-            // Recompute and verify tag.
-            expectedTag = ComputeTag(_aad.AsSpan(), output[..plaintextLength]);
+            // Recompute and verify the tag.
+            ComputeTag(output[..plaintextLength], expectedTag);
             if (!CryptographicOperations.FixedTimeEquals(expectedTag, receivedTag))
             {
                 CryptographyHelper.Clear(output[..plaintextLength]);
@@ -263,15 +275,14 @@ public sealed class GcmSivModeTransform
         finally
         {
             CryptographyHelper.Clear(expectedTag);
-            CryptographyHelper.Clear(ctrIv);
-            CryptographyHelper.Clear(receivedTagCopy);
+            CryptographyHelper.Clear(receivedTag);
             _completed = true;
         }
     }
 
     /// <summary>
-    /// Releases the resources used by this instance and clears retained authentication key, nonce, associated-data
-    /// state, and the derived encryption cipher.
+    /// Releases the resources used by this instance and clears the retained authentication key, nonce, and
+    /// associated-data state, and disposes the derived encryption cipher.
     /// </summary>
     /// <remarks>
     /// The supplied master cipher is not disposed by this type. Ownership of the master cipher remains with the caller.
@@ -293,311 +304,181 @@ public sealed class GcmSivModeTransform
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, required);
         EnsureAadProcessed();
 
-        byte[]? tag = null;
-        byte[]? ctrIv = null;
+        Span<byte> tag = stackalloc byte[TagSizeBits / 8];
 
         try
         {
-            // Tag = E(K_enc, POLYVAL(K_auth, AAD, PT) XOR nonce) with bits [31] and [63] cleared.
-            tag = ComputeTag(_aad.AsSpan(), plaintext);
+            // Tag = E(K_enc, POLYVAL(K_auth, AAD, PT) XOR nonce) with bit 127 cleared.
+            ComputeTag(plaintext, tag);
 
             // Encrypt plaintext with CTR(K_enc) seeded from tag.
-            ctrIv = BuildCtrIv(tag);
-            CtrEncrypt(plaintext, output[..plaintext.Length], ctrIv);
+            ApplyCtr(plaintext, output[..plaintext.Length], tag);
             tag.CopyTo(output[plaintext.Length..]);
             return required;
         }
         finally
         {
-            CryptographyHelper.Clear(ctrIv);
             CryptographyHelper.Clear(tag);
             _completed = true;
         }
     }
 
     /// <inheritdoc />
+    /// <remarks>
+    /// The associated data is folded into the POLYVAL state here, since POLYVAL takes it before the plaintext, so the
+    /// transform keeps neither the data nor a copy of it.
+    /// </remarks>
+    [SkipLocalsInit]
     public void ProcessAssociatedData(ReadOnlySpan<byte> associatedData)
     {
         ThrowIfDisposed();
         CryptographyThrowHelper.ThrowIfAssociatedDataAlreadyProcessed(_aadProcessed);
 
-        _aad = associatedData.ToArray();
+        Span<byte> state = stackalloc byte[BlockBytes];
+        state.Clear();
+
+        try
+        {
+            Ghash.Update(in _polyvalKey, state, associatedData);
+            _aadHash = Vector128.Create((ReadOnlySpan<byte>)state);
+            _aadLength = associatedData.Length;
+        }
+        finally
+        {
+            CryptographyHelper.Clear(state);
+        }
+
         _aadProcessed = true;
     }
 
     /// <summary>
-    /// Builds the GCM-SIV CTR IV from the tag: set MSB of last byte (bit 127) to 1 to distinguish CTR from POLYVAL
-    /// blocks per RFC 8452 Section 5.
-    /// </summary>
-    /// <param name="tag">The POLYVAL-derived authentication tag.</param>
-    /// <returns>The CTR initialization vector derived from <paramref name="tag" /> per RFC 8452.</returns>
-    private static byte[] BuildCtrIv(byte[] tag)
-    {
-        byte[] ctrIv = (byte[])tag.Clone();
-        ctrIv[15] |= 0x80; // set bit 127
-        return ctrIv;
-    }
-
-    /// <summary>
     /// Derives K_auth (16 bytes) and K_enc (16 or 32 bytes, as long as the key-generating key) from the master cipher
-    /// and nonce per RFC 8452 Section 4. Each cipher call encrypts <c>LE32(i) || nonce</c> (4 + 12 = 16 bytes), and
-    /// each key is the first 8 bytes of consecutive calls: calls 0 and 1 for K_auth, then calls 2 and 3 — and 4 and 5
-    /// for a 256-bit key-generating key — for K_enc.
+    /// and nonce per RFC 8452 Section 4. Block <c>i</c> is <c>LE32(i) || nonce</c>, and each key is the first 8 bytes
+    /// of the encryptions of consecutive blocks: blocks 0 and 1 for K_auth, then blocks 2 and 3 — and 4 and 5 for a
+    /// 256-bit key-generating key — for K_enc. All the blocks are encrypted in one multi-block call.
     /// </summary>
     /// <param name="cipher">The master block cipher keyed with the key-generating key.</param>
     /// <param name="nonce">The 12-byte nonce.</param>
-    /// <param name="encryptionKeyLength">The length, in bytes, of the message-encryption key: 16 or 32.</param>
-    /// <returns>The derived message-authentication key and message-encryption key.</returns>
-    private static (byte[] authKey, byte[] encKey) DeriveKeys(IBlockCipher cipher, byte[] nonce, int encryptionKeyLength)
+    /// <param name="authKey">Receives the 16-byte message-authentication key.</param>
+    /// <param name="encKey">
+    /// Receives the message-encryption key; its length, 16 or 32 bytes, selects the derivation.
+    /// </param>
+    [SkipLocalsInit]
+    private static void DeriveKeys(IBlockCipher cipher, ReadOnlySpan<byte> nonce, Span<byte> authKey, Span<byte> encKey)
     {
-        int blockSize = cipher.BlockSize / 8;
-        byte[] authKey = new byte[blockSize];
-        byte[] encKey = new byte[encryptionKeyLength];
+        int blocks = 2 + (encKey.Length / 8);
+        int length = blocks * BlockBytes;
+        Span<byte> input = stackalloc byte[6 * BlockBytes];
+        Span<byte> derived = stackalloc byte[6 * BlockBytes];
+        input = input[..length];
+        derived = derived[..length];
 
         try
         {
-            DeriveHalves(0, authKey);
-            DeriveHalves(2, encKey);
+            for (int i = 0; i < blocks; i++)
+            {
+                BinaryPrimitives.WriteUInt32LittleEndian(input.Slice(i * BlockBytes), (uint)i);
+                nonce.CopyTo(input.Slice((i * BlockBytes) + 4));
+            }
 
-            return (authKey, encKey);
+            cipher.EncryptBlocks(input, derived);
+
+            for (int i = 0; i < blocks; i++)
+            {
+                Span<byte> half = i < 2 ? authKey.Slice(8 * i, 8) : encKey.Slice(8 * (i - 2), 8);
+                derived.Slice(i * BlockBytes, 8).CopyTo(half);
+            }
+        }
+        finally
+        {
+            CryptographyHelper.Clear(derived);
+        }
+    }
+
+    /// <summary>
+    /// Computes the GCM-SIV tag per RFC 8452 Section 5: POLYVAL over the associated data, the plaintext, and the length
+    /// block <c>LE64(|A| · 8) || LE64(|P| · 8)</c>, XORed with the nonce, with bit 127 cleared, then encrypted with
+    /// K_enc.
+    /// </summary>
+    /// <param name="plaintext">The plaintext bytes authenticated by the tag.</param>
+    /// <param name="tag">Receives the 16-byte tag; cleared if the cipher throws.</param>
+    [SkipLocalsInit]
+    private void ComputeTag(ReadOnlySpan<byte> plaintext, Span<byte> tag)
+    {
+        Span<byte> state = stackalloc byte[BlockBytes];
+        Span<byte> lengths = stackalloc byte[BlockBytes];
+
+        try
+        {
+            _aadHash.CopyTo(state);
+            Ghash.Update(in _polyvalKey, state, plaintext);
+
+            BinaryPrimitives.WriteUInt64LittleEndian(lengths, (ulong)_aadLength * 8);
+            BinaryPrimitives.WriteUInt64LittleEndian(lengths[8..], (ulong)plaintext.Length * 8);
+            Ghash.Update(in _polyvalKey, state, lengths);
+
+            // XOR the nonce into the first twelve bytes and clear the top bit of the last.
+            (Vector128.Create((ReadOnlySpan<byte>)state) ^ _nonceBlock).CopyTo(state);
+            state[15] &= 0x7F;
+
+            _encCipher.Encrypt(state, tag);
         }
         catch
         {
-            CryptographyHelper.Clear(authKey);
-            CryptographyHelper.Clear(encKey);
+            // Zero the partially written tag when the derived cipher faults mid-encrypt.
+            CryptographyHelper.Clear(tag);
             throw;
         }
-
-        void DeriveHalves(int firstCounter, byte[] destination)
-        {
-            for (int half = 0; half < destination.Length / 8; half++)
-            {
-                byte[]? output = null;
-
-                try
-                {
-                    output = Derive(firstCounter + half);
-                    output.AsSpan(0, 8).CopyTo(destination.AsSpan(8 * half));
-                }
-                finally
-                {
-                    CryptographyHelper.ClearAndNullify(ref output);
-                }
-            }
-        }
-
-        byte[] Derive(int counter)
-        {
-            byte[] block = new byte[blockSize];
-            byte[] output = new byte[blockSize];
-
-            try
-            {
-                // Little-endian 32-bit counter in first 4 bytes.
-                block[0] = (byte)counter;
-                block[1] = (byte)(counter >> 8);
-                block[2] = (byte)(counter >> 16);
-                block[3] = (byte)(counter >> 24);
-
-                nonce.CopyTo(block, 4);
-
-                cipher.Encrypt(block, output);
-
-                return output;
-            }
-            finally
-            {
-                CryptographyHelper.Clear(block);
-            }
-        }
-    }
-
-    /// <summary>
-    /// Multiplies two 128-bit big-endian field elements in GF(2^128) with polynomial x^128 + x^7 + x^2 + x + 1
-    /// (GCM/GHASH field). Shift-and-XOR algorithm.
-    /// </summary>
-    /// <param name="x">The left operand block (16 bytes).</param>
-    /// <param name="h">The hash subkey <c>H</c> (16 bytes).</param>
-    /// <param name="result">The destination block (16 bytes); receives the GF(2<sup>128</sup>) product.</param>
-    /// <remarks>
-    /// Delegates to <see cref="GaloisField128.Multiply" />, which dispatches to the carry-less
-    /// <see cref="System.Runtime.Intrinsics.X86.Pclmulqdq" /> multiply when available and falls back to the
-    /// constant-time scalar reference otherwise. Both operands here are secret (reflected POLYVAL state and reflected
-    /// auth key), and both dispatch targets are constant-time.
-    /// </remarks>
-    private static void GhashMultiply(ReadOnlySpan<byte> x, ReadOnlySpan<byte> h, Span<byte> result) =>
-        GaloisField128.Multiply(x, h, result);
-
-    /// <summary>
-    /// Computes POLYVAL(H, X) by reflecting both operands, applying GHASH multiplication, and reflecting the result.
-    /// reflect(X) = byte-reverse + bit-reverse within each byte.
-    /// </summary>
-    /// <param name="x">The left operand block (16 bytes).</param>
-    /// <param name="h">The POLYVAL hash key (16 bytes).</param>
-    /// <param name="result">The destination block (16 bytes); receives the POLYVAL product.</param>
-    private static void PolyvalMultiply(Span<byte> x, ReadOnlySpan<byte> h, Span<byte> result)
-    {
-        // Stack-allocate all three scratch blocks so reflected key material never reaches the managed heap, and
-        // zero them before they go out of scope — hr in particular holds the reflected auth key.
-        Span<byte> xr = stackalloc byte[16];
-        Span<byte> hr = stackalloc byte[16];
-        Span<byte> product = stackalloc byte[16];
-
-        try
-        {
-            ByteReverse(x, xr);
-            ByteReverse(h, hr);
-
-            // RFC 8452 §3: POLYVAL(H, X) = ByteReverse(GHASH(mulX_GHASH(reflect(H)), reflect(X))). The reflected hash key
-            // must be multiplied by x in the GHASH field; without this the tag is wrong for every non-zero POLYVAL input.
-            MulXGhash(hr);
-
-            GhashMultiply(xr, hr, product);
-
-            ByteReverse(product, result);
-        }
         finally
         {
-            CryptographyHelper.Clear(product);
-            CryptographyHelper.Clear(hr);
-            CryptographyHelper.Clear(xr);
+            CryptographyHelper.Clear(state);
         }
     }
 
     /// <summary>
-    /// Multiplies a 128-bit GHASH-domain field element by <c>x</c> in place (right-shift by one bit with conditional
-    /// reduction by <c>0xE1</c>), as required to convert a reflected POLYVAL hash key for GHASH multiplication.
-    /// </summary>
-    /// <param name="v">The 16-byte field element, modified in place.</param>
-    private static void MulXGhash(Span<byte> v)
-    {
-        byte lsbMask = (byte)(-(v[15] & 0x01));
-
-        for (int j = 15; j > 0; j--)
-            v[j] = (byte)((v[j] >> 1) | ((v[j - 1] & 0x01) << 7));
-        v[0] >>= 1;
-
-        v[0] ^= (byte)(0xE1 & lsbMask);
-    }
-
-    /// <summary>
-    /// Reverses the byte order of a 128-bit value (RFC 8452 <c>ByteReverse</c>), mapping between POLYVAL's
-    /// little-endian element representation and the GHASH multiply's byte order.
-    /// </summary>
-    /// <param name="input">The source 16-byte block.</param>
-    /// <param name="output">
-    /// The destination 16-byte block; receives <paramref name="input" /> with byte order reversed.
-    /// </param>
-    private static void ByteReverse(ReadOnlySpan<byte> input, Span<byte> output)
-    {
-        for (int i = 0; i < 16; i++)
-            output[i] = input[15 - i];
-    }
-
-    /// <summary>
-    /// Writes the byte-wise XOR of <paramref name="a" /> and <paramref name="b" /> into <paramref name="result" />.
-    /// </summary>
-    /// <param name="a">The first operand span.</param>
-    /// <param name="b">The second operand span; must be at least <paramref name="a" />.Length bytes.</param>
-    /// <param name="result">The destination span; must be at least <paramref name="a" />.Length bytes.</param>
-    private static void Xor(ReadOnlySpan<byte> a, ReadOnlySpan<byte> b, Span<byte> result)
-    {
-        for (int i = 0; i < result.Length; i++) result[i] = (byte)(a[i] ^ b[i]);
-    }
-
-    /// <summary>
-    /// Computes the GCM-SIV tag per RFC 8452 Section 5.2. POLYVAL(K_auth, len(A)||len(C), A blocks, C blocks) XOR
-    /// nonce, then clear bit 31 and 63, then encrypt with K_enc.
-    /// </summary>
-    /// <param name="aad">The associated authenticated data.</param>
-    /// <param name="plaintext">The plaintext bytes authenticated by the tag.</param>
-    /// <returns>The computed AES-GCM-SIV authentication tag.</returns>
-    private byte[] ComputeTag(ReadOnlySpan<byte> aad, ReadOnlySpan<byte> plaintext)
-    {
-        int blockSize = _encCipher.BlockSize / 8;
-
-        // POLYVAL accumulation: process AAD blocks, then plaintext blocks, then length block.
-        // polyvalResult holds intermediate MAC state XOR'd with the nonce — cleared in finally.
-        byte[] polyvalResult = new byte[blockSize];
-        try
-        {
-            PolyvalUpdate(polyvalResult, aad);
-            PolyvalUpdate(polyvalResult, plaintext);
-
-            // Length block: LE64(|A| * 8) || LE64(|P| * 8). Stack-allocated; never reaches the heap.
-            Span<byte> lenBlock = stackalloc byte[blockSize];
-            ulong aadBits = (ulong)aad.Length * 8;
-            ulong ptBits = (ulong)plaintext.Length * 8;
-            for (int i = 0; i < 8; i++) lenBlock[i] = (byte)(aadBits >> (8 * i));
-            for (int i = 0; i < 8; i++) lenBlock[8 + i] = (byte)(ptBits >> (8 * i));
-            PolyvalUpdate(polyvalResult, lenBlock);
-
-            // XOR with nonce, clear bit 31 (byte 3 MSB) and bit 63 (byte 7 MSB).
-            for (int i = 0; i < (NonceSizeBits / 8); i++)
-                polyvalResult[i] ^= _nonce[i];
-            polyvalResult[15] &= 0x7F; // clear bit 127 (RFC calls this bit 31 of the last 32-bit word)
-
-            // Encrypt with K_enc to produce the tag.
-            byte[] tag = new byte[blockSize];
-            try
-            {
-                _encCipher.Encrypt(polyvalResult, tag);
-            }
-            catch
-            {
-                // Zero the partially written tag when the derived cipher faults mid-encrypt.
-                CryptographyHelper.Clear(tag);
-                throw;
-            }
-
-            return tag;
-        }
-        finally
-        {
-            CryptographyHelper.Clear(polyvalResult);
-        }
-    }
-
-    /// <summary>
-    /// Applies AES-CTR encryption using the supplied <paramref name="counter" /> block, producing
-    /// <c>input XOR keystream</c> in <paramref name="output" />.
+    /// Applies the CTR keystream seeded from <paramref name="tag" />: the counter block is the tag with its most
+    /// significant bit set, and successive blocks increment its first 32 bits as a little-endian integer, modulo
+    /// <c>2³²</c>, leaving the other 96 bits unchanged (RFC 8452 Section 4). The counter blocks are encrypted a run at
+    /// a time.
     /// </summary>
     /// <param name="input">The plaintext (or ciphertext) bytes.</param>
     /// <param name="output">The destination span; must be at least <paramref name="input" />.Length bytes.</param>
-    /// <param name="counter">The initial counter block; the low 32 bits are incremented per block per RFC 8452.</param>
-    private void CtrEncrypt(ReadOnlySpan<byte> input, Span<byte> output, byte[] counter)
+    /// <param name="tag">The 16-byte tag that seeds the counter.</param>
+    [SkipLocalsInit]
+    private void ApplyCtr(ReadOnlySpan<byte> input, Span<byte> output, ReadOnlySpan<byte> tag)
     {
-        int blockSize = _encCipher.BlockSize / 8;
+        Span<byte> counters = stackalloc byte[CounterKeystream.BatchBytes];
+        Span<byte> keystream = stackalloc byte[CounterKeystream.BatchBytes];
+        int used = 0;
 
-        // Stack-allocate the mutable counter copy so the ephemeral CTR state never reaches the heap, and zero both
-        // scratch blocks before they go out of scope — ks holds raw keystream.
-        Span<byte> ctr = stackalloc byte[blockSize];
-        counter.CopyTo(ctr);
-        Span<byte> ks = stackalloc byte[blockSize];
+        uint count = BinaryPrimitives.ReadUInt32LittleEndian(tag);
+        uint fixedLow = BinaryPrimitives.ReadUInt32LittleEndian(tag[4..]);
+        ulong fixedHigh = BinaryPrimitives.ReadUInt64LittleEndian(tag[8..]) | 0x8000_0000_0000_0000UL;
 
         try
         {
-            for (int offset = 0; offset < input.Length; offset += blockSize)
+            int offset = 0;
+            while (offset < input.Length)
             {
-                _encCipher.Encrypt(ctr, ks);
+                int length = Math.Min(counters.Length, input.Length - offset);
+                int filled = (length + BlockBytes - 1) & ~(BlockBytes - 1);
+                for (int position = 0; position < filled; position += BlockBytes)
+                {
+                    BinaryPrimitives.WriteUInt32LittleEndian(counters[position..], count);
+                    BinaryPrimitives.WriteUInt32LittleEndian(counters.Slice(position + 4), fixedLow);
+                    BinaryPrimitives.WriteUInt64LittleEndian(counters.Slice(position + 8), fixedHigh);
+                    count = unchecked(count + 1);
+                }
 
-                // GCM-SIV CTR increments the first 32 bits (little-endian), leaving the remaining 96 bits — including the
-                // block-tag bit set in the most significant bit of the last byte — unchanged, per RFC 8452 Section 4.
-                uint lo = (uint)(ctr[0] | (ctr[1] << 8) | (ctr[2] << 16) | (ctr[3] << 24));
-                lo++;
-                ctr[0] = (byte)lo;
-                ctr[1] = (byte)(lo >> 8);
-                ctr[2] = (byte)(lo >> 16);
-                ctr[3] = (byte)(lo >> 24);
-                int len = Math.Min(blockSize, input.Length - offset);
-                for (int i = 0; i < len; i++)
-                    output[offset + i] = (byte)(input[offset + i] ^ ks[i]);
+                // Widen the extent to clear before the cipher writes keystream, so a throwing cipher leaves none behind.
+                used = Math.Max(used, filled);
+                CounterKeystream.Apply(_encCipher, counters[..filled], keystream, input.Slice(offset, length), output.Slice(offset, length));
+                offset += length;
             }
         }
         finally
         {
-            CryptographyHelper.Clear(ks);
-            CryptographyHelper.Clear(ctr);
+            CryptographyHelper.Clear(keystream[..used]);
         }
     }
 
@@ -618,10 +499,10 @@ public sealed class GcmSivModeTransform
             if (_encCipher is IDisposable disposableCipher)
                 disposableCipher.Dispose();
 
-            CryptographyHelper.Clear(_authKey);
-            CryptographyHelper.Clear(_nonce);
-            CryptographyHelper.ClearAndNullify(ref _aad);
-
+            _polyvalKey = default;
+            _nonceBlock = default;
+            _aadHash = default;
+            _aadLength = 0;
             _aadProcessed = false;
         }
 
@@ -631,46 +512,11 @@ public sealed class GcmSivModeTransform
     // ── Private helpers ────────────────────────────────────────────────────────────────────────
 
     /// <summary>
-    /// Ensures the associated-data (AAD) POLYVAL contribution has been finalized exactly once before payload bytes are
-    /// processed; no-op on subsequent invocations.
+    /// Marks the associated data as processed before the payload is, so a transform given no associated data
+    /// authenticates an empty string and rejects a later <see cref="ProcessAssociatedData" /> call.
     /// </summary>
-    private void EnsureAadProcessed()
-    {
-        if (!_aadProcessed)
-        {
-            _aad = [];
-            _aadProcessed = true;
-        }
-    }
-
-    /// <summary>
-    /// Accumulates <paramref name="data" /> into the POLYVAL state block-by-block. POLYVAL(H, X) =
-    /// reflect(GHASH(reflect(H), reflect(X))). Internally uses GHASH multiplication on reflected inputs.
-    /// </summary>
-    /// <param name="state">The POLYVAL accumulator (16 bytes); updated in place.</param>
-    /// <param name="data">The input bytes to fold into the POLYVAL state.</param>
-    private void PolyvalUpdate(byte[] state, ReadOnlySpan<byte> data)
-    {
-        const int blockSize = 16;
-
-        // Stack-allocate the per-block scratch buffer so plaintext/AAD fragments never reach the heap.
-        Span<byte> block = stackalloc byte[blockSize];
-        for (int offset = 0; offset < data.Length; offset += blockSize)
-        {
-            int len = Math.Min(blockSize, data.Length - offset);
-            data.Slice(offset, len).CopyTo(block);
-
-            // RFC 8452 §4 zero-pads the final partial block. The scratch buffer is reused across iterations, so the
-            // tail beyond `len` must be cleared explicitly; leaving the previous block's bytes there corrupts the
-            // POLYVAL tag for any AAD or plaintext whose length is not a multiple of the block size.
-            if (len < blockSize)
-                block[len..].Clear();
-
-            // state ^= block, then multiply by H (authKey) via POLYVAL.
-            Xor(state, block, state);
-            PolyvalMultiply(state, _authKey, state);
-        }
-    }
+    private void EnsureAadProcessed() =>
+        _aadProcessed = true;
 
     /// <summary>
     /// Throws <see cref="InvalidOperationException" /> if this transform has already encrypted or decrypted a message.

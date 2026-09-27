@@ -175,6 +175,7 @@ internal static class CryptoHarness
             Measure("aead", "Bodu AES-128-GCM 1 MiB", BulkLength, () => { using var gcm = new GcmModeTransform(aes, nonce12); gcm.Encrypt(bulk, output); });
             Measure("aead", "Bodu AES-128-GCM 64 B", SmallLength, () => { using var gcm = new GcmModeTransform(aes, nonce12); gcm.Encrypt(small, output); });
             Measure("aead", "Bodu AES-128-GCM-SIV 1 MiB", BulkLength, () => { using var siv = new GcmSivModeTransform(aes, static k => new AesBlockCipher(k), iv16); siv.Encrypt(bulk, output); });
+            Measure("aead", "Bodu AES-128-GCM-SIV 64 B", SmallLength, () => { using var siv = new GcmSivModeTransform(aes, static k => new AesBlockCipher(k), iv16); siv.Encrypt(small, output); });
             Measure("aead", "Bodu AES-128-CCM 1 MiB", BulkLength, () => { using var ccm = new CcmModeTransform(aes, iv16); ccm.Encrypt(bulk, output); });
             Measure("aead", "Bodu AES-128-EAX 1 MiB", BulkLength, () => { using var eax = new EaxModeTransform(aes, iv16); eax.Encrypt(bulk, output); });
             Measure("aead", "Bodu AES-128-OCB 1 MiB", BulkLength, () => { using var ocb = new OcbModeTransform(aes, iv16); ocb.Encrypt(bulk, output); });
