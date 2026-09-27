@@ -15,8 +15,22 @@
     <PackageReference Include="BenchmarkDotNet" />
   </ItemGroup>
 
-  <ItemGroup>
+  <!--
+    By default the benchmarks measure this repository's build. Setting BoduCryptoBaseline to a published version
+    (for example, passing -p:BoduCryptoBaseline=1.0.0 to dotnet run) measures that nuget.org package instead, from
+    the same benchmark source, so a baseline and a candidate are compared like for like. BODU_CRYPTO_BASELINE lets
+    the source leave out benchmarks for members the baseline does not have.
+  -->
+  <ItemGroup Condition="'$(BoduCryptoBaseline)' == ''">
     <ProjectReference Include="..\src\Bodu.Security.Cryptography.csproj" />
   </ItemGroup>
+
+  <ItemGroup Condition="'$(BoduCryptoBaseline)' != ''">
+    <PackageReference Include="Bodu.Security.Cryptography" VersionOverride="$(BoduCryptoBaseline)" />
+  </ItemGroup>
+
+  <PropertyGroup Condition="'$(BoduCryptoBaseline)' != ''">
+    <DefineConstants>$(DefineConstants);BODU_CRYPTO_BASELINE</DefineConstants>
+  </PropertyGroup>
 
 </Project>
