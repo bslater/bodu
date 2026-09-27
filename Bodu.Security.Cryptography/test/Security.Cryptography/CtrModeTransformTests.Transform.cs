@@ -135,4 +135,47 @@ public sealed partial class CtrModeTransformTests
 
         CollectionAssert.AreNotEqual(oA, oB);
     }
+
+    /// <summary>
+    /// Verifies that the keystream matches a block-at-a-time reference — one counter block encrypted per whole or
+    /// partial block of each call, the rest of a partial block's keystream discarded — for messages that fit in one
+    /// run of counters, straddle one, and span several, and for calls split both on and off block boundaries.
+    /// </summary>
+    /// <param name="name">The cipher's name, for the test's display.</param>
+    /// <param name="create">Creates a fresh keyed cipher.</param>
+    [TestMethod]
+    [DynamicData(nameof(BatchingCiphers))]
+    public void Transform_WhenInputSpansSeveralRunsOfCounters_ShouldMatchBlockAtATimeReference(string name, Func<IBlockCipher> create)
+    {
+        int[][] callPlans =
+        [
+            [0], [1], [15], [16], [17], [4095], [4096], [4097], [(3 * 4096) + 17], [20000],
+            [7, 4096 + 5, 11], [64, 64, 64], [4096, 4096], [1, 1, 1, 8191],
+        ];
+
+        foreach (int[] calls in callPlans)
+        {
+            using IBlockCipher cipher = create();
+            int blockSize = cipher.BlockSize / 8;
+            byte[] initialCounter = new byte[blockSize];
+            initialCounter[^1] = 0xF0;
+            initialCounter[^2] = 0xFF;
+
+            byte[] input = new byte[calls.Sum()];
+            new Random(input.Length).NextBytes(input);
+
+            byte[] expected = ReferenceKeystreamXor(cipher, initialCounter, input, calls);
+
+            byte[] actual = new byte[input.Length];
+            using var transform = new CtrModeTransform(cipher, initialCounter);
+            int offset = 0;
+            foreach (int length in calls)
+            {
+                transform.Transform(input.AsSpan(offset, length), actual.AsSpan(offset, length), encrypt: true);
+                offset += length;
+            }
+
+            CollectionAssert.AreEqual(expected, actual, $"{name}, calls {string.Join("+", calls)}");
+        }
+    }
 }
