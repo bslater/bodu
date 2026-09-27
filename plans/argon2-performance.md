@@ -1,6 +1,7 @@
 # Implementation plan: a faster Argon2id
 
-**Status:** Proposed · **Source:** FallbackPlan requirements document "a faster
+**Status:** Implemented on `claude/argon2-prototype-co27tu`, not yet merged; measured on
+one x64 machine (§10), ARM64 performance still to measure · **Source:** FallbackPlan requirements document "a faster
 Argon2id in Bodu" (`ARG-F-*` / `ARG-N-*`, raised 2026-09-27 against 1.0.0) ·
 **Target:** `Bodu.Security.Cryptography` 1.1.0
 
@@ -611,4 +612,127 @@ class:
 | Four at once | 1× | 3.7–5.7× the throughput |
 
 Phase 7 confirms these on the release build, and on the kinds of machines
-FallbackPlan's users run.
+FallbackPlan's users run. §10 records the implementation's measurements so far.
+
+## 10. Results
+
+The phases are implemented on `claude/argon2-prototype-co27tu`, one commit or more
+each: Phase 0 (`1af9d09`, `311aa11`), 1 (`a0eb574`), 2 (`b0e244d`), 3 (`cfef00f`),
+4 (`089c541`), 5 (`9b8def8`), 6 (`11373cf`, `2e6a5b3`) and 8 (`7bcb9e4`). Phase 7's
+measurements follow, from one machine: the 4-vCPU Xeon (AVX-512) of §2, .NET 10.0.0,
+Release, using the harness (`--argon2-harness`, the requirements' appendix method). Each
+row is the mean of two rounds, with 1.0.0 measured in the same session. The VM's speed
+drifted by 10–15 % between sessions, so compare figures within a table, not with §2.
+
+**Table R1 — one derivation (Argon2id, 64 MiB, t = 3, p = 4, warm).** The kernel is
+selected with the runtime's switches: the default takes AVX2, `DOTNET_EnableAVX2=0`
+SSSE3, and `DOTNET_EnableHWIntrinsic=0` the scalar kernel.
+
+| Build | Wall | vs 1.0.0 | CPU | vs 1.0.0 | Allocated | Gen2 per call |
+|---|--:|--:|--:|--:|--:|--:|
+| 1.0.0 | 247.5 ms | 100 % | 246.8 ms | 100 % | 64 MiB | 0.5 |
+| AVX2, threads (default) | 30.7 | 12 % | 91.3 | 37 % | 26 KiB | 0 |
+| AVX2, one thread | 90.2 | 36 % | 91.5 | 37 % | 0.2 KiB | 0 |
+| SSSE3, threads | 41.4 | 17 % | 131.5 | 53 % | 26 KiB | 0 |
+| SSSE3, one thread | 133.3 | 54 % | 134.0 | 54 % | 0.2 KiB | 0 |
+| Scalar, threads | 62.2 | 25 % | 191.2 | 77 % | 26 KiB | 0 |
+| Scalar, one thread | 193.6 | 78 % | 195.9 | 79 % | 0.2 KiB | 0 |
+
+**Table R2 — four at once (four dedicated threads, each deriving four times).**
+
+| Build | All 16, threads | All 16, one thread each | Throughput vs 1.0.0 |
+|---|--:|--:|--:|
+| 1.0.0 | 1,096 ms | — | 1.0× |
+| AVX2 | 462 | 450 | 2.4× |
+| SSSE3 | 655 | 619 | 1.7–1.8× |
+| Scalar | 929 | 872 | 1.2–1.3× |
+
+**Table R3 — the first derivation in a fresh process (64 MiB, p = 4; three processes
+each).** 1.0.0: 363–385 ms. This build: 96–115 ms.
+
+**Table R4 — where threads pay (AVX2, p = 4, t = 3).** Measured on a scratch build with
+the threshold lowered to one block, so four threads engage at every size; three runs,
+each the median of repeated derivations. The ratios divide four threads by one.
+
+| m | Blocks per segment | Wall ratio | CPU ratio |
+|---|--:|--:|--:|
+| 1 MiB | 64 | 0.95–1.11 | 1.9–2.5 |
+| 2 MiB | 128 | 0.66–1.03 | 1.2–2.2 |
+| 4 MiB | 256 | 0.59–0.72 | 0.9–1.7 |
+| 8 MiB | 512 | 0.51–0.68 | 1.6–1.7 |
+| 16 MiB | 1,024 | 0.41–0.48 | 1.4–1.5 |
+| 32 MiB | 2,048 | 0.42–0.49 | 1.3–1.5 |
+
+An earlier single run read 1.01 at 4 MiB; the three repeats did not reproduce it.
+
+**NativeAOT (linux-x64, same host).** A default AOT build compiles against a baseline
+instruction set without AVX2, so dispatch selects the SSSE3 kernel: 116 ms for the
+64 MiB derivation on one thread, with the RFC 9106 tag reproduced. Built with
+`IlcInstructionSet=x86-64-v3`, it selects AVX2: 73 ms.
+
+**ARM64.** Correctness only, so far, under qemu-user with the linux-arm64 runtime.
+Dispatch selects AdvSimd; 10,000 shim checks against their scalar definitions, 300
+differential blocks against the scalar kernel, RFC 9106 and all 132 recorded rows pass.
+qemu occasionally crashes the runtime itself when tiered compilation is on, including in
+a control program with no Argon2 code; with tiering off every run passed, and no run ever
+produced a wrong tag. The ARM64 CI job (Phase 6) runs both suites on hardware.
+
+**Coverage.** Both cryptography suites, merged, on the host above: the package at 98.3 %
+of lines, every kernel file at 100 %, and the AdvSimd shim n/a (hardware-gated). The
+collection took about 8 minutes for the main suite and 7 for the SIMD-off assembly,
+within coverage.runsettings' 30-minute limit, once the kernel and thread sweeps were
+capped at 16 MiB vectors.
+
+### 10.1 Against the requirements
+
+| Requirement | Target | Result on the machine above |
+|---|---|---|
+| ARG-F-001 | Tags unchanged | RFC 9106, the reference implementation's vectors, and the 132 rows recorded from 1.0.0 reproduce on every kernel and at every thread bound |
+| ARG-F-002 | Additive API only | `MaxDegreeOfParallelism`, a bounded constructor per variant, and a bounded `Verify`; nothing changed or removed |
+| ARG-F-003 | A bound on threads | Implemented; `1` is 1.0.0's behaviour |
+| ARG-N-001 | Wall ≤ 40 % | 12 % (AVX2), 17 % (SSSE3), 25 % (scalar) |
+| ARG-N-002 | CPU ≤ 60 % with vector code | 37 % (AVX2), 53 % (SSSE3); **ARM64 not yet measured** |
+| ARG-N-003 | Scalar no slower | 77–79 % |
+| ARG-N-004 | < 1 MiB allocated, no gen2 | 26 KiB with threads, 0.2–0.3 KiB without; gen2 0 |
+| ARG-N-005 | Four at once ≥ 1.0.0 | 2.4× (AVX2), 1.7× (SSSE3), 1.2× (scalar) |
+| ARG-N-006 | Clearing | The matrix, H0, per-segment scratch and the first- and last-block buffers are cleared |
+| ARG-N-007 | Data independence | Kernels branch-free, shuffles by constant indices; checklist §7 in `SECURITY-CHECKLIST.md` |
+| ARG-N-008 | Scalar held to the vectors; ARM64 in CI | The SIMD-off assembly runs the Argon2 vectors; the ARM64 job is in place but has not yet run |
+| ARG-N-009 | Measurement | The harness gained one-thread rows and was run here |
+| ARG-N-010 | In-box APIs; AOT | In-box only; AOT selects SSSE3 by default and AVX2 with `IlcInstructionSet` |
+
+### 10.2 Tunables and deferred decisions
+
+- **Thread threshold: 256 blocks per segment, unchanged.** It is the first size in
+  Table R4 where four threads reliably cut the wall time, by 28–41 %; at 128 blocks
+  the gain is inconsistent and at 64 there is none.
+- **Pool: `ProcessorCount` buffers, 256 MiB each, 30 s idle, unchanged.** Four at once
+  shows no gen2 collections and no throughput loss, and the residency is documented.
+- **No AVX-512 kernel.** None was prototyped. AVX2 already meets ARG-N-002 at 37 %, and
+  the plan's 15 % bar needs a prototype to clear.
+- **No `AppContext` default for the bound.** Four at once never falls below 1.0.0. When
+  the machine is already saturated, threads by default cost 3–7 % of throughput against
+  one thread each (AVX2 3 %, SSSE3 6 %, scalar 7 %), which the per-instance bound
+  recovers.
+
+### 10.3 Still open
+
+- **ARM64 performance**, the riskiest target: run the harness on Apple silicon (or
+  Graviton) against 1.0.0, and tune the shim (for example `SHL`/`SRI` in place of `TBL`)
+  if CPU exceeds 60 %.
+- **The ARM64 CI job's first run.** It triggers on pull requests, pushes to `master`
+  and manual dispatch, so it has not run on this branch.
+- **A small-L3 desktop**, the second machine §7 names.
+- **Release** at the next lock-step bump, with notes such as these:
+
+  > **Argon2 is faster.** Derivations now divide their lanes among threads once each lane
+  > is about 1 MiB, compress blocks with AVX2, SSSE3 or AdvSimd, and hold the matrix in
+  > native memory: a 64 MiB derivation takes about an eighth of the time and allocates
+  > almost nothing on the managed heap. Tags are unchanged. Two behaviours are new, and
+  > each can be turned off: **threads by default** — construct with
+  > `maxDegreeOfParallelism: 1`, or pass it to `Argon2.Verify`, to keep each derivation on
+  > its calling thread; and **retained matrices** — up to one cleared matrix per processor
+  > stays reserved for 30 seconds after the last derivation, unless the `AppContext` switch
+  > `Bodu.Security.Cryptography.Argon2.DisableMatrixReuse` is set. NativeAOT applications
+  > get the SSSE3 kernel on x64 unless they set `IlcInstructionSet` (for example
+  > `x86-64-v3`).
