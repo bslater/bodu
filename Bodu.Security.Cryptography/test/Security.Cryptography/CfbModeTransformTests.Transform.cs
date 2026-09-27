@@ -189,6 +189,29 @@ public sealed partial class CfbModeTransformTests
     }
 
     /// <summary>
+    /// Verifies that decrypting a buffer in place over <see cref="AesBlockCipher" /> matches the platform's full-block CFB for AES-128 and
+    /// AES-256.
+    /// </summary>
+    [TestMethod]
+    public void Transform_WhenDecryptingInPlace_ShouldMatchPlatformCfb128()
+    {
+        foreach (int keyLength in new[] { 16, 32 })
+        {
+            byte[] key = AesReference.RandomBytes(keyLength, keyLength + 41);
+            byte[] iv = AesReference.RandomBytes(16, keyLength + 42);
+            using System.Security.Cryptography.Aes platform = AesReference.Create(key);
+
+            foreach (int length in AesReference.AlignedLengths)
+            {
+                byte[] ciphertext = AesReference.RandomBytes(length, length + 43);
+                byte[] expected = platform.DecryptCfb(ciphertext, iv, System.Security.Cryptography.PaddingMode.None, feedbackSizeInBits: 128);
+
+                CollectionAssert.AreEqual(expected, TransformWithAes(key, iv, ciphertext, encrypt: false, [length], inPlace: true), $"AES-{keyLength * 8}, {length} bytes");
+            }
+        }
+    }
+
+    /// <summary>
     /// Returns ways to split an input across <see cref="IBlockCipherModeTransform.Transform" /> calls: one call, and
     /// calls that end one block into a 4 KiB run and one block short of one.
     /// </summary>
