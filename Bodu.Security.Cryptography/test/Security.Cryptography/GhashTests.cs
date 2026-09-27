@@ -4,12 +4,14 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Buffers.Binary;
+
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Tests for <see cref="Ghash" />, grouped into member-named partial files. Every kernel the processor supports is held
-/// to the published RFC 8452 and NIST SP 800-38D values and to a bit-serial reference built from
-/// <see cref="GaloisField128.MultiplyScalar" />; GCM's and GCM-SIV's known-answer suites pin the kernels end to end.
+/// to the published RFC 8452 and NIST SP 800-38D values and to a bit-serial reference, NIST SP 800-38D's Algorithm 1;
+/// GCM's and GCM-SIV's known-answer suites pin the kernels end to end.
 /// </summary>
 [TestClass]
 public sealed partial class GhashTests
@@ -37,7 +39,7 @@ public sealed partial class GhashTests
             for (int i = 0; i < Math.Min(16, data.Length - offset); i++)
                 y[i] ^= data[offset + i];
 
-            GaloisField128.MultiplyScalar(y, h, y);
+            y = ReferenceMultiply(y, h);
         }
 
         return y;
@@ -64,10 +66,58 @@ public sealed partial class GhashTests
             for (int i = 0; i < 16; i++)
                 y[i] ^= block[15 - i];
 
-            GaloisField128.MultiplyScalar(y, ghashKey, y);
+            y = ReferenceMultiply(y, ghashKey);
         }
 
         return ReverseCopy(y);
+    }
+
+    /// <summary>
+    /// Multiplies two GHASH field elements bit by bit, as NIST SP 800-38D's Algorithm 1 defines the product: bit 0 of an
+    /// element is the most significant bit of its first byte, and each step shifts <c>V</c> right one bit, reducing by
+    /// <c>R = 11100001 || 0¹²⁰</c> when a set bit leaves it.
+    /// </summary>
+    /// <param name="x">The first factor.</param>
+    /// <param name="y">The second factor.</param>
+    /// <returns>The product.</returns>
+    private static byte[] ReferenceMultiply(byte[] x, byte[] y)
+    {
+        UInt128 xValue = BinaryPrimitives.ReadUInt128BigEndian(x);
+        UInt128 v = BinaryPrimitives.ReadUInt128BigEndian(y);
+        UInt128 z = 0;
+
+        for (int i = 0; i < 128; i++)
+        {
+            if (((xValue >> (127 - i)) & 1) != 0)
+                z ^= v;
+
+            bool carry = (v & 1) != 0;
+            v >>= 1;
+            if (carry)
+                v ^= (UInt128)0xE1 << 120;
+        }
+
+        byte[] product = new byte[16];
+        BinaryPrimitives.WriteUInt128BigEndian(product, z);
+        return product;
+    }
+
+    /// <summary>
+    /// Returns the boundary operands: zero, every bit set, and each of the 128 single-bit elements, where a lost carry
+    /// or a wrong reduction term would show.
+    /// </summary>
+    /// <returns>The operands.</returns>
+    private static byte[][] BoundaryOperands()
+    {
+        var operands = new List<byte[]> { new byte[16], Enumerable.Repeat((byte)0xFF, 16).ToArray() };
+        for (int bit = 0; bit < 128; bit++)
+        {
+            byte[] operand = new byte[16];
+            operand[bit >> 3] = (byte)(1 << (7 - (bit & 7)));
+            operands.Add(operand);
+        }
+
+        return operands.ToArray();
     }
 
     /// <summary>

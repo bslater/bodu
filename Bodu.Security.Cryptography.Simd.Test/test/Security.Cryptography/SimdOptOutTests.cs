@@ -86,22 +86,19 @@ public sealed class SimdOptOutTests
     }
 
     /// <summary>
-    /// Verifies that with SIMD disabled, <see cref="GaloisField128.Multiply" /> falls back to the scalar reference and
-    /// still reproduces the documented GCM Test Case 2 GHASH product <c>C₁ · H</c> (NIST SP 800-38D), confirming the
-    /// carry-less path's scalar fallback is correct.
+    /// Verifies that with SIMD disabled, one GHASH step through the dispatched kernel still reproduces the documented GCM
+    /// test case 2 product <c>C₁ · H</c> (NIST SP 800-38D), confirming the scalar kernel the switch selects is correct.
     /// </summary>
     [TestMethod]
-    public void GaloisField128Multiply_WhenSimdDisabled_ShouldReproduceDocumentedGhashProduct()
+    public void GhashUpdate_WhenSimdDisabled_ShouldReproduceDocumentedGhashProduct()
     {
-        byte[] c1 = Convert.FromHexString("0388dace60b6a392f328c2b971b2fe78");
-        byte[] h = Convert.FromHexString("66e94bd4ef8a2c3b884cfa59ca342b2e");
-        byte[] expected = Convert.FromHexString("5e2ec746917062882c85b0685353deb7");
+        var key = Ghash.Key.ForGhash(Convert.FromHexString("66e94bd4ef8a2c3b884cfa59ca342b2e"), Ghash.SelectKernel());
+        byte[] state = new byte[16];
 
-        Span<byte> actual = stackalloc byte[16];
-        GaloisField128.Multiply(c1, h, actual);
+        Ghash.Update(in key, state, Convert.FromHexString("0388dace60b6a392f328c2b971b2fe78"));
 
-        CollectionAssert.AreEqual(expected, actual.ToArray(),
-            "Scalar-fallback GHASH multiply did not match the documented product.");
+        CollectionAssert.AreEqual(Convert.FromHexString("5e2ec746917062882c85b0685353deb7"), state,
+            "Scalar-kernel GHASH did not match the documented product.");
     }
 
     /// <summary>

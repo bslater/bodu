@@ -65,6 +65,103 @@ public sealed partial class GhashTests
     }
 
     /// <summary>
+    /// Verifies that one GHASH step on NIST SP 800-38D test case 2's first ciphertext block, from a zero state, gives
+    /// the specification's documented product <c>C₁ · H</c>.
+    /// </summary>
+    /// <param name="kernel">The kernel's name.</param>
+    [TestMethod]
+    [DynamicData(nameof(SupportedKernels))]
+    public void Update_WhenKeyIsGhash_ForGcmSpecificationTestCase2FirstBlock_ShouldReturnDocumentedProduct(string kernel)
+    {
+        var key = Ghash.Key.ForGhash(Convert.FromHexString("66e94bd4ef8a2c3b884cfa59ca342b2e"), Enum.Parse<Ghash.KernelKind>(kernel));
+        byte[] state = new byte[16];
+
+        Ghash.Update(in key, state, Convert.FromHexString("0388dace60b6a392f328c2b971b2fe78"));
+
+        Assert.AreEqual("5e2ec746917062882c85b0685353deb7", Convert.ToHexString(state).ToLowerInvariant());
+    }
+
+    /// <summary>
+    /// Verifies that one GHASH step matches the bit-serial reference for every pair of boundary operands — zero, every
+    /// bit set, and each single-bit element — as block and as key.
+    /// </summary>
+    /// <param name="kernel">The kernel's name.</param>
+    [TestMethod]
+    [DynamicData(nameof(SupportedKernels))]
+    public void Update_WhenKeyIsGhash_ForBoundaryOperands_ShouldMatchBitSerialReference(string kernel)
+    {
+        var kind = Enum.Parse<Ghash.KernelKind>(kernel);
+        byte[][] operands = BoundaryOperands();
+
+        foreach (byte[] h in operands)
+        {
+            var key = Ghash.Key.ForGhash(h, kind);
+            foreach (byte[] x in operands)
+            {
+                byte[] state = new byte[16];
+                Ghash.Update(in key, state, x);
+
+                CollectionAssert.AreEqual(ReferenceMultiply(x, h), state, $"x {Convert.ToHexString(x)}, h {Convert.ToHexString(h)}");
+            }
+        }
+    }
+
+    /// <summary>
+    /// Verifies that one POLYVAL step matches the reference for every pair of boundary operands, which also exercises
+    /// the key's conversion to the GHASH domain on each of them.
+    /// </summary>
+    /// <param name="kernel">The kernel's name.</param>
+    [TestMethod]
+    [DynamicData(nameof(SupportedKernels))]
+    public void Update_WhenKeyIsPolyval_ForBoundaryOperands_ShouldMatchReference(string kernel)
+    {
+        var kind = Enum.Parse<Ghash.KernelKind>(kernel);
+        byte[][] operands = BoundaryOperands();
+
+        foreach (byte[] h in operands)
+        {
+            var key = Ghash.Key.ForPolyval(h, kind);
+            foreach (byte[] x in operands)
+            {
+                byte[] state = new byte[16];
+                Ghash.Update(in key, state, x);
+
+                CollectionAssert.AreEqual(ReferencePolyval(h, new byte[16], x), state, $"x {Convert.ToHexString(x)}, h {Convert.ToHexString(h)}");
+            }
+        }
+    }
+
+    /// <summary>
+    /// Verifies that GHASH over five blocks — one four-block group and one single block — matches the bit-serial
+    /// reference under thousands of random keys, which exercises the key powers each key prepares.
+    /// </summary>
+    /// <param name="kernel">The kernel's name.</param>
+    [TestMethod]
+    [TestCategory("Regression")]
+    [DynamicData(nameof(SupportedKernels))]
+    public void Update_WhenKeysAreRandom_ShouldMatchBitSerialReference(string kernel)
+    {
+        var kind = Enum.Parse<Ghash.KernelKind>(kernel);
+        var random = new Random(0x5EED_1234);
+        byte[] h = new byte[16];
+        byte[] start = new byte[16];
+        byte[] data = new byte[5 * 16];
+
+        for (int iteration = 0; iteration < 2_000; iteration++)
+        {
+            random.NextBytes(h);
+            random.NextBytes(start);
+            random.NextBytes(data);
+            var key = Ghash.Key.ForGhash(h, kind);
+            byte[] state = (byte[])start.Clone();
+
+            Ghash.Update(in key, state, data);
+
+            CollectionAssert.AreEqual(ReferenceGhash(h, start, data), state, $"iteration {iteration}");
+        }
+    }
+
+    /// <summary>
     /// Verifies that each kernel matches the bit-serial reference for GHASH at every data length from 0 to 200 bytes —
     /// every tail, and every position relative to a four-block group — from a non-zero state.
     /// </summary>
