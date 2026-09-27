@@ -51,6 +51,41 @@ public sealed class SimdOptOutTests
     }
 
     /// <summary>
+    /// Verifies that with SIMD disabled, GCM — hashing through the scalar GHASH kernel — still matches the platform's
+    /// <see cref="System.Security.Cryptography.AesGcm" /> on messages that fill several four-block groups and end in a
+    /// partial block, with associated data of several alignments.
+    /// </summary>
+    [TestMethod]
+    public void GcmModeTransformEncrypt_WhenSimdDisabled_ShouldMatchPlatformAesGcm()
+    {
+        if (!System.Security.Cryptography.AesGcm.IsSupported)
+            Assert.Inconclusive("AesGcm is not supported on this platform.");
+
+        byte[] key = RandomBytes(16, 1);
+        byte[] nonce = RandomBytes(12, 2);
+        using var platform = new System.Security.Cryptography.AesGcm(key, 16);
+        using var cipher = new AesBlockCipher(key);
+
+        foreach (int length in new[] { 0, 17, 4097, 20000 })
+        {
+            foreach (int aadLength in new[] { 0, 17, 100 })
+            {
+                byte[] plaintext = RandomBytes(length, length + 3);
+                byte[] aad = RandomBytes(aadLength, aadLength + 5);
+                byte[] expected = new byte[length + 16];
+                platform.Encrypt(nonce, plaintext, expected.AsSpan(0, length), expected.AsSpan(length), aad);
+
+                using var transform = new GcmModeTransform(cipher, nonce);
+                transform.ProcessAssociatedData(aad);
+                byte[] actual = new byte[length + 16];
+                transform.Encrypt(plaintext, actual);
+
+                CollectionAssert.AreEqual(expected, actual, $"{length} bytes, {aadLength} bytes of AAD");
+            }
+        }
+    }
+
+    /// <summary>
     /// Verifies that with SIMD disabled, <see cref="GaloisField128.Multiply" /> falls back to the scalar reference and
     /// still reproduces the documented GCM Test Case 2 GHASH product <c>C₁ · H</c> (NIST SP 800-38D), confirming the
     /// carry-less path's scalar fallback is correct.
@@ -83,5 +118,18 @@ public sealed class SimdOptOutTests
         Assert.AreEqual(
             "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
             Convert.ToHexString(digest).ToLowerInvariant());
+    }
+
+    /// <summary>
+    /// Returns a deterministic pseudo-random buffer.
+    /// </summary>
+    /// <param name="length">The buffer's length.</param>
+    /// <param name="seed">The generator's seed.</param>
+    /// <returns>The buffer.</returns>
+    private static byte[] RandomBytes(int length, int seed)
+    {
+        byte[] buffer = new byte[length];
+        new Random(seed).NextBytes(buffer);
+        return buffer;
     }
 }
