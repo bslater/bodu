@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Buffers;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 
@@ -47,7 +48,7 @@ namespace Bodu.Security.Cryptography;
 /// <seealso href="../guides/cryptography/aead-modes.html">Using AEAD modes (guide with full encrypt / decrypt examples)
 /// </seealso>
 public sealed class AesBlockCipher
-    : IBlockCipher
+    : IBlockCipher, ICbcBlockCipher
 {
     /// <summary>Length of the AES block is 128 bits (16 bytes). Internal constant kept for span-length validation; callers should read <see cref="BlockSize" /> instead.</summary>
     private const int BlockSizeBits = 128;
@@ -63,6 +64,9 @@ public sealed class AesBlockCipher
 
     /// <summary>The cached ECB encryptor, created once so its key schedule is reused across every single-block call. Nulled on disposal.</summary>
     private ICryptoTransform? _encryptor;
+
+    /// <summary>The cached CBC encryptor with a zero IV, created on the first chained encryption: each chain folds the caller's chaining value into its first block and resets the transform when it ends. Nulled on disposal.</summary>
+    private ICryptoTransform? _cbcEncryptor;
 
     /// <summary>The cached ECB decryptor, created on the first decryption so an instance that only encrypts — as the cipher of every counter-based mode does — never pays for one. Nulled on disposal.</summary>
     private ICryptoTransform? _decryptor;
@@ -149,9 +153,11 @@ public sealed class AesBlockCipher
         {
             _encryptor?.Dispose();
             _decryptor?.Dispose();
+            _cbcEncryptor?.Dispose();
             _aes.Dispose();
             _encryptor = null;
             _decryptor = null;
+            _cbcEncryptor = null;
             CryptographyHelper.Clear(_scratchIn);
             CryptographyHelper.Clear(_scratchOut);
             _disposed = true;
@@ -262,6 +268,76 @@ public sealed class AesBlockCipher
         {
             CryptographyHelper.Clear(scratch.AsSpan(0, 2 * chunk));
             ArrayPool<byte>.Shared.Return(scratch);
+        }
+    }
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// The chain runs through a cached CBC encryptor in chunks of up to 4 KiB, which the platform chains block to block
+    /// itself: one platform call per chunk rather than one per block. <paramref name="output" /> may be the same memory
+    /// as <paramref name="input" />.
+    /// </remarks>
+    void ICbcBlockCipher.EncryptCbc(ReadOnlySpan<byte> input, Span<byte> output, Span<byte> chainingValue)
+    {
+        ThrowIfDisposed();
+        Debug.Assert(input.Length % (BlockSizeBits / 8) == 0, "CBC chains whole blocks.");
+        Debug.Assert(chainingValue.Length == BlockSizeBits / 8, "The chaining value is one block.");
+
+        if (input.IsEmpty)
+            return;
+
+        const int BlockBytes = BlockSizeBits / 8;
+        ICryptoTransform cbc = _cbcEncryptor ??= CreateCbcEncryptor();
+        int chunk = Math.Min(BulkChunkBytes, input.Length);
+        byte[] scratch = ArrayPool<byte>.Shared.Rent(2 * chunk);
+
+        try
+        {
+            for (int offset = 0; offset < input.Length; offset += BulkChunkBytes)
+            {
+                int length = Math.Min(BulkChunkBytes, input.Length - offset);
+                Span<byte> source = scratch.AsSpan(0, length);
+                input.Slice(offset, length).CopyTo(source);
+
+                // The transform starts each chain from a zero IV, so the caller's chaining value is folded into the
+                // chain's first block.
+                if (offset == 0)
+                    CryptographyHelper.Xor(source[..BlockBytes], chainingValue, source[..BlockBytes]);
+
+                cbc.TransformBlock(scratch, 0, length, scratch, chunk);
+                if (!output.IsEmpty)
+                    scratch.AsSpan(chunk, length).CopyTo(output.Slice(offset, length));
+            }
+
+            int lastChunk = ((input.Length - 1) % BulkChunkBytes) + 1;
+            scratch.AsSpan(chunk + lastChunk - BlockBytes, BlockBytes).CopyTo(chainingValue);
+        }
+        finally
+        {
+            // Reset the transform to its zero IV for the next chain.
+            cbc.TransformFinalBlock(scratch, 0, 0);
+            CryptographyHelper.Clear(scratch.AsSpan(0, 2 * chunk));
+            ArrayPool<byte>.Shared.Return(scratch);
+        }
+    }
+
+    /// <summary>
+    /// Creates the CBC encryptor with a zero IV that chained encryption runs through.
+    /// </summary>
+    /// <returns>The encryptor.</returns>
+    private ICryptoTransform CreateCbcEncryptor()
+    {
+        // The algorithm object's mode and IV apply to the transforms created from it. Switch them for this one, then
+        // restore the mode so a decryptor created later is still an ECB one.
+        _aes.Mode = CipherMode.CBC;
+        try
+        {
+            _aes.IV = new byte[BlockSizeBits / 8];
+            return _aes.CreateEncryptor();
+        }
+        finally
+        {
+            _aes.Mode = CipherMode.ECB;
         }
     }
 
