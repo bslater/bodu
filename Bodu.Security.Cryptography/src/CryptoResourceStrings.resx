@@ -439,6 +439,9 @@
   <data name="Arg_OutOfRange_DegreeOfParallelism" xml:space="preserve">
     <value>The degree of parallelism must be -1 or a positive number of workers, but was {0}.</value>
   </data>
+  <data name="Arg_OutOfRange_GcmSivKeySize" xml:space="preserve">
+    <value>RFC 8452 defines GCM-SIV for 128- and 256-bit key-generating keys.</value>
+  </data>
   <data name="Op_Invalid_MerkleAccumulatorFinished" xml:space="preserve">
     <value>The accumulator has been finished; call Reset before appending further input.</value>
   </data>

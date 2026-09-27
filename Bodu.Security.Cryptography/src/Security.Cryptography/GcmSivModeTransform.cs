@@ -23,12 +23,14 @@ namespace Bodu.Security.Cryptography;
 /// reflection that makes little-endian processing efficient on modern processors.
 /// </para>
 /// <para>
-/// GCM-SIV derives per-message authentication and encryption keys from the master key and a 12-byte nonce using four
-/// cipher calls with little-endian counters (RFC 8452 Section 4):
+/// GCM-SIV derives per-message authentication and encryption keys from the master key and a 12-byte nonce using cipher
+/// calls with little-endian counters (RFC 8452 Section 4). The encryption key is as long as the master key, so a
+/// 128-bit master key takes four calls and a 256-bit one six:
 /// <code>
 ///<![CDATA[
-/// K_auth = E_K(LE32(0) || nonce)[0..7] || E_K(LE32(1) || nonce)[0..7]   (16 bytes)
-/// K_enc  = E_K(LE32(2) || nonce)[0..7] || E_K(LE32(3) || nonce)[0..7]   (16 bytes)
+/// K_auth = E_K(LE32(0) || nonce)[0..7] || E_K(LE32(1) || nonce)[0..7]                      (16 bytes)
+/// K_enc  = E_K(LE32(2) || nonce)[0..7] || E_K(LE32(3) || nonce)[0..7]                      (16 bytes, 128-bit K)
+/// K_enc  = E_K(LE32(2) || nonce)[0..7] || ... || E_K(LE32(5) || nonce)[0..7]               (32 bytes, 256-bit K)
 ///]]>
 /// </code>
 /// </para>
@@ -107,11 +109,11 @@ public sealed class GcmSivModeTransform
     private bool _disposed;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="GcmSivModeTransform" /> class.
+    /// Initializes a new instance of the <see cref="GcmSivModeTransform" /> class, reading the key-generating key's
+    /// size from <paramref name="masterCipher" />.
     /// </summary>
     /// <param name="masterCipher">
-    /// The block cipher keyed with the master key. Used for per-message key derivation (four encrypt calls). Must have
-    /// a 16-byte block size.
+    /// The block cipher keyed with the master key. Used for per-message key derivation. Must have a 16-byte block size.
     /// </param>
     /// <param name="cipherFactory">
     /// A factory that creates a fresh <see cref="IBlockCipher" /> instance keyed with the supplied byte array. Called
@@ -128,18 +130,61 @@ public sealed class GcmSivModeTransform
     /// <exception cref="InvalidOperationException">
     /// <paramref name="cipherFactory" /> returned <see langword="null" />.
     /// </exception>
+    /// <remarks>
+    /// An <see cref="AesBlockCipher" /> created with a 256-bit key derives a 256-bit message-encryption key, as RFC
+    /// 8452 specifies for AEAD_AES_256_GCM_SIV. Every other master cipher derives a 128-bit one, including AES-192,
+    /// which RFC 8452 does not define. To use a 256-bit key-generating key through another <see cref="IBlockCipher" />,
+    /// call the overload that takes the key size.
+    /// </remarks>
     public GcmSivModeTransform(IBlockCipher masterCipher, Func<byte[], IBlockCipher> cipherFactory, byte[] iv)
+        : this(masterCipher, cipherFactory, iv, masterCipher is AesBlockCipher { KeySize: 256 } ? 256 : 128)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="GcmSivModeTransform" /> class for a key-generating key of the
+    /// specified size.
+    /// </summary>
+    /// <param name="masterCipher">
+    /// The block cipher keyed with the master key. Used for per-message key derivation. Must have a 16-byte block size.
+    /// </param>
+    /// <param name="cipherFactory">
+    /// A factory that creates a fresh <see cref="IBlockCipher" /> instance keyed with the supplied byte array. Called
+    /// once to produce the per-message encryption cipher.
+    /// </param>
+    /// <param name="iv">
+    /// The initialization vector. The first 12 bytes are used as the GCM-SIV nonce. Must equal the master cipher block
+    /// size. A defensive copy is taken.
+    /// </param>
+    /// <param name="keySize">
+    /// The size, in bits, of the key-generating key <paramref name="masterCipher" /> is keyed with.
+    /// </param>
+    /// <exception cref="ArgumentNullException">Any argument is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="iv" /> length does not equal the cipher block size.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="keySize" /> is neither 128 nor 256.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// <paramref name="cipherFactory" /> returned <see langword="null" />.
+    /// </exception>
+    /// <remarks>
+    /// RFC 8452 defines GCM-SIV for 128- and 256-bit key-generating keys, and derives a message-encryption key of the
+    /// same size: four cipher calls for 128 bits, six for 256. That key is what <paramref name="cipherFactory" />
+    /// receives.
+    /// </remarks>
+    public GcmSivModeTransform(IBlockCipher masterCipher, Func<byte[], IBlockCipher> cipherFactory, byte[] iv, int keySize)
     {
         ThrowHelper.ThrowIfNull(masterCipher);
         ThrowHelper.ThrowIfNull(cipherFactory);
         CryptographyThrowHelper.ThrowIfIvLengthInvalid(iv, masterCipher.BlockSize);
+        if (keySize != 128 && keySize != 256) throw new ArgumentOutOfRangeException(nameof(keySize), keySize, CryptoResourceStrings.Arg_OutOfRange_GcmSivKeySize);
 
         _nonce = new byte[NonceSizeBits / 8];
         iv.AsSpan(0, NonceSizeBits / 8).CopyTo(_nonce);
 
         // Derive K_auth and K_enc per RFC 8452 Section 4.
         // Each call: E_K(LE32(i) || nonce), take first 8 bytes.
-        (byte[]? authKey, byte[]? encKeyMaterial) = DeriveKeys(masterCipher, _nonce);
+        (byte[]? authKey, byte[]? encKeyMaterial) = DeriveKeys(masterCipher, _nonce, keySize / 8);
 
         try
         {
@@ -294,36 +339,25 @@ public sealed class GcmSivModeTransform
     }
 
     /// <summary>
-    /// Derives K_auth (16 bytes) and K_enc (16 bytes) from the master cipher and nonce using four cipher calls per RFC
-    /// 8452 Section 4. Input block format: LE32(i) || nonce (4 + 12 = 16 bytes). Take first 8 bytes of each output.
+    /// Derives K_auth (16 bytes) and K_enc (16 or 32 bytes, as long as the key-generating key) from the master cipher
+    /// and nonce per RFC 8452 Section 4. Each cipher call encrypts <c>LE32(i) || nonce</c> (4 + 12 = 16 bytes), and
+    /// each key is the first 8 bytes of consecutive calls: calls 0 and 1 for K_auth, then calls 2 and 3 — and 4 and 5
+    /// for a 256-bit key-generating key — for K_enc.
     /// </summary>
     /// <param name="cipher">The master block cipher keyed with the key-generating key.</param>
     /// <param name="nonce">The 12-byte nonce.</param>
+    /// <param name="encryptionKeyLength">The length, in bytes, of the message-encryption key: 16 or 32.</param>
     /// <returns>The derived message-authentication key and message-encryption key.</returns>
-    private static (byte[] authKey, byte[] encKey) DeriveKeys(IBlockCipher cipher, byte[] nonce)
+    private static (byte[] authKey, byte[] encKey) DeriveKeys(IBlockCipher cipher, byte[] nonce, int encryptionKeyLength)
     {
         int blockSize = cipher.BlockSize / 8;
         byte[] authKey = new byte[blockSize];
-        byte[] encKey = new byte[blockSize];
-
-        byte[]? b0 = null;
-        byte[]? b1 = null;
-        byte[]? b2 = null;
-        byte[]? b3 = null;
+        byte[] encKey = new byte[encryptionKeyLength];
 
         try
         {
-            // K_auth = first 8 bytes of call(0) || first 8 bytes of call(1).
-            b0 = Derive(0);
-            b1 = Derive(1);
-            b0.AsSpan(0, 8).CopyTo(authKey.AsSpan(0));
-            b1.AsSpan(0, 8).CopyTo(authKey.AsSpan(8));
-
-            // K_enc = first 8 bytes of call(2) || first 8 bytes of call(3).
-            b2 = Derive(2);
-            b3 = Derive(3);
-            b2.AsSpan(0, 8).CopyTo(encKey.AsSpan(0));
-            b3.AsSpan(0, 8).CopyTo(encKey.AsSpan(8));
+            DeriveHalves(0, authKey);
+            DeriveHalves(2, encKey);
 
             return (authKey, encKey);
         }
@@ -333,12 +367,23 @@ public sealed class GcmSivModeTransform
             CryptographyHelper.Clear(encKey);
             throw;
         }
-        finally
+
+        void DeriveHalves(int firstCounter, byte[] destination)
         {
-            CryptographyHelper.ClearAndNullify(ref b3);
-            CryptographyHelper.ClearAndNullify(ref b2);
-            CryptographyHelper.ClearAndNullify(ref b1);
-            CryptographyHelper.ClearAndNullify(ref b0);
+            for (int half = 0; half < destination.Length / 8; half++)
+            {
+                byte[]? output = null;
+
+                try
+                {
+                    output = Derive(firstCounter + half);
+                    output.AsSpan(0, 8).CopyTo(destination.AsSpan(8 * half));
+                }
+                finally
+                {
+                    CryptographyHelper.ClearAndNullify(ref output);
+                }
+            }
         }
 
         byte[] Derive(int counter)

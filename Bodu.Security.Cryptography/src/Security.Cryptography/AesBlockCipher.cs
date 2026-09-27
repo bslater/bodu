@@ -108,6 +108,11 @@ public sealed class AesBlockCipher
     /// <value>Length of the AES block is 128 bits (16 bytes).</value>
     public int BlockSize => BlockSizeBits;
 
+    /// <summary>
+    /// Gets the size, in bits, of the key this instance was created with: 128, 192, or 256.
+    /// </summary>
+    internal int KeySize => _aes.KeySize;
+
     /// <inheritdoc />
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     /// <exception cref="ArgumentException">

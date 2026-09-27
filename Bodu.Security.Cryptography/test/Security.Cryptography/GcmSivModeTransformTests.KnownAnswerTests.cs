@@ -153,7 +153,7 @@ public sealed partial class GcmSivModeTransformTests
         byte[] iv = new byte[16];
         vector.Nonce.CopyTo(iv, 0);
 
-        var t = new GcmSivModeTransform(new AesBlockCipher(vector.Key), k => new AesBlockCipher(k), iv);
+        var t = new GcmSivModeTransform(new AesBlockCipher(vector.Key!), k => new AesBlockCipher(k), iv);
         if (vector.AssociatedData.Length > 0) t.ProcessAssociatedData(vector.AssociatedData);
         return t;
     }

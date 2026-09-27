@@ -1203,6 +1203,15 @@ namespace Bodu {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to RFC 8452 defines GCM-SIV for 128- and 256-bit key-generating keys..
+        /// </summary>
+        internal static string Arg_OutOfRange_GcmSivKeySize {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_GcmSivKeySize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The accumulator has been finished; call Reset before appending further input..
         /// </summary>
         internal static string Op_Invalid_MerkleAccumulatorFinished {

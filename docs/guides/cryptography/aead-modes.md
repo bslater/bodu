@@ -219,6 +219,11 @@ using (var master = new AesBlockCipher(masterKey))
 
 The factory expression `static k => new AesBlockCipher(k)` is the canonical form — the `static` modifier avoids a closure allocation.
 
+RFC 8452 defines GCM-SIV for 128- and 256-bit master keys, and the per-message key it derives is as long as the master key. With an `AesBlockCipher` master the transform reads the key size itself, so a 32-byte master key hands the factory a 32-byte key and the message is encrypted with AES-256. Any other `IBlockCipher` master derives a 16-byte key unless you pass the size: `new GcmSivModeTransform(master, factory, iv, keySize: 256)`.
+
+> [!IMPORTANT]
+> Earlier releases derived a 16-byte per-message key for AES-256 master keys too, which does not match RFC 8452. Data they sealed under a 256-bit master key does not decrypt with this release; AES-128 output is unchanged.
+
 ## One-transform, one-message
 
 Every AEAD transform in this library is **stateful and single-use**. A second call to `Encrypt` or `Decrypt` on the same instance — *including after a tag-mismatch failure* — throws <xref:System.InvalidOperationException>. The contract is enforced uniformly across `GcmModeTransform`, `CcmModeTransform`, `EaxModeTransform`, `OcbModeTransform`, `GcmSivModeTransform`, and `SivModeTransform`.
