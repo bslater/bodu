@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="GcmSivModeTransformTests.Decrypt.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -63,6 +63,39 @@ public sealed partial class GcmSivModeTransformTests
                     new byte[plaintext.Length], output,
                     $"GcmSivModeTransform must zero the output buffer when the derived cipher faults " +
                     $"on call {faultAt} of {totalCalls} so no plaintext or keystream bytes leak.");
+            }
+        }
+    }
+
+    /// <summary>
+    /// Verifies that ciphertext and tags the block-at-a-time reference sealed authenticate and decrypt to the original
+    /// plaintext across the same lengths and alignments as the encryption cross-check.
+    /// </summary>
+    [TestMethod]
+    public void Decrypt_WhenGivenReferenceSealedMessage_ShouldRecoverPlaintext()
+    {
+        foreach (int keyLength in new[] { 16, 32 })
+        {
+            byte[] key = ReferenceBytes(keyLength, keyLength + 21);
+            byte[] nonce = ReferenceBytes(12, keyLength + 22);
+
+            foreach (int length in s_referenceLengths)
+            {
+                foreach (int aadLength in s_referenceAadLengths)
+                {
+                    byte[] plaintext = ReferenceBytes(length, length + 23);
+                    byte[] aad = ReferenceBytes(aadLength, aadLength + 29);
+                    byte[] sealedMessage = ReferenceSeal(key, nonce, aad, plaintext);
+
+                    using var master = new AesBlockCipher(key);
+                    using var transform = new GcmSivModeTransform(master, k => new AesBlockCipher(k), ReferenceIv(nonce));
+                    transform.ProcessAssociatedData(aad);
+                    byte[] recovered = new byte[length];
+                    int written = transform.Decrypt(sealedMessage, recovered);
+
+                    Assert.AreEqual(length, written);
+                    CollectionAssert.AreEqual(plaintext, recovered, $"AES-{keyLength * 8}, {length} bytes, {aadLength} bytes of AAD");
+                }
             }
         }
     }
