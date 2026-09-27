@@ -135,8 +135,10 @@ bld/collect-coverage.sh --project Bodu.Security.Cryptography/test/Bodu.Security.
 bld/merge-coverage.sh
 ```
 
-`--scalar` re-runs the suite with `DOTNET_EnableAVX512F=0 DOTNET_EnableAVX2=0
-DOTNET_EnableHWIntrinsic=0` into a parallel `<Name>.scalar` directory.
+`--scalar` re-runs the suite with `DOTNET_EnableAVX512F=0 DOTNET_EnableAVX512=0
+DOTNET_EnableAVX2=0 DOTNET_EnableHWIntrinsic=0` into a parallel `<Name>.scalar`
+directory. The two AVX-512 names are .NET 8's and .NET 10's; each runtime ignores
+the other's.
 ReportGenerator takes the maximum hit count per line, so merging the two yields
 the union rather than either half. `.github/workflows/coverage.yml` runs the
 scalar pass automatically in whichever job collected the crypto suite.

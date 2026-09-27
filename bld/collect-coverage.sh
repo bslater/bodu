@@ -234,7 +234,8 @@ while read -r proj; do
     # ThreefishBlockCipher.{256,512,1024}.cs from 19.0/12.8/8.3% to 90.5/93.1/94.9%.
     scalar_env=()
     if [ "$scalar_pass" = true ]; then
-        scalar_env=(DOTNET_EnableAVX512F=0 DOTNET_EnableAVX2=0 DOTNET_EnableHWIntrinsic=0)
+        # .NET 8 reads DOTNET_EnableAVX512F and .NET 10 DOTNET_EnableAVX512; each ignores the other's name.
+        scalar_env=(DOTNET_EnableAVX512F=0 DOTNET_EnableAVX512=0 DOTNET_EnableAVX2=0 DOTNET_EnableHWIntrinsic=0)
         echo "Hardware intrinsics disabled for this pass."
     fi
 
