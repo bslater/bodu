@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Buffers;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 
@@ -71,12 +72,6 @@ public sealed class AesBlockCipher
 
     /// <summary>Reusable single-block scratch buffer for the byte-array-based <see cref="ICryptoTransform" /> surface.</summary>
     private readonly byte[] _scratchOut = new byte[BlockSizeBits / 8];
-
-    /// <summary>Reusable scratch for multi-block runs, which cross the byte-array-based <see cref="ICryptoTransform" /> surface a chunk at a time; created on first use and cleared on disposal.</summary>
-    private byte[]? _bulkIn;
-
-    /// <summary>Reusable scratch that receives each transformed chunk of a multi-block run; created on first use and cleared on disposal.</summary>
-    private byte[]? _bulkOut;
 
     /// <summary>Indicates whether the instance has been disposed.</summary>
     private bool _disposed;
@@ -154,8 +149,6 @@ public sealed class AesBlockCipher
             _decryptor = null;
             CryptographyHelper.Clear(_scratchIn);
             CryptographyHelper.Clear(_scratchOut);
-            CryptographyHelper.Clear(_bulkIn);
-            CryptographyHelper.Clear(_bulkOut);
             _disposed = true;
         }
     }
@@ -218,7 +211,7 @@ public sealed class AesBlockCipher
 
     /// <summary>
     /// Runs a whole number of blocks through the supplied cached ECB transform, a chunk of up to
-    /// <see cref="BulkChunkBytes" /> at a time through reusable scratch arrays.
+    /// <see cref="BulkChunkBytes" /> at a time through scratch borrowed from the shared array pool for the call.
     /// </summary>
     /// <param name="transform">The cached ECB encryptor or decryptor.</param>
     /// <param name="input">The blocks to transform.</param>
@@ -237,15 +230,29 @@ public sealed class AesBlockCipher
             return;
         }
 
-        byte[] bulkIn = _bulkIn ??= new byte[BulkChunkBytes];
-        byte[] bulkOut = _bulkOut ??= new byte[BulkChunkBytes];
+        if (input.Length == 0)
+            return;
 
-        for (int offset = 0; offset < input.Length; offset += BulkChunkBytes)
+        // Borrow the scratch for this call only, so an instance created per message allocates none and no instance
+        // keeps a run's plaintext, ciphertext, or keystream between calls. The first half takes each chunk in, the
+        // second receives it transformed.
+        int chunk = Math.Min(BulkChunkBytes, input.Length);
+        byte[] scratch = ArrayPool<byte>.Shared.Rent(2 * chunk);
+
+        try
         {
-            int length = Math.Min(BulkChunkBytes, input.Length - offset);
-            input.Slice(offset, length).CopyTo(bulkIn);
-            transform.TransformBlock(bulkIn, 0, length, bulkOut, 0);
-            bulkOut.AsSpan(0, length).CopyTo(output.Slice(offset, length));
+            for (int offset = 0; offset < input.Length; offset += BulkChunkBytes)
+            {
+                int length = Math.Min(BulkChunkBytes, input.Length - offset);
+                input.Slice(offset, length).CopyTo(scratch);
+                transform.TransformBlock(scratch, 0, length, scratch, chunk);
+                scratch.AsSpan(chunk, length).CopyTo(output.Slice(offset, length));
+            }
+        }
+        finally
+        {
+            CryptographyHelper.Clear(scratch.AsSpan(0, 2 * chunk));
+            ArrayPool<byte>.Shared.Return(scratch);
         }
     }
 
