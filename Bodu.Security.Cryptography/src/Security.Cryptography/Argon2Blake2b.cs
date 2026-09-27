@@ -23,14 +23,25 @@ namespace Bodu.Security.Cryptography;
 /// that well-tested type, Argon2 bundles its own minimal BLAKE2b here — the standard approach taken by reference Argon2
 /// implementations. Only the unkeyed digest is needed; Argon2 never uses BLAKE2b's keyed (MAC) mode.
 /// </para>
+/// <para>
+/// The digest is computed incrementally through <see cref="Hasher" />, so a caller can hash several inputs — the
+/// pre-hashing digest's length-prefixed password, salt, secret, and associated data — without first copying them into
+/// one buffer. Every buffer that holds input or state is cleared before it is released.
+/// </para>
 /// </remarks>
-internal static class Argon2Blake2b
+internal static partial class Argon2Blake2b
 {
     /// <summary>The BLAKE2b block size, in bytes.</summary>
     internal const int BlockSizeBytes = 128;
 
     /// <summary>The maximum BLAKE2b digest length, in bytes.</summary>
     internal const int MaxDigestBytes = 64;
+
+    /// <summary>The number of 64-bit words in the BLAKE2b chaining state.</summary>
+    internal const int StateWords = 8;
+
+    /// <summary>The number of 64-bit message words in one BLAKE2b block.</summary>
+    private const int MessageWords = 16;
 
     /// <summary>The BLAKE2b initialization vector (the SHA-512 IV).</summary>
     private static readonly ulong[] s_iv =
@@ -63,7 +74,10 @@ internal static class Argon2Blake2b
     /// to <paramref name="output" />.
     /// </summary>
     /// <param name="input">The message to hash.</param>
-    /// <param name="output">The destination buffer; its length determines the digest size (1–64 bytes).</param>
+    /// <param name="output">
+    /// The destination buffer; its length determines the digest size (1–64 bytes). It may overlap
+    /// <paramref name="input" />.
+    /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <c>output.Length</c> is not between 1 and 64 inclusive.
     /// </exception>
@@ -72,42 +86,12 @@ internal static class Argon2Blake2b
         if (output.Length is < 1 or > MaxDigestBytes)
             throw new ArgumentOutOfRangeException(nameof(output));
 
-        Span<ulong> h = stackalloc ulong[8];
-        s_iv.CopyTo(h);
+        Span<ulong> state = stackalloc ulong[StateWords];
+        Span<byte> block = stackalloc byte[BlockSizeBytes];
 
-        // Parameter block: digest length, key length (0), fanout (1), depth (1) packed into the first word.
-        h[0] ^= 0x0101_0000UL ^ (ulong)(uint)output.Length;
-
-        Span<ulong> m = stackalloc ulong[16];
-
-        ulong counter = 0;
-        int offset = 0;
-        int remaining = input.Length;
-
-        // Process all but the final block (BLAKE2b always finalizes exactly one block, even for empty input).
-        while (remaining > BlockSizeBytes)
-        {
-            LoadBlock(input.Slice(offset, BlockSizeBytes), m);
-            counter += BlockSizeBytes;
-            Compress(h, m, counter, last: false);
-
-            offset += BlockSizeBytes;
-            remaining -= BlockSizeBytes;
-        }
-
-        // Final (possibly partial) block, zero-padded to 128 bytes.
-        Span<byte> finalBlock = stackalloc byte[BlockSizeBytes];
-        input.Slice(offset, remaining).CopyTo(finalBlock);
-        LoadBlock(finalBlock, m);
-        counter += (ulong)remaining;
-        Compress(h, m, counter, last: true);
-
-        // Serialize the state little-endian and truncate to the requested length.
-        Span<byte> digest = stackalloc byte[MaxDigestBytes];
-        for (int i = 0; i < 8; i++)
-            BinaryPrimitives.WriteUInt64LittleEndian(digest.Slice(i * 8, 8), h[i]);
-
-        digest[..output.Length].CopyTo(output);
+        var hasher = new Hasher(state, block, output.Length);
+        hasher.Append(input);
+        hasher.Finish(output);
     }
 
     /// <summary>
@@ -124,15 +108,15 @@ internal static class Argon2Blake2b
     {
         int outLen = output.Length;
 
-        // Prefix the little-endian 32-bit output length.
-        byte[] prefixed = new byte[4 + input.Length];
-        BinaryPrimitives.WriteInt32LittleEndian(prefixed, outLen);
-        input.CopyTo(prefixed.AsSpan(4));
+        Span<ulong> state = stackalloc ulong[StateWords];
+        Span<byte> block = stackalloc byte[BlockSizeBytes];
 
         if (outLen <= MaxDigestBytes)
         {
-            Hash(prefixed, output);
-            CryptographyHelper.Clear(prefixed);
+            var hasher = new Hasher(state, block, outLen);
+            hasher.AppendLittleEndian(outLen);
+            hasher.Append(input);
+            hasher.Finish(output);
             return;
         }
 
@@ -141,8 +125,11 @@ internal static class Argon2Blake2b
         int r = ((outLen + 31) / 32) - 2;
 
         Span<byte> v = stackalloc byte[MaxDigestBytes];
-        Hash(prefixed, v);                 // V_1
-        CryptographyHelper.Clear(prefixed);
+
+        var first = new Hasher(state, block, MaxDigestBytes);
+        first.AppendLittleEndian(outLen);
+        first.Append(input);
+        first.Finish(v);                   // V_1
 
         v[..32].CopyTo(output[..32]);      // W_1
 
@@ -158,29 +145,22 @@ internal static class Argon2Blake2b
     }
 
     /// <summary>
-    /// Loads a 128-byte block into sixteen little-endian 64-bit message words.
-    /// </summary>
-    /// <param name="block">The 128-byte source block.</param>
-    /// <param name="m">The sixteen-word destination.</param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static void LoadBlock(ReadOnlySpan<byte> block, Span<ulong> m)
-    {
-        for (int i = 0; i < 16; i++)
-            m[i] = BinaryPrimitives.ReadUInt64LittleEndian(block.Slice(i * 8, 8));
-    }
-
-    /// <summary>
     /// Applies the BLAKE2b compression function to the state.
     /// </summary>
     /// <param name="h">The eight-word chaining state, updated in place.</param>
-    /// <param name="m">The sixteen message words for this block.</param>
+    /// <param name="block">The 128-byte message block.</param>
     /// <param name="counter">
     /// The total number of input bytes processed so far (low 64 bits; high word is zero here).
     /// </param>
     /// <param name="last"><see langword="true" /> when this is the final block, applying the finalization flag.</param>
-    private static void Compress(Span<ulong> h, ReadOnlySpan<ulong> m, ulong counter, bool last)
+    private static void Compress(Span<ulong> h, ReadOnlySpan<byte> block, ulong counter, bool last)
     {
-        Span<ulong> v = stackalloc ulong[16];
+        Span<ulong> m = stackalloc ulong[MessageWords];
+        Span<ulong> v = stackalloc ulong[MessageWords];
+
+        for (int i = 0; i < MessageWords; i++)
+            m[i] = BinaryPrimitives.ReadUInt64LittleEndian(block.Slice(i * 8, 8));
+
         h.CopyTo(v);
         s_iv.CopyTo(v[8..]);
 
@@ -205,8 +185,13 @@ internal static class Argon2Blake2b
             Mix(v, 3, 4, 9, 14, m[s[14]], m[s[15]]);
         }
 
-        for (int i = 0; i < 8; i++)
+        for (int i = 0; i < StateWords; i++)
             h[i] ^= v[i] ^ v[i + 8];
+
+        // The message words hold raw input — the password, while H0 is computed — and the working vector is derived
+        // from it, so neither outlives the call.
+        CryptographyHelper.Clear(m);
+        CryptographyHelper.Clear(v);
     }
 
     /// <summary>
