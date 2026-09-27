@@ -1,9 +1,10 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EaxModeTransformTests.KnownAnswerTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Security.Cryptography;
 using Bodu.Security.Cryptography.Infrastructure;
 using Bodu.Test.Kat;
 using static Bodu.Security.Cryptography.Infrastructure.KatBytes;
@@ -175,4 +176,100 @@ public sealed partial class EaxModeTransformTests
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void Decrypt_WithEaxPaperVector_ShouldRecoverOriginalPlaintext(AeadKnownAnswer vector)
         => AssertKatDecrypt(vector);
+
+    // ── Project Wycheproof ───────────────────────────────────────────────────────────────────
+
+    /// <summary>The logical name of the embedded, curated Wycheproof vector file.</summary>
+    private const string WycheproofResourceName = "Bodu.Security.Cryptography.Eax.Wycheproof.txt";
+
+    /// <summary>
+    /// Gets the curated Wycheproof rows whose result is valid.
+    /// </summary>
+    /// <returns>One row per vector.</returns>
+    private static IEnumerable<object[]> WycheproofValidVectors() =>
+        WycheproofAeadKatReader.Read(typeof(EaxModeTransformTests), WycheproofResourceName, "aes_eax_test.json", valid: true).Select(static vector => new object[] { vector });
+
+    /// <summary>
+    /// Gets the curated Wycheproof rows whose result is invalid: each has a modified tag, ciphertext, or nonce that
+    /// decryption must reject.
+    /// </summary>
+    /// <returns>One row per vector.</returns>
+    private static IEnumerable<object[]> WycheproofInvalidVectors() =>
+        WycheproofAeadKatReader.Read(typeof(EaxModeTransformTests), WycheproofResourceName, "aes_eax_test.json", valid: false).Select(static vector => new object[] { vector });
+
+    /// <summary>
+    /// Verifies that <see cref="EaxModeTransform.Encrypt" /> reproduces each valid Wycheproof vector's ciphertext and tag.
+    /// </summary>
+    /// <param name="vector">The known-answer vector under test.</param>
+    [TestMethod]
+    [DynamicData(
+        nameof(WycheproofValidVectors),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void Encrypt_WithWycheproofVector_ShouldMatchExpected(AeadKnownAnswer vector)
+    {
+        using var cipher = new AesBlockCipher(vector.Key!);
+        using var transform = CreateWycheproofTransform(cipher, vector);
+        transform.ProcessAssociatedData(vector.AssociatedData);
+        byte[] output = new byte[vector.Plaintext.Length + 16];
+
+        transform.Encrypt(vector.Plaintext, output);
+
+        CollectionAssert.AreEqual(vector.CiphertextWithTag, output);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="EaxModeTransform.Decrypt" /> authenticates each valid Wycheproof vector and recovers its
+    /// message.
+    /// </summary>
+    /// <param name="vector">The known-answer vector under test.</param>
+    [TestMethod]
+    [DynamicData(
+        nameof(WycheproofValidVectors),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void Decrypt_WithWycheproofVector_ShouldRecoverPlaintext(AeadKnownAnswer vector)
+    {
+        using var cipher = new AesBlockCipher(vector.Key!);
+        using var transform = CreateWycheproofTransform(cipher, vector);
+        transform.ProcessAssociatedData(vector.AssociatedData);
+        byte[] output = new byte[vector.Plaintext.Length];
+
+        int written = transform.Decrypt(vector.CiphertextWithTag, output);
+
+        Assert.AreEqual(vector.Plaintext.Length, written);
+        CollectionAssert.AreEqual(vector.Plaintext, output);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="EaxModeTransform.Decrypt" /> rejects each invalid Wycheproof vector with
+    /// <see cref="CryptographicException" />.
+    /// </summary>
+    /// <param name="vector">The known-answer vector under test.</param>
+    [TestMethod]
+    [DynamicData(
+        nameof(WycheproofInvalidVectors),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void Decrypt_WithWycheproofInvalidVector_ShouldThrowCryptographicException(AeadKnownAnswer vector)
+    {
+        using var cipher = new AesBlockCipher(vector.Key!);
+        using var transform = CreateWycheproofTransform(cipher, vector);
+        transform.ProcessAssociatedData(vector.AssociatedData);
+        byte[] output = new byte[vector.Plaintext.Length];
+
+        Assert.ThrowsExactly<CryptographicException>(() =>
+        {
+            transform.Decrypt(vector.CiphertextWithTag, output);
+        });
+    }
+
+    /// <summary>
+    /// Creates the transform for a Wycheproof row. EAX takes the 16-byte nonce as its initialization vector.
+    /// </summary>
+    /// <param name="cipher">The cipher keyed with the row's key.</param>
+    /// <param name="vector">The row.</param>
+    /// <returns>The transform.</returns>
+    private static EaxModeTransform CreateWycheproofTransform(IBlockCipher cipher, AeadKnownAnswer vector) =>
+        new EaxModeTransform(cipher, vector.Nonce);
 }

@@ -135,7 +135,7 @@ public sealed partial class SivModeTransformTests
                 new AeadKnownAnswer
                 {
                     Name = "Wycheproof " + HexFieldKatReader.GetRequired(record, "Name"),
-                    Provenance = KatProvenance.Standard("Project Wycheproof aes_siv_cmac_test.json"),
+                    Provenance = KatProvenance.ReferenceImplementation("Project Wycheproof aes_siv_cmac_test.json"),
                     Key = Hex(HexFieldKatReader.GetRequired(record, "Key")),
                     Nonce = [],
                     AssociatedData = Hex(HexFieldKatReader.GetRequired(record, "Aad")),

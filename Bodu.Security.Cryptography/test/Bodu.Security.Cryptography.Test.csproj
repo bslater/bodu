@@ -57,6 +57,9 @@
     <EmbeddedResource Include="Security.Cryptography\Fixtures\Hpke\Rfc9180\test-vectors.json" LogicalName="Bodu.Security.Cryptography.Hpke.Rfc9180Vectors.json" />
     <EmbeddedResource Include="Security.Cryptography\Fixtures\Xts\OpenSsl\ieee1619-2007-xts.txt" LogicalName="Bodu.Security.Cryptography.Xts.ieee1619-2007-xts.txt" />
     <EmbeddedResource Include="Security.Cryptography\Fixtures\Siv\Wycheproof\aes_siv_cmac_test.txt" LogicalName="Bodu.Security.Cryptography.Siv.Wycheproof.txt" />
+    <EmbeddedResource Include="Security.Cryptography\Fixtures\Eax\Wycheproof\aes_eax_test.txt" LogicalName="Bodu.Security.Cryptography.Eax.Wycheproof.txt" />
+    <EmbeddedResource Include="Security.Cryptography\Fixtures\Ccm\Wycheproof\aes_ccm_test.txt" LogicalName="Bodu.Security.Cryptography.Ccm.Wycheproof.txt" />
+    <EmbeddedResource Include="Security.Cryptography\Fixtures\GcmSiv\Wycheproof\aes_gcm_siv_test.txt" LogicalName="Bodu.Security.Cryptography.GcmSiv.Wycheproof.txt" />
     <!-- The Argon2 reference implementation's test.c and version 0x10 traces, and the corpus recorded from 1.0.0. -->
     <EmbeddedResource Include="Security.Cryptography\Fixtures\Argon2\PhcReference\test.c" LogicalName="Bodu.Security.Cryptography.Argon2.test.c" />
     <EmbeddedResource Include="Security.Cryptography\Fixtures\Argon2\PhcReference\argon2d_v16" LogicalName="Bodu.Security.Cryptography.Argon2.argon2d_v16" />
