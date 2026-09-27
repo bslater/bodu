@@ -101,14 +101,8 @@ public sealed class OcbModeTransform
     /// <summary>The authentication-tag length, in bytes (between 1 and the cipher block size).</summary>
     private readonly int _tagLen;
 
-    /// <summary>The L_* constant, equal to <c>E(0^128)</c>.</summary>
-    private readonly byte[] _lStar;
-
-    /// <summary>The L_$ constant, equal to <c>double(L_*)</c>.</summary>
-    private readonly byte[] _lDollar;
-
-    /// <summary>The precomputed L array where <c>L[0] = double(L_$)</c> and <c>L[i] = double(L[i-1])</c>.</summary>
-    private readonly byte[][] _lArray;
+    /// <summary>The key-dependent values, one block each: <c>L_* = E(0^128)</c>, <c>L_$ = double(L_*)</c>, then <c>L[0] = double(L_$)</c> to <c>L[31]</c>, where <c>L[i] = double(L[i-1])</c>.</summary>
+    private readonly byte[] _lTable;
 
     /// <summary>The buffered associated authenticated data, or <see langword="null" /> until processed.</summary>
     private byte[]? _aad;
@@ -164,36 +158,33 @@ public sealed class OcbModeTransform
 
         _tagLen = tagSize / 8;
 
-        int blockSize = cipher.BlockSize / 8;
+        // RFC 7253 §2.1 — Key-dependent constants derived once per key: L_* = ENCIPHER(K, zeros(128)), and each later
+        // block of the table the double of the one before it — L_$, then L[0] to L[31].
+        _lTable = new byte[(MaxLValues + 2) * BlockBytes];
+        Span<byte> table = _lTable;
+        Span<byte> zeroBlock = stackalloc byte[BlockBytes];
+        zeroBlock.Clear();
+        cipher.Encrypt(zeroBlock, table[..BlockBytes]);
 
-        // RFC 7253 §2.1 — Key-dependent constants derived once per key.
-        // L_* = ENCIPHER(K, zeros(128)).
-        byte[] zeroBlock = new byte[blockSize];
-        _lStar = new byte[blockSize];
-
-        try
-        {
-            cipher.Encrypt(zeroBlock, _lStar);
-        }
-        finally
-        {
-            CryptographyHelper.Clear(zeroBlock);
-        }
-
-        // L_$ = double(L_*).
-        _lDollar = GfDouble(_lStar);
-
-        // L[i] = double(L[i-1]), L[0] = double(L_$).
-        _lArray = new byte[MaxLValues][];
-        _lArray[0] = GfDouble(_lDollar);
-
-        for (int i = 1; i < MaxLValues; i++)
-            _lArray[i] = GfDouble(_lArray[i - 1]);
+        for (int i = 1; i < MaxLValues + 2; i++)
+            GaloisField128.Double(table.Slice((i - 1) * BlockBytes, BlockBytes), table.Slice(i * BlockBytes, BlockBytes));
     }
 
     /// <inheritdoc />
     /// <value>The configured OCB authentication-tag size, in bits. Defaults to 128 bits (16 bytes).</value>
     public int TagSize => _tagLen * 8;
+
+    /// <summary>
+    /// Gets <c>L_*</c>, the encryption of the zero block.
+    /// </summary>
+    private ReadOnlySpan<byte> LStar =>
+        _lTable.AsSpan(0, BlockBytes);
+
+    /// <summary>
+    /// Gets <c>L_$ = double(L_*)</c>.
+    /// </summary>
+    private ReadOnlySpan<byte> LDollar =>
+        _lTable.AsSpan(BlockBytes, BlockBytes);
 
     /// <inheritdoc />
     public void ProcessAssociatedData(ReadOnlySpan<byte> associatedData)
@@ -239,7 +230,7 @@ public sealed class OcbModeTransform
             int remainder = plaintext.Length - full;
             if (remainder > 0)
             {
-                CryptographyHelper.Xor(offset, _lStar, offset);
+                CryptographyHelper.Xor(offset, LStar, offset);
                 _cipher.Encrypt(offset, pad);
 
                 padded.Clear();
@@ -311,7 +302,7 @@ public sealed class OcbModeTransform
             int remainder = plaintextLength - full;
             if (remainder > 0)
             {
-                CryptographyHelper.Xor(offset, _lStar, offset);
+                CryptographyHelper.Xor(offset, LStar, offset);
                 _cipher.Encrypt(offset, pad);
                 CryptographyHelper.Xor(ciphertext[full..], pad[..remainder], output.Slice(full, remainder));
 
@@ -380,11 +371,7 @@ public sealed class OcbModeTransform
         if (disposing)
         {
             CryptographyHelper.Clear(_nonce);
-            CryptographyHelper.Clear(_lStar);
-            CryptographyHelper.Clear(_lDollar);
-
-            foreach (byte[] value in _lArray)
-                CryptographyHelper.Clear(value);
+            CryptographyHelper.Clear(_lTable);
 
             CryptographyHelper.ClearAndNullify(ref _aad);
 
@@ -511,7 +498,7 @@ public sealed class OcbModeTransform
     private void ComputeTag(ReadOnlySpan<byte> checksum, ReadOnlySpan<byte> offset, Span<byte> scratch, Span<byte> tag)
     {
         CryptographyHelper.Xor(checksum, offset, scratch);
-        CryptographyHelper.Xor(scratch, _lDollar, scratch);
+        CryptographyHelper.Xor(scratch, LDollar, scratch);
         _cipher.Encrypt(scratch, tag);
 
         ComputeHash(_aad!, scratch);
@@ -566,7 +553,7 @@ public sealed class OcbModeTransform
                 aad[full..].CopyTo(padded);
                 padded[remainder] = 0x80;
 
-                CryptographyHelper.Xor(offset, _lStar, offset);
+                CryptographyHelper.Xor(offset, LStar, offset);
                 CryptographyHelper.Xor(padded, offset, padded);
                 _cipher.Encrypt(padded, offsets[..BlockBytes]);
                 CryptographyHelper.Xor(sum, offsets[..BlockBytes], sum);
@@ -586,6 +573,14 @@ public sealed class OcbModeTransform
     }
 
     /// <summary>
+    /// Returns <c>L[i]</c>, the <paramref name="i" />-th double of <c>L_$</c>.
+    /// </summary>
+    /// <param name="i">The index, from 0 to 31: the number of trailing zeros of a block index.</param>
+    /// <returns>The value.</returns>
+    private ReadOnlySpan<byte> L(int i) =>
+        _lTable.AsSpan((i + 2) * BlockBytes, BlockBytes);
+
+    /// <summary>
     /// Writes consecutive offsets, <c>Offset_i = Offset_{i-1} XOR L_{ntz(i)}</c>, one per block of
     /// <paramref name="offsets" />.
     /// </summary>
@@ -600,26 +595,11 @@ public sealed class OcbModeTransform
         Vector128<byte> current = Vector128.Create((ReadOnlySpan<byte>)offset);
         for (int position = 0; position < offsets.Length; position += BlockBytes)
         {
-            current ^= Vector128.Create(_lArray[BitOperations.TrailingZeroCount(index++)]);
+            current ^= Vector128.Create(L(BitOperations.TrailingZeroCount(index++)));
             current.CopyTo(offsets.Slice(position));
         }
 
         current.CopyTo(offset);
-    }
-
-    /// <summary>
-    /// Multiplies <paramref name="x" /> by α in GF(2^128) with big-endian bit order and polynomial x^128 + x^7 + x^2 +
-    /// x + 1, via the shared branch-free <see cref="GaloisField128.Double" /> so the key-derived offset ladder does not
-    /// influence control flow.
-    /// </summary>
-    /// <param name="x">The 16-byte input block.</param>
-    /// <returns>The GF(2<sup>128</sup>) doubling of <paramref name="x" />.</returns>
-    private static byte[] GfDouble(byte[] x)
-    {
-        byte[] result = new byte[x.Length];
-        GaloisField128.Double(x, result);
-
-        return result;
     }
 
     /// <summary>
