@@ -39,6 +39,7 @@ on-disk folder layout and file names can change **without touching any test code
 | ML-KEM | `NistAcvp` | `ML-KEM-*.txt` | NIST ACVP |
 | ML-DSA | `NistAcvp` | `ML-DSA-*.txt` | NIST ACVP |
 | XTS-AES | `OpenSsl` | `ieee1619-2007-xts.txt` | IEEE Std 1619-2007 vectors, via OpenSSL `evpciph_aes_common.txt` |
+| AES-SIV | `Wycheproof` | `aes_siv_cmac_test.txt` | Project Wycheproof (`aes_siv_cmac_test.json`; the valid rows with non-empty associated data) |
 | HPKE | `Rfc9180` | `test-vectors.json` | RFC 9180 |
 | Argon2 | `PhcReference` | `test.c`, `argon2{d,i,id}_v16` | github.com/P-H-C/phc-winner-argon2 at `f57e61e` (`src/test.c`, `kats/`); CC0 1.0 or Apache 2.0 |
 | Argon2 | `Bodu100` | `argon2-1.0.0-corpus.txt` | Recorded from the published `Bodu.Security.Cryptography` 1.0.0 package — an in-tree regression baseline, not an external source; its header explains the shapes |
