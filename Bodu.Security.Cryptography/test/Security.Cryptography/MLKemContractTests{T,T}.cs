@@ -14,7 +14,7 @@ namespace Bodu.Security.Cryptography;
 /// <typeparam name="TTest">The concrete test class, used to resolve specification data for <see cref="DynamicDataAttribute" /> sources.</typeparam>
 /// <typeparam name="TKem">The concrete parameter-set type under test.</typeparam>
 [TestClass]
-public abstract class MLKemContractTests<TTest, TKem>
+public abstract partial class MLKemContractTests<TTest, TKem>
     : KemAlgorithmTests<TTest, TKem>
     where TTest : MLKemContractTests<TTest, TKem>, new()
     where TKem : MLKem, new()

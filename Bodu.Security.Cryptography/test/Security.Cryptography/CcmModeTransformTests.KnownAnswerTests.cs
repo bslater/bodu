@@ -5,6 +5,8 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Security.Cryptography;
+using Bodu.Security.Cryptography.Infrastructure;
+using Bodu.Test.Kat;
 
 namespace Bodu.Security.Cryptography;
 
@@ -127,5 +129,113 @@ public sealed partial class CcmModeTransformTests
         byte[] output = new byte[tagBytes];
         int written = transform.Encrypt([], output);
         Assert.AreEqual(tagBytes, written, "Encrypting empty plaintext must produce a 16-byte tag.");
+    }
+
+    // ── Project Wycheproof ───────────────────────────────────────────────────────────────────
+
+    /// <summary>The logical name of the embedded, curated Wycheproof vector file.</summary>
+    private const string WycheproofResourceName = "Bodu.Security.Cryptography.Ccm.Wycheproof.txt";
+
+    /// <summary>
+    /// Gets the curated Wycheproof rows whose result is valid.
+    /// </summary>
+    /// <returns>One row per vector.</returns>
+    private static IEnumerable<object[]> WycheproofValidVectors() =>
+        WycheproofAeadKatReader.Read(typeof(CcmModeTransformTests), WycheproofResourceName, "aes_ccm_test.json", valid: true).Select(static vector => new object[] { vector });
+
+    /// <summary>
+    /// Gets the curated Wycheproof rows whose result is invalid: each has a modified tag, ciphertext, or nonce that
+    /// decryption must reject.
+    /// </summary>
+    /// <returns>One row per vector.</returns>
+    private static IEnumerable<object[]> WycheproofInvalidVectors() =>
+        WycheproofAeadKatReader.Read(typeof(CcmModeTransformTests), WycheproofResourceName, "aes_ccm_test.json", valid: false).Select(static vector => new object[] { vector });
+
+    /// <summary>
+    /// Verifies that <see cref="CcmModeTransform.Encrypt" /> reproduces each valid Wycheproof vector's ciphertext and tag.
+    /// </summary>
+    /// <param name="vector">The known-answer vector under test.</param>
+    [TestMethod]
+    [DynamicData(
+        nameof(WycheproofValidVectors),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void Encrypt_WhenGivenWycheproofVector_ShouldMatchExpected(AeadKnownAnswer vector)
+    {
+        using var cipher = new AesBlockCipher(vector.Key!);
+        using var transform = CreateWycheproofTransform(cipher, vector);
+        transform.ProcessAssociatedData(vector.AssociatedData);
+        byte[] output = new byte[vector.Plaintext.Length + 16];
+
+        transform.Encrypt(vector.Plaintext, output);
+
+        CollectionAssert.AreEqual(vector.CiphertextWithTag, output);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CcmModeTransform.Decrypt" /> authenticates each valid Wycheproof vector and recovers its
+    /// message.
+    /// </summary>
+    /// <param name="vector">The known-answer vector under test.</param>
+    [TestMethod]
+    [DynamicData(
+        nameof(WycheproofValidVectors),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void Decrypt_WhenGivenWycheproofVector_ShouldRecoverPlaintext(AeadKnownAnswer vector)
+    {
+        using var cipher = new AesBlockCipher(vector.Key!);
+        using var transform = CreateWycheproofTransform(cipher, vector);
+        transform.ProcessAssociatedData(vector.AssociatedData);
+        byte[] output = new byte[vector.Plaintext.Length];
+
+        int written = transform.Decrypt(vector.CiphertextWithTag, output);
+
+        Assert.AreEqual(vector.Plaintext.Length, written);
+        CollectionAssert.AreEqual(vector.Plaintext, output);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CcmModeTransform.Decrypt" /> rejects each invalid Wycheproof vector with
+    /// <see cref="CryptographicException" />.
+    /// </summary>
+    /// <param name="vector">The known-answer vector under test.</param>
+    [TestMethod]
+    [DynamicData(
+        nameof(WycheproofInvalidVectors),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void Decrypt_WhenGivenInvalidWycheproofVector_ShouldThrowCryptographicException(AeadKnownAnswer vector)
+    {
+        using var cipher = new AesBlockCipher(vector.Key!);
+        using var transform = CreateWycheproofTransform(cipher, vector);
+        transform.ProcessAssociatedData(vector.AssociatedData);
+        byte[] output = new byte[vector.Plaintext.Length];
+
+        Assert.ThrowsExactly<CryptographicException>(() =>
+        {
+            transform.Decrypt(vector.CiphertextWithTag, output);
+        });
+    }
+
+    /// <summary>
+    /// Creates the transform for a Wycheproof row. CCM reads its 12-byte nonce from the front of a block-sized initialization vector.
+    /// </summary>
+    /// <param name="cipher">The cipher keyed with the row's key.</param>
+    /// <param name="vector">The row.</param>
+    /// <returns>The transform.</returns>
+    private static CcmModeTransform CreateWycheproofTransform(IBlockCipher cipher, AeadKnownAnswer vector) =>
+        new CcmModeTransform(cipher, PadNonce(vector.Nonce));
+
+    /// <summary>
+    /// Returns a 16-byte initialization vector whose first bytes are <paramref name="nonce" />.
+    /// </summary>
+    /// <param name="nonce">The nonce.</param>
+    /// <returns>The initialization vector.</returns>
+    private static byte[] PadNonce(byte[] nonce)
+    {
+        byte[] iv = new byte[16];
+        nonce.CopyTo(iv, 0);
+        return iv;
     }
 }

@@ -21,8 +21,11 @@
          the host packages so the solution total counts it exactly once. See $SharedSourceSets.
 
       3. Hardware-gated paths. The JIT selects exactly one of the AVX-512 or scalar implementations
-         per process, so a single run cannot cover both. Files that the collecting host could not
-         possibly execute are reported as n/a and excluded from the denominator rather than as 0%.
+         per process, so a single run cannot cover both, and the ARM64 implementations (the AdvSimd
+         and PMULL instruction-set shims) run only on ARM64. Files that the collecting host could not
+         possibly execute - *.Avx512.cs and the 512-bit *.Vector512.cs kernels on a host without
+         AVX-512, *.AdvSimd.cs and *.PmullIsa.cs on a host that is not ARM64 - are reported as n/a and
+         excluded from the denominator rather than as 0%.
 
 .PARAMETER ReportPath
     Merged Cobertura report. Default: artifacts/coverage/report/Cobertura.xml.
@@ -132,6 +135,17 @@ if ($manifests.Count -gt 0) {
     if ($manifests | Where-Object { $_.avx512Supported -eq 'true' }) { $avx512 = 'true' }
     elseif ($manifests | Where-Object { $_.avx512Supported -eq 'false' }) { $avx512 = 'false' }
 }
+
+# The ARM64 implementations need an ARM64 host; the manifests record each collecting host's 'uname -m'.
+$arm64 = 'unknown'
+if ($manifests.Count -gt 0) {
+    # Any shard collected on ARM64 means the ARM64 paths were reachable in this collection.
+    if ($manifests | Where-Object { $_.arch -in @('aarch64', 'arm64') }) { $arm64 = 'true' }
+    elseif ($manifests | Where-Object { $_.arch }) { $arm64 = 'false' }
+}
+
+$architectures = @($manifests | Where-Object { $_.arch } | ForEach-Object { $_.arch } | Sort-Object -Unique)
+$architecture = if ($architectures.Count -gt 0) { $architectures -join ', ' } else { 'unknown' }
 
 $commit = if ($manifests.Count -gt 0 -and $manifests[0].commit) { $manifests[0].commit } else { 'unknown' }
 
@@ -332,17 +346,26 @@ foreach ($relative in @($files.Keys)) {
 # Hardware-gated files
 #
 # When the collecting host lacks AVX-512 the intrinsic implementations cannot execute, so they are
-# reported as n/a. Bodu.Security.Cryptography.Simd.Test forces the SIMD feature switch off in its own
-# process, so when it is part of the collection the scalar fallbacks are covered regardless.
+# reported as n/a; so are the ARM64 implementations when no collecting host is ARM64.
+# Bodu.Security.Cryptography.Simd.Test forces the SIMD feature switch off in its own process, so when
+# it is part of the collection the scalar fallbacks are covered regardless.
 # ---------------------------------------------------------------------------------------------------------------
 $hardwareGated = @()
 if ($avx512 -eq 'false') {
-    $hardwareGated = @($files.Keys | Where-Object { $_ -like '*.Avx512.cs' })
+    $hardwareGated = @($files.Keys | Where-Object { $_ -like '*.Avx512.cs' -or $_ -like '*.Vector512.cs' })
 }
 elseif ($avx512 -ne 'true') {
     # Gate only on positive evidence that the host could not execute these paths. Excluding code
     # from the denominator because the probe did not run would quietly inflate the figure.
     Write-Warning 'AVX-512 support could not be determined from the collection manifests; the intrinsic implementations are reported as measured rather than excluded.'
+}
+
+if ($arm64 -eq 'false') {
+    $hardwareGated += @($files.Keys | Where-Object { $_ -like '*.AdvSimd.cs' -or $_ -like '*.PmullIsa.cs' })
+}
+elseif ($arm64 -ne 'true') {
+    # The same rule: exclude only on positive evidence that no collecting host was ARM64.
+    Write-Warning 'The collecting architecture could not be determined from the collection manifests; the ARM64 implementations are reported as measured rather than excluded.'
 }
 
 # ---------------------------------------------------------------------------------------------------------------
@@ -518,6 +541,7 @@ if ($rows | Where-Object Excluded) {
 [void]$sb.AppendLine()
 [void]$sb.AppendLine("- Commit: ``$commit``")
 [void]$sb.AppendLine("- ``Avx512F.IsSupported`` on the collecting host: ``$avx512``")
+[void]$sb.AppendLine("- Architecture of the collecting host: ``$architecture``")
 [void]$sb.AppendLine("- Phantom rows discarded: $($phantom.Count)")
 [void]$sb.AppendLine("- Files with stale line numbering: $($staleNumbered.Count)")
 
@@ -525,9 +549,10 @@ if ($hardwareGated.Count -gt 0) {
     [void]$sb.AppendLine()
     [void]$sb.AppendLine('### Hardware-gated files excluded from the denominator')
     [void]$sb.AppendLine()
-    [void]$sb.AppendLine('The collecting host does not support AVX-512, so the JIT could not select these')
-    [void]$sb.AppendLine('implementations. They are exercised by the standard known-answer suites on capable')
-    [void]$sb.AppendLine('hardware and are **not** a missing-test gap.')
+    [void]$sb.AppendLine('The collecting host could not execute these implementations - AVX-512 code without')
+    [void]$sb.AppendLine('AVX-512, ARM64 code off ARM64 - so the JIT could not select them. They are exercised by')
+    [void]$sb.AppendLine('the standard known-answer suites on capable hardware, including the ARM64 CI job, and are')
+    [void]$sb.AppendLine('**not** a missing-test gap.')
     [void]$sb.AppendLine()
     foreach ($file in ($hardwareGated | Sort-Object)) { [void]$sb.AppendLine("- ``$file``") }
 }

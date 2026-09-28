@@ -1,0 +1,179 @@
+﻿// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="Argon2Harness.cs" company="Bodu Pty. Ltd.">
+// Copyright (c) Bodu Pty. Ltd. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+using System.Diagnostics;
+using System.Globalization;
+using System.Reflection;
+using System.Runtime.InteropServices;
+
+namespace Bodu.Security.Cryptography.Benchmarks;
+
+/// <summary>
+/// Reproduces the measurement method in the appendix of FallbackPlan's Argon2 requirements, so figures taken here line
+/// up with the table in its section 2.1: wall time, CPU time, cores used, allocation, gen2 collections, and GC pause per
+/// derivation, one at a time and four at once.
+/// </summary>
+/// <remarks>
+/// <para>
+/// Run with <c>--argon2-harness</c>. Built with <c>-p:BoduCryptoBaseline=1.0.0</c>, the same source measures the
+/// published package, which is how a baseline is taken on the machine under test.
+/// </para>
+/// <para>
+/// <c>--argon2-harness --first-call</c> derives once and prints how long the process's first derivation took. Run it
+/// several times from a shell to sample what a command-line unlock waits through; in-process, only the first call of a
+/// process can be measured.
+/// </para>
+/// </remarks>
+internal static class Argon2Harness
+{
+    /// <summary>The number of untimed derivations before each measurement.</summary>
+    private const int WarmUpCount = 6;
+
+    /// <summary>The number of timed derivations in each measurement.</summary>
+    private const int RunCount = 10;
+
+    /// <summary>The number of threads, and derivations per thread, in the four-at-once measurement.</summary>
+    private const int Concurrency = 4;
+
+    private static readonly byte[] Password = "correct horse battery staple"u8.ToArray();
+    private static readonly byte[] Salt = "0123456789abcdef"u8.ToArray();
+
+    /// <summary>
+    /// Runs the harness.
+    /// </summary>
+    /// <param name="args">The arguments after <c>--argon2-harness</c>; <c>--first-call</c> selects the first-call mode.</param>
+    internal static void Run(string[] args)
+    {
+        var parameters = new Argon2Parameters { MemoryKiB = 65536, Iterations = 3, Parallelism = 4, TagLength = 32 };
+
+        if (args.Contains("--first-call"))
+        {
+            var stopwatch = Stopwatch.StartNew();
+            _ = Argon2id.DeriveKey(Password, Salt, parameters);
+            Console.WriteLine(string.Create(CultureInfo.InvariantCulture, $"first call {stopwatch.Elapsed.TotalMilliseconds:F1} ms ({Describe()})"));
+            return;
+        }
+
+        Console.WriteLine(Describe());
+        Measure("p = 4", () => Argon2id.DeriveKey(Password, Salt, parameters));
+        Measure("p = 1", () => Argon2id.DeriveKey(Password, Salt, parameters with { Parallelism = 1 }));
+        MeasureConcurrent("p = 4, four at once", () => Argon2id.DeriveKey(Password, Salt, parameters));
+#if !BODU_CRYPTO_BASELINE
+
+        // The published package has no bound; these rows show what a caller that confines each derivation to its own
+        // thread gets.
+        var oneThread = new Argon2id(parameters, maxDegreeOfParallelism: 1);
+        Measure("p = 4, one thread", () => oneThread.GetBytes(Password, Salt));
+        MeasureConcurrent("p = 4, one thread, 4 at once", () => oneThread.GetBytes(Password, Salt));
+#endif
+    }
+
+    /// <summary>
+    /// Describes the build and the host the numbers come from.
+    /// </summary>
+    /// <returns>The package version under test, the runtime, the processor count, and the vector sets the host supports.</returns>
+    private static string Describe()
+    {
+        string version = typeof(Argon2id).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "unknown";
+        return string.Create(
+            CultureInfo.InvariantCulture,
+            $"Bodu.Security.Cryptography {version} on {RuntimeInformation.FrameworkDescription}, {RuntimeInformation.ProcessArchitecture}, {Environment.ProcessorCount} logical processors, AVX2 {System.Runtime.Intrinsics.X86.Avx2.IsSupported}, AVX-512F {System.Runtime.Intrinsics.X86.Avx512F.IsSupported}, AdvSimd {System.Runtime.Intrinsics.Arm.AdvSimd.IsSupported}");
+    }
+
+    /// <summary>
+    /// Measures one derivation at a time, as the requirements' appendix does.
+    /// </summary>
+    /// <param name="name">The label printed with the results.</param>
+    /// <param name="derive">The derivation to measure.</param>
+    private static void Measure(string name, Func<byte[]> derive)
+    {
+        for (int i = 0; i < WarmUpCount; i++)
+            _ = derive();
+
+        GC.Collect();
+        GC.WaitForPendingFinalizers();
+        GC.Collect();
+
+        TimeSpan pauseBefore = GC.GetTotalPauseDuration();
+        long allocatedBefore = GC.GetTotalAllocatedBytes(precise: true);
+        int gen2Before = GC.CollectionCount(2);
+        using Process process = Process.GetCurrentProcess();
+        process.Refresh();
+        TimeSpan cpuBefore = process.TotalProcessorTime;
+
+        var walls = new List<double>(RunCount);
+        var total = Stopwatch.StartNew();
+        for (int i = 0; i < RunCount; i++)
+        {
+            var stopwatch = Stopwatch.StartNew();
+            _ = derive();
+            walls.Add(stopwatch.Elapsed.TotalMilliseconds);
+        }
+
+        total.Stop();
+        process.Refresh();
+
+        double cpu = (process.TotalProcessorTime - cpuBefore).TotalMilliseconds / RunCount;
+        double allocatedKiB = (GC.GetTotalAllocatedBytes(precise: true) - allocatedBefore) / 1024.0 / RunCount;
+        double gen2 = (GC.CollectionCount(2) - gen2Before) / (double)RunCount;
+        double pause = (GC.GetTotalPauseDuration() - pauseBefore).TotalMilliseconds / RunCount;
+        walls.Sort();
+
+        Console.WriteLine(string.Create(
+            CultureInfo.InvariantCulture,
+            $"{name,-28} wall {walls[walls.Count / 2],7:F1} ms   cpu {cpu,7:F1} ms   cores {cpu / (total.Elapsed.TotalMilliseconds / RunCount),4:F2}   allocated {allocatedKiB,9:F1} KiB   gen2 {gen2,4:F2}   pause {pause,4:F1} ms"));
+    }
+
+    /// <summary>
+    /// Measures four derivations at once, each on its own thread, each thread deriving four times, as the requirements'
+    /// appendix does.
+    /// </summary>
+    /// <param name="name">The label printed with the results.</param>
+    /// <param name="derive">The derivation to measure.</param>
+    private static void MeasureConcurrent(string name, Func<byte[]> derive)
+    {
+        for (int i = 0; i < 2; i++)
+            _ = derive();
+
+        GC.Collect();
+        GC.WaitForPendingFinalizers();
+        GC.Collect();
+
+        int gen2Before = GC.CollectionCount(2);
+        using Process process = Process.GetCurrentProcess();
+        process.Refresh();
+        TimeSpan cpuBefore = process.TotalProcessorTime;
+
+        using var start = new ManualResetEventSlim(false);
+        var threads = new Thread[Concurrency];
+        for (int t = 0; t < Concurrency; t++)
+        {
+            threads[t] = new Thread(() =>
+            {
+                start.Wait();
+                for (int i = 0; i < Concurrency; i++)
+                    _ = derive();
+            });
+            threads[t].Start();
+        }
+
+        var total = Stopwatch.StartNew();
+        start.Set();
+        foreach (Thread thread in threads)
+            thread.Join();
+
+        total.Stop();
+        process.Refresh();
+
+        int derivations = Concurrency * Concurrency;
+        double cpu = (process.TotalProcessorTime - cpuBefore).TotalMilliseconds / derivations;
+        double gen2 = (GC.CollectionCount(2) - gen2Before) / (double)derivations;
+
+        Console.WriteLine(string.Create(
+            CultureInfo.InvariantCulture,
+            $"{name,-28} {derivations} in {total.Elapsed.TotalMilliseconds,6:F0} ms   {total.Elapsed.TotalMilliseconds / derivations,6:F1} ms each   cpu {cpu,7:F1} ms each   gen2 {gen2,4:F2}"));
+    }
+}

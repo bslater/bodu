@@ -4,19 +4,18 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Security.Cryptography;
-
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Anchors the shared <see cref="Poly1305AeadCore" /> RFC 8439 framing against the gold-standard
-/// ChaCha20-Poly1305 known-answer vector from RFC 8439 Section 2.8.2. Because the extended-nonce constructions reuse
-/// this exact framing on top of an HChaCha20 / HSalsa20 subkey, locking the framing here verifies the pad16 + length
-/// block, the counter-0 Poly1305 key derivation, and the encrypt-from-counter-1 behaviour independently of the
-/// subkey-derivation layer.
+/// Tests for <see cref="Poly1305AeadCore" />, grouped into member-named partial files. The RFC 8439 framing is anchored
+/// to the gold-standard ChaCha20-Poly1305 known-answer vector from RFC 8439 Section 2.8.2. Because the extended-nonce
+/// constructions reuse this exact framing on top of an HChaCha20 / HSalsa20 subkey, locking the framing here verifies
+/// the pad16 + length block, the counter-0 Poly1305 key derivation, and the encrypt-from-counter-1 behaviour
+/// independently of the subkey-derivation layer. Each framing is also held, over every message length to past the
+/// widest kernel's run, to the same framing drawn from an engine one block at a time and from a keystream value.
 /// </summary>
 [TestClass]
-public class Poly1305AeadCoreTests
+public partial class Poly1305AeadCoreTests
 {
     // RFC 8439 Section 2.8.2 — AEAD_CHACHA20_POLY1305 example and test vector.
     private static readonly byte[] s_key =
@@ -44,61 +43,35 @@ public class Poly1305AeadCoreTests
         Convert.FromHexString("1ae10b594f09e26a7e902ecbd0600691");
 
     /// <summary>
-    /// Verifies that <see cref="Poly1305AeadCore.SealRfc8439" /> driven by a raw ChaCha20 engine reproduces the
-    /// ciphertext and tag mandated by RFC 8439 Section 2.8.2.
+    /// Gets the message lengths the differential tests sweep: every length from empty to 299 bytes, which crosses the
+    /// block, secretbox-offset and 4-, 8- and 16-block run boundaries, and a few longer ones with partial tails.
     /// </summary>
-    [TestMethod]
-    public void SealRfc8439_WhenGivenRfc8439Vector_ShouldProduceExpectedCiphertextAndTag()
-    {
-        var engine = new ChaCha20StreamCipher(s_key, s_nonce, initialCounter: 0);
-        byte[] output = new byte[s_plaintext.Length + Poly1305AeadCore.TagBytes];
-
-        int written = Poly1305AeadCore.SealRfc8439(engine, s_associatedData, s_plaintext, output);
-
-        Assert.AreEqual(output.Length, written);
-        CollectionAssert.AreEqual(s_ciphertext, output.AsSpan(0, s_plaintext.Length).ToArray());
-        CollectionAssert.AreEqual(s_tag, output.AsSpan(s_plaintext.Length).ToArray());
-    }
+    /// <value>The lengths, in bytes.</value>
+    private static IEnumerable<int> MessageLengths =>
+        Enumerable.Range(0, 300).Concat([1024, 1029, 4099]);
 
     /// <summary>
-    /// Verifies that <see cref="Poly1305AeadCore.OpenRfc8439" /> recovers the RFC 8439 Section 2.8.2 plaintext from the
-    /// reference ciphertext and tag.
+    /// Returns the RFC 8439 Section 2.8.2 ciphertext followed by its tag.
     /// </summary>
-    [TestMethod]
-    public void OpenRfc8439_WhenGivenRfc8439Vector_ShouldRecoverPlaintext()
+    /// <returns>The sealed message.</returns>
+    private static byte[] Rfc8439CiphertextWithTag()
     {
-        var engine = new ChaCha20StreamCipher(s_key, s_nonce, initialCounter: 0);
-
         byte[] ciphertextWithTag = new byte[s_ciphertext.Length + s_tag.Length];
         s_ciphertext.CopyTo(ciphertextWithTag, 0);
         s_tag.CopyTo(ciphertextWithTag, s_ciphertext.Length);
-
-        byte[] output = new byte[s_ciphertext.Length];
-        int written = Poly1305AeadCore.OpenRfc8439(engine, s_associatedData, ciphertextWithTag, output);
-
-        Assert.AreEqual(s_plaintext.Length, written);
-        CollectionAssert.AreEqual(s_plaintext, output);
+        return ciphertextWithTag;
     }
 
     /// <summary>
-    /// Verifies that <see cref="Poly1305AeadCore.OpenRfc8439" /> throws <see cref="CryptographicException" /> when the
-    /// authentication tag has been altered.
+    /// Returns a new array of seeded random bytes.
     /// </summary>
-    [TestMethod]
-    public void OpenRfc8439_WhenTagIsTampered_ShouldThrowCryptographicException()
+    /// <param name="random">The source of the bytes.</param>
+    /// <param name="length">The number of bytes.</param>
+    /// <returns>The bytes.</returns>
+    private static byte[] NextBytes(Random random, int length)
     {
-        var engine = new ChaCha20StreamCipher(s_key, s_nonce, initialCounter: 0);
-
-        byte[] ciphertextWithTag = new byte[s_ciphertext.Length + s_tag.Length];
-        s_ciphertext.CopyTo(ciphertextWithTag, 0);
-        s_tag.CopyTo(ciphertextWithTag, s_ciphertext.Length);
-        ciphertextWithTag[^1] ^= 0xff;
-
-        byte[] output = new byte[s_ciphertext.Length];
-
-        Assert.ThrowsExactly<CryptographicException>(() =>
-        {
-            _ = Poly1305AeadCore.OpenRfc8439(engine, s_associatedData, ciphertextWithTag, output);
-        });
+        byte[] bytes = new byte[length];
+        random.NextBytes(bytes);
+        return bytes;
     }
 }

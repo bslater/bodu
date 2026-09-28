@@ -193,6 +193,11 @@ using (var ctr = new AesBlockCipher(ctrKey))
 
 The `iv` argument is kept for interface compatibility but is not used — SIV derives its synthetic IV from the AAD and plaintext.
 
+The associated data is S2V's one associated-data string when it is non-empty. Empty associated data, or none, contributes no string, because the transform cannot tell the two apart; implementations that always pass the associated data as a string, even an empty one, compute a different synthetic IV for such messages.
+
+> [!IMPORTANT]
+> Earlier releases computed the synthetic IV of an empty plaintext with the wrong padding constant, which does not match RFC 5297. Data they sealed with an empty plaintext does not decrypt with this release; every non-empty plaintext is unchanged.
+
 ## GCM-SIV — the modern replacement for GCM
 
 GCM-SIV (RFC 8452) is a misuse-resistant AEAD with GCM-like performance. It's the preferred choice when you want GCM's speed *and* need to tolerate accidental nonce reuse. The construction uses AES internally, but with a key-derivation step — so the constructor takes a master cipher **and** a factory that produces a new cipher for the derived per-message key.
@@ -218,6 +223,11 @@ using (var master = new AesBlockCipher(masterKey))
 ```
 
 The factory expression `static k => new AesBlockCipher(k)` is the canonical form — the `static` modifier avoids a closure allocation.
+
+RFC 8452 defines GCM-SIV for 128- and 256-bit master keys, and the per-message key it derives is as long as the master key. With an `AesBlockCipher` master the transform reads the key size itself, so a 32-byte master key hands the factory a 32-byte key and the message is encrypted with AES-256. Any other `IBlockCipher` master derives a 16-byte key unless you pass the size: `new GcmSivModeTransform(master, factory, iv, keySize: 256)`.
+
+> [!IMPORTANT]
+> Earlier releases derived a 16-byte per-message key for AES-256 master keys too, which does not match RFC 8452. Data they sealed under a 256-bit master key does not decrypt with this release; AES-128 output is unchanged.
 
 ## One-transform, one-message
 

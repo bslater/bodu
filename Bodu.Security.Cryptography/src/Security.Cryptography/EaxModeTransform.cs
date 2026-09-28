@@ -90,6 +90,9 @@ public sealed class EaxModeTransform
     /// <summary>The default EAX authentication-tag size, in bytes.</summary>
     private const int DefaultTagSize = DefaultTagSizeBits / 8;
 
+    /// <summary>The block size, in bytes, of the cipher, of OMAC, and of a counter block.</summary>
+    private const int BlockBytes = 16;
+
     /// <summary>The underlying block cipher used for both OMAC and the CTR keystream.</summary>
     private readonly IBlockCipher _cipher;
 
@@ -158,33 +161,34 @@ public sealed class EaxModeTransform
 
         EnsureAadProcessed();
 
-        byte[]? nPrime = null;
-        byte[]? hPrime = null;
-        byte[]? cPrime = null;
+        // Scratch: the CMAC subkeys K1 and K2, the CMAC state and held-back block, then N', H', and C'.
+        Span<byte> scratch = stackalloc byte[7 * BlockBytes];
 
         try
         {
-            nPrime = Omac(0, _nonce);
-            hPrime = Omac(1, _aad!);
+            Span<byte> nPrime = scratch.Slice(4 * BlockBytes, BlockBytes);
+            Span<byte> hPrime = scratch.Slice(5 * BlockBytes, BlockBytes);
+            Span<byte> cPrime = scratch.Slice(6 * BlockBytes, BlockBytes);
+            Cmac.DeriveSubkeys(_cipher, scratch[..BlockBytes], scratch.Slice(BlockBytes, BlockBytes));
 
-            // CTR-encrypt plaintext into output[..plaintext.Length] using N' as the initial counter.
+            Omac(0, _nonce, scratch, nPrime);
+            Omac(1, _aad!, scratch, hPrime);
+
+            // CTR-encrypt the plaintext from N', then authenticate the ciphertext.
             Span<byte> ciphertext = output[..plaintext.Length];
-            CtrEncrypt(plaintext, ciphertext, nPrime);
-
-            cPrime = Omac(2, ciphertext);
+            CounterKeystream.TransformBigEndian128(_cipher, nPrime, plaintext, ciphertext);
+            Omac(2, ciphertext, scratch, cPrime);
 
             // Tag = N' XOR H' XOR C'.
             Span<byte> tag = output.Slice(plaintext.Length, DefaultTagSize);
-            for (int i = 0; i < DefaultTagSize; i++)
-                tag[i] = (byte)(nPrime[i] ^ hPrime[i] ^ cPrime[i]);
+            CryptographyHelper.Xor(nPrime, hPrime, tag);
+            CryptographyHelper.Xor(tag, cPrime, tag);
 
             return required;
         }
         finally
         {
-            CryptographyHelper.Clear(nPrime);
-            CryptographyHelper.Clear(hPrime);
-            CryptographyHelper.Clear(cPrime);
+            CryptographyHelper.Clear(scratch);
             _completed = true;
         }
     }
@@ -212,20 +216,23 @@ public sealed class EaxModeTransform
         ReadOnlySpan<byte> ciphertext = ciphertextWithTag[..plaintextLength];
         ReadOnlySpan<byte> receivedTag = ciphertextWithTag[plaintextLength..];
 
-        byte[]? nPrime = null;
-        byte[]? hPrime = null;
-        byte[]? cPrime = null;
-        byte[]? expectedTag = null;
+        // Scratch: the CMAC subkeys K1 and K2, the CMAC state and held-back block, then N', H', C', and the expected tag.
+        Span<byte> scratch = stackalloc byte[8 * BlockBytes];
 
         try
         {
-            nPrime = Omac(0, _nonce);
-            hPrime = Omac(1, _aad!);
-            cPrime = Omac(2, ciphertext);
+            Span<byte> nPrime = scratch.Slice(4 * BlockBytes, BlockBytes);
+            Span<byte> hPrime = scratch.Slice(5 * BlockBytes, BlockBytes);
+            Span<byte> cPrime = scratch.Slice(6 * BlockBytes, BlockBytes);
+            Span<byte> expectedTag = scratch.Slice(7 * BlockBytes, BlockBytes);
+            Cmac.DeriveSubkeys(_cipher, scratch[..BlockBytes], scratch.Slice(BlockBytes, BlockBytes));
 
-            expectedTag = new byte[DefaultTagSize];
-            for (int i = 0; i < DefaultTagSize; i++)
-                expectedTag[i] = (byte)(nPrime[i] ^ hPrime[i] ^ cPrime[i]);
+            Omac(0, _nonce, scratch, nPrime);
+            Omac(1, _aad!, scratch, hPrime);
+            Omac(2, ciphertext, scratch, cPrime);
+
+            CryptographyHelper.Xor(nPrime, hPrime, expectedTag);
+            CryptographyHelper.Xor(expectedTag, cPrime, expectedTag);
 
             // Constant-time tag comparison; throw before emitting any plaintext. On failure, also
             // zero any data the caller may have pre-seeded into the output buffer — defense-in-depth
@@ -236,7 +243,7 @@ public sealed class EaxModeTransform
                 throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_AuthenticationTagMismatch);
             }
 
-            CtrEncrypt(ciphertext, output[..plaintextLength], nPrime);
+            CounterKeystream.TransformBigEndian128(_cipher, nPrime, ciphertext, output[..plaintextLength]);
 
             return plaintextLength;
         }
@@ -249,10 +256,7 @@ public sealed class EaxModeTransform
         }
         finally
         {
-            CryptographyHelper.Clear(expectedTag);
-            CryptographyHelper.Clear(cPrime);
-            CryptographyHelper.Clear(hPrime);
-            CryptographyHelper.Clear(nPrime);
+            CryptographyHelper.Clear(scratch);
             _completed = true;
         }
     }
@@ -315,177 +319,30 @@ public sealed class EaxModeTransform
 
     /// <summary>
     /// Computes <c>OMAC_K^t(m) = CMAC_K([t]_n ‖ m)</c>, where <c>[t]_n</c> is the integer <paramref name="t" /> encoded
-    /// as a full-block big-endian prefix.
+    /// as a full-block big-endian prefix, without copying <paramref name="m" />.
     /// </summary>
-    /// <param name="t">
-    /// The single-byte tweak that selects the OMAC domain, encoded as a full-block big-endian prefix.
-    /// </param>
+    /// <param name="t">The single-byte tweak that selects the OMAC domain.</param>
     /// <param name="m">The message bytes to authenticate.</param>
-    /// <returns>The OMAC tag for <paramref name="m" /> under tweak <paramref name="t" />.</returns>
-    private byte[] Omac(byte t, ReadOnlySpan<byte> m)
+    /// <param name="scratch">
+    /// Scratch whose first two blocks hold the subkeys <c>K1</c> and <c>K2</c> and whose next two receive the CMAC
+    /// state and held-back block.
+    /// </param>
+    /// <param name="mac">Receives the OMAC tag.</param>
+    private void Omac(byte t, ReadOnlySpan<byte> m, Span<byte> scratch, Span<byte> mac)
     {
-        int blockSize = _cipher.BlockSize / 8;
-        byte[] prefixed = new byte[blockSize + m.Length];
+        Span<byte> prefix = stackalloc byte[BlockBytes];
+        prefix.Clear();
+        prefix[^1] = t;
 
-        try
-        {
-            prefixed[blockSize - 1] = t; // [t]_n = (blockSize − 1) zero bytes, then t
-            m.CopyTo(prefixed.AsSpan(blockSize));
-
-            return ComputeCmac(prefixed);
-        }
-        finally
-        {
-            CryptographyHelper.Clear(prefixed);
-        }
-    }
-
-    /// <summary>
-    /// Computes AES-CMAC of <paramref name="message" /> under the mode's cipher, per RFC 4493.
-    /// </summary>
-    /// <param name="message">The message to authenticate.</param>
-    /// <returns>The CMAC tag, one cipher block in length.</returns>
-    private byte[] ComputeCmac(ReadOnlySpan<byte> message)
-    {
-        int blockSize = _cipher.BlockSize / 8;
-
-        byte[] zeroBlock = new byte[blockSize];
-        byte[] l = new byte[blockSize];
-        byte[] k1 = new byte[blockSize];
-        byte[] k2 = new byte[blockSize];
-        byte[] mac = new byte[blockSize];
-        byte[] lastBlock = new byte[blockSize];
-
-        try
-        {
-            // Subkey generation: K1 = dbl(E(0^n)), K2 = dbl(K1).
-            _cipher.Encrypt(zeroBlock, l);
-
-            l.CopyTo(k1, 0);
-            Dbl(k1);
-
-            k1.CopyTo(k2, 0);
-            Dbl(k2);
-
-            int totalBlocks = (message.Length + blockSize - 1) / blockSize;
-            bool lastIsFull = message.Length > 0 && message.Length % blockSize == 0;
-
-            if (message.Length == 0)
-            {
-                totalBlocks = 1;
-                lastIsFull = false;
-            }
-
-            for (int blockIdx = 0; blockIdx < totalBlocks - 1; blockIdx++)
-            {
-                byte[] block = new byte[blockSize];
-
-                try
-                {
-                    message.Slice(blockIdx * blockSize, blockSize).CopyTo(block);
-                    Xor(mac, block, mac);
-                    _cipher.Encrypt(mac, mac);
-                }
-                finally
-                {
-                    CryptographyHelper.Clear(block);
-                }
-            }
-
-            // Last block: pad with 0x80 || 0…0 if partial, then XOR K1 (full) or K2 (partial).
-            if (message.Length > 0)
-            {
-                int lastOffset = (totalBlocks - 1) * blockSize;
-                int lastLen = message.Length - lastOffset;
-
-                message.Slice(lastOffset, lastLen).CopyTo(lastBlock);
-
-                if (!lastIsFull)
-                    lastBlock[lastLen] = 0x80;
-            }
-            else
-            {
-                lastBlock[0] = 0x80; // empty message: pad = 0x80 || 0...0
-            }
-
-            byte[] subkey = lastIsFull ? k1 : k2;
-            Xor(lastBlock, subkey, lastBlock);
-            Xor(mac, lastBlock, mac);
-            _cipher.Encrypt(mac, mac);
-
-            return mac;
-        }
-        catch
-        {
-            // On a mid-MAC cipher fault, zero the partially computed accumulator before it escapes;
-            // mirrors SivModeTransform.ComputeCmac so both CMAC paths clear secret state on failure.
-            CryptographyHelper.Clear(mac);
-            throw;
-        }
-        finally
-        {
-            CryptographyHelper.Clear(lastBlock);
-            CryptographyHelper.Clear(k2);
-            CryptographyHelper.Clear(k1);
-            CryptographyHelper.Clear(l);
-            CryptographyHelper.Clear(zeroBlock);
-        }
-    }
-
-    /// <summary>
-    /// Applies CTR mode: generates a keystream by encrypting successive big-endian increments of
-    /// <paramref name="counter" /> (copied defensively) and XORs it with <paramref name="input" />. The final block may
-    /// be partial; remaining keystream bytes are discarded.
-    /// </summary>
-    /// <param name="input">The bytes to encrypt or decrypt.</param>
-    /// <param name="output">The span that receives the transformed bytes.</param>
-    /// <param name="counter">The initial counter block; copied defensively and left unmodified.</param>
-    private void CtrEncrypt(ReadOnlySpan<byte> input, Span<byte> output, byte[] counter)
-    {
-        int blockSize = _cipher.BlockSize / 8;
-        byte[] ctr = (byte[])counter.Clone();
-        Span<byte> ks = stackalloc byte[blockSize];
-
-        try
-        {
-            for (int offset = 0; offset < input.Length; offset += blockSize)
-            {
-                _cipher.Encrypt(ctr, ks);
-
-                for (int i = ctr.Length - 1; i >= 0; i--)
-                    if (++ctr[i] != 0) break;
-
-                int len = Math.Min(blockSize, input.Length - offset);
-                for (int i = 0; i < len; i++)
-                    output[offset + i] = (byte)(input[offset + i] ^ ks[i]);
-            }
-        }
-        finally
-        {
-            CryptographyHelper.Clear(ks);
-            CryptographyHelper.Clear(ctr);
-        }
-    }
-
-    /// <summary>
-    /// Doubles <paramref name="x" /> in-place in GF(2^128) with big-endian bit order and polynomial x^128 + x^7 + x^2 +
-    /// x + 1, via the shared branch-free <see cref="GaloisField128.Double" /> so the key-derived CMAC subkeys do not
-    /// influence control flow.
-    /// </summary>
-    /// <param name="x">The block doubled in place.</param>
-    private static void Dbl(byte[] x) =>
-        GaloisField128.Double(x, x);
-
-    /// <summary>
-    /// XORs two equally-sized input spans into <paramref name="result" />.
-    /// </summary>
-    /// <param name="a">The first input span.</param>
-    /// <param name="b">The second input span.</param>
-    /// <param name="result">The span that receives the XOR of <paramref name="a" /> and <paramref name="b" />.</param>
-    private static void Xor(ReadOnlySpan<byte> a, ReadOnlySpan<byte> b, Span<byte> result)
-    {
-        for (int i = 0; i < result.Length; i++)
-            result[i] = (byte)(a[i] ^ b[i]);
+        var cmac = new Cmac(
+            _cipher,
+            scratch[..BlockBytes],
+            scratch.Slice(BlockBytes, BlockBytes),
+            scratch.Slice(2 * BlockBytes, BlockBytes),
+            scratch.Slice(3 * BlockBytes, BlockBytes));
+        cmac.Append(prefix);
+        cmac.Append(m);
+        cmac.Finish(mac);
     }
 
     /// <summary>

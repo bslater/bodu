@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SivModeTransformTests.KnownAnswerTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -68,7 +68,7 @@ public sealed partial class SivModeTransformTests
         nameof(SivKatA1),
         DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public void Encrypt_WithRfc5297A1Vector_ShouldMatchExpected(AeadKnownAnswer vector)
+    public void Encrypt_WhenGivenRfc5297A1Vector_ShouldMatchExpected(AeadKnownAnswer vector)
     {
         using var s2vCipher = new AesBlockCipherFixture(vector.Key[..16]);
         using var ctrCipher = new AesBlockCipherFixture(vector.Key[16..]);
@@ -92,7 +92,7 @@ public sealed partial class SivModeTransformTests
         nameof(SivKatA1),
         DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public void Decrypt_WithRfc5297A1Vector_ShouldRecoverPlaintext(AeadKnownAnswer vector)
+    public void Decrypt_WhenGivenRfc5297A1Vector_ShouldRecoverPlaintext(AeadKnownAnswer vector)
     {
         using var s2vCipher = new AesBlockCipherFixture(vector.Key[..16]);
         using var ctrCipher = new AesBlockCipherFixture(vector.Key[16..]);
@@ -106,5 +106,96 @@ public sealed partial class SivModeTransformTests
         Assert.AreEqual(vector.Plaintext.Length, written);
         CollectionAssert.AreEqual(vector.Plaintext, output,
             "SIV decrypt mismatch for RFC 5297 A.1 vector.");
+    }
+
+    // ── Project Wycheproof — AES-SIV known-answer tests ──────────────────────────────────────
+
+    /// <summary>The logical name of the embedded, curated Wycheproof AES-SIV vector file.</summary>
+    private const string WycheproofResourceName = "Bodu.Security.Cryptography.Siv.Wycheproof.txt";
+
+    /// <summary>
+    /// Loads the curated Wycheproof AES-SIV vectors — every valid row with non-empty associated data, for AES-128,
+    /// AES-192, and AES-256 key halves, fifteen of them with an empty message — as rows whose key is <c>K1 || K2</c>.
+    /// </summary>
+    /// <returns>One row per vector.</returns>
+    private static IEnumerable<object[]> WycheproofVectors()
+    {
+        using Stream stream = typeof(SivModeTransformTests).Assembly.GetManifestResourceStream(WycheproofResourceName)
+            ?? throw new InvalidOperationException(
+                $"Embedded resource '{WycheproofResourceName}' is not present in the test assembly. " +
+                "Check the <EmbeddedResource> entry in Bodu.Security.Cryptography.Test.csproj.");
+
+        foreach (Dictionary<string, string> record in HexFieldKatReader.Read(stream))
+        {
+            // Wycheproof writes RFC 5297's V || C; the transform writes C || V.
+            byte[] sealedMessage = Hex(HexFieldKatReader.GetRequired(record, "Ct"));
+            string message = HexFieldKatReader.GetRequired(record, "Msg");
+            yield return new object[]
+            {
+                new AeadKnownAnswer
+                {
+                    Name = "Wycheproof " + HexFieldKatReader.GetRequired(record, "Name"),
+                    Provenance = KatProvenance.ReferenceImplementation("Project Wycheproof aes_siv_cmac_test.json"),
+                    Key = Hex(HexFieldKatReader.GetRequired(record, "Key")),
+                    Nonce = [],
+                    AssociatedData = Hex(HexFieldKatReader.GetRequired(record, "Aad")),
+                    Plaintext = message.Length == 0 ? [] : Hex(message),
+                    Ciphertext = sealedMessage[16..],
+                    Tag = sealedMessage[..16],
+                    Layout = AeadKatOutputLayout.CiphertextThenTag,
+                },
+            };
+        }
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="SivModeTransform.Encrypt" /> reproduces each curated Wycheproof vector's ciphertext and
+    /// synthetic IV, including the empty messages, whose S2V pads the empty final string.
+    /// </summary>
+    /// <param name="vector">The AES-SIV known-answer vector under test.</param>
+    [TestMethod]
+    [DynamicData(
+        nameof(WycheproofVectors),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void Encrypt_WhenGivenWycheproofVector_ShouldMatchExpected(AeadKnownAnswer vector)
+    {
+        byte[] key = vector.Key!;
+        int half = key.Length / 2;
+        using var s2vCipher = new AesBlockCipherFixture(key[..half]);
+        using var ctrCipher = new AesBlockCipherFixture(key[half..]);
+
+        var transform = new SivModeTransform(s2vCipher, ctrCipher, new byte[16]);
+        transform.ProcessAssociatedData(vector.AssociatedData);
+        byte[] output = new byte[vector.Plaintext.Length + (transform.TagSize / 8)];
+        transform.Encrypt(vector.Plaintext, output);
+
+        CollectionAssert.AreEqual(vector.CiphertextWithTag, output);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="SivModeTransform.Decrypt" /> authenticates each curated Wycheproof vector and recovers its
+    /// message, including the empty messages.
+    /// </summary>
+    /// <param name="vector">The AES-SIV known-answer vector under test.</param>
+    [TestMethod]
+    [DynamicData(
+        nameof(WycheproofVectors),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void Decrypt_WhenGivenWycheproofVector_ShouldRecoverPlaintext(AeadKnownAnswer vector)
+    {
+        byte[] key = vector.Key!;
+        int half = key.Length / 2;
+        using var s2vCipher = new AesBlockCipherFixture(key[..half]);
+        using var ctrCipher = new AesBlockCipherFixture(key[half..]);
+
+        var transform = new SivModeTransform(s2vCipher, ctrCipher, new byte[16]);
+        transform.ProcessAssociatedData(vector.AssociatedData);
+        byte[] output = new byte[vector.Plaintext.Length];
+        int written = transform.Decrypt(vector.CiphertextWithTag, output);
+
+        Assert.AreEqual(vector.Plaintext.Length, written);
+        CollectionAssert.AreEqual(vector.Plaintext, output);
     }
 }

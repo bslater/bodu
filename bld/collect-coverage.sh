@@ -29,9 +29,12 @@
 #   -h | --help         Show this help.
 #
 # Emits <output>/report/environment.json describing the run — most importantly whether this host
-# supports AVX-512. Six *.Avx512.cs files in Bodu.Security.Cryptography are hardware-gated: the JIT
-# selects exactly one path per process, so on a host without AVX-512 those files CANNOT be covered
-# and must be reported as 'n/a (hardware-gated)' rather than 0%. See docs/articles/code-coverage.md.
+# supports AVX-512, and its architecture. Six *.Avx512.cs files in Bodu.Security.Cryptography are
+# hardware-gated: the JIT selects exactly one path per process, so on a host without AVX-512 those
+# files CANNOT be covered and must be reported as 'n/a (hardware-gated)' rather than 0%. The
+# ARM64 instruction-set shims (*.AdvSimd.cs, *.PmullIsa.cs) are gated the same way on any host that
+# is not ARM64; the ARM64 job in .github/workflows/build-test.yml runs them. See
+# docs/articles/code-coverage.md.
 #
 # Exit code: 0 when every selected project collected successfully, 1 otherwise.
 # ---------------------------------------------------------------------------------------------------------------
@@ -50,7 +53,7 @@ list_only=false
 scalar_pass=false
 
 usage() {
-    sed -n '2,32p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
+    sed -n '2,40p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
 }
 
 while [ $# -gt 0 ]; do
@@ -232,7 +235,8 @@ while read -r proj; do
     # ThreefishBlockCipher.{256,512,1024}.cs from 19.0/12.8/8.3% to 90.5/93.1/94.9%.
     scalar_env=()
     if [ "$scalar_pass" = true ]; then
-        scalar_env=(DOTNET_EnableAVX512F=0 DOTNET_EnableAVX2=0 DOTNET_EnableHWIntrinsic=0)
+        # .NET 8 reads DOTNET_EnableAVX512F and .NET 10 DOTNET_EnableAVX512; each ignores the other's name.
+        scalar_env=(DOTNET_EnableAVX512F=0 DOTNET_EnableAVX512=0 DOTNET_EnableAVX2=0 DOTNET_EnableHWIntrinsic=0)
         echo "Hardware intrinsics disabled for this pass."
     fi
 

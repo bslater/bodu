@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Buffers.Binary;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
@@ -101,6 +103,12 @@ public sealed class CtrModeTransform
     }
 
     /// <inheritdoc />
+    /// <remarks>
+    /// Each call consumes one counter block per whole or partial block of input; the unused keystream of a final
+    /// partial block is discarded rather than carried into the next call. Counter blocks are encrypted a run at a time
+    /// through <see cref="IBlockCipher.EncryptBlocks" />.
+    /// </remarks>
+    [SkipLocalsInit]
     public int Transform(ReadOnlySpan<byte> input, Span<byte> output, bool encrypt)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
@@ -108,22 +116,41 @@ public sealed class CtrModeTransform
         CryptographyThrowHelper.ThrowIfInvalidOverlap(input, output);
 
         int blockSize = _cipher.BlockSize / 8;
-        Span<byte> keystream = stackalloc byte[blockSize];
+        int batchLength = CounterKeystream.BatchLength(blockSize);
+        Span<byte> counters = batchLength <= CounterKeystream.BatchBytes ? stackalloc byte[batchLength] : new byte[batchLength];
+        Span<byte> keystream = batchLength <= CounterKeystream.BatchBytes ? stackalloc byte[batchLength] : new byte[batchLength];
+        int used = 0;
 
-        for (int offset = 0; offset < input.Length; offset += blockSize)
+        try
         {
-            if (_counterWrapped)
-                throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_CtrCounterWrapped);
+            int offset = 0;
+            while (offset < input.Length)
+            {
+                // Lay out counter blocks until the run is full, the input is covered, or the counter has wrapped — the
+                // block after a wrap is the one the per-block formulation refuses to produce.
+                int limit = Math.Min(batchLength, input.Length - offset);
+                int filled = blockSize == 16 ? LayOutCounters16(counters, limit) : LayOutCounters(counters, limit, blockSize);
 
-            _cipher.Encrypt(_counter, keystream);
-            IncrementCounter();
+                if (filled > 0)
+                {
+                    // Widen the extent to clear before the cipher writes keystream, so a throwing cipher leaves none
+                    // behind.
+                    int length = Math.Min(filled, input.Length - offset);
+                    used = Math.Max(used, filled);
+                    CounterKeystream.Apply(_cipher, counters[..filled], keystream, input.Slice(offset, length), output.Slice(offset, length));
+                    offset += length;
+                }
 
-            int len = Math.Min(blockSize, input.Length - offset);
-            for (int i = 0; i < len; i++)
-                output[offset + i] = (byte)(input[offset + i] ^ keystream[i]);
+                if (offset < input.Length && _counterWrapped)
+                    throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_CtrCounterWrapped);
+            }
+
+            return input.Length;
         }
-
-        return input.Length;
+        finally
+        {
+            CryptographyHelper.Clear(keystream[..used]);
+        }
     }
 
     /// <summary>
@@ -145,6 +172,60 @@ public sealed class CtrModeTransform
     }
 
     // ── Private helpers ────────────────────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Writes successive counter blocks into <paramref name="destination" /> until at least <paramref name="limit" />
+    /// bytes are covered or the counter wraps, advancing the counter past each block written.
+    /// </summary>
+    /// <param name="destination">The run of counter blocks to fill.</param>
+    /// <param name="limit">
+    /// The number of input bytes the run must cover; the last block may cover only part of it.
+    /// </param>
+    /// <param name="blockSize">The cipher's block size, in bytes.</param>
+    /// <returns>The number of bytes of counter blocks written: a whole number of blocks.</returns>
+    private int LayOutCounters(Span<byte> destination, int limit, int blockSize)
+    {
+        int filled = 0;
+        while (filled < limit && !_counterWrapped)
+        {
+            _counter.CopyTo(destination[filled..]);
+            IncrementCounter();
+            filled += blockSize;
+        }
+
+        return filled;
+    }
+
+    /// <summary>
+    /// Writes successive 16-byte counter blocks into <paramref name="destination" /> as <see cref="LayOutCounters" />
+    /// does, holding the counter as two big-endian 64-bit words so each block costs two stores and an add.
+    /// </summary>
+    /// <param name="destination">The run of counter blocks to fill.</param>
+    /// <param name="limit">
+    /// The number of input bytes the run must cover; the last block may cover only part of it.
+    /// </param>
+    /// <returns>The number of bytes of counter blocks written: a whole number of blocks.</returns>
+    private int LayOutCounters16(Span<byte> destination, int limit)
+    {
+        ulong high = BinaryPrimitives.ReadUInt64BigEndian(_counter);
+        ulong low = BinaryPrimitives.ReadUInt64BigEndian(_counter.AsSpan(8));
+        int filled = 0;
+
+        while (filled < limit && !_counterWrapped)
+        {
+            BinaryPrimitives.WriteUInt64BigEndian(destination[filled..], high);
+            BinaryPrimitives.WriteUInt64BigEndian(destination.Slice(filled + 8), low);
+            filled += 16;
+
+            // Big-endian increment across both words; carrying out of the high word is the full 2^128 rollover.
+            if (++low == 0 && ++high == 0)
+                _counterWrapped = true;
+        }
+
+        BinaryPrimitives.WriteUInt64BigEndian(_counter, high);
+        BinaryPrimitives.WriteUInt64BigEndian(_counter.AsSpan(8), low);
+        return filled;
+    }
 
     /// <summary>
     /// Increments the counter in big-endian (rightmost-byte-first) order, matching NIST SP 800-38A, and latches the

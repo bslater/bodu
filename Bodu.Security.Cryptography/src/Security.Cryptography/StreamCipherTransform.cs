@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Buffers.Binary;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 
@@ -222,7 +221,8 @@ internal sealed class StreamCipherTransform
     /// </exception>
     /// <remarks>
     /// Any keystream left over from a previous call is consumed first so that the keystream advances by exactly the
-    /// number of bytes processed. A new block is pulled from the engine only when the carried block is exhausted.
+    /// number of bytes processed. Whole blocks then go to an <see cref="IBulkStreamCipher" /> engine in one call, or
+    /// through one keystream block at a time for any other engine; a new block is pulled for a partial tail only.
     /// </remarks>
     private void Apply(ReadOnlySpan<byte> input, Span<byte> output)
     {
@@ -234,18 +234,30 @@ internal sealed class StreamCipherTransform
         if (_keystreamOffset < blockSize)
         {
             int take = Math.Min(blockSize - _keystreamOffset, input.Length);
-            XorInto(input[..take], keystream.Slice(_keystreamOffset, take), output[..take]);
+            CryptographyHelper.Xor(input[..take], keystream.Slice(_keystreamOffset, take), output[..take]);
             _keystreamOffset += take;
             pos = take;
         }
 
-        // 2. Whole blocks: pull one keystream block at a time and XOR the full block in ulong-wide chunks.
-        while (input.Length - pos >= blockSize)
+        // 2. Whole blocks: all at once from an engine that produces keystream in bulk, otherwise one block at a time.
+        int whole = (input.Length - pos) / blockSize * blockSize;
+        if (whole > 0)
         {
-            _cipher.NextKeystreamBlock(keystream);
-            XorInto(input.Slice(pos, blockSize), keystream, output.Slice(pos, blockSize));
+            if (_cipher is IBulkStreamCipher bulk)
+            {
+                bulk.XorKeystreamBlocks(input.Slice(pos, whole), output.Slice(pos, whole));
+                pos += whole;
+            }
+            else
+            {
+                for (int end = pos + whole; pos < end; pos += blockSize)
+                {
+                    _cipher.NextKeystreamBlock(keystream);
+                    CryptographyHelper.Xor(input.Slice(pos, blockSize), keystream, output.Slice(pos, blockSize));
+                }
+            }
+
             _keystreamOffset = blockSize;
-            pos += blockSize;
         }
 
         // 3. Trailing partial block: pull a fresh block and retain the unused keystream tail for the next call.
@@ -253,31 +265,9 @@ internal sealed class StreamCipherTransform
         {
             _cipher.NextKeystreamBlock(keystream);
             int take = input.Length - pos;
-            XorInto(input.Slice(pos, take), keystream[..take], output.Slice(pos, take));
+            CryptographyHelper.Xor(input.Slice(pos, take), keystream[..take], output.Slice(pos, take));
             _keystreamOffset = take;
         }
-    }
-
-    /// <summary>
-    /// XORs <paramref name="a" /> with <paramref name="b" /> into <paramref name="dest" />, processing eight bytes at a
-    /// time before handling any remaining tail one byte at a time.
-    /// </summary>
-    /// <param name="a">The first input span.</param>
-    /// <param name="b">The second input span; must be at least as long as <paramref name="a" />.</param>
-    /// <param name="dest">The destination span; must be at least as long as <paramref name="a" />.</param>
-    private static void XorInto(ReadOnlySpan<byte> a, ReadOnlySpan<byte> b, Span<byte> dest)
-    {
-        int i = 0;
-        int n = a.Length;
-
-        for (; i + sizeof(ulong) <= n; i += sizeof(ulong))
-        {
-            ulong x = BinaryPrimitives.ReadUInt64LittleEndian(a[i..]) ^ BinaryPrimitives.ReadUInt64LittleEndian(b[i..]);
-            BinaryPrimitives.WriteUInt64LittleEndian(dest[i..], x);
-        }
-
-        for (; i < n; i++)
-            dest[i] = (byte)(a[i] ^ b[i]);
     }
 
     /// <summary>

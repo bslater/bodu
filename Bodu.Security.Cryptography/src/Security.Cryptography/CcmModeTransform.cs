@@ -87,6 +87,9 @@ public sealed class CcmModeTransform
     /// <summary>Length of the CCM authentication tag is 128 bits (16 bytes). Byte length is derived inline via <see cref="TagSizeBits" /> / 8.</summary>
     private const int TagSizeBits = 128;
 
+    /// <summary>The block size, in bytes, of the cipher, of the CBC-MAC, and of a counter block.</summary>
+    private const int BlockBytes = 16;
+
     /// <summary>The maximum message length, in bytes, encodable in the 3-byte length field (<c>q = 3</c>): <c>2²⁴ − 1</c>. Internal so tests can validate the constant.</summary>
     /// <remarks>
     /// The B0 length field occupies only bytes 13–15 and the CTR counter is likewise 3 bytes wide. A longer message
@@ -184,23 +187,24 @@ public sealed class CcmModeTransform
 
         EnsureAadProcessed();
 
-        byte[]? mac = null;
-        byte[]? encTag = null;
+        // The CBC-MAC, then the tag mask S0 = E(A0).
+        Span<byte> scratch = stackalloc byte[2 * BlockBytes];
 
         try
         {
-            mac = ComputeCbcMac(_aad.AsSpan(), plaintext);
-            encTag = XorWithCtrBlock(mac, counterIndex: 0);
+            Span<byte> mac = scratch[..BlockBytes];
+            Span<byte> mask = scratch.Slice(BlockBytes, BlockBytes);
 
-            EncryptCtr(plaintext, output[..plaintext.Length], startIndex: 1);
-            encTag.AsSpan(0, TagSizeBits / 8).CopyTo(output[plaintext.Length..]);
+            ComputeCbcMac(_aad.AsSpan(), plaintext, mac);
+            EncryptCounterBlock(0, mask);
+            ApplyCtr(plaintext, output[..plaintext.Length]);
+            CryptographyHelper.Xor(mac, mask, output.Slice(plaintext.Length, TagSizeBits / 8));
 
             return required;
         }
         finally
         {
-            CryptographyHelper.Clear(encTag);
-            CryptographyHelper.Clear(mac);
+            CryptographyHelper.Clear(scratch);
             _completed = true;
         }
     }
@@ -230,17 +234,24 @@ public sealed class CcmModeTransform
         ReadOnlySpan<byte> ciphertext = ciphertextWithTag[..plaintextLength];
         ReadOnlySpan<byte> receivedTag = ciphertextWithTag[plaintextLength..];
 
-        byte[]? mac = null;
-        byte[]? encTag = null;
+        // The received tag, the CBC-MAC, and the expected tag.
+        Span<byte> scratch = stackalloc byte[3 * BlockBytes];
 
         try
         {
-            EncryptCtr(ciphertext, output[..plaintextLength], startIndex: 1);
+            Span<byte> tagCopy = scratch[..BlockBytes];
+            Span<byte> mac = scratch.Slice(BlockBytes, BlockBytes);
+            Span<byte> expectedTag = scratch.Slice(2 * BlockBytes, BlockBytes);
 
-            mac = ComputeCbcMac(_aad.AsSpan(), output[..plaintextLength]);
-            encTag = XorWithCtrBlock(mac, counterIndex: 0);
+            // Copy the tag first: the plaintext may be written over the buffer holding it.
+            receivedTag.CopyTo(tagCopy);
 
-            if (!CryptographicOperations.FixedTimeEquals(encTag.AsSpan(0, TagSizeBits / 8), receivedTag))
+            ApplyCtr(ciphertext, output[..plaintextLength]);
+            ComputeCbcMac(_aad.AsSpan(), output[..plaintextLength], mac);
+            EncryptCounterBlock(0, expectedTag);
+            CryptographyHelper.Xor(mac, expectedTag, expectedTag);
+
+            if (!CryptographicOperations.FixedTimeEquals(expectedTag, tagCopy))
             {
                 CryptographicOperations.ZeroMemory(output[..plaintextLength]);
                 throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_AuthenticationTagMismatch);
@@ -258,8 +269,7 @@ public sealed class CcmModeTransform
         }
         finally
         {
-            CryptographyHelper.Clear(encTag);
-            CryptographyHelper.Clear(mac);
+            CryptographyHelper.Clear(scratch);
             _completed = true;
         }
     }
@@ -341,32 +351,33 @@ public sealed class CcmModeTransform
     /// </summary>
     /// <param name="aad">The associated authenticated data.</param>
     /// <param name="plaintext">The plaintext bytes whose MAC is being computed.</param>
-    /// <returns>The computed CBC-MAC tag, truncated to the configured tag length.</returns>
-    private byte[] ComputeCbcMac(ReadOnlySpan<byte> aad, ReadOnlySpan<byte> plaintext)
+    /// <param name="mac">Receives the 16-byte CBC-MAC; cleared if the cipher throws.</param>
+    /// <remarks>
+    /// The formatted input is never assembled: B0, the block that starts the associated-data encoding, and each
+    /// zero-padded final block are built on the stack, and the whole blocks in between are chained straight from the
+    /// caller's spans.
+    /// </remarks>
+    private void ComputeCbcMac(ReadOnlySpan<byte> aad, ReadOnlySpan<byte> plaintext, Span<byte> mac)
     {
-        int blockSize = _cipher.BlockSize / 8;
-        byte[] mac = new byte[blockSize];
-
-        byte[]? b0 = null;
-        byte[]? aadEncoded = null;
-        byte[]? block = null;
+        Span<byte> block = stackalloc byte[BlockBytes];
+        mac.Clear();
 
         try
         {
-            // Block B0.
+            // Block B0: flags || nonce || [len(P)]_3, big-endian (q = 3).
             bool hasAad = aad.Length > 0;
-            b0 = new byte[blockSize];
-            b0[0] = hasAad ? BaseB0WithAad : BaseB0NoAad;
-            _nonce.CopyTo(b0, 1);
+            block[0] = hasAad ? BaseB0WithAad : BaseB0NoAad;
+            _nonce.CopyTo(block[1..]);
 
-            // Message length in last 3 bytes (big-endian, q=3).
             uint len = (uint)plaintext.Length;
-            b0[15] = (byte)len;
-            b0[14] = (byte)(len >> 8);
-            b0[13] = (byte)(len >> 16);
-            CbcMacUpdate(mac, b0);
+            block[13] = (byte)(len >> 16);
+            block[14] = (byte)(len >> 8);
+            block[15] = (byte)len;
 
-            // AAD: 2-byte length prefix then AAD bytes, zero-padded to block boundary.
+            CbcChain.Mac(_cipher, block, mac);
+
+            // AAD: 2-byte length prefix then AAD bytes, zero-padded to block boundary. The first block holds the length
+            // and up to fourteen bytes of AAD.
             if (hasAad)
             {
                 if (aad.Length >= 0xFF00)
@@ -375,140 +386,114 @@ public sealed class CcmModeTransform
                         string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Op_NotSupported_AadTooLongForLengthEncoding, 0xFF00, 2));
                 }
 
-                // Encode: 2-byte length + aad + zero-padding to block multiple.
-                int encodedLen = 2 + aad.Length;
-                int padded = ((encodedLen + blockSize - 1) / blockSize) * blockSize;
-                aadEncoded = new byte[padded];
-                aadEncoded[0] = (byte)(aad.Length >> 8);
-                aadEncoded[1] = (byte)aad.Length;
-                aad.CopyTo(aadEncoded.AsSpan(2));
-                for (int i = 0; i < aadEncoded.Length; i += blockSize)
-                    CbcMacUpdate(mac, aadEncoded.AsSpan(i, blockSize));
+                int head = Math.Min(aad.Length, BlockBytes - 2);
+                block.Clear();
+                block[0] = (byte)(aad.Length >> 8);
+                block[1] = (byte)aad.Length;
+                aad[..head].CopyTo(block[2..]);
+                CbcChain.Mac(_cipher, block, mac);
+
+                MacZeroPadded(aad[head..], block, mac);
             }
 
             // Plaintext blocks (zero-padded last block).
-            block = new byte[blockSize];
-            for (int i = 0; i < plaintext.Length; i += blockSize)
-            {
-                CryptographyHelper.Clear(block);
-                plaintext.Slice(i, Math.Min(blockSize, plaintext.Length - i)).CopyTo(block);
-                CbcMacUpdate(mac, block);
-            }
-
-            return mac;
+            MacZeroPadded(plaintext, block, mac);
         }
         catch
         {
             // Zero the partially computed MAC accumulator when the underlying cipher faults mid-MAC,
-            // aligned with EaxModeTransform.ComputeCmac and SivModeTransform.ComputeCmac.
+            // aligned with EaxModeTransform and SivModeTransform.
             CryptographyHelper.Clear(mac);
             throw;
         }
         finally
         {
             CryptographyHelper.Clear(block);
-            CryptographyHelper.Clear(aadEncoded);
-            CryptographyHelper.Clear(b0);
         }
     }
 
     /// <summary>
-    /// XORs <paramref name="block" /> into <paramref name="mac" /> and runs a single AES block through the underlying
-    /// cipher to advance the CBC-MAC state.
+    /// Folds <paramref name="data" /> into the CBC-MAC, zero-padding its final partial block.
     /// </summary>
-    /// <param name="mac">The CBC-MAC accumulator (16 bytes); updated in place.</param>
-    /// <param name="block">The next input block; must be 16 bytes.</param>
-    private void CbcMacUpdate(byte[] mac, ReadOnlySpan<byte> block)
+    /// <param name="data">The data to fold in.</param>
+    /// <param name="block">A 16-byte scratch block for the padded final block.</param>
+    /// <param name="mac">The CBC-MAC state; updated in place.</param>
+    private void MacZeroPadded(ReadOnlySpan<byte> data, Span<byte> block, Span<byte> mac)
     {
-        Span<byte> xored = stackalloc byte[mac.Length];
+        int whole = data.Length & ~(BlockBytes - 1);
+        CbcChain.Mac(_cipher, data[..whole], mac);
 
-        try
+        if (whole < data.Length)
         {
-            for (int i = 0; i < mac.Length; i++) xored[i] = (byte)(mac[i] ^ block[i]);
-            _cipher.Encrypt(xored, mac);
-        }
-        finally
-        {
-            CryptographyHelper.Clear(xored);
+            block.Clear();
+            data[whole..].CopyTo(block);
+            CbcChain.Mac(_cipher, block, mac);
         }
     }
 
     /// <summary>
-    /// Builds counter block A_i (flags | nonce | counter), encrypts it, and XORs with input.
+    /// Encrypts counter block <c>A_i = flags || nonce || [i]_3</c>.
     /// </summary>
-    /// <param name="input">The input bytes to XOR with the keystream.</param>
-    /// <param name="counterIndex">The CTR block index that produces the keystream block.</param>
-    /// <returns>A fresh array holding <c>input XOR keystream</c>.</returns>
-    private byte[] XorWithCtrBlock(ReadOnlySpan<byte> input, int counterIndex)
+    /// <param name="counterIndex">The counter-block index.</param>
+    /// <param name="destination">Receives the 16-byte encrypted counter block.</param>
+    private void EncryptCounterBlock(int counterIndex, Span<byte> destination)
     {
-        int blockSize = _cipher.BlockSize / 8;
-        byte[] ctr = new byte[blockSize];
-
-        try
-        {
-            ctr[0] = CounterFlagByte;
-
-            _nonce.CopyTo(ctr, 1);
-
-            ctr[15] = (byte)counterIndex;
-            ctr[14] = (byte)(counterIndex >> 8);
-            ctr[13] = (byte)(counterIndex >> 16);
-
-            byte[] ks = new byte[blockSize];
-            _cipher.Encrypt(ctr, ks);
-
-            for (int i = 0; i < Math.Min(input.Length, blockSize); i++)
-                ks[i] ^= input[i];
-
-            return ks;
-        }
-        finally
-        {
-            CryptographyHelper.Clear(ctr);
-        }
+        Span<byte> counter = stackalloc byte[BlockBytes];
+        WriteCounterBlock(counter, (uint)counterIndex);
+        _cipher.Encrypt(counter, destination);
     }
 
     /// <summary>
-    /// Applies CTR-mode encryption starting from counter-block index <paramref name="startIndex" />, writing
-    /// <c>input XOR keystream</c> into <paramref name="output" />.
+    /// Applies CTR-mode encryption from counter-block index 1, writing <c>input XOR keystream</c> into
+    /// <paramref name="output" />, with the counter blocks encrypted a run at a time.
     /// </summary>
     /// <param name="input">The plaintext (or ciphertext) bytes to XOR with the keystream.</param>
     /// <param name="output">The destination span; must be at least <paramref name="input" />.Length bytes.</param>
-    /// <param name="startIndex">The starting counter-block index in the CTR sequence.</param>
-    private void EncryptCtr(ReadOnlySpan<byte> input, Span<byte> output, int startIndex)
+    /// <remarks>
+    /// The payload is at most <see cref="MaxPlaintextBytes" /> bytes, so the 24-bit counter never wraps.
+    /// </remarks>
+    [SkipLocalsInit]
+    private void ApplyCtr(ReadOnlySpan<byte> input, Span<byte> output)
     {
-        int blockSize = _cipher.BlockSize / 8;
-        Span<byte> ks = stackalloc byte[blockSize];
-        Span<byte> ctr = stackalloc byte[blockSize];
+        Span<byte> counters = stackalloc byte[CounterKeystream.BatchBytes];
+        Span<byte> keystream = stackalloc byte[CounterKeystream.BatchBytes];
+        uint index = 1;
+        int used = 0;
 
         try
         {
-            for (int offset = 0; offset < input.Length; offset += blockSize)
+            int offset = 0;
+            while (offset < input.Length)
             {
-                int idx = startIndex + (offset / blockSize);
+                int length = Math.Min(counters.Length, input.Length - offset);
+                int filled = (length + BlockBytes - 1) & ~(BlockBytes - 1);
+                for (int position = 0; position < filled; position += BlockBytes)
+                    WriteCounterBlock(counters.Slice(position, BlockBytes), index++);
 
-                ctr.Clear();
-                ctr[0] = CounterFlagByte;
-
-                _nonce.CopyTo(ctr[1..]);
-
-                ctr[15] = (byte)idx;
-                ctr[14] = (byte)(idx >> 8);
-                ctr[13] = (byte)(idx >> 16);
-
-                _cipher.Encrypt(ctr, ks);
-
-                int rem = Math.Min(blockSize, input.Length - offset);
-
-                for (int i = 0; i < rem; i++)
-                    output[offset + i] = (byte)(input[offset + i] ^ ks[i]);
+                // Widen the extent to clear before the cipher writes keystream, so a throwing cipher leaves none behind.
+                used = Math.Max(used, filled);
+                CounterKeystream.Apply(_cipher, counters[..filled], keystream, input.Slice(offset, length), output.Slice(offset, length));
+                offset += length;
             }
         }
         finally
         {
-            CryptographyHelper.Clear(ctr);
-            CryptographyHelper.Clear(ks);
+            CryptographyHelper.Clear(keystream[..used]);
         }
+    }
+
+    /// <summary>
+    /// Writes counter block <c>A_i = flags || nonce || [i]_3</c>.
+    /// </summary>
+    /// <param name="destination">The 16-byte destination.</param>
+    /// <param name="index">The counter-block index.</param>
+    private void WriteCounterBlock(Span<byte> destination, uint index)
+    {
+        destination[0] = CounterFlagByte;
+        _nonce.CopyTo(destination[1..]);
+        destination[13] = (byte)(index >> 16);
+        destination[14] = (byte)(index >> 8);
+        destination[15] = (byte)index;
     }
 
     /// <summary>

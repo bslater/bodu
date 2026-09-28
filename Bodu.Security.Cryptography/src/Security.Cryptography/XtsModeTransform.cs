@@ -4,7 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Buffers.Binary;
 using System.Globalization;
+using System.Runtime.CompilerServices;
 
 namespace Bodu.Security.Cryptography;
 
@@ -88,6 +90,9 @@ namespace Bodu.Security.Cryptography;
 public sealed class XtsModeTransform
     : IBlockCipherModeTransform
 {
+    /// <summary>The XTS block size, in bytes.</summary>
+    private const int BlockBytes = 16;
+
     /// <summary>The data cipher (Key₁) used to encrypt or decrypt data blocks.</summary>
     private readonly IBlockCipher _cipher;
 
@@ -145,6 +150,13 @@ public sealed class XtsModeTransform
     }
 
     /// <inheritdoc />
+    /// <remarks>
+    /// The tweaks for a run of up to 4 KiB are computed first, then the run is XORed with them, encrypted or decrypted
+    /// with one multi-block call, and XORed with them again; the output is identical to transforming a block at a time.
+    /// <paramref name="output" /> may be the same memory as <paramref name="input" />. The tweak and scratch buffers
+    /// are cleared before the call returns.
+    /// </remarks>
+    [SkipLocalsInit]
     public int Transform(ReadOnlySpan<byte> input, Span<byte> output, bool encrypt)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
@@ -156,30 +168,51 @@ public sealed class XtsModeTransform
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, 0, input.Length);
         CryptographyThrowHelper.ThrowIfInvalidOverlap(input, output);
 
-        // T_0 = tweakCipher.Encrypt(sector_number)
-        Span<byte> T = stackalloc byte[blockSize];
-        _tweakCipher.Encrypt(_tweak, T);
+        Span<byte> tweaks = stackalloc byte[CounterKeystream.BatchBytes];
+        Span<byte> work = stackalloc byte[CounterKeystream.BatchBytes];
+        Span<byte> initialTweak = stackalloc byte[BlockBytes];
+        int used = 0;
 
-        Span<byte> buf = stackalloc byte[blockSize];
-
-        for (int offset = 0; offset < input.Length; offset += blockSize)
+        try
         {
-            ReadOnlySpan<byte> inBlock = input.Slice(offset, blockSize);
-            Span<byte> outBlock = output.Slice(offset, blockSize);
+            // T_0 = tweakCipher.Encrypt(sector_number)
+            _tweakCipher.Encrypt(_tweak, initialTweak);
+            ulong low = BinaryPrimitives.ReadUInt64LittleEndian(initialTweak);
+            ulong high = BinaryPrimitives.ReadUInt64LittleEndian(initialTweak.Slice(8));
 
-            // XEX: out = cipher(in XOR T) XOR T
-            for (int i = 0; i < blockSize; i++) buf[i] = (byte)(inBlock[i] ^ T[i]);
-            if (encrypt)
-                _cipher.Encrypt(buf, outBlock);
-            else
-                _cipher.Decrypt(buf, outBlock);
-            for (int i = 0; i < blockSize; i++) outBlock[i] ^= T[i];
+            int offset = 0;
+            while (offset < input.Length)
+            {
+                int length = Math.Min(tweaks.Length, input.Length - offset);
+                for (int position = 0; position < length; position += BlockBytes)
+                {
+                    BinaryPrimitives.WriteUInt64LittleEndian(tweaks.Slice(position), low);
+                    BinaryPrimitives.WriteUInt64LittleEndian(tweaks.Slice(position + 8), high);
+                    MultiplyByAlpha(ref low, ref high);
+                }
 
-            // Advance tweak: T = α ⊗ T in GF(2^128), little-endian, poly 0x87 reduction.
-            GfDouble(T);
+                // XEX: out = cipher(in XOR T) XOR T, a run at a time. The run is read into the scratch before any of its
+                // output is written, so exact aliasing is safe.
+                used = Math.Max(used, length);
+                Span<byte> run = output.Slice(offset, length);
+                CryptographyHelper.Xor(input.Slice(offset, length), tweaks[..length], work[..length]);
+                if (encrypt)
+                    _cipher.EncryptBlocks(work[..length], run);
+                else
+                    _cipher.DecryptBlocks(work[..length], run);
+
+                CryptographyHelper.Xor(run, tweaks[..length], run);
+                offset += length;
+            }
+
+            return input.Length;
         }
-
-        return input.Length;
+        finally
+        {
+            CryptographyHelper.Clear(initialTweak);
+            CryptographyHelper.Clear(tweaks[..used]);
+            CryptographyHelper.Clear(work[..used]);
+        }
     }
 
     /// <summary>
@@ -203,22 +236,20 @@ public sealed class XtsModeTransform
     // ── Private helpers ────────────────────────────────────────────────────────────────────────
 
     /// <summary>
-    /// Multiplies <paramref name="t1" /> by α in GF(2^128) using the IEEE 1619 polynomial x^128 + x^7 + x^2 + x + 1,
-    /// with little-endian bit ordering (byte 0 = x^0..x^7).
+    /// Multiplies a tweak by <c>α</c> in <c>GF(2¹²⁸)</c>, in XTS's little-endian representation: a one-bit left shift
+    /// of the 128-bit value, reduced by <c>0x87</c> (<c>x⁷ + x² + x + 1</c>) when the <c>x¹²⁷</c> coefficient shifts
+    /// out.
     /// </summary>
-    /// <param name="t1">The 16-byte tweak block to double in GF(2<sup>128</sup>); updated in place.</param>
-    private static void GfDouble(Span<byte> t1)
+    /// <param name="low">The tweak's low 64 bits; updated in place.</param>
+    /// <param name="high">The tweak's high 64 bits; updated in place.</param>
+    /// <remarks>
+    /// The reduction is masked rather than branched on, so the cost does not depend on the tweak.
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static void MultiplyByAlpha(ref ulong low, ref ulong high)
     {
-        // Left-shift the 128-bit little-endian value. Carry propagates from byte[0] upward.
-        int carry = 0;
-        for (int i = 0; i < t1.Length; i++)
-        {
-            int t = t1[i];
-            t1[i] = (byte)((t << 1) | carry);
-            carry = t >> 7;
-        }
-
-        // If the MSB of byte[15] was set (= x^127 coefficient), reduce by 0x87 (= x^7+x^2+x+1).
-        if (carry != 0) t1[0] ^= 0x87;
+        ulong reduction = 0x87UL & (0UL - (high >> 63));
+        high = (high << 1) | (low >> 63);
+        low = (low << 1) ^ reduction;
     }
 }

@@ -18,7 +18,7 @@ namespace Bodu.Security.Cryptography;
 /// <see cref="ScalarMult(Ed25519Point, ReadOnlySpan{byte})" /> remains the reference path these routines are validated
 /// against.
 /// </remarks>
-internal partial struct Ed25519Point
+internal readonly partial struct Ed25519Point
 {
     /// <summary>The 4-bit window width used by the fixed-base table.</summary>
     private const int WindowBits = 4;
@@ -99,8 +99,9 @@ internal partial struct Ed25519Point
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(baseScalar, 32);
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(pointScalar, 32);
 
-        // pointTable[d] = [d]·point; the base multiples reuse window 0 of the fixed-base table (s_baseTable[0][d] = d·B).
-        var pointTable = new Ed25519Point[WindowSize];
+        // pointTable[d] = [d]·point, on the stack; the base multiples reuse window 0 of the fixed-base table
+        // (s_baseTable[0][d] = d·B).
+        Span<Ed25519Point> pointTable = stackalloc Ed25519Point[WindowSize];
         pointTable[0] = Identity;
         for (int d = 1; d < WindowSize; d++)
             pointTable[d] = pointTable[d - 1].Add(point);
@@ -131,17 +132,30 @@ internal partial struct Ed25519Point
     /// <param name="window">The window's table entries.</param>
     /// <param name="index">The entry to select, in <c>[0, WindowSize)</c>.</param>
     /// <returns>The selected point.</returns>
+    /// <remarks>
+    /// The coordinates are selected one field element at a time, straight from each entry in the table, so that no
+    /// entry is copied whole.
+    /// </remarks>
     private static Ed25519Point SelectWindowEntry(Ed25519Point[] window, int index)
     {
-        Ed25519Point selected = Identity;
+        Curve25519FieldElement x = Curve25519FieldElement.Zero;
+        Curve25519FieldElement y = Curve25519FieldElement.One;
+        Curve25519FieldElement z = Curve25519FieldElement.One;
+        Curve25519FieldElement t = Curve25519FieldElement.Zero;
+
         for (int d = 0; d < WindowSize; d++)
         {
             // 1 when d == index, else 0, computed without a data-dependent branch.
             uint difference = (uint)(d ^ index);
             ulong match = ((difference - 1) >> 31) & 1;
-            ConditionalMove(ref selected, window[d], match);
+
+            ref readonly Ed25519Point entry = ref window[d];
+            Curve25519FieldElement.ConditionalMove(ref x, entry._x, match);
+            Curve25519FieldElement.ConditionalMove(ref y, entry._y, match);
+            Curve25519FieldElement.ConditionalMove(ref z, entry._z, match);
+            Curve25519FieldElement.ConditionalMove(ref t, entry._t, match);
         }
 
-        return selected;
+        return new Ed25519Point(x, y, z, t);
     }
 }

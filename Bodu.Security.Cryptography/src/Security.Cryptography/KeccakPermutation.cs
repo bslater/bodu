@@ -4,7 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Extensions;
+using System.Numerics;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace Bodu.Security.Cryptography;
 
@@ -28,70 +30,150 @@ internal static class KeccakPermutation
         0x8000000080008081UL, 0x8000000000008080UL, 0x0000000080000001UL, 0x8000000080008008UL,
     ];
 
-    /// <summary>ρ (rho) rotation offsets indexed as rho[x + 5y].</summary>
-#pragma warning disable SA1137 // Elements should have the same indentation
-    private static readonly int[] s_rho =
-    [
-         0,  1, 62, 28, 27,
-        36, 44,  6, 55, 20,
-         3, 10, 43, 25, 39,
-        41, 45, 15, 21,  8,
-        18,  2, 61, 56, 14,
-    ];
-
-    /// <summary>π (pi) permutation indices mapping state[i] → B[pi[i]].</summary>
-    private static readonly int[] s_pi =
-    [
-         0, 10, 20,  5, 15,
-        16,  1, 11, 21,  6,
-         7, 17,  2, 12, 22,
-        23,  8, 18,  3, 13,
-        14, 24,  9, 19,  4,
-    ];
-#pragma warning restore SA1137 // Elements should have the same indentation
-
     /// <summary>
     /// Applies the full <c>Keccak-f[1600]</c> permutation — 24 rounds of θ, ρ, π, χ, and ι — to the supplied 25-word
     /// state in place.
     /// </summary>
     /// <param name="state">The 25-element state to permute. Modified in place.</param>
     /// <exception cref="ArgumentException"><paramref name="state" /> is not exactly 25 elements long.</exception>
+    /// <remarks>
+    /// <para>
+    /// The lanes live in locals for all 24 rounds, <c>a{x + 5y}</c> for lane (x, y). Each round computes the five
+    /// column parities and the θ offsets, then builds the next state one output row at a time: ρ and π are folded into
+    /// which θ-adjusted lane, rotated by which constant, lands in each position <c>b{x + 5y}</c>, and χ and ι combine
+    /// each row of <c>b</c> back into <c>a</c>. Every index and rotation is a constant, so there are no table lookups,
+    /// modulo operations, or bounds checks inside the loop.
+    /// </para>
+    /// <para>
+    /// No lane is ever used as an index or a branch condition, so the permutation takes the same time and touches the
+    /// same memory whatever the state holds.
+    /// </para>
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     internal static void Permute(Span<ulong> state)
     {
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(state, StateWords);
 
-        Span<ulong> c = stackalloc ulong[5];
-        Span<ulong> b = stackalloc ulong[StateWords];
+        ref ulong lanes = ref MemoryMarshal.GetReference(state);
+        var a00 = Unsafe.Add(ref lanes, 0);
+        var a01 = Unsafe.Add(ref lanes, 1);
+        var a02 = Unsafe.Add(ref lanes, 2);
+        var a03 = Unsafe.Add(ref lanes, 3);
+        var a04 = Unsafe.Add(ref lanes, 4);
+        var a05 = Unsafe.Add(ref lanes, 5);
+        var a06 = Unsafe.Add(ref lanes, 6);
+        var a07 = Unsafe.Add(ref lanes, 7);
+        var a08 = Unsafe.Add(ref lanes, 8);
+        var a09 = Unsafe.Add(ref lanes, 9);
+        var a10 = Unsafe.Add(ref lanes, 10);
+        var a11 = Unsafe.Add(ref lanes, 11);
+        var a12 = Unsafe.Add(ref lanes, 12);
+        var a13 = Unsafe.Add(ref lanes, 13);
+        var a14 = Unsafe.Add(ref lanes, 14);
+        var a15 = Unsafe.Add(ref lanes, 15);
+        var a16 = Unsafe.Add(ref lanes, 16);
+        var a17 = Unsafe.Add(ref lanes, 17);
+        var a18 = Unsafe.Add(ref lanes, 18);
+        var a19 = Unsafe.Add(ref lanes, 19);
+        var a20 = Unsafe.Add(ref lanes, 20);
+        var a21 = Unsafe.Add(ref lanes, 21);
+        var a22 = Unsafe.Add(ref lanes, 22);
+        var a23 = Unsafe.Add(ref lanes, 23);
+        var a24 = Unsafe.Add(ref lanes, 24);
 
         for (int round = 0; round < 24; round++)
         {
-            // θ (theta): column parity and mixing.
-            for (int x = 0; x < 5; x++)
-                c[x] = state[x] ^ state[x + 5] ^ state[x + 10] ^ state[x + 15] ^ state[x + 20];
+            // θ: the parity of each column, and the offset each column receives from its neighbors.
+            var c0 = a00 ^ a05 ^ a10 ^ a15 ^ a20;
+            var c1 = a01 ^ a06 ^ a11 ^ a16 ^ a21;
+            var c2 = a02 ^ a07 ^ a12 ^ a17 ^ a22;
+            var c3 = a03 ^ a08 ^ a13 ^ a18 ^ a23;
+            var c4 = a04 ^ a09 ^ a14 ^ a19 ^ a24;
+            var d0 = c4 ^ BitOperations.RotateLeft(c1, 1);
+            var d1 = c0 ^ BitOperations.RotateLeft(c2, 1);
+            var d2 = c1 ^ BitOperations.RotateLeft(c3, 1);
+            var d3 = c2 ^ BitOperations.RotateLeft(c4, 1);
+            var d4 = c3 ^ BitOperations.RotateLeft(c0, 1);
 
-            for (int x = 0; x < 5; x++)
-            {
-                ulong d = c[(x + 4) % 5] ^ c[(x + 1) % 5].RotateBitsLeftUnchecked(1);
-                for (int y = 0; y < 5; y++)
-                    state[x + (y * 5)] ^= d;
-            }
+            // ρ and π: lane (x, y), θ-adjusted and rotated by its offset, moves to position (y, 2x + 3y).
+            var b00 = a00 ^ d0;
+            var b01 = BitOperations.RotateLeft(a06 ^ d1, 44);
+            var b02 = BitOperations.RotateLeft(a12 ^ d2, 43);
+            var b03 = BitOperations.RotateLeft(a18 ^ d3, 21);
+            var b04 = BitOperations.RotateLeft(a24 ^ d4, 14);
+            var b05 = BitOperations.RotateLeft(a03 ^ d3, 28);
+            var b06 = BitOperations.RotateLeft(a09 ^ d4, 20);
+            var b07 = BitOperations.RotateLeft(a10 ^ d0, 3);
+            var b08 = BitOperations.RotateLeft(a16 ^ d1, 45);
+            var b09 = BitOperations.RotateLeft(a22 ^ d2, 61);
+            var b10 = BitOperations.RotateLeft(a01 ^ d1, 1);
+            var b11 = BitOperations.RotateLeft(a07 ^ d2, 6);
+            var b12 = BitOperations.RotateLeft(a13 ^ d3, 25);
+            var b13 = BitOperations.RotateLeft(a19 ^ d4, 8);
+            var b14 = BitOperations.RotateLeft(a20 ^ d0, 18);
+            var b15 = BitOperations.RotateLeft(a04 ^ d4, 27);
+            var b16 = BitOperations.RotateLeft(a05 ^ d0, 36);
+            var b17 = BitOperations.RotateLeft(a11 ^ d1, 10);
+            var b18 = BitOperations.RotateLeft(a17 ^ d2, 15);
+            var b19 = BitOperations.RotateLeft(a23 ^ d3, 56);
+            var b20 = BitOperations.RotateLeft(a02 ^ d2, 62);
+            var b21 = BitOperations.RotateLeft(a08 ^ d3, 55);
+            var b22 = BitOperations.RotateLeft(a14 ^ d4, 39);
+            var b23 = BitOperations.RotateLeft(a15 ^ d0, 41);
+            var b24 = BitOperations.RotateLeft(a21 ^ d1, 2);
 
-            // ρ and π combined: rotate each lane and scatter to the π-permuted position.
-            for (int i = 0; i < StateWords; i++)
-                b[s_pi[i]] = state[i].RotateBitsLeftUnchecked(s_rho[i]);
-
-            // χ (chi): non-linear mixing within each row.
-            for (int y = 0; y < 5; y++)
-            {
-                for (int x = 0; x < 5; x++)
-                    state[x + (y * 5)] = b[x + (y * 5)] ^ ((~b[((x + 1) % 5) + (y * 5)]) & b[((x + 2) % 5) + (y * 5)]);
-            }
-
-            // ι (iota): XOR a round constant into lane (0,0).
-            state[0] ^= s_roundConstants[round];
+            // χ and ι: each output lane mixes the next two in its row; the round constant enters lane (0, 0).
+            a00 = b00 ^ (~b01 & b02) ^ s_roundConstants[round];
+            a01 = b01 ^ (~b02 & b03);
+            a02 = b02 ^ (~b03 & b04);
+            a03 = b03 ^ (~b04 & b00);
+            a04 = b04 ^ (~b00 & b01);
+            a05 = b05 ^ (~b06 & b07);
+            a06 = b06 ^ (~b07 & b08);
+            a07 = b07 ^ (~b08 & b09);
+            a08 = b08 ^ (~b09 & b05);
+            a09 = b09 ^ (~b05 & b06);
+            a10 = b10 ^ (~b11 & b12);
+            a11 = b11 ^ (~b12 & b13);
+            a12 = b12 ^ (~b13 & b14);
+            a13 = b13 ^ (~b14 & b10);
+            a14 = b14 ^ (~b10 & b11);
+            a15 = b15 ^ (~b16 & b17);
+            a16 = b16 ^ (~b17 & b18);
+            a17 = b17 ^ (~b18 & b19);
+            a18 = b18 ^ (~b19 & b15);
+            a19 = b19 ^ (~b15 & b16);
+            a20 = b20 ^ (~b21 & b22);
+            a21 = b21 ^ (~b22 & b23);
+            a22 = b22 ^ (~b23 & b24);
+            a23 = b23 ^ (~b24 & b20);
+            a24 = b24 ^ (~b20 & b21);
         }
 
-        CryptographyHelper.Clear(c);
-        CryptographyHelper.Clear(b);
+        Unsafe.Add(ref lanes, 0) = a00;
+        Unsafe.Add(ref lanes, 1) = a01;
+        Unsafe.Add(ref lanes, 2) = a02;
+        Unsafe.Add(ref lanes, 3) = a03;
+        Unsafe.Add(ref lanes, 4) = a04;
+        Unsafe.Add(ref lanes, 5) = a05;
+        Unsafe.Add(ref lanes, 6) = a06;
+        Unsafe.Add(ref lanes, 7) = a07;
+        Unsafe.Add(ref lanes, 8) = a08;
+        Unsafe.Add(ref lanes, 9) = a09;
+        Unsafe.Add(ref lanes, 10) = a10;
+        Unsafe.Add(ref lanes, 11) = a11;
+        Unsafe.Add(ref lanes, 12) = a12;
+        Unsafe.Add(ref lanes, 13) = a13;
+        Unsafe.Add(ref lanes, 14) = a14;
+        Unsafe.Add(ref lanes, 15) = a15;
+        Unsafe.Add(ref lanes, 16) = a16;
+        Unsafe.Add(ref lanes, 17) = a17;
+        Unsafe.Add(ref lanes, 18) = a18;
+        Unsafe.Add(ref lanes, 19) = a19;
+        Unsafe.Add(ref lanes, 20) = a20;
+        Unsafe.Add(ref lanes, 21) = a21;
+        Unsafe.Add(ref lanes, 22) = a22;
+        Unsafe.Add(ref lanes, 23) = a23;
+        Unsafe.Add(ref lanes, 24) = a24;
     }
 }

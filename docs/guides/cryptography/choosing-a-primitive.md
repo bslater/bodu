@@ -13,9 +13,9 @@ title: Choosing a primitive
 
 | Algorithm | Type | Output (bits) | Keyed mode | Fast path | Standard | Use it for |
 |---|---|---|---|---|---|---|
-| BLAKE2b | <xref:Bodu.Security.Cryptography.Blake2b> | 128 / 160 / 192 / 224 / 256 / 384 / 512 — default **512** | Yes — `Key` of 1–64 bytes (RFC 7693 §2.8 MAC mode) | AVX-512 (VL) | RFC 7693 | The general-purpose fast digest on 64-bit hosts; keyed hashing without HMAC. |
-| BLAKE2s | <xref:Bodu.Security.Cryptography.Blake2s> | 128 / 160 / 192 / 224 / 256 — default **256** | Yes — `Key` of 1–32 bytes | AVX-512 (VL) | RFC 7693 | Same as BLAKE2b on 32-bit or constrained hosts. |
-| BLAKE3 | <xref:Bodu.Security.Cryptography.Blake3> | **256** (fixed) | No — keyed and KDF modes are not exposed | AVX-512 (VL) | BLAKE3 specification (no RFC) | Tree-parallel digest of large inputs; the fixed-output subset only. |
+| BLAKE2b | <xref:Bodu.Security.Cryptography.Blake2b> | 128 / 160 / 192 / 224 / 256 / 384 / 512 — default **512** | Yes — `Key` of 1–64 bytes (RFC 7693 §2.8 MAC mode) | AVX-512 (VL), AVX2, SSSE3, AdvSimd | RFC 7693 | The general-purpose fast digest on 64-bit hosts; keyed hashing without HMAC. |
+| BLAKE2s | <xref:Bodu.Security.Cryptography.Blake2s> | 128 / 160 / 192 / 224 / 256 — default **256** | Yes — `Key` of 1–32 bytes | AVX-512 (VL), SSSE3, AdvSimd | RFC 7693 | Same as BLAKE2b on 32-bit or constrained hosts. |
+| BLAKE3 | <xref:Bodu.Security.Cryptography.Blake3> | **256** (fixed) | No — keyed and KDF modes are not exposed | AVX-512, AVX2, SSSE3, AdvSimd, many chunks at once; threads by opt-in | BLAKE3 specification (no RFC) | Tree-parallel digest of large inputs; the fixed-output subset only. |
 | Skein-256 / 512 / 1024 | <xref:Bodu.Security.Cryptography.Skein256> / <xref:Bodu.Security.Cryptography.Skein512> / <xref:Bodu.Security.Cryptography.Skein1024> | 256: 128 / 160 / 224 / 256 · 512: 128 / 160 / 224 / 256 / 384 / 512 · 1024: 384 / 512 / 1024 — default = state width | Yes — `Key` up to 8192 bits | Through the Threefish kernels (AVX-512) | SHA-3 finalist | Skein's native keyed mode (a MAC without HMAC) and the Skein/Threefish family. |
 | Whirlpool | <xref:Bodu.Security.Cryptography.Whirlpool> | **512** | No | — | ISO/IEC 10118-3 | Interoperability with formats that mandate it; three historical `Version` variants. |
 | Tiger | <xref:Bodu.Security.Cryptography.Tiger> | 128 / 160 / 192 — default **192**; Tiger and Tiger2 `Variant` | No | — | Legacy (TTH, Direct Connect) | Interoperability only, including Tiger-Tree hashes through <xref:Bodu.Security.Cryptography.MerkleTree> at `blockSize: 1024`. |
@@ -200,7 +200,7 @@ A raw block cipher gives confidentiality only. For new designs, start from the A
 | Skipjack | <xref:Bodu.Security.Cryptography.Skipjack> | 64 | 80 | — | Withdrawn (NIST) | Interoperability with legacy government-format data only. |
 
 > [!WARNING]
-> Camellia, Twofish, Serpent, Blowfish, Skipjack, Tiger, Whirlpool, and Snefru are table-driven: their control flow is constant-time but the S-box reads are data-dependent, and the source states they are **not hardened** against cache-timing attacks. The ARX designs (BLAKE2, BLAKE3, Threefish, ChaCha20, Salsa20) and the AES path (hardware) do not have that caveat. See [Security guarantees and limitations](security-posture.md#constant-time-claims-by-primitive).
+> Camellia, Twofish, Blowfish, Skipjack, Tiger, Whirlpool, and Snefru are table-driven: their control flow is constant-time but the S-box reads are data-dependent, and the source states they are **not hardened** against cache-timing attacks. The ARX designs (BLAKE2, BLAKE3, Threefish, ChaCha20, Salsa20), Serpent (whose S-boxes are Boolean circuits), and the AES path (hardware) do not have that caveat. See [Security guarantees and limitations](security-posture.md#constant-time-claims-by-primitive).
 
 ## API summary
 

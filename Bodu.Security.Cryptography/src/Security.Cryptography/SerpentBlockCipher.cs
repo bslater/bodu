@@ -31,10 +31,9 @@ namespace Bodu.Security.Cryptography;
 /// its cryptographic properties have not been externally analyzed. Use the canonical <see cref="Serpent128Cipher" />
 /// when Serpent compatibility is required. </note>
 /// <para>
-/// This implementation is constant-time in its control flow, and each 4-bit S-box substitution reads a 16-byte table at
-/// a data-dependent index. The table spans a single cache line, which limits — but does not formally eliminate —
-/// cache-timing exposure; this implementation is <b>not</b> hardened against timing or cache-based side-channel
-/// attacks.
+/// This implementation computes each S-box as a Boolean circuit (Osvik's) and the linear transform with rotations,
+/// shifts and XOR, so it reads no tables and takes no branches that depend on the key or the data: its running time
+/// does not depend on either.
 /// </para>
 /// </remarks>
 public abstract partial class SerpentBlockCipher

@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Reflection;
 using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
@@ -24,6 +25,15 @@ public abstract class StreamAeadTransformContractTests<TAead>
     /// </summary>
     /// <value><see langword="true" /> for the RFC 8439-framed AEADs; <see langword="false" /> for secretbox.</value>
     protected virtual bool SupportsAssociatedData => true;
+
+    /// <summary>
+    /// Gets a value indicating whether the construction under test seals and opens a message without allocating.
+    /// </summary>
+    /// <value>
+    /// <see langword="true" /> for the constructions in the library, which draw their keystream from a value on the
+    /// stack; <see langword="false" /> for a type that creates an engine per message.
+    /// </value>
+    protected virtual bool AllocatesNothingPerMessage => true;
 
     /// <summary>
     /// Creates an instance of the construction under test.
@@ -351,6 +361,93 @@ public abstract class StreamAeadTransformContractTests<TAead>
         {
             _ = dec.Decrypt(buffer.AsSpan(0, sealed_.Length), buffer.AsSpan(1, length));
         });
+    }
+
+    /// <summary>
+    /// Verifies that sealing a message allocates nothing on the managed heap: the keystream and the authenticator live
+    /// on the stack, and the key and nonce inside the instance.
+    /// </summary>
+    /// <remarks>
+    /// Measured on the calling thread around the one call, so allocations made by tests running in parallel, and by
+    /// the constructor, do not count. A first message on another instance warms the path up.
+    /// </remarks>
+    [TestMethod]
+    public void Encrypt_WhenSealingAMessage_ShouldAllocateNothing()
+    {
+        if (!AllocatesNothingPerMessage)
+            Assert.Inconclusive("The construction creates an engine for every message.");
+
+        byte[] plaintext = Pattern(1000);
+        byte[] associatedData = SupportsAssociatedData ? Pattern(13) : [];
+        byte[] output = new byte[plaintext.Length + 16];
+        _ = Seal(plaintext, associatedData);
+        using TAead enc = Create(Key(), Nonce());
+
+        long before = GC.GetAllocatedBytesForCurrentThread();
+        _ = enc.Encrypt(plaintext, output, associatedData);
+        long allocated = GC.GetAllocatedBytesForCurrentThread() - before;
+
+        Assert.AreEqual(0L, allocated, $"Encrypt allocated {allocated} bytes.");
+    }
+
+    /// <summary>
+    /// Verifies that opening a message allocates nothing on the managed heap.
+    /// </summary>
+    /// <remarks>
+    /// Measured on the calling thread around the one call, as for <see cref="Encrypt_WhenSealingAMessage_ShouldAllocateNothing" />.
+    /// </remarks>
+    [TestMethod]
+    public void Decrypt_WhenOpeningAMessage_ShouldAllocateNothing()
+    {
+        if (!AllocatesNothingPerMessage)
+            Assert.Inconclusive("The construction creates an engine for every message.");
+
+        byte[] associatedData = SupportsAssociatedData ? Pattern(13) : [];
+        byte[] sealed_ = Seal(Pattern(1000), associatedData);
+        byte[] output = new byte[sealed_.Length - 16];
+        _ = Open(sealed_, associatedData);
+        using TAead dec = Create(Key(), Nonce());
+
+        long before = GC.GetAllocatedBytesForCurrentThread();
+        _ = dec.Decrypt(sealed_, output, associatedData);
+        long allocated = GC.GetAllocatedBytesForCurrentThread() - before;
+
+        Assert.AreEqual(0L, allocated, $"Decrypt allocated {allocated} bytes.");
+    }
+
+    /// <summary>
+    /// Verifies that the construction's engine members agree with the path <see cref="IAeadTransform.Encrypt" /> and
+    /// <see cref="IAeadTransform.Decrypt" /> take: the engine from <c>CreateEngine</c>, sealed through <c>SealCore</c>,
+    /// produces the output of <see cref="IAeadTransform.Encrypt" />, and opened through <c>OpenCore</c> recovers the
+    /// plaintext.
+    /// </summary>
+    /// <remarks>
+    /// The constructions in the library seal and open without an engine, so this holds the protected members they
+    /// still expose to the keystream and framing the allocation-free path applies.
+    /// </remarks>
+    [TestMethod]
+    public void CreateEngine_WhenUsedWithSealCoreAndOpenCore_ShouldMatchEncryptAndDecrypt()
+    {
+        byte[] plaintext = Pattern(300);
+        byte[] associatedData = SupportsAssociatedData ? Pattern(21) : [];
+        byte[] expected = Seal(plaintext, associatedData);
+        byte[] actual = new byte[expected.Length];
+        byte[] recovered = new byte[plaintext.Length];
+        using TAead aead = Create(Key(), Nonce());
+        MethodInfo createEngine = typeof(TAead).GetMethod("CreateEngine", BindingFlags.Instance | BindingFlags.NonPublic)!;
+        Poly1305AeadFraming sealCore = typeof(TAead).GetMethod("SealCore", BindingFlags.Instance | BindingFlags.NonPublic)!
+            .CreateDelegate<Poly1305AeadFraming>(aead);
+        Poly1305AeadFraming openCore = typeof(TAead).GetMethod("OpenCore", BindingFlags.Instance | BindingFlags.NonPublic)!
+            .CreateDelegate<Poly1305AeadFraming>(aead);
+
+        using (var engine = (IStreamCipher)createEngine.Invoke(aead, null)!)
+            _ = sealCore(engine, associatedData, plaintext, actual);
+
+        using (var engine = (IStreamCipher)createEngine.Invoke(aead, null)!)
+            _ = openCore(engine, associatedData, actual, recovered);
+
+        CollectionAssert.AreEqual(expected, actual);
+        CollectionAssert.AreEqual(plaintext, recovered);
     }
 
     /// <summary>

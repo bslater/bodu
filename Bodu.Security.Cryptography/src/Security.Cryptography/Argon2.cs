@@ -23,9 +23,22 @@ namespace Bodu.Security.Cryptography;
 /// variant named in the string.
 /// </para>
 /// <para>
-/// This implementation computes lanes sequentially; results are identical to a multi-threaded implementation for any
-/// degree of parallelism. It is not independently audited and offers best-effort, not guaranteed, side-channel
-/// resistance.
+/// A derivation fills its lanes on several threads when that pays: up to <see cref="Argon2Parameters.Parallelism" />
+/// threads, bounded by the processor count, once each lane's share of a pass is large enough to be worth dividing (in
+/// the region of 1 MiB). The calling thread always takes part, so a derivation never waits on an idle thread pool, and
+/// the tag never depends on the threads used. <see cref="MaxDegreeOfParallelism" /> bounds a derivation's threads for
+/// callers that already run many derivations at once.
+/// </para>
+/// <para>
+/// The memory matrix is held in native memory and reused across derivations, so a derivation neither allocates it on
+/// the collected heap nor waits for it to be zeroed. Up to one matrix per processor stays reserved — cleared — for up
+/// to thirty seconds after the last derivation; the <c>Bodu.Security.Cryptography.Argon2.DisableMatrixReuse</c>
+/// <see cref="AppContext" /> switch releases each matrix as soon as its derivation ends instead. Every block of the
+/// matrix and every buffer holding a password-derived value is cleared before it is released; values the JIT keeps in
+/// registers or its own stack slots are beyond the library's reach.
+/// </para>
+/// <para>
+/// This implementation is not independently audited and offers best-effort, not guaranteed, side-channel resistance.
 /// </para>
 /// </remarks>
 public abstract class Argon2
@@ -48,11 +61,35 @@ public abstract class Argon2
     /// The version code in <paramref name="parameters" /> is neither 0x10 nor 0x13.
     /// </exception>
     protected Argon2(Argon2Parameters parameters)
+        : this(parameters, maxDegreeOfParallelism: -1)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Argon2" /> class with the specified cost parameters and bound on
+    /// the threads each derivation may use.
+    /// </summary>
+    /// <param name="parameters">The cost and auxiliary parameters governing the derivation.</param>
+    /// <param name="maxDegreeOfParallelism">
+    /// The greatest number of threads one derivation may use, the calling thread included; <c>-1</c> lets the library
+    /// choose.
+    /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="parameters" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// A cost parameter in <paramref name="parameters" /> falls outside the range permitted by RFC 9106, or
+    /// <paramref name="maxDegreeOfParallelism" /> is zero or less than <c>-1</c>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// The version code in <paramref name="parameters" /> is neither 0x10 nor 0x13.
+    /// </exception>
+    private protected Argon2(Argon2Parameters parameters, int maxDegreeOfParallelism)
     {
         ThrowHelper.ThrowIfNull(parameters);
+        CryptographyThrowHelper.ThrowIfDegreeOfParallelismInvalid(maxDegreeOfParallelism);
         parameters.Validate();
 
         Parameters = parameters;
+        MaxDegreeOfParallelism = maxDegreeOfParallelism;
     }
 
     /// <summary>
@@ -60,6 +97,17 @@ public abstract class Argon2
     /// </summary>
     /// <value>The <see cref="Argon2Parameters" /> supplied at construction.</value>
     public Argon2Parameters Parameters { get; }
+
+    /// <summary>
+    /// Gets the greatest number of threads one derivation by this instance may use, the calling thread included.
+    /// </summary>
+    /// <value>
+    /// <c>-1</c>, the default, when the library chooses: up to <see cref="Argon2Parameters.Parallelism" /> threads,
+    /// bounded by the processor count, when the lanes are large enough to be worth dividing. <c>1</c> confines every
+    /// derivation to the calling thread; a larger value bounds the threads. A derivation never uses more threads than
+    /// it has lanes, and the tag never depends on this value.
+    /// </value>
+    public int MaxDegreeOfParallelism { get; }
 
     /// <summary>
     /// Gets the variant code that selects the reference-indexing strategy for this instance.
@@ -98,9 +146,38 @@ public abstract class Argon2
     /// <exception cref="FormatException">
     /// <paramref name="encoded" /> is not a well-formed Argon2 PHC string.
     /// </exception>
-    public static bool Verify(string encoded, ReadOnlySpan<byte> password, ReadOnlySpan<byte> secret)
+    public static bool Verify(string encoded, ReadOnlySpan<byte> password, ReadOnlySpan<byte> secret) =>
+        Verify(encoded, password, secret, maxDegreeOfParallelism: -1);
+
+    /// <summary>
+    /// Verifies a password against an Argon2 PHC encoded-hash string using the supplied secret key, with a bound on the
+    /// threads the derivation may use.
+    /// </summary>
+    /// <param name="encoded">The PHC encoded-hash string produced by an Argon2 variant.</param>
+    /// <param name="password">The password to verify.</param>
+    /// <param name="secret">The secret key (pepper) used when the hash was produced; empty when none was used.</param>
+    /// <param name="maxDegreeOfParallelism">
+    /// The greatest number of threads the derivation may use, the calling thread included; <c>-1</c> lets the library
+    /// choose.
+    /// </param>
+    /// <returns>
+    /// <see langword="true" /> if the password matches the encoded hash; otherwise, <see langword="false" />.
+    /// </returns>
+    /// <exception cref="ArgumentNullException"><paramref name="encoded" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="maxDegreeOfParallelism" /> is zero or less than <c>-1</c>.
+    /// </exception>
+    /// <exception cref="FormatException">
+    /// <paramref name="encoded" /> is not a well-formed Argon2 PHC string.
+    /// </exception>
+    /// <remarks>
+    /// The bound serves a service that verifies many passwords at once and gains nothing when each derivation spreads
+    /// across every core. The result never depends on it.
+    /// </remarks>
+    public static bool Verify(string encoded, ReadOnlySpan<byte> password, ReadOnlySpan<byte> secret, int maxDegreeOfParallelism)
     {
         ThrowHelper.ThrowIfNull(encoded);
+        CryptographyThrowHelper.ThrowIfDegreeOfParallelismInvalid(maxDegreeOfParallelism);
 
         Argon2EncodedHash parsed = Decode(encoded);
 
@@ -120,7 +197,7 @@ public abstract class Argon2
         byte[] computed = new byte[parsed.Hash.Length];
         try
         {
-            Argon2Core.DeriveTag(parsed.Type, parameters, password, parsed.Salt, computed);
+            Argon2Core.DeriveTag(parsed.Type, parameters, password, parsed.Salt, computed, maxDegreeOfParallelism);
             return CryptographicOperations.FixedTimeEquals(computed, parsed.Hash);
         }
         finally
@@ -154,7 +231,7 @@ public abstract class Argon2
                 nameof(destination));
         }
 
-        Argon2Core.DeriveTag(Type, Parameters, password, salt, destination);
+        Argon2Core.DeriveTag(Type, Parameters, password, salt, destination, MaxDegreeOfParallelism);
     }
 
     /// <summary>
@@ -169,7 +246,7 @@ public abstract class Argon2
         ThrowIfSaltTooShort(salt);
 
         byte[] tag = new byte[Parameters.TagLength];
-        Argon2Core.DeriveTag(Type, Parameters, password, salt, tag);
+        Argon2Core.DeriveTag(Type, Parameters, password, salt, tag, MaxDegreeOfParallelism);
         return tag;
     }
 
@@ -201,7 +278,7 @@ public abstract class Argon2
 
         try
         {
-            Argon2Core.DeriveTag(Type, Parameters, password, salt, tag);
+            Argon2Core.DeriveTag(Type, Parameters, password, salt, tag, MaxDegreeOfParallelism);
 
             return Encode(Type, Parameters, salt, tag);
         }

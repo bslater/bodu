@@ -418,3 +418,98 @@ jobs:
           path: TestResults/**/*.trx
           reporter: dotnet-trx
           fail-on-error: false
+
+  # The job above runs every suite on x64, where the Argon2 AdvSimd kernel and the GHASH PMULL kernel cannot
+  # execute. This one runs the two cryptography suites on GitHub's hosted ARM64 runner (free for public
+  # repositories), on both frameworks, so both kernels are held to the same vectors as the x64 ones and the SIMD
+  # opt-out is proven on ARM64 too. SimdCapabilitiesTests fails if the AdvSimd gate is closed here, so the job cannot
+  # silently fall back to the scalar Argon2 kernel; the PMULL gate opens wherever the processor lists 'pmull' among
+  # the features the step below reports. It proves correctness; performance is measured separately.
+  build-test-arm64:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 30
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
+
+    env:
+      TEST_PROJECTS: >-
+        Bodu.Security.Cryptography/test/Bodu.Security.Cryptography.Test.csproj
+        Bodu.Security.Cryptography.Simd.Test/test/Bodu.Security.Cryptography.Simd.Test.csproj
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.x
+            10.0.x
+
+      - name: Pack Bodu.CodeStyle.XmlDocumentation analyzer (local feed)
+        working-directory: Bodu.CodeStyle
+        run: |
+          dotnet pack Bodu.CodeStyle.XmlDocumentation/Bodu.CodeStyle.XmlDocumentation.csproj \
+            --configuration Release \
+            --output "${{ github.workspace }}/local-packages"
+
+      - name: Report processor
+        run: |
+          uname -m
+          grep -m1 -i 'features' /proc/cpuinfo || true
+
+      - name: Restore
+        run: |
+          for proj in $TEST_PROJECTS; do
+            echo "::group::Restore $proj"
+            dotnet restore "$proj"
+            echo "::endgroup::"
+          done
+
+      - name: Build
+        run: |
+          for proj in $TEST_PROJECTS; do
+            echo "::group::Build $proj"
+            dotnet build "$proj" --configuration Release --no-restore
+            echo "::endgroup::"
+          done
+
+      - name: Test
+        run: |
+          status=0
+
+          for proj in $TEST_PROJECTS; do
+            name=$(basename "$proj" .csproj)
+
+            echo "::group::Test $name"
+
+            dotnet test "$proj" \
+              --configuration Release \
+              --no-build \
+              --settings test.runsettings \
+              --results-directory "${{ github.workspace }}/TestResults/$name" \
+              --logger "trx;LogFileName=$name.trx" \
+              --logger "console;verbosity=normal" || status=$?
+
+            echo "::endgroup::"
+          done
+
+          exit $status
+
+      - name: Upload TRX artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-trx-arm64
+          path: TestResults/**/*.trx
+          retention-days: 14
+          if-no-files-found: error
+
+      - name: Publish test report
+        if: always()
+        uses: dorny/test-reporter@v1
+        with:
+          name: MSTest Results (ARM64)
+          path: TestResults/**/*.trx
+          reporter: dotnet-trx
+          fail-on-error: false

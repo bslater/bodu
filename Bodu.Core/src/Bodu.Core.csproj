@@ -16,7 +16,8 @@
       - Bodu.Core.Test               : test project (ConcurrentHashSet internal ctor, ClampDefaultConcurrencyLevel,
                                        XorShiftRandom ScaleToUnitInterval / BoundedNextUInt32 helpers, etc.).
       - Bodu.Globalization.Calendar  : DateTimeExtensions.TicksPerDay.
-      - Bodu.Security.Cryptography   : RotateBitsRightUnchecked numeric extensions.
+      - Bodu.Security.Cryptography   : the *Unchecked numeric extensions (RotateBitsLeftUnchecked /
+                                       RotateBitsRightUnchecked in the cipher and hash cores).
       - Bodu.IO.Hashing              : ResourceStrings, RotateBitsRightUnchecked.
     Drop an entry only after a fresh `dotnet build` of the corresponding sibling confirms no internal use.
   -->

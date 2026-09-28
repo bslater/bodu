@@ -122,4 +122,33 @@ public sealed partial class CtrModeTransformTests
             });
         }
     }
+
+    /// <summary>
+    /// Verifies that when the counter wraps partway through a run of counters, the blocks before the wrap are written
+    /// exactly as block-at-a-time processing writes them, the rest of the output is left untouched, and the call throws
+    /// <see cref="CryptographicException" />.
+    /// </summary>
+    [TestMethod]
+    public void Transform_WhenCounterWrapsInsideARun_ShouldWriteTheBlocksBeforeTheWrapThenThrow()
+    {
+        using var cipher = new AesBlockCipher(new byte[16]);
+        using var transform = new CtrModeTransform(cipher, new byte[16]);
+        byte[] nearMax = new byte[16];
+        Array.Fill(nearMax, (byte)0xFF);
+        nearMax[^1] = 0xFD;
+        typeof(CtrModeTransform).GetField("_counter", BindingFlags.NonPublic | BindingFlags.Instance)!.SetValue(transform, nearMax.Clone());
+
+        byte[] input = new byte[16 * 5];
+        new Random(5).NextBytes(input);
+        byte[] output = new byte[input.Length];
+
+        Assert.ThrowsExactly<CryptographicException>(() =>
+        {
+            transform.Transform(input, output, encrypt: true);
+        });
+
+        byte[] expected = ReferenceKeystreamXor(cipher, nearMax, input.AsSpan(0, 16 * 3).ToArray(), [16 * 3]);
+        CollectionAssert.AreEqual(expected, output[..(16 * 3)], "the three blocks before the wrap");
+        CollectionAssert.AreEqual(new byte[16 * 2], output[(16 * 3)..], "the blocks after the wrap");
+    }
 }

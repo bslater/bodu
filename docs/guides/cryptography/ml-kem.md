@@ -76,6 +76,8 @@ restored.ImportDecapsulationKey(decapsulationKey);
 
 `ImportDecapsulationKey` and `ImportEncapsulationKey` apply the FIPS 203 §7.3 hash-consistency and §7.2 modulus checks respectively, throwing <xref:System.ArgumentException> on a malformed or wrong-length key.
 
+An instance keeps what FIPS 203 derives from its key on every operation — the matrix Â, the decoded vectors t̂ and ŝ, and H(ek) — from the moment the key is generated or imported, so reuse one instance for many encapsulations or decapsulations rather than importing the key for each. Beside the encoded keys these take about 8, 15 and 24 KiB for ML-KEM-512, 768 and 1024, or 6, 12 and 20 KiB for an encapsulation key alone; the secret vector is zeroed with the decapsulation key when the instance is disposed.
+
 ## Implicit rejection — decapsulation does not throw on tampering
 
 A tampered ciphertext of the **correct length** does not throw. Per FIPS 203, `Decapsulate` silently returns an unrelated key (the implicit-rejection value), so an attacker cannot use decapsulation failures as an oracle. Both parties simply end up with different secrets, and the mismatch surfaces later when the symmetric session fails to authenticate. Only a *wrong-length* ciphertext throws <xref:System.ArgumentException>.

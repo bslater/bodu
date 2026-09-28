@@ -89,15 +89,6 @@ public sealed partial class Blake2b
     /// <summary>Convenience constant for the byte length of <see cref="BlockSizeValue" />, used when slicing or allocating <see cref="byte" /> buffers from the bit-valued constant.</summary>
     private const int BlockSizeBytesValue = BlockSizeValue / 8;
 
-    /// <summary>The SHA-512 initialization constants used as the BLAKE2b IV.</summary>
-    private static readonly ulong[] s_iv =
-    [
-        0x6A09E667F3BCC908UL, 0xBB67AE8584CAA73BUL,
-        0x3C6EF372FE94F82BUL, 0xA54FF53A5F1D36F1UL,
-        0x510E527FADE682D1UL, 0x9B05688C2B3E6C1FUL,
-        0x1F83D9ABFB41BD6BUL, 0x5BE0CD19137E2179UL,
-    ];
-
     /// <summary>The eight 64-bit internal hash state words.</summary>
     private readonly ulong[] _h = new ulong[8];
 
@@ -232,82 +223,11 @@ public sealed partial class Blake2b
     /// <see langword="true" /> if this is the final block; causes the finalization flag word to be inverted.
     /// </param>
     /// <remarks>
-    /// Dispatches to an AVX-512 vectorised implementation when supported by the host, falling back to a scalar
-    /// reference implementation otherwise. Dispatch is gated by <see cref="SimdCapabilities.Avx512FVL" />, which
-    /// combines the hardware intrinsic with the process-wide SIMD opt-out; on hosts without AVX-512 it still folds to a
-    /// compile-time constant that removes the branch, otherwise it reduces to a single cached-boolean load.
+    /// Compression runs on the widest kernel <see cref="Blake2bCore" /> selects: AVX-512, then AVX2, then the scalar
+    /// kernel, each gate honoring the process-wide SIMD opt-out.
     /// </remarks>
-    protected override void ProcessBlock(ReadOnlySpan<byte> block, ulong totalBytesIncludingThisBlock, bool isFinal)
-    {
-        if (SimdCapabilities.Avx512FVL)
-        {
-            ProcessBlockAvx512(block, totalBytesIncludingThisBlock, isFinal);
-            return;
-        }
-
-        ProcessBlockScalar(block, totalBytesIncludingThisBlock, isFinal);
-    }
-
-    /// <summary>
-    /// Compresses a single 128-byte block using the scalar reference BLAKE2b implementation.
-    /// </summary>
-    /// <param name="block">The 128-byte block to compress.</param>
-    /// <param name="totalBytesIncludingThisBlock">The cumulative byte count including this block.</param>
-    /// <param name="isFinal"><see langword="true" /> if this is the final block.</param>
-    /// <remarks>
-    /// Invoked by <see cref="ProcessBlock" /> on hosts without AVX-512 + VL support. Implements the reference
-    /// 16-element working-vector form of the BLAKE2b <c>F</c> compression function directly from RFC 7693.
-    /// </remarks>
-    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-    private void ProcessBlockScalar(ReadOnlySpan<byte> block, ulong totalBytesIncludingThisBlock, bool isFinal)
-    {
-        // Read the 16 message words in little-endian order.
-        Span<ulong> m = stackalloc ulong[16];
-        for (int i = 0; i < 16; i++)
-            m[i] = BinaryPrimitives.ReadUInt64LittleEndian(block.Slice(i * 8, 8));
-
-        // Initialize the 16-element working vector.
-        Span<ulong> v =
-        [
-            _h[0],
-            _h[1],
-            _h[2],
-            _h[3],
-            _h[4],
-            _h[5],
-            _h[6],
-            _h[7],
-            s_iv[0],
-            s_iv[1],
-            s_iv[2],
-            s_iv[3],
-            s_iv[4] ^ totalBytesIncludingThisBlock,
-            s_iv[5],          // counter high word (always 0 for messages < 2^64 bytes)
-            s_iv[6],
-            s_iv[7],
-        ];
-        if (isFinal)
-            v[14] = ~v[14];
-
-        // 12 rounds of G mixing.
-        for (int r = 0; r < 12; r++)
-        {
-            byte[] s = Blake2Constants.Sigma[r % 10];
-
-            G(v, 0, 4, 8, 12, m[s[0]], m[s[1]]);
-            G(v, 1, 5, 9, 13, m[s[2]], m[s[3]]);
-            G(v, 2, 6, 10, 14, m[s[4]], m[s[5]]);
-            G(v, 3, 7, 11, 15, m[s[6]], m[s[7]]);
-            G(v, 0, 5, 10, 15, m[s[8]], m[s[9]]);
-            G(v, 1, 6, 11, 12, m[s[10]], m[s[11]]);
-            G(v, 2, 7, 8, 13, m[s[12]], m[s[13]]);
-            G(v, 3, 4, 9, 14, m[s[14]], m[s[15]]);
-        }
-
-        // Fold the working vector back into the hash state.
-        for (int i = 0; i < 8; i++)
-            _h[i] ^= v[i] ^ v[i + 8];
-    }
+    protected override void ProcessBlock(ReadOnlySpan<byte> block, ulong totalBytesIncludingThisBlock, bool isFinal) =>
+        Blake2bCore.Compress(_h, block, totalBytesIncludingThisBlock, isFinal);
 
     /// <inheritdoc />
     /// <remarks>
@@ -346,34 +266,11 @@ public sealed partial class Blake2b
     /// </remarks>
     protected override void InitializeHashState()
     {
-        s_iv.CopyTo(_h, 0);
+        Blake2bCore.InitializationVector.CopyTo(_h);
 
         // Parameter block: fan-out=1, max depth=1, digest length=nn, key length=kk.
         int nn = HashSizeValue / 8;
         int kk = KeyValue?.Length ?? 0;
         _h[0] ^= 0x01010000UL ^ ((ulong)kk << 8) ^ (ulong)nn;
-    }
-
-    /// <summary>
-    /// Applies the BLAKE2b <c>G</c> mixing function to four elements of the working vector.
-    /// </summary>
-    /// <param name="v">The 16-element working vector.</param>
-    /// <param name="a">Index of the first element.</param>
-    /// <param name="b">Index of the second element.</param>
-    /// <param name="c">Index of the third element.</param>
-    /// <param name="d">Index of the fourth element.</param>
-    /// <param name="x">The first message word for this mix.</param>
-    /// <param name="y">The second message word for this mix.</param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static void G(Span<ulong> v, int a, int b, int c, int d, ulong x, ulong y)
-    {
-        v[a] += v[b] + x;
-        v[d] = (v[d] ^ v[a]).RotateBitsRightUnchecked(32);
-        v[c] += v[d];
-        v[b] = (v[b] ^ v[c]).RotateBitsRightUnchecked(24);
-        v[a] += v[b] + y;
-        v[d] = (v[d] ^ v[a]).RotateBitsRightUnchecked(16);
-        v[c] += v[d];
-        v[b] = (v[b] ^ v[c]).RotateBitsRightUnchecked(63);
     }
 }

@@ -77,10 +77,10 @@ internal static partial class MLDsaEngine
         Span<int> packed = stackalloc int[N];
         for (int i = 0; i < N; i++)
         {
+            // Values above (q − 1) / 2 are negative ones folded modulo q. The unfolding is a mask rather than a branch,
+            // since during key generation the coefficients are secret.
             int centered = coefficients[i];
-            if (centered > (Q - 1) / 2)
-                centered -= Q;
-
+            centered -= Q & ((((Q - 1) / 2) - centered) >> 31);
             packed[i] = bound - centered;
         }
 
@@ -133,7 +133,7 @@ internal static partial class MLDsaEngine
             valid &= raw <= maxEncoded;
 
             int centered = bound - raw;
-            destination[i] = ((centered % Q) + Q) % Q;
+            destination[i] = Canonicalize(centered);
         }
 
         return valid;
@@ -144,9 +144,9 @@ internal static partial class MLDsaEngine
     /// cumulative counts (FIPS 204 Algorithm 20 / HintBitPack).
     /// </summary>
     /// <param name="parameters">The parameter set supplying ω and k.</param>
-    /// <param name="hints">The k hint polynomials with entries 0 or 1.</param>
+    /// <param name="hints">The k hint polynomials with entries 0 or 1, polynomial i at offset 256i.</param>
     /// <param name="destination">The span receiving ω + k bytes.</param>
-    private static void HintBitPack(MLDsaParameters parameters, int[][] hints, Span<byte> destination)
+    private static void HintBitPack(MLDsaParameters parameters, ReadOnlySpan<int> hints, Span<byte> destination)
     {
         destination.Clear();
 
@@ -155,7 +155,7 @@ internal static partial class MLDsaEngine
         {
             for (int j = 0; j < N; j++)
             {
-                if (hints[i][j] != 0)
+                if (hints[(i * N) + j] != 0)
                     destination[index++] = (byte)j;
             }
 
@@ -170,14 +170,14 @@ internal static partial class MLDsaEngine
     /// </summary>
     /// <param name="parameters">The parameter set supplying ω and k.</param>
     /// <param name="source">The ω + k encoded bytes.</param>
-    /// <param name="hints">The k hint polynomials receiving entries of 0 or 1.</param>
+    /// <param name="hints">The k hint polynomials receiving entries of 0 or 1, polynomial i at offset 256i.</param>
     /// <returns><see langword="true" /> when the encoding is canonical; otherwise, <see langword="false" />.</returns>
-    private static bool TryHintBitUnpack(MLDsaParameters parameters, ReadOnlySpan<byte> source, int[][] hints)
+    private static bool TryHintBitUnpack(MLDsaParameters parameters, ReadOnlySpan<byte> source, Span<int> hints)
     {
         int index = 0;
         for (int i = 0; i < parameters.K; i++)
         {
-            Array.Clear(hints[i]);
+            hints.Slice(i * N, N).Clear();
 
             int limit = source[parameters.Omega + i];
             if (limit < index || limit > parameters.Omega)
@@ -189,7 +189,7 @@ internal static partial class MLDsaEngine
                 if (index > first && source[index] <= source[index - 1])
                     return false;
 
-                hints[i][source[index]] = 1;
+                hints[(i * N) + source[index]] = 1;
                 index++;
             }
         }
@@ -209,12 +209,12 @@ internal static partial class MLDsaEngine
     /// width (FIPS 204 Algorithm 28 / w1Encode).
     /// </summary>
     /// <param name="parameters">The parameter set supplying the packing width and k.</param>
-    /// <param name="w1">The k high-bits polynomials.</param>
+    /// <param name="w1">The k high-bits polynomials, polynomial i at offset 256i.</param>
     /// <param name="destination">The span receiving 32·bits·k bytes.</param>
-    private static void W1Encode(MLDsaParameters parameters, int[][] w1, Span<byte> destination)
+    private static void W1Encode(MLDsaParameters parameters, ReadOnlySpan<int> w1, Span<byte> destination)
     {
         int bytesPerPoly = 32 * parameters.W1Bits;
         for (int i = 0; i < parameters.K; i++)
-            SimpleBitPack(parameters.W1Bits, w1[i], destination.Slice(i * bytesPerPoly, bytesPerPoly));
+            SimpleBitPack(parameters.W1Bits, w1.Slice(i * N, N), destination.Slice(i * bytesPerPoly, bytesPerPoly));
     }
 }

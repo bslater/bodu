@@ -1,11 +1,10 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MerkleTree.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
-using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
@@ -125,7 +124,7 @@ public sealed partial class MerkleTree
     {
         ThrowHelper.ThrowIfNull(algorithmFactory);
         if (fanOut < BinaryFanOut) throw new ArgumentOutOfRangeException(nameof(fanOut), CryptoResourceStrings.Arg_OutOfRange_FanOutMinimum);
-        ThrowIfDegreeOfParallelismInvalid(maxDegreeOfParallelism);
+        CryptographyThrowHelper.ThrowIfDegreeOfParallelismInvalid(maxDegreeOfParallelism);
 
         _algorithmFactory = algorithmFactory;
         FanOut = fanOut;
@@ -204,29 +203,6 @@ public sealed partial class MerkleTree
     private void ThrowIfNotBinary()
     {
         if (!IsBinary) throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Op_NotSupported_MerkleProofsRequireBinaryTree, FanOut));
-    }
-
-    /// <summary>
-    /// Throws when a degree-of-parallelism argument is neither <c>-1</c> nor a positive count.
-    /// </summary>
-    /// <param name="maxDegreeOfParallelism">The value to validate.</param>
-    /// <param name="paramName">The caller-supplied parameter name, captured automatically.</param>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="maxDegreeOfParallelism" /> is zero or is less than <c>-1</c>.
-    /// </exception>
-    private static void ThrowIfDegreeOfParallelismInvalid(
-        int maxDegreeOfParallelism,
-        [CallerArgumentExpression(nameof(maxDegreeOfParallelism))] string? paramName = null)
-    {
-        if (maxDegreeOfParallelism == 0 || maxDegreeOfParallelism < -1)
-        {
-            throw new ArgumentOutOfRangeException(
-                paramName,
-                string.Format(
-                    CultureInfo.CurrentCulture,
-                    CryptoResourceStrings.Arg_OutOfRange_MerkleParallelism,
-                    maxDegreeOfParallelism));
-        }
     }
 
     /// <summary>

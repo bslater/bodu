@@ -30,15 +30,20 @@ internal static partial class MLDsaEngine
         indices[1] = row;
         sponge.Absorb(indices);
 
-        Span<byte> block = stackalloc byte[3];
+        // FIPS 204 Algorithm 30 reads the XOF three bytes at a time. Squeezing a whole rate block — 56 triples, one
+        // permutation — reads the same byte stream; the bytes left over once the polynomial is full are never used.
+        Span<byte> block = stackalloc byte[KeccakSponge.Shake128RateBytes];
         int count = 0;
         while (count < N)
         {
             sponge.Squeeze(block);
 
-            int candidate = block[0] | (block[1] << 8) | ((block[2] & 0x7F) << 16);
-            if (candidate < Q)
-                destination[count++] = candidate;
+            for (int offset = 0; offset < block.Length && count < N; offset += 3)
+            {
+                int candidate = block[offset] | (block[offset + 1] << 8) | ((block[offset + 2] & 0x7F) << 16);
+                if (candidate < Q)
+                    destination[count++] = candidate;
+            }
         }
 
         sponge.Clear();
@@ -64,22 +69,28 @@ internal static partial class MLDsaEngine
         nonceBytes[1] = (byte)(nonce >> 8);
         sponge.Absorb(nonceBytes);
 
-        Span<byte> block = stackalloc byte[1];
+        // FIPS 204 Algorithm 31 reads the XOF a byte at a time. Squeezing a whole rate block — one permutation — reads
+        // the same byte stream. The stream determines the secret coefficients, so the block is cleared afterwards.
+        Span<byte> block = stackalloc byte[KeccakSponge.Shake256RateBytes];
         int count = 0;
         while (count < N)
         {
             sponge.Squeeze(block);
 
-            int low = block[0] & 0x0F;
-            int high = block[0] >> 4;
+            for (int offset = 0; offset < block.Length && count < N; offset++)
+            {
+                int low = block[offset] & 0x0F;
+                int high = block[offset] >> 4;
 
-            if (TryCoeffFromHalfByte(eta, low, out int first) && count < N)
-                destination[count++] = first;
+                if (TryCoeffFromHalfByte(eta, low, out int first) && count < N)
+                    destination[count++] = first;
 
-            if (TryCoeffFromHalfByte(eta, high, out int second) && count < N)
-                destination[count++] = second;
+                if (TryCoeffFromHalfByte(eta, high, out int second) && count < N)
+                    destination[count++] = second;
+            }
         }
 
+        CryptographyHelper.Clear(block);
         sponge.Clear();
     }
 
@@ -95,13 +106,13 @@ internal static partial class MLDsaEngine
     {
         if (eta == 2 && halfByte < 15)
         {
-            coefficient = ((2 - (halfByte % 5)) + Q) % Q;
+            coefficient = Canonicalize(2 - (halfByte % 5));
             return true;
         }
 
         if (eta == 4 && halfByte < 9)
         {
-            coefficient = ((4 - halfByte) + Q) % Q;
+            coefficient = Canonicalize(4 - halfByte);
             return true;
         }
 
@@ -147,10 +158,14 @@ internal static partial class MLDsaEngine
         var sponge = KeccakSponge.CreateShake256();
         sponge.Absorb(commitmentHash);
 
-        Span<byte> signBytes = stackalloc byte[8];
-        sponge.Squeeze(signBytes);
+        // FIPS 204 Algorithm 29 reads eight sign bytes and then one byte per candidate index from a single XOF stream.
+        // Squeezing a whole rate block at a time reads the same stream, one permutation per block.
+        Span<byte> block = stackalloc byte[KeccakSponge.Shake256RateBytes];
+        sponge.Squeeze(block);
 
-        Span<byte> candidate = stackalloc byte[1];
+        Span<byte> signBytes = stackalloc byte[8];
+        block[..8].CopyTo(signBytes);
+        int position = 8;
         int signIndex = 0;
 
         for (int i = N - parameters.Tau; i < N; i++)
@@ -158,8 +173,13 @@ internal static partial class MLDsaEngine
             int j;
             do
             {
-                sponge.Squeeze(candidate);
-                j = candidate[0];
+                if (position == block.Length)
+                {
+                    sponge.Squeeze(block);
+                    position = 0;
+                }
+
+                j = block[position++];
             }
             while (j > i);
 

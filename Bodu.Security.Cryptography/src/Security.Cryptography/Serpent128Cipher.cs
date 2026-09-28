@@ -31,10 +31,9 @@ namespace Bodu.Security.Cryptography;
 /// <see cref="IPaddingStrategy" />.
 /// </para>
 /// <para>
-/// This implementation is constant-time in its control flow, and each 4-bit S-box substitution reads a 16-byte table at
-/// a data-dependent index. The table spans a single cache line, which limits — but does not formally eliminate —
-/// cache-timing exposure; this implementation is <b>not</b> hardened against timing or cache-based side-channel
-/// attacks.
+/// This implementation computes each S-box as a Boolean circuit (Osvik's) and the linear transform with rotations,
+/// shifts and XOR, so it reads no tables and takes no branches that depend on the key or the data: its running time
+/// does not depend on either.
 /// </para>
 /// </remarks>
 /// <example>
@@ -58,7 +57,7 @@ namespace Bodu.Security.Cryptography;
 /// </example>
 /// <seealso cref="Serpent128"/>
 public sealed class Serpent128Cipher
-    : SerpentBlockCipherBase
+    : SerpentBlockCipherBase, IBlockCipher
 {
     /// <summary>Length of the Serpent block is 128 bits (16 bytes). Internal constant kept for span-length validation; callers should read <see cref="BlockSize" /> instead.</summary>
     private const int BlockSizeBits = 128;
@@ -120,50 +119,7 @@ public sealed class Serpent128Cipher
                 string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_BlockLength, BlockSizeBits / 8));
         }
 
-        // Load the 128-bit plaintext block as four little-endian 32-bit words. This is the canonical Serpent bitslice
-        // representation used by the shared S-box and linear-transform helpers.
-        uint x0 = BinaryReadUInt32LE(input, 0);
-        uint x1 = BinaryReadUInt32LE(input, 4);
-        uint x2 = BinaryReadUInt32LE(input, 8);
-        uint x3 = BinaryReadUInt32LE(input, 12);
-
-        uint[] rk = _roundKeys;
-
-        // Rounds 0..30: XOR the round key, apply S_r where r cycles modulo 8, then apply the Serpent linear transform.
-        // The linear transform is omitted only from the final round.
-        for (int r = 0; r < RoundCount - 1; r++)
-        {
-            int k = r * 4;
-            x0 ^= rk[k];
-            x1 ^= rk[k + 1];
-            x2 ^= rk[k + 2];
-            x3 ^= rk[k + 3];
-
-            ApplySBox(r & 7, ref x0, ref x1, ref x2, ref x3);
-            LinearTransform(ref x0, ref x1, ref x2, ref x3);
-        }
-
-        // Final round: Serpent performs the final key XOR and S-box layer without the linear transform, then applies
-        // the extra post-round key K_32 as output whitening.
-        int kFinal = (RoundCount - 1) * 4;
-        x0 ^= rk[kFinal];
-        x1 ^= rk[kFinal + 1];
-        x2 ^= rk[kFinal + 2];
-        x3 ^= rk[kFinal + 3];
-
-        ApplySBox((RoundCount - 1) & 7, ref x0, ref x1, ref x2, ref x3);
-
-        int kPost = RoundCount * 4;
-        x0 ^= rk[kPost];
-        x1 ^= rk[kPost + 1];
-        x2 ^= rk[kPost + 2];
-        x3 ^= rk[kPost + 3];
-
-        // Store the ciphertext using the same little-endian 32-bit word layout used for input.
-        BinaryWriteUInt32LE(output, 0, x0);
-        BinaryWriteUInt32LE(output, 4, x1);
-        BinaryWriteUInt32LE(output, 8, x2);
-        BinaryWriteUInt32LE(output, 12, x3);
+        SerpentCore.EncryptBlock(_roundKeys, input, output);
     }
 
     /// <inheritdoc />
@@ -176,48 +132,47 @@ public sealed class Serpent128Cipher
                 string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_BlockLength, BlockSizeBits / 8));
         }
 
-        // Load the 128-bit ciphertext block as four little-endian 32-bit words.
-        uint x0 = BinaryReadUInt32LE(input, 0);
-        uint x1 = BinaryReadUInt32LE(input, 4);
-        uint x2 = BinaryReadUInt32LE(input, 8);
-        uint x3 = BinaryReadUInt32LE(input, 12);
+        SerpentCore.DecryptBlock(_roundKeys, input, output);
+    }
 
-        uint[] rk = _roundKeys;
+    /// <inheritdoc />
+    /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="input" /> is not a whole number of blocks, or <paramref name="output" /> is shorter than
+    /// <paramref name="input" />.
+    /// </exception>
+    /// <remarks>
+    /// Encrypts eight blocks at a time over 256-bit vectors, and four over 128-bit vectors, where the processor offers
+    /// them, one block to each lane; the rest go one at a time. <paramref name="output" /> may be the same memory as
+    /// <paramref name="input" />.
+    /// </remarks>
+    void IBlockCipher.EncryptBlocks(ReadOnlySpan<byte> input, Span<byte> output)
+    {
+        ThrowIfDisposed();
+        CryptographyThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf(input, BlockSizeBits / 8, throwIfZero: false);
+        ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, input.Length);
 
-        // Reverse the final encryption round: remove post-round key K_32, apply inverse S_31, then remove K_31.
-        int kPost = RoundCount * 4;
-        x0 ^= rk[kPost];
-        x1 ^= rk[kPost + 1];
-        x2 ^= rk[kPost + 2];
-        x3 ^= rk[kPost + 3];
+        SerpentCore.EncryptBlocks(_roundKeys, input, output);
+    }
 
-        ApplyInverseSBox((RoundCount - 1) & 7, ref x0, ref x1, ref x2, ref x3);
+    /// <inheritdoc />
+    /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="input" /> is not a whole number of blocks, or <paramref name="output" /> is shorter than
+    /// <paramref name="input" />.
+    /// </exception>
+    /// <remarks>
+    /// Decrypts eight or four blocks at a time where the processor offers the vectors, as
+    /// <see cref="IBlockCipher.EncryptBlocks" /> encrypts them. <paramref name="output" /> may be the same memory as
+    /// <paramref name="input" />.
+    /// </remarks>
+    void IBlockCipher.DecryptBlocks(ReadOnlySpan<byte> input, Span<byte> output)
+    {
+        ThrowIfDisposed();
+        CryptographyThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf(input, BlockSizeBits / 8, throwIfZero: false);
+        ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, input.Length);
 
-        int kFinal = (RoundCount - 1) * 4;
-        x0 ^= rk[kFinal];
-        x1 ^= rk[kFinal + 1];
-        x2 ^= rk[kFinal + 2];
-        x3 ^= rk[kFinal + 3];
-
-        // Reverse rounds 30..0. The inverse order is linear transform, inverse S-box, then round-key XOR because
-        // encryption applied key XOR, S-box, then linear transform.
-        for (int r = RoundCount - 2; r >= 0; r--)
-        {
-            InverseLinearTransform(ref x0, ref x1, ref x2, ref x3);
-            ApplyInverseSBox(r & 7, ref x0, ref x1, ref x2, ref x3);
-
-            int k = r * 4;
-            x0 ^= rk[k];
-            x1 ^= rk[k + 1];
-            x2 ^= rk[k + 2];
-            x3 ^= rk[k + 3];
-        }
-
-        // Store the recovered plaintext using the same little-endian 32-bit word layout.
-        BinaryWriteUInt32LE(output, 0, x0);
-        BinaryWriteUInt32LE(output, 4, x1);
-        BinaryWriteUInt32LE(output, 8, x2);
-        BinaryWriteUInt32LE(output, 12, x3);
+        SerpentCore.DecryptBlocks(_roundKeys, input, output);
     }
 
     /// <inheritdoc />
@@ -245,20 +200,6 @@ public sealed class Serpent128Cipher
     /// </remarks>
     private static uint BinaryReadUInt32LE(ReadOnlySpan<byte> buffer, int offset) =>
         System.Buffers.Binary.BinaryPrimitives.ReadUInt32LittleEndian(buffer.Slice(offset, 4));
-
-    /// <summary>
-    /// Writes <paramref name="value" /> to <paramref name="buffer" /> at the specified <paramref name="offset" /> in
-    /// little-endian byte order.
-    /// </summary>
-    /// <param name="buffer">The destination byte span.</param>
-    /// <param name="offset">The byte offset at which to write.</param>
-    /// <param name="value">The value to write.</param>
-    /// <remarks>
-    /// Serpent blocks are emitted as four little-endian 32-bit words, matching the load format and canonical
-    /// test-vector representation used by this implementation.
-    /// </remarks>
-    private static void BinaryWriteUInt32LE(Span<byte> buffer, int offset, uint value) =>
-        System.Buffers.Binary.BinaryPrimitives.WriteUInt32LittleEndian(buffer.Slice(offset, 4), value);
 
     /// <summary>
     /// Expands <paramref name="key" /> into the 132-word round-key schedule.

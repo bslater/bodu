@@ -29,11 +29,17 @@ namespace Bodu.Security.Cryptography;
 /// <see cref="Decrypt" /> — including after a tag-mismatch failure — throws <see cref="InvalidOperationException" />.
 /// </para>
 /// <para>
+/// <strong>Allocation.</strong> The instance holds the key and nonce inline, and the constructions in this library draw
+/// each message's keystream from a value on the stack, so <see cref="Encrypt" /> and <see cref="Decrypt" /> allocate
+/// nothing. A type derived outside this library is served through the engine its <see cref="CreateEngine" /> override
+/// returns.
+/// </para>
+/// <para>
 /// <strong>Buffer overlap.</strong> Exact in-place operation is supported: the plaintext (or ciphertext) may begin at
 /// the same location as the output. Any other (partial) overlap is rejected with <see cref="ArgumentException" />.
 /// </para>
 /// </remarks>
-public abstract class Poly1305AeadTransform
+public abstract partial class Poly1305AeadTransform
     : IStreamAeadTransform
 {
     /// <summary>Length of the key, in bytes (256 bits).</summary>
@@ -48,11 +54,8 @@ public abstract class Poly1305AeadTransform
     /// <summary>Length of the authentication tag, in bits (128).</summary>
     private const int TagSizeBits = TagBytes * 8;
 
-    /// <summary>The retained 256-bit secret key, cleared on disposal.</summary>
-    private readonly byte[] _key;
-
-    /// <summary>The retained 192-bit nonce, cleared on disposal.</summary>
-    private readonly byte[] _nonce;
+    /// <summary>The retained 256-bit secret key followed by the 192-bit nonce, held inline and cleared on disposal.</summary>
+    private KeyAndNonceBuffer _keyAndNonce;
 
     /// <summary>A value indicating whether this single-use transform has already processed a message.</summary>
     private bool _completed;
@@ -76,8 +79,8 @@ public abstract class Poly1305AeadTransform
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(key, KeyBytes);
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(nonce, NonceBytes);
 
-        _key = key.ToArray();
-        _nonce = nonce.ToArray();
+        key.CopyTo(_keyAndNonce);
+        nonce.CopyTo(((Span<byte>)_keyAndNonce)[KeyBytes..]);
     }
 
     /// <inheritdoc />
@@ -97,13 +100,13 @@ public abstract class Poly1305AeadTransform
     /// Gets the retained secret key.
     /// </summary>
     /// <value>A read-only view over the 32-byte key.</value>
-    protected ReadOnlySpan<byte> Key => _key;
+    protected ReadOnlySpan<byte> Key => ((ReadOnlySpan<byte>)_keyAndNonce)[..KeyBytes];
 
     /// <summary>
     /// Gets the retained nonce.
     /// </summary>
     /// <value>A read-only view over the 24-byte nonce.</value>
-    protected ReadOnlySpan<byte> Nonce => _nonce;
+    protected ReadOnlySpan<byte> Nonce => ((ReadOnlySpan<byte>)_keyAndNonce)[KeyBytes..];
 
     /// <inheritdoc />
     public int Encrypt(ReadOnlySpan<byte> plaintext, Span<byte> output, ReadOnlySpan<byte> associatedData = default)
@@ -119,8 +122,7 @@ public abstract class Poly1305AeadTransform
 
         try
         {
-            using IStreamCipher engine = CreateEngine();
-            return SealCore(engine, associatedData, plaintext, output);
+            return SealMessage(associatedData, plaintext, output);
         }
         finally
         {
@@ -149,8 +151,7 @@ public abstract class Poly1305AeadTransform
 
         try
         {
-            using IStreamCipher engine = CreateEngine();
-            return OpenCore(engine, associatedData, ciphertextWithTag, output);
+            return OpenMessage(associatedData, ciphertextWithTag, output);
         }
         finally
         {
@@ -166,8 +167,7 @@ public abstract class Poly1305AeadTransform
         if (_disposed)
             return;
 
-        CryptographicOperations.ZeroMemory(_key);
-        CryptographicOperations.ZeroMemory(_nonce);
+        CryptographicOperations.ZeroMemory(_keyAndNonce);
 
         _completed = true;
         _disposed = true;
@@ -216,6 +216,43 @@ public abstract class Poly1305AeadTransform
         ReadOnlySpan<byte> ciphertextWithTag,
         Span<byte> output) =>
         Poly1305AeadCore.OpenRfc8439(engine, associatedData, ciphertextWithTag, output);
+
+    /// <summary>
+    /// Encrypts and authenticates one message through a keystream engine from <see cref="CreateEngine" /> and
+    /// <see cref="SealCore" />.
+    /// </summary>
+    /// <param name="associatedData">The associated data to authenticate.</param>
+    /// <param name="plaintext">The data to encrypt.</param>
+    /// <param name="output">Receives the ciphertext followed by the authentication tag.</param>
+    /// <returns>The number of bytes written.</returns>
+    /// <remarks>
+    /// The constructions in this library override this to draw the keystream from a value on the stack, so that the
+    /// message allocates nothing; the engine serves types derived outside it.
+    /// </remarks>
+    private protected virtual int SealMessage(ReadOnlySpan<byte> associatedData, ReadOnlySpan<byte> plaintext, Span<byte> output)
+    {
+        using IStreamCipher engine = CreateEngine();
+        return SealCore(engine, associatedData, plaintext, output);
+    }
+
+    /// <summary>
+    /// Verifies and decrypts one message through a keystream engine from <see cref="CreateEngine" /> and
+    /// <see cref="OpenCore" />.
+    /// </summary>
+    /// <param name="associatedData">The associated data that must match the value used at encryption time.</param>
+    /// <param name="ciphertextWithTag">The ciphertext followed by its authentication tag.</param>
+    /// <param name="output">Receives the recovered plaintext.</param>
+    /// <returns>The number of plaintext bytes written.</returns>
+    /// <exception cref="CryptographicException">The authentication tag did not match.</exception>
+    /// <remarks>
+    /// The constructions in this library override this to draw the keystream from a value on the stack, so that the
+    /// message allocates nothing; the engine serves types derived outside it.
+    /// </remarks>
+    private protected virtual int OpenMessage(ReadOnlySpan<byte> associatedData, ReadOnlySpan<byte> ciphertextWithTag, Span<byte> output)
+    {
+        using IStreamCipher engine = CreateEngine();
+        return OpenCore(engine, associatedData, ciphertextWithTag, output);
+    }
 
     /// <summary>
     /// Throws an <see cref="ArgumentException" /> if <paramref name="input" /> and <paramref name="output" /> overlap

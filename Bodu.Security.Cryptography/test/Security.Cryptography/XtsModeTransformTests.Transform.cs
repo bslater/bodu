@@ -148,4 +148,110 @@ public sealed partial class XtsModeTransformTests
         CollectionAssert.AreEqual(expected, output,
             "XTS with identity cipher must reduce to C = P (XOR cancellation of tweak).");
     }
+
+    // ── Long data units ───────────────────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Verifies that encrypting data units of one block to several 4 KiB runs, in a separate buffer and in place,
+    /// matches a block-at-a-time IEEE 1619 reference on the platform's AES for AES-128 and AES-256.
+    /// </summary>
+    [TestMethod]
+    public void Transform_WhenEncryptingLongDataUnit_ShouldMatchBlockAtATimeReference()
+    {
+        foreach (int keyLength in new[] { 16, 32 })
+        {
+            byte[] dataKey = AesReference.RandomBytes(keyLength, keyLength);
+            byte[] tweakKey = AesReference.RandomBytes(keyLength, keyLength + 1);
+            byte[] tweak = AesReference.RandomBytes(16, keyLength + 2);
+
+            foreach (int length in AesReference.AlignedLengths)
+            {
+                byte[] plaintext = AesReference.RandomBytes(length, length + 3);
+                byte[] expected = ReferenceTransform(dataKey, tweakKey, tweak, plaintext, encrypt: true);
+
+                CollectionAssert.AreEqual(expected, TransformWithAes(dataKey, tweakKey, tweak, plaintext, encrypt: true, inPlace: false), $"AES-{keyLength * 8}, {length} bytes");
+                CollectionAssert.AreEqual(expected, TransformWithAes(dataKey, tweakKey, tweak, plaintext, encrypt: true, inPlace: true), $"AES-{keyLength * 8}, {length} bytes, in place");
+            }
+        }
+    }
+
+    /// <summary>
+    /// Verifies that decrypting data units of one block to several 4 KiB runs, in a separate buffer and in place,
+    /// matches a block-at-a-time IEEE 1619 reference on the platform's AES for AES-128 and AES-256.
+    /// </summary>
+    [TestMethod]
+    public void Transform_WhenDecryptingLongDataUnit_ShouldMatchBlockAtATimeReference()
+    {
+        foreach (int keyLength in new[] { 16, 32 })
+        {
+            byte[] dataKey = AesReference.RandomBytes(keyLength, keyLength + 11);
+            byte[] tweakKey = AesReference.RandomBytes(keyLength, keyLength + 12);
+            byte[] tweak = AesReference.RandomBytes(16, keyLength + 13);
+
+            foreach (int length in AesReference.AlignedLengths)
+            {
+                byte[] ciphertext = AesReference.RandomBytes(length, length + 14);
+                byte[] expected = ReferenceTransform(dataKey, tweakKey, tweak, ciphertext, encrypt: false);
+
+                CollectionAssert.AreEqual(expected, TransformWithAes(dataKey, tweakKey, tweak, ciphertext, encrypt: false, inPlace: false), $"AES-{keyLength * 8}, {length} bytes");
+                CollectionAssert.AreEqual(expected, TransformWithAes(dataKey, tweakKey, tweak, ciphertext, encrypt: false, inPlace: true), $"AES-{keyLength * 8}, {length} bytes, in place");
+            }
+        }
+    }
+
+    /// <summary>
+    /// Transforms one data unit with <see cref="XtsModeTransform" /> over <see cref="AesBlockCipher" />.
+    /// </summary>
+    /// <param name="dataKey">The data key <c>K1</c>.</param>
+    /// <param name="tweakKey">The tweak key <c>K2</c>.</param>
+    /// <param name="tweak">The 16-byte tweak.</param>
+    /// <param name="input">The data unit.</param>
+    /// <param name="encrypt"><see langword="true" /> to encrypt; <see langword="false" /> to decrypt.</param>
+    /// <param name="inPlace"><see langword="true" /> to transform the input buffer in place.</param>
+    /// <returns>The transformed data unit.</returns>
+    private static byte[] TransformWithAes(byte[] dataKey, byte[] tweakKey, byte[] tweak, byte[] input, bool encrypt, bool inPlace)
+    {
+        using var dataCipher = new AesBlockCipher(dataKey);
+        using var tweakCipher = new AesBlockCipher(tweakKey);
+        using var transform = new XtsModeTransform(dataCipher, tweakCipher, tweak);
+        byte[] buffer = (byte[])input.Clone();
+        byte[] output = inPlace ? buffer : new byte[input.Length];
+        transform.Transform(buffer, output, encrypt);
+        return output;
+    }
+
+    /// <summary>
+    /// Transforms one data unit with XTS one block at a time: <c>T = E_K2(tweak)</c>, then each block becomes
+    /// <c>E_K1(block ⊕ T) ⊕ T</c> — or the decryption — and <c>T</c> is multiplied by <c>α</c>.
+    /// </summary>
+    /// <param name="dataKey">The data key <c>K1</c>.</param>
+    /// <param name="tweakKey">The tweak key <c>K2</c>.</param>
+    /// <param name="tweak">The 16-byte tweak.</param>
+    /// <param name="input">The data unit.</param>
+    /// <param name="encrypt"><see langword="true" /> to encrypt; <see langword="false" /> to decrypt.</param>
+    /// <returns>The transformed data unit.</returns>
+    private static byte[] ReferenceTransform(byte[] dataKey, byte[] tweakKey, byte[] tweak, byte[] input, bool encrypt)
+    {
+        using System.Security.Cryptography.Aes data = AesReference.Create(dataKey);
+        using System.Security.Cryptography.Aes tweaks = AesReference.Create(tweakKey);
+        byte[] t = AesReference.Encrypt(tweaks, tweak);
+        byte[] output = new byte[input.Length];
+        for (int offset = 0; offset < input.Length; offset += 16)
+        {
+            byte[] block = AesReference.Xor(input[offset..(offset + 16)], t);
+            block = encrypt ? AesReference.Encrypt(data, block) : AesReference.Decrypt(data, block);
+            AesReference.Xor(block, t).CopyTo(output, offset);
+
+            // Multiply by α in the little-endian representation, reducing by 0x87.
+            bool carry = (t[15] & 0x80) != 0;
+            for (int i = 15; i > 0; i--)
+                t[i] = (byte)((t[i] << 1) | (t[i - 1] >> 7));
+
+            t[0] = (byte)(t[0] << 1);
+            if (carry)
+                t[0] ^= 0x87;
+        }
+
+        return output;
+    }
 }

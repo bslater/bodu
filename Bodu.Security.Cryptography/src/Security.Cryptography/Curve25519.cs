@@ -16,6 +16,10 @@ namespace Bodu.Security.Cryptography;
 /// per bit so that the sequence of field operations is independent of the scalar value. The scalar supplied by the
 /// caller is never modified: clamping is applied to a stack copy that is zeroed before returning.
 /// </para>
+/// <para>
+/// Multiples of the base point, which key generation needs, do not use the ladder: <see cref="ScalarMultBase" /> forms
+/// them from Ed25519's precomputed fixed-base table and maps the result across to Curve25519.
+/// </para>
 /// </remarks>
 internal static class Curve25519
 {
@@ -135,14 +139,36 @@ internal static class Curve25519
     /// <paramref name="scalar" /> or <paramref name="destination" /> is not exactly 32 bytes long.
     /// </exception>
     /// <remarks>
-    /// The base point has order 8 × L, so a clamped scalar can never produce the all-zero output; the low-order result
-    /// flag returned by <see cref="ScalarMult" /> is therefore discarded.
+    /// <para>
+    /// The base point u = 9 is the image of the Ed25519 base point B under the birational map u = (1 + y) / (1 − y),
+    /// which respects scalar multiplication. The multiple is therefore formed on the Edwards curve from Ed25519's
+    /// precomputed fixed-base table, in constant time, and mapped across with one inversion, instead of by the 255-step
+    /// ladder that <see cref="ScalarMult" /> runs for an arbitrary point.
+    /// </para>
+    /// <para>
+    /// The multiples of B form its prime-order subgroup. A clamped scalar, a multiple of 8 between 2^254 and 2^255, is
+    /// never a multiple of that order, so the result is never the identity and never the all-zero output.
+    /// </para>
     /// </remarks>
     internal static void ScalarMultBase(ReadOnlySpan<byte> scalar, Span<byte> destination)
     {
-        Span<byte> basePoint = stackalloc byte[PointSizeInBytes];
-        basePoint[0] = 9;
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(scalar, PointSizeInBytes);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(destination, PointSizeInBytes);
 
-        _ = ScalarMult(scalar, basePoint, destination);
+        Span<byte> e = stackalloc byte[PointSizeInBytes];
+
+        try
+        {
+            scalar.CopyTo(e);
+            e[0] &= 248;
+            e[31] &= 127;
+            e[31] |= 64;
+
+            Ed25519Point.ScalarMultBase(e).EncodeMontgomeryU(destination);
+        }
+        finally
+        {
+            CryptographyHelper.Clear(e);
+        }
     }
 }

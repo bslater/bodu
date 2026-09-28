@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Buffers;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 
@@ -17,9 +19,9 @@ namespace Bodu.Security.Cryptography;
 /// <remarks>
 /// <para>
 /// The adapter encrypts and decrypts exactly one 16-byte block per call, in ECB mode with no padding, delegating to the
-/// BCL's hardware-accelerated <see cref="Aes" /> implementation. Key scheduling is performed once on construction and
-/// the resulting ECB transforms are cached, so per-block calls reuse the expanded key schedule rather than rebuilding a
-/// cipher context each time.
+/// BCL's hardware-accelerated <see cref="Aes" /> implementation. The ECB encryptor is created on construction and the
+/// decryptor on the first decryption, and both are cached, so per-block calls reuse the expanded key schedule rather
+/// than rebuilding a cipher context each time, and an instance that only encrypts never builds a decryptor.
 /// </para>
 /// <para>
 /// <see cref="AesBlockCipher" /> is not intended for direct encryption of user data. Wrap it in one of the
@@ -46,10 +48,16 @@ namespace Bodu.Security.Cryptography;
 /// <seealso href="../guides/cryptography/aead-modes.html">Using AEAD modes (guide with full encrypt / decrypt examples)
 /// </seealso>
 public sealed class AesBlockCipher
-    : IBlockCipher
+    : IBlockCipher, ICbcBlockCipher
 {
     /// <summary>Length of the AES block is 128 bits (16 bytes). Internal constant kept for span-length validation; callers should read <see cref="BlockSize" /> instead.</summary>
     private const int BlockSizeBits = 128;
+
+    /// <summary>The largest chunk, in bytes, a multi-block run moves through the cached transforms in one call.</summary>
+    private const int BulkChunkBytes = 4096;
+
+    /// <summary>The run length, in bytes, from which a multi-block run goes through the BCL's one-shot ECB call instead: long enough that the call's per-invocation cipher-context setup is amortized, and the chunk copies are avoided.</summary>
+    private const int OneShotThresholdBytes = 64 * 1024;
 
     /// <summary>The underlying BCL <see cref="Aes" /> instance that owns the expanded key schedule.</summary>
     private readonly Aes _aes;
@@ -57,7 +65,10 @@ public sealed class AesBlockCipher
     /// <summary>The cached ECB encryptor, created once so its key schedule is reused across every single-block call. Nulled on disposal.</summary>
     private ICryptoTransform? _encryptor;
 
-    /// <summary>The cached ECB decryptor, created once so its key schedule is reused across every single-block call. Nulled on disposal.</summary>
+    /// <summary>The cached CBC encryptor with a zero IV, created on the first chained encryption: each chain folds the caller's chaining value into its first block and resets the transform when it ends. Nulled on disposal.</summary>
+    private ICryptoTransform? _cbcEncryptor;
+
+    /// <summary>The cached ECB decryptor, created on the first decryption so an instance that only encrypts — as the cipher of every counter-based mode does — never pays for one. Nulled on disposal.</summary>
     private ICryptoTransform? _decryptor;
 
     /// <summary>Reusable single-block scratch buffer for the byte-array-based <see cref="ICryptoTransform" /> surface.</summary>
@@ -89,11 +100,10 @@ public sealed class AesBlockCipher
             aes.Mode = CipherMode.ECB;
             aes.Padding = PaddingMode.None;
 
-            // Create the ECB transforms once. ECB is stateless between blocks, so a single cached transform can
-            // process every subsequent single-block call without re-deriving the key schedule per call (the cost the
-            // one-shot EncryptEcb/DecryptEcb API pays on every invocation).
+            // Create the ECB encryptor once. ECB is stateless between blocks, so a single cached transform can process
+            // every subsequent call without re-deriving the key schedule per call (the cost the one-shot
+            // EncryptEcb/DecryptEcb API pays on every invocation). The decryptor is created on first use.
             _encryptor = aes.CreateEncryptor();
-            _decryptor = aes.CreateDecryptor();
         }
         catch
         {
@@ -107,6 +117,17 @@ public sealed class AesBlockCipher
     /// <inheritdoc />
     /// <value>Length of the AES block is 128 bits (16 bytes).</value>
     public int BlockSize => BlockSizeBits;
+
+    /// <summary>
+    /// Gets the size, in bits, of the key this instance was created with: 128, 192, or 256.
+    /// </summary>
+    internal int KeySize => _aes.KeySize;
+
+    /// <summary>
+    /// Gets the cached ECB decryptor, creating it on first use.
+    /// </summary>
+    private ICryptoTransform Decryptor =>
+        _decryptor ??= _aes.CreateDecryptor();
 
     /// <inheritdoc />
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
@@ -132,9 +153,11 @@ public sealed class AesBlockCipher
         {
             _encryptor?.Dispose();
             _decryptor?.Dispose();
+            _cbcEncryptor?.Dispose();
             _aes.Dispose();
             _encryptor = null;
             _decryptor = null;
+            _cbcEncryptor = null;
             CryptographyHelper.Clear(_scratchIn);
             CryptographyHelper.Clear(_scratchOut);
             _disposed = true;
@@ -152,29 +175,170 @@ public sealed class AesBlockCipher
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockSizeBits / 8);
         ThrowIfDisposed();
 
-        TransformSingleBlock(_decryptor!, input, output);
+        TransformSingleBlock(Decryptor, input, output);
     }
 
     /// <inheritdoc />
+    /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="input" /> is not a whole number of blocks, or <paramref name="output" /> is shorter than
+    /// <paramref name="input" />.
+    /// </exception>
     /// <remarks>
-    /// Processes the whole run through a single BCL one-shot ECB call, so the key schedule is derived once for the run
-    /// rather than once per block.
+    /// Moves the run through the cached ECB encryptor in chunks of up to 4 KiB, one platform call per chunk. The cached
+    /// transform keeps its key schedule, whereas the BCL's one-shot ECB methods rebuild a cipher context on every call
+    /// — which costs about as much as encrypting a kilobyte, so a counter mode handing over a few kilobytes at a time
+    /// would spend most of its time there. <paramref name="output" /> may be the same memory as
+    /// <paramref name="input" />.
     /// </remarks>
     public void EncryptBlocks(ReadOnlySpan<byte> input, Span<byte> output)
     {
         ThrowIfDisposed();
-        _aes.EncryptEcb(input, output[..input.Length], PaddingMode.None);
+        CryptographyThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf(input, BlockSizeBits / 8, throwIfZero: false);
+        ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, input.Length);
+
+        TransformBlocks(encrypt: true, input, output);
     }
 
     /// <inheritdoc />
+    /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="input" /> is not a whole number of blocks, or <paramref name="output" /> is shorter than
+    /// <paramref name="input" />.
+    /// </exception>
     /// <remarks>
-    /// Processes the whole run through a single BCL one-shot ECB call, so the key schedule is derived once for the run
-    /// rather than once per block.
+    /// Moves the run through the cached ECB decryptor, or one one-shot call from 64 KiB, as
+    /// <see cref="EncryptBlocks" /> does. <paramref name="output" /> may be the same memory as
+    /// <paramref name="input" />.
     /// </remarks>
     public void DecryptBlocks(ReadOnlySpan<byte> input, Span<byte> output)
     {
         ThrowIfDisposed();
-        _aes.DecryptEcb(input, output[..input.Length], PaddingMode.None);
+        CryptographyThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf(input, BlockSizeBits / 8, throwIfZero: false);
+        ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, input.Length);
+
+        TransformBlocks(encrypt: false, input, output);
+    }
+
+    /// <summary>
+    /// Runs a whole number of blocks through the cached ECB encryptor or decryptor, a chunk of up to
+    /// <see cref="BulkChunkBytes" /> at a time through scratch borrowed from the shared array pool for the call.
+    /// </summary>
+    /// <param name="encrypt">
+    /// <see langword="true" /> to encrypt the blocks; <see langword="false" /> to decrypt them.
+    /// </param>
+    /// <param name="input">The blocks to transform.</param>
+    /// <param name="output">The destination; at least as long as <paramref name="input" />, and may alias it.</param>
+    private void TransformBlocks(bool encrypt, ReadOnlySpan<byte> input, Span<byte> output)
+    {
+        // A long run amortizes the one-shot call's cipher-context setup and needs no copies, so it goes straight to the
+        // platform; shorter runs go through the cached transform, whose setup is already paid.
+        if (input.Length >= OneShotThresholdBytes)
+        {
+            if (encrypt)
+                _aes.EncryptEcb(input, output[..input.Length], PaddingMode.None);
+            else
+                _aes.DecryptEcb(input, output[..input.Length], PaddingMode.None);
+
+            return;
+        }
+
+        if (input.Length == 0)
+            return;
+
+        ICryptoTransform transform = encrypt ? _encryptor! : Decryptor;
+
+        // Borrow the scratch for this call only, so an instance created per message allocates none and no instance
+        // keeps a run's plaintext, ciphertext, or keystream between calls. The first half takes each chunk in, the
+        // second receives it transformed.
+        int chunk = Math.Min(BulkChunkBytes, input.Length);
+        byte[] scratch = ArrayPool<byte>.Shared.Rent(2 * chunk);
+
+        try
+        {
+            for (int offset = 0; offset < input.Length; offset += BulkChunkBytes)
+            {
+                int length = Math.Min(BulkChunkBytes, input.Length - offset);
+                input.Slice(offset, length).CopyTo(scratch);
+                transform.TransformBlock(scratch, 0, length, scratch, chunk);
+                scratch.AsSpan(chunk, length).CopyTo(output.Slice(offset, length));
+            }
+        }
+        finally
+        {
+            CryptographyHelper.Clear(scratch.AsSpan(0, 2 * chunk));
+            ArrayPool<byte>.Shared.Return(scratch);
+        }
+    }
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// The chain runs through a cached CBC encryptor in chunks of up to 4 KiB, which the platform chains block to block
+    /// itself: one platform call per chunk rather than one per block. <paramref name="output" /> may be the same memory
+    /// as <paramref name="input" />.
+    /// </remarks>
+    void ICbcBlockCipher.EncryptCbc(ReadOnlySpan<byte> input, Span<byte> output, Span<byte> chainingValue)
+    {
+        ThrowIfDisposed();
+        Debug.Assert(input.Length % (BlockSizeBits / 8) == 0, "CBC chains whole blocks.");
+        Debug.Assert(chainingValue.Length == BlockSizeBits / 8, "The chaining value is one block.");
+
+        if (input.IsEmpty)
+            return;
+
+        const int BlockBytes = BlockSizeBits / 8;
+        ICryptoTransform cbc = _cbcEncryptor ??= CreateCbcEncryptor();
+        int chunk = Math.Min(BulkChunkBytes, input.Length);
+        byte[] scratch = ArrayPool<byte>.Shared.Rent(2 * chunk);
+
+        try
+        {
+            for (int offset = 0; offset < input.Length; offset += BulkChunkBytes)
+            {
+                int length = Math.Min(BulkChunkBytes, input.Length - offset);
+                Span<byte> source = scratch.AsSpan(0, length);
+                input.Slice(offset, length).CopyTo(source);
+
+                // The transform starts each chain from a zero IV, so the caller's chaining value is folded into the
+                // chain's first block.
+                if (offset == 0)
+                    CryptographyHelper.Xor(source[..BlockBytes], chainingValue, source[..BlockBytes]);
+
+                cbc.TransformBlock(scratch, 0, length, scratch, chunk);
+                if (!output.IsEmpty)
+                    scratch.AsSpan(chunk, length).CopyTo(output.Slice(offset, length));
+            }
+
+            int lastChunk = ((input.Length - 1) % BulkChunkBytes) + 1;
+            scratch.AsSpan(chunk + lastChunk - BlockBytes, BlockBytes).CopyTo(chainingValue);
+        }
+        finally
+        {
+            // Reset the transform to its zero IV for the next chain.
+            cbc.TransformFinalBlock(scratch, 0, 0);
+            CryptographyHelper.Clear(scratch.AsSpan(0, 2 * chunk));
+            ArrayPool<byte>.Shared.Return(scratch);
+        }
+    }
+
+    /// <summary>
+    /// Creates the CBC encryptor with a zero IV that chained encryption runs through.
+    /// </summary>
+    /// <returns>The encryptor.</returns>
+    private ICryptoTransform CreateCbcEncryptor()
+    {
+        // The algorithm object's mode and IV apply to the transforms created from it. Switch them for this one, then
+        // restore the mode so a decryptor created later is still an ECB one.
+        _aes.Mode = CipherMode.CBC;
+        try
+        {
+            _aes.IV = new byte[BlockSizeBits / 8];
+            return _aes.CreateEncryptor();
+        }
+        finally
+        {
+            _aes.Mode = CipherMode.ECB;
+        }
     }
 
     /// <summary>

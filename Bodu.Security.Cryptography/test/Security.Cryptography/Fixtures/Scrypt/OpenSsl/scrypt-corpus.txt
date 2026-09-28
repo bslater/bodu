@@ -1,0 +1,650 @@
+# scrypt (RFC 7914) known-answer corpus generated with OpenSSL.
+#
+# Source: OpenSSL 3.0.13 (30 Jan 2024), EVP_PBE_scrypt, called through libcrypto.so.3 on 2026-09-28.
+# Grid: every combination of N in {2, 4, 16, 1024, 16384}, r in {1, 2, 3, 8} and p in {1, 2, 3, 4} - 80 rows -
+#       with seeded pseudo-random passwords of 0 to 23 bytes and salts of 0 to 32 bytes, and keys of 1, 16, 32,
+#       64 or 100 bytes. The library's implementation matched every row when the corpus was generated, before
+#       the scrypt performance work.
+#
+# Fields: Name (diagnostic label), Password and Salt (hex; may be empty), N, R and P (the cost, block-size and
+#         parallelization parameters), Key (hex; its length is the derived-key length).
+
+Name = N=2 r=1 p=1, 5-byte password, 14-byte salt, 32-byte key
+Password = ed2f9abca9
+Salt = f4b81a719c983583901885d992a6
+N = 2
+R = 1
+P = 1
+Key = 2a39b14b2922c0f7d9963c80af45bbb17024acef35e7a955c8ccf9cc62f01062
+
+Name = N=2 r=1 p=2, 4-byte password, 10-byte salt, 64-byte key
+Password = 5f2dfa37
+Salt = 8753aafd572af0ddd550
+N = 2
+R = 1
+P = 2
+Key = 6369ed6ef308a21a81a7cba28cd641b8a7f4b7cce7fdc0be8f718fc80c5620f61cb739f57e20d14145a36f4cc69b43dbf3af8d6c8cb6c990759e6b9922ca0cca
+
+Name = N=2 r=1 p=3, 14-byte password, 16-byte salt, 1-byte key
+Password = 21221d2dced3f343fb3103469369
+Salt = 59487a8d01a085fe50a00e1c1971a857
+N = 2
+R = 1
+P = 3
+Key = 55
+
+Name = N=2 r=1 p=4, 15-byte password, 3-byte salt, 100-byte key
+Password = 3f8964b67578798b39b63c79830d16
+Salt = dcd0a8
+N = 2
+R = 1
+P = 4
+Key = 8d37a1056bb543a9c5a3a7a4a513610884c56b231b589c8761db9ffe89860f22f33415adb940ad9af96902b3af6cb1b4cd85c447a507c561e4bdeb15a5a5d0e756c9594d74a6f317ddfeb0ff5a4489685a10b7efe099ad2c7af29e6c572bdb7060e14058
+
+Name = N=2 r=2 p=1, 18-byte password, 12-byte salt, 16-byte key
+Password = 484eee9b24cd8cc0b6d9d153d955070905c4
+Salt = cf0001c8e94984cc93f7883d
+N = 2
+R = 2
+P = 1
+Key = 5d10fdf8a6cecaafa7731a6e2e2ff5a8
+
+Name = N=2 r=2 p=2, 3-byte password, 31-byte salt, 32-byte key
+Password = fff365
+Salt = 9bc892a7ecb8d560e5e8a02e050d8e17ecd86246860452a001f8c92e9c3053
+N = 2
+R = 2
+P = 2
+Key = 50d2c96792807986f1ff0fef7aa07f86fc8454b69924610db125769dae461882
+
+Name = N=2 r=2 p=3, 16-byte password, 3-byte salt, 64-byte key
+Password = f0166d3c323ce3482c670460e49d8dea
+Salt = 26b427
+N = 2
+R = 2
+P = 3
+Key = 08d6b9c218cfb6130c44f18424aa1137eb12b8ec3b67b85db08ca16d210da3caaebdd25a8f1d4c010a963745893e0f323f3e252d0f650aa7614134c9ed8a7380
+
+Name = N=2 r=2 p=4, 1-byte password, 12-byte salt, 1-byte key
+Password = 1f
+Salt = 9676f1a5f3efa7c4b495ba3d
+N = 2
+R = 2
+P = 4
+Key = fe
+
+Name = N=2 r=3 p=1, 10-byte password, 5-byte salt, 100-byte key
+Password = 9f52e4aff51a191e00f1
+Salt = 636ade3375
+N = 2
+R = 3
+P = 1
+Key = bca1e504bc260df33c32273a79c7cc681662559cb3b6e3daff30afe4a88a175ec064fd0840f9246c1820b3688b873503e6bfed54e1eb5fda0123c3e4d3bf6b1413b2f2a613d931cb6732c0662ab608e97234b458a1e53d516b16dcf3bc87dd27107c8c1e
+
+Name = N=2 r=3 p=2, 14-byte password, 19-byte salt, 16-byte key
+Password = 2b54d1abd7c64197ef5985a34fcb
+Salt = 609e4aa841053276054b958435428810734e39
+N = 2
+R = 3
+P = 2
+Key = 10bac8b78b569b9de1dfc76940bc5d63
+
+Name = N=2 r=3 p=3, 11-byte password, 13-byte salt, 32-byte key
+Password = 656c43c88ba31805c1937a
+Salt = 269203cc948b3476f9decb6041
+N = 2
+R = 3
+P = 3
+Key = 4ff785c58cf8db1bd46191eccda0920d12c3030b4af5d20f299867411215bb7e
+
+Name = N=2 r=3 p=4, 4-byte password, 16-byte salt, 64-byte key
+Password = 0b546748
+Salt = 551661c3f35a821c9eed2db571d0e45d
+N = 2
+R = 3
+P = 4
+Key = 1ca1c129a31f40b1fcd840723bc288eee87ab5b9bc0eb97fad44dff8934dd1fee06f5ac92a3bea6916be74bc9aecaff552684cd771d3f24e6986742d6a842505
+
+Name = N=2 r=8 p=1, 22-byte password, 17-byte salt, 1-byte key
+Password = 3ebc7ce719c36f87a1e3874997c39d7881259bc4ce10
+Salt = 126f9688cc29598f5ce46816abcc2b3b53
+N = 2
+R = 8
+P = 1
+Key = 11
+
+Name = N=2 r=8 p=2, 23-byte password, 18-byte salt, 100-byte key
+Password = 3b5177fad3062a8f3cf0ab4999d42e4a6978833aa35e47
+Salt = 2a652facf2ab56e948d292bef9179c905e3d
+N = 2
+R = 8
+P = 2
+Key = 4c9ee2811f0723687056fb08807b47eda4dc3d743b58a26519c2cfdf127d174a5fd0a6654320ac1acfce91336d165e5ac0de2af871e60de33ccd4b0be57f4224368709a18dcbdc11d36c18c2f676b7c7b3bc3b15f95b299187ccd7696ad04cf95018bcf9
+
+Name = N=2 r=8 p=3, 16-byte password, 5-byte salt, 16-byte key
+Password = 69e4134a94e86062b3b8184edd0a24d0
+Salt = d67d9c909a
+N = 2
+R = 8
+P = 3
+Key = fd754af783ae5c2222f39cac88a571ae
+
+Name = N=2 r=8 p=4, 1-byte password, 29-byte salt, 32-byte key
+Password = 01
+Salt = 416f5052dbf3db6671de6f171a9ac49249a2302f83b5b4d5462db9e1a0
+N = 2
+R = 8
+P = 4
+Key = 53482d317d879a55e81a62f6d1af32406c7ec5cfb586ee934d74f7cacb3cf6af
+
+Name = N=4 r=1 p=1, 4-byte password, 14-byte salt, 64-byte key
+Password = ce221183
+Salt = 780f0fd7c53de86b2bb4b8533bb8
+N = 4
+R = 1
+P = 1
+Key = 9ac175a204aa1a9d51ad392f1a3c1db16e7f4d99845fe8412497c8e0300b93251f6938db37c8b161d809647f1cae85934431d6abc79c6c3dc25a66196df66b66
+
+Name = N=4 r=1 p=2, 5-byte password, 12-byte salt, 1-byte key
+Password = 47f791d242
+Salt = bb7b0cae39fac5150f4d0596
+N = 4
+R = 1
+P = 2
+Key = a0
+
+Name = N=4 r=1 p=3, 9-byte password, 19-byte salt, 100-byte key
+Password = 4c8239cb6bf29b4a88
+Salt = 8eda7d299614d7903f40c8bc9403298b432355
+N = 4
+R = 1
+P = 3
+Key = e98ba265852a8226a7567ad03ea82857c767f1cadb0f418ed1d6b54e520baaebf0c335d67b40dec01deed418db37ab32d419d80f097bf5028d0a3f54444c5861a97869a140d8d779552f03d53a44c622543b8b2b2fbc94a3325bfc109a90fb344c67f02c
+
+Name = N=4 r=1 p=4, 7-byte password, 19-byte salt, 16-byte key
+Password = 67b2bdf46c870e
+Salt = 25dfa740335a7dd3bcd02e0137bcc5557f8fee
+N = 4
+R = 1
+P = 4
+Key = 8ed9357e7a17fb2032d84acf28adf21e
+
+Name = N=4 r=2 p=1, 8-byte password, 21-byte salt, 32-byte key
+Password = a2e0ae77f46cb8db
+Salt = 88bc0e06ac6b5f998789398655ce72f554e4abec67
+N = 4
+R = 2
+P = 1
+Key = 5e68e0c5dc1548b417a2e1c474f68a5a9c203bbef15ae8c2c61f8b09f8cf111a
+
+Name = N=4 r=2 p=2, 4-byte password, 3-byte salt, 64-byte key
+Password = dc99d889
+Salt = 302f4c
+N = 4
+R = 2
+P = 2
+Key = 7421e102ca5a5e131bb0d1cd408f1fd231a93e471b656b08dfb8e0a468bad4b244774f478e317b57ea565e45ea9024accd92f3c195a5e83ca9517b0f152327e1
+
+Name = N=4 r=2 p=3, 2-byte password, 10-byte salt, 1-byte key
+Password = a1a1
+Salt = 33141ffa8b5166bcf805
+N = 4
+R = 2
+P = 3
+Key = f2
+
+Name = N=4 r=2 p=4, 16-byte password, 30-byte salt, 100-byte key
+Password = af4d113c82a0870deeb413df752d2226
+Salt = 693bc297e49d9b5ed559585a86ab7cd7e4293b33f4adab3f94b2021f34aa
+N = 4
+R = 2
+P = 4
+Key = ad6897f4921bf0e2752aa79f97b77f6e000a66e14e261eda8b673bdafc210ae67f0b8fa2b975e97dbc56f72aa1ac883392dc4122b76029ce9ddc589e6c2fb422836d1129d4017ce90c06a9046bbb1c9d97cc0fbd73ad6b2c8e1810854e0afdefabae22f1
+
+Name = N=4 r=3 p=1, 1-byte password, 27-byte salt, 16-byte key
+Password = 68
+Salt = 3752bd431ccaaf76dead462eb3680896089003e7f23abc8f830331
+N = 4
+R = 3
+P = 1
+Key = 35c4a7e5c56618b4b6a6769dee3f8232
+
+Name = N=4 r=3 p=2, 7-byte password, 31-byte salt, 32-byte key
+Password = 7b292b8cef2f4f
+Salt = bf94c75f8cbc15006410e04af9892b19c98137fc962dc0199814fbb481b93e
+N = 4
+R = 3
+P = 2
+Key = 33ee38ec0ab37cc6aa303952708dd4382791748e1db71525b88cdf1b4c3a247c
+
+Name = N=4 r=3 p=3, 7-byte password, 8-byte salt, 64-byte key
+Password = 18afd774c8a45a
+Salt = 25bc2a7223e7a1f1
+N = 4
+R = 3
+P = 3
+Key = 65847de7e0bafd9a78a3fbd133da5f7167fb4fcfcab0916146465243fd8e0a18c277979232ff26d794c9fe68331b66fd41fe88330be5b05dcb50a48928c23ee1
+
+Name = N=4 r=3 p=4, 8-byte password, 18-byte salt, 1-byte key
+Password = 12c36ef753c292d3
+Salt = c678c1607eaad15c3149b2b650252701d7da
+N = 4
+R = 3
+P = 4
+Key = 8c
+
+Name = N=4 r=8 p=1, 23-byte password, 6-byte salt, 100-byte key
+Password = 4df6b17209b66ff6d08cc5ed44a01adde275c43d7fa0c7
+Salt = 573f47c19e47
+N = 4
+R = 8
+P = 1
+Key = 069a3b071634fb3512da754ba06328fb96d92c08268c20dedf02d3b39986d30e524d0b6e56f99d21a4119dd9a18ddc4d2e572b8730adf01cf0307b82b50c6efc951103511ceaf6fc90af0c42750e781efb7965a44b5bdfd9ecd6a2a0ee3c0f89742d372a
+
+Name = N=4 r=8 p=2, 16-byte password, 2-byte salt, 16-byte key
+Password = 7ce78f86b81406b7aa0fb400cf6c5c6d
+Salt = 3647
+N = 4
+R = 8
+P = 2
+Key = 80d858aeef9cf0cd91056be888d37141
+
+Name = N=4 r=8 p=3, 1-byte password, 24-byte salt, 32-byte key
+Password = 8c
+Salt = 9d83ac2efc1ac96eae5889974905b51a61c8dbbd1a2ecba0
+N = 4
+R = 8
+P = 3
+Key = 45656afbe70e6b827b8d592193a489bfd1f5ea605ec539be8575210ddb0540f2
+
+Name = N=4 r=8 p=4, 1-byte password, 24-byte salt, 64-byte key
+Password = 48
+Salt = d2318a570269694a0bd98918ebed3b615b77372356b7fbd5
+N = 4
+R = 8
+P = 4
+Key = 3d291d83ff80839865da4846d717b9cd9b1f59a13143c33cd00e174e4468f07fbd905cd1fb6d5579dc558bc0b6901efcdc625a9f5b69a25c3310d09ff6979773
+
+Name = N=16 r=1 p=1, 8-byte password, 26-byte salt, 1-byte key
+Password = 69cef86fb70c36b3
+Salt = f73d2301872edfbba940d7b0f0cfdfcc6f28c025a51b35b5d898
+N = 16
+R = 1
+P = 1
+Key = c5
+
+Name = N=16 r=1 p=2, 8-byte password, 28-byte salt, 100-byte key
+Password = 70db54cc5264ccf6
+Salt = 3d5aef09439b0dbbfdcd78fe19a247e3768e79db076e28ee936fdf55
+N = 16
+R = 1
+P = 2
+Key = 2fe7e7cea27859d1e87ea5b6e3f88b64307258b6102f38b239ac7f42595570aadf75556c9338d0e3ce2a4311d52eaa42577d45e6898a3f832d60fa24ad38e536b1ce2a894dbfef245824380a95ffcffee7b34d0863f0394567ee3a94f5251dc2af6a496a
+
+Name = N=16 r=1 p=3, 19-byte password, 4-byte salt, 16-byte key
+Password = 854b23d9e18f1539b6e10a0d7ab80a209b5739
+Salt = e9dcd553
+N = 16
+R = 1
+P = 3
+Key = cb9b403fe3a2b6a3da3236f1e948bcc3
+
+Name = N=16 r=1 p=4, 19-byte password, 3-byte salt, 32-byte key
+Password = f6cf310076d4bbb84778815525381232aac0ad
+Salt = ce8db5
+N = 16
+R = 1
+P = 4
+Key = a897e9356296b385e1e6a11e4c82e9f1c6c153f24f5f9f9e850fa66079f72f12
+
+Name = N=16 r=2 p=1, 18-byte password, 11-byte salt, 64-byte key
+Password = cef817a6488aa876d0beeabfe338400d4e55
+Salt = 4088ca751f26db3e1c28e4
+N = 16
+R = 2
+P = 1
+Key = 213b808c644d9c5cd9de4f566a81f9938ee7e2163bf55f73ab718c98c3d2b2abefc1dbf124287c35bbf3ab79d9291a46ab3027cd1d1a03b48a45905b3b88593a
+
+Name = N=16 r=2 p=2, 14-byte password, 1-byte salt, 1-byte key
+Password = 691914317dbc1470bccf0b85674d
+Salt = 4e
+N = 16
+R = 2
+P = 2
+Key = b3
+
+Name = N=16 r=2 p=3, 10-byte password, 9-byte salt, 100-byte key
+Password = 7f9f20785975940482f8
+Salt = 6c4c8c4deb7181a5cf
+N = 16
+R = 2
+P = 3
+Key = 9a9b6f7666f1d859c65a0a725f28a5b97e16f831b872aa9ba32db69f0023ef4d5def21613d5bd023215cab1bdd16e5503696f48d03ca019591bca4785d187ad91676a87aa0dcdc3d0377d105f7c0e1e9f2ffb0c4d78e95de27e9f7f697bd1ea456216f2a
+
+Name = N=16 r=2 p=4, 0-byte password, 26-byte salt, 16-byte key
+Password =
+Salt = 503ae576707d450ed2d38ccd9c89c4d30fa47f2dfbc494037043
+N = 16
+R = 2
+P = 4
+Key = c6505097982ea41f64450be2ef4d5d52
+
+Name = N=16 r=3 p=1, 4-byte password, 0-byte salt, 32-byte key
+Password = 99f5cbad
+Salt =
+N = 16
+R = 3
+P = 1
+Key = 2c163cbd9c64c8fa30977ba0854eec61c154407f96f8abd0033d4846ac364729
+
+Name = N=16 r=3 p=2, 9-byte password, 25-byte salt, 64-byte key
+Password = bc4ee693e20417be74
+Salt = ade07eefc4279e720150d9c78ca5e1062dbeac1807260d62df
+N = 16
+R = 3
+P = 2
+Key = 295d7420c08b664ae0b5559076365e9b2df83c7e329fbfc5ce8a82b57d97db2c0b4f70b012ec52c56030e84370b983695d833f817bce52c8a4f4feeec4138bcf
+
+Name = N=16 r=3 p=3, 3-byte password, 7-byte salt, 1-byte key
+Password = dd402c
+Salt = 676f869ee722f1
+N = 16
+R = 3
+P = 3
+Key = ae
+
+Name = N=16 r=3 p=4, 15-byte password, 6-byte salt, 100-byte key
+Password = f9715759ab2e91f5c240b1dcd65912
+Salt = 1e86d21b0f8a
+N = 16
+R = 3
+P = 4
+Key = 22f33efd85a5ab2af51f1944429290867a55398a9a67fc007880681dfef44d8d942e7e4a3f3589bd1026a08ba2ed2a00be11c9cd8c53fca3497555518e5e12eef52e3aa2daf2be77428072956567006696f343bf1808ebc45c82407271c12883644b79bd
+
+Name = N=16 r=8 p=1, 19-byte password, 12-byte salt, 16-byte key
+Password = 5d4561e96a40edbdbe14dac53ac1ad7aded1ea
+Salt = 9d8e50c90e5c2b806050d544
+N = 16
+R = 8
+P = 1
+Key = 3df902b9211e4ca176939ae44436d24a
+
+Name = N=16 r=8 p=2, 5-byte password, 5-byte salt, 32-byte key
+Password = 28f9134a45
+Salt = b4d582f3c8
+N = 16
+R = 8
+P = 2
+Key = 538bf826727bdbdd5de8040768dbd974b46f8e16f872c342f65ab60982f135ae
+
+Name = N=16 r=8 p=3, 16-byte password, 7-byte salt, 64-byte key
+Password = 93d899700cf34a2413accff597da0d15
+Salt = 5d6e3e955512c8
+N = 16
+R = 8
+P = 3
+Key = bf496fd0552ebc55a9b389b5b81db9c905b76706756b72aaad00e3a7588410c44aad3b4b2103e957b5df73c43e22850934177824596766a05d5d0a881125bbba
+
+Name = N=16 r=8 p=4, 8-byte password, 27-byte salt, 1-byte key
+Password = 2f99aa36a11a9b87
+Salt = 7a84920f545c8b1f5c7b291eb36a199f68258489663dc6d1d6dc5a
+N = 16
+R = 8
+P = 4
+Key = 91
+
+Name = N=1024 r=1 p=1, 16-byte password, 18-byte salt, 100-byte key
+Password = ee7192346dca6088825e0811b276f996
+Salt = 7c7c2e909739f416fe663cbec0387702ec31
+N = 1024
+R = 1
+P = 1
+Key = 31c17140dab1082562f5011e7a9991a8d1bc218fe65cf43d0a692ed7e5280607bfc159abd00141762e48771ef90e28be7260938cf35b3d7cbd8a8cba763825326b3bd411f7ef7bd02b56ee8dd749b18fc22b5452150814fb219ee3f84b82cba4a0d71bf8
+
+Name = N=1024 r=1 p=2, 1-byte password, 29-byte salt, 16-byte key
+Password = e8
+Salt = b0e80a911c0a1c72d6f0442f325a5f2b0f56379e1e6f6424cac225910f
+N = 1024
+R = 1
+P = 2
+Key = 0c1e0afcfe577f7584b71983a04a47d9
+
+Name = N=1024 r=1 p=3, 19-byte password, 17-byte salt, 32-byte key
+Password = 450eaea9cb9424ff7b2fd7a32776f88f8dde17
+Salt = dddab34ad64183e5c659e48b630faa3581
+N = 1024
+R = 1
+P = 3
+Key = 9ab092c7b3001ea9c6ccee1a81c491d79bc34f066802b090a2352d6a56a3d1e3
+
+Name = N=1024 r=1 p=4, 5-byte password, 3-byte salt, 64-byte key
+Password = 8ecb070fdb
+Salt = c67a47
+N = 1024
+R = 1
+P = 4
+Key = e205a8330be00e1aa69a3f46f55c1204b80c7cfa8a594aaa3f15289c89455b33b42f17edb4d4c25824230ee829acb28bc51756ac3d79ba5cdd8bcbd118c1fdb4
+
+Name = N=1024 r=2 p=1, 14-byte password, 30-byte salt, 1-byte key
+Password = 2c3b34477938e96a5b63d289103e
+Salt = 214a4b4017cbc20e044f4ccfcdfeab845cfa95b98b259d122a263fda1db6
+N = 1024
+R = 2
+P = 1
+Key = ad
+
+Name = N=1024 r=2 p=2, 19-byte password, 15-byte salt, 100-byte key
+Password = bac8d6babd7a392f23692c30f72c691c6cafde
+Salt = 8f7b84adfbac3916f18be8f04e4a91
+N = 1024
+R = 2
+P = 2
+Key = fc31d0ac4acaf553e60aafac4db15ef062c53814a42c62378b02f0e1a67bab733e6b926e8414d2389d0dfe2f0b24e0e3b26252bfe06e2d7fc35e387ca0c2a07e7fd0172ef32c492546ef763fc2796b767d635eded70fc11d051b3e4180845f9d092a2816
+
+Name = N=1024 r=2 p=3, 12-byte password, 18-byte salt, 16-byte key
+Password = f743ed0a22ca71505ef5a6e5
+Salt = 09d32a3e3f753f4429bf1040233d97803ce2
+N = 1024
+R = 2
+P = 3
+Key = b12a66b0cb996ae09c67463e3d9c2748
+
+Name = N=1024 r=2 p=4, 17-byte password, 24-byte salt, 32-byte key
+Password = 9b632528c1d453c509344e06065455e7b8
+Salt = b10ed552c2cd84ddc9ff8cdacf2213f94a5de4aa686aebaf
+N = 1024
+R = 2
+P = 4
+Key = e7908568e80cc3dac48a9c74b5e7a1d7b7bdd275555d48ede89cac56a0018f0a
+
+Name = N=1024 r=3 p=1, 9-byte password, 31-byte salt, 64-byte key
+Password = 10dab80aeccd56dfc3
+Salt = d3d648a057a3e40b54382f642cf30d09f8030d544722261db2f3ccd3dc3136
+N = 1024
+R = 3
+P = 1
+Key = db32919b2ad417439f62b5ce34adeb0db0f074c7af5d22218268c12d9d1ee6bd80d6818fab4da081dafbec4e340f105150d6d2daa9d5d3049da85e27ea6362eb
+
+Name = N=1024 r=3 p=2, 11-byte password, 0-byte salt, 1-byte key
+Password = 0c973f2201bc8d07845e97
+Salt =
+N = 1024
+R = 3
+P = 2
+Key = 8d
+
+Name = N=1024 r=3 p=3, 16-byte password, 12-byte salt, 100-byte key
+Password = abadc5fde2d552d26e43b1b02bee63d7
+Salt = 2e2302355795b3ea083b7506
+N = 1024
+R = 3
+P = 3
+Key = 8847d3598b3bafa9ab728077a74757eda5981600ba7b1940ba0048ea4748dceea3da6c52397058dc11a8ac393906272f597b425a399529e99f0b7c51b061f46125b4aab432a1ce28c1da066f1ea9b1b85742b0e483104fceeae2d57ed0a4ecc01b727b7e
+
+Name = N=1024 r=3 p=4, 18-byte password, 22-byte salt, 16-byte key
+Password = e88baf17064606d6fa5be3289e538d71d5ce
+Salt = 2f72307374d053171112d999ddcc9d5b260114e71dd0
+N = 1024
+R = 3
+P = 4
+Key = 1260c95b20963ea9ea100cd010ff46a0
+
+Name = N=1024 r=8 p=1, 5-byte password, 8-byte salt, 32-byte key
+Password = 34c81e0db9
+Salt = 2678336d4cd65db7
+N = 1024
+R = 8
+P = 1
+Key = 4444706c4a998d825a14b1ac14cfa3240c1a0c666c6c32d157766743db5d4e7a
+
+Name = N=1024 r=8 p=2, 19-byte password, 2-byte salt, 64-byte key
+Password = 3a46b22ef5c320c1065b00f8676fc1e60c5f37
+Salt = aa55
+N = 1024
+R = 8
+P = 2
+Key = c5a31a257f7c4b17ee07cd07243385102fe9568f6f7e263621c3e6d26f04db12341743b16cbe78f16ceee82de3192ee3e1ba5e213805e382335ac085dd8c7f81
+
+Name = N=1024 r=8 p=3, 8-byte password, 16-byte salt, 1-byte key
+Password = 9ad5eb99a62c90f6
+Salt = a30ec7cd35eedb77140618b1b84abe08
+N = 1024
+R = 8
+P = 3
+Key = 30
+
+Name = N=1024 r=8 p=4, 1-byte password, 29-byte salt, 100-byte key
+Password = 87
+Salt = 7726bb6ce48318590a2979957565c15458a8f3b11d84bfe7a43d12e18b
+N = 1024
+R = 8
+P = 4
+Key = ff2075fac140fcaa013313fa79c9d9a951b0392e249126420697421363106a7db133dc9aeaca17bf8b8a4d54e9ca9e4c2287db5a064af2b107ed56a66b100ec4db98f5680ec6fbf0fda5c92442a96a328e72e8b284005b2cf73bde6587a8c7f460b04398
+
+Name = N=16384 r=1 p=1, 15-byte password, 19-byte salt, 16-byte key
+Password = 9034a4517f19e7a1e2491c95d04e9a
+Salt = a34bf7f565607ed622f266d3c8a77136cddd98
+N = 16384
+R = 1
+P = 1
+Key = ad3b3cd85c74c3cc0636eb17459eb46d
+
+Name = N=16384 r=1 p=2, 16-byte password, 9-byte salt, 32-byte key
+Password = f024e6a86db7c5a99487b3714d3299c6
+Salt = 96c630b6ce2e8cb213
+N = 16384
+R = 1
+P = 2
+Key = a947330d69c37964600e0d1f8c8584eed61eb11b9c4f4f8d74c4ceaad4b0368d
+
+Name = N=16384 r=1 p=3, 21-byte password, 29-byte salt, 64-byte key
+Password = 3bd8e6c8f3b555807e644f87ae9bd4429b3ff48696
+Salt = aa4c3716688e22f55af55ade8ad1aebfc0bcf7b11a619b0e1795e18b93
+N = 16384
+R = 1
+P = 3
+Key = af5105a6210f01368faf561c25b4e8c4fc5ab8e25ee551e2e5eec70b912860b1f63b4936f1447d58d1efada9d8c997e376bdbf03d02e3a07dffc84c70df0cbbf
+
+Name = N=16384 r=1 p=4, 21-byte password, 23-byte salt, 1-byte key
+Password = be8c422d2d9991dc4cc75e890a592dd0110394db7f
+Salt = 8fe4f349b128fed3ad96620d36cd9b5ca3142de46f2f52
+N = 16384
+R = 1
+P = 4
+Key = 80
+
+Name = N=16384 r=2 p=1, 18-byte password, 8-byte salt, 100-byte key
+Password = 5741e14784ddf7b7cd86fd5d3ae4e868dd79
+Salt = c826fd225f35b460
+N = 16384
+R = 2
+P = 1
+Key = a0f942651cc7fafc7a68bd1b734733e187f2adb853eed2731785027f75831d81cb3f963bf986753b139ac8970dd85b569c07aabbb670e4b7b031a683465faaa41ee399056481755b80938f63dd83c4daafa9c91e1a87d5ae8f8036112892e572e45defbd
+
+Name = N=16384 r=2 p=2, 8-byte password, 30-byte salt, 16-byte key
+Password = ae9ac75f9261f270
+Salt = b74fcf9eaa3fb0cf3e22bf2cc506f6158a6b5a1e8112cf7d780932be9dcb
+N = 16384
+R = 2
+P = 2
+Key = bf100e5755055cb03cd1c4d5a0742fec
+
+Name = N=16384 r=2 p=3, 21-byte password, 2-byte salt, 32-byte key
+Password = f27821252a4a297bbd728ff691a052e894d14907f6
+Salt = 51c5
+N = 16384
+R = 2
+P = 3
+Key = 223b7e2f9ec359d9fef982c985530daa754c22d046579a29b797ed905720a2ee
+
+Name = N=16384 r=2 p=4, 5-byte password, 11-byte salt, 64-byte key
+Password = 7f5226a10c
+Salt = 317249cdb4a3e0cccb61ef
+N = 16384
+R = 2
+P = 4
+Key = 599e7126b6e2838c90f96363b84074716987ce72412bd4ca4c027d2df6ff2500a3c7d16a7953e07ab238d7b32d8634f9dc9e2f117bc355a645b37188f59be509
+
+Name = N=16384 r=3 p=1, 15-byte password, 21-byte salt, 1-byte key
+Password = abf11b3edc25209eed54c3e25a265c
+Salt = aaf803dab0815d8347d39e45b3057ea606fba5d389
+N = 16384
+R = 3
+P = 1
+Key = de
+
+Name = N=16384 r=3 p=2, 22-byte password, 12-byte salt, 100-byte key
+Password = 7500806e04ddae67738d466021d25d15eb2a9397f708
+Salt = dbeae7d51ddb5e8088f66982
+N = 16384
+R = 3
+P = 2
+Key = 1c887c9cf456b6aa9c80b61c636c5b7c846d24aaeb85d9a7ef5a4228aaa4e6f38a573685d6f0eca56f69ea32b96d2777afb1f24ffa628d3cad0eff6d3b459e77587958e648e7d567d2f78e27222bf102c2343a3f3f2b534350d732a1de7246e0b5c635da
+
+Name = N=16384 r=3 p=3, 1-byte password, 21-byte salt, 16-byte key
+Password = 59
+Salt = 7d80d5e06010fe53e3ac48f10f7b40f2496d78a583
+N = 16384
+R = 3
+P = 3
+Key = e51c6d2d89c341638032f7a1c486c853
+
+Name = N=16384 r=3 p=4, 11-byte password, 6-byte salt, 32-byte key
+Password = 08918b140dbe69b7505abc
+Salt = ad13c216a876
+N = 16384
+R = 3
+P = 4
+Key = 7f84ef966902bc4698266984669c639233d65833e158883e91f8862ecdb01b9c
+
+Name = N=16384 r=8 p=1, 7-byte password, 9-byte salt, 64-byte key
+Password = 970329d5ea4e04
+Salt = 041f158ab3bf607743
+N = 16384
+R = 8
+P = 1
+Key = 086e32e6b55bf3a2fa6d4bd4cc9ed99b976abd9b49cf7ca5915706af11bf61ef031b17f4b7af5c477319239da164edbd1891377ab3e072e1aa1ca52c00376f52
+
+Name = N=16384 r=8 p=2, 2-byte password, 17-byte salt, 1-byte key
+Password = 4b03
+Salt = ea2c5bed3566ce2c2f33c402c9eb18dfbb
+N = 16384
+R = 8
+P = 2
+Key = 87
+
+Name = N=16384 r=8 p=3, 16-byte password, 29-byte salt, 100-byte key
+Password = c5087564973bd008e94c9b7ec15c739b
+Salt = d7cde7b5e8361bd4ec5088e9d3489888b486faca8594201c2c7c8291b1
+N = 16384
+R = 8
+P = 3
+Key = 6a7174ffe85c606e6f44dd3b3ed16d14cb0000bb995c2bdcbc8e7542f074aae7453c4dac9347332312f5447eb24d6016419846f951cb43014354c00ca7e58b2a8422149096f4ebfdbf659a2593688a7d534d2c98189aab579c32413f17bc5dc8ca4a7e05
+
+Name = N=16384 r=8 p=4, 17-byte password, 7-byte salt, 16-byte key
+Password = 678e2d3f4111d3ebddd25a8fabea481e16
+Salt = 03f60dd679d127
+N = 16384
+R = 8
+P = 4
+Key = 6f76bcdfe3b47d81d358963ce2e1ed09

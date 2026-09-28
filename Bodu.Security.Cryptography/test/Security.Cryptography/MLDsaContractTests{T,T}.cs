@@ -15,7 +15,7 @@ namespace Bodu.Security.Cryptography;
 /// <typeparam name="TTest">The concrete test class, used to resolve specification data for <see cref="DynamicDataAttribute" /> sources.</typeparam>
 /// <typeparam name="TDsa">The concrete parameter-set type under test.</typeparam>
 [TestClass]
-public abstract class MLDsaContractTests<TTest, TDsa>
+public abstract partial class MLDsaContractTests<TTest, TDsa>
     : SignatureAlgorithmTests<TTest, TDsa>
     where TTest : MLDsaContractTests<TTest, TDsa>, new()
     where TDsa : MLDsa, new()

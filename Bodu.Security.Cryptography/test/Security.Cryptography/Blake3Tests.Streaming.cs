@@ -64,6 +64,103 @@ public partial class Blake3Tests
             $"One-shot vs random-chunking digests diverged for input length {inputLength}.");
     }
 
+    /// <summary>
+    /// Verifies that a large write that starts part-way into a chunk — after a first write of the given length — hashes
+    /// as a stream of 100-byte writes does: the large write first completes the open chunk block by block, then hashes
+    /// whole subtrees, and leaves its tail to be finished block by block.
+    /// </summary>
+    /// <param name="firstWrite">The length of the write before the large one.</param>
+    [TestMethod]
+    [TestCategory(TestCategories.Regression)]
+    [DataRow(1)]
+    [DataRow(63)]
+    [DataRow(64)]
+    [DataRow(65)]
+    [DataRow(1000)]
+    [DataRow(1023)]
+    [DataRow(1024)]
+    [DataRow(1025)]
+    [DataRow(2047)]
+    [DataRow(4096)]
+    public void ChunkingPattern_WhenLargeWriteStartsInsideAChunk_ShouldMatchSmallWrites(int firstWrite)
+    {
+        byte[] input = BuildDeterministicInput(40 * 1024 + 7);
+
+        using var hasher = new Blake3();
+        hasher.TransformBlock(input, 0, firstWrite, null, 0);
+        hasher.TransformBlock(input, firstWrite, input.Length - firstWrite - 3, null, 0);
+        hasher.TransformFinalBlock(input, input.Length - 3, 3);
+
+        CollectionAssert.AreEqual(HashInFixedBlocks(input, 100), hasher.Hash, $"first write {firstWrite}");
+    }
+
+    /// <summary>
+    /// Verifies that one-shot hashing, which takes whole subtrees at once, matches a stream of 100-byte writes, which
+    /// never does, for inputs one byte either side of every power-of-two number of chunks up to 512 and of the 64-chunk
+    /// batch multiples beyond it.
+    /// </summary>
+    /// <param name="chunks">The number of whole chunks.</param>
+    [TestMethod]
+    [TestCategory(TestCategories.Regression)]
+    [DataRow(1)]
+    [DataRow(2)]
+    [DataRow(4)]
+    [DataRow(8)]
+    [DataRow(16)]
+    [DataRow(32)]
+    [DataRow(64)]
+    [DataRow(65)]
+    [DataRow(128)]
+    [DataRow(192)]
+    [DataRow(256)]
+    [DataRow(512)]
+    public void ChunkingPattern_WhenLengthStraddlesASubtreeBoundary_ShouldMatchSmallWrites(int chunks)
+    {
+        foreach (int delta in new[] { -1, 0, 1 })
+        {
+            byte[] input = BuildDeterministicInput((chunks * 1024) + delta);
+
+            using var hasher = new Blake3();
+            CollectionAssert.AreEqual(HashInFixedBlocks(input, 100), hasher.ComputeHash(input), $"{chunks} chunks {delta:+0;-0;+0} bytes");
+        }
+    }
+
+    /// <summary>
+    /// Verifies that a stream of writes of whole-chunk and ragged lengths, each large enough to hash subtrees of its
+    /// own, matches a stream of 100-byte writes: each write's subtrees must line up with those the earlier writes
+    /// left open.
+    /// </summary>
+    [TestMethod]
+    [TestCategory(TestCategories.Regression)]
+    public void ChunkingPattern_WhenLargeWritesFollowEachOther_ShouldMatchSmallWrites()
+    {
+        int[][] patterns =
+        [
+            [3072, 5120, 65536 + 17, 1025],
+            [1025, 1025, 1025, 1025, 1025, 1025, 1025],
+            [4096, 4096, 4096, 4096, 4096],
+            [64 * 1024, 64 * 1024, 1, 64 * 1024],
+            [2048 + 1, 8192 - 1, 32768 + 1024],
+        ];
+
+        foreach (int[] pattern in patterns)
+        {
+            byte[] input = BuildDeterministicInput(pattern.Sum());
+
+            using var hasher = new Blake3();
+            int offset = 0;
+            foreach (int length in pattern)
+            {
+                hasher.TransformBlock(input, offset, length, null, 0);
+                offset += length;
+            }
+
+            hasher.TransformFinalBlock([], 0, 0);
+
+            CollectionAssert.AreEqual(HashInFixedBlocks(input, 100), hasher.Hash, string.Join(", ", pattern));
+        }
+    }
+
     private static byte[] BuildDeterministicInput(int length)
     {
         byte[] buffer = new byte[length];

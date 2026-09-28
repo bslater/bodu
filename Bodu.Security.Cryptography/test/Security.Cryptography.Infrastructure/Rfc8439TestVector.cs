@@ -9,7 +9,7 @@ namespace Bodu.Security.Cryptography.Infrastructure;
 /// <summary>
 /// Represents a single parsed RFC 8439 appendix test vector — its block number, the labelled hex-dump fields keyed by
 /// their heading (for example <c>Key</c>, <c>Nonce</c>, <c>Plaintext</c>, <c>Ciphertext</c>), and the optional
-/// <c>Initial Block Counter</c> scalar.
+/// <c>Initial Block Counter</c> (or Appendix A.1's <c>Block Counter</c>) scalar.
 /// </summary>
 /// <param name="Number">The <c>Test Vector #N</c> block number within its appendix section.</param>
 /// <param name="Fields">The labelled byte fields decoded from the block's hex dumps.</param>

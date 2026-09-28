@@ -53,6 +53,40 @@ public sealed class StreamCipherEngineDisposeTests
     /// Verifies that <see cref="RabbitStreamCipher.NextKeystreamBlock" /> throws
     /// <see cref="ObjectDisposedException" /> after the engine has been disposed.
     /// </summary>
+    /// <summary>
+    /// Verifies that <see cref="ChaCha20StreamCipher.XorKeystreamBlocks" /> throws
+    /// <see cref="ObjectDisposedException" /> once the engine is disposed.
+    /// </summary>
+    [TestMethod]
+    public void ChaCha20StreamCipher_XorKeystreamBlocks_WhenDisposed_ShouldThrowObjectDisposedException()
+    {
+        var cipher = new ChaCha20StreamCipher(new byte[32], new byte[12], initialCounter: 0u);
+        cipher.Dispose();
+
+        byte[] blocks = new byte[128];
+        Assert.ThrowsExactly<ObjectDisposedException>(() =>
+        {
+            cipher.XorKeystreamBlocks(blocks, blocks);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Salsa20StreamCipher.XorKeystreamBlocks" /> throws
+    /// <see cref="ObjectDisposedException" /> once the engine is disposed.
+    /// </summary>
+    [TestMethod]
+    public void Salsa20StreamCipher_XorKeystreamBlocks_WhenDisposed_ShouldThrowObjectDisposedException()
+    {
+        var cipher = new Salsa20StreamCipher(new byte[32], new byte[8], initialCounter: 0uL);
+        cipher.Dispose();
+
+        byte[] blocks = new byte[128];
+        Assert.ThrowsExactly<ObjectDisposedException>(() =>
+        {
+            cipher.XorKeystreamBlocks(blocks, blocks);
+        });
+    }
+
     [TestMethod]
     public void RabbitStreamCipher_NextKeystreamBlock_WhenDisposed_ShouldThrowObjectDisposedException()
     {

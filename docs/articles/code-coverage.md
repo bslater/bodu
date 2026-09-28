@@ -86,8 +86,9 @@ was being established:
 ## Hardware-gated SIMD paths (the AVX512 split)
 
 `Bodu.Security.Cryptography` ships hardware-accelerated implementations
-(`ThreefishBlockCipher.{256,512,1024}.Avx512.cs`, `Blake2b/2s/3.Avx512.cs`,
-…) alongside scalar fallbacks. The JIT selects exactly one path per process
+(`ThreefishBlockCipher.{256,512,1024}.Avx512.cs`, the `Blake2bCore` /
+`Blake2sCore` / `Blake3Core` `.Avx512.cs` shims, BLAKE3's 512-bit
+`Blake3Core.Vector512.cs`, …) alongside scalar fallbacks. The JIT selects exactly one path per process
 based on the CPU, so **no single machine can cover both**:
 
 - On an **AVX512-capable** host the existing known-answer tests drive the
@@ -135,8 +136,10 @@ bld/collect-coverage.sh --project Bodu.Security.Cryptography/test/Bodu.Security.
 bld/merge-coverage.sh
 ```
 
-`--scalar` re-runs the suite with `DOTNET_EnableAVX512F=0 DOTNET_EnableAVX2=0
-DOTNET_EnableHWIntrinsic=0` into a parallel `<Name>.scalar` directory.
+`--scalar` re-runs the suite with `DOTNET_EnableAVX512F=0 DOTNET_EnableAVX512=0
+DOTNET_EnableAVX2=0 DOTNET_EnableHWIntrinsic=0` into a parallel `<Name>.scalar`
+directory. The two AVX-512 names are .NET 8's and .NET 10's; each runtime ignores
+the other's.
 ReportGenerator takes the maximum hit count per line, so merging the two yields
 the union rather than either half. `.github/workflows/coverage.yml` runs the
 scalar pass automatically in whichever job collected the crypto suite.
@@ -154,9 +157,48 @@ wall clock for nothing.
 
 **This does not retire the `n/a (hardware-gated)` classification** in
 `tools/New-CoverageMatrix.ps1`. A single-pass local run on a machine without
-AVX-512 still cannot execute the intrinsic files, and reporting them as 0% there
-would be wrong. The classification stays for that case; after a dual pass it
+AVX-512 still cannot execute the intrinsic files — every `*.Avx512.cs`, and the
+512-bit `*.Vector512.cs` kernels, which the script classifies with them — and
+reporting them as 0% there would be wrong. The classification stays for that case; after a dual pass it
 simply never triggers, because neither path is unreachable any more.
+
+### ARM64: the AdvSimd and PMULL files
+
+Argon2's 128-bit compression kernel is written once over portable `Vector128`
+arithmetic and specialized by a five-member instruction-set shim, so nearly all
+of it runs on x64. On an AVX2 host the kernel-sweep test drives the AVX2, SSSE3
+and scalar kernels explicitly, whichever one dispatch picks, so one native pass
+covers all three. Only the ARM64 shim, `Argon2Core.AdvSimd.cs`, cannot run
+there: each of its members is an AdvSimd instruction.
+
+The GHASH and POLYVAL kernel behind GCM follows the same pattern. The carry-less
+kernel is written once against a shim, and the GHASH tests drive every kernel
+the processor supports, so an x64 pass covers the kernel, its PCLMULQDQ shim and
+the scalar kernel. Only the ARM64 shim, `Ghash.PmullIsa.cs`, built on the
+cryptography extension's `PMULL`, cannot run there.
+
+scrypt's BlockMix kernel and the BLAKE2 compression kernels follow it too. Its 128-bit kernel is written once
+over `Vector128` and specialized by a shim of three lane rotations; the scrypt
+tests drive the SSE2 and scalar kernels explicitly on x64, so only the ARM64 shim,
+`ScryptCore.AdvSimd.cs`, cannot run there. The BLAKE2 core tests likewise drive every
+x64 kernel explicitly; BLAKE2b's 128-bit kernel reuses Argon2's shims, so its ARM64
+shim is `Argon2Core.AdvSimd.cs` again, and BLAKE2s's is `Blake2sCore.AdvSimd.cs`.
+BLAKE3's 128-bit kernels reuse the BLAKE2s shims, so on ARM64 they too run through
+`Blake2sCore.AdvSimd.cs`; its 256- and 512-bit kernels are x64-only, and the
+512-bit one, `Blake3Core.Vector512.cs`, is classified with the AVX-512 files.
+
+`tools/New-CoverageMatrix.ps1` therefore treats `*.AdvSimd.cs` and
+`*.PmullIsa.cs` as hardware-gated whenever no collecting host is ARM64 — judged
+from the `arch` field every collection manifest records — and reports them as
+`n/a (hardware-gated)` rather than 0%. As with the AVX-512 files, the rule
+applies only on positive evidence: a collection with no recorded architecture
+reports the files as measured. The shims are not untested: the ARM64 job in
+`.github/workflows/build-test.yml` runs both cryptography suites on GitHub's
+hosted ARM64 runner, where the Argon2 shim tests hold each member to its scalar
+definition, the vector corpus runs through the AdvSimd kernel, the GHASH
+tests hold the PMULL kernel to the RFC 8452 values and to a bit-serial reference,
+and the scrypt tests hold the AdvSimd BlockMix kernel to RFC 7914's vectors and to
+the scalar kernel.
 
 ### The switch itself
 
@@ -174,9 +216,10 @@ and a second writer in a second assembly would corrupt it.
 
 Run on its own, that assembly executes the scalar implementations at 87–95% and
 every Threefish `*.Avx512.cs` file at **0%** — measured proof that the switch is
-engaged and the intrinsic path is not running. The BLAKE intrinsic files show
-four lines of their static constructor, which initialize the rotation constants
-whenever the type is touched; no intrinsic compute code executes.
+engaged and the intrinsic path is not running. The BLAKE intrinsic files of the
+time showed four lines of their static constructor, which initialized rotation
+constants whenever the type was touched; no intrinsic compute code executed. The
+BLAKE kernels have since moved to shim structs with no static state.
 
 Adding it changed the package figure not at all, which is the point: it buys
 confidence in the feature, and a second independent source of scalar coverage

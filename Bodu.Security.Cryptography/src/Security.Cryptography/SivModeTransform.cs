@@ -91,6 +91,9 @@ public sealed class SivModeTransform
     /// <summary>Length of the SIV authentication tag is 128 bits (16 bytes). Byte length derived inline via <see cref="TagSizeBits" /> / 8.</summary>
     private const int TagSizeBits = 128;
 
+    /// <summary>The block size, in bytes, of both ciphers, of CMAC, and of a counter block.</summary>
+    private const int BlockBytes = BlockSizeBits / 8;
+
     /// <summary>The cipher keyed with K₁, used by CMAC and S2V to derive the synthetic IV.</summary>
     private readonly IBlockCipher _s2vCipher;
 
@@ -167,20 +170,22 @@ public sealed class SivModeTransform
 
         EnsureAadProcessed();
 
-        byte[]? siv = null;
-        byte[]? ctrSeed = null;
+        // The synthetic IV, then the counter derived from it.
+        Span<byte> scratch = stackalloc byte[2 * BlockBytes];
 
         try
         {
+            Span<byte> siv = scratch[..BlockBytes];
+            Span<byte> counter = scratch.Slice(BlockBytes, BlockBytes);
+
             // SIV = S2V(K1, AAD, plaintext).
-            siv = S2V(_aad!, plaintext);
+            S2V(_aad!, plaintext, siv);
 
             // Encrypt plaintext with CTR (K2) seeded from SIV with bits 31 and 63 cleared.
-            ctrSeed = (byte[])siv.Clone();
-            ctrSeed[8] &= 0x7F;
-            ctrSeed[12] &= 0x7F;
-
-            CtrEncrypt(plaintext, output[..plaintext.Length], ctrSeed);
+            siv.CopyTo(counter);
+            counter[8] &= 0x7F;
+            counter[12] &= 0x7F;
+            CounterKeystream.TransformBigEndian128(_ctrCipher, counter, plaintext, output[..plaintext.Length]);
 
             // Output: ciphertext || SIV tag.
             siv.CopyTo(output[plaintext.Length..]);
@@ -189,8 +194,7 @@ public sealed class SivModeTransform
         }
         finally
         {
-            CryptographyHelper.Clear(ctrSeed);
-            CryptographyHelper.Clear(siv);
+            CryptographyHelper.Clear(scratch);
             _completed = true;
         }
     }
@@ -219,21 +223,27 @@ public sealed class SivModeTransform
         ReadOnlySpan<byte> ciphertext = ciphertextWithTag[..plaintextLength];
         ReadOnlySpan<byte> receivedSiv = ciphertextWithTag[plaintextLength..];
 
-        byte[]? ctrSeed = null;
-        byte[]? expectedSiv = null;
+        // The received SIV, the counter derived from it, and the expected SIV.
+        Span<byte> scratch = stackalloc byte[3 * BlockBytes];
 
         try
         {
-            // Decrypt with CTR seeded from received SIV.
-            ctrSeed = receivedSiv.ToArray();
-            ctrSeed[8] &= 0x7F;
-            ctrSeed[12] &= 0x7F;
+            Span<byte> sivCopy = scratch[..BlockBytes];
+            Span<byte> counter = scratch.Slice(BlockBytes, BlockBytes);
+            Span<byte> expectedSiv = scratch.Slice(2 * BlockBytes, BlockBytes);
 
-            CtrEncrypt(ciphertext, output[..plaintextLength], ctrSeed);
+            // Copy the SIV first: it seeds the counter, and the plaintext may be written over the buffer holding it.
+            receivedSiv.CopyTo(sivCopy);
+
+            // Decrypt with CTR seeded from the received SIV.
+            sivCopy.CopyTo(counter);
+            counter[8] &= 0x7F;
+            counter[12] &= 0x7F;
+            CounterKeystream.TransformBigEndian128(_ctrCipher, counter, ciphertext, output[..plaintextLength]);
 
             // Verify SIV.
-            expectedSiv = S2V(_aad!, output[..plaintextLength]);
-            if (!CryptographicOperations.FixedTimeEquals(expectedSiv, receivedSiv))
+            S2V(_aad!, output[..plaintextLength], expectedSiv);
+            if (!CryptographicOperations.FixedTimeEquals(expectedSiv, sivCopy))
             {
                 CryptographyHelper.Clear(output[..plaintextLength]);
                 throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_AuthenticationTagMismatch);
@@ -251,8 +261,7 @@ public sealed class SivModeTransform
         }
         finally
         {
-            CryptographyHelper.Clear(expectedSiv);
-            CryptographyHelper.Clear(ctrSeed);
+            CryptographyHelper.Clear(scratch);
             _completed = true;
         }
     }
@@ -314,219 +323,92 @@ public sealed class SivModeTransform
 
     /// <summary>
     /// Computes the Synthetic IV using S2V per RFC 5297 Section 2.4. S2V(K, S₁, …, Sₙ) where S₁ = AAD and Sₙ =
-    /// plaintext.
+    /// plaintext; empty associated data contributes no string, so the plaintext is then the only one.
     /// </summary>
     /// <param name="aad">The associated authenticated data.</param>
     /// <param name="plaintext">The plaintext bytes.</param>
-    /// <returns>The S2V synthetic initialization vector.</returns>
-    private byte[] S2V(ReadOnlySpan<byte> aad, ReadOnlySpan<byte> plaintext)
+    /// <param name="v">Receives the 16-byte synthetic initialization vector.</param>
+    /// <remarks>
+    /// Every CMAC runs through <see cref="Cmac" />, so the plaintext is never copied: for a plaintext of a block or
+    /// more, <c>Sₙ xorend D</c> is its bytes up to the last block as they are, then that last block XORed with <c>D</c>.
+    /// </remarks>
+    private void S2V(ReadOnlySpan<byte> aad, ReadOnlySpan<byte> plaintext, Span<byte> v)
     {
-        int blockSize = _s2vCipher.BlockSize / 8;
-
-        byte[] zeroBlock = new byte[blockSize];
-        byte[]? d = null;
-        byte[]? mac = null;
-        byte[]? t = null;
-        byte[]? padded = null;
+        // Scratch: the CMAC subkeys K1 and K2, the CMAC state and held-back block, D, and a block for T.
+        Span<byte> scratch = stackalloc byte[6 * BlockBytes];
 
         try
         {
+            Span<byte> d = scratch.Slice(4 * BlockBytes, BlockBytes);
+            Span<byte> block = scratch.Slice(5 * BlockBytes, BlockBytes);
+            Cmac.DeriveSubkeys(_s2vCipher, scratch[..BlockBytes], scratch.Slice(BlockBytes, BlockBytes));
+
             // D = CMAC(K1, 0^128).
-            d = ComputeCmac(zeroBlock);
+            block.Clear();
+            ComputeCmac(scratch, block, d);
 
             // For each component before the last: D = dbl(D) XOR CMAC(K1, component).
             if (aad.Length > 0)
             {
-                Dbl(d);
-
-                mac = ComputeCmac(aad);
-                Xor(d, mac, d);
+                GaloisField128.Double(d, d);
+                ComputeCmac(scratch, aad, block);
+                CryptographyHelper.Xor(d, block, d);
             }
 
-            // Last component = plaintext.
-            if (plaintext.Length == 0)
+            // Last component = plaintext. A plaintext shorter than a block, the empty one included, is padded with
+            // 10* — <one> is only for a call with no strings, which cannot happen here.
+            if (plaintext.Length >= BlockBytes)
             {
-                Dbl(d);
-                d[blockSize - 1] ^= 0x01;
-
-                return ComputeCmac(d);
+                var cmac = NewCmac(scratch);
+                cmac.Append(plaintext[..^BlockBytes]);
+                CryptographyHelper.Xor(plaintext[^BlockBytes..], d, block);
+                cmac.Append(block);
+                cmac.Finish(v);
+                return;
             }
 
-            if (plaintext.Length >= blockSize)
-            {
-                t = plaintext.ToArray();
-
-                int offset = t.Length - blockSize;
-                for (int i = 0; i < blockSize; i++)
-                    t[offset + i] ^= d[i];
-
-                return ComputeCmac(t);
-            }
-
-            Dbl(d);
-
-            padded = new byte[blockSize];
-            plaintext.CopyTo(padded);
-            padded[plaintext.Length] = 0x80;
-
-            Xor(d, padded, padded);
-
-            return ComputeCmac(padded);
+            GaloisField128.Double(d, d);
+            block.Clear();
+            plaintext.CopyTo(block);
+            block[plaintext.Length] = 0x80;
+            CryptographyHelper.Xor(d, block, block);
+            ComputeCmac(scratch, block, v);
         }
         finally
         {
-            CryptographyHelper.Clear(padded);
-            CryptographyHelper.Clear(t);
-            CryptographyHelper.Clear(mac);
-            CryptographyHelper.Clear(d);
-            CryptographyHelper.Clear(zeroBlock);
+            CryptographyHelper.Clear(scratch);
         }
     }
 
     /// <summary>
-    /// Computes AES-CMAC of <paramref name="message" /> using <c>s2vCipher</c> per RFC 4493.
+    /// Computes the CMAC of <paramref name="message" /> under K1.
     /// </summary>
-    /// <param name="message">The message to MAC.</param>
-    /// <returns>The 16-byte CMAC tag.</returns>
-    private byte[] ComputeCmac(ReadOnlySpan<byte> message)
+    /// <param name="scratch">
+    /// Scratch whose first two blocks hold the subkeys and whose next two receive the CMAC state.
+    /// </param>
+    /// <param name="message">The message.</param>
+    /// <param name="mac">Receives the 16-byte MAC.</param>
+    private void ComputeCmac(Span<byte> scratch, ReadOnlySpan<byte> message, Span<byte> mac)
     {
-        int blockSize = _s2vCipher.BlockSize / 8;
-
-        byte[] zeroBlock = new byte[blockSize];
-        byte[] l = new byte[blockSize];
-        byte[] k1 = new byte[blockSize];
-        byte[] k2 = new byte[blockSize];
-        byte[] mac = new byte[blockSize];
-        byte[] lastBlock = new byte[blockSize];
-
-        try
-        {
-            _s2vCipher.Encrypt(zeroBlock, l);
-
-            l.CopyTo(k1, 0);
-            Dbl(k1);
-
-            k1.CopyTo(k2, 0);
-            Dbl(k2);
-
-            int totalBlocks = (message.Length + blockSize - 1) / blockSize;
-            bool lastIsFull = message.Length > 0 && message.Length % blockSize == 0;
-
-            if (message.Length == 0)
-            {
-                totalBlocks = 1;
-                lastIsFull = false;
-            }
-
-            for (int blockIdx = 0; blockIdx < totalBlocks - 1; blockIdx++)
-            {
-                byte[] block = new byte[blockSize];
-
-                try
-                {
-                    message.Slice(blockIdx * blockSize, blockSize).CopyTo(block);
-
-                    Xor(mac, block, mac);
-                    _s2vCipher.Encrypt(mac, mac);
-                }
-                finally
-                {
-                    CryptographyHelper.Clear(block);
-                }
-            }
-
-            if (message.Length > 0)
-            {
-                int lastOffset = (totalBlocks - 1) * blockSize;
-                int lastLen = message.Length - lastOffset;
-
-                message.Slice(lastOffset, lastLen).CopyTo(lastBlock);
-
-                if (!lastIsFull)
-                    lastBlock[lastLen] = 0x80;
-            }
-            else
-            {
-                lastBlock[0] = 0x80;
-            }
-
-            byte[] subkey = lastIsFull ? k1 : k2;
-
-            Xor(lastBlock, subkey, lastBlock);
-            Xor(mac, lastBlock, mac);
-            _s2vCipher.Encrypt(mac, mac);
-
-            return mac;
-        }
-        catch
-        {
-            CryptographyHelper.Clear(mac);
-            throw;
-        }
-        finally
-        {
-            CryptographyHelper.Clear(lastBlock);
-            CryptographyHelper.Clear(k2);
-            CryptographyHelper.Clear(k1);
-            CryptographyHelper.Clear(l);
-            CryptographyHelper.Clear(zeroBlock);
-        }
+        var cmac = NewCmac(scratch);
+        cmac.Append(message);
+        cmac.Finish(mac);
     }
 
     /// <summary>
-    /// Applies AES-CTR encryption using <paramref name="counter" /> as the initial counter block, producing
-    /// <c>input XOR keystream</c> in <paramref name="output" />.
+    /// Starts a CMAC under K1 over the scratch layout <see cref="S2V" /> uses.
     /// </summary>
-    /// <param name="input">The plaintext or ciphertext bytes.</param>
-    /// <param name="output">The destination span.</param>
-    /// <param name="counter">The starting counter block.</param>
-    private void CtrEncrypt(ReadOnlySpan<byte> input, Span<byte> output, byte[] counter)
-    {
-        int blockSize = _ctrCipher.BlockSize / 8;
-        byte[] ctr = (byte[])counter.Clone();
-        Span<byte> ks = stackalloc byte[blockSize];
-
-        try
-        {
-            for (int offset = 0; offset < input.Length; offset += blockSize)
-            {
-                _ctrCipher.Encrypt(ctr, ks);
-
-                for (int i = ctr.Length - 1; i >= 0; i--)
-                    if (++ctr[i] != 0) break;
-
-                int len = Math.Min(blockSize, input.Length - offset);
-                for (int i = 0; i < len; i++)
-                    output[offset + i] = (byte)(input[offset + i] ^ ks[i]);
-            }
-        }
-        finally
-        {
-            CryptographyHelper.Clear(ks);
-            CryptographyHelper.Clear(ctr);
-        }
-    }
-
-    /// <summary>
-    /// Doubles <paramref name="x" /> in-place in GF(2^128) with big-endian bit order and polynomial x^128 + x^7 + x^2 +
-    /// x + 1, via the shared branch-free <see cref="GaloisField128.Double" /> so the S2V accumulator and CMAC subkeys
-    /// do not influence control flow.
-    /// </summary>
-    /// <param name="x">The 16-byte block to double in GF(2<sup>128</sup>); updated in place.</param>
-    private static void Dbl(byte[] x) =>
-        GaloisField128.Double(x, x);
-
-    /// <summary>
-    /// Writes the byte-wise XOR of <paramref name="a" /> and <paramref name="b" /> into <paramref name="result" />.
-    /// </summary>
-    /// <param name="a">The first operand span.</param>
-    /// <param name="b">The second operand span.</param>
-    /// <param name="result">The destination span.</param>
-    private static void Xor(ReadOnlySpan<byte> a, ReadOnlySpan<byte> b, Span<byte> result)
-    {
-        for (int i = 0; i < result.Length; i++)
-            result[i] = (byte)(a[i] ^ b[i]);
-    }
+    /// <param name="scratch">
+    /// Scratch whose first two blocks hold the subkeys and whose next two receive the CMAC state.
+    /// </param>
+    /// <returns>The computation.</returns>
+    private Cmac NewCmac(Span<byte> scratch) =>
+        new(
+            _s2vCipher,
+            scratch[..BlockBytes],
+            scratch.Slice(BlockBytes, BlockBytes),
+            scratch.Slice(2 * BlockBytes, BlockBytes),
+            scratch.Slice(3 * BlockBytes, BlockBytes));
 
     /// <summary>
     /// Throws an <see cref="ObjectDisposedException" /> if the algorithm instance has been disposed.

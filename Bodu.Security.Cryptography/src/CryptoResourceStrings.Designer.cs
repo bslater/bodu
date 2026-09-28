@@ -79,6 +79,15 @@ namespace Bodu {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A BLAKE3 subtree must hold a power-of-two number of whole {0}-byte chunks..
+        /// </summary>
+        internal static string Arg_Invalid_Blake3SubtreeChunkCount {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_Blake3SubtreeChunkCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid block size {0}. Size of block must be {1}..
         /// </summary>
         internal static string Arg_Invalid_BlockLength {
@@ -1196,9 +1205,18 @@ namespace Bodu {
         /// <summary>
         ///   Looks up a localized string similar to The degree of parallelism must be -1 or a positive number of workers, but was {0}..
         /// </summary>
-        internal static string Arg_OutOfRange_MerkleParallelism {
+        internal static string Arg_OutOfRange_DegreeOfParallelism {
             get {
-                return ResourceManager.GetString("Arg_OutOfRange_MerkleParallelism", resourceCulture);
+                return ResourceManager.GetString("Arg_OutOfRange_DegreeOfParallelism", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to RFC 8452 defines GCM-SIV for 128- and 256-bit key-generating keys..
+        /// </summary>
+        internal static string Arg_OutOfRange_GcmSivKeySize {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_GcmSivKeySize", resourceCulture);
             }
         }
         

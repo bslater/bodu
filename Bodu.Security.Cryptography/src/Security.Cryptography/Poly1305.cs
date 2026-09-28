@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Buffers.Binary;
-using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
@@ -33,7 +31,8 @@ namespace Bodu.Security.Cryptography;
 /// Internally, the input is split into 16-byte blocks, each treated as a 130-bit number (with an additional high bit if
 /// full-sized), and accumulated using modular arithmetic modulo <c>2¹³⁰ - 5</c>. After processing all blocks, the
 /// accumulator is finalized by adding the second half of the key <c>s</c> and serializing the result as the final MAC
-/// tag.
+/// tag. The arithmetic runs on three 64-bit limbs with 128-bit products, straight from the caller's buffers, and takes
+/// the same time for every message of a given length.
 /// </para>
 /// <para>
 /// <strong>Parameters at a glance.</strong>
@@ -87,23 +86,11 @@ public sealed class Poly1305
     /// <summary>Length of the Poly1305 key is 256 bits (32 bytes).</summary>
     public const int KeySize = 256;
 
-    /// <summary>The 26-bit mask applied to each limb of the radix-2^26 representation.</summary>
-    private const uint Mask26 = 0x3ffffff;
-
     /// <summary>Length of the Poly1305 input block is 128 bits (16 bytes). Byte length is derived inline via <see cref="BlockSize" /> / 8 where needed.</summary>
     private new const int BlockSize = 128;
 
-    /// <summary>The polynomial accumulator, held as five radix-2^26 limbs.</summary>
-    private readonly uint[] _acc = new uint[5];
-
-    /// <summary>The encrypted-nonce key half <c>s</c>, held as four 32-bit words.</summary>
-    private readonly uint[] _key = new uint[4];
-
-    /// <summary>The clamped polynomial key <c>r</c>, held as five radix-2^26 limbs.</summary>
-    private readonly uint[] _r = new uint[5];
-
-    /// <summary>The precomputed <c>5 * r[1..4]</c> multiples used to fold the reduction modulo <c>2^130 - 5</c>.</summary>
-    private readonly uint[] _s = new uint[4];
+    /// <summary>The authenticator: the key schedule, the accumulator, and any partial block, used in place.</summary>
+    private Poly1305Core _core;
 
     /// <summary>Indicates whether <c>ProcessFinalBlock</c> has run for the currently-assigned key.</summary>
     /// <remarks>
@@ -161,7 +148,7 @@ public sealed class Poly1305
     /// <remarks>
     /// Assigning a fresh key clears the one-time-use finalization guard so the same instance may authenticate a new
     /// message under the new key. Reusing the <em>same</em> key for a second message remains a contract violation and
-    /// is rejected by <see cref="ProcessBlock" /> / <see cref="ProcessFinalBlock" />.
+    /// is rejected by <see cref="HashCore(ReadOnlySpan{byte})" /> / <see cref="ProcessFinalBlock" />.
     /// </remarks>
     public override byte[] Key
     {
@@ -202,10 +189,7 @@ public sealed class Poly1305
 
         if (disposing)
         {
-            CryptographyHelper.Clear(_acc);
-            CryptographyHelper.Clear(_r);
-            CryptographyHelper.Clear(_key);
-            CryptographyHelper.Clear(_s);
+            _core.Clear();
         }
 
         base.Dispose(disposing);
@@ -216,118 +200,67 @@ public sealed class Poly1305
         throw new NotSupportedException(CryptoResourceStrings.Op_NotSupported_Poly1305Padding);
 
     /// <inheritdoc />
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage(
-        "StyleCop.CSharp.ReadabilityRules",
-        "SA1107:Code should not contain multiple statements on one line",
-        Justification = "Grouped limb and accumulator assignments intentionally mirror the Poly1305 5-limb arithmetic steps, keeping related state transitions on one line so the implementation remains aligned with the algorithm structure.")]
-    protected override void ProcessBlock(ReadOnlySpan<byte> block)
+    /// <remarks>
+    /// The input goes straight to the authenticator, which holds a partial block itself, so the block-hash base's
+    /// residual buffer and per-block dispatch are bypassed.
+    /// </remarks>
+    /// <exception cref="ObjectDisposedException">The algorithm instance has been disposed.</exception>
+    /// <exception cref="CryptographicException">
+    /// The tag has already been produced under the current key; assign a fresh <see cref="Key" /> first.
+    /// </exception>
+    protected override void HashCore(ReadOnlySpan<byte> source)
     {
-        if (_finalized)
-            throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_AlreadyFinalized);
+        ThrowIfDisposed();
+        ThrowIfFinalized();
 
-        const int blockBytes = BlockSize / 8;
-
-        // Copy input to 16-byte buffer and append a single '1' byte if block is short (RFC: padding = 1 byte then zeros)
-        Span<byte> padded = stackalloc byte[blockBytes];
-        block.CopyTo(padded);
-        if (block.Length < blockBytes)
-            padded[block.Length] = 1;
-
-        // Load accumulator state
-        ulong h0 = _acc[0], h1 = _acc[1], h2 = _acc[2], h3 = _acc[3], h4 = _acc[4];
-
-        // Convert padded input block into 130-bit number split into 5 26-bit limbs (as per RFC)
-        ulong t0 = BinaryPrimitives.ReadUInt64LittleEndian(padded);
-        ulong t1 = BinaryPrimitives.ReadUInt64LittleEndian(padded[8..]);
-        h0 += (uint)(t0 & 0x3ffffff);
-        h1 += (uint)((t0 >> 26) & 0x3ffffff);
-        h2 += (uint)(((t0 >> 52) | (t1 << 12)) & 0x3ffffff);
-        h3 += (uint)((t1 >> 14) & 0x3ffffff);
-        h4 += (uint)((t1 >> 40) & 0x3ffffff);
-
-        // If full 16 bytes were present, set highest bit (equivalent to adding 2^128 per RFC)
-        if (block.Length == blockBytes)
-            h4 += 1 << 24;
-
-        // Load r and perform 130-bit polynomial multiplication: accumulator * r
-        ulong r0 = _r[0], r1 = _r[1], r2 = _r[2], r3 = _r[3], r4 = _r[4];
-
-        // Compute limb products with optimized carry structure
-        ulong t00 = (h0 * r0) + (h1 * _s[3]) + (h2 * _s[2]) + (h3 * _s[1]) + (h4 * _s[0]);
-        ulong t01 = (h0 * r1) + (h1 * r0) + (h2 * _s[3]) + (h3 * _s[2]) + (h4 * _s[1]);
-        ulong t02 = (h0 * r2) + (h1 * r1) + (h2 * r0) + (h3 * _s[3]) + (h4 * _s[2]);
-        ulong t03 = (h0 * r3) + (h1 * r2) + (h2 * r1) + (h3 * r0) + (h4 * _s[3]);
-        ulong t04 = (h0 * r4) + (h1 * r3) + (h2 * r2) + (h3 * r1) + (h4 * r0);
-
-        // Perform carry propagation and modular reduction mod 2^130 - 5
-        t01 += t00 >> 26; h0 = (uint)(t00 & Mask26);
-        t02 += t01 >> 26; h1 = (uint)(t01 & Mask26);
-        t03 += t02 >> 26; h2 = (uint)(t02 & Mask26);
-        t04 += t03 >> 26; h3 = (uint)(t03 & Mask26);
-        ulong carry = t04 >> 26; h4 = (uint)(t04 & Mask26);
-
-        // Fold final carry into h0 (modulo 2^130 - 5 reduction)
-        h0 += (uint)(carry * 5);
-        carry = h0 >> 26; h0 &= Mask26;
-        h1 += (uint)carry;
-
-        // Save accumulator state
-        _acc[0] = (uint)h0; _acc[1] = (uint)h1; _acc[2] = (uint)h2; _acc[3] = (uint)h3; _acc[4] = (uint)h4;
+        _core.Update(source);
     }
 
     /// <inheritdoc />
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage(
-        "StyleCop.CSharp.ReadabilityRules",
-        "SA1107:Code should not contain multiple statements on one line",
-        Justification = "Grouped carry-propagation statements intentionally mirror the Poly1305 limb-normalization and reduction steps, keeping each carry and mask operation together as one logical arithmetic transition.")]
+    /// <remarks>
+    /// The authenticator absorbs any partial last block itself, so this goes straight to
+    /// <see cref="ProcessFinalBlock" />.
+    /// </remarks>
+    /// <exception cref="ObjectDisposedException">The algorithm instance has been disposed.</exception>
+    /// <exception cref="CryptographicException">
+    /// The tag has already been produced under the current key; assign a fresh <see cref="Key" /> first.
+    /// </exception>
+    protected override byte[] HashFinal()
+    {
+        ThrowIfDisposed();
+
+        return ProcessFinalBlock();
+    }
+
+    /// <inheritdoc />
+    /// <exception cref="CryptographicException">
+    /// The tag has already been produced under the current key; assign a fresh <see cref="Key" /> first.
+    /// </exception>
+    protected override void ProcessBlock(ReadOnlySpan<byte> block)
+    {
+        ThrowIfFinalized();
+
+        _core.Update(block);
+    }
+
+    /// <inheritdoc />
+    /// <exception cref="CryptographicException">
+    /// The tag has already been produced under the current key; assign a fresh <see cref="Key" /> first.
+    /// </exception>
     protected override byte[] ProcessFinalBlock()
     {
-        if (_finalized)
-            throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_AlreadyFinalized);
+        ThrowIfFinalized();
 
-        // Final modular reduction: canonicalize accumulator to [0..2^130-5]
-        uint h0 = _acc[0], h1 = _acc[1], h2 = _acc[2], h3 = _acc[3], h4 = _acc[4];
+        // Finish clears the whole authenticator, key schedule and accumulator included, once the tag is written, so
+        // no tag-producing secret stays in memory between here and the framework's automatic re-initialization at the
+        // end of ComputeHash. Dispose still clears it as defence in depth.
+        byte[] tag = new byte[Poly1305Core.TagBytes];
+        _core.Finish(tag);
 
-        // Propagate carries across limbs
-        h1 += h0 >> 26; h0 &= Mask26;
-        h2 += h1 >> 26; h1 &= Mask26;
-        h3 += h2 >> 26; h2 &= Mask26;
-        h4 += h3 >> 26; h3 &= Mask26;
-
-        // Compute g = h + 5, then conditionally reduce modulo 2^130-5 if g >= 2^130
-        h0 += 5;
-        h1 += h0 >> 26; h0 &= Mask26;
-        h2 += h1 >> 26; h1 &= Mask26;
-        h3 += h2 >> 26; h2 &= Mask26;
-        h4 += h3 >> 26; h3 &= Mask26;
-
-        Span<byte> tag = stackalloc byte[16];
-
-        // If h + 5 carried into bit 130, c starts at 0 and the reduced value is used.
-        // Otherwise, c starts at -5, which cancels the test addition above.
-        long c = ((int)(h4 >> 26) - 1) * 5L;
-
-        c += (long)_key[0] + (h0 | (h1 << 26));
-        BinaryPrimitives.WriteUInt32LittleEndian(tag[..], (uint)c);
-        c >>= 32;
-
-        c += (long)_key[1] + ((h1 >> 6) | (h2 << 20));
-        BinaryPrimitives.WriteUInt32LittleEndian(tag[4..], (uint)c);
-        c >>= 32;
-
-        c += (long)_key[2] + ((h2 >> 12) | (h3 << 14));
-        BinaryPrimitives.WriteUInt32LittleEndian(tag[8..], (uint)c);
-        c >>= 32;
-
-        c += (long)_key[3] + ((h3 >> 18) | (h4 << 8));
-        BinaryPrimitives.WriteUInt32LittleEndian(tag[12..], (uint)c);
-
-        // Mark the instance as finalized so subsequent ProcessBlock / ProcessFinalBlock calls — and the
-        // ProcessBlock invoked by base.Initialize → OnKeyChanged → next ComputeHash — are rejected. The
-        // guard is unconditional across all target frameworks because Poly1305's one-time-key contract is
-        // not defended by HashAlgorithm.State alone (Initialize resets State to 0 after every ComputeHash).
+        // Mark the instance as finalized so subsequent HashCore / ProcessFinalBlock calls — and the next
+        // ComputeHash after the framework's automatic re-initialization — are rejected. The guard is
+        // unconditional across all target frameworks because Poly1305's one-time-key contract is not defended
+        // by HashAlgorithm.State alone (Initialize resets State to 0 after every ComputeHash).
         _finalized = true;
 
         // Key material is no longer needed — zero it immediately to enforce Poly1305's one-time-use
@@ -337,15 +270,7 @@ public sealed class Poly1305
         if (KeyValue is not null)
             CryptographyHelper.Clear(KeyValue);
 
-        // Zero the derived key schedule and accumulator before returning so the tag-producing secret
-        // material is not observable in memory between ProcessFinalBlock and the framework's automatic
-        // re-initialization at the end of ComputeHash. Dispose still clears these as defence in depth.
-        CryptographyHelper.Clear(_r);
-        CryptographyHelper.Clear(_s);
-        CryptographyHelper.Clear(_key);
-        CryptographyHelper.Clear(_acc);
-
-        return tag.ToArray();
+        return tag;
     }
 
     /// <inheritdoc />
@@ -356,93 +281,23 @@ public sealed class Poly1305
     /// re-initialized.
     /// </summary>
     /// <remarks>
-    /// Loads and clamps <c>r</c>, precomputes the <c>5 * r[i]</c> helpers, and captures the second half of the key
-    /// <c>s</c> used in the final tag calculation. The polynomial accumulator is reset so that the next hash
-    /// computation starts from a clean state.
+    /// Loads and clamps <c>r</c>, captures the second half of the key <c>s</c> used in the final tag calculation, and
+    /// resets the accumulator so that the next hash computation starts from a clean state.
     /// </remarks>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    protected override void OnKeyChanged() =>
+    protected override void OnKeyChanged()
+    {
         // OnKeyChanged is only invoked by the Key setter and Initialize, both of which guarantee
         // KeyValue is non-null and of the expected length before this point.
-        LoadKey(KeyValue!);
-
-    /// <summary>
-    /// Loads the one-time key directly from a span, deriving the clamped polynomial key <c>r</c>, the precomputed
-    /// <c>5·r</c> multiples, and the final-addition key <c>s</c>, and resetting the accumulator. This is the internal
-    /// span counterpart of assigning <see cref="Key" /> — it takes no defensive array copy, so the AEAD framing can key
-    /// a fresh instance without materializing the per-message key on the heap.
-    /// </summary>
-    /// <param name="key">The 32-byte one-time key.</param>
-    /// <exception cref="ArgumentException"><paramref name="key" /> is not exactly 32 bytes.</exception>
-    /// <remarks>
-    /// Intended for the internal streaming core (<see cref="AppendCore" /> / <see cref="FinalizeTagCore" />) on a
-    /// freshly constructed instance. It deliberately bypasses <see cref="KeyedBlockHashAlgorithm.Key" />, so the public
-    /// <c>Key</c> property does not reflect the loaded key material.
-    /// </remarks>
-    internal void InitializeKeyCore(ReadOnlySpan<byte> key)
-    {
-        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(key, KeySize / 8);
-
-        LoadKey(key);
+        _core.Initialize(KeyValue!);
     }
 
     /// <summary>
-    /// Feeds <paramref name="data" /> into the running MAC directly from the caller's span, without bridging through
-    /// the byte-array <see cref="HashAlgorithm" /> transform API.
+    /// Throws when the tag has already been produced under the current key.
     /// </summary>
-    /// <param name="data">The bytes to authenticate.</param>
-    internal void AppendCore(ReadOnlySpan<byte> data) =>
-        HashCore(data);
-
-    /// <summary>
-    /// Finalizes the MAC and writes the 16-byte tag into <paramref name="tag" />, clearing the intermediate digest
-    /// array. The instance is one-time: construct a fresh instance (or re-key via <see cref="InitializeKeyCore" />) for
-    /// the next message.
-    /// </summary>
-    /// <param name="tag">The span receiving the tag. Must be at least 16 bytes.</param>
-    internal void FinalizeTagCore(Span<byte> tag)
+    /// <exception cref="CryptographicException">The instance is finalized.</exception>
+    private void ThrowIfFinalized()
     {
-        byte[] digest = HashFinal();
-        digest.AsSpan().CopyTo(tag);
-        CryptographyHelper.Clear(digest);
-    }
-
-    /// <summary>
-    /// Parses the supplied 32-byte key into the limb representation used by the accumulator loop and resets the
-    /// accumulator so the next computation starts clean.
-    /// </summary>
-    /// <param name="key">The 32-byte one-time key.</param>
-    private void LoadKey(ReadOnlySpan<byte> key)
-    {
-        // Reset accumulator so the next computation starts clean — correct whether this
-        // hook runs in response to an explicit Key assignment, from Initialize, from
-        // the constructor's default-key setup, or from the internal span core.
-        CryptographyHelper.Clear(_acc);
-
-        // Load and clamp the first 128 bits of the key as the polynomial 'r' key Clamp 'r' by setting/clearing specific bits to avoid
-        // vulnerabilities as per RFC 8439, Section 2.5.1
-        uint t0 = BinaryPrimitives.ReadUInt32LittleEndian(key[..]);
-        uint t1 = BinaryPrimitives.ReadUInt32LittleEndian(key[4..]);
-        uint t2 = BinaryPrimitives.ReadUInt32LittleEndian(key[8..]);
-        uint t3 = BinaryPrimitives.ReadUInt32LittleEndian(key[12..]);
-
-        // Split 128-bit r into 5 x 26-bit limbs with clamping (see RFC for bitmask values)
-        _r[0] = t0 & 0x03FFFFFFU;
-        _r[1] = ((t0 >> 26) | (t1 << 6)) & 0x03FFFF03U;
-        _r[2] = ((t1 >> 20) | (t2 << 12)) & 0x03FFC0FFU;
-        _r[3] = ((t2 >> 14) | (t3 << 18)) & 0x03F03FFFU;
-        _r[4] = (t3 >> 8) & 0x000FFFFFU;
-
-        // Precompute 5*r[i] values to optimize carry-reduction step later
-        _s[0] = _r[1] * 5;
-        _s[1] = _r[2] * 5;
-        _s[2] = _r[3] * 5;
-        _s[3] = _r[4] * 5;
-
-        // Load the second half of the key (s), which will be added during final tag computation
-        _key[0] = BinaryPrimitives.ReadUInt32LittleEndian(key[16..]);
-        _key[1] = BinaryPrimitives.ReadUInt32LittleEndian(key[20..]);
-        _key[2] = BinaryPrimitives.ReadUInt32LittleEndian(key[24..]);
-        _key[3] = BinaryPrimitives.ReadUInt32LittleEndian(key[28..]);
+        if (_finalized)
+            throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_AlreadyFinalized);
     }
 }

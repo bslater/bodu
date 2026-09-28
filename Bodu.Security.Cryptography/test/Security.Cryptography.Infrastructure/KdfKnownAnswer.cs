@@ -96,4 +96,11 @@ public sealed record KdfKnownAnswer
     /// </summary>
     /// <value>The expected output hex.</value>
     public required string ExpectedHex { get; init; }
+
+    /// <summary>
+    /// Gets the PHC encoded-hash string published with an Argon2 vector, or <see langword="null" /> when the source
+    /// publishes only the raw tag.
+    /// </summary>
+    /// <value>The encoded-hash string, or <see langword="null" />.</value>
+    public string? Encoded { get; init; }
 }

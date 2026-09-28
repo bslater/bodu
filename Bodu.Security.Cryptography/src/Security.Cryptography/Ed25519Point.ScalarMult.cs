@@ -9,7 +9,7 @@ namespace Bodu.Security.Cryptography;
 /// <summary>
 /// Provides scalar multiplication for <see cref="Ed25519Point" />.
 /// </summary>
-internal partial struct Ed25519Point
+internal readonly partial struct Ed25519Point
 {
     /// <summary>
     /// Multiplies <paramref name="point" /> by a 256-bit little-endian scalar using a constant-time binary ladder.
@@ -64,11 +64,15 @@ internal partial struct Ed25519Point
     /// <param name="destination">The point conditionally overwritten.</param>
     /// <param name="source">The point conditionally copied.</param>
     /// <param name="condition">The move condition. Must be exactly 0 or 1.</param>
-    private static void ConditionalMove(ref Ed25519Point destination, Ed25519Point source, ulong condition)
+    private static void ConditionalMove(ref Ed25519Point destination, in Ed25519Point source, ulong condition)
     {
-        Curve25519FieldElement.ConditionalMove(ref destination._x, source._x, condition);
-        Curve25519FieldElement.ConditionalMove(ref destination._y, source._y, condition);
-        Curve25519FieldElement.ConditionalMove(ref destination._z, source._z, condition);
-        Curve25519FieldElement.ConditionalMove(ref destination._t, source._t, condition);
+        Curve25519FieldElement x = destination._x, y = destination._y, z = destination._z, t = destination._t;
+
+        Curve25519FieldElement.ConditionalMove(ref x, source._x, condition);
+        Curve25519FieldElement.ConditionalMove(ref y, source._y, condition);
+        Curve25519FieldElement.ConditionalMove(ref z, source._z, condition);
+        Curve25519FieldElement.ConditionalMove(ref t, source._t, condition);
+
+        destination = new Ed25519Point(x, y, z, t);
     }
 }

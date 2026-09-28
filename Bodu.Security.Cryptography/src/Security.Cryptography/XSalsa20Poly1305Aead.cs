@@ -91,7 +91,41 @@ public sealed class XSalsa20Poly1305Aead
     /// <remarks>
     /// Derives the 256-bit Salsa20 subkey from the key and the first 128 bits of the nonce via HSalsa20, then returns a
     /// Salsa20 engine under that subkey with the trailing 64 bits of the extended nonce.
+    /// <see cref="IAeadTransform.Encrypt" /> and <see cref="IAeadTransform.Decrypt" /> draw the same keystream from a
+    /// value on the stack instead.
     /// </remarks>
     protected override IStreamCipher CreateEngine() =>
         XSalsa20EngineFactory.Create(Key, Nonce);
+
+    /// <inheritdoc />
+    private protected override int SealMessage(ReadOnlySpan<byte> associatedData, ReadOnlySpan<byte> plaintext, Span<byte> output)
+    {
+        Salsa20Core.Keystream keystream = default;
+
+        try
+        {
+            XSalsa20EngineFactory.InitializeKeystream(Key, Nonce, ref keystream);
+            return Poly1305AeadCore.SealRfc8439(ref keystream, associatedData, plaintext, output);
+        }
+        finally
+        {
+            keystream.Clear();
+        }
+    }
+
+    /// <inheritdoc />
+    private protected override int OpenMessage(ReadOnlySpan<byte> associatedData, ReadOnlySpan<byte> ciphertextWithTag, Span<byte> output)
+    {
+        Salsa20Core.Keystream keystream = default;
+
+        try
+        {
+            XSalsa20EngineFactory.InitializeKeystream(Key, Nonce, ref keystream);
+            return Poly1305AeadCore.OpenRfc8439(ref keystream, associatedData, ciphertextWithTag, output);
+        }
+        finally
+        {
+            keystream.Clear();
+        }
+    }
 }

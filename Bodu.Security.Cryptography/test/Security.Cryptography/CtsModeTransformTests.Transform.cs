@@ -165,4 +165,28 @@ public sealed partial class CtsModeTransformTests
 
         CollectionAssert.AreEqual(ivCopy, iv, "CTS must not mutate the caller-supplied IV.");
     }
+
+    /// <summary>
+    /// Verifies that decrypting in place — the output being exactly the input — recovers the plaintext for block-aligned
+    /// input and for input that ends in a stolen partial block, with several blocks before it.
+    /// </summary>
+    [TestMethod]
+    public void Transform_WhenDecryptingInPlace_ShouldRecoverPlaintext()
+    {
+        byte[] key = AesReference.RandomBytes(16, 51);
+        byte[] iv = AesReference.RandomBytes(16, 52);
+
+        foreach (int length in new[] { 32, 33, 48, 100, 4096, 4111 })
+        {
+            byte[] plaintext = AesReference.RandomBytes(length, length + 53);
+            using var encryptCipher = new AesBlockCipher(key);
+            byte[] buffer = new byte[length];
+            CreateTransform(encryptCipher, (byte[])iv.Clone()).Transform(plaintext, buffer, encrypt: true);
+
+            using var decryptCipher = new AesBlockCipher(key);
+            CreateTransform(decryptCipher, (byte[])iv.Clone()).Transform(buffer, buffer, encrypt: false);
+
+            CollectionAssert.AreEqual(plaintext, buffer, $"{length} bytes");
+        }
+    }
 }

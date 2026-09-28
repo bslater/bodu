@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Runtime.CompilerServices;
+
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
@@ -102,40 +104,65 @@ public sealed class CbcModeTransform
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, 0, input.Length);
         CryptographyThrowHelper.ThrowIfInvalidOverlap(input, output);
 
-        Span<byte> tempBlock = stackalloc byte[blockSize];
-
-        for (int offset = 0; offset < input.Length; offset += blockSize)
+        if (encrypt)
         {
-            ReadOnlySpan<byte> inBlock = input.Slice(offset, blockSize);
-            Span<byte> outBlock = output.Slice(offset, blockSize);
-
-            if (encrypt)
-            {
-                // Encrypt: XOR input with IV, then encrypt
-                for (int i = 0; i < blockSize; i++)
-                    tempBlock[i] = (byte)(inBlock[i] ^ _currentIv[i]);
-
-                _cipher.Encrypt(tempBlock, outBlock);
-
-                // Update IV to the current ciphertext block
-                outBlock.CopyTo(_currentIv);
-            }
-            else
-            {
-                // Decrypt: store current ciphertext block, decrypt, then XOR with IV
-                inBlock.CopyTo(tempBlock);
-
-                _cipher.Decrypt(inBlock, outBlock);
-
-                for (int i = 0; i < blockSize; i++)
-                    outBlock[i] ^= _currentIv[i];
-
-                // Update IV to original ciphertext block
-                tempBlock.CopyTo(_currentIv);
-            }
+            // CBC encryption is sequential; the chain runs through the cipher's own implementation where it has one.
+            CbcChain.Encrypt(_cipher, input, output, _currentIv);
+        }
+        else
+        {
+            DecryptRuns(input, output, blockSize);
         }
 
         return input.Length;
+    }
+
+    /// <summary>
+    /// Decrypts whole blocks a run at a time: the run's chaining values — the current IV and every ciphertext block but
+    /// the last — are copied aside, the run is decrypted with one multi-block call, and the chaining values are XORed
+    /// in.
+    /// </summary>
+    /// <param name="input">The ciphertext, a whole number of blocks.</param>
+    /// <param name="output">The destination; may be the same memory as <paramref name="input" />.</param>
+    /// <param name="blockSize">The cipher's block size, in bytes.</param>
+    /// <remarks>
+    /// Everything a run needs from its ciphertext is copied before the run's output is written, so exact aliasing is
+    /// safe; the IV becomes the run's last ciphertext block.
+    /// </remarks>
+    [SkipLocalsInit]
+    private void DecryptRuns(ReadOnlySpan<byte> input, Span<byte> output, int blockSize)
+    {
+        int batchLength = CounterKeystream.BatchLength(blockSize);
+        Span<byte> chaining = batchLength <= CounterKeystream.BatchBytes ? stackalloc byte[batchLength] : new byte[batchLength];
+        Span<byte> nextIv = stackalloc byte[blockSize];
+        int used = 0;
+
+        try
+        {
+            int offset = 0;
+            while (offset < input.Length)
+            {
+                int length = Math.Min(batchLength, input.Length - offset);
+                ReadOnlySpan<byte> run = input.Slice(offset, length);
+                used = Math.Max(used, length);
+
+                _currentIv.CopyTo(chaining);
+                run[..^blockSize].CopyTo(chaining.Slice(blockSize));
+                run[^blockSize..].CopyTo(nextIv);
+
+                Span<byte> plaintext = output.Slice(offset, length);
+                _cipher.DecryptBlocks(run, plaintext);
+                CryptographyHelper.Xor(plaintext, chaining[..length], plaintext);
+
+                nextIv.CopyTo(_currentIv);
+                offset += length;
+            }
+        }
+        finally
+        {
+            CryptographyHelper.Clear(chaining[..used]);
+            CryptographyHelper.Clear(nextIv);
+        }
     }
 
     /// <summary>

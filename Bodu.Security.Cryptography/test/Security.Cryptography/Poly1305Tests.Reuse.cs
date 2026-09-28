@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
@@ -42,9 +43,9 @@ public partial class Poly1305Tests
     }
 
     /// <summary>
-    /// Verifies that <see cref="HashAlgorithm.Dispose()" /> overwrites the derived polynomial key schedule
-    /// (<c>_r</c>, <c>_s</c>, <c>_key</c>) and the running accumulator <c>_acc</c> so that no residual key
-    /// material remains observable through reflection after the instance is disposed.
+    /// Verifies that <see cref="HashAlgorithm.Dispose()" /> overwrites the authenticator — the derived polynomial key
+    /// schedule, <c>s</c>, the running accumulator and any held partial block, all in <c>_core</c> — so that no residual
+    /// key material remains observable through reflection after the instance is disposed.
     /// </summary>
     /// <remarks>
     /// The schedule is captured immediately after the <c>Key</c> setter populates it — not after a hash
@@ -56,41 +57,20 @@ public partial class Poly1305Tests
     {
         var poly = new Poly1305 { Key = (byte[])Poly1305TestKey.Clone() };
 
-        FieldInfo? rField = typeof(Poly1305).GetField("_r", BindingFlags.Instance | BindingFlags.NonPublic);
-        FieldInfo? sField = typeof(Poly1305).GetField("_s", BindingFlags.Instance | BindingFlags.NonPublic);
-        FieldInfo? keyField = typeof(Poly1305).GetField("_key", BindingFlags.Instance | BindingFlags.NonPublic);
-        FieldInfo? accField = typeof(Poly1305).GetField("_acc", BindingFlags.Instance | BindingFlags.NonPublic);
+        FieldInfo? coreField = typeof(Poly1305).GetField("_core", BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.IsNotNull(coreField);
 
-        Assert.IsNotNull(rField);
-        Assert.IsNotNull(sField);
-        Assert.IsNotNull(keyField);
-        Assert.IsNotNull(accField);
-
-        uint[] rBefore = ((uint[])rField.GetValue(poly)!).ToArray();
-        uint[] sBefore = ((uint[])sField.GetValue(poly)!).ToArray();
-        uint[] keyBefore = ((uint[])keyField.GetValue(poly)!).ToArray();
-
-        Assert.IsTrue(Array.Exists(rBefore, v => v != 0), "Precondition: derived _r should be non-zero before Dispose.");
-        Assert.IsTrue(Array.Exists(sBefore, v => v != 0), "Precondition: derived _s should be non-zero before Dispose.");
-        Assert.IsTrue(Array.Exists(keyBefore, v => v != 0), "Precondition: derived _key should be non-zero before Dispose.");
+        Assert.IsFalse(IsCleared((Poly1305Core)coreField.GetValue(poly)!), "Precondition: the derived key schedule should be non-zero before Dispose.");
 
         poly.Dispose();
 
-        uint[] rAfter = (uint[])rField.GetValue(poly)!;
-        uint[] sAfter = (uint[])sField.GetValue(poly)!;
-        uint[] keyAfter = (uint[])keyField.GetValue(poly)!;
-        uint[] accAfter = (uint[])accField.GetValue(poly)!;
-
-        Assert.IsTrue(Array.TrueForAll(rAfter, v => v == 0), "Dispose must clear _r.");
-        Assert.IsTrue(Array.TrueForAll(sAfter, v => v == 0), "Dispose must clear _s.");
-        Assert.IsTrue(Array.TrueForAll(keyAfter, v => v == 0), "Dispose must clear _key.");
-        Assert.IsTrue(Array.TrueForAll(accAfter, v => v == 0), "Dispose must clear _acc.");
+        Assert.IsTrue(IsCleared((Poly1305Core)coreField.GetValue(poly)!), "Dispose must clear _core.");
     }
 
     /// <summary>
-    /// Verifies that <c>Poly1305.ProcessFinalBlock</c> itself zeros the derived polynomial key schedule
-    /// (<c>_r</c>, <c>_s</c>, <c>_key</c>) and the running accumulator <c>_acc</c> before returning the tag,
-    /// independently of the framework's post-finalize auto-<see cref="HashAlgorithm.Initialize" />.
+    /// Verifies that <c>Poly1305.ProcessFinalBlock</c> itself zeros the authenticator — the derived polynomial key
+    /// schedule, <c>s</c>, the running accumulator and any held partial block, all in <c>_core</c> — before returning
+    /// the tag, independently of the framework's post-finalize auto-<see cref="HashAlgorithm.Initialize" />.
     /// </summary>
     /// <remarks>
     /// Both <see cref="HashAlgorithm.ComputeHash(byte[])" /> and
@@ -98,9 +78,9 @@ public partial class Poly1305Tests
     /// <see cref="HashAlgorithm.Initialize" /> immediately after <c>HashFinal</c> returns, which on
     /// Poly1305 re-derives the schedule from the (already-cleared) <c>KeyValue</c>. That makes the end
     /// state observably all-zero even when <c>ProcessFinalBlock</c> clears nothing itself. To validate the
-    /// in-window clearing this commit adds, the test invokes the protected <c>ProcessFinalBlock</c>
-    /// directly via reflection — bypassing the framework's auto-Initialize so only the clearing performed
-    /// by <c>ProcessFinalBlock</c> itself is observable.
+    /// in-window clearing, the test invokes the protected <c>ProcessFinalBlock</c> directly via reflection —
+    /// bypassing the framework's auto-Initialize so only the clearing performed by <c>ProcessFinalBlock</c>
+    /// itself is observable.
     /// </remarks>
     [TestMethod]
     public void ComputeHash_ShouldClearDerivedKeyScheduleAndAccumulator()
@@ -108,40 +88,26 @@ public partial class Poly1305Tests
         using var poly = new Poly1305 { Key = (byte[])Poly1305TestKey.Clone() };
         byte[] message = System.Text.Encoding.ASCII.GetBytes("payload");
 
-        // Drive ProcessBlock indirectly via HashCore (which accepts byte[]) to seed _acc with non-zero
-        // state, then invoke the protected ProcessFinalBlock directly via reflection. The HashAlgorithm
-        // pipeline (HashFinal -> Initialize) is bypassed, so the only thing that can zero _r/_s/_key/_acc
-        // is ProcessFinalBlock itself.
+        // Feed the message through HashCore (which accepts byte[]) so the core holds a partial block and a non-zero
+        // key schedule, then invoke the protected ProcessFinalBlock directly via reflection. The HashAlgorithm
+        // pipeline (HashFinal -> Initialize) is bypassed, so the only thing that can zero _core is
+        // ProcessFinalBlock itself.
         MethodInfo? hashCore = typeof(HashAlgorithm).GetMethod(
             "HashCore",
             BindingFlags.Instance | BindingFlags.NonPublic,
             [typeof(byte[]), typeof(int), typeof(int)]);
         MethodInfo? processFinalBlock = typeof(Poly1305).GetMethod("ProcessFinalBlock", BindingFlags.Instance | BindingFlags.NonPublic);
+        FieldInfo? coreField = typeof(Poly1305).GetField("_core", BindingFlags.Instance | BindingFlags.NonPublic);
         Assert.IsNotNull(hashCore);
         Assert.IsNotNull(processFinalBlock);
+        Assert.IsNotNull(coreField);
 
         hashCore.Invoke(poly, [message, 0, message.Length]);
+        Assert.IsFalse(IsCleared((Poly1305Core)coreField.GetValue(poly)!), "Precondition: the core should hold key and message state before ProcessFinalBlock.");
+
         _ = processFinalBlock.Invoke(poly, null);
 
-        FieldInfo? rField = typeof(Poly1305).GetField("_r", BindingFlags.Instance | BindingFlags.NonPublic);
-        FieldInfo? sField = typeof(Poly1305).GetField("_s", BindingFlags.Instance | BindingFlags.NonPublic);
-        FieldInfo? keyField = typeof(Poly1305).GetField("_key", BindingFlags.Instance | BindingFlags.NonPublic);
-        FieldInfo? accField = typeof(Poly1305).GetField("_acc", BindingFlags.Instance | BindingFlags.NonPublic);
-
-        Assert.IsNotNull(rField);
-        Assert.IsNotNull(sField);
-        Assert.IsNotNull(keyField);
-        Assert.IsNotNull(accField);
-
-        uint[] rAfter = (uint[])rField.GetValue(poly)!;
-        uint[] sAfter = (uint[])sField.GetValue(poly)!;
-        uint[] keyAfter = (uint[])keyField.GetValue(poly)!;
-        uint[] accAfter = (uint[])accField.GetValue(poly)!;
-
-        Assert.IsTrue(Array.TrueForAll(rAfter, v => v == 0), "ProcessFinalBlock must clear _r.");
-        Assert.IsTrue(Array.TrueForAll(sAfter, v => v == 0), "ProcessFinalBlock must clear _s.");
-        Assert.IsTrue(Array.TrueForAll(keyAfter, v => v == 0), "ProcessFinalBlock must clear _key.");
-        Assert.IsTrue(Array.TrueForAll(accAfter, v => v == 0), "ProcessFinalBlock must clear _acc.");
+        Assert.IsTrue(IsCleared((Poly1305Core)coreField.GetValue(poly)!), "ProcessFinalBlock must clear _core.");
     }
 
     /// <summary>
@@ -168,4 +134,12 @@ public partial class Poly1305Tests
         CollectionAssert.AreNotEqual(firstTag, secondTag,
             "Re-keying with a different one-time key must change the produced tag.");
     }
+
+    /// <summary>
+    /// Returns whether every byte of an authenticator — key schedule, accumulator and held bytes alike — is zero.
+    /// </summary>
+    /// <param name="core">A copy of the authenticator.</param>
+    /// <returns><see langword="true" /> when the authenticator holds only zeros.</returns>
+    private static bool IsCleared(Poly1305Core core) =>
+        !MemoryMarshal.AsBytes(MemoryMarshal.CreateReadOnlySpan(ref core, 1)).ContainsAnyExcept((byte)0);
 }

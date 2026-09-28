@@ -4,8 +4,12 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Buffers.Binary;
 using System.Globalization;
+using System.Numerics;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using System.Runtime.Intrinsics;
 using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
@@ -82,6 +86,9 @@ public sealed class OcbModeTransform
     /// <summary>Length of the OCB nonce is 96 bits (12 bytes). Byte length derived inline via <see cref="NonceSizeBits" /> / 8.</summary>
     private const int NonceSizeBits = 96;
 
+    /// <summary>The OCB block size, in bytes.</summary>
+    private const int BlockBytes = BlockSizeBits / 8;
+
     /// <summary>The number of precomputed L values, sufficient for up to 2^32 blocks.</summary>
     private const int MaxLValues = 32;
 
@@ -94,14 +101,8 @@ public sealed class OcbModeTransform
     /// <summary>The authentication-tag length, in bytes (between 1 and the cipher block size).</summary>
     private readonly int _tagLen;
 
-    /// <summary>The L_* constant, equal to <c>E(0^128)</c>.</summary>
-    private readonly byte[] _lStar;
-
-    /// <summary>The L_$ constant, equal to <c>double(L_*)</c>.</summary>
-    private readonly byte[] _lDollar;
-
-    /// <summary>The precomputed L array where <c>L[0] = double(L_$)</c> and <c>L[i] = double(L[i-1])</c>.</summary>
-    private readonly byte[][] _lArray;
+    /// <summary>The key-dependent values, one block each: <c>L_* = E(0^128)</c>, <c>L_$ = double(L_*)</c>, then <c>L[0] = double(L_$)</c> to <c>L[31]</c>, where <c>L[i] = double(L[i-1])</c>.</summary>
+    private readonly byte[] _lTable;
 
     /// <summary>The buffered associated authenticated data, or <see langword="null" /> until processed.</summary>
     private byte[]? _aad;
@@ -157,36 +158,33 @@ public sealed class OcbModeTransform
 
         _tagLen = tagSize / 8;
 
-        int blockSize = cipher.BlockSize / 8;
+        // RFC 7253 §2.1 — Key-dependent constants derived once per key: L_* = ENCIPHER(K, zeros(128)), and each later
+        // block of the table the double of the one before it — L_$, then L[0] to L[31].
+        _lTable = new byte[(MaxLValues + 2) * BlockBytes];
+        Span<byte> table = _lTable;
+        Span<byte> zeroBlock = stackalloc byte[BlockBytes];
+        zeroBlock.Clear();
+        cipher.Encrypt(zeroBlock, table[..BlockBytes]);
 
-        // RFC 7253 §2.1 — Key-dependent constants derived once per key.
-        // L_* = ENCIPHER(K, zeros(128)).
-        byte[] zeroBlock = new byte[blockSize];
-        _lStar = new byte[blockSize];
-
-        try
-        {
-            cipher.Encrypt(zeroBlock, _lStar);
-        }
-        finally
-        {
-            CryptographyHelper.Clear(zeroBlock);
-        }
-
-        // L_$ = double(L_*).
-        _lDollar = GfDouble(_lStar);
-
-        // L[i] = double(L[i-1]), L[0] = double(L_$).
-        _lArray = new byte[MaxLValues][];
-        _lArray[0] = GfDouble(_lDollar);
-
-        for (int i = 1; i < MaxLValues; i++)
-            _lArray[i] = GfDouble(_lArray[i - 1]);
+        for (int i = 1; i < MaxLValues + 2; i++)
+            GaloisField128.Double(table.Slice((i - 1) * BlockBytes, BlockBytes), table.Slice(i * BlockBytes, BlockBytes));
     }
 
     /// <inheritdoc />
     /// <value>The configured OCB authentication-tag size, in bits. Defaults to 128 bits (16 bytes).</value>
     public int TagSize => _tagLen * 8;
+
+    /// <summary>
+    /// Gets <c>L_*</c>, the encryption of the zero block.
+    /// </summary>
+    private ReadOnlySpan<byte> LStar =>
+        _lTable.AsSpan(0, BlockBytes);
+
+    /// <summary>
+    /// Gets <c>L_$ = double(L_*)</c>.
+    /// </summary>
+    private ReadOnlySpan<byte> LDollar =>
+        _lTable.AsSpan(BlockBytes, BlockBytes);
 
     /// <inheritdoc />
     public void ProcessAssociatedData(ReadOnlySpan<byte> associatedData)
@@ -210,101 +208,48 @@ public sealed class OcbModeTransform
 
         EnsureAadProcessed();
 
-        int blockSize = _cipher.BlockSize / 8;
-
-        byte[]? offset = null;
-        byte[]? checksum = null;
-        byte[]? block = null;
-        byte[]? tagInput = null;
-        byte[]? hashResult = null;
+        // Scratch: the offset, the checksum, a pad block, the padded final block, and the tag.
+        Span<byte> scratch = stackalloc byte[5 * BlockBytes];
 
         try
         {
-            offset = ComputeInitialOffset();
-            checksum = new byte[blockSize];
-            block = new byte[blockSize];
+            Span<byte> offset = scratch[..BlockBytes];
+            Span<byte> checksum = scratch.Slice(BlockBytes, BlockBytes);
+            Span<byte> pad = scratch.Slice(2 * BlockBytes, BlockBytes);
+            Span<byte> padded = scratch.Slice(3 * BlockBytes, BlockBytes);
+            Span<byte> tag = scratch.Slice(4 * BlockBytes, BlockBytes);
 
-            int m = (plaintext.Length + blockSize - 1) / blockSize;
+            ComputeInitialOffset(offset);
+            checksum.Clear();
 
-            for (int blockIdx = 1; blockIdx <= m - 1; blockIdx++)
+            int full = plaintext.Length & ~(BlockBytes - 1);
+            ProcessFullBlocks(plaintext[..full], output[..full], encrypt: true, offset, checksum);
+
+            // P_*: Offset_* = Offset_m XOR L_*, C_* = P_* XOR ENCIPHER(K, Offset_*), Checksum_* = Checksum_m XOR
+            // (P_* || 1 || 0...). P_* is read into the checksum before C_* is written, so exact aliasing is safe.
+            int remainder = plaintext.Length - full;
+            if (remainder > 0)
             {
-                int src = (blockIdx - 1) * blockSize;
+                CryptographyHelper.Xor(offset, LStar, offset);
+                _cipher.Encrypt(offset, pad);
 
-                Xor(offset, _lArray[Ntz(blockIdx)], offset);
+                padded.Clear();
+                plaintext[full..].CopyTo(padded);
+                padded[remainder] = 0x80;
+                CryptographyHelper.Xor(checksum, padded, checksum);
 
-                plaintext.Slice(src, blockSize).CopyTo(block);
-                Xor(block, offset, block);
-                _cipher.Encrypt(block, block);
-                Xor(block, offset, block);
-                block.CopyTo(output[src..]);
-
-                Xor(checksum, plaintext.Slice(src, blockSize), checksum);
+                CryptographyHelper.Xor(plaintext[full..], pad[..remainder], output.Slice(full, remainder));
             }
 
-            if (plaintext.Length > 0)
-            {
-                int lastSrc = (m - 1) * blockSize;
-                int lastLen = plaintext.Length - lastSrc;
-
-                if (lastLen == blockSize)
-                {
-                    Xor(offset, _lArray[Ntz(m)], offset);
-
-                    plaintext.Slice(lastSrc, blockSize).CopyTo(block);
-                    Xor(block, offset, block);
-                    _cipher.Encrypt(block, block);
-                    Xor(block, offset, block);
-                    block.CopyTo(output[lastSrc..]);
-
-                    Xor(checksum, plaintext.Slice(lastSrc, blockSize), checksum);
-                }
-                else
-                {
-                    byte[] pad = new byte[blockSize];
-                    byte[] padBlock = new byte[blockSize];
-
-                    try
-                    {
-                        Xor(offset, _lStar, offset);
-
-                        _cipher.Encrypt(offset, pad);
-
-                        for (int i = 0; i < lastLen; i++)
-                            output[lastSrc + i] = (byte)(plaintext[lastSrc + i] ^ pad[i]);
-
-                        plaintext.Slice(lastSrc, lastLen).CopyTo(padBlock);
-                        padBlock[lastLen] = 0x80;
-
-                        Xor(checksum, padBlock, checksum);
-                    }
-                    finally
-                    {
-                        CryptographyHelper.Clear(padBlock);
-                        CryptographyHelper.Clear(pad);
-                    }
-                }
-            }
-
-            tagInput = new byte[blockSize];
-
-            Xor(_lDollar, offset, tagInput);
-            Xor(tagInput, checksum, tagInput);
-            _cipher.Encrypt(tagInput, tagInput);
-
-            hashResult = ComputeHash(_aad!);
-            Xor(tagInput, hashResult, tagInput);
-
-            tagInput.AsSpan(0, _tagLen).CopyTo(output[plaintext.Length..]);
+            // Tag = ENCIPHER(K, Checksum_* XOR Offset_* XOR L_$) XOR HASH(K, A).
+            ComputeTag(checksum, offset, pad, tag);
+            tag[.._tagLen].CopyTo(output[plaintext.Length..]);
 
             return required;
         }
         finally
         {
-            CryptographyHelper.Clear(hashResult);
-            CryptographyHelper.Clear(tagInput);
-            CryptographyHelper.Clear(block);
-            CryptographyHelper.Clear(checksum);
-            CryptographyHelper.Clear(offset);
+            CryptographyHelper.Clear(scratch);
             _completed = true;
         }
     }
@@ -333,91 +278,42 @@ public sealed class OcbModeTransform
         ReadOnlySpan<byte> ciphertext = ciphertextWithTag[..plaintextLength];
         ReadOnlySpan<byte> receivedTag = ciphertextWithTag[plaintextLength..];
 
-        int blockSize = _cipher.BlockSize / 8;
-
-        byte[]? offset = null;
-        byte[]? checksum = null;
-        byte[]? block = null;
-        byte[]? tagInput = null;
-        byte[]? hashResult = null;
+        // Scratch: the offset, the checksum, a pad block, the padded final block, the tag, and the received tag.
+        Span<byte> scratch = stackalloc byte[6 * BlockBytes];
 
         try
         {
-            offset = ComputeInitialOffset();
-            checksum = new byte[blockSize];
-            block = new byte[blockSize];
+            Span<byte> offset = scratch[..BlockBytes];
+            Span<byte> checksum = scratch.Slice(BlockBytes, BlockBytes);
+            Span<byte> pad = scratch.Slice(2 * BlockBytes, BlockBytes);
+            Span<byte> padded = scratch.Slice(3 * BlockBytes, BlockBytes);
+            Span<byte> tag = scratch.Slice(4 * BlockBytes, BlockBytes);
+            Span<byte> tagCopy = scratch.Slice(5 * BlockBytes, _tagLen);
 
-            int m = (plaintextLength + blockSize - 1) / blockSize;
+            // Copy the tag first: the plaintext may be written over the buffer holding it.
+            receivedTag.CopyTo(tagCopy);
 
-            for (int blockIdx = 1; blockIdx <= m - 1; blockIdx++)
+            ComputeInitialOffset(offset);
+            checksum.Clear();
+
+            int full = plaintextLength & ~(BlockBytes - 1);
+            ProcessFullBlocks(ciphertext[..full], output[..full], encrypt: false, offset, checksum);
+
+            int remainder = plaintextLength - full;
+            if (remainder > 0)
             {
-                int src = (blockIdx - 1) * blockSize;
+                CryptographyHelper.Xor(offset, LStar, offset);
+                _cipher.Encrypt(offset, pad);
+                CryptographyHelper.Xor(ciphertext[full..], pad[..remainder], output.Slice(full, remainder));
 
-                Xor(offset, _lArray[Ntz(blockIdx)], offset);
-
-                ciphertext.Slice(src, blockSize).CopyTo(block);
-                Xor(block, offset, block);
-                _cipher.Decrypt(block, block);
-                Xor(block, offset, block);
-                block.CopyTo(output[src..]);
-
-                Xor(checksum, output.Slice(src, blockSize), checksum);
+                padded.Clear();
+                output.Slice(full, remainder).CopyTo(padded);
+                padded[remainder] = 0x80;
+                CryptographyHelper.Xor(checksum, padded, checksum);
             }
 
-            if (plaintextLength > 0)
-            {
-                int lastSrc = (m - 1) * blockSize;
-                int lastLen = plaintextLength - lastSrc;
-
-                if (lastLen == blockSize)
-                {
-                    Xor(offset, _lArray[Ntz(m)], offset);
-
-                    ciphertext.Slice(lastSrc, blockSize).CopyTo(block);
-                    Xor(block, offset, block);
-                    _cipher.Decrypt(block, block);
-                    Xor(block, offset, block);
-                    block.CopyTo(output[lastSrc..]);
-
-                    Xor(checksum, output.Slice(lastSrc, blockSize), checksum);
-                }
-                else
-                {
-                    byte[] pad = new byte[blockSize];
-                    byte[] padBlock = new byte[blockSize];
-
-                    try
-                    {
-                        Xor(offset, _lStar, offset);
-
-                        _cipher.Encrypt(offset, pad);
-
-                        for (int i = 0; i < lastLen; i++)
-                            output[lastSrc + i] = (byte)(ciphertext[lastSrc + i] ^ pad[i]);
-
-                        output.Slice(lastSrc, lastLen).CopyTo(padBlock);
-                        padBlock[lastLen] = 0x80;
-
-                        Xor(checksum, padBlock, checksum);
-                    }
-                    finally
-                    {
-                        CryptographyHelper.Clear(padBlock);
-                        CryptographyHelper.Clear(pad);
-                    }
-                }
-            }
-
-            tagInput = new byte[blockSize];
-
-            Xor(_lDollar, offset, tagInput);
-            Xor(tagInput, checksum, tagInput);
-            _cipher.Encrypt(tagInput, tagInput);
-
-            hashResult = ComputeHash(_aad!);
-            Xor(tagInput, hashResult, tagInput);
-
-            if (!CryptographicOperations.FixedTimeEquals(tagInput.AsSpan(0, _tagLen), receivedTag))
+            ComputeTag(checksum, offset, pad, tag);
+            if (!CryptographicOperations.FixedTimeEquals(tag[.._tagLen], tagCopy))
             {
                 CryptographyHelper.Clear(output[..plaintextLength]);
                 throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_AuthenticationTagMismatch);
@@ -435,11 +331,7 @@ public sealed class OcbModeTransform
         }
         finally
         {
-            CryptographyHelper.Clear(hashResult);
-            CryptographyHelper.Clear(tagInput);
-            CryptographyHelper.Clear(block);
-            CryptographyHelper.Clear(checksum);
-            CryptographyHelper.Clear(offset);
+            CryptographyHelper.Clear(scratch);
             _completed = true;
         }
     }
@@ -479,11 +371,7 @@ public sealed class OcbModeTransform
         if (disposing)
         {
             CryptographyHelper.Clear(_nonce);
-            CryptographyHelper.Clear(_lStar);
-            CryptographyHelper.Clear(_lDollar);
-
-            foreach (byte[] value in _lArray)
-                CryptographyHelper.Clear(value);
+            CryptographyHelper.Clear(_lTable);
 
             CryptographyHelper.ClearAndNullify(ref _aad);
 
@@ -510,185 +398,223 @@ public sealed class OcbModeTransform
     /// <summary>
     /// Computes the initial offset Offset_0 using the RFC 7253 §2.4 K_top stretch. Supports a 12-byte nonce.
     /// </summary>
-    /// <returns>The initial <c>Offset_0</c> value derived from the nonce per RFC 7253.</returns>
-    private byte[] ComputeInitialOffset()
+    /// <param name="offset">Receives the 16-byte <c>Offset_0</c>.</param>
+    /// <remarks>
+    /// <c>Stretch = Ktop || (Ktop[1..64] XOR Ktop[9..72])</c> is held as three 64-bit words, and <c>Offset_0</c> is its
+    /// 128 bits from bit <c>bottom</c>; <c>bottom</c> comes from the public nonce.
+    /// </remarks>
+    private void ComputeInitialOffset(Span<byte> offset)
     {
-        int blockSize = _cipher.BlockSize / 8;
-
-        byte[] nonceWord = new byte[blockSize];
-        byte[]? ktopInput = null;
-        byte[]? ktop = null;
-        byte[]? stretch = null;
+        Span<byte> nonceWord = stackalloc byte[BlockBytes];
+        Span<byte> ktop = stackalloc byte[BlockBytes];
 
         try
         {
+            // Nonce = num2str(TAGLEN mod 128, 7) || zeros(120 - bitlen(N)) || 1 || N.
+            nonceWord.Clear();
             nonceWord[0] = (byte)(((_tagLen * 8) % 128) << 1);
             nonceWord[3] = 0x01;
-            _nonce.CopyTo(nonceWord, 4);
+            _nonce.CopyTo(nonceWord[4..]);
 
-            int bottom = nonceWord[blockSize - 1] & 0x3F;
+            int bottom = nonceWord[BlockBytes - 1] & 0x3F;
+            nonceWord[BlockBytes - 1] &= 0xC0;
+            _cipher.Encrypt(nonceWord, ktop);
 
-            ktopInput = (byte[])nonceWord.Clone();
-            ktopInput[blockSize - 1] &= 0xC0;
+            ulong k0 = BinaryPrimitives.ReadUInt64BigEndian(ktop);
+            ulong k1 = BinaryPrimitives.ReadUInt64BigEndian(ktop.Slice(8));
+            ulong stretchTail = k0 ^ ((k0 << 8) | (k1 >> 56));
 
-            ktop = new byte[blockSize];
-            _cipher.Encrypt(ktopInput, ktop);
-
-            stretch = new byte[blockSize + (blockSize / 2)];
-            ktop.CopyTo(stretch, 0);
-
-            for (int i = 0; i < blockSize / 2; i++)
-                stretch[blockSize + i] = (byte)(ktop[i] ^ ktop[i + 1]);
-
-            byte[] offset = new byte[blockSize];
-
-            int byteOffset = bottom / 8;
-            int bitOffset = bottom % 8;
-
-            if (bitOffset == 0)
-            {
-                stretch.AsSpan(byteOffset, blockSize).CopyTo(offset);
-            }
-            else
-            {
-                for (int i = 0; i < blockSize; i++)
-                {
-                    offset[i] = (byte)(
-                        (stretch[byteOffset + i] << bitOffset) |
-                        (stretch[byteOffset + i + 1] >> (8 - bitOffset)));
-                }
-            }
-
-            return offset;
+            ulong high = bottom == 0 ? k0 : (k0 << bottom) | (k1 >> (64 - bottom));
+            ulong low = bottom == 0 ? k1 : (k1 << bottom) | (stretchTail >> (64 - bottom));
+            BinaryPrimitives.WriteUInt64BigEndian(offset, high);
+            BinaryPrimitives.WriteUInt64BigEndian(offset.Slice(8), low);
         }
         finally
         {
-            CryptographyHelper.Clear(stretch);
             CryptographyHelper.Clear(ktop);
-            CryptographyHelper.Clear(ktopInput);
             CryptographyHelper.Clear(nonceWord);
         }
     }
 
     /// <summary>
-    /// Computes HASH(K, A), the OCB3 authentication of associated data per RFC 7253.
+    /// Encrypts or decrypts the whole blocks of a message a run at a time — the offsets for up to 4 KiB first, then one
+    /// multi-block cipher call between two XORs with them — and folds the plaintext blocks into the checksum.
     /// </summary>
-    /// <param name="aad">The associated authenticated data.</param>
-    /// <returns>The HASH value of <paramref name="aad" /> per RFC 7253.</returns>
-    private byte[] ComputeHash(ReadOnlySpan<byte> aad)
+    /// <param name="input">The whole blocks to transform.</param>
+    /// <param name="output">The destination; may be the same memory as <paramref name="input" />.</param>
+    /// <param name="encrypt"><see langword="true" /> to encrypt; <see langword="false" /> to decrypt.</param>
+    /// <param name="offset"><c>Offset_0</c> on entry; <c>Offset_m</c> on return.</param>
+    /// <param name="checksum">The checksum; the plaintext blocks are XORed in.</param>
+    [SkipLocalsInit]
+    private void ProcessFullBlocks(ReadOnlySpan<byte> input, Span<byte> output, bool encrypt, Span<byte> offset, Span<byte> checksum)
     {
-        int blockSize = _cipher.BlockSize / 8;
-
-        byte[] sum = new byte[blockSize];
-
-        if (aad.Length == 0)
-            return sum;
-
-        byte[] offsetHash = new byte[blockSize];
-        byte[] block = new byte[blockSize];
+        Span<byte> offsets = stackalloc byte[CounterKeystream.BatchBytes];
+        Span<byte> work = stackalloc byte[CounterKeystream.BatchBytes];
+        int index = 1;
+        int used = 0;
 
         try
         {
-            int m = (aad.Length + blockSize - 1) / blockSize;
-
-            for (int blockIdx = 1; blockIdx <= m; blockIdx++)
+            int position = 0;
+            while (position < input.Length)
             {
-                int src = (blockIdx - 1) * blockSize;
-                int blockLen = Math.Min(blockSize, aad.Length - src);
-                bool full = blockLen == blockSize;
+                int length = Math.Min(offsets.Length, input.Length - position);
+                ReadOnlySpan<byte> source = input.Slice(position, length);
+                Span<byte> run = output.Slice(position, length);
+                FillOffsets(offsets[..length], ref index, offset);
+                used = Math.Max(used, length);
 
-                if (full)
-                {
-                    Xor(offsetHash, _lArray[Ntz(blockIdx)], offsetHash);
+                // Fold the plaintext in before the run's output can overwrite it.
+                if (encrypt)
+                    XorBlocksInto(source, checksum);
 
-                    aad.Slice(src, blockSize).CopyTo(block);
-                    Xor(block, offsetHash, block);
-                    _cipher.Encrypt(block, block);
-                    Xor(sum, block, sum);
-                }
+                CryptographyHelper.Xor(source, offsets[..length], work[..length]);
+                if (encrypt)
+                    _cipher.EncryptBlocks(work[..length], run);
                 else
-                {
-                    byte[] padBlock = new byte[blockSize];
+                    _cipher.DecryptBlocks(work[..length], run);
 
-                    try
-                    {
-                        Xor(offsetHash, _lStar, offsetHash);
+                CryptographyHelper.Xor(run, offsets[..length], run);
+                if (!encrypt)
+                    XorBlocksInto(run, checksum);
 
-                        aad.Slice(src, blockLen).CopyTo(padBlock);
-                        padBlock[blockLen] = 0x80;
+                position += length;
+            }
+        }
+        finally
+        {
+            CryptographyHelper.Clear(offsets[..used]);
+            CryptographyHelper.Clear(work[..used]);
+        }
+    }
 
-                        Xor(padBlock, offsetHash, padBlock);
+    /// <summary>
+    /// Computes the tag, <c>ENCIPHER(K, Checksum XOR Offset XOR L_$) XOR HASH(K, A)</c>.
+    /// </summary>
+    /// <param name="checksum">The final checksum.</param>
+    /// <param name="offset">The final offset.</param>
+    /// <param name="scratch">A 16-byte scratch block.</param>
+    /// <param name="tag">Receives the full 16-byte tag.</param>
+    private void ComputeTag(ReadOnlySpan<byte> checksum, ReadOnlySpan<byte> offset, Span<byte> scratch, Span<byte> tag)
+    {
+        CryptographyHelper.Xor(checksum, offset, scratch);
+        CryptographyHelper.Xor(scratch, LDollar, scratch);
+        _cipher.Encrypt(scratch, tag);
 
-                        _cipher.Encrypt(padBlock, padBlock);
-                        Xor(sum, padBlock, sum);
-                    }
-                    finally
-                    {
-                        CryptographyHelper.Clear(padBlock);
-                    }
-                }
+        ComputeHash(_aad!, scratch);
+        CryptographyHelper.Xor(tag, scratch, tag);
+    }
+
+    /// <summary>
+    /// Computes HASH(K, A), the OCB3 authentication of associated data per RFC 7253, a run of whole blocks at a time.
+    /// </summary>
+    /// <param name="aad">The associated authenticated data.</param>
+    /// <param name="sum">Receives the 16-byte HASH value; cleared if the cipher throws.</param>
+    [SkipLocalsInit]
+    private void ComputeHash(ReadOnlySpan<byte> aad, Span<byte> sum)
+    {
+        sum.Clear();
+        if (aad.IsEmpty)
+            return;
+
+        Span<byte> offsets = stackalloc byte[CounterKeystream.BatchBytes];
+        Span<byte> work = stackalloc byte[CounterKeystream.BatchBytes];
+        Span<byte> offset = stackalloc byte[BlockBytes];
+        offset.Clear();
+        int index = 1;
+        int used = 0;
+
+        try
+        {
+            // Sum = XOR of ENCIPHER(K, A_i XOR Offset_i) over the whole blocks. The encryptions land in the offsets
+            // buffer, which the XOR has finished with.
+            int full = aad.Length & ~(BlockBytes - 1);
+            int position = 0;
+            while (position < full)
+            {
+                int length = Math.Min(offsets.Length, full - position);
+                FillOffsets(offsets[..length], ref index, offset);
+                used = Math.Max(used, length);
+
+                CryptographyHelper.Xor(aad.Slice(position, length), offsets[..length], work[..length]);
+                _cipher.EncryptBlocks(work[..length], offsets[..length]);
+                XorBlocksInto(offsets[..length], sum);
+
+                position += length;
             }
 
-            return sum;
+            // A_*: Sum XOR= ENCIPHER(K, (A_* || 1 || 0...) XOR Offset_m XOR L_*).
+            int remainder = aad.Length - full;
+            if (remainder > 0)
+            {
+                used = Math.Max(used, 2 * BlockBytes);
+                Span<byte> padded = work[..BlockBytes];
+                padded.Clear();
+                aad[full..].CopyTo(padded);
+                padded[remainder] = 0x80;
+
+                CryptographyHelper.Xor(offset, LStar, offset);
+                CryptographyHelper.Xor(padded, offset, padded);
+                _cipher.Encrypt(padded, offsets[..BlockBytes]);
+                CryptographyHelper.Xor(sum, offsets[..BlockBytes], sum);
+            }
         }
         catch
         {
-            CryptographyHelper.Clear(sum);
+            sum.Clear();
             throw;
         }
         finally
         {
-            CryptographyHelper.Clear(block);
-            CryptographyHelper.Clear(offsetHash);
+            CryptographyHelper.Clear(offset);
+            CryptographyHelper.Clear(offsets[..used]);
+            CryptographyHelper.Clear(work[..used]);
         }
     }
 
     /// <summary>
-    /// Multiplies <paramref name="x" /> by α in GF(2^128) with big-endian bit order and polynomial x^128 + x^7 + x^2 +
-    /// x + 1, via the shared branch-free <see cref="GaloisField128.Double" /> so the key-derived offset ladder does not
-    /// influence control flow.
+    /// Returns <c>L[i]</c>, the <paramref name="i" />-th double of <c>L_$</c>.
     /// </summary>
-    /// <param name="x">The 16-byte input block.</param>
-    /// <returns>The GF(2<sup>128</sup>) doubling of <paramref name="x" />.</returns>
-    private static byte[] GfDouble(byte[] x)
-    {
-        byte[] result = new byte[x.Length];
-        GaloisField128.Double(x, result);
-
-        return result;
-    }
+    /// <param name="i">The index, from 0 to 31: the number of trailing zeros of a block index.</param>
+    /// <returns>The value.</returns>
+    private ReadOnlySpan<byte> L(int i) =>
+        _lTable.AsSpan((i + 2) * BlockBytes, BlockBytes);
 
     /// <summary>
-    /// Writes the byte-wise XOR of <paramref name="a" /> and <paramref name="b" /> into <paramref name="result" />.
+    /// Writes consecutive offsets, <c>Offset_i = Offset_{i-1} XOR L_{ntz(i)}</c>, one per block of
+    /// <paramref name="offsets" />.
     /// </summary>
-    /// <param name="a">The first operand span.</param>
-    /// <param name="b">The second operand span.</param>
-    /// <param name="result">The destination span.</param>
-    private static void Xor(ReadOnlySpan<byte> a, ReadOnlySpan<byte> b, Span<byte> result)
+    /// <param name="offsets">Receives the offsets, a whole number of blocks.</param>
+    /// <param name="index">The 1-based index of the first block; advanced past the last.</param>
+    /// <param name="offset">The offset before the first block on entry; the last offset written on return.</param>
+    /// <remarks>
+    /// The table is indexed by the number of trailing zeros of the public block index, not by data.
+    /// </remarks>
+    private void FillOffsets(Span<byte> offsets, ref int index, Span<byte> offset)
     {
-        for (int i = 0; i < result.Length; i++)
-            result[i] = (byte)(a[i] ^ b[i]);
-    }
-
-    /// <summary>
-    /// Returns the number of trailing zero bits of <paramref name="n" />.
-    /// </summary>
-    /// <param name="n">A positive block index.</param>
-    /// <returns>The number of trailing zero bits in <paramref name="n" />.</returns>
-    private static int Ntz(int n)
-    {
-        if (n == 0)
-            return 32;
-
-        int count = 0;
-
-        while ((n & 1) == 0)
+        Vector128<byte> current = Vector128.Create((ReadOnlySpan<byte>)offset);
+        for (int position = 0; position < offsets.Length; position += BlockBytes)
         {
-            n >>= 1;
-            count++;
+            current ^= Vector128.Create(L(BitOperations.TrailingZeroCount(index++)));
+            current.CopyTo(offsets.Slice(position));
         }
 
-        return count;
+        current.CopyTo(offset);
+    }
+
+    /// <summary>
+    /// XORs every 16-byte block of <paramref name="blocks" /> into <paramref name="accumulator" />.
+    /// </summary>
+    /// <param name="blocks">The blocks, a whole number of them.</param>
+    /// <param name="accumulator">The 16-byte accumulator; updated in place.</param>
+    private static void XorBlocksInto(ReadOnlySpan<byte> blocks, Span<byte> accumulator)
+    {
+        Vector128<byte> sum = Vector128.Create((ReadOnlySpan<byte>)accumulator);
+        ref byte source = ref MemoryMarshal.GetReference(blocks);
+        for (int position = 0; position < blocks.Length; position += BlockBytes)
+            sum ^= Vector128.LoadUnsafe(ref source, (nuint)position);
+
+        sum.CopyTo(accumulator);
     }
 
     /// <summary>

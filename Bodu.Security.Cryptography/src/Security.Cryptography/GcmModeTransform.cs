@@ -133,8 +133,8 @@ public sealed class GcmModeTransform
     /// <summary>Indicates whether the instance has been disposed.</summary>
     private bool _disposed;
 
-    /// <summary>The GHASH subkey <c>H = E_K(0¹²⁸)</c>.</summary>
-    private byte[]? _h;
+    /// <summary>The GHASH subkey <c>H = E_K(0¹²⁸)</c>, prepared for the process's GHASH kernel; reset to <see langword="default" /> on disposal.</summary>
+    private Ghash.Key _hashKey;
 
     /// <summary>The initial counter block <c>J0</c>, reserved as the base for the authentication tag.</summary>
     private byte[]? _j0;
@@ -238,13 +238,21 @@ public sealed class GcmModeTransform
             }
         }
 
-        _h = new byte[BlockSize / 8];
         _j0 = new byte[BlockSize / 8];
         _counter = new byte[BlockSize / 8];
 
-        // H = E_K(0¹²⁸).
+        // H = E_K(0¹²⁸), prepared once for the GHASH kernel and then cleared.
         Span<byte> zeroBlock = stackalloc byte[BlockSize / 8];
-        _cipher.Encrypt(zeroBlock, _h);
+        Span<byte> h = stackalloc byte[BlockSize / 8];
+        try
+        {
+            _cipher.Encrypt(zeroBlock, h);
+            _hashKey = Ghash.Key.ForGhash(h, Ghash.SelectKernel());
+        }
+        finally
+        {
+            CryptographyHelper.Clear(h);
+        }
 
         // Build J0.
         if (useInitialCounterBlock)
@@ -359,7 +367,7 @@ public sealed class GcmModeTransform
     {
         if (_disposed) return;
 
-        CryptographyHelper.ClearAndNullify(ref _h);
+        _hashKey = default;
         CryptographyHelper.ClearAndNullify(ref _j0);
         CryptographyHelper.ClearAndNullify(ref _counter);
         CryptographyHelper.ClearAndNullify(ref _aad);
@@ -493,63 +501,6 @@ public sealed class GcmModeTransform
     }
 
     /// <summary>
-    /// Processes one 16-byte block through GHASH: <c>y = (y ⊕ block) · H</c>.
-    /// </summary>
-    /// <param name="y">The running GHASH accumulator (16 bytes); updated in place.</param>
-    /// <param name="h">The GHASH subkey.</param>
-    /// <param name="block">A single 16-byte block to fold into <paramref name="y" />.</param>
-    private static void GhashBlock(Span<byte> y, ReadOnlySpan<byte> h, ReadOnlySpan<byte> block)
-    {
-        for (int i = 0; i < BlockSize / 8; i++)
-            y[i] ^= block[i];
-
-        GhashMultiply(y, h, y);
-    }
-
-    /// <summary>
-    /// Multiplies <paramref name="x" /> by <paramref name="h" /> in GF(2¹²⁸) using the GCM irreducible polynomial
-    /// <c>x¹²⁸ + x⁷ + x² + x + 1</c>, with big-endian bit ordering. Result is written into <paramref name="result" />
-    /// (may alias <paramref name="x" />).
-    /// </summary>
-    /// <param name="x">The left operand block (16 bytes).</param>
-    /// <param name="h">The hash subkey <c>H</c> (16 bytes).</param>
-    /// <param name="result">The destination span (16 bytes); receives <c>x · H</c>.</param>
-    /// <remarks>
-    /// Delegates to <see cref="GaloisField128.Multiply" />, which dispatches to the carry-less
-    /// <see cref="System.Runtime.Intrinsics.X86.Pclmulqdq" /> multiply when available and falls back to the
-    /// constant-time scalar reference otherwise.
-    /// </remarks>
-    private static void GhashMultiply(ReadOnlySpan<byte> x, ReadOnlySpan<byte> h, Span<byte> result) =>
-        GaloisField128.Multiply(x, h, result);
-
-    /// <summary>
-    /// Feeds <paramref name="data" /> into the GHASH accumulator <paramref name="y" /> block by block.
-    /// </summary>
-    /// <param name="y">The running GHASH accumulator (16 bytes); updated in place.</param>
-    /// <param name="h">The GHASH subkey.</param>
-    /// <param name="data">The input bytes to fold into the GHASH state.</param>
-    private static void GhashUpdate(Span<byte> y, ReadOnlySpan<byte> h, ReadOnlySpan<byte> data)
-    {
-        Span<byte> block = stackalloc byte[BlockSize / 8];
-        try
-        {
-            for (int offset = 0; offset < data.Length; offset += BlockSize / 8)
-            {
-                block.Clear();
-
-                int remaining = Math.Min(BlockSize / 8, data.Length - offset);
-                data.Slice(offset, remaining).CopyTo(block);
-
-                GhashBlock(y, h, block);
-            }
-        }
-        finally
-        {
-            CryptographyHelper.Clear(block);
-        }
-    }
-
-    /// <summary>
     /// Increments the 32-bit big-endian counter in the last 4 bytes of <paramref name="counter" /> per NIST SP 800-38D
     /// <c>inc32</c>, and reports whether the increment wrapped past <c>0xFFFFFFFF</c>.
     /// </summary>
@@ -567,8 +518,8 @@ public sealed class GcmModeTransform
     }
 
     /// <summary>
-    /// Applies CTR mode: for each block, computes <c>keystream = E_K(counter)</c>, XORs with input, increments the
-    /// counter. Rejects any message whose length would force the 32-bit counter to wrap into <c>J0</c>'s reserved
+    /// Applies CTR mode: encrypts successive <c>inc32</c> counter blocks a run at a time and XORs the keystream with
+    /// the input. Rejects any message whose length would force the 32-bit counter to wrap into <c>J0</c>'s reserved
     /// value, because reusing <c>E_K(J0)</c> as keystream leaks the GHASH subkey.
     /// </summary>
     /// <param name="input">The input bytes to XOR with the CTR keystream.</param>
@@ -577,34 +528,61 @@ public sealed class GcmModeTransform
     /// The plaintext / ciphertext length would step the GCM counter past <c>0xFFFFFFFF</c> while another block remains
     /// to be processed (NIST SP 800-38D §5.2.1.1 — at most <c>2^32 − 2</c> blocks per <c>(key, nonce)</c>).
     /// </exception>
+    /// <remarks>
+    /// Each run of counters stops after the block that takes the counter to <c>0xFFFFFFFF</c>, so the blocks before a
+    /// rejected wrap are written exactly as a block-at-a-time loop writes them before it throws.
+    /// </remarks>
+    [SkipLocalsInit]
     private void ApplyCtr(ReadOnlySpan<byte> input, Span<byte> output)
     {
-        Span<byte> keystream = stackalloc byte[BlockSize / 8];
+        const int BlockBytes = BlockSize / 8;
+        Span<byte> counters = stackalloc byte[CounterKeystream.BatchBytes];
+        Span<byte> keystream = stackalloc byte[CounterKeystream.BatchBytes];
+        byte[] counter = _counter!;
+        int used = 0;
+
+        // The first twelve bytes never change; inc32 increments the last four as a big-endian integer.
+        ulong fixedLow = BinaryPrimitives.ReadUInt64LittleEndian(counter);
+        uint fixedHigh = BinaryPrimitives.ReadUInt32LittleEndian(counter.AsSpan(8));
+        uint count = BinaryPrimitives.ReadUInt32BigEndian(counter.AsSpan(12));
+        bool wrapped = false;
+
         try
         {
-            byte[] counter = _counter!;
-
-            for (int offset = 0; offset < input.Length; offset += BlockSize / 8)
+            int offset = 0;
+            while (offset < input.Length)
             {
-                _cipher.Encrypt(counter, keystream);
+                int limit = Math.Min(counters.Length, input.Length - offset);
+                int filled = 0;
+                while (filled < limit && !wrapped)
+                {
+                    BinaryPrimitives.WriteUInt64LittleEndian(counters[filled..], fixedLow);
+                    BinaryPrimitives.WriteUInt32LittleEndian(counters.Slice(filled + 8), fixedHigh);
+                    BinaryPrimitives.WriteUInt32BigEndian(counters.Slice(filled + 12), count);
+                    filled += BlockBytes;
+                    wrapped = ++count == 0;
+                }
 
-                int remaining = Math.Min(BlockSize / 8, input.Length - offset);
-                for (int i = 0; i < remaining; i++)
-                    output[offset + i] = (byte)(input[offset + i] ^ keystream[i]);
+                // Widen the extent to clear before the cipher writes keystream, so a throwing cipher leaves none behind.
+                int length = Math.Min(filled, input.Length - offset);
+                used = Math.Max(used, filled);
+                CounterKeystream.Apply(_cipher, counters[..filled], keystream, input.Slice(offset, length), output.Slice(offset, length));
+                offset += length;
 
-                // Reject wrap only when the wrapped counter would actually be consumed by another block;
-                // a message that ends exactly at counter 0xFFFFFFFF stays within the GCM contract.
-                bool wrapped = IncrementCounter32(counter);
-                if (wrapped && offset + (BlockSize / 8) < input.Length)
+                // Reject wrap only when the wrapped counter would actually be consumed by another block; a message that
+                // ends exactly at counter 0xFFFFFFFF stays within the GCM contract.
+                if (wrapped && offset < input.Length)
                 {
                     throw new CryptographicException(
                         CryptoResourceStrings.Crypt_Invalid_GcmCounterWrap);
                 }
             }
+
+            BinaryPrimitives.WriteUInt32BigEndian(counter.AsSpan(12), count);
         }
         finally
         {
-            CryptographyHelper.Clear(keystream);
+            CryptographyHelper.Clear(keystream[..used]);
         }
     }
 
@@ -623,20 +601,19 @@ public sealed class GcmModeTransform
 
         try
         {
-            ReadOnlySpan<byte> h = _h!;
-
-            GhashUpdate(y, h, aad);
-            GhashUpdate(y, h, ciphertext);
+            // GHASH over AAD and ciphertext, each padded with zeros to a block boundary, then the length block.
+            y.Clear();
+            Ghash.Update(in _hashKey, y, aad);
+            Ghash.Update(in _hashKey, y, ciphertext);
 
             // Length block: [len(AAD)]_64 || [len(C)]_64 in bits, big-endian.
             BinaryPrimitives.WriteUInt64BigEndian(lengthBlock[..8], checked((ulong)aad.Length * 8));
             BinaryPrimitives.WriteUInt64BigEndian(lengthBlock.Slice(8, 8), checked((ulong)ciphertext.Length * 8));
-            GhashBlock(y, h, lengthBlock);
+            Ghash.Update(in _hashKey, y, lengthBlock);
 
             // T = y ⊕ E_K(J0).
             _cipher.Encrypt(_j0!, encryptedJ0);
-            for (int i = 0; i < BlockSize / 8; i++)
-                destination[i] = (byte)(y[i] ^ encryptedJ0[i]);
+            CryptographyHelper.Xor(y, encryptedJ0, destination);
         }
         finally
         {

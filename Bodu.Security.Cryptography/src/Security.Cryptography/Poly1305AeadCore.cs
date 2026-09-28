@@ -13,15 +13,22 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Provides the Poly1305-based authenticated-encryption framing shared by the ChaCha20- and Salsa20-family AEAD
-/// transforms. Composes an <see cref="IStreamCipher" /> keystream engine with the one-time <see cref="Poly1305" /> MAC
-/// in two distinct constructions: the RFC 8439 framing (used by XChaCha20-Poly1305 and the IETF-style
-/// XSalsa20-Poly1305) and the NaCl <c>crypto_secretbox</c> framing (used by XSalsa20-Poly1305).
+/// transforms. Composes a ChaCha20 or Salsa20 keystream with the one-time Poly1305 MAC in two distinct constructions:
+/// the RFC 8439 framing (used by XChaCha20-Poly1305 and the IETF-style XSalsa20-Poly1305) and the NaCl
+/// <c>crypto_secretbox</c> framing (used by XSalsa20-Poly1305).
 /// </summary>
 /// <remarks>
 /// <para>
-/// The engine passed to every method must be freshly constructed and positioned at block counter 0. The first 32 bytes
-/// of the counter-0 keystream block always form the one-time Poly1305 key; how the remainder of that block and the
-/// subsequent blocks are consumed is what distinguishes the two framings:
+/// Each framing is generic over an <see cref="IKeystreamSource" /> passed by reference, so that the AEADs in this
+/// library draw their keystream from a <see cref="ChaCha20Core.Keystream" /> or <see cref="Salsa20Core.Keystream" /> on
+/// the stack and a message allocates nothing; an overload taking an <see cref="IStreamCipher" /> engine serves the
+/// engines a derived <see cref="Poly1305AeadTransform" /> creates. The authenticator is a <see cref="Poly1305Core" />
+/// on the stack in both cases.
+/// </para>
+/// <para>
+/// The keystream passed to every method must be positioned at block counter 0. The first 32 bytes of the counter-0
+/// keystream block always form the one-time Poly1305 key; how the remainder of that block and the subsequent blocks are
+/// consumed is what distinguishes the two framings:
 /// </para>
 /// <list type="bullet">
 /// <item>
@@ -45,7 +52,7 @@ namespace Bodu.Security.Cryptography;
 /// untouched.
 /// </para>
 /// </remarks>
-internal static class Poly1305AeadCore
+internal static partial class Poly1305AeadCore
 {
     /// <summary>Length of the Poly1305 authentication tag, in bytes (128 bits).</summary>
     internal const int TagBytes = 16;
@@ -60,8 +67,8 @@ internal static class Poly1305AeadCore
     private const int SecretboxKeystreamOffset = Poly1305KeyBytes;
 
     /// <summary>
-    /// Encrypts <paramref name="plaintext" /> under the RFC 8439 ChaCha20-Poly1305 / XChaCha20-Poly1305 framing and
-    /// appends the authentication tag.
+    /// Encrypts <paramref name="plaintext" /> under the RFC 8439 ChaCha20-Poly1305 / XChaCha20-Poly1305 framing,
+    /// drawing the keystream from an engine, and appends the authentication tag.
     /// </summary>
     /// <param name="engine">A keystream engine positioned at block counter 0. Consumed in full by this call.</param>
     /// <param name="associatedData">The associated data authenticated alongside the ciphertext.</param>
@@ -74,16 +81,39 @@ internal static class Poly1305AeadCore
         ReadOnlySpan<byte> plaintext,
         Span<byte> output)
     {
+        var keystream = new EngineKeystream(engine);
+        return SealRfc8439(ref keystream, associatedData, plaintext, output);
+    }
+
+    /// <summary>
+    /// Encrypts <paramref name="plaintext" /> under the RFC 8439 ChaCha20-Poly1305 / XChaCha20-Poly1305 framing and
+    /// appends the authentication tag.
+    /// </summary>
+    /// <typeparam name="TKeystream">The type of the keystream.</typeparam>
+    /// <param name="keystream">
+    /// A keystream positioned at block counter 0, advanced past every block this call uses.
+    /// </param>
+    /// <param name="associatedData">The associated data authenticated alongside the ciphertext.</param>
+    /// <param name="plaintext">The data to encrypt.</param>
+    /// <param name="output">Receives the ciphertext followed by the <see cref="TagBytes" />-byte tag.</param>
+    /// <returns>The number of bytes written: <c>plaintext.Length + <see cref="TagBytes" /></c>.</returns>
+    internal static int SealRfc8439<TKeystream>(
+        ref TKeystream keystream,
+        ReadOnlySpan<byte> associatedData,
+        ReadOnlySpan<byte> plaintext,
+        Span<byte> output)
+        where TKeystream : struct, IKeystreamSource
+    {
         ValidateSealBuffers(plaintext, output);
 
         Span<byte> poly1305Key = stackalloc byte[Poly1305KeyBytes];
 
         try
         {
-            DerivePoly1305KeyDiscardingBlock(engine, poly1305Key);
+            DerivePoly1305KeyDiscardingBlock(ref keystream, poly1305Key);
 
             Span<byte> ciphertext = output[..plaintext.Length];
-            XorKeystream(engine, plaintext, ciphertext);
+            XorKeystream(ref keystream, plaintext, ciphertext);
 
             ComputeRfc8439Tag(poly1305Key, associatedData, ciphertext, output.Slice(plaintext.Length, TagBytes));
 
@@ -96,7 +126,8 @@ internal static class Poly1305AeadCore
     }
 
     /// <summary>
-    /// Verifies and decrypts <paramref name="ciphertextWithTag" /> under the RFC 8439 framing.
+    /// Verifies and decrypts <paramref name="ciphertextWithTag" /> under the RFC 8439 framing, drawing the keystream
+    /// from an engine.
     /// </summary>
     /// <param name="engine">A keystream engine positioned at block counter 0. Consumed in full by this call.</param>
     /// <param name="associatedData">The associated data that must match what was supplied at encryption time.</param>
@@ -110,6 +141,29 @@ internal static class Poly1305AeadCore
         ReadOnlySpan<byte> ciphertextWithTag,
         Span<byte> output)
     {
+        var keystream = new EngineKeystream(engine);
+        return OpenRfc8439(ref keystream, associatedData, ciphertextWithTag, output);
+    }
+
+    /// <summary>
+    /// Verifies and decrypts <paramref name="ciphertextWithTag" /> under the RFC 8439 framing.
+    /// </summary>
+    /// <typeparam name="TKeystream">The type of the keystream.</typeparam>
+    /// <param name="keystream">
+    /// A keystream positioned at block counter 0, advanced past every block this call uses.
+    /// </param>
+    /// <param name="associatedData">The associated data that must match what was supplied at encryption time.</param>
+    /// <param name="ciphertextWithTag">The ciphertext followed by its <see cref="TagBytes" />-byte tag.</param>
+    /// <param name="output">Receives the recovered plaintext.</param>
+    /// <returns>The number of plaintext bytes written.</returns>
+    /// <exception cref="CryptographicException">The authentication tag did not match.</exception>
+    internal static int OpenRfc8439<TKeystream>(
+        ref TKeystream keystream,
+        ReadOnlySpan<byte> associatedData,
+        ReadOnlySpan<byte> ciphertextWithTag,
+        Span<byte> output)
+        where TKeystream : struct, IKeystreamSource
+    {
         ValidateOpenBuffers(ciphertextWithTag, output);
 
         int ciphertextLength = ciphertextWithTag.Length - TagBytes;
@@ -121,13 +175,13 @@ internal static class Poly1305AeadCore
 
         try
         {
-            DerivePoly1305KeyDiscardingBlock(engine, poly1305Key);
+            DerivePoly1305KeyDiscardingBlock(ref keystream, poly1305Key);
             ComputeRfc8439Tag(poly1305Key, associatedData, ciphertext, expectedTag);
 
             if (!CryptographicOperations.FixedTimeEquals(receivedTag, expectedTag))
                 throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_AuthenticationTagMismatch);
 
-            XorKeystream(engine, ciphertext, output[..ciphertextLength]);
+            XorKeystream(ref keystream, ciphertext, output[..ciphertextLength]);
 
             return ciphertextLength;
         }
@@ -139,14 +193,32 @@ internal static class Poly1305AeadCore
     }
 
     /// <summary>
-    /// Encrypts <paramref name="plaintext" /> under the NaCl <c>crypto_secretbox</c> (XSalsa20-Poly1305) framing and
-    /// appends the authentication tag.
+    /// Encrypts <paramref name="plaintext" /> under the NaCl <c>crypto_secretbox</c> (XSalsa20-Poly1305) framing,
+    /// drawing the keystream from an engine, and appends the authentication tag.
     /// </summary>
     /// <param name="engine">A keystream engine positioned at block counter 0. Consumed in full by this call.</param>
     /// <param name="plaintext">The data to encrypt.</param>
     /// <param name="output">Receives the ciphertext followed by the <see cref="TagBytes" />-byte tag.</param>
     /// <returns>The number of bytes written: <c>plaintext.Length + <see cref="TagBytes" /></c>.</returns>
     internal static int SealSecretbox(IStreamCipher engine, ReadOnlySpan<byte> plaintext, Span<byte> output)
+    {
+        var keystream = new EngineKeystream(engine);
+        return SealSecretbox(ref keystream, plaintext, output);
+    }
+
+    /// <summary>
+    /// Encrypts <paramref name="plaintext" /> under the NaCl <c>crypto_secretbox</c> (XSalsa20-Poly1305) framing and
+    /// appends the authentication tag.
+    /// </summary>
+    /// <typeparam name="TKeystream">The type of the keystream.</typeparam>
+    /// <param name="keystream">
+    /// A keystream positioned at block counter 0, advanced past every block this call uses.
+    /// </param>
+    /// <param name="plaintext">The data to encrypt.</param>
+    /// <param name="output">Receives the ciphertext followed by the <see cref="TagBytes" />-byte tag.</param>
+    /// <returns>The number of bytes written: <c>plaintext.Length + <see cref="TagBytes" /></c>.</returns>
+    internal static int SealSecretbox<TKeystream>(ref TKeystream keystream, ReadOnlySpan<byte> plaintext, Span<byte> output)
+        where TKeystream : struct, IKeystreamSource
     {
         ValidateSealBuffers(plaintext, output);
 
@@ -155,11 +227,11 @@ internal static class Poly1305AeadCore
 
         try
         {
-            engine.NextKeystreamBlock(block0);
+            keystream.NextBlock(block0);
             block0[..Poly1305KeyBytes].CopyTo(poly1305Key);
 
             Span<byte> ciphertext = output[..plaintext.Length];
-            EncryptSecretboxBody(engine, block0, plaintext, ciphertext);
+            EncryptSecretboxBody(ref keystream, block0, plaintext, ciphertext);
 
             ComputePoly1305(poly1305Key, ciphertext, output.Slice(plaintext.Length, TagBytes));
 
@@ -173,7 +245,8 @@ internal static class Poly1305AeadCore
     }
 
     /// <summary>
-    /// Verifies and decrypts <paramref name="ciphertextWithTag" /> under the NaCl <c>crypto_secretbox</c> framing.
+    /// Verifies and decrypts <paramref name="ciphertextWithTag" /> under the NaCl <c>crypto_secretbox</c> framing,
+    /// drawing the keystream from an engine.
     /// </summary>
     /// <param name="engine">A keystream engine positioned at block counter 0. Consumed in full by this call.</param>
     /// <param name="ciphertextWithTag">The ciphertext followed by its <see cref="TagBytes" />-byte tag.</param>
@@ -181,6 +254,24 @@ internal static class Poly1305AeadCore
     /// <returns>The number of plaintext bytes written.</returns>
     /// <exception cref="CryptographicException">The authentication tag did not match.</exception>
     internal static int OpenSecretbox(IStreamCipher engine, ReadOnlySpan<byte> ciphertextWithTag, Span<byte> output)
+    {
+        var keystream = new EngineKeystream(engine);
+        return OpenSecretbox(ref keystream, ciphertextWithTag, output);
+    }
+
+    /// <summary>
+    /// Verifies and decrypts <paramref name="ciphertextWithTag" /> under the NaCl <c>crypto_secretbox</c> framing.
+    /// </summary>
+    /// <typeparam name="TKeystream">The type of the keystream.</typeparam>
+    /// <param name="keystream">
+    /// A keystream positioned at block counter 0, advanced past every block this call uses.
+    /// </param>
+    /// <param name="ciphertextWithTag">The ciphertext followed by its <see cref="TagBytes" />-byte tag.</param>
+    /// <param name="output">Receives the recovered plaintext.</param>
+    /// <returns>The number of plaintext bytes written.</returns>
+    /// <exception cref="CryptographicException">The authentication tag did not match.</exception>
+    internal static int OpenSecretbox<TKeystream>(ref TKeystream keystream, ReadOnlySpan<byte> ciphertextWithTag, Span<byte> output)
+        where TKeystream : struct, IKeystreamSource
     {
         ValidateOpenBuffers(ciphertextWithTag, output);
 
@@ -194,7 +285,7 @@ internal static class Poly1305AeadCore
 
         try
         {
-            engine.NextKeystreamBlock(block0);
+            keystream.NextBlock(block0);
             block0[..Poly1305KeyBytes].CopyTo(poly1305Key);
 
             ComputePoly1305(poly1305Key, ciphertext, expectedTag);
@@ -202,7 +293,7 @@ internal static class Poly1305AeadCore
             if (!CryptographicOperations.FixedTimeEquals(receivedTag, expectedTag))
                 throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_AuthenticationTagMismatch);
 
-            EncryptSecretboxBody(engine, block0, ciphertext, output[..ciphertextLength]);
+            EncryptSecretboxBody(ref keystream, block0, ciphertext, output[..ciphertextLength]);
 
             return ciphertextLength;
         }
@@ -216,17 +307,19 @@ internal static class Poly1305AeadCore
 
     /// <summary>
     /// Reads the counter-0 keystream block, copies its leading 32 bytes into <paramref name="poly1305Key" />, and
-    /// discards the remainder — the RFC 8439 key-derivation step that leaves the engine positioned at counter 1.
+    /// discards the remainder — the RFC 8439 key-derivation step that leaves the keystream positioned at counter 1.
     /// </summary>
-    /// <param name="engine">A keystream engine positioned at block counter 0.</param>
+    /// <typeparam name="TKeystream">The type of the keystream.</typeparam>
+    /// <param name="keystream">A keystream positioned at block counter 0.</param>
     /// <param name="poly1305Key">A 32-byte span that receives the one-time Poly1305 key.</param>
-    private static void DerivePoly1305KeyDiscardingBlock(IStreamCipher engine, Span<byte> poly1305Key)
+    private static void DerivePoly1305KeyDiscardingBlock<TKeystream>(ref TKeystream keystream, Span<byte> poly1305Key)
+        where TKeystream : struct, IKeystreamSource
     {
         Span<byte> block0 = stackalloc byte[KeystreamBlockBytes];
 
         try
         {
-            engine.NextKeystreamBlock(block0);
+            keystream.NextBlock(block0);
             block0[..Poly1305KeyBytes].CopyTo(poly1305Key);
         }
         finally
@@ -239,54 +332,59 @@ internal static class Poly1305AeadCore
     /// XORs the secretbox message against the keystream, using the trailing 32 bytes of the counter-0 block for the
     /// first 32 message bytes and full counter-1+ blocks for the remainder.
     /// </summary>
-    /// <param name="engine">
-    /// A keystream engine positioned at block counter 1 (its counter-0 block already read).
-    /// </param>
+    /// <typeparam name="TKeystream">The type of the keystream.</typeparam>
+    /// <param name="keystream">A keystream positioned at block counter 1 (its counter-0 block already read).</param>
     /// <param name="block0">The already-read counter-0 keystream block.</param>
     /// <param name="input">The plaintext (when sealing) or ciphertext (when opening).</param>
     /// <param name="output">Receives the XOR of <paramref name="input" /> with the keystream.</param>
-    private static void EncryptSecretboxBody(
-        IStreamCipher engine,
+    private static void EncryptSecretboxBody<TKeystream>(
+        ref TKeystream keystream,
         ReadOnlySpan<byte> block0,
         ReadOnlySpan<byte> input,
         Span<byte> output)
+        where TKeystream : struct, IKeystreamSource
     {
         int head = Math.Min(SecretboxKeystreamOffset, input.Length);
-        for (int i = 0; i < head; i++)
-            output[i] = (byte)(input[i] ^ block0[SecretboxKeystreamOffset + i]);
+        CryptographyHelper.Xor(input[..head], block0.Slice(SecretboxKeystreamOffset, head), output[..head]);
 
         if (input.Length > SecretboxKeystreamOffset)
-            XorKeystream(engine, input[SecretboxKeystreamOffset..], output[SecretboxKeystreamOffset..]);
+            XorKeystream(ref keystream, input[SecretboxKeystreamOffset..], output[SecretboxKeystreamOffset..]);
     }
 
     /// <summary>
-    /// XORs <paramref name="input" /> against successive full keystream blocks drawn from <paramref name="engine" />,
-    /// writing the result to <paramref name="output" />.
+    /// XORs <paramref name="input" /> against the successive keystream blocks of <paramref name="keystream" />, writing
+    /// the result to <paramref name="output" />.
     /// </summary>
-    /// <param name="engine">The keystream engine to advance.</param>
+    /// <typeparam name="TKeystream">The type of the keystream.</typeparam>
+    /// <param name="keystream">The keystream to advance.</param>
     /// <param name="input">The data to combine with the keystream.</param>
     /// <param name="output">Receives the XOR result; must be at least <c>input.Length</c> bytes.</param>
-    private static void XorKeystream(IStreamCipher engine, ReadOnlySpan<byte> input, Span<byte> output)
+    /// <remarks>
+    /// The whole blocks go to <see cref="IKeystreamSource.XorBlocks" /> in one call; a partial last block takes one
+    /// more keystream block, of which the unused tail is discarded.
+    /// </remarks>
+    private static void XorKeystream<TKeystream>(ref TKeystream keystream, ReadOnlySpan<byte> input, Span<byte> output)
+        where TKeystream : struct, IKeystreamSource
     {
-        Span<byte> keystream = stackalloc byte[KeystreamBlockBytes];
+        int whole = input.Length / KeystreamBlockBytes * KeystreamBlockBytes;
+        if (whole > 0)
+            keystream.XorBlocks(input[..whole], output);
+
+        if (whole == input.Length)
+            return;
+
+        Span<byte> block = stackalloc byte[KeystreamBlockBytes];
 
         try
         {
-            int offset = 0;
-            while (offset < input.Length)
-            {
-                engine.NextKeystreamBlock(keystream);
+            keystream.NextBlock(block);
 
-                int count = Math.Min(KeystreamBlockBytes, input.Length - offset);
-                for (int i = 0; i < count; i++)
-                    output[offset + i] = (byte)(input[offset + i] ^ keystream[i]);
-
-                offset += count;
-            }
+            int tail = input.Length - whole;
+            CryptographyHelper.Xor(input[whole..], block[..tail], output.Slice(whole, tail));
         }
         finally
         {
-            CryptographicOperations.ZeroMemory(keystream);
+            CryptographicOperations.ZeroMemory(block);
         }
     }
 
@@ -304,28 +402,28 @@ internal static class Poly1305AeadCore
         ReadOnlySpan<byte> ciphertext,
         Span<byte> tag)
     {
-        // The internal span core feeds the MAC input directly from the caller's buffers: no per-message key copy,
-        // no rented chunk buffer, and no bridging through the byte-array HashAlgorithm transform API. The block-hash
-        // base buffers residual bytes across AppendCore calls, so the ProcessBlock sequence is identical to a
-        // single-shot hash over AAD || pad16 || ciphertext || pad16 || lengths.
-        using var poly1305 = new Poly1305();
-        poly1305.InitializeKeyCore(poly1305Key);
+        // The authenticator lives on the stack and reads the caller's buffers in place; padding each segment to 16
+        // bytes happens inside it, so nothing is copied or allocated per message.
+        Poly1305Core mac = default;
 
-        Span<byte> scratch = stackalloc byte[16];
-        scratch.Clear();
+        try
+        {
+            mac.Initialize(poly1305Key);
+            mac.UpdatePadded(associatedData);
+            mac.UpdatePadded(ciphertext);
 
-        poly1305.AppendCore(associatedData);
-        poly1305.AppendCore(scratch[..PaddingTo16(associatedData.Length)]);
-        poly1305.AppendCore(ciphertext);
-        poly1305.AppendCore(scratch[..PaddingTo16(ciphertext.Length)]);
+            // Final 16-byte little-endian length block completes the 16-aligned MAC input.
+            Span<byte> lengths = stackalloc byte[Poly1305Core.BlockBytes];
+            BinaryPrimitives.WriteUInt64LittleEndian(lengths, (ulong)associatedData.Length);
+            BinaryPrimitives.WriteUInt64LittleEndian(lengths.Slice(sizeof(ulong)), (ulong)ciphertext.Length);
+            mac.Update(lengths);
 
-        // Final 16-byte little-endian length block completes the 16-aligned MAC input.
-        BinaryPrimitives.WriteUInt64LittleEndian(scratch[..sizeof(ulong)], (ulong)associatedData.Length);
-        BinaryPrimitives.WriteUInt64LittleEndian(scratch[sizeof(ulong)..], (ulong)ciphertext.Length);
-        poly1305.AppendCore(scratch);
-
-        poly1305.FinalizeTagCore(tag);
-        CryptographicOperations.ZeroMemory(scratch);
+            mac.Finish(tag);
+        }
+        finally
+        {
+            mac.Clear();
+        }
     }
 
     /// <summary>
@@ -334,23 +432,22 @@ internal static class Poly1305AeadCore
     /// <param name="poly1305Key">The 32-byte one-time Poly1305 key.</param>
     /// <param name="data">The message authenticated by the MAC.</param>
     /// <param name="tag">A 16-byte span that receives the computed tag.</param>
-    /// <exception cref="CryptographicException">The MAC failed to produce a tag.</exception>
     private static void ComputePoly1305(ReadOnlySpan<byte> poly1305Key, ReadOnlySpan<byte> data, Span<byte> tag)
     {
-        // Span core: keys and feeds the MAC directly from the caller's buffers with no per-message key copy.
-        using var poly1305 = new Poly1305();
-        poly1305.InitializeKeyCore(poly1305Key);
-        poly1305.AppendCore(data);
-        poly1305.FinalizeTagCore(tag);
-    }
+        // The authenticator lives on the stack and reads the caller's buffer in place.
+        Poly1305Core mac = default;
 
-    /// <summary>
-    /// Returns the number of zero bytes required to pad <paramref name="length" /> up to the next multiple of 16.
-    /// </summary>
-    /// <param name="length">The unpadded length, in bytes.</param>
-    /// <returns>A value in the range 0–15.</returns>
-    private static int PaddingTo16(int length) =>
-        (16 - (length & 15)) & 15;
+        try
+        {
+            mac.Initialize(poly1305Key);
+            mac.Update(data);
+            mac.Finish(tag);
+        }
+        finally
+        {
+            mac.Clear();
+        }
+    }
 
     /// <summary>
     /// Validates that <paramref name="output" /> can hold the ciphertext plus tag for a sealing operation.

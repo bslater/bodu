@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
 using System.Reflection;
 using System.Text;
 using Bodu.Security.Cryptography.Infrastructure;
@@ -43,6 +44,82 @@ public partial class ScryptTests
             ExpectedHex = "7023bdcb3afd7348461c06cd81fd38ebfda8fbba904f8e3ea9b543f6545da1f2" +
                           "d5432955613f0fcf62d49705242a9af9e61e85dc0d651e40dfcf017b45575887",
         }];
+    }
+
+    /// <summary>The logical name of the embedded OpenSSL-generated corpus.</summary>
+    private const string OpenSslCorpusResourceName = "Bodu.Security.Cryptography.Scrypt.OpenSsl.txt";
+
+    /// <summary>
+    /// Gets the OpenSSL corpus rows with <c>N</c> up to 1,024, which run in milliseconds.
+    /// </summary>
+    /// <returns>One row per vector.</returns>
+    public static IEnumerable<object[]> OpenSslCorpusLight() =>
+        ReadOpenSslCorpus().Where(static vector => vector.CostN <= 1024).Select(static vector => new object[] { vector });
+
+    /// <summary>
+    /// Gets the OpenSSL corpus rows with <c>N</c> = 16,384, which take up to 64 MiB each.
+    /// </summary>
+    /// <returns>One row per vector.</returns>
+    public static IEnumerable<object[]> OpenSslCorpusHeavy() =>
+        ReadOpenSslCorpus().Where(static vector => vector.CostN > 1024).Select(static vector => new object[] { vector });
+
+    /// <summary>
+    /// Verifies that scrypt reproduces each row of the OpenSSL-generated corpus with <c>N</c> up to 1,024: every
+    /// combination of <c>r</c> in {1, 2, 3, 8} and <c>p</c> in {1, 2, 3, 4}, with passwords, salts, and keys of assorted
+    /// lengths.
+    /// </summary>
+    /// <param name="vector">The corpus row under test.</param>
+    [TestMethod]
+    [DynamicData(nameof(OpenSslCorpusLight), DynamicDataDisplayName = nameof(GetVectorName))]
+    public void DeriveKey_WhenGivenOpenSslCorpusRow_ShouldMatchRecordedKey(KdfKnownAnswer vector)
+    {
+        byte[] derived = Scrypt.DeriveKey(vector.Password, vector.Salt, vector.CostN, vector.BlockSizeR, vector.Parallelism, vector.OutputLength);
+
+        Assert.AreEqual(vector.ExpectedHex, Convert.ToHexString(derived).ToLowerInvariant());
+    }
+
+    /// <summary>
+    /// Verifies that scrypt reproduces each row of the OpenSSL-generated corpus with <c>N</c> = 16,384.
+    /// </summary>
+    /// <param name="vector">The corpus row under test.</param>
+    [TestMethod]
+    [TestCategory("Regression")]
+    [DynamicData(nameof(OpenSslCorpusHeavy), DynamicDataDisplayName = nameof(GetVectorName))]
+    public void DeriveKey_WhenGivenLargeOpenSslCorpusRow_ShouldMatchRecordedKey(KdfKnownAnswer vector)
+    {
+        byte[] derived = Scrypt.DeriveKey(vector.Password, vector.Salt, vector.CostN, vector.BlockSizeR, vector.Parallelism, vector.OutputLength);
+
+        Assert.AreEqual(vector.ExpectedHex, Convert.ToHexString(derived).ToLowerInvariant());
+    }
+
+    /// <summary>
+    /// Reads the OpenSSL-generated corpus.
+    /// </summary>
+    /// <returns>One known answer per row.</returns>
+    private static IEnumerable<KdfKnownAnswer> ReadOpenSslCorpus()
+    {
+        using Stream stream = typeof(ScryptTests).Assembly.GetManifestResourceStream(OpenSslCorpusResourceName)
+            ?? throw new InvalidOperationException(
+                $"Embedded resource '{OpenSslCorpusResourceName}' is not present in the test assembly. " +
+                "Check the <EmbeddedResource> entry in Bodu.Security.Cryptography.Test.csproj.");
+
+        foreach (Dictionary<string, string> record in HexFieldKatReader.Read(stream))
+        {
+            string password = HexFieldKatReader.GetRequired(record, "Password");
+            string salt = HexFieldKatReader.GetRequired(record, "Salt");
+            string key = HexFieldKatReader.GetRequired(record, "Key");
+            yield return new KdfKnownAnswer
+            {
+                Name = "OpenSSL corpus " + HexFieldKatReader.GetRequired(record, "Name"),
+                Password = password.Length == 0 ? [] : Convert.FromHexString(password),
+                Salt = salt.Length == 0 ? [] : Convert.FromHexString(salt),
+                CostN = int.Parse(HexFieldKatReader.GetRequired(record, "N"), CultureInfo.InvariantCulture),
+                BlockSizeR = int.Parse(HexFieldKatReader.GetRequired(record, "R"), CultureInfo.InvariantCulture),
+                Parallelism = int.Parse(HexFieldKatReader.GetRequired(record, "P"), CultureInfo.InvariantCulture),
+                OutputLength = key.Length / 2,
+                ExpectedHex = key,
+            };
+        }
     }
 
     /// <summary>

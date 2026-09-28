@@ -70,7 +70,10 @@ internal class AsymmetricKeyMaterial
     /// <summary>
     /// Zeroizes the held private key material.
     /// </summary>
-    internal void Clear()
+    /// <remarks>
+    /// Key material that caches values derived from the private key overrides this to zeroize them as well.
+    /// </remarks>
+    internal virtual void Clear()
     {
         if (PrivateKey is not null)
             CryptographyHelper.Clear(PrivateKey);

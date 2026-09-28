@@ -114,15 +114,36 @@ string stored = Argon2id.Hash(password, salt, parameters);
 bool ok = Argon2id.Verify(stored, candidate, pepper);   // pepper supplied at verify time
 ```
 
+## Threads, memory, and hardware
+
+A derivation divides its lanes among threads when they are large enough to be worth dividing — from about 1 MiB per lane, so `m=64 MiB, p=4` qualifies and `m=1 MiB, p=4` does not. It uses up to `Parallelism` threads, bounded by the processor count; the calling thread always takes part, so a derivation never waits on an idle thread pool. The tag never depends on the threads used: `p` is part of the result, the thread count is not.
+
+A service that already verifies many passwords at once gains nothing from spreading each derivation across every core, and can bound the threads per derivation instead:
+
+```csharp
+using Bodu.Security.Cryptography;
+
+// Confine each derivation to the thread that calls it, as a busy login service might.
+var argon2 = new Argon2id(parameters, maxDegreeOfParallelism: 1);
+byte[] key = argon2.GetBytes(password, salt);
+
+bool ok = Argon2.Verify(stored, candidate, secret: [], maxDegreeOfParallelism: 1);
+```
+
+`-1`, the default, lets the library choose; `1` confines a derivation to the calling thread; a larger value caps the threads. `0` or anything below `-1` throws <xref:System.ArgumentOutOfRangeException>.
+
+The compression function runs on **AVX2** where the processor has it, on **SSSE3** on other x64 processors, on **AdvSimd** on ARM64, and on a portable scalar path otherwise. All four produce identical output, and the `Bodu.Security.Cryptography.DisableSimd` switch pins the scalar path — see [Hardware acceleration and the SIMD opt-out](hardware-acceleration.md). A NativeAOT application is compiled for a baseline x64 instruction set that excludes AVX2, so it takes the SSSE3 kernel unless the project raises the target, for example with `<IlcInstructionSet>x86-64-v3</IlcInstructionSet>` — only where every machine it will run on has AVX2.
+
+The memory matrix lives in native memory, not on the managed heap, so a derivation allocates no large array and provokes no gen2 collection. So that a burst of logins does not map fresh pages every time, up to one buffer per processor (of up to 256 MiB each) stays reserved for 30 seconds after the last derivation — cleared, so what stays resident is zeros. The reserve is shared with [scrypt](scrypt.md), which keeps its working memory the same way. Setting the `AppContext` switch `Bodu.Security.Cryptography.Argon2.DisableMatrixReuse` releases each buffer as soon as its derivation ends instead, for both functions. Every block of the matrix, and every buffer that held a password-derived value, is cleared before it is released; values the JIT keeps in registers or its own stack slots are beyond the library's reach.
+
 ## Choosing parameters
 
-The right cost is "as high as your latency budget allows." Pick a target verification time (say 250–500 ms on your server hardware), fix `p = 4` and `T = 32`, then raise `MemoryKiB` until you hit that budget; only drop to a smaller `m` with a higher `t` when memory is genuinely constrained. Measure on the hardware that will run the check — not a developer laptop.
+The right cost is "as high as your latency budget allows." Pick a target verification time (say 250–500 ms on your server hardware), fix `p = 4` and `T = 32`, then raise `MemoryKiB` until you hit that budget; only drop to a smaller `m` with a higher `t` when memory is genuinely constrained. With `p = 4` a derivation can finish several times sooner on a machine with four or more cores; the work it demands of an attacker is unchanged. Measure on the hardware that will run the check — not a developer laptop — and under the concurrency it will see.
 
 ## What Argon2 is not
 
 - **Not a general-purpose KDF for high-entropy inputs.** If you are stretching an already-random key (not a password), `HKDF` (`System.Security.Cryptography.HKDF`) is the right, far cheaper tool.
 - **Not a substitute for a salt.** Always pass a unique, random salt per password. The `Hash(password)` overload generates one for you.
-- **Not multi-threaded here.** Lanes are computed sequentially; the result is identical to a threaded implementation for any `Parallelism`, but a high `p` does not buy wall-clock speed in this implementation.
 
 ## Where to go next
 
