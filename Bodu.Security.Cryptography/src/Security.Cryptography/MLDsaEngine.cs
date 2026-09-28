@@ -29,6 +29,11 @@ namespace Bodu.Security.Cryptography;
 /// The number of rejection-loop restarts during signing is public by design (FIPS 204 §3.5); the per-iteration work is
 /// fixed and the norm scans have no early exit.
 /// </para>
+/// <para>
+/// Signing and verification each come in two forms. One takes the encoded key and derives from it, on every call, the
+/// matrix Â and the key's vectors in the form the arithmetic uses. The other takes those values as
+/// <see cref="MLDsaKeyMaterial" /> keeps them, computed once when the key is set.
+/// </para>
 /// </remarks>
 internal static partial class MLDsaEngine
 {
@@ -59,63 +64,52 @@ internal static partial class MLDsaEngine
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(publicKey, parameters.PublicKeySize);
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(privateKey, parameters.PrivateKeySize);
 
-        int k = parameters.K;
-        int l = parameters.L;
-
-        // (ρ, ρ′, K) = H(ξ ‖ k ‖ ℓ, 128).
-        Span<byte> dims = stackalloc byte[2];
-        dims[0] = (byte)k;
-        dims[1] = (byte)l;
-
-        Span<byte> expanded = stackalloc byte[128];
-        var sponge = KeccakSponge.CreateShake256();
-        sponge.Absorb(xi);
-        sponge.Absorb(dims);
-        sponge.Squeeze(expanded);
-        sponge.Clear();
-
-        ReadOnlySpan<byte> rho = expanded[..32];
-        ReadOnlySpan<byte> rhoPrime = expanded.Slice(32, 64);
-        ReadOnlySpan<byte> capK = expanded[96..];
-
-        int length = ((2 * l) + (2 * k) + 1) * N;
-        int[] rented = ArrayPool<int>.Shared.Rent(length);
-
-        try
-        {
-            Span<int> workspace = rented.AsSpan(0, length);
-            Span<int> s1 = workspace.Slice(0, l * N);
-            Span<int> s1Hat = workspace.Slice(l * N, l * N);
-            Span<int> s2 = workspace.Slice(2 * l * N, k * N);
-            Span<int> t = workspace.Slice(((2 * l) + k) * N, k * N);
-            Span<int> entry = workspace.Slice(((2 * l) + (2 * k)) * N, N);
-
-            SampleSecretVector(parameters, rhoPrime, 0, s1);
-            SampleSecretVector(parameters, rhoPrime, l, s2);
-
-            // t = NTT⁻¹(Â ∘ NTT(s₁)) + s₂, with ŝ₁ held in Montgomery form for the products.
-            s1.CopyTo(s1Hat);
-            ToNttMontgomery(s1Hat);
-            MultiplyMatrixVector(parameters, rho, s1Hat, t, entry);
-
-            for (int i = 0; i < k; i++)
-            {
-                Span<int> ti = t.Slice(i * N, N);
-                InvNtt(ti);
-                AddInto(ti, s2.Slice(i * N, N));
-            }
-
-            EncodeKeys(parameters, rho, capK, t, s1, s2, publicKey, privateKey);
-        }
-        finally
-        {
-            CryptographyHelper.Clear(expanded);
-            ReturnWorkspace(rented, length);
-        }
+        KeyGenCore(parameters, xi, publicKey, privateKey, [], [], [], [], [], keepValues: false);
     }
 
     /// <summary>
-    /// Runs ML-DSA.Sign_internal (FIPS 204 Algorithm 7) over the message representative M′ = 0x00 ‖ len(ctx) ‖ ctx ‖ M.
+    /// Runs ML-DSA.KeyGen_internal (FIPS 204 Algorithm 6) from the 32-byte seed ξ, producing the encoded key pair and
+    /// the values a key keeps for signing and verification.
+    /// </summary>
+    /// <param name="parameters">The parameter set.</param>
+    /// <param name="xi">The 32-byte key-generation seed ξ.</param>
+    /// <param name="publicKey">The span receiving the encoded public key ρ ‖ t₁.</param>
+    /// <param name="privateKey">The span receiving the encoded private key ρ ‖ K ‖ tr ‖ s₁ ‖ s₂ ‖ t₀.</param>
+    /// <param name="matrix">The span receiving Â, as <see cref="ExpandMatrix" /> produces it.</param>
+    /// <param name="highOrderVector">
+    /// The span receiving NTT(t₁·2ᵈ), as <see cref="ExpandPublicKey" /> produces it.
+    /// </param>
+    /// <param name="secretVector1">The span receiving ŝ₁, as <see cref="ExpandPrivateKey" /> produces it.</param>
+    /// <param name="secretVector2">The span receiving ŝ₂, as <see cref="ExpandPrivateKey" /> produces it.</param>
+    /// <param name="lowOrderVector">The span receiving t̂₀, as <see cref="ExpandPrivateKey" /> produces it.</param>
+    /// <exception cref="ArgumentException">A span does not have its exact required length.</exception>
+    internal static void KeyGen(
+        MLDsaParameters parameters,
+        ReadOnlySpan<byte> xi,
+        Span<byte> publicKey,
+        Span<byte> privateKey,
+        Span<int> matrix,
+        Span<int> highOrderVector,
+        Span<int> secretVector1,
+        Span<int> secretVector2,
+        Span<int> lowOrderVector)
+    {
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(xi, 32);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(publicKey, parameters.PublicKeySize);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(privateKey, parameters.PrivateKeySize);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(matrix, parameters.K * parameters.L * N);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(highOrderVector, parameters.K * N);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(secretVector1, parameters.L * N);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(secretVector2, parameters.K * N);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(lowOrderVector, parameters.K * N);
+
+        KeyGenCore(
+            parameters, xi, publicKey, privateKey, matrix, highOrderVector, secretVector1, secretVector2, lowOrderVector, keepValues: true);
+    }
+
+    /// <summary>
+    /// Runs ML-DSA.Sign_internal (FIPS 204 Algorithm 7) over the message representative M′ = 0x00 ‖ len(ctx) ‖ ctx ‖ M,
+    /// deriving from the encoded private key the values signing uses.
     /// </summary>
     /// <param name="parameters">The parameter set.</param>
     /// <param name="privateKey">The encoded private key.</param>
@@ -126,6 +120,10 @@ internal static partial class MLDsaEngine
     /// </param>
     /// <param name="signature">The span receiving the encoded signature c̃ ‖ z ‖ h.</param>
     /// <exception cref="ArgumentException">A fixed-size span does not have its exact required length.</exception>
+    /// <remarks>
+    /// The matrix Â and the vectors ŝ₁, ŝ₂ and t̂₀ are derived on every call. A key used for more than one signature
+    /// keeps them instead and signs through the overload that takes them.
+    /// </remarks>
     internal static void Sign(
         MLDsaParameters parameters,
         ReadOnlySpan<byte> privateKey,
@@ -135,14 +133,75 @@ internal static partial class MLDsaEngine
         Span<byte> signature)
     {
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(privateKey, parameters.PrivateKeySize);
+
+        int k = parameters.K;
+        int l = parameters.L;
+
+        // Â, then ŝ₁, ŝ₂ and t̂₀.
+        int length = ((k * l) + l + (2 * k)) * N;
+        int[] rented = ArrayPool<int>.Shared.Rent(length);
+
+        try
+        {
+            Span<int> workspace = rented.AsSpan(0, length);
+            Span<int> matrix = TakePolynomials(ref workspace, k * l);
+            Span<int> secretVector1 = TakePolynomials(ref workspace, l);
+            Span<int> secretVector2 = TakePolynomials(ref workspace, k);
+            Span<int> lowOrderVector = TakePolynomials(ref workspace, k);
+
+            ExpandMatrix(parameters, privateKey[..32], matrix);
+            ExpandPrivateKey(parameters, privateKey, secretVector1, secretVector2, lowOrderVector);
+
+            Sign(parameters, privateKey, matrix, secretVector1, secretVector2, lowOrderVector, context, message, rnd, signature);
+        }
+        finally
+        {
+            ReturnWorkspace(rented, length);
+        }
+    }
+
+    /// <summary>
+    /// Runs ML-DSA.Sign_internal (FIPS 204 Algorithm 7) over the message representative M′ = 0x00 ‖ len(ctx) ‖ ctx ‖ M,
+    /// with the values derived from the private key supplied as a key keeps them.
+    /// </summary>
+    /// <param name="parameters">The parameter set.</param>
+    /// <param name="privateKey">The encoded private key, from which the seed K and the hash tr are read.</param>
+    /// <param name="matrix">The matrix Â, as <see cref="ExpandMatrix" /> produces it.</param>
+    /// <param name="secretVector1">The vector ŝ₁, as <see cref="ExpandPrivateKey" /> produces it.</param>
+    /// <param name="secretVector2">The vector ŝ₂, as <see cref="ExpandPrivateKey" /> produces it.</param>
+    /// <param name="lowOrderVector">The vector t̂₀, as <see cref="ExpandPrivateKey" /> produces it.</param>
+    /// <param name="context">The signature context string (at most 255 bytes; validated by the caller).</param>
+    /// <param name="message">The message bytes.</param>
+    /// <param name="rnd">
+    /// The 32-byte signer randomness: fresh random for hedged signing, all-zero for deterministic.
+    /// </param>
+    /// <param name="signature">The span receiving the encoded signature c̃ ‖ z ‖ h.</param>
+    /// <exception cref="ArgumentException">A fixed-size span does not have its exact required length.</exception>
+    internal static void Sign(
+        MLDsaParameters parameters,
+        ReadOnlySpan<byte> privateKey,
+        ReadOnlySpan<int> matrix,
+        ReadOnlySpan<int> secretVector1,
+        ReadOnlySpan<int> secretVector2,
+        ReadOnlySpan<int> lowOrderVector,
+        ReadOnlySpan<byte> context,
+        ReadOnlySpan<byte> message,
+        ReadOnlySpan<byte> rnd,
+        Span<byte> signature)
+    {
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(privateKey, parameters.PrivateKeySize);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(matrix, parameters.K * parameters.L * N);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(secretVector1, parameters.L * N);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(secretVector2, parameters.K * N);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(lowOrderVector, parameters.K * N);
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(rnd, 32);
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(signature, parameters.SignatureSize);
 
         int k = parameters.K;
         int l = parameters.L;
 
-        // Â, ŝ₁, ŝ₂ and t̂₀, then y, ŷ, z, w, w₁, w − cs₂, the hints, c and one product.
-        int length = ((k * l) + (4 * l) + (6 * k) + 2) * N;
+        // y, ŷ, z, w, w₁, w − cs₂, the hints, c and one product.
+        int length = ((3 * l) + (4 * k) + 2) * N;
         int[] rented = ArrayPool<int>.Shared.Rent(length);
 
         Span<byte> mu = stackalloc byte[64];
@@ -152,10 +211,6 @@ internal static partial class MLDsaEngine
         try
         {
             Span<int> workspace = rented.AsSpan(0, length);
-            Span<int> matrix = TakePolynomials(ref workspace, k * l);
-            Span<int> s1Hat = TakePolynomials(ref workspace, l);
-            Span<int> s2Hat = TakePolynomials(ref workspace, k);
-            Span<int> t0Hat = TakePolynomials(ref workspace, k);
             Span<int> y = TakePolynomials(ref workspace, l);
             Span<int> yHat = TakePolynomials(ref workspace, l);
             Span<int> z = TakePolynomials(ref workspace, l);
@@ -166,26 +221,18 @@ internal static partial class MLDsaEngine
             Span<int> c = TakePolynomials(ref workspace, 1);
             Span<int> product = TakePolynomials(ref workspace, 1);
 
-            DecodePrivateKey(
-                parameters, privateKey, out ReadOnlySpan<byte> rho, out ReadOnlySpan<byte> capK, out ReadOnlySpan<byte> tr, s1Hat, s2Hat, t0Hat);
-
-            // ŝ₁, ŝ₂, t̂₀ and Â are kept in the NTT domain, in Montgomery form, for the per-iteration products.
-            ToNttMontgomery(s1Hat);
-            ToNttMontgomery(s2Hat);
-            ToNttMontgomery(t0Hat);
-            ExpandMatrix(parameters, rho, matrix);
-
             // μ = H(tr ‖ M′, 64); ρ″ = H(K ‖ rnd ‖ μ, 64).
-            ComputeMu(tr, context, message, mu);
+            ComputeMu(privateKey.Slice(64, 64), context, message, mu);
 
             var seedSponge = KeccakSponge.CreateShake256();
-            seedSponge.Absorb(capK);
+            seedSponge.Absorb(privateKey.Slice(32, 32));
             seedSponge.Absorb(rnd);
             seedSponge.Absorb(mu);
             seedSponge.Squeeze(rhoDoublePrime);
             seedSponge.Clear();
 
-            Span<byte> commitmentHash = signature[..(parameters.Lambda / 4)];
+            int commitmentHashSize = parameters.Lambda / 4;
+            Span<byte> commitmentHash = signature[..commitmentHashSize];
 
             for (int kappa = 0; ; kappa += l)
             {
@@ -197,13 +244,11 @@ internal static partial class MLDsaEngine
                 for (int r = 0; r < l; r++)
                     Ntt(yHat.Slice(r * N, N));
 
+                MultiplyMatrixVector(parameters, matrix, yHat, w);
+
                 for (int i = 0; i < k; i++)
                 {
                     Span<int> wi = w.Slice(i * N, N);
-                    wi.Clear();
-                    for (int s = 0; s < l; s++)
-                        MultiplyAccumulateNtt(matrix.Slice(((i * l) + s) * N, N), yHat.Slice(s * N, N), wi);
-
                     InvNtt(wi);
                     for (int j = 0; j < N; j++)
                         w1[(i * N) + j] = HighBits(parameters.Gamma2, wi[j]);
@@ -224,7 +269,7 @@ internal static partial class MLDsaEngine
                 // z = y + NTT⁻¹(ĉ ∘ ŝ₁); reject when ‖z‖∞ ≥ γ₁ − β.
                 for (int r = 0; r < l; r++)
                 {
-                    MultiplyNtt(s1Hat.Slice(r * N, N), c, product);
+                    MultiplyNtt(secretVector1.Slice(r * N, N), c, product);
                     InvNtt(product);
 
                     Span<int> zr = z.Slice(r * N, N);
@@ -238,7 +283,7 @@ internal static partial class MLDsaEngine
                 // r₀ = LowBits(w − NTT⁻¹(ĉ ∘ ŝ₂)); reject when ‖r₀‖∞ ≥ γ₂ − β.
                 for (int i = 0; i < k; i++)
                 {
-                    MultiplyNtt(s2Hat.Slice(i * N, N), c, product);
+                    MultiplyNtt(secretVector2.Slice(i * N, N), c, product);
                     InvNtt(product);
 
                     Span<int> ri = wMinusCs2.Slice(i * N, N);
@@ -258,7 +303,7 @@ internal static partial class MLDsaEngine
                 int hintWeight = 0;
                 for (int i = 0; i < k; i++)
                 {
-                    MultiplyNtt(t0Hat.Slice(i * N, N), c, product);
+                    MultiplyNtt(lowOrderVector.Slice(i * N, N), c, product);
                     InvNtt(product);
 
                     rejected |= InfinityNorm(product) >= parameters.Gamma2;
@@ -290,7 +335,7 @@ internal static partial class MLDsaEngine
 
     /// <summary>
     /// Runs ML-DSA.Verify_internal (FIPS 204 Algorithm 8) over the message representative M′ = 0x00 ‖ len(ctx) ‖ ctx ‖
-    /// M.
+    /// M, deriving from the encoded public key the values verification uses.
     /// </summary>
     /// <param name="parameters">The parameter set.</param>
     /// <param name="publicKey">The encoded public key ρ ‖ t₁.</param>
@@ -301,6 +346,10 @@ internal static partial class MLDsaEngine
     /// <exception cref="ArgumentException">
     /// <paramref name="publicKey" /> does not have its exact required length.
     /// </exception>
+    /// <remarks>
+    /// The hash tr, the matrix Â and the vector NTT(t₁·2ᵈ) are derived on every call. A key used for more than one
+    /// verification keeps them instead and verifies through the overload that takes them.
+    /// </remarks>
     internal static bool Verify(
         MLDsaParameters parameters,
         ReadOnlySpan<byte> publicKey,
@@ -310,23 +359,77 @@ internal static partial class MLDsaEngine
     {
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(publicKey, parameters.PublicKeySize);
 
+        int k = parameters.K;
+        int l = parameters.L;
+
+        // Â, then NTT(t₁·2ᵈ).
+        int length = ((k * l) + k) * N;
+        int[] rented = ArrayPool<int>.Shared.Rent(length);
+
+        Span<byte> publicKeyHash = stackalloc byte[64];
+
+        try
+        {
+            Span<int> workspace = rented.AsSpan(0, length);
+            Span<int> matrix = TakePolynomials(ref workspace, k * l);
+            Span<int> highOrderVector = TakePolynomials(ref workspace, k);
+
+            KeccakSponge.Shake256(publicKey, publicKeyHash);
+            ExpandMatrix(parameters, publicKey[..32], matrix);
+            ExpandPublicKey(parameters, publicKey, highOrderVector);
+
+            return Verify(parameters, publicKeyHash, matrix, highOrderVector, context, message, signature);
+        }
+        finally
+        {
+            ReturnWorkspace(rented, length);
+        }
+    }
+
+    /// <summary>
+    /// Runs ML-DSA.Verify_internal (FIPS 204 Algorithm 8) over the message representative M′ = 0x00 ‖ len(ctx) ‖ ctx ‖
+    /// M, with the values derived from the public key supplied as a key keeps them.
+    /// </summary>
+    /// <param name="parameters">The parameter set.</param>
+    /// <param name="publicKeyHash">The 64-byte hash tr = H(pk, 64) of the encoded public key.</param>
+    /// <param name="matrix">The matrix Â, as <see cref="ExpandMatrix" /> produces it.</param>
+    /// <param name="highOrderVector">The vector NTT(t₁·2ᵈ), as <see cref="ExpandPublicKey" /> produces it.</param>
+    /// <param name="context">The signature context string (at most 255 bytes; validated by the caller).</param>
+    /// <param name="message">The message bytes.</param>
+    /// <param name="signature">The candidate encoded signature.</param>
+    /// <returns><see langword="true" /> when the signature is valid; otherwise, <see langword="false" />.</returns>
+    /// <exception cref="ArgumentException">
+    /// A span derived from the key does not have its exact required length.
+    /// </exception>
+    internal static bool Verify(
+        MLDsaParameters parameters,
+        ReadOnlySpan<byte> publicKeyHash,
+        ReadOnlySpan<int> matrix,
+        ReadOnlySpan<int> highOrderVector,
+        ReadOnlySpan<byte> context,
+        ReadOnlySpan<byte> message,
+        ReadOnlySpan<byte> signature)
+    {
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(publicKeyHash, 64);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(matrix, parameters.K * parameters.L * N);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(highOrderVector, parameters.K * N);
+
         if (signature.Length != parameters.SignatureSize)
             return false;
 
         int k = parameters.K;
         int l = parameters.L;
         int zBytes = 32 * parameters.Gamma1Bits;
+        int commitmentHashSize = parameters.Lambda / 4;
 
-        ReadOnlySpan<byte> rho = publicKey[..32];
-        ReadOnlySpan<byte> commitmentHash = signature[..(parameters.Lambda / 4)];
-        ReadOnlySpan<byte> zPacked = signature.Slice(parameters.Lambda / 4, l * zBytes);
-        ReadOnlySpan<byte> hintPacked = signature[((parameters.Lambda / 4) + (l * zBytes))..];
+        ReadOnlySpan<byte> commitmentHash = signature[..commitmentHashSize];
+        ReadOnlySpan<byte> zPacked = signature.Slice(commitmentHashSize, l * zBytes);
+        ReadOnlySpan<byte> hintPacked = signature.Slice(commitmentHashSize + (l * zBytes));
 
-        // Â, then z, the hints, w₁, c, t₁, w and one product.
-        int length = ((k * l) + l + (2 * k) + 4) * N;
+        // z, the hints, w, w₁, c and one product.
+        int length = (l + (3 * k) + 2) * N;
         int[] rented = ArrayPool<int>.Shared.Rent(length);
 
-        Span<byte> tr = stackalloc byte[64];
         Span<byte> mu = stackalloc byte[64];
         Span<byte> expectedHash = stackalloc byte[64];
         Span<byte> w1Encoded = stackalloc byte[32 * parameters.W1Bits * k];
@@ -334,13 +437,11 @@ internal static partial class MLDsaEngine
         try
         {
             Span<int> workspace = rented.AsSpan(0, length);
-            Span<int> matrix = TakePolynomials(ref workspace, k * l);
             Span<int> z = TakePolynomials(ref workspace, l);
             Span<int> hints = TakePolynomials(ref workspace, k);
+            Span<int> w = TakePolynomials(ref workspace, k);
             Span<int> w1 = TakePolynomials(ref workspace, k);
             Span<int> c = TakePolynomials(ref workspace, 1);
-            Span<int> t1 = TakePolynomials(ref workspace, 1);
-            Span<int> w = TakePolynomials(ref workspace, 1);
             Span<int> product = TakePolynomials(ref workspace, 1);
 
             // Decode z and reject ‖z‖∞ ≥ γ₁ − β; reject non-canonical hint encodings.
@@ -355,13 +456,8 @@ internal static partial class MLDsaEngine
             if (!TryHintBitUnpack(parameters, hintPacked, hints))
                 return false;
 
-            // μ = H(H(pk, 64) ‖ M′, 64).
-            var trSponge = KeccakSponge.CreateShake256();
-            trSponge.Absorb(publicKey);
-            trSponge.Squeeze(tr);
-            trSponge.Clear();
-
-            ComputeMu(tr, context, message, mu);
+            // μ = H(tr ‖ M′, 64).
+            ComputeMu(publicKeyHash, context, message, mu);
 
             SampleInBall(parameters, commitmentHash, c);
             Ntt(c);
@@ -369,41 +465,89 @@ internal static partial class MLDsaEngine
             for (int r = 0; r < l; r++)
                 Ntt(z.Slice(r * N, N));
 
-            ExpandMatrix(parameters, rho, matrix);
+            // w′ ≈ NTT⁻¹(Â ∘ ẑ − ĉ ∘ NTT(t₁·2ᵈ)); w₁′ = UseHint(h, w′).
+            MultiplyMatrixVector(parameters, matrix, z, w);
 
-            // w′ ≈ NTT⁻¹(Â ∘ ẑ − ĉ ∘ NTT(t₁·2ᵈ)); w₁′ = UseHint(h, w′). t₁·2ᵈ is formed in Montgomery form, so its
-            // transform multiplies ĉ exactly.
             for (int i = 0; i < k; i++)
             {
-                w.Clear();
-                for (int s = 0; s < l; s++)
-                    MultiplyAccumulateNtt(matrix.Slice(((i * l) + s) * N, N), z.Slice(s * N, N), w);
-
-                SimpleBitUnpack(10, publicKey.Slice(32 + (i * 320), 320), t1);
+                Span<int> wi = w.Slice(i * N, N);
+                MultiplyNtt(highOrderVector.Slice(i * N, N), c, product);
                 for (int j = 0; j < N; j++)
-                    t1[j] = MontgomeryReduce(t1[j] * PowerOfTwoDMontgomery);
+                    wi[j] = Reduce32(wi[j] - product[j]);
 
-                Ntt(t1);
-                MultiplyNtt(t1, c, product);
-                for (int j = 0; j < N; j++)
-                    w[j] -= product[j];
-
-                InvNtt(w);
+                InvNtt(wi);
 
                 for (int j = 0; j < N; j++)
-                    w1[(i * N) + j] = UseHint(parameters.Gamma2, hints[(i * N) + j], w[j]);
+                    w1[(i * N) + j] = UseHint(parameters.Gamma2, hints[(i * N) + j], wi[j]);
             }
 
             // Valid iff c̃ = H(μ ‖ w1Encode(w₁′), λ/4).
             W1Encode(parameters, w1, w1Encoded);
-            KeccakSponge.Shake256(mu, w1Encoded, expectedHash[..(parameters.Lambda / 4)]);
+            KeccakSponge.Shake256(mu, w1Encoded, expectedHash[..commitmentHashSize]);
 
             return System.Security.Cryptography.CryptographicOperations.FixedTimeEquals(
-                commitmentHash, expectedHash[..(parameters.Lambda / 4)]);
+                commitmentHash, expectedHash[..commitmentHashSize]);
         }
         finally
         {
             ReturnWorkspace(rented, length);
+        }
+    }
+
+    /// <summary>
+    /// Decodes the secret vectors of an encoded private key into the form signing uses: ŝ₁, ŝ₂ and t̂₀, each in the NTT
+    /// domain and in Montgomery form.
+    /// </summary>
+    /// <param name="parameters">The parameter set.</param>
+    /// <param name="privateKey">The encoded private key.</param>
+    /// <param name="secretVector1">The span receiving the ℓ polynomials of ŝ₁.</param>
+    /// <param name="secretVector2">The span receiving the k polynomials of ŝ₂.</param>
+    /// <param name="lowOrderVector">The span receiving the k polynomials of t̂₀.</param>
+    /// <exception cref="ArgumentException">A span does not have its exact required length.</exception>
+    /// <remarks>
+    /// The key is not checked here: key generation produces well-formed keys, and import checks them.
+    /// </remarks>
+    internal static void ExpandPrivateKey(
+        MLDsaParameters parameters,
+        ReadOnlySpan<byte> privateKey,
+        Span<int> secretVector1,
+        Span<int> secretVector2,
+        Span<int> lowOrderVector)
+    {
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(privateKey, parameters.PrivateKeySize);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(secretVector1, parameters.L * N);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(secretVector2, parameters.K * N);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(lowOrderVector, parameters.K * N);
+
+        _ = DecodePrivateKey(parameters, privateKey, out _, out _, out _, secretVector1, secretVector2, lowOrderVector);
+
+        ToNttMontgomery(secretVector1);
+        ToNttMontgomery(secretVector2);
+        ToNttMontgomery(lowOrderVector);
+    }
+
+    /// <summary>
+    /// Decodes t₁ from an encoded public key into the form verification uses: NTT(t₁·2ᵈ), in Montgomery form.
+    /// </summary>
+    /// <param name="parameters">The parameter set.</param>
+    /// <param name="publicKey">The encoded public key ρ ‖ t₁.</param>
+    /// <param name="highOrderVector">The span receiving the k polynomials.</param>
+    /// <exception cref="ArgumentException">A span does not have its exact required length.</exception>
+    internal static void ExpandPublicKey(MLDsaParameters parameters, ReadOnlySpan<byte> publicKey, Span<int> highOrderVector)
+    {
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(publicKey, parameters.PublicKeySize);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(highOrderVector, parameters.K * N);
+
+        for (int i = 0; i < parameters.K; i++)
+        {
+            Span<int> t1 = highOrderVector.Slice(i * N, N);
+            SimpleBitUnpack(10, publicKey.Slice(32 + (i * 320), 320), t1);
+
+            // t₁·2ᵈ is formed directly in Montgomery form, so its transform multiplies ĉ exactly.
+            for (int j = 0; j < N; j++)
+                t1[j] = MontgomeryReduce(t1[j] * PowerOfTwoDMontgomery);
+
+            Ntt(t1);
         }
     }
 
@@ -424,73 +568,49 @@ internal static partial class MLDsaEngine
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(privateKey, parameters.PrivateKeySize);
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(publicKey, parameters.PublicKeySize);
 
-        int k = parameters.K;
-        int l = parameters.L;
+        return TryDerivePublicKeyCore(parameters, privateKey, publicKey, [], [], [], [], [], keepValues: false);
+    }
 
-        // s₁, ŝ₁, s₂, t₀, t, one matrix entry and t₁.
-        int length = ((2 * l) + (3 * k) + 2) * N;
-        int[] rented = ArrayPool<int>.Shared.Rent(length);
+    /// <summary>
+    /// Recomputes the encoded public key from a private key and reports whether the embedded tr hash matches, producing
+    /// as well the values a key keeps for signing and verification.
+    /// </summary>
+    /// <param name="parameters">The parameter set.</param>
+    /// <param name="privateKey">The encoded private key.</param>
+    /// <param name="publicKey">The span receiving the recomputed encoded public key.</param>
+    /// <param name="matrix">The span receiving Â, as <see cref="ExpandMatrix" /> produces it.</param>
+    /// <param name="highOrderVector">
+    /// The span receiving NTT(t₁·2ᵈ), as <see cref="ExpandPublicKey" /> produces it.
+    /// </param>
+    /// <param name="secretVector1">The span receiving ŝ₁, as <see cref="ExpandPrivateKey" /> produces it.</param>
+    /// <param name="secretVector2">The span receiving ŝ₂, as <see cref="ExpandPrivateKey" /> produces it.</param>
+    /// <param name="lowOrderVector">The span receiving t̂₀, as <see cref="ExpandPrivateKey" /> produces it.</param>
+    /// <returns><see langword="true" /> when tr = H(pk, 64) holds; otherwise, <see langword="false" />.</returns>
+    /// <exception cref="ArgumentException">A span does not have its exact required length.</exception>
+    /// <remarks>
+    /// The value spans are filled whether or not the key is consistent. When it is not, the caller discards them, and
+    /// clears the secret ones.
+    /// </remarks>
+    internal static bool TryDerivePublicKey(
+        MLDsaParameters parameters,
+        ReadOnlySpan<byte> privateKey,
+        Span<byte> publicKey,
+        Span<int> matrix,
+        Span<int> highOrderVector,
+        Span<int> secretVector1,
+        Span<int> secretVector2,
+        Span<int> lowOrderVector)
+    {
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(privateKey, parameters.PrivateKeySize);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(publicKey, parameters.PublicKeySize);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(matrix, parameters.K * parameters.L * N);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(highOrderVector, parameters.K * N);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(secretVector1, parameters.L * N);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(secretVector2, parameters.K * N);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(lowOrderVector, parameters.K * N);
 
-        Span<byte> actualTr = stackalloc byte[64];
-
-        try
-        {
-            Span<int> workspace = rented.AsSpan(0, length);
-            Span<int> s1 = TakePolynomials(ref workspace, l);
-            Span<int> s1Hat = TakePolynomials(ref workspace, l);
-            Span<int> s2 = TakePolynomials(ref workspace, k);
-            Span<int> t0 = TakePolynomials(ref workspace, k);
-            Span<int> t = TakePolynomials(ref workspace, k);
-            Span<int> entry = TakePolynomials(ref workspace, 1);
-            Span<int> t1 = TakePolynomials(ref workspace, 1);
-
-            // s₁/s₂ are rejected here when packed outside [−η, η]; t₀ spans the full d-bit range, so it is validated
-            // below by comparing the decoded low bits against those recomputed from s₁/s₂.
-            bool valid = DecodePrivateKey(
-                parameters, privateKey, out ReadOnlySpan<byte> rho, out _, out ReadOnlySpan<byte> tr, s1, s2, t0);
-
-            // t = NTT⁻¹(Â ∘ NTT(s₁)) + s₂ = t₁·2ᵈ + t₀; rebuild t₁ and the pk encoding from it.
-            s1.CopyTo(s1Hat);
-            ToNttMontgomery(s1Hat);
-            MultiplyMatrixVector(parameters, rho, s1Hat, t, entry);
-            rho.CopyTo(publicKey[..32]);
-
-            bool t0Matches = true;
-            for (int i = 0; i < k; i++)
-            {
-                Span<int> ti = t.Slice(i * N, N);
-                InvNtt(ti);
-                AddInto(ti, s2.Slice(i * N, N));
-
-                for (int j = 0; j < N; j++)
-                {
-                    Power2Round(ti[j], out t1[j], out int recomputedT0);
-
-                    // The encoded t₀ stores the centered low bits folded into [0, q); unfold before comparing, through a
-                    // mask rather than a branch. The scan has no early exit so a corrupted coefficient is not revealed
-                    // by timing.
-                    int decodedT0 = t0[(i * N) + j];
-                    decodedT0 -= Q & ((((Q - 1) / 2) - decodedT0) >> 31);
-
-                    t0Matches &= decodedT0 == recomputedT0;
-                }
-
-                SimpleBitPack(10, t1, publicKey.Slice(32 + (i * 320), 320));
-            }
-
-            var trSponge = KeccakSponge.CreateShake256();
-            trSponge.Absorb(publicKey);
-            trSponge.Squeeze(actualTr);
-            trSponge.Clear();
-
-            bool matches = System.Security.Cryptography.CryptographicOperations.FixedTimeEquals(tr, actualTr);
-
-            return valid & t0Matches & matches;
-        }
-        finally
-        {
-            ReturnWorkspace(rented, length);
-        }
+        return TryDerivePublicKeyCore(
+            parameters, privateKey, publicKey, matrix, highOrderVector, secretVector1, secretVector2, lowOrderVector, keepValues: true);
     }
 
     /// <summary>
@@ -519,6 +639,251 @@ internal static partial class MLDsaEngine
     }
 
     /// <summary>
+    /// Runs ML-DSA.KeyGen_internal (FIPS 204 Algorithm 6) for both
+    /// <see cref="KeyGen(MLDsaParameters, ReadOnlySpan{byte}, Span{byte}, Span{byte})" /> overloads, whose arguments
+    /// are already validated.
+    /// </summary>
+    /// <param name="parameters">The parameter set.</param>
+    /// <param name="xi">The 32-byte key-generation seed ξ.</param>
+    /// <param name="publicKey">The span receiving the encoded public key.</param>
+    /// <param name="privateKey">The span receiving the encoded private key.</param>
+    /// <param name="matrix">The span receiving Â, or an empty span when the values are not kept.</param>
+    /// <param name="highOrderVector">The span receiving NTT(t₁·2ᵈ), or an empty span.</param>
+    /// <param name="secretVector1">The span receiving ŝ₁, or an empty span.</param>
+    /// <param name="secretVector2">The span receiving ŝ₂, or an empty span.</param>
+    /// <param name="lowOrderVector">The span receiving t̂₀, or an empty span.</param>
+    /// <param name="keepValues">
+    /// <see langword="true" /> to fill the five value spans; <see langword="false" /> when they are empty.
+    /// </param>
+    private static void KeyGenCore(
+        MLDsaParameters parameters,
+        ReadOnlySpan<byte> xi,
+        Span<byte> publicKey,
+        Span<byte> privateKey,
+        Span<int> matrix,
+        Span<int> highOrderVector,
+        Span<int> secretVector1,
+        Span<int> secretVector2,
+        Span<int> lowOrderVector,
+        bool keepValues)
+    {
+        int k = parameters.K;
+        int l = parameters.L;
+
+        // (ρ, ρ′, K) = H(ξ ‖ k ‖ ℓ, 128).
+        Span<byte> dims = stackalloc byte[2];
+        dims[0] = (byte)k;
+        dims[1] = (byte)l;
+
+        Span<byte> expanded = stackalloc byte[128];
+        var sponge = KeccakSponge.CreateShake256();
+        sponge.Absorb(xi);
+        sponge.Absorb(dims);
+        sponge.Squeeze(expanded);
+        sponge.Clear();
+
+        ReadOnlySpan<byte> rho = expanded[..32];
+        ReadOnlySpan<byte> rhoPrime = expanded.Slice(32, 64);
+        ReadOnlySpan<byte> capK = expanded[96..];
+
+        // s₁, ŝ₁, s₂, t and t₀, then Â when the caller does not keep it.
+        int length = ((2 * l) + (3 * k) + (keepValues ? 0 : k * l)) * N;
+        int[] rented = ArrayPool<int>.Shared.Rent(length);
+
+        try
+        {
+            Span<int> workspace = rented.AsSpan(0, length);
+            Span<int> s1 = TakePolynomials(ref workspace, l);
+            Span<int> s1Hat = TakePolynomials(ref workspace, l);
+            Span<int> s2 = TakePolynomials(ref workspace, k);
+            Span<int> t = TakePolynomials(ref workspace, k);
+            Span<int> t0 = TakePolynomials(ref workspace, k);
+            Span<int> expandedMatrix = keepValues ? matrix : TakePolynomials(ref workspace, k * l);
+
+            SampleSecretVector(parameters, rhoPrime, 0, s1);
+            SampleSecretVector(parameters, rhoPrime, l, s2);
+            ExpandMatrix(parameters, rho, expandedMatrix);
+
+            // t = NTT⁻¹(Â ∘ NTT(s₁)) + s₂. Â is held in Montgomery form, so ŝ₁ stays plain for the products.
+            s1.CopyTo(s1Hat);
+            for (int r = 0; r < l; r++)
+                Ntt(s1Hat.Slice(r * N, N));
+
+            MultiplyMatrixVector(parameters, expandedMatrix, s1Hat, t);
+            if (keepValues)
+                t.CopyTo(highOrderVector);
+
+            for (int i = 0; i < k; i++)
+            {
+                Span<int> ti = t.Slice(i * N, N);
+                InvNtt(ti);
+                AddInto(ti, s2.Slice(i * N, N));
+            }
+
+            EncodeKeys(parameters, rho, capK, t, s1, s2, t0, publicKey, privateKey);
+
+            if (keepValues)
+                KeepKeyValues(s1Hat, s2, t0, highOrderVector, secretVector1, secretVector2, lowOrderVector);
+        }
+        finally
+        {
+            CryptographyHelper.Clear(expanded);
+            ReturnWorkspace(rented, length);
+        }
+    }
+
+    /// <summary>
+    /// Recomputes the encoded public key from a private key for both
+    /// <see cref="TryDerivePublicKey(MLDsaParameters, ReadOnlySpan{byte}, Span{byte})" /> overloads, whose arguments
+    /// are already validated.
+    /// </summary>
+    /// <param name="parameters">The parameter set.</param>
+    /// <param name="privateKey">The encoded private key.</param>
+    /// <param name="publicKey">The span receiving the recomputed encoded public key.</param>
+    /// <param name="matrix">The span receiving Â, or an empty span when the values are not kept.</param>
+    /// <param name="highOrderVector">The span receiving NTT(t₁·2ᵈ), or an empty span.</param>
+    /// <param name="secretVector1">The span receiving ŝ₁, or an empty span.</param>
+    /// <param name="secretVector2">The span receiving ŝ₂, or an empty span.</param>
+    /// <param name="lowOrderVector">The span receiving t̂₀, or an empty span.</param>
+    /// <param name="keepValues">
+    /// <see langword="true" /> to fill the five value spans; <see langword="false" /> when they are empty.
+    /// </param>
+    /// <returns><see langword="true" /> when tr = H(pk, 64) holds; otherwise, <see langword="false" />.</returns>
+    private static bool TryDerivePublicKeyCore(
+        MLDsaParameters parameters,
+        ReadOnlySpan<byte> privateKey,
+        Span<byte> publicKey,
+        Span<int> matrix,
+        Span<int> highOrderVector,
+        Span<int> secretVector1,
+        Span<int> secretVector2,
+        Span<int> lowOrderVector,
+        bool keepValues)
+    {
+        int k = parameters.K;
+        int l = parameters.L;
+
+        // s₁, ŝ₁, s₂, t₀, t and t₁, then Â when the caller does not keep it.
+        int length = ((2 * l) + (3 * k) + 1 + (keepValues ? 0 : k * l)) * N;
+        int[] rented = ArrayPool<int>.Shared.Rent(length);
+
+        Span<byte> actualTr = stackalloc byte[64];
+
+        try
+        {
+            Span<int> workspace = rented.AsSpan(0, length);
+            Span<int> s1 = TakePolynomials(ref workspace, l);
+            Span<int> s1Hat = TakePolynomials(ref workspace, l);
+            Span<int> s2 = TakePolynomials(ref workspace, k);
+            Span<int> t0 = TakePolynomials(ref workspace, k);
+            Span<int> t = TakePolynomials(ref workspace, k);
+            Span<int> t1 = TakePolynomials(ref workspace, 1);
+            Span<int> expandedMatrix = keepValues ? matrix : TakePolynomials(ref workspace, k * l);
+
+            // s₁/s₂ are rejected here when packed outside [−η, η]; t₀ spans the full d-bit range, so it is validated
+            // below by comparing the decoded low bits against those recomputed from s₁/s₂.
+            bool valid = DecodePrivateKey(
+                parameters, privateKey, out ReadOnlySpan<byte> rho, out _, out ReadOnlySpan<byte> tr, s1, s2, t0);
+
+            // t = NTT⁻¹(Â ∘ NTT(s₁)) + s₂ = t₁·2ᵈ + t₀; rebuild t₁ and the pk encoding from it.
+            ExpandMatrix(parameters, rho, expandedMatrix);
+            s1.CopyTo(s1Hat);
+            for (int r = 0; r < l; r++)
+                Ntt(s1Hat.Slice(r * N, N));
+
+            MultiplyMatrixVector(parameters, expandedMatrix, s1Hat, t);
+            if (keepValues)
+                t.CopyTo(highOrderVector);
+
+            rho.CopyTo(publicKey[..32]);
+
+            bool t0Matches = true;
+            for (int i = 0; i < k; i++)
+            {
+                Span<int> ti = t.Slice(i * N, N);
+                InvNtt(ti);
+                AddInto(ti, s2.Slice(i * N, N));
+
+                for (int j = 0; j < N; j++)
+                {
+                    Power2Round(ti[j], out t1[j], out int recomputedT0);
+
+                    // The encoded t₀ stores the centered low bits folded into [0, q); unfold before comparing, through a
+                    // mask rather than a branch. The scan has no early exit so a corrupted coefficient is not revealed
+                    // by timing.
+                    int decodedT0 = t0[(i * N) + j];
+                    decodedT0 -= Q & ((((Q - 1) / 2) - decodedT0) >> 31);
+
+                    t0Matches &= decodedT0 == recomputedT0;
+                }
+
+                SimpleBitPack(10, t1, publicKey.Slice(32 + (i * 320), 320));
+            }
+
+            KeccakSponge.Shake256(publicKey, actualTr);
+
+            bool matches = System.Security.Cryptography.CryptographicOperations.FixedTimeEquals(tr, actualTr);
+
+            if (keepValues)
+                KeepKeyValues(s1Hat, s2, t0, highOrderVector, secretVector1, secretVector2, lowOrderVector);
+
+            return valid & t0Matches & matches;
+        }
+        finally
+        {
+            ReturnWorkspace(rented, length);
+        }
+    }
+
+    /// <summary>
+    /// Forms the values a key keeps for signing and verification from what key generation and import compute along the
+    /// way, sparing the transforms <see cref="ExpandPrivateKey" /> and <see cref="ExpandPublicKey" /> would repeat.
+    /// </summary>
+    /// <param name="s1Hat">The ℓ polynomials of NTT(s₁), plain.</param>
+    /// <param name="s2">The k polynomials of s₂, coefficients in [0, q).</param>
+    /// <param name="t0">The k polynomials of t₀, coefficients in [0, q) as the private key encodes them.</param>
+    /// <param name="highOrderVector">
+    /// Holds Â ∘ NTT(s₁) on entry; receives NTT(t₁·2ᵈ), as <see cref="ExpandPublicKey" /> produces it.
+    /// </param>
+    /// <param name="secretVector1">The span receiving ŝ₁, as <see cref="ExpandPrivateKey" /> produces it.</param>
+    /// <param name="secretVector2">The span receiving ŝ₂, as <see cref="ExpandPrivateKey" /> produces it.</param>
+    /// <param name="lowOrderVector">The span receiving t̂₀, as <see cref="ExpandPrivateKey" /> produces it.</param>
+    /// <remarks>
+    /// The transform is linear, so NTT(t₁·2ᵈ) = NTT(t) − t̂₀ = Â ∘ ŝ₁ + ŝ₂ − t̂₀, and the high-order vector comes from
+    /// values already at hand rather than from k more transforms. Each value is brought to the representative the
+    /// Expand methods produce, so what a key keeps does not depend on how the key was set.
+    /// </remarks>
+    private static void KeepKeyValues(
+        ReadOnlySpan<int> s1Hat,
+        ReadOnlySpan<int> s2,
+        ReadOnlySpan<int> t0,
+        Span<int> highOrderVector,
+        Span<int> secretVector1,
+        Span<int> secretVector2,
+        Span<int> lowOrderVector)
+    {
+        for (int j = 0; j < s1Hat.Length; j++)
+            secretVector1[j] = ToMontgomery(s1Hat[j]);
+
+        s2.CopyTo(secretVector2);
+        t0.CopyTo(lowOrderVector);
+        for (int offset = 0; offset < secretVector2.Length; offset += N)
+        {
+            Ntt(secretVector2.Slice(offset, N));
+            Ntt(lowOrderVector.Slice(offset, N));
+        }
+
+        // Â ∘ ŝ₁ arrives reduced by Reduce32, so the sum below stays well within Freeze's range.
+        for (int j = 0; j < highOrderVector.Length; j++)
+        {
+            int plain = Freeze(highOrderVector[j] + secretVector2[j] - lowOrderVector[j]);
+            highOrderVector[j] = Canonicalize(ToMontgomery(plain));
+            secretVector2[j] = ToMontgomery(secretVector2[j]);
+            lowOrderVector[j] = ToMontgomery(lowOrderVector[j]);
+        }
+    }
+
+    /// <summary>
     /// Computes the message digest μ = H(tr ‖ 0x00 ‖ len(ctx) ‖ ctx ‖ M, 64) without materializing the concatenated
     /// message representative.
     /// </summary>
@@ -542,30 +907,33 @@ internal static partial class MLDsaEngine
     }
 
     /// <summary>
-    /// Computes Â ∘ v̂ for an NTT-domain vector in Montgomery form, sampling each entry of Â as it is needed.
+    /// Computes Â ∘ v̂ for the matrix in Montgomery form and a plain NTT-domain vector.
     /// </summary>
     /// <param name="parameters">The parameter set.</param>
-    /// <param name="rho">The 32-byte matrix seed.</param>
-    /// <param name="montgomeryVector">The ℓ NTT-domain polynomials, in Montgomery form.</param>
-    /// <param name="result">The span receiving the k unreduced NTT-domain products.</param>
-    /// <param name="entry">Scratch for one entry of Â.</param>
+    /// <param name="matrix">The matrix Â, as <see cref="ExpandMatrix" /> produces it.</param>
+    /// <param name="vector">The ℓ NTT-domain polynomials.</param>
+    /// <param name="result">
+    /// The span receiving the k NTT-domain products, plain, each coefficient reduced with <see cref="Reduce32" /> so
+    /// that <see cref="InvNtt" /> takes it as it is.
+    /// </param>
     private static void MultiplyMatrixVector(
         MLDsaParameters parameters,
-        ReadOnlySpan<byte> rho,
-        ReadOnlySpan<int> montgomeryVector,
-        Span<int> result,
-        Span<int> entry)
+        ReadOnlySpan<int> matrix,
+        ReadOnlySpan<int> vector,
+        Span<int> result)
     {
+        int l = parameters.L;
+
         for (int i = 0; i < parameters.K; i++)
         {
             Span<int> ri = result.Slice(i * N, N);
             ri.Clear();
 
-            for (int s = 0; s < parameters.L; s++)
-            {
-                RejNttPoly(rho, (byte)s, (byte)i, entry);
-                MultiplyAccumulateNtt(montgomeryVector.Slice(s * N, N), entry, ri);
-            }
+            for (int s = 0; s < l; s++)
+                MultiplyAccumulateNtt(matrix.Slice(((i * l) + s) * N, N), vector.Slice(s * N, N), ri);
+
+            for (int j = 0; j < N; j++)
+                ri[j] = Reduce32(ri[j]);
         }
     }
 
@@ -607,6 +975,9 @@ internal static partial class MLDsaEngine
     /// <param name="t">The k polynomials t = As₁ + s₂, split by Power2Round during encoding.</param>
     /// <param name="s1">The ℓ secret polynomials s₁.</param>
     /// <param name="s2">The k secret polynomials s₂.</param>
+    /// <param name="t0">
+    /// The span receiving the k polynomials t₀ that Power2Round splits from t, coefficients folded into [0, q).
+    /// </param>
     /// <param name="publicKey">The span receiving the encoded public key.</param>
     /// <param name="privateKey">The span receiving the encoded private key.</param>
     private static void EncodeKeys(
@@ -616,6 +987,7 @@ internal static partial class MLDsaEngine
         ReadOnlySpan<int> t,
         ReadOnlySpan<int> s1,
         ReadOnlySpan<int> s2,
+        Span<int> t0,
         Span<byte> publicKey,
         Span<byte> privateKey)
     {
@@ -624,7 +996,6 @@ internal static partial class MLDsaEngine
         int etaBytes = 32 * parameters.EtaBits;
 
         Span<int> t1 = stackalloc int[N];
-        Span<int> t0 = stackalloc int[N];
 
         rho.CopyTo(publicKey[..32]);
         rho.CopyTo(privateKey[..32]);
@@ -633,14 +1004,15 @@ internal static partial class MLDsaEngine
         Span<byte> t0Section = privateKey[(128 + ((k + l) * etaBytes))..];
         for (int i = 0; i < k; i++)
         {
+            Span<int> t0i = t0.Slice(i * N, N);
             for (int j = 0; j < N; j++)
             {
                 Power2Round(t[(i * N) + j], out t1[j], out int low);
-                t0[j] = Canonicalize(low);
+                t0i[j] = Canonicalize(low);
             }
 
             SimpleBitPack(10, t1, publicKey.Slice(32 + (i * 320), 320));
-            BitPackSigned(13, 1 << (D - 1), t0, t0Section.Slice(i * 32 * 13, 32 * 13));
+            BitPackSigned(13, 1 << (D - 1), t0i, t0Section.Slice(i * 32 * 13, 32 * 13));
         }
 
         for (int r = 0; r < l; r++)
@@ -655,8 +1027,6 @@ internal static partial class MLDsaEngine
         sponge.Absorb(publicKey);
         sponge.Squeeze(tr);
         sponge.Clear();
-
-        CryptographyHelper.Clear(t0);
     }
 
     /// <summary>
@@ -673,7 +1043,7 @@ internal static partial class MLDsaEngine
     /// <returns>
     /// <see langword="true" /> when every s₁/s₂ coefficient is packed within its canonical [−η, η] range; otherwise,
     /// <see langword="false" />. The t₀ packing spans the full d-bit range, so its consistency is validated separately
-    /// by recomputation in <see cref="TryDerivePublicKey" />.
+    /// by recomputation in <see cref="TryDerivePublicKeyCore" />.
     /// </returns>
     private static bool DecodePrivateKey(
         MLDsaParameters parameters,

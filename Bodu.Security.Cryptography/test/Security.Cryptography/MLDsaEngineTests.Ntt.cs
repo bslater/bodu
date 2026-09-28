@@ -45,26 +45,33 @@ public partial class MLDsaEngineTests
     }
 
     /// <summary>
-    /// Verifies that the inverse transform accepts unreduced coefficients at the ends of the range it documents, as a
-    /// caller that accumulates products without reducing them passes, and transforms their residues.
+    /// Verifies that the inverse transform accepts coefficients up to q − 1 in magnitude, the ends of the range it
+    /// documents, including the patterns that drive the last layer's sum and difference to 256(q − 1), and transforms
+    /// their residues.
     /// </summary>
     [TestMethod]
-    public void InvNtt_WhenCoefficientsAreUnreducedSums_ShouldTransformTheirResidues()
+    public void InvNtt_WhenCoefficientsReachQInMagnitude_ShouldTransformTheirResidues()
     {
-        const int Largest = int.MaxValue - (1 << 22);
         var random = new Random(0x0204_0005);
 
         for (int iteration = 0; iteration < 64; iteration++)
         {
-            int[] unreduced = Enumerable.Range(0, MLDsaEngine.N)
-                .Select(i => iteration == 0 ? (i % 2 == 0 ? Largest : int.MinValue) : random.Next(int.MinValue, Largest))
+            int[] coefficients = Enumerable.Range(0, MLDsaEngine.N)
+                .Select(i => iteration switch
+                {
+                    0 => Q - 1,
+                    1 => -(Q - 1),
+                    2 => i % 2 == 0 ? Q - 1 : -(Q - 1),
+                    3 => i < MLDsaEngine.N / 2 ? Q - 1 : -(Q - 1),
+                    _ => random.Next(-Q + 1, Q),
+                })
                 .ToArray();
-            int[] expected = unreduced.Select(value => Mod(value)).ToArray();
+            int[] expected = coefficients.Select(value => Mod(value)).ToArray();
 
             MLDsaReference.InvNtt(expected);
-            MLDsaEngine.InvNtt(unreduced);
+            MLDsaEngine.InvNtt(coefficients);
 
-            CollectionAssert.AreEqual(expected, unreduced, $"iteration {iteration}");
+            CollectionAssert.AreEqual(expected, coefficients, $"iteration {iteration}");
         }
     }
 

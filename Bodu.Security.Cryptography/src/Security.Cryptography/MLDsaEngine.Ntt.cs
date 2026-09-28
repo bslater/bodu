@@ -76,18 +76,21 @@ internal static partial class MLDsaEngine
     /// mod q.
     /// </summary>
     /// <param name="w">
-    /// The 256 NTT coefficients, each from −2^31 to 2^31 − 2^22 − 1 — a sum of up to a few hundred products from
-    /// <see cref="MultiplyNtt" /> qualifies — replaced by the standard representation in [0, q).
+    /// The 256 NTT coefficients, each below q in magnitude, replaced by the standard representation in [0, q).
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="w" /> holds fewer than 256 coefficients.
     /// </exception>
     /// <remarks>
     /// <para>
-    /// The coefficients are first reduced into (−q, q) with <see cref="Reduce32" />, so a caller may accumulate
-    /// products without reducing them. Each butterfly then leaves its sum unreduced and reduces its twiddle product
-    /// with <see cref="MontgomeryReduce" />: sums at most double per layer and stay below 256 · 6283008 &lt; 2^31 after
-    /// the eighth.
+    /// Each butterfly leaves its sum unreduced and reduces its twiddle product with <see cref="MontgomeryReduce" />.
+    /// Sums at most double from layer to layer, so coefficients below q in magnitude stay below 256q &lt; 2^31 through
+    /// the eighth. A caller holding larger values, such as sums of products from <see cref="MultiplyAccumulateNtt" />,
+    /// reduces them first with <see cref="Reduce32" />.
+    /// </para>
+    /// <para>
+    /// The last layer carries the final scaling: its sums are multiplied by 256⁻¹ and its differences by ζ·256⁻¹, each
+    /// with a single Montgomery reduction, so no separate pass over the coefficients is needed.
     /// </para>
     /// <para>
     /// FIPS 204 negates the twiddle and computes ζ·(t − w); using the positive twiddle with the (w − t) ordering below
@@ -100,14 +103,8 @@ internal static partial class MLDsaEngine
 
         ref int coefficients = ref MemoryMarshal.GetReference(w);
 
-        for (int j = 0; j < N; j++)
-        {
-            ref int coefficient = ref Unsafe.Add(ref coefficients, j);
-            coefficient = Reduce32(coefficient);
-        }
-
         int m = 256;
-        for (int len = 1; len < N; len <<= 1)
+        for (int len = 1; len < N / 2; len <<= 1)
         {
             for (int start = 0; start < N; start += 2 * len)
             {
@@ -125,10 +122,17 @@ internal static partial class MLDsaEngine
             }
         }
 
-        for (int j = 0; j < N; j++)
+        // The last layer's twiddle, ζ = s_zetas[1], combined with 256⁻¹; both stay in Montgomery form.
+        long scaledZeta = MontgomeryReduce(s_zetas[1] * InverseOf256Montgomery);
+        ref int lowHalf = ref coefficients;
+        ref int highHalf = ref Unsafe.Add(ref coefficients, N / 2);
+
+        for (int j = 0; j < N / 2; j++)
         {
-            ref int coefficient = ref Unsafe.Add(ref coefficients, j);
-            coefficient = Canonicalize(MontgomeryReduce(InverseOf256Montgomery * coefficient));
+            int t = Unsafe.Add(ref lowHalf, j);
+            int u = Unsafe.Add(ref highHalf, j);
+            Unsafe.Add(ref lowHalf, j) = Canonicalize(MontgomeryReduce(InverseOf256Montgomery * (t + u)));
+            Unsafe.Add(ref highHalf, j) = Canonicalize(MontgomeryReduce(scaledZeta * (u - t)));
         }
     }
 

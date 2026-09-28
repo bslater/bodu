@@ -32,6 +32,64 @@ public partial class MLDsaEngineTests
         (int)(((value % Q) + Q) % Q);
 
     /// <summary>
+    /// Returns the engine parameters for a parameter-set designator.
+    /// </summary>
+    /// <param name="designator">The designator: 44, 65 or 87.</param>
+    /// <returns>The parameter set.</returns>
+    private static MLDsaParameters Parameters(int designator) =>
+        designator switch
+        {
+            44 => MLDsaParameters.MLDsa44,
+            65 => MLDsaParameters.MLDsa65,
+            _ => MLDsaParameters.MLDsa87,
+        };
+
+    /// <summary>
+    /// Generates a seeded key pair through the key generation that keeps no values.
+    /// </summary>
+    /// <param name="parameters">The parameter set.</param>
+    /// <param name="seed">The 32-byte seed ξ.</param>
+    /// <returns>The encoded public and private keys.</returns>
+    private static (byte[] PublicKey, byte[] PrivateKey) GenerateKeys(MLDsaParameters parameters, byte[] seed)
+    {
+        byte[] publicKey = new byte[parameters.PublicKeySize];
+        byte[] privateKey = new byte[parameters.PrivateKeySize];
+        MLDsaEngine.KeyGen(parameters, seed, publicKey, privateKey);
+
+        return (publicKey, privateKey);
+    }
+
+    /// <summary>
+    /// Returns a seed ξ drawn from a seeded generator.
+    /// </summary>
+    /// <param name="seed">The generator's seed.</param>
+    /// <returns>The 32-byte seed ξ.</returns>
+    private static byte[] Seed(int seed)
+    {
+        byte[] xi = new byte[32];
+        new Random(seed).NextBytes(xi);
+
+        return xi;
+    }
+
+    /// <summary>
+    /// Derives from encoded keys, through the Expand methods, the values a key keeps for signing and verification.
+    /// </summary>
+    /// <param name="parameters">The parameter set.</param>
+    /// <param name="publicKey">The encoded public key.</param>
+    /// <param name="privateKey">The encoded private key.</param>
+    /// <returns>The values: Â, NTT(t₁·2ᵈ), ŝ₁, ŝ₂ and t̂₀.</returns>
+    private static KeyValues Expand(MLDsaParameters parameters, byte[] publicKey, byte[] privateKey)
+    {
+        KeyValues values = KeyValues.Allocate(parameters);
+        MLDsaEngine.ExpandMatrix(parameters, publicKey.AsSpan(0, 32), values.Matrix);
+        MLDsaEngine.ExpandPublicKey(parameters, publicKey, values.HighOrderVector);
+        MLDsaEngine.ExpandPrivateKey(parameters, privateKey, values.SecretVector1, values.SecretVector2, values.LowOrderVector);
+
+        return values;
+    }
+
+    /// <summary>
     /// Returns polynomials whose coefficients sit at the ends of [0, q) and at a few patterns, then seeded ones.
     /// </summary>
     /// <returns>The polynomials.</returns>

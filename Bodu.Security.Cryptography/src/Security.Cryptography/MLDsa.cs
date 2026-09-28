@@ -42,9 +42,15 @@ namespace Bodu.Security.Cryptography;
 /// and retain their base (throwing) behavior.
 /// </para>
 /// <para>
+/// <strong>Memory.</strong> When a key is generated or imported, the instance also keeps the values FIPS 204 derives
+/// from it on every operation — the matrix Â, the hash tr, and the key's vectors in the form the arithmetic uses — so
+/// that signing and verification do not recompute them. Beside the encoded keys they take about 32, 53 and 87 KiB for
+/// ML-DSA-44, 65 and 87, or 20, 36 and 64 KiB for an instance holding only a public key.
+/// </para>
+/// <para>
 /// Verification returns <see langword="false" /> (never throws) for malformed, non-canonical, or wrong-length
-/// signatures. Private key material is zeroed on dispose. This implementation offers best-effort side-channel
-/// resistance and has not been independently audited.
+/// signatures. Private key material, the cached secret vectors included, is zeroed on dispose. This implementation
+/// offers best-effort side-channel resistance and has not been independently audited.
 /// </para>
 /// </remarks>
 /// <example>
@@ -71,6 +77,15 @@ public abstract partial class MLDsa
 
     /// <summary>The FIPS 204 parameter set implemented by the derived type.</summary>
     private readonly MLDsaParameters _parameters;
+
+    /// <summary>
+    /// Gets the current key material typed as <see cref="MLDsaKeyMaterial" />, which carries the values derived from
+    /// the keys when they were set. Every store goes through ML-DSA's own generate and import paths, so the downcast is
+    /// always valid.
+    /// </summary>
+    /// <value>The typed key material, or <see langword="null" /> when no key has been generated or imported.</value>
+    private MLDsaKeyMaterial? TypedKeyMaterial =>
+        (MLDsaKeyMaterial?)KeyMaterial;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="MLDsa" /> class for a specific FIPS 204 parameter set.
@@ -242,8 +257,8 @@ public abstract partial class MLDsa
         CryptographyThrowHelper.ThrowIfInvalidRawKeyLength(
             privateKey, _parameters.PrivateKeySize, $"{_parameters.Name} private");
 
-        byte[] publicKey = new byte[_parameters.PublicKeySize];
-        if (!MLDsaEngine.TryDerivePublicKey(_parameters, privateKey, publicKey))
+        MLDsaKeyMaterial? keyMaterial = MLDsaKeyMaterial.TryImportPrivateKey(_parameters, privateKey);
+        if (keyMaterial is null)
         {
             throw new ArgumentException(
                 string.Format(
@@ -254,7 +269,7 @@ public abstract partial class MLDsa
                 nameof(privateKey));
         }
 
-        ReplaceKeyMaterial(AsymmetricKeyMaterial.ForKeyPair(publicKey, privateKey.ToArray()));
+        ReplaceKeyMaterial(keyMaterial);
     }
 
     /// <summary>
@@ -289,7 +304,7 @@ public abstract partial class MLDsa
         CryptographyThrowHelper.ThrowIfInvalidRawKeyLength(
             publicKey, _parameters.PublicKeySize, $"{_parameters.Name} public");
 
-        ReplaceKeyMaterial(AsymmetricKeyMaterial.ForPublicKey(publicKey.ToArray()));
+        ReplaceKeyMaterial(MLDsaKeyMaterial.ForPublicKey(_parameters, publicKey.ToArray()));
     }
 
     /// <summary>
@@ -347,7 +362,9 @@ public abstract partial class MLDsa
         if (!DeterministicSigning)
             CryptographyHelper.FillWithRandomBytes(rnd);
 
-        MLDsaEngine.Sign(_parameters, KeyMaterial!.PrivateKey!, context, data, rnd, destination);
+        MLDsaKeyMaterial key = TypedKeyMaterial!;
+        MLDsaEngine.Sign(
+            _parameters, key.PrivateKey!, key.Matrix, key.SecretVector1!, key.SecretVector2!, key.LowOrderVector!, context, data, rnd, destination);
         CryptographyHelper.Clear(rnd);
     }
 
@@ -384,7 +401,8 @@ public abstract partial class MLDsa
         ThrowIfContextTooLong(context);
         CryptographyThrowHelper.ThrowIfNoPublicKey(KeyMaterial is not null);
 
-        return MLDsaEngine.Verify(_parameters, KeyMaterial!.PublicKey, context, data, signature);
+        MLDsaKeyMaterial key = TypedKeyMaterial!;
+        return MLDsaEngine.Verify(_parameters, key.PublicKeyHash, key.Matrix, key.HighOrderVector, context, data, signature);
     }
 
     /// <summary>
@@ -405,7 +423,9 @@ public abstract partial class MLDsa
         CryptographyThrowHelper.ThrowIfNoPrivateKey(KeyMaterial?.HasPrivateKey ?? false);
 
         byte[] signature = new byte[_parameters.SignatureSize];
-        MLDsaEngine.Sign(_parameters, KeyMaterial!.PrivateKey!, context, data, rnd, signature);
+        MLDsaKeyMaterial key = TypedKeyMaterial!;
+        MLDsaEngine.Sign(
+            _parameters, key.PrivateKey!, key.Matrix, key.SecretVector1!, key.SecretVector2!, key.LowOrderVector!, context, data, rnd, signature);
 
         return signature;
     }
@@ -432,13 +452,7 @@ public abstract partial class MLDsa
     /// Derives and stores the key pair from the 32-byte seed ξ, zeroing any previously held private key.
     /// </summary>
     /// <param name="seed">The 32-byte seed.</param>
-    private void SetKeysFromSeed(ReadOnlySpan<byte> seed)
-    {
-        byte[] publicKey = new byte[_parameters.PublicKeySize];
-        byte[] privateKey = new byte[_parameters.PrivateKeySize];
-        MLDsaEngine.KeyGen(_parameters, seed, publicKey, privateKey);
-
-        ReplaceKeyMaterial(AsymmetricKeyMaterial.ForKeyPair(publicKey, privateKey));
-    }
+    private void SetKeysFromSeed(ReadOnlySpan<byte> seed) =>
+        ReplaceKeyMaterial(MLDsaKeyMaterial.Generate(_parameters, seed));
 
 }

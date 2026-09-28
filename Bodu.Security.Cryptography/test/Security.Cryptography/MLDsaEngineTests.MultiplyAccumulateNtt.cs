@@ -9,8 +9,9 @@ namespace Bodu.Security.Cryptography;
 public partial class MLDsaEngineTests
 {
     /// <summary>
-    /// Verifies that accumulating products without reducing them, then applying the inverse transform, gives the
-    /// reference's inverse transform of the reduced sum of products, for as many terms as the widest matrix row holds.
+    /// Verifies that accumulating products without reducing them, then reducing the sums with Reduce32 and applying the
+    /// inverse transform, gives the reference's inverse transform of the reduced sum of products, for as many terms as
+    /// the widest matrix row holds.
     /// </summary>
     [TestMethod]
     public void MultiplyAccumulateNtt_WhenFollowedByInvNtt_ShouldMatchTheReferenceSumOfProducts()
@@ -30,6 +31,9 @@ public partial class MLDsaEngineTests
             for (int j = 0; j < MLDsaEngine.N; j++)
                 expected[j] = (expected[j] + product[j]) % Q;
         }
+
+        for (int j = 0; j < MLDsaEngine.N; j++)
+            accumulator[j] = MLDsaEngine.Reduce32(accumulator[j]);
 
         MLDsaReference.InvNtt(expected);
         MLDsaEngine.InvNtt(accumulator);
