@@ -30,6 +30,9 @@ internal static partial class MLKemEngine
     /// Applies the forward NTT (FIPS 203 Algorithm 9) to a polynomial in place.
     /// </summary>
     /// <param name="f">The 256 coefficients in [0, q), replaced by their NTT representation in [0, q).</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="f" /> holds fewer than 256 coefficients.
+    /// </exception>
     /// <remarks>
     /// Each butterfly multiplies by its twiddle through <see cref="MontgomeryReduce" /> and leaves the sum and
     /// difference unreduced: a layer grows the coefficients by at most q in magnitude, so after the seven layers they
@@ -73,6 +76,9 @@ internal static partial class MLKemEngine
     /// mod q.
     /// </summary>
     /// <param name="f">The 256 NTT coefficients in [0, q), replaced by the standard representation in [0, q).</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="f" /> holds fewer than 256 coefficients.
+    /// </exception>
     /// <remarks>
     /// Each butterfly reduces its sum with <see cref="BarrettReduce" /> and its twiddle product with
     /// <see cref="MontgomeryReduce" />, which keeps every coefficient within (−q, q) from layer to layer.
@@ -116,6 +122,10 @@ internal static partial class MLKemEngine
     /// <param name="left">The first NTT-domain polynomial. Coefficients in [0, q).</param>
     /// <param name="right">The second NTT-domain polynomial. Coefficients in [0, q).</param>
     /// <param name="destination">The span receiving the NTT-domain product. May not alias the inputs.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="left" />, <paramref name="right" /> or <paramref name="destination" /> holds fewer than 256
+    /// coefficients.
+    /// </exception>
     /// <remarks>
     /// Each output coefficient is a sum of products below q³ + q² &lt; 2^36, reduced once with
     /// <see cref="ReduceWide" />.

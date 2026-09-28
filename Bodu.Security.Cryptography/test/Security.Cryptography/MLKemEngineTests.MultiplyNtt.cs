@@ -51,4 +51,26 @@ public partial class MLKemEngineTests
             CollectionAssert.AreEqual(expected, actual);
         }
     }
+
+    /// <summary>
+    /// Verifies that the NTT-domain product rejects an operand or destination shorter than a polynomial with
+    /// <see cref="ArgumentOutOfRangeException" /> naming it, rather than reading or writing past its end.
+    /// </summary>
+    /// <param name="shortSpan">The position of the span one coefficient short: 0, 1 or 2.</param>
+    /// <param name="expectedParamName">The name of the parameter that span is passed as.</param>
+    [TestMethod]
+    [DataRow(0, "left")]
+    [DataRow(1, "right")]
+    [DataRow(2, "destination")]
+    public void MultiplyNtt_WhenASpanIsShorterThanAPolynomial_ShouldThrowArgumentOutOfRangeException(int shortSpan, string expectedParamName)
+    {
+        int[][] spans = Enumerable.Range(0, 3).Select(i => new int[i == shortSpan ? MLKemEngine.N - 1 : MLKemEngine.N]).ToArray();
+
+        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            MLKemEngine.MultiplyNtt(spans[0], spans[1], spans[2]);
+        });
+
+        Assert.AreEqual(expectedParamName, ex.ParamName);
+    }
 }

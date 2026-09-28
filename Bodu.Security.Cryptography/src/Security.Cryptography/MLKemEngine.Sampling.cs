@@ -69,6 +69,9 @@ internal static partial class MLKemEngine
     /// <param name="seed">The 32-byte PRF seed (σ or r).</param>
     /// <param name="counter">The domain-separation counter byte N.</param>
     /// <param name="destination">The span receiving 256 coefficients in [0, q).</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="destination" /> holds fewer than 256 coefficients.
+    /// </exception>
     /// <remarks>
     /// Coefficient i is the sum of η stream bits minus the sum of the next η. The bits are counted a word at a time:
     /// adding a word's bits to its bits shifted right by one (and, for η = 3, by two) leaves each η-bit field holding

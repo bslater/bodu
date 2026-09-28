@@ -34,4 +34,21 @@ public partial class MLKemEngineTests
             CollectionAssert.AreEqual(expected, actual, $"iteration {iteration}");
         }
     }
+
+    /// <summary>
+    /// Verifies that the binomial sampler rejects a destination shorter than a polynomial with
+    /// <see cref="ArgumentOutOfRangeException" /> naming it, rather than writing past its end.
+    /// </summary>
+    [TestMethod]
+    public void SamplePolyCbd_WhenDestinationIsShorterThanAPolynomial_ShouldThrowArgumentOutOfRangeException()
+    {
+        byte[] seed = new byte[32];
+
+        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            MLKemEngine.SamplePolyCbd(2, seed, 0, new int[MLKemEngine.N - 1]);
+        });
+
+        Assert.AreEqual("destination", ex.ParamName);
+    }
 }
