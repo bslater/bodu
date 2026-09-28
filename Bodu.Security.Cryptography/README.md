@@ -2,7 +2,9 @@
 
 > **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
 
-Managed implementations of modern and legacy cryptographic primitives for .NET 8. The library provides block ciphers, AEAD modes, hash and MAC functions, padding schemes, asymmetric key agreement and signatures (including the FIPS 203/204 post-quantum algorithms), and the supporting transform infrastructure to compose them. All algorithms are exposed through the standard `SymmetricAlgorithm` / `HashAlgorithm` / `KeyedHashAlgorithm` / `AsymmetricAlgorithm` contracts so they slot into existing BCL pipelines (including `CryptoStream`).
+Managed implementations of modern and legacy cryptographic primitives for .NET 8 and later. The library provides block ciphers, AEAD modes, hash and MAC functions, padding schemes, asymmetric key agreement and signatures (including the FIPS 203/204 post-quantum algorithms), and the supporting transform infrastructure to compose them. All algorithms are exposed through the standard `SymmetricAlgorithm` / `HashAlgorithm` / `KeyedHashAlgorithm` / `AsymmetricAlgorithm` contracts so they slot into existing BCL pipelines (including `CryptoStream`).
+
+It also provides an RFC 6962 [Merkle tree](#merkle-trees) with inclusion and consistency proofs, built over any `HashAlgorithm` and able to hash a large input's leaves on every core.
 
 ## Security posture and limitations
 
@@ -14,7 +16,7 @@ Read this before using the library for anything that matters.
 - **AES delegates to the BCL.** `AesBlockCipher` wraps the platform `System.Security.Cryptography.Aes` (hardware-accelerated, constant-time, FIPS-validated). Everything else in the package is a bespoke managed implementation.
 - **This is a toolbox, not a safe-by-default API.** ECB, `NoPadding`, raw CBC, and unauthenticated stream ciphers are all first-class. Prefer an AEAD mode (GCM, EAX, OCB, or a nonce-misuse-resistant SIV / GCM-SIV) unless you have a specific reason not to, and read the per-type remarks for the failure modes.
 
-The primitives provided here exist mainly to cover what the BCL does not ship (Blake2/Blake3, Ascon, Skein, Poly1305, SipHash, Threefish, Serpent, Camellia, Blowfish, Skipjack, OCB / EAX / SIV / GCM-SIV modes, X25519 / Ed25519, the post-quantum ML-KEM / ML-DSA on .NET 8, etc.).
+The primitives provided here exist mainly to cover what the BCL does not ship (Blake2/Blake3, Ascon, Skein, Poly1305, SipHash, Threefish, Serpent, Camellia, Blowfish, Skipjack, OCB / EAX / SIV / GCM-SIV modes, X25519 / Ed25519, the post-quantum ML-KEM / ML-DSA on .NET 8, RFC 6962 Merkle trees, etc.).
 
 ## Algorithm support matrix
 
@@ -88,7 +90,7 @@ PKCS#7, ANSI X9.23, ISO 7816-4, ISO 10126, zero-padding, and `None`. All are exe
 | Algorithm | Type | Standard | Output (bits) | Status | Notes |
 |---|---|---|---:|---|---|
 | BLAKE2b / BLAKE2s | hash + optional MAC | RFC 7693 | 8–512 / 8–256 | Recommended | Keyed mode is a one-step HMAC alternative |
-| BLAKE3 | hash + XOF | BLAKE3 reference | 256 (extendable) | Recommended | Tree hashing; chunk and merge stack |
+| BLAKE3 | hash + XOF | BLAKE3 reference | 256 (extendable) | Recommended | Tree hashing; optionally [multithreaded](#multithreading) for large inputs |
 | Skein 256 / 512 / 1024 | hash with UBI tweak | Skein 1.3 | up to state size | Recommended for tweakable use | SHA-3 candidate |
 | Ascon-Hash256 / Ascon-HashA256 | hash | NIST SP 800-232 | 256 | Recommended for lightweight | Conservative (Ascon-p12) vs. fast (Ascon-p8) variants |
 | Ascon-XOF128 / Ascon-CXOF128 | XOF / customisable XOF | NIST SP 800-232 | extendable | Recommended for lightweight | Sponge-mode streaming output |
@@ -101,6 +103,45 @@ PKCS#7, ANSI X9.23, ISO 7816-4, ISO 10126, zero-padding, and `None`. All are exe
 | Snefru | hash | Merkle (1990) | 128 / 256 | Legacy / educational | Software table-based |
 
 Non-cryptographic hashes and checksums — FNV-1a, Adler-32, CRC-3 through CRC-64, and Fletcher-16/32/64 — live in the sibling `Bodu.IO.Hashing` package.
+
+### Merkle trees
+
+`MerkleTree` computes the RFC 6962 (Certificate Transparency) Merkle Tree Hash over an ordered list of entries, or over the fixed-size blocks of a stream or buffer, and produces and verifies the proofs that go with it. It works over any `HashAlgorithm` — `new MerkleTree(SHA256.Create)` — and assumes no particular digest length.
+
+| Capability | Members | Notes |
+|---|---|---|
+| Root over entries | `ComputeRoot`, `ComputeRootOfLeafHashes`, `HashLeaf`, `HashNode` | Leaves and nodes are domain-separated (`0x00` / `0x01` prefixes); an empty tree's root is `H()` |
+| Root over blocks | `ComputeRootOfBlocks`, `ComputeRootOfBlocksAsync` | Folds as it reads, holding O(log n) hashes; takes a `Stream`, `ReadOnlyMemory<byte>`, `ReadOnlySpan<byte>` or `byte[]` |
+| Root and leaf hashes | `ComputeBlocked`, `ComputeBlockedAsync` → `MerkleBlockComputation` | Keeps every leaf hash, for proofs later |
+| Root while writing | `CreateBlockAccumulator` → `MerkleBlockAccumulator` | Builds the root from `Append` calls as the bytes are written; the same root as `ComputeRootOfBlocks` |
+| Inclusion proofs | `AuthenticationPath`, `VerifyInclusion`, `VerifyInclusionOfLeafHash` | RFC 6962 §2.1.1 audit paths |
+| Consistency proofs | `ConsistencyProof`, `ConsistencyProofOfLeafHashes`, `VerifyConsistency` | RFC 6962 §2.1.2: a later tree extends an earlier one |
+| Length-bound roots | `BindRoot`, `VerifyInclusionBound`, `VerifyBlockInclusion` | An addition to RFC 6962 that binds the tree size into the root, so a prover cannot understate it |
+| Tracing | `MerkleTreeDiagnostics` | Optional recorder of every node a computation produces |
+
+- **Parallel leaf hashing.** Hashing the leaves is nearly all of a block computation's work. `new MerkleTree(SHA256.Create, maxDegreeOfParallelism: -1)` hashes them in batches on every core, with one `HashAlgorithm` per worker, and folds them in order on the calling thread. A parallel instance produces the same roots and proofs as a sequential one; the default, `1`, keeps everything on the calling thread.
+- **Fan-out.** The default `fanOut` of 2 is RFC 6962's binary tree. A wider fan-out builds a shallower k-ary tree as an explicit non-RFC mode: its roots work, and the proof members throw `NotSupportedException`.
+- **Sharing and verification.** An instance is immutable and safe to share across threads, provided the factory returns a new `HashAlgorithm` on each call, as `SHA256.Create` does. Verification returns `false` for a malformed proof rather than throwing. `VerifyInclusion` trusts the tree size it is given; when that size comes from the party being checked, publish a length-bound root and verify with `VerifyInclusionBound` or `VerifyBlockInclusion`, which fail closed.
+
+```csharp
+using System.Security.Cryptography;
+using Bodu.Security.Cryptography;
+
+var tree = new MerkleTree(SHA256.Create, maxDegreeOfParallelism: -1);
+
+// The root and every leaf hash of a file in 1 MiB blocks, the leaves hashed on every core.
+using var file = File.OpenRead("archive.bin");
+MerkleBlockComputation blocks = tree.ComputeBlocked(file, blockSize: 1 << 20);
+
+// Prove that block 3 is in the file, then check the proof.
+byte[][] path = tree.AuthenticationPath(blocks.LeafHashes, leafIndex: 3);
+bool included = tree.VerifyInclusionOfLeafHash(
+    blocks.Root, treeSize: blocks.LeafHashes.Count, leafIndex: 3,
+    leafHash: blocks.LeafHashes[3],
+    path: path.Select(step => (ReadOnlyMemory<byte>)step).ToArray());
+```
+
+The [Merkle tree sample](https://github.com/bslater/bodu/tree/master/samples/Security.Cryptography/Bodu.Security.Cryptography.Samples.MerkleTrees) runs each of these as a scenario.
 
 ### One-time passwords
 
@@ -121,9 +162,22 @@ Static, span-based, and built on the BCL one-shot HMAC (`OtpHashAlgorithm` selec
 
 ## Hardware acceleration
 
-`Blake2b`, `Blake2s`, `Blake3`, `Threefish256` / `Threefish512` / `Threefish1024`, and `CubeHash` ship an AVX-512 vectorised path alongside a scalar reference implementation, and dispatch to it automatically when the host CPU supports it. `Argon2d` / `Argon2i` / `Argon2id` compress blocks with AVX2, else SSSE3 on x64 or AdvSimd on ARM64, and also divide a derivation's lanes among threads once they reach about 1 MiB each (bounded per instance by `MaxDegreeOfParallelism`). Every path produces bit-identical output.
+`Blake2b`, `Blake2s`, `Blake3`, `Threefish256` / `Threefish512` / `Threefish1024`, and `CubeHash` ship an AVX-512 vectorised path alongside a scalar reference implementation, and dispatch to it automatically when the host CPU supports it. `Argon2d` / `Argon2i` / `Argon2id` compress blocks with AVX2, else SSSE3 on x64 or AdvSimd on ARM64. Every path produces bit-identical output.
 
 Set the process-wide feature switch **`Bodu.Security.Cryptography.DisableSimd`** to `true` to force the scalar path — useful for reproducibility, differential testing, or audit. It is read once, before first use of any accelerated primitive, so set it via `runtimeconfig.json` / a `<RuntimeHostConfigurationOption>` item or an early `AppContext.SetSwitch(...)`. The paths are equivalent (BLAKE2/3 and Threefish are ARX and constant-time in both forms); the switch is not a security control. See the [hardware-acceleration guide](https://github.com/bodu/bodu) for details.
+
+## Multithreading
+
+Four types can spread a single operation across threads. Each takes a `maxDegreeOfParallelism` bound when constructed and exposes it as `MaxDegreeOfParallelism`: `1` keeps the work on the calling thread, `-1` allows up to one thread per processor, and a larger value caps the threads. The output never depends on the bound.
+
+| Type | Default | What runs on threads |
+|---|---|---|
+| `MerkleTree` | `1` | Leaf hashing, in batches with one `HashAlgorithm` per worker; the tree is folded on the calling thread |
+| `Blake3` | `1` | The whole chunks of a write of 256 KiB or more, as independent 64 KiB subtrees joined on the calling thread |
+| `Argon2d` / `Argon2i` / `Argon2id` | `-1` | A derivation's lanes, once they reach about 1 MiB each |
+| `Scrypt` | `1` | A derivation's `p` units, each with its own `V`; small units stay on the calling thread, and large ones use fewer threads so their `V`s stay within 2 GiB |
+
+`Argon2.Verify` and `Scrypt.Verify` take the same bound. The defaults are `1` where a busy service would only pay for the hand-offs (or, for scrypt, the extra memory); raise the bound to process one large input faster. Argon2 defaults to `-1` because its lanes share one memory matrix, so threads do not multiply its memory the way scrypt's units do.
 
 ## Reusable infrastructure
 
