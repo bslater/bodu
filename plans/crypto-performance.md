@@ -1,6 +1,6 @@
 # Implementation plan: faster primitives across Bodu.Security.Cryptography
 
-**Status:** In progress on `claude/argon2-prototype-co27tu` (W0–W2c done, §10) · **Source:** the assessment run on
+**Status:** In progress on `claude/argon2-prototype-co27tu` (W0–W2 done, §10) · **Source:** the assessment run on
 2026-09-27 after the Argon2 work (§1) · **Target:** `Bodu.Security.Cryptography`, next lock-step release
 
 The Argon2 work ([`argon2-performance.md`](argon2-performance.md)) used four techniques: a
@@ -448,9 +448,12 @@ none depends on a later one.
 
 ## 7. Compatibility and version
 
-- Output is unchanged everywhere except AES-256-GCM-SIV. That change is a conformance
-  fix, but it breaks stored data sealed under a 256-bit key, and the release notes must
-  say so.
+- Output is unchanged everywhere except two conformance fixes. Each breaks stored data,
+  and the release notes must say so:
+  - AES-256-GCM-SIV now derives a 256-bit message key, so data sealed under a 256-bit
+    key by earlier releases does not decrypt;
+  - AES-SIV now pads an empty plaintext in S2V, so data sealed with an empty plaintext by
+    earlier releases does not decrypt. Non-empty plaintexts are unchanged.
 - The public API changes only by addition.
 - The work ships with the next lock-step `BoduBaseVersion` bump, as Argon2 does.
 
@@ -504,7 +507,7 @@ this machine is about ±5–10%.
 On .NET 8: SHAKE128 goes from 36.4 to 269.9 MiB/s, ML-KEM-768 encaps / decaps from
 290 / 416 to 114 / 162 µs, and ML-DSA-65 verify from 1.01 to 0.33 ms.
 
-### W2 — AES modes, GHASH and POLYVAL (W2a–c done; W2d next)
+### W2 — AES modes, GHASH and POLYVAL (done)
 
 | Measure | Baseline | Result | Target |
 |---|---|---|---|
@@ -560,5 +563,56 @@ How it was done, and where it departs from the design above:
   the counter blocks through `ICryptoTransform` copies. Closing the gap needs a managed
   AES round, which §9 rules out.
 
-W2d baselines, measured after W2c: CCM 26.6, EAX 27.4 (3.67 MB and 15 gen2 collections
-per message), OCB 49.7, SIV 26.0 (3.67 MB), CBC decrypt 50.4, and XTS 59.7 MiB/s.
+#### W2d — the remaining AES modes
+
+| Measure (AES-128, 1 MiB) | Baseline | Result | Target |
+|---|---|---|---|
+| EAX | 27.4 MiB/s, 3.67 MB and 15 gen2 per message | 603.1 MiB/s, 112 B | ≥ 5× — met (22×) |
+| SIV | 26.0 MiB/s, 3.67 MB and 14 gen2 per message | 611.1 MiB/s, 72 B | ≥ 5× — met (23×) |
+| CCM | 26.6 MiB/s | 521.5 MiB/s | ≥ 5× — met (20×) |
+| OCB | 49.7 MiB/s, 2,160 B | 1,721.0 MiB/s, 664 B | ≥ 5× — met (35×) |
+| XTS | 59.7 MiB/s | 1,384.4 MiB/s | ≥ 5× — met (23×) |
+| CBC encryption | 59.5 MiB/s | 966.0 MiB/s | — |
+| CBC decryption | 58.2 MiB/s | 2,241.4 MiB/s | — |
+| CFB decryption | 57.5 MiB/s | 2,149.2 MiB/s | — |
+
+- **CBC chaining.** CBC encryption and the CBC-MACs inside CMAC and CCM are sequential,
+  so `EncryptBlocks` cannot batch them. Chained a block at a time they top out near
+  65 MiB/s on AES. The platform chains CBC at about 1.1 GiB/s:
+
+  | Chain | One-shot `EncryptCbc` | Cached transform, reset per call | Per block |
+  |---|---|---|---|
+  | 64 B | 24 MiB/s | 52 MiB/s | 33 MiB/s |
+  | 256 B | 130 MiB/s | 211 MiB/s | 62 MiB/s |
+  | 4 KiB | 766 MiB/s | 920 MiB/s | 64 MiB/s |
+  | 1 MiB | 1,105 MiB/s | 1,163 MiB/s | 65 MiB/s |
+
+  A new internal `ICbcBlockCipher`, which `AesBlockCipher` implements explicitly, runs a
+  chain through a cached zero-IV CBC transform: the caller's chaining value is folded
+  into the first block, and the transform is reset after each chain. `CbcChain` uses it
+  from six blocks up and chains single blocks otherwise and for every other cipher. The
+  public surface is unchanged.
+- **CMAC.** A new incremental `Cmac` holds back the last block until it knows whether it
+  is the last, and folds the rest through `CbcChain` in whole runs. EAX's
+  `OMAC(t, M) = CMAC([t] || M)` and SIV's `Sn xorend D` therefore need no copies of the
+  message. The subkeys are derived once per message instead of once per CMAC.
+- **Batched modes.** EAX and SIV share `CounterKeystream.TransformBigEndian128`, and CCM
+  lays out its 24-bit counter a run at a time. XTS computes a run's tweaks first, OCB a
+  run's offsets, and CBC and CFB decryption copy a run's chaining values first. Each then
+  makes one multi-block call between two XORs. OCB's 34 key-dependent blocks now sit in
+  one table.
+
+Correctness work found on the way, each fixed test-first:
+
+- **SIV empty plaintext.** S2V XORed in `<one>`, the constant reserved for a call with
+  no strings, instead of padding the empty final string. Project Wycheproof's vectors
+  exposed this, and they are now pinned for SIV, EAX, CCM and GCM-SIV. SIV treats empty
+  associated data as no string, a convention its interface forces and the AEAD guide now
+  documents; Wycheproof's empty-associated-data rows assume the other convention and are
+  excluded.
+- **In-place decryption.** CFB, and the CBC helper inside CTS, copied each ciphertext
+  block into the chaining value only after writing the plaintext over it, so decrypting
+  in place corrupted every block after the first.
+- **Long-message coverage.** Every mode is now cross-checked on messages of up to
+  20,000 bytes against the platform (`AesGcm`, `AesCcm`, CBC, CFB) or against a
+  block-at-a-time reference built from its specification on the platform's AES.
