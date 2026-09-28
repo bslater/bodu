@@ -46,7 +46,7 @@ internal static partial class Blake3Core
         /// <param name="counter">The chunk counter.</param>
         /// <param name="blockLength">The number of message bytes in the block.</param>
         /// <param name="flags">The domain-separation flags.</param>
-        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.AggressiveOptimization)]
         internal static void Compress(ref uint cv, ref byte block, ulong counter, uint blockLength, uint flags)
         {
             Vector128<uint> a = Vector128.LoadUnsafe(ref cv);
@@ -97,7 +97,7 @@ internal static partial class Blake3Core
         /// Each block's message is read in full before the rounds, and the chaining values are written only after the
         /// last block, so the output may overlay the inputs of a one-block call.
         /// </remarks>
-        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.AggressiveOptimization)]
         internal static void HashMany(
             ref byte input,
             nint stride,

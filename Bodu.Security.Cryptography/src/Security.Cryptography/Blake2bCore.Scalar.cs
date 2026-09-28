@@ -23,7 +23,7 @@ internal static partial class Blake2bCore
     /// The twelve rounds are written out with the message schedule σ resolved to constant indices, so each <c>G</c>
     /// reads its two message words straight from the block and the sixteen working words stay in locals.
     /// </remarks>
-    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+    [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.AggressiveOptimization)]
     private static void CompressScalar(ref ulong h, ref byte block, ulong counter, ulong finalization)
     {
         ulong v0 = h;

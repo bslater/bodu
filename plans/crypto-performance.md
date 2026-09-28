@@ -812,7 +812,16 @@ How it was done, and where it departs from the design above:
   - 1,000 compressions;
   - every chunk and parent count up to 40, parents in place too;
   - subtrees of 1 to 256 chunks.
-- **Found along the way.** On .NET 8, BLAKE2b's 128-bit kernel (SSSE3 hosts, and the
-  AdvSimd kernel on ARM64) runs at 181 MiB/s, below its own scalar kernel's 507; on
-  .NET 10 it runs at 582. W4 measured that tier on .NET 10 only. It is taken up
-  next, before W6.
+- **Found along the way, and fixed.** On .NET 8, BLAKE2b's 128-bit kernel (SSSE3 hosts,
+  and the AdvSimd kernel on ARM64) ran at 181 MiB/s, below its own scalar kernel's 507;
+  W4 had measured that tier on .NET 10 only, where it runs at 582. Dynamic PGO was
+  inlining the hot kernel into `Blake2bCore.Compress` and running out of inlining
+  budget inside it, leaving the kernel's `G`, message loads and `Undiagonalize` as
+  calls; with `TieredPGO=0` it ran at 554–609 MiB/s. Every BLAKE kernel entry point
+  now forbids inlining, so each is compiled on its own whatever the profile: the
+  kernel runs at 580 MiB/s on .NET 8, and no other tier moved beyond noise. A
+  reflection test per core pins the attribute, committed red before the fix.
+  - The same sweep showed AES-GCM 12–20% slower on .NET 8 with PGO than without. The
+    GHASH kernel compiles the same either way; the difference lies in how PGO lays out
+    and devirtualizes the BCL's OpenSSL AES path under `AesBlockCipher.TransformBlocks`.
+    It is not pursued here.

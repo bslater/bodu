@@ -31,6 +31,11 @@ namespace Bodu.Security.Cryptography;
 /// transposed copy of the current blocks, and the subtree code the chaining values of up to 64 chunks, on the stack,
 /// clearing both before they return. Values the JIT spills to its own stack slots are beyond the library's reach.
 /// </para>
+/// <para>
+/// Every kernel forbids inlining, so it is compiled on its own with its own inlining budget. Under .NET 8's dynamic
+/// PGO the dispatcher otherwise inlined whichever kernel it found hot, ran out of budget inside it, and left the
+/// kernel's own helpers as calls.
+/// </para>
 /// </remarks>
 [SkipLocalsInit]
 internal static partial class Blake3Core

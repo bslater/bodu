@@ -35,7 +35,7 @@ internal static partial class Blake2sCore
         /// <param name="block">The first byte of the 64-byte block.</param>
         /// <param name="counter">The number of message bytes compressed so far, this block included.</param>
         /// <param name="finalization">All ones for the final block; otherwise zero.</param>
-        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.AggressiveOptimization)]
         internal static void Compress(ref uint h, ref byte block, ulong counter, uint finalization)
         {
             Vector128<uint> h0 = Vector128.LoadUnsafe(ref h);

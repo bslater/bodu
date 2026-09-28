@@ -21,6 +21,11 @@ namespace Bodu.Security.Cryptography;
 /// no copy of the message or of the working vector in memory of their own. Values the JIT spills to its own stack slots
 /// are beyond the library's reach.
 /// </para>
+/// <para>
+/// Every kernel forbids inlining, so it is compiled on its own with its own inlining budget. Under .NET 8's dynamic
+/// PGO the dispatcher otherwise inlined whichever kernel it found hot, ran out of budget inside it, and left the
+/// kernel's own helpers as calls.
+/// </para>
 /// </remarks>
 internal static partial class Blake2sCore
 {
