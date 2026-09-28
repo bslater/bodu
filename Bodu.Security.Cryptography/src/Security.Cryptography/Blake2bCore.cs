@@ -56,6 +56,30 @@ internal static partial class Blake2bCore
     private const ulong Iv7 = 0x5BE0CD19137E2179UL;
 
     /// <summary>
+    /// Gets the BLAKE2b message schedule σ for all twelve rounds (RFC 7693, Section 2.7): sixteen message-word indices
+    /// per round, rounds 10 and 11 repeating rounds 0 and 1.
+    /// </summary>
+    /// <remarks>
+    /// The scalar and 256-bit kernels write their rounds out with these indices as constants; the 128-bit kernel reads
+    /// them from here.
+    /// </remarks>
+    internal static ReadOnlySpan<byte> Sigma =>
+    [
+        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+        14, 10, 4, 8, 9, 15, 13, 6, 1, 12, 0, 2, 11, 7, 5, 3,
+        11, 8, 12, 0, 5, 2, 15, 13, 10, 14, 3, 6, 7, 1, 9, 4,
+        7, 9, 3, 1, 13, 12, 11, 14, 2, 6, 5, 10, 4, 0, 15, 8,
+        9, 0, 5, 7, 2, 4, 10, 15, 14, 1, 11, 12, 6, 8, 3, 13,
+        2, 12, 6, 10, 0, 11, 8, 3, 4, 13, 7, 5, 15, 14, 1, 9,
+        12, 5, 1, 15, 14, 13, 4, 10, 0, 7, 6, 3, 9, 2, 8, 11,
+        13, 11, 7, 14, 12, 1, 3, 9, 5, 0, 15, 4, 8, 6, 2, 10,
+        6, 15, 14, 9, 11, 3, 0, 8, 12, 2, 13, 7, 1, 4, 10, 5,
+        10, 2, 8, 4, 7, 6, 1, 5, 15, 11, 9, 14, 3, 12, 13, 0,
+        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+        14, 10, 4, 8, 9, 15, 13, 6, 1, 12, 0, 2, 11, 7, 5, 3,
+    ];
+
+    /// <summary>
     /// Gets the BLAKE2b initialization vector: the eight words the chaining state starts from before the parameter
     /// block is folded in.
     /// </summary>
@@ -98,6 +122,14 @@ internal static partial class Blake2bCore
                 Vector256Kernel<Avx2Isa>.Compress(ref h, ref m, counter, finalization);
                 break;
 
+            case KernelKind.AdvSimd:
+                Vector128Kernel<Argon2Core.AdvSimdIsa>.Compress(ref h, ref m, counter, finalization);
+                break;
+
+            case KernelKind.Ssse3:
+                Vector128Kernel<Argon2Core.Ssse3Isa>.Compress(ref h, ref m, counter, finalization);
+                break;
+
             default:
                 CompressScalar(ref h, ref m, counter, finalization);
                 break;
@@ -105,8 +137,8 @@ internal static partial class Blake2bCore
     }
 
     /// <summary>
-    /// Selects the widest kernel the processor supports and the process allows: AVX-512, then AVX2, then the scalar
-    /// kernel.
+    /// Selects the widest kernel the processor supports and the process allows: AVX-512, then AVX2, then AdvSimd on
+    /// ARM64, then SSSE3, then the scalar kernel.
     /// </summary>
     /// <returns>The kernel dispatch runs; never <see cref="KernelKind.Auto" />.</returns>
     /// <remarks>
@@ -118,7 +150,13 @@ internal static partial class Blake2bCore
         if (SimdCapabilities.Avx512FVL)
             return KernelKind.Avx512;
 
-        return SimdCapabilities.Avx2 ? KernelKind.Avx2 : KernelKind.Scalar;
+        if (SimdCapabilities.Avx2)
+            return KernelKind.Avx2;
+
+        if (SimdCapabilities.AdvSimd)
+            return KernelKind.AdvSimd;
+
+        return SimdCapabilities.Ssse3 ? KernelKind.Ssse3 : KernelKind.Scalar;
     }
 
     /// <summary>
@@ -132,6 +170,8 @@ internal static partial class Blake2bCore
     internal static bool IsSupported(KernelKind kernel) => kernel switch
     {
         KernelKind.Auto or KernelKind.Scalar => true,
+        KernelKind.Ssse3 => System.Runtime.Intrinsics.X86.Ssse3.IsSupported,
+        KernelKind.AdvSimd => System.Runtime.Intrinsics.Arm.AdvSimd.Arm64.IsSupported,
         KernelKind.Avx2 => System.Runtime.Intrinsics.X86.Avx2.IsSupported,
         KernelKind.Avx512 => System.Runtime.Intrinsics.X86.Avx2.IsSupported && System.Runtime.Intrinsics.X86.Avx512F.VL.IsSupported,
         _ => false,

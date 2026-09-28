@@ -66,6 +66,30 @@ public sealed partial class Blake2bCoreTests
     }
 
     /// <summary>
+    /// Verifies that dispatch selects the AdvSimd kernel on ARM64.
+    /// </summary>
+    [TestMethod]
+    public void SelectKernel_WhenAdvSimdIsAvailable_ShouldReturnAdvSimd()
+    {
+        if (!SimdCapabilities.AdvSimd)
+            Assert.Inconclusive("AdvSimd is not available on this processor.");
+
+        Assert.AreEqual(Blake2bCore.KernelKind.AdvSimd, Blake2bCore.SelectKernel());
+    }
+
+    /// <summary>
+    /// Verifies that dispatch falls back to the SSSE3 kernel on an x64 processor without AVX2.
+    /// </summary>
+    [TestMethod]
+    public void SelectKernel_WhenSsse3IsTheWidestGateOpen_ShouldReturnSsse3()
+    {
+        if (!SimdCapabilities.Ssse3 || SimdCapabilities.Avx2)
+            Assert.Inconclusive("The processor is not an x64 processor with SSSE3 and without AVX2.");
+
+        Assert.AreEqual(Blake2bCore.KernelKind.Ssse3, Blake2bCore.SelectKernel());
+    }
+
+    /// <summary>
     /// Verifies that each vector kernel is reported as supported exactly when the processor has its instruction sets,
     /// whatever the process's SIMD switch says.
     /// </summary>
@@ -73,6 +97,9 @@ public sealed partial class Blake2bCoreTests
     public void IsSupported_WhenKernelIsVectorized_ShouldFollowTheProcessor()
     {
         bool avx2 = System.Runtime.Intrinsics.X86.Avx2.IsSupported;
+
+        Assert.AreEqual(System.Runtime.Intrinsics.X86.Ssse3.IsSupported, Blake2bCore.IsSupported(Blake2bCore.KernelKind.Ssse3));
+        Assert.AreEqual(System.Runtime.Intrinsics.Arm.AdvSimd.Arm64.IsSupported, Blake2bCore.IsSupported(Blake2bCore.KernelKind.AdvSimd));
 
         Assert.AreEqual(avx2, Blake2bCore.IsSupported(Blake2bCore.KernelKind.Avx2));
         Assert.AreEqual(avx2 && System.Runtime.Intrinsics.X86.Avx512F.VL.IsSupported, Blake2bCore.IsSupported(Blake2bCore.KernelKind.Avx512));

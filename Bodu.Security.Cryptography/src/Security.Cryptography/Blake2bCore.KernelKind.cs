@@ -24,6 +24,16 @@ internal static partial class Blake2bCore
         Scalar,
 
         /// <summary>
+        /// The 128-bit kernel on x64, over SSSE3.
+        /// </summary>
+        Ssse3,
+
+        /// <summary>
+        /// The 128-bit kernel on ARM64, over AdvSimd.
+        /// </summary>
+        AdvSimd,
+
+        /// <summary>
         /// The 256-bit kernel on x64, over AVX2.
         /// </summary>
         Avx2,

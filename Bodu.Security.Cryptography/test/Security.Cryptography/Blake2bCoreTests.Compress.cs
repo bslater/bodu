@@ -17,6 +17,8 @@ public sealed partial class Blake2bCoreTests
     /// <param name="kernel">The kernel's name.</param>
     [TestMethod]
     [DataRow("Scalar")]
+    [DataRow("Ssse3")]
+    [DataRow("AdvSimd")]
     [DataRow("Avx2")]
     [DataRow("Avx512")]
     public void Compress_ForEachKernel_ShouldMatchRfc7693Example(string kernel)
@@ -33,6 +35,8 @@ public sealed partial class Blake2bCoreTests
     /// <param name="kernel">The kernel's name.</param>
     [TestMethod]
     [DataRow("Scalar")]
+    [DataRow("Ssse3")]
+    [DataRow("AdvSimd")]
     [DataRow("Avx2")]
     [DataRow("Avx512")]
     public void Compress_ForEachKernel_ShouldMatchReferenceVectors(string kernel)
@@ -53,6 +57,8 @@ public sealed partial class Blake2bCoreTests
     /// </summary>
     /// <param name="kernel">The kernel's name.</param>
     [TestMethod]
+    [DataRow("Ssse3")]
+    [DataRow("AdvSimd")]
     [DataRow("Avx2")]
     [DataRow("Avx512")]
     public void Compress_ForEachKernel_ShouldMatchScalarKernel(string kernel)
