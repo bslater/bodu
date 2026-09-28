@@ -949,3 +949,95 @@ How it was done, and where it departs from the design above:
   - Salsa20 trails ChaCha20 on AVX2 because none of its rotations (7, 9, 13, 18) is
     byte-aligned, so each is a shift pair. Where AVX-512's `vprold` is available the
     two run at the same speed.
+
+### W7 — Serpent (done)
+
+| Measure (1 MiB unless noted) | Baseline | Result | Target |
+|---|---|---|---|
+| Serpent-128-CTR, scalar | 3.7 MiB/s | 73–76 MiB/s | ≥ 60 MiB/s — met |
+| Serpent-128-CTR, AVX2 eight-way | 3.7 MiB/s | 396–419 MiB/s | ≥ 200 MiB/s — met |
+| Serpent-128-CTR, AVX-512VL eight-way (this host's default) | 3.7 MiB/s | 563–579 MiB/s | — |
+| Serpent-128-CTR, SSSE3 four-way | 3.7 MiB/s | 206–212 MiB/s | — |
+| Serpent-128 `EncryptBlocks` / `DecryptBlocks`, AVX-512VL | — | 730 / 785 MiB/s | — |
+| Serpent-128 `EncryptBlocks` / `DecryptBlocks`, AVX2 | — | 487 / 519 MiB/s | — |
+| Serpent-128 `Encrypt`, one block per call | 3.9 MiB/s (3.96 µs) | 81 MiB/s (188 ns) | — |
+| Serpent-256 / 512 / 1024 `Encrypt`, one block per call | 2.5 / 1.8 / 1.5 MiB/s | 17 / 12.5 / 10.5 MiB/s | — |
+
+The CTR baseline is §1's and was re-measured at `e63fe20`, whose Serpent is 1.0.0's.
+The `Encrypt` rows come from a scratch probe that times 20,000 calls on one block, and
+the `EncryptBlocks` rows from one that times the explicit `IBlockCipher` members on
+1 MiB; both take the best of five or more rounds.
+
+On .NET 8 the scalar and SSSE3 tiers match within noise: 75 and 200 MiB/s. The vector
+tiers run 10–20% slower:
+
+- AVX-512 gives 476–484 MiB/s in CTR, and 596 / 639 MiB/s through `EncryptBlocks` /
+  `DecryptBlocks`. .NET 10 folds chains of bitwise operations into AVX-512's
+  three-input `vpternlogd`: the eight-way kernel has 71 of them against .NET 8's 11, and
+  335 instructions per eight rounds against 377.
+- AVX2 gives 334–360 MiB/s in CTR and 428 MiB/s through `EncryptBlocks`. Here the two
+  runtimes emit nearly the same kernel, .NET 8's 528 instructions against .NET 10's
+  522, so the gap lies in register allocation or scheduling; it was not pursued.
+
+How it was done, and where it departs from the design above:
+
+- **T1, the circuits (W7a).** `SerpentCore` holds Osvik's circuits for S0–S7 and their
+  inverses, as Crypto++ publishes them in `serpentp.h`, which is in the public domain.
+  - Each circuit has 14 to 19 Boolean operations, with no branches and no table reads.
+    It leaves its outputs permuted across five registers. The permutations were derived
+    by simulating every circuit on truth tables, and the same simulation checked every
+    output bit against the S-box tables.
+  - Serpent-128's 32 rounds run eight at a time, one per S-box, so each circuit is
+    chosen at compile time. The key schedule and the wide-block variants call the
+    circuits through an indexed dispatch; the index is a round number, never data.
+  - The core works on plain `uint` words, and the rotations use Bodu.Core's
+    `RotateBitsLeftUnchecked` / `RotateBitsRightUnchecked`, the prekey recurrence
+    included. A version generic over wrapper structs was tried first. The JIT ran out of
+    inlining budget and left 154 calls to the wrappers' XOR operator in every block,
+    and about 80 to the other operators and rotations.
+  - `EncryptBlock` and `DecryptBlock` are `NoInlining | AggressiveOptimization`, as the
+    BLAKE kernels are. Without it dynamic PGO inlined them into their caller and ran
+    out of budget there, leaving the circuits as calls: 33 MiB/s with PGO against 77
+    without.
+- **T4, blocks in bulk (W7b).** `Vector128Kernel<TIsa>` and `Vector256Kernel<TIsa>`
+  process four or eight blocks at a time. They load the blocks, transpose them so each
+  vector holds one word from every block, and run the circuits unchanged.
+  - The kernels run over ChaCha20's instruction-set shims, SSSE3, AdvSimd, AVX2 and
+    AVX-512VL, and share its 4×4 transposes. The eight-way kernel transposes two
+    consecutive blocks per 256-bit load in lane.
+  - They are generated per vector type rather than written generically, for the
+    wrapper reason above and because .NET 8's `Vector128<T>` and `Vector256<T>` do not
+    implement `IBitwiseOperators`. Their entry points are
+    `NoInlining | AggressiveOptimization`, and a reflection test pins that.
+  - `SerpentCore.EncryptBlocks` / `DecryptBlocks` pick the kernel once per process
+    through the `SimdCapabilities` gates. A run goes through in groups of eight, then
+    four, and the last few blocks go through the scalar rounds one at a time.
+  - `Serpent128Cipher` re-implements `IBlockCipher.EncryptBlocks` / `DecryptBlocks`
+    explicitly, so W2's batched modes reach the kernels. The public API is unchanged.
+- **Side effect.** Serpent no longer reads tables at secret-dependent indices. The
+  remarks on the Serpent types and the security-posture, choosing-a-primitive and
+  Serpent guides now say so, and Serpent has moved out of the "data-dependent table
+  lookups" group.
+- **Tests.**
+  - The existing NESSIE vectors and the wide-block variants' vectors still pass.
+  - Each circuit is checked against its S-box table for every 4-bit input in every bit
+    position. The linear transform and its inverse are checked against the replaced
+    code.
+  - The table-driven 1.0.0 cipher is kept in the tests as `SerpentReference`. Whole
+    blocks are compared with it both ways, over seeded keys of every key size and
+    seeded blocks.
+  - Every supported kernel, driven explicitly, is held to the scalar path one block at a
+    time: at every block count from 0 to 40 plus 47, 48, 49, 64 and 100, in place and
+    out of place. The guards and the dispatch are covered, and the SIMD-off assembly
+    checks that dispatch falls to the scalar path.
+- **ARM64.** Under qemu the AdvSimd kernel matched the scalar path over every block
+  count, both ways: 552 checks, confirmed with a span comparison because the emulator
+  faults inside MSTest's `CollectionAssert`.
+- **Left for later.**
+  - The wide-block variants gained 7×, not Serpent-128's 20×. Every round sends each
+    four-word group through the indexed dispatch as a call, and the state makes a round
+    trip through a span between the key, S-box and linear passes. Unrolling their rounds
+    eight at a time, as Serpent-128's are, would remove the dispatch; the cross-group
+    word rotation and the tweak injection every fourth round stay.
+  - CTR runs at about three quarters of `EncryptBlocks`, the rest going to the counter
+    blocks and the XOR. That cost is W2's and applies to every block cipher.
