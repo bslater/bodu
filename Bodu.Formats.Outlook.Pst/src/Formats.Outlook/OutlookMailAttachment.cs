@@ -34,7 +34,7 @@ public sealed class OutlookMailAttachment
     private readonly PstNode _node;
 
     /// <summary>The tag of the by-value payload property.</summary>
-    private static readonly MapiPropertyTag AttachDataTag = new(MapiPropertyIds.AttachData, MapiPropertyType.Binary);
+    private static readonly MapiPropertyTag s_attachDataTag = new(MapiPropertyIds.AttachData, MapiPropertyType.Binary);
 
     /// <summary>The attachment object's property context; kept so a deferred payload can be streamed from it.</summary>
     private PstPropertyContext? _context;
@@ -116,7 +116,7 @@ public sealed class OutlookMailAttachment
                 }
             }
 
-            return Properties.Contains(AttachDataTag)
+            return Properties.Contains(s_attachDataTag)
                 ? OutlookAttachmentMethod.ByValue
                 : OutlookAttachmentMethod.None;
         }
@@ -193,7 +193,7 @@ public sealed class OutlookMailAttachment
         }
 
         // A deferred payload is present in the collection with a null value; its bytes stay in the store.
-        if (Properties.Contains(AttachDataTag) && _context!.TryOpenValueStream(MapiPropertyIds.AttachData, out Stream? stream))
+        if (Properties.Contains(s_attachDataTag) && _context!.TryOpenValueStream(MapiPropertyIds.AttachData, out Stream? stream))
             return stream;
 
         throw new OutlookPstFormatException(OutlookPstResourceStrings.Format_Invalid_PstAttachmentContent);
@@ -211,7 +211,7 @@ public sealed class OutlookMailAttachment
         if (Properties.GetBinary(MapiPropertyIds.AttachData) is ReadOnlyMemory<byte> content)
             return content.Length;
 
-        return Properties.Contains(AttachDataTag) && _context!.TryGetValueLength(MapiPropertyIds.AttachData, out long length)
+        return Properties.Contains(s_attachDataTag) && _context!.TryGetValueLength(MapiPropertyIds.AttachData, out long length)
             ? length
             : null;
     }

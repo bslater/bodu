@@ -119,24 +119,27 @@ dotnet_naming_symbols.constant_fields.applicable_kinds = field
 dotnet_naming_symbols.constant_fields.required_modifiers = const
 dotnet_naming_style.pascal_case_style.capitalization = pascal_case
 
-# Non-public static fields: s_camelCase.
+# Private static fields: s_camelCase.
+# Internal fields are deliberately left out of this rule and the instance-field rule below: StyleCop's SA1304 and
+# SA1307 require every non-private field to start with an upper-case letter, so prefixing internal fields as well
+# made each of them violate one rule or the other. Internal fields are PascalCase.
 dotnet_naming_rule.static_fields_should_have_prefix.severity = suggestion
 dotnet_naming_rule.static_fields_should_have_prefix.symbols = static_fields
 dotnet_naming_rule.static_fields_should_have_prefix.style = static_prefix_style
 dotnet_naming_symbols.static_fields.applicable_kinds = field
 dotnet_naming_symbols.static_fields.required_modifiers = static
-dotnet_naming_symbols.static_fields.applicable_accessibilities = private, internal, private_protected
+dotnet_naming_symbols.static_fields.applicable_accessibilities = private, private_protected
 dotnet_naming_style.static_prefix_style.required_prefix = s_
 dotnet_naming_style.static_prefix_style.capitalization = camel_case
 
-# Private and internal instance fields: _camelCase.
+# Private instance fields: _camelCase.
 # Roslyn naming rules do not provide a reliable "not static" filter, so the static rule above is deliberately
 # more specific and should win for static fields.
-dotnet_naming_rule.camel_case_for_private_internal_fields.severity = suggestion
-dotnet_naming_rule.camel_case_for_private_internal_fields.symbols = private_internal_fields
-dotnet_naming_rule.camel_case_for_private_internal_fields.style = camel_case_underscore_style
-dotnet_naming_symbols.private_internal_fields.applicable_kinds = field
-dotnet_naming_symbols.private_internal_fields.applicable_accessibilities = private, internal
+dotnet_naming_rule.camel_case_for_private_fields.severity = suggestion
+dotnet_naming_rule.camel_case_for_private_fields.symbols = private_fields
+dotnet_naming_rule.camel_case_for_private_fields.style = camel_case_underscore_style
+dotnet_naming_symbols.private_fields.applicable_kinds = field
+dotnet_naming_symbols.private_fields.applicable_accessibilities = private
 dotnet_naming_style.camel_case_underscore_style.required_prefix = _
 dotnet_naming_style.camel_case_underscore_style.capitalization = camel_case
 

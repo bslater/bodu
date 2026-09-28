@@ -24,10 +24,10 @@ public sealed partial class NotableDateDocumentBuilder
         if (element is null)
             return;
 
-        _metadataName = (string?)element.Element(BuilderXml.s_namespace + "Name");
-        _metadataDescription = (string?)element.Element(BuilderXml.s_namespace + "Description");
+        _metadataName = (string?)element.Element(BuilderXml.Namespace + "Name");
+        _metadataDescription = (string?)element.Element(BuilderXml.Namespace + "Description");
         _sources.Clear();
-        foreach (XElement source in element.Elements(BuilderXml.s_namespace + "Source"))
+        foreach (XElement source in element.Elements(BuilderXml.Namespace + "Source"))
             _sources.Add(source.Value);
     }
 
@@ -46,10 +46,10 @@ public sealed partial class NotableDateDocumentBuilder
         if (!string.IsNullOrEmpty(workingDays) && WeekPattern.TryParse(workingDays, out WeekPattern parsed))
             workingWeek = parsed;
 
-        XElement? precedenceElement = element.Element(BuilderXml.s_namespace + "CategoryPrecedence");
+        XElement? precedenceElement = element.Element(BuilderXml.Namespace + "CategoryPrecedence");
         IReadOnlyList<NotableDateCategory>? categoryPrecedence = precedenceElement is null
             ? null
-            : [.. precedenceElement.Elements(BuilderXml.s_namespace + "Category")
+            : [.. precedenceElement.Elements(BuilderXml.Namespace + "Category")
                 .Select(c => ParseNullableEnum<NotableDateCategory>((string?)c.Attribute("value")) ?? NotableDateCategory.None)];
 
         policy.SetParsedValues(
@@ -73,7 +73,7 @@ public sealed partial class NotableDateDocumentBuilder
         if (element is null)
             return;
 
-        foreach (XElement policyElement in element.Elements(BuilderXml.s_namespace + "AdjustmentPolicy"))
+        foreach (XElement policyElement in element.Elements(BuilderXml.Namespace + "AdjustmentPolicy"))
             _adjustmentPolicies.Add(ReadAdjustmentPolicy(policyElement));
     }
 
@@ -88,13 +88,13 @@ public sealed partial class NotableDateDocumentBuilder
         policy.SetParsedHeader(
             BuilderXml.ParseInt((string?)element.Attribute("priority")),
             (string?)element.Attribute("description"),
-            ReadScope(element.Element(BuilderXml.s_namespace + "Scope")));
+            ReadScope(element.Element(BuilderXml.Namespace + "Scope")));
 
-        XElement? trigger = element.Element(BuilderXml.s_namespace + "Trigger");
+        XElement? trigger = element.Element(BuilderXml.Namespace + "Trigger");
         if (trigger is not null)
         {
             List<DayOfWeek> weekdays = new();
-            foreach (XElement weekday in trigger.Elements(BuilderXml.s_namespace + "Weekday"))
+            foreach (XElement weekday in trigger.Elements(BuilderXml.Namespace + "Weekday"))
                 weekdays.Add(ParseEnum<DayOfWeek>((string?)weekday.Attribute("value")));
 
             string? month = (string?)trigger.Attribute("month");
@@ -107,7 +107,7 @@ public sealed partial class NotableDateDocumentBuilder
                 (string?)trigger.Attribute("handlerKey"));
         }
 
-        XElement? action = element.Element(BuilderXml.s_namespace + "Action");
+        XElement? action = element.Element(BuilderXml.Namespace + "Action");
         if (action is not null)
         {
             policy.SetParsedAction(
@@ -122,7 +122,7 @@ public sealed partial class NotableDateDocumentBuilder
                 (string?)action.Attribute("handlerKey"));
         }
 
-        XElement? emission = element.Element(BuilderXml.s_namespace + "Emission");
+        XElement? emission = element.Element(BuilderXml.Namespace + "Emission");
         if (emission is not null)
         {
             policy.SetParsedEmission(
@@ -131,11 +131,11 @@ public sealed partial class NotableDateDocumentBuilder
                 BuilderXml.ParseBool((string?)emission.Attribute("nonWorking")));
         }
 
-        XElement? parameters = element.Element(BuilderXml.s_namespace + "Parameters");
+        XElement? parameters = element.Element(BuilderXml.Namespace + "Parameters");
         if (parameters is not null)
         {
             List<KeyValuePair<string, string>> pairs = new();
-            foreach (XElement param in parameters.Elements(BuilderXml.s_namespace + "Param"))
+            foreach (XElement param in parameters.Elements(BuilderXml.Namespace + "Param"))
                 pairs.Add(new KeyValuePair<string, string>((string?)param.Attribute("key") ?? string.Empty, (string?)param.Attribute("value") ?? string.Empty));
 
             policy.SetParsedParameters(pairs);
@@ -223,10 +223,10 @@ public sealed partial class NotableDateDocumentBuilder
         if (element is null)
             return;
 
-        foreach (XElement importElement in element.Elements(BuilderXml.s_namespace + "Import"))
+        foreach (XElement importElement in element.Elements(BuilderXml.Namespace + "Import"))
         {
             ImportBuilder import = new((string?)importElement.Attribute("resource") ?? string.Empty);
-            foreach (XElement useElement in importElement.Elements(BuilderXml.s_namespace + "Use"))
+            foreach (XElement useElement in importElement.Elements(BuilderXml.Namespace + "Use"))
                 import.AddUse(ReadImportUse(useElement));
 
             _imports.Add(import);
@@ -241,10 +241,10 @@ public sealed partial class NotableDateDocumentBuilder
     private static ImportUseBuilder ReadImportUse(XElement element)
     {
         List<string> adjustments = new();
-        XElement? adjustmentsElement = element.Element(BuilderXml.s_namespace + "Adjustments");
+        XElement? adjustmentsElement = element.Element(BuilderXml.Namespace + "Adjustments");
         if (adjustmentsElement is not null)
         {
-            foreach (XElement adjustment in adjustmentsElement.Elements(BuilderXml.s_namespace + "Adjustment"))
+            foreach (XElement adjustment in adjustmentsElement.Elements(BuilderXml.Namespace + "Adjustment"))
                 adjustments.Add((string?)adjustment.Attribute("policyRef") ?? string.Empty);
         }
 
@@ -268,7 +268,7 @@ public sealed partial class NotableDateDocumentBuilder
         if (element is null)
             return;
 
-        foreach (XElement definitionElement in element.Elements(BuilderXml.s_namespace + "NotableDate"))
+        foreach (XElement definitionElement in element.Elements(BuilderXml.Namespace + "NotableDate"))
             _definitions.Add(ReadNotableDate(definitionElement));
     }
 
@@ -287,12 +287,12 @@ public sealed partial class NotableDateDocumentBuilder
         definition.SetParsedValues(
             BuilderXml.ParseInt((string?)element.Attribute("defaultDurationDays")),
             BuilderXml.ParseBool((string?)element.Attribute("defaultNonWorkingDay")),
-            ReadTags(element.Element(BuilderXml.s_namespace + "Tags")));
+            ReadTags(element.Element(BuilderXml.Namespace + "Tags")));
 
-        XElement? rules = element.Element(BuilderXml.s_namespace + "Rules");
+        XElement? rules = element.Element(BuilderXml.Namespace + "Rules");
         if (rules is not null)
         {
-            foreach (XElement ruleElement in rules.Elements(BuilderXml.s_namespace + "Rule"))
+            foreach (XElement ruleElement in rules.Elements(BuilderXml.Namespace + "Rule"))
                 definition.AddRule(ReadRule(ruleElement));
         }
 
@@ -310,7 +310,7 @@ public sealed partial class NotableDateDocumentBuilder
     {
         NotableDateRuleBuilder rule = new((string?)element.Attribute(idAttributeName) ?? string.Empty);
 
-        XElement? applicability = element.Element(BuilderXml.s_namespace + "Applicability");
+        XElement? applicability = element.Element(BuilderXml.Namespace + "Applicability");
         rule.SetParsedScalars(
             BuilderXml.ParseInt((string?)element.Attribute("priority")),
             ParseNullableEnum<NotableDateCategory>((string?)element.Attribute("category")),
@@ -328,34 +328,34 @@ public sealed partial class NotableDateDocumentBuilder
         List<int> exceptYears = new();
         if (applicability is not null)
         {
-            foreach (XElement territory in applicability.Elements(BuilderXml.s_namespace + "Territory"))
+            foreach (XElement territory in applicability.Elements(BuilderXml.Namespace + "Territory"))
                 territories.Add((string?)territory.Attribute("code") ?? string.Empty);
-            foreach (XElement year in applicability.Elements(BuilderXml.s_namespace + "OnlyYear"))
+            foreach (XElement year in applicability.Elements(BuilderXml.Namespace + "OnlyYear"))
                 onlyYears.Add(BuilderXml.ParseInt((string?)year.Attribute("value")) ?? 0);
-            foreach (XElement year in applicability.Elements(BuilderXml.s_namespace + "ExceptYear"))
+            foreach (XElement year in applicability.Elements(BuilderXml.Namespace + "ExceptYear"))
                 exceptYears.Add(BuilderXml.ParseInt((string?)year.Attribute("value")) ?? 0);
         }
 
         List<string> adjustments = new();
-        XElement? adjustmentsElement = element.Element(BuilderXml.s_namespace + "Adjustments");
+        XElement? adjustmentsElement = element.Element(BuilderXml.Namespace + "Adjustments");
         if (adjustmentsElement is not null)
         {
-            foreach (XElement adjustment in adjustmentsElement.Elements(BuilderXml.s_namespace + "Adjustment"))
+            foreach (XElement adjustment in adjustmentsElement.Elements(BuilderXml.Namespace + "Adjustment"))
                 adjustments.Add((string?)adjustment.Attribute("policyRef") ?? string.Empty);
         }
 
-        rule.SetParsedCollections(territories, onlyYears, exceptYears, ReadTags(element.Element(BuilderXml.s_namespace + "Tags")), adjustments);
+        rule.SetParsedCollections(territories, onlyYears, exceptYears, ReadTags(element.Element(BuilderXml.Namespace + "Tags")), adjustments);
 
-        XElement? strategy = element.Element(BuilderXml.s_namespace + "Strategy");
+        XElement? strategy = element.Element(BuilderXml.Namespace + "Strategy");
         XElement? strategyChild = strategy?.Elements().FirstOrDefault();
         rule.SetParsedStrategy(strategyChild is null ? null : new XElement(strategyChild));
 
-        if (element.Element(BuilderXml.s_namespace + "Recurrence") is XElement recurrence)
+        if (element.Element(BuilderXml.Namespace + "Recurrence") is XElement recurrence)
             rule.SetParsedRecurrence(new XElement(recurrence));
 
-        if (element.Element(BuilderXml.s_namespace + "Duration")?.Element(BuilderXml.s_namespace + "UntilDate") is XElement untilDate)
+        if (element.Element(BuilderXml.Namespace + "Duration")?.Element(BuilderXml.Namespace + "UntilDate") is XElement untilDate)
         {
-            XElement? endStrategyChild = untilDate.Element(BuilderXml.s_namespace + "Strategy")?.Elements().FirstOrDefault();
+            XElement? endStrategyChild = untilDate.Element(BuilderXml.Namespace + "Strategy")?.Elements().FirstOrDefault();
             rule.SetParsedDuration(
                 endStrategyChild is null ? null : new XElement(endStrategyChild),
                 ParseNullableEnum<DateBoundary>((string?)untilDate.Attribute("startBoundary")) ?? DateBoundary.Inclusive,
@@ -385,7 +385,7 @@ public sealed partial class NotableDateDocumentBuilder
                         OverrideOperation.AddRule,
                         (string?)child.Attribute("notableDateRef") ?? string.Empty,
                         null,
-                        ReadRule(child.Element(BuilderXml.s_namespace + "Rule") ?? new XElement(BuilderXml.s_namespace + "Rule"))));
+                        ReadRule(child.Element(BuilderXml.Namespace + "Rule") ?? new XElement(BuilderXml.Namespace + "Rule"))));
                     break;
 
                 case "RemoveRule":
@@ -423,7 +423,7 @@ public sealed partial class NotableDateDocumentBuilder
         if (element is null)
             return tags;
 
-        foreach (XElement tag in element.Elements(BuilderXml.s_namespace + "Tag"))
+        foreach (XElement tag in element.Elements(BuilderXml.Namespace + "Tag"))
             tags.Add((string?)tag.Attribute("value") ?? string.Empty);
 
         return tags;

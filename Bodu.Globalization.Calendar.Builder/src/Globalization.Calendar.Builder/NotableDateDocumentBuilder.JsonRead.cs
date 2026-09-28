@@ -286,13 +286,13 @@ public sealed partial class NotableDateDocumentBuilder
             if (property.Value is not JsonObject body || !s_jsonRecurrenceElementNames.TryGetValue(property.Key, out string? elementName))
                 continue;
 
-            XElement kind = new(BuilderXml.s_namespace + elementName);
+            XElement kind = new(BuilderXml.Namespace + elementName);
             foreach (KeyValuePair<string, JsonNode?> attribute in body)
             {
                 if (string.Equals(attribute.Key, "days", StringComparison.Ordinal) && attribute.Value is JsonArray days)
                 {
                     foreach (JsonNode? day in days)
-                        kind.Add(new XElement(BuilderXml.s_namespace + "Day", new XAttribute("dayOfWeek", day?.GetValue<string>() ?? string.Empty)));
+                        kind.Add(new XElement(BuilderXml.Namespace + "Day", new XAttribute("dayOfWeek", day?.GetValue<string>() ?? string.Empty)));
                 }
                 else
                 {
@@ -300,7 +300,7 @@ public sealed partial class NotableDateDocumentBuilder
                 }
             }
 
-            return new XElement(BuilderXml.s_namespace + "Recurrence", kind);
+            return new XElement(BuilderXml.Namespace + "Recurrence", kind);
         }
 
         return null;
@@ -394,7 +394,7 @@ public sealed partial class NotableDateDocumentBuilder
             if (property.Value is not JsonObject body || !s_jsonStrategyElementNames.TryGetValue(property.Key, out string? elementName))
                 continue;
 
-            XElement element = new(BuilderXml.s_namespace + elementName);
+            XElement element = new(BuilderXml.Namespace + elementName);
             foreach (KeyValuePair<string, JsonNode?> attribute in body)
                 element.SetAttributeValue(attribute.Key, ConvertStrategyAttribute(attribute.Key, attribute.Value));
 

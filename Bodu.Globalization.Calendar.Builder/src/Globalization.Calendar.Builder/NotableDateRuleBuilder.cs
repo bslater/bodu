@@ -477,7 +477,7 @@ public sealed class NotableDateRuleBuilder
         ThrowHelper.ThrowIfLessThan(day, 1);
         ThrowHelper.ThrowIfGreaterThan(day, 31);
 
-        XElement element = new(BuilderXml.s_namespace + "Fixed", new XAttribute("month", month), new XAttribute("day", BuilderXml.Int(day)));
+        XElement element = new(BuilderXml.Namespace + "Fixed", new XAttribute("month", month), new XAttribute("day", BuilderXml.Int(day)));
         if (skipLeapMonth) element.SetAttributeValue("skipLeapMonth", BuilderXml.Bool(true));
         if (sweepCalendarYears) element.SetAttributeValue("sweepCalendarYears", BuilderXml.Bool(true));
 
@@ -499,7 +499,7 @@ public sealed class NotableDateRuleBuilder
         ThrowHelper.ThrowIfGreaterThan(month, 12);
 
         XElement element = new(
-            BuilderXml.s_namespace + "DayOfWeekInMonth",
+            BuilderXml.Namespace + "DayOfWeekInMonth",
             new XAttribute("month", BuilderXml.GetMonthName(month)),
             new XAttribute("dayOfWeek", dayOfWeek.ToString()),
             new XAttribute("weekOrdinal", weekOrdinal.ToString()));
@@ -527,7 +527,7 @@ public sealed class NotableDateRuleBuilder
         ThrowHelper.ThrowIfGreaterThan(day, 31);
 
         XElement element = new(
-            BuilderXml.s_namespace + "WeekdayNearDate",
+            BuilderXml.Namespace + "WeekdayNearDate",
             new XAttribute("month", BuilderXml.GetMonthName(month)),
             new XAttribute("day", BuilderXml.Int(day)),
             new XAttribute("dayOfWeek", dayOfWeek.ToString()),
@@ -553,7 +553,7 @@ public sealed class NotableDateRuleBuilder
         ThrowHelper.ThrowIfGreaterThan(month, 12);
 
         XElement element = new(
-            BuilderXml.s_namespace + "RelativeWeekdayInMonth",
+            BuilderXml.Namespace + "RelativeWeekdayInMonth",
             new XAttribute("month", BuilderXml.GetMonthName(month)),
             new XAttribute("dayOfWeek", dayOfWeek.ToString()),
             new XAttribute("weekOrdinal", weekOrdinal.ToString()),
@@ -581,7 +581,7 @@ public sealed class NotableDateRuleBuilder
         ThrowHelper.ThrowIfNullOrWhiteSpace(notableDateRef);
 
         XElement element = new(
-            BuilderXml.s_namespace + "OffsetFromRule",
+            BuilderXml.Namespace + "OffsetFromRule",
             new XAttribute("notableDateRef", notableDateRef),
             new XAttribute("offsetDays", BuilderXml.Int(offsetDays)));
         if (!string.IsNullOrEmpty(ruleRef)) element.SetAttributeValue("ruleRef", ruleRef);
@@ -602,7 +602,7 @@ public sealed class NotableDateRuleBuilder
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(key);
 
-        XElement element = new(BuilderXml.s_namespace + "Algorithm", new XAttribute("key", key));
+        XElement element = new(BuilderXml.Namespace + "Algorithm", new XAttribute("key", key));
 
         return SetStrategy(element);
     }
@@ -618,7 +618,7 @@ public sealed class NotableDateRuleBuilder
     /// </exception>
     public NotableDateRuleBuilder OrdinalDayOfMonth(int month, int ordinal) =>
         SetStrategy(new XElement(
-            BuilderXml.s_namespace + "OrdinalDayOfMonth",
+            BuilderXml.Namespace + "OrdinalDayOfMonth",
             new XAttribute("month", BuilderXml.GetMonthName(month)),
             new XAttribute("ordinal", BuilderXml.Int(ordinal))));
 
@@ -631,7 +631,7 @@ public sealed class NotableDateRuleBuilder
     /// An occurrence source has already been configured on this rule.
     /// </exception>
     public NotableDateRuleBuilder DayOfYear(int ordinal) =>
-        SetStrategy(new XElement(BuilderXml.s_namespace + "DayOfYear", new XAttribute("ordinal", BuilderXml.Int(ordinal))));
+        SetStrategy(new XElement(BuilderXml.Namespace + "DayOfYear", new XAttribute("ordinal", BuilderXml.Int(ordinal))));
 
     /// <summary>
     /// Configures the rule with an ISO-week-date strategy.
@@ -644,7 +644,7 @@ public sealed class NotableDateRuleBuilder
     /// </exception>
     public NotableDateRuleBuilder IsoWeekDate(int week, DayOfWeek dayOfWeek) =>
         SetStrategy(new XElement(
-            BuilderXml.s_namespace + "IsoWeekDate",
+            BuilderXml.Namespace + "IsoWeekDate",
             new XAttribute("week", BuilderXml.Int(week)),
             new XAttribute("dayOfWeek", dayOfWeek.ToString())));
 
@@ -669,7 +669,7 @@ public sealed class NotableDateRuleBuilder
         ThrowHelper.ThrowIfNullOrWhiteSpace(notableDateRef);
 
         XElement element = new(
-            BuilderXml.s_namespace + "WeekdayNearRule",
+            BuilderXml.Namespace + "WeekdayNearRule",
             new XAttribute("notableDateRef", notableDateRef),
             new XAttribute("dayOfWeek", dayOfWeek.ToString()),
             new XAttribute("direction", direction.ToString()));
@@ -699,7 +699,7 @@ public sealed class NotableDateRuleBuilder
         ThrowHelper.ThrowIfNullOrWhiteSpace(notableDateRef);
 
         XElement element = new(
-            BuilderXml.s_namespace + "NthWeekdayFromRule",
+            BuilderXml.Namespace + "NthWeekdayFromRule",
             new XAttribute("notableDateRef", notableDateRef),
             new XAttribute("dayOfWeek", dayOfWeek.ToString()),
             new XAttribute("ordinal", BuilderXml.Int(ordinal)));
@@ -728,7 +728,7 @@ public sealed class NotableDateRuleBuilder
         ThrowHelper.ThrowIfNullOrWhiteSpace(notableDateRef);
 
         XElement element = new(
-            BuilderXml.s_namespace + "WorkingDayOffsetFromRule",
+            BuilderXml.Namespace + "WorkingDayOffsetFromRule",
             new XAttribute("notableDateRef", notableDateRef),
             new XAttribute("offsetWorkingDays", BuilderXml.Int(offsetWorkingDays)));
         if (referenceYearOffset != 0) element.SetAttributeValue("referenceYearOffset", BuilderXml.Int(referenceYearOffset));
@@ -748,7 +748,7 @@ public sealed class NotableDateRuleBuilder
     /// </exception>
     public NotableDateRuleBuilder WorkingDayInMonth(int month, int ordinal) =>
         SetStrategy(new XElement(
-            BuilderXml.s_namespace + "WorkingDayInMonth",
+            BuilderXml.Namespace + "WorkingDayInMonth",
             new XAttribute("month", BuilderXml.GetMonthName(month)),
             new XAttribute("ordinal", BuilderXml.Int(ordinal))));
 
@@ -763,7 +763,7 @@ public sealed class NotableDateRuleBuilder
     /// </exception>
     public NotableDateRuleBuilder DailyInterval(DateOnly anchorDate, int intervalDays = 1)
     {
-        XElement inner = new(BuilderXml.s_namespace + "DailyInterval", new XAttribute("anchorDate", FormatDate(anchorDate)));
+        XElement inner = new(BuilderXml.Namespace + "DailyInterval", new XAttribute("anchorDate", FormatDate(anchorDate)));
         if (intervalDays != 1) inner.SetAttributeValue("intervalDays", BuilderXml.Int(intervalDays));
 
         return SetRecurrence(inner);
@@ -784,11 +784,11 @@ public sealed class NotableDateRuleBuilder
     {
         ThrowHelper.ThrowIfNull(daysOfWeek);
 
-        XElement inner = new(BuilderXml.s_namespace + "Weekly");
+        XElement inner = new(BuilderXml.Namespace + "Weekly");
         if (intervalWeeks != 1) inner.SetAttributeValue("intervalWeeks", BuilderXml.Int(intervalWeeks));
         if (anchorDate is DateOnly anchor) inner.SetAttributeValue("anchorDate", FormatDate(anchor));
         foreach (DayOfWeek day in daysOfWeek)
-            inner.Add(new XElement(BuilderXml.s_namespace + "Day", new XAttribute("dayOfWeek", day.ToString())));
+            inner.Add(new XElement(BuilderXml.Namespace + "Day", new XAttribute("dayOfWeek", day.ToString())));
 
         return SetRecurrence(inner);
     }
@@ -806,7 +806,7 @@ public sealed class NotableDateRuleBuilder
     /// </exception>
     public NotableDateRuleBuilder MonthlyDay(int dayOfMonth, int intervalMonths = 1, DateOnly? anchorDate = null, InvalidDayOfMonthBehavior invalidDayBehavior = InvalidDayOfMonthBehavior.Skip)
     {
-        XElement inner = new(BuilderXml.s_namespace + "MonthlyDay", new XAttribute("dayOfMonth", BuilderXml.Int(dayOfMonth)));
+        XElement inner = new(BuilderXml.Namespace + "MonthlyDay", new XAttribute("dayOfMonth", BuilderXml.Int(dayOfMonth)));
         if (intervalMonths != 1) inner.SetAttributeValue("intervalMonths", BuilderXml.Int(intervalMonths));
         if (anchorDate is DateOnly anchor) inner.SetAttributeValue("anchorDate", FormatDate(anchor));
         if (invalidDayBehavior != InvalidDayOfMonthBehavior.Skip) inner.SetAttributeValue("invalidDayBehavior", invalidDayBehavior.ToString());
@@ -828,7 +828,7 @@ public sealed class NotableDateRuleBuilder
     public NotableDateRuleBuilder MonthlyWeekday(DayOfWeek dayOfWeek, WeekOrdinal weekOrdinal, int intervalMonths = 1, DateOnly? anchorDate = null)
     {
         XElement inner = new(
-            BuilderXml.s_namespace + "MonthlyWeekday",
+            BuilderXml.Namespace + "MonthlyWeekday",
             new XAttribute("dayOfWeek", dayOfWeek.ToString()),
             new XAttribute("weekOrdinal", weekOrdinal.ToString()));
         if (intervalMonths != 1) inner.SetAttributeValue("intervalMonths", BuilderXml.Int(intervalMonths));
@@ -1061,7 +1061,7 @@ public sealed class NotableDateRuleBuilder
         if (Strategy is not null || Recurrence is not null)
             throw new InvalidOperationException(BuilderResourceStrings.Op_Invalid_RuleStrategyAlreadySet);
 
-        Recurrence = new XElement(BuilderXml.s_namespace + "Recurrence", inner);
+        Recurrence = new XElement(BuilderXml.Namespace + "Recurrence", inner);
         return this;
     }
 }

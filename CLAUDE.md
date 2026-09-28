@@ -505,6 +505,7 @@ This convention is the dotted-flat reading of `dotnet_style_namespace_match_fold
 
 - Private instance fields: `_camelCase`.
 - Private static fields: `s_camelCase`.
+- Internal (and any other non-private) fields: `PascalCase`, with no prefix. StyleCop's SA1304/SA1307 require it, so `.editorconfig` applies the `_` and `s_` rules to private fields only.
 - Prefer `var` where the type is obvious; see **Implicit Typing (`var`)** under C# Code Style Guidelines for the decision cascade.
 - No primary constructors on documented public types (they conflict with `<param>` XML documentation).
 - Expression-bodied members for methods, properties, and accessors with a small implementation footprint — see **Expression-Bodied Members** below for the required layout.
