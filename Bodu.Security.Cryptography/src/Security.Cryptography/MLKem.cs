@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MLKem.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -39,8 +39,15 @@ namespace Bodu.Security.Cryptography;
 /// <see cref="AsymmetricAlgorithm" /> are not implemented and retain their base (throwing) behavior.
 /// </para>
 /// <para>
-/// The decapsulation re-encryption comparison and key selection are constant-time, and private key material is zeroed
-/// on dispose. This implementation offers best-effort side-channel resistance and has not been independently audited.
+/// <strong>Memory.</strong> When a key is generated or imported, the instance also keeps the values FIPS 203 derives
+/// from it on every operation — the matrix Â, the decoded vectors t̂ and ŝ, and H(ek) — so that encapsulation and
+/// decapsulation do not recompute them. Beside the encoded keys they take about 8, 15 and 24 KiB for ML-KEM-512, 768
+/// and 1024, or 6, 12 and 20 KiB for an instance holding only an encapsulation key.
+/// </para>
+/// <para>
+/// The decapsulation re-encryption comparison and key selection are constant-time, and private key material, the cached
+/// secret vector included, is zeroed on dispose. This implementation offers best-effort side-channel resistance and has
+/// not been independently audited.
 /// </para>
 /// </remarks>
 /// <example>
@@ -69,6 +76,15 @@ public abstract partial class MLKem
 
     /// <summary>The FIPS 203 parameter set implemented by the derived type.</summary>
     private readonly MLKemParameters _parameters;
+
+    /// <summary>
+    /// Gets the current key material typed as <see cref="MLKemKeyMaterial" />, which carries the values derived from
+    /// the keys when they were set. Every store goes through ML-KEM's own generate and import paths, so the downcast is
+    /// always valid.
+    /// </summary>
+    /// <value>The typed key material, or <see langword="null" /> when no key has been generated or imported.</value>
+    private MLKemKeyMaterial? TypedKeyMaterial =>
+        (MLKemKeyMaterial?)KeyMaterial;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="MLKem" /> class for a specific FIPS 203 parameter set.
@@ -233,7 +249,7 @@ public abstract partial class MLKem
         }
 
         byte[] encapsulationKey = decapsulationKey.Slice(384 * _parameters.K, _parameters.EncapsulationKeySize).ToArray();
-        ReplaceKeyMaterial(AsymmetricKeyMaterial.ForKeyPair(encapsulationKey, decapsulationKey.ToArray()));
+        ReplaceKeyMaterial(MLKemKeyMaterial.ForKeyPair(_parameters, encapsulationKey, decapsulationKey.ToArray()));
     }
 
     /// <summary>
@@ -265,7 +281,7 @@ public abstract partial class MLKem
                 nameof(encapsulationKey));
         }
 
-        ReplaceKeyMaterial(AsymmetricKeyMaterial.ForPublicKey(encapsulationKey.ToArray()));
+        ReplaceKeyMaterial(MLKemKeyMaterial.ForPublicKey(_parameters, encapsulationKey.ToArray()));
     }
 
     /// <summary>
@@ -334,7 +350,8 @@ public abstract partial class MLKem
         Span<byte> m = stackalloc byte[32];
         CryptographyHelper.FillWithRandomBytes(m);
 
-        MLKemEngine.Encapsulate(_parameters, KeyMaterial!.PublicKey, m, ciphertext, sharedSecret);
+        MLKemKeyMaterial key = TypedKeyMaterial!;
+        MLKemEngine.Encapsulate(_parameters, key.EncapsulationKeyHash, key.Matrix, key.PublicVector, m, ciphertext, sharedSecret);
         CryptographyHelper.Clear(m);
     }
 
@@ -389,7 +406,8 @@ public abstract partial class MLKem
         CryptographyThrowHelper.ThrowIfInvalidDestinationLength(sharedSecret, SharedSecretSizeInBytes);
         CryptographyThrowHelper.ThrowIfNoPrivateKey(KeyMaterial?.HasPrivateKey ?? false);
 
-        MLKemEngine.Decapsulate(_parameters, KeyMaterial!.PrivateKey!, ciphertext, sharedSecret);
+        MLKemKeyMaterial key = TypedKeyMaterial!;
+        MLKemEngine.Decapsulate(_parameters, key.PrivateKey!, key.Matrix, key.PublicVector, key.SecretVector!, ciphertext, sharedSecret);
     }
 
     /// <summary>
@@ -400,9 +418,14 @@ public abstract partial class MLKem
     {
         byte[] encapsulationKey = new byte[_parameters.EncapsulationKeySize];
         byte[] decapsulationKey = new byte[_parameters.DecapsulationKeySize];
-        MLKemEngine.KeyGen(_parameters, seed[..32], seed[32..], encapsulationKey, decapsulationKey);
+        int[] matrix = new int[_parameters.K * _parameters.K * MLKemEngine.N];
+        int[] publicVector = new int[_parameters.K * MLKemEngine.N];
+        int[] secretVector = new int[_parameters.K * MLKemEngine.N];
+        MLKemEngine.KeyGen(
+            _parameters, seed[..32], seed[32..], encapsulationKey, decapsulationKey, matrix, publicVector, secretVector);
 
-        ReplaceKeyMaterial(AsymmetricKeyMaterial.ForKeyPair(encapsulationKey, decapsulationKey));
+        ReplaceKeyMaterial(
+            MLKemKeyMaterial.ForKeyPair(_parameters, encapsulationKey, decapsulationKey, matrix, publicVector, secretVector));
     }
 
 }

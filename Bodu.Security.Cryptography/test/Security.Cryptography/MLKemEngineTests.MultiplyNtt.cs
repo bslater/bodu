@@ -30,4 +30,25 @@ public partial class MLKemEngineTests
             CollectionAssert.AreEqual(expected, actual, $"pair {i}");
         }
     }
+
+    /// <summary>
+    /// Verifies that the base-case products stay exact when the left factor's coefficients reach 4095, the largest
+    /// value 12-bit decoding yields: FIPS 203's decapsulation-key check does not bound the packed secret vector by q.
+    /// </summary>
+    [TestMethod]
+    public void MultiplyNtt_WhenLeftCoefficientsReachTheTwelveBitMaximum_ShouldMatchTheReference()
+    {
+        int[] left = Enumerable.Repeat(4095, MLKemEngine.N).ToArray();
+
+        foreach (int[] right in Polynomials().Take(20))
+        {
+            int[] expected = new int[MLKemEngine.N];
+            int[] actual = new int[MLKemEngine.N];
+
+            MLKemReference.MultiplyNtt(left, right, expected);
+            MLKemEngine.MultiplyNtt(left, right, actual);
+
+            CollectionAssert.AreEqual(expected, actual);
+        }
+    }
 }
