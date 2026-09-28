@@ -304,28 +304,28 @@ internal static class Poly1305AeadCore
         ReadOnlySpan<byte> ciphertext,
         Span<byte> tag)
     {
-        // The internal span core feeds the MAC input directly from the caller's buffers: no per-message key copy,
-        // no rented chunk buffer, and no bridging through the byte-array HashAlgorithm transform API. The block-hash
-        // base buffers residual bytes across AppendCore calls, so the ProcessBlock sequence is identical to a
-        // single-shot hash over AAD || pad16 || ciphertext || pad16 || lengths.
-        using var poly1305 = new Poly1305();
-        poly1305.InitializeKeyCore(poly1305Key);
+        // The authenticator lives on the stack and reads the caller's buffers in place; padding each segment to 16
+        // bytes happens inside it, so nothing is copied or allocated per message.
+        Poly1305Core mac = default;
 
-        Span<byte> scratch = stackalloc byte[16];
-        scratch.Clear();
+        try
+        {
+            mac.Initialize(poly1305Key);
+            mac.UpdatePadded(associatedData);
+            mac.UpdatePadded(ciphertext);
 
-        poly1305.AppendCore(associatedData);
-        poly1305.AppendCore(scratch[..PaddingTo16(associatedData.Length)]);
-        poly1305.AppendCore(ciphertext);
-        poly1305.AppendCore(scratch[..PaddingTo16(ciphertext.Length)]);
+            // Final 16-byte little-endian length block completes the 16-aligned MAC input.
+            Span<byte> lengths = stackalloc byte[Poly1305Core.BlockBytes];
+            BinaryPrimitives.WriteUInt64LittleEndian(lengths, (ulong)associatedData.Length);
+            BinaryPrimitives.WriteUInt64LittleEndian(lengths.Slice(sizeof(ulong)), (ulong)ciphertext.Length);
+            mac.Update(lengths);
 
-        // Final 16-byte little-endian length block completes the 16-aligned MAC input.
-        BinaryPrimitives.WriteUInt64LittleEndian(scratch[..sizeof(ulong)], (ulong)associatedData.Length);
-        BinaryPrimitives.WriteUInt64LittleEndian(scratch[sizeof(ulong)..], (ulong)ciphertext.Length);
-        poly1305.AppendCore(scratch);
-
-        poly1305.FinalizeTagCore(tag);
-        CryptographicOperations.ZeroMemory(scratch);
+            mac.Finish(tag);
+        }
+        finally
+        {
+            mac.Clear();
+        }
     }
 
     /// <summary>
@@ -334,23 +334,22 @@ internal static class Poly1305AeadCore
     /// <param name="poly1305Key">The 32-byte one-time Poly1305 key.</param>
     /// <param name="data">The message authenticated by the MAC.</param>
     /// <param name="tag">A 16-byte span that receives the computed tag.</param>
-    /// <exception cref="CryptographicException">The MAC failed to produce a tag.</exception>
     private static void ComputePoly1305(ReadOnlySpan<byte> poly1305Key, ReadOnlySpan<byte> data, Span<byte> tag)
     {
-        // Span core: keys and feeds the MAC directly from the caller's buffers with no per-message key copy.
-        using var poly1305 = new Poly1305();
-        poly1305.InitializeKeyCore(poly1305Key);
-        poly1305.AppendCore(data);
-        poly1305.FinalizeTagCore(tag);
-    }
+        // The authenticator lives on the stack and reads the caller's buffer in place.
+        Poly1305Core mac = default;
 
-    /// <summary>
-    /// Returns the number of zero bytes required to pad <paramref name="length" /> up to the next multiple of 16.
-    /// </summary>
-    /// <param name="length">The unpadded length, in bytes.</param>
-    /// <returns>A value in the range 0–15.</returns>
-    private static int PaddingTo16(int length) =>
-        (16 - (length & 15)) & 15;
+        try
+        {
+            mac.Initialize(poly1305Key);
+            mac.Update(data);
+            mac.Finish(tag);
+        }
+        finally
+        {
+            mac.Clear();
+        }
+    }
 
     /// <summary>
     /// Validates that <paramref name="output" /> can hold the ciphertext plus tag for a sealing operation.

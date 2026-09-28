@@ -22,12 +22,13 @@ public partial class Poly1305Tests
 
     /// <summary>
     /// Loads the RFC 8439 Appendix A.3 Poly1305 vectors from the embedded RFC text and yields them as
-    /// <see cref="DynamicDataAttribute" /> rows, mapping the one-time key, message, and tag onto a
+    /// <see cref="DynamicDataAttribute" /> rows, for these tests and <see cref="Poly1305CoreTests" />, mapping the
+    /// one-time key, message, and tag onto a
     /// <see cref="MessageDigestKnownAnswer" />.
     /// </summary>
     /// <returns>One row per Appendix A.3 vector.</returns>
     /// <exception cref="InvalidOperationException">The embedded resource cannot be located.</exception>
-    private static IEnumerable<object[]> Poly1305Rfc8439KatData()
+    internal static IEnumerable<object[]> Poly1305Rfc8439KatData()
     {
         using Stream stream = typeof(Poly1305Tests).Assembly.GetManifestResourceStream(Poly1305Rfc8439ResourceName)
             ?? throw new InvalidOperationException($"Embedded resource '{Poly1305Rfc8439ResourceName}' is missing.");
