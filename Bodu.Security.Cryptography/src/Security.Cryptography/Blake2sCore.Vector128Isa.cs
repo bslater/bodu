@@ -11,12 +11,13 @@ namespace Bodu.Security.Cryptography;
 internal static partial class Blake2sCore
 {
     /// <summary>
-    /// Supplies the four rotations of <c>G</c> and the three lane rotations of the 128-bit BLAKE2s kernel for one
-    /// instruction set.
+    /// Supplies the four rotations of <c>G</c>, the three lane rotations and the 4×4 transpose of the 128-bit BLAKE2s
+    /// and BLAKE3 kernels for one instruction set.
     /// </summary>
     /// <remarks>
-    /// <see cref="Vector128Kernel{TIsa}" /> is written once against this interface, so the AVX-512, SSSE3 and AdvSimd
-    /// kernels share every step but these. Each member is a fixed permutation of its operand's bits or lanes.
+    /// <see cref="Vector128Kernel{TIsa}" /> and BLAKE3's 128-bit kernels are written once against this interface, so
+    /// the AVX-512, SSSE3 and AdvSimd kernels share every step but these; BLAKE3's <c>G</c> is BLAKE2s's, rotations
+    /// included. Each member is a fixed permutation of its operands' bits or lanes.
     /// </remarks>
     internal interface IVector128Isa
     {
@@ -68,5 +69,18 @@ internal static partial class Blake2sCore
         /// <param name="value">The lanes to rotate.</param>
         /// <returns>The rotated lanes.</returns>
         static abstract Vector128<uint> RotateLanes3(Vector128<uint> value);
+
+        /// <summary>
+        /// Transposes four rows of four words: afterwards row <c>i</c> holds what was column <c>i</c>.
+        /// </summary>
+        /// <param name="row0">The first row, replaced by the first column.</param>
+        /// <param name="row1">The second row, replaced by the second column.</param>
+        /// <param name="row2">The third row, replaced by the third column.</param>
+        /// <param name="row3">The fourth row, replaced by the fourth column.</param>
+        /// <remarks>
+        /// BLAKE3's four-way kernel uses it to turn four inputs' message words into one vector per word, and the four
+        /// chaining values back.
+        /// </remarks>
+        static abstract void Transpose(ref Vector128<uint> row0, ref Vector128<uint> row1, ref Vector128<uint> row2, ref Vector128<uint> row3);
     }
 }

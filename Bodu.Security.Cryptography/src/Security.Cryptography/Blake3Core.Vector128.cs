@@ -21,10 +21,19 @@ internal static partial class Blake3Core
     /// so the BLAKE2s shims serve both.
     /// </typeparam>
     /// <remarks>
-    /// The working vector is held as four rows of four words, so lane <c>i</c> of the rows is column <c>i</c> and one
-    /// vector <c>G</c> mixes all four columns. Rotating the second, third and fourth rows by one, two and three lanes
-    /// turns the diagonals into columns for the second half of a round, and rotating them back restores the rows. Each
-    /// round's message words are gathered straight from the block as the schedule names them.
+    /// <para>
+    /// <see cref="Compress" /> compresses one block: the working vector is held as four rows of four words, so lane
+    /// <c>i</c> of the rows is column <c>i</c> and one vector <c>G</c> mixes all four columns. Rotating the second,
+    /// third and fourth rows by one, two and three lanes turns the diagonals into columns for the second half of a
+    /// round, and rotating them back restores the rows. Each round's message words are gathered straight from the block
+    /// as the schedule names them.
+    /// </para>
+    /// <para>
+    /// <see cref="HashMany" /> compresses up to four inputs at once, one to a lane, as the eight-way kernel does eight:
+    /// each working-vector word is a vector holding that word for all four inputs, and 4×4 transposes carry the message
+    /// words in and the chaining values out. The transposed message is its only copy of the input; it lives on the
+    /// stack and is cleared before the method returns.
+    /// </para>
     /// </remarks>
     internal readonly struct Vector128Kernel<TIsa>
         where TIsa : struct, Blake2sCore.IVector128Isa
@@ -65,6 +74,133 @@ internal static partial class Blake3Core
 
             (a ^ c).StoreUnsafe(ref cv);
             (b ^ d).StoreUnsafe(ref cv, 4);
+        }
+
+        /// <summary>
+        /// Compresses up to four equally spaced inputs of whole blocks, each from the key to its chaining value.
+        /// </summary>
+        /// <param name="input">The first byte of the first input.</param>
+        /// <param name="stride">The distance, in bytes, between the starts of consecutive inputs.</param>
+        /// <param name="lanes">The number of inputs, from 1 to 4.</param>
+        /// <param name="blocks">The number of 64-byte blocks in every input.</param>
+        /// <param name="key">The first of the eight key words every input starts from.</param>
+        /// <param name="counter">The counter of the first input.</param>
+        /// <param name="incrementCounter">
+        /// <see langword="true" /> to give input <c>i</c> the counter <paramref name="counter" /> + <c>i</c>;
+        /// <see langword="false" /> to give every input <paramref name="counter" />.
+        /// </param>
+        /// <param name="flags">The flags on every block.</param>
+        /// <param name="flagsStart">The flags added to every input's first block.</param>
+        /// <param name="flagsEnd">The flags added to every input's last block.</param>
+        /// <param name="output">The first byte of the chaining values, 32 bytes to an input.</param>
+        /// <remarks>
+        /// Each block's message is read in full before the rounds, and the chaining values are written only after the
+        /// last block, so the output may overlay the inputs of a one-block call.
+        /// </remarks>
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+        internal static void HashMany(
+            ref byte input,
+            nint stride,
+            int lanes,
+            int blocks,
+            ref uint key,
+            ulong counter,
+            bool incrementCounter,
+            uint flags,
+            uint flagsStart,
+            uint flagsEnd,
+            ref byte output)
+        {
+            // Lanes past the inputs repeat the first input, so every load stays inside the inputs; their results are
+            // dropped.
+            nint offset1 = lanes > 1 ? stride : 0;
+            nint offset2 = lanes > 2 ? 2 * stride : 0;
+            nint offset3 = lanes > 3 ? 3 * stride : 0;
+
+            ulong step = incrementCounter ? 1UL : 0UL;
+            Vector128<uint> counterLow = Vector128.Create(
+                (uint)counter,
+                (uint)(counter + step),
+                (uint)(counter + (2 * step)),
+                (uint)(counter + (3 * step)));
+            Vector128<uint> counterHigh = Vector128.Create(
+                (uint)(counter >> 32),
+                (uint)((counter + step) >> 32),
+                (uint)((counter + (2 * step)) >> 32),
+                (uint)((counter + (3 * step)) >> 32));
+
+            Vector128<uint> h0 = Vector128.Create(key);
+            Vector128<uint> h1 = Vector128.Create(Unsafe.Add(ref key, 1));
+            Vector128<uint> h2 = Vector128.Create(Unsafe.Add(ref key, 2));
+            Vector128<uint> h3 = Vector128.Create(Unsafe.Add(ref key, 3));
+            Vector128<uint> h4 = Vector128.Create(Unsafe.Add(ref key, 4));
+            Vector128<uint> h5 = Vector128.Create(Unsafe.Add(ref key, 5));
+            Vector128<uint> h6 = Vector128.Create(Unsafe.Add(ref key, 6));
+            Vector128<uint> h7 = Vector128.Create(Unsafe.Add(ref key, 7));
+
+            Span<Vector128<uint>> message = stackalloc Vector128<uint>[16];
+            ref Vector128<uint> m = ref MemoryMarshal.GetReference(message);
+            ref byte schedule = ref MemoryMarshal.GetReference(MessageSchedule);
+
+            for (int block = 0; block < blocks; block++)
+            {
+                LoadMessage(ref Unsafe.Add(ref input, block * BlockBytes), offset1, offset2, offset3, ref m);
+
+                uint blockFlags = flags;
+                if (block == 0) blockFlags |= flagsStart;
+                if (block == blocks - 1) blockFlags |= flagsEnd;
+
+                Vector128<uint> v0 = h0;
+                Vector128<uint> v1 = h1;
+                Vector128<uint> v2 = h2;
+                Vector128<uint> v3 = h3;
+                Vector128<uint> v4 = h4;
+                Vector128<uint> v5 = h5;
+                Vector128<uint> v6 = h6;
+                Vector128<uint> v7 = h7;
+                Vector128<uint> v8 = Vector128.Create(Iv0);
+                Vector128<uint> v9 = Vector128.Create(Iv1);
+                Vector128<uint> v10 = Vector128.Create(Iv2);
+                Vector128<uint> v11 = Vector128.Create(Iv3);
+                Vector128<uint> v12 = counterLow;
+                Vector128<uint> v13 = counterHigh;
+                Vector128<uint> v14 = Vector128.Create((uint)BlockBytes);
+                Vector128<uint> v15 = Vector128.Create(blockFlags);
+
+                for (int round = 0; round < 7; round++)
+                {
+                    ref byte s = ref Unsafe.Add(ref schedule, round * 16);
+
+                    G(ref v0, ref v4, ref v8, ref v12, Word(ref m, ref s, 0), Word(ref m, ref s, 1));
+                    G(ref v1, ref v5, ref v9, ref v13, Word(ref m, ref s, 2), Word(ref m, ref s, 3));
+                    G(ref v2, ref v6, ref v10, ref v14, Word(ref m, ref s, 4), Word(ref m, ref s, 5));
+                    G(ref v3, ref v7, ref v11, ref v15, Word(ref m, ref s, 6), Word(ref m, ref s, 7));
+                    G(ref v0, ref v5, ref v10, ref v15, Word(ref m, ref s, 8), Word(ref m, ref s, 9));
+                    G(ref v1, ref v6, ref v11, ref v12, Word(ref m, ref s, 10), Word(ref m, ref s, 11));
+                    G(ref v2, ref v7, ref v8, ref v13, Word(ref m, ref s, 12), Word(ref m, ref s, 13));
+                    G(ref v3, ref v4, ref v9, ref v14, Word(ref m, ref s, 14), Word(ref m, ref s, 15));
+                }
+
+                h0 = v0 ^ v8;
+                h1 = v1 ^ v9;
+                h2 = v2 ^ v10;
+                h3 = v3 ^ v11;
+                h4 = v4 ^ v12;
+                h5 = v5 ^ v13;
+                h6 = v6 ^ v14;
+                h7 = v7 ^ v15;
+            }
+
+            message.Clear();
+
+            // Row i of each transposed half is the matching half of lane i's chaining value.
+            TIsa.Transpose(ref h0, ref h1, ref h2, ref h3);
+            TIsa.Transpose(ref h4, ref h5, ref h6, ref h7);
+
+            Store(h0, h4, ref output, 0);
+            if (lanes > 1) Store(h1, h5, ref output, 1);
+            if (lanes > 2) Store(h2, h6, ref output, 2);
+            if (lanes > 3) Store(h3, h7, ref output, 3);
         }
 
         /// <summary>
@@ -141,5 +277,59 @@ internal static partial class Blake3Core
                 M(ref block, Unsafe.Add(ref schedule, k1)),
                 M(ref block, Unsafe.Add(ref schedule, k2)),
                 M(ref block, Unsafe.Add(ref schedule, k3)));
+
+        /// <summary>
+        /// Loads one block of each of four inputs and transposes it into sixteen vectors, one per message word.
+        /// </summary>
+        /// <param name="block">The first byte of the first input's block.</param>
+        /// <param name="offset1">The offset of the second input's block from the first's.</param>
+        /// <param name="offset2">The offset of the third input's block from the first's.</param>
+        /// <param name="offset3">The offset of the fourth input's block from the first's.</param>
+        /// <param name="message">The first of the sixteen vectors that receive the message words.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void LoadMessage(ref byte block, nint offset1, nint offset2, nint offset3, ref Vector128<uint> message)
+        {
+            for (nint quarter = 0; quarter < BlockBytes; quarter += 16)
+            {
+                Vector128<uint> row0 = Vector128.LoadUnsafe(ref Unsafe.Add(ref block, quarter)).AsUInt32();
+                Vector128<uint> row1 = Vector128.LoadUnsafe(ref Unsafe.Add(ref block, offset1 + quarter)).AsUInt32();
+                Vector128<uint> row2 = Vector128.LoadUnsafe(ref Unsafe.Add(ref block, offset2 + quarter)).AsUInt32();
+                Vector128<uint> row3 = Vector128.LoadUnsafe(ref Unsafe.Add(ref block, offset3 + quarter)).AsUInt32();
+
+                TIsa.Transpose(ref row0, ref row1, ref row2, ref row3);
+
+                ref Vector128<uint> words = ref Unsafe.Add(ref message, quarter / sizeof(uint));
+                words = row0;
+                Unsafe.Add(ref words, 1) = row1;
+                Unsafe.Add(ref words, 2) = row2;
+                Unsafe.Add(ref words, 3) = row3;
+            }
+        }
+
+        /// <summary>
+        /// Returns the transposed message word a round's schedule names.
+        /// </summary>
+        /// <param name="message">The first of the sixteen transposed message words.</param>
+        /// <param name="schedule">The first of the round's sixteen schedule entries.</param>
+        /// <param name="k">The index of the schedule entry.</param>
+        /// <returns>The message word, for all four inputs.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static Vector128<uint> Word(ref Vector128<uint> message, ref byte schedule, int k) =>
+            Unsafe.Add(ref message, Unsafe.Add(ref schedule, k));
+
+        /// <summary>
+        /// Writes one input's chaining value.
+        /// </summary>
+        /// <param name="low">The chaining value's first four words.</param>
+        /// <param name="high">The chaining value's last four words.</param>
+        /// <param name="output">The first byte of the chaining values.</param>
+        /// <param name="lane">The input's index.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void Store(Vector128<uint> low, Vector128<uint> high, ref byte output, int lane)
+        {
+            ref byte destination = ref Unsafe.Add(ref output, lane * ChainingValueBytes);
+            low.AsByte().StoreUnsafe(ref destination);
+            high.AsByte().StoreUnsafe(ref Unsafe.Add(ref destination, 16));
+        }
     }
 }

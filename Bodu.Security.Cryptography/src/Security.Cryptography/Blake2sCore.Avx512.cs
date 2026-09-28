@@ -13,7 +13,8 @@ namespace Bodu.Security.Cryptography;
 internal static partial class Blake2sCore
 {
     /// <summary>
-    /// Supplies the rotations with AVX-512VL, each a single <c>VPRORD</c>, and the lane rotations with <c>PSHUFD</c>.
+    /// Supplies the rotations with AVX-512VL, each a single <c>VPRORD</c>, the lane rotations with <c>PSHUFD</c>, and
+    /// the transpose with SSE2's unpacks.
     /// </summary>
     internal readonly struct Avx512Isa
         : IVector128Isa
@@ -80,5 +81,16 @@ internal static partial class Blake2sCore
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector128<uint> RotateLanes3(Vector128<uint> value) =>
             Sse2.Shuffle(value, 0b10_01_00_11);
+
+        /// <summary>
+        /// Transposes four rows of four words, as the SSSE3 shim does.
+        /// </summary>
+        /// <param name="row0">The first row, replaced by the first column.</param>
+        /// <param name="row1">The second row, replaced by the second column.</param>
+        /// <param name="row2">The third row, replaced by the third column.</param>
+        /// <param name="row3">The fourth row, replaced by the fourth column.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Transpose(ref Vector128<uint> row0, ref Vector128<uint> row1, ref Vector128<uint> row2, ref Vector128<uint> row3) =>
+            Ssse3Isa.Transpose(ref row0, ref row1, ref row2, ref row3);
     }
 }

@@ -5,24 +5,32 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Buffers.Binary;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Implements the BLAKE3 compression function for <see cref="Blake3" />.
+/// Implements the BLAKE3 compression function for <see cref="Blake3" />: one block at a time, and whole chunks, parents
+/// and subtrees many at once.
 /// </summary>
 /// <remarks>
 /// <para>
-/// Each kernel compresses one 64-byte block into an eight-word chaining value. Dispatch picks the widest kernel the
-/// processor supports and the process allows; every kernel produces the same chaining value.
+/// <see cref="Compress(Span{uint}, ReadOnlySpan{byte}, ulong, uint, uint)" /> compresses one 64-byte block into an
+/// eight-word chaining value. <see cref="CompressChunks" /> and <see cref="CompressParents" /> compress many inputs at
+/// once, one to a lane: eight on the 256-bit kernel over AVX2 or AVX-512VL, and four on the 128-bit kernel over SSSE3
+/// or AdvSimd. <see cref="CompressSubtree(ReadOnlySpan{byte}, ReadOnlySpan{uint}, ulong, uint, Span{uint})" /> builds a
+/// complete subtree from both. Dispatch picks the widest kernel the processor supports and the process allows; every
+/// kernel produces the same chaining values.
 /// </para>
 /// <para>
-/// The kernels read the message words straight from the block and keep the working vector in registers, so they leave
-/// no copy of the message or of the working vector in memory of their own. Values the JIT spills to its own stack slots
-/// are beyond the library's reach.
+/// The one-block kernels read the message words straight from the block and keep the working vector in registers, so
+/// they leave no copy of the message or of the working vector in memory of their own. The many-input kernels hold a
+/// transposed copy of the current blocks, and the subtree code the chaining values of up to 64 chunks, on the stack,
+/// clearing both before they return. Values the JIT spills to its own stack slots are beyond the library's reach.
 /// </para>
 /// </remarks>
+[SkipLocalsInit]
 internal static partial class Blake3Core
 {
     /// <summary>The number of bytes in a BLAKE3 block.</summary>
@@ -239,5 +247,23 @@ internal static partial class Blake3Core
 
         for (int i = 0; i < ChainingValueWords; i++)
             BinaryPrimitives.WriteUInt32LittleEndian(destination[(i * sizeof(uint))..], chainingValue[i]);
+    }
+
+    /// <summary>
+    /// Decodes a chaining value from the 32 little-endian bytes BLAKE3 defines.
+    /// </summary>
+    /// <param name="source">The 32-byte encoding.</param>
+    /// <param name="chainingValue">The eight words that receive the chaining value.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="source" /> holds fewer than 32 bytes, or <paramref name="chainingValue" /> fewer than eight
+    /// words.
+    /// </exception>
+    internal static void LoadChainingValue(ReadOnlySpan<byte> source, Span<uint> chainingValue)
+    {
+        ArgumentOutOfRangeException.ThrowIfLessThan(source.Length, ChainingValueBytes, nameof(source));
+        ArgumentOutOfRangeException.ThrowIfLessThan(chainingValue.Length, ChainingValueWords, nameof(chainingValue));
+
+        for (int i = 0; i < ChainingValueWords; i++)
+            chainingValue[i] = BinaryPrimitives.ReadUInt32LittleEndian(source[(i * sizeof(uint))..]);
     }
 }

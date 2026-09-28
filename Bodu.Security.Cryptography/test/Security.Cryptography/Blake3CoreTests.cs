@@ -159,6 +159,53 @@ public sealed partial class Blake3CoreTests
     }
 
     /// <summary>
+    /// Encodes a chaining value as its eight words, little-endian.
+    /// </summary>
+    /// <param name="chainingValue">The chaining value.</param>
+    /// <returns>The 32-byte encoding.</returns>
+    private static byte[] Encode(uint[] chainingValue)
+    {
+        byte[] bytes = new byte[Blake3Core.ChainingValueBytes];
+        for (int i = 0; i < 8; i++)
+            BinaryPrimitives.WriteUInt32LittleEndian(bytes.AsSpan(i * sizeof(uint)), chainingValue[i]);
+
+        return bytes;
+    }
+
+    /// <summary>
+    /// Computes, with the scalar kernel one block at a time, the chaining value of a complete subtree: every chunk
+    /// compressed from the key, and the chaining values paired level by level.
+    /// </summary>
+    /// <param name="key">The eight-word key.</param>
+    /// <param name="flags">The mode's flags.</param>
+    /// <param name="input">The subtree's chunks.</param>
+    /// <param name="counter">The counter of the subtree's first chunk.</param>
+    /// <returns>The subtree's chaining value.</returns>
+    private static uint[] ReferenceSubtree(ReadOnlySpan<uint> key, uint flags, ReadOnlySpan<byte> input, ulong counter)
+    {
+        int chunks = input.Length / Blake3Core.ChunkBytes;
+        uint[][] chainingValues = new uint[chunks][];
+        for (int chunk = 0; chunk < chunks; chunk++)
+            chainingValues[chunk] = CompressChunk(Blake3Core.KernelKind.Scalar, key, flags, input.Slice(chunk * Blake3Core.ChunkBytes, Blake3Core.ChunkBytes), counter + (ulong)chunk, isRoot: false);
+
+        return Subtree(Blake3Core.KernelKind.Scalar, key, flags, chainingValues, 0, chunks, isRoot: false);
+    }
+
+    /// <summary>
+    /// Returns eight seeded random key words.
+    /// </summary>
+    /// <param name="random">The source of randomness.</param>
+    /// <returns>The key.</returns>
+    private static uint[] RandomKey(Random random)
+    {
+        uint[] key = new uint[Blake3Core.ChainingValueWords];
+        for (int i = 0; i < key.Length; i++)
+            key[i] = (uint)random.Next() ^ ((uint)random.Next() << 31);
+
+        return key;
+    }
+
+    /// <summary>
     /// Reads a 32-byte key as eight little-endian words.
     /// </summary>
     /// <param name="key">The key.</param>

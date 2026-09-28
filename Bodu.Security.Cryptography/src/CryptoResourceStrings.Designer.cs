@@ -79,6 +79,15 @@ namespace Bodu {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A BLAKE3 subtree must hold a power-of-two number of whole {0}-byte chunks..
+        /// </summary>
+        internal static string Arg_Invalid_Blake3SubtreeChunkCount {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_Blake3SubtreeChunkCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid block size {0}. Size of block must be {1}..
         /// </summary>
         internal static string Arg_Invalid_BlockLength {

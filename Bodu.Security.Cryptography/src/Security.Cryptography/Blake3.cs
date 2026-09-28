@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using System.Numerics;
 using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
@@ -180,6 +181,41 @@ public sealed class Blake3
     }
 
     /// <summary>
+    /// Consumes the supplied input span. Whole chunks that start on a chunk boundary and are followed by more input are
+    /// hashed as complete subtrees, many chunks at once; everything else goes through the block-by-block path of the
+    /// base class, which keeps the final block deferred.
+    /// </summary>
+    /// <param name="source">
+    /// The input bytes to consume. May be empty, partial, exact-block, or multi-chunk in length.
+    /// </param>
+    /// <exception cref="ObjectDisposedException">The algorithm instance has been disposed.</exception>
+    protected override void HashCore(ReadOnlySpan<byte> source)
+    {
+        ThrowIfDisposed();
+
+        ulong position = _totalBytes + (ulong)_residualBytes;
+        int toBoundary = (int)((ChunkSize - (position % ChunkSize)) % ChunkSize);
+        if (source.Length - toBoundary > ChunkSize)
+        {
+            base.HashCore(source[..toBoundary]);
+            source = source[toBoundary..];
+
+            // A full residual block ends the current chunk. More input follows, so it is not the final block: compress
+            // it now, as the base class would before taking the next byte.
+            if (_residualBytes == BlockSize)
+            {
+                ProcessBlock(_residualBlock.Span, _totalBytes + BlockSize, isFinal: false);
+                _totalBytes += BlockSize;
+                _residualBytes = 0;
+            }
+
+            source = source[HashSubtrees(source)..];
+        }
+
+        base.HashCore(source);
+    }
+
+    /// <summary>
     /// Advances the BLAKE3 compression state by one 64-byte block, applying the correct chunk-level and tree-level
     /// domain flags derived from <paramref name="totalBytesIncludingThisBlock" />.
     /// </summary>
@@ -236,10 +272,10 @@ public sealed class Blake3
         Blake3Core.Compress(_chunkCv, block, chunkIndex, blockLen, flags);
 
         // Completed non-final chunks are pushed to the stack for pairwise tree merging.
-        // PushChunkCv copies the CV into its merge buffer immediately, so the caller's _chunkCv may be reused for the
+        // PushSubtreeCv copies the CV into its merge buffer immediately, so the caller's _chunkCv may be reused for the
         // next chunk without cloning.
         if (isLastBlock && !isFinal)
-            PushChunkCv(_chunkCv, chunkIndex);
+            PushSubtreeCv(_chunkCv, 0, chunkIndex + 1);
     }
 
     /// <inheritdoc />
@@ -332,30 +368,67 @@ public sealed class Blake3
     // ---- tree-merging stack helpers ----
 
     /// <summary>
-    /// Pushes a completed chunk chaining value onto <see cref="_cvStack" />, folding the top of the stack into the
-    /// incoming CV whenever a balanced subtree boundary completes at this chunk.
+    /// Hashes the whole chunks at the front of the input as complete subtrees, leaving at least one byte for the
+    /// deferred final block.
+    /// </summary>
+    /// <param name="source">The input, starting on a chunk boundary with nothing buffered.</param>
+    /// <returns>The number of bytes hashed: a whole number of chunks.</returns>
+    /// <remarks>
+    /// Each subtree is the largest run of whole chunks that leaves at least one byte behind, holds a power of two of
+    /// chunks, and starts on a multiple of its own length, which makes it a node of the tree whatever input follows.
+    /// Its chaining value joins the stack as a chunk's would, one level up for every doubling of its size.
+    /// </remarks>
+    private int HashSubtrees(ReadOnlySpan<byte> source)
+    {
+        Span<uint> chainingValue = stackalloc uint[8];
+        ulong chunkCount = _totalBytes / ChunkSize;
+        int consumed = 0;
+
+        while (source.Length - consumed > ChunkSize)
+        {
+            int chunks = 1 << BitOperations.Log2((uint)((source.Length - consumed - 1) / ChunkSize));
+            if (chunkCount != 0)
+                chunks = (int)Math.Min((ulong)chunks, 1UL << BitOperations.TrailingZeroCount(chunkCount));
+
+            Blake3Core.CompressSubtree(source.Slice(consumed, chunks * ChunkSize), Blake3Core.InitializationVector, chunkCount, 0, chainingValue);
+
+            chunkCount += (ulong)chunks;
+            consumed += chunks * ChunkSize;
+            PushSubtreeCv(chainingValue, BitOperations.Log2((uint)chunks), chunkCount);
+        }
+
+        _totalBytes += (ulong)consumed;
+        chainingValue.Clear();
+
+        return consumed;
+    }
+
+    /// <summary>
+    /// Pushes the chaining value of a completed subtree onto <see cref="_cvStack" />, folding the top of the stack into
+    /// the incoming CV whenever a balanced subtree boundary completes with it.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Implements the BLAKE3 push-chunk-chaining-value step from §2.1 of the specification. After completing the chunk
-    /// at zero-based index <paramref name="chunkIdx" /> the total chunk count is
-    /// <c>(<paramref name="chunkIdx" /> + 1)</c>; the algorithm folds one tree level into the incoming CV for each
-    /// trailing zero bit of that count. Each trailing zero indicates a balanced subtree of the corresponding height has
-    /// just been completed, so the top stack entry (its left sibling) is popped and merged with the incoming CV via
-    /// <see cref="ParentCv" />.
+    /// Implements the BLAKE3 push-chunk-chaining-value step from §2.1 of the specification, generalized to a subtree of
+    /// <c>2^<paramref name="level" /></c> chunks — a single chunk at level 0. After it the total chunk count is
+    /// <paramref name="chunkCount" />; the algorithm folds one tree level into the incoming CV for each trailing zero
+    /// bit of that count above <paramref name="level" />. Each such bit indicates a balanced subtree of the
+    /// corresponding height has just been completed, so the top stack entry (its left sibling) is popped and merged
+    /// with the incoming CV via <see cref="ParentCv" />.
     /// </para>
     /// <para>
-    /// After this step the live stack depth equals <c>popcount(<paramref name="chunkIdx"/> + 1)</c>, which is bounded
-    /// at <see cref="MaxCvStackDepth" /> for any well-formed BLAKE3 input.
+    /// After this step the live stack depth equals <c>popcount(<paramref name="chunkCount"/>)</c>, which is bounded at
+    /// <see cref="MaxCvStackDepth" /> for any well-formed BLAKE3 input.
     /// </para>
     /// </remarks>
-    /// <param name="cv">The 8-word chaining value produced by the completed chunk.</param>
-    /// <param name="chunkIdx">The zero-based chunk index of the completed chunk.</param>
+    /// <param name="cv">The 8-word chaining value of the completed subtree.</param>
+    /// <param name="level">The base-2 logarithm of the subtree's chunk count.</param>
+    /// <param name="chunkCount">The number of chunks hashed, the subtree's included.</param>
     /// <exception cref="InvalidOperationException">
     /// The stack already holds <see cref="MaxCvStackDepth" /> live levels. This is unreachable for any well-formed
     /// BLAKE3 input (which is bounded at <c>2^54</c> chunks) and indicates a corrupted streaming state.
     /// </exception>
-    private void PushChunkCv(ReadOnlySpan<uint> cv, ulong chunkIdx)
+    private void PushSubtreeCv(ReadOnlySpan<uint> cv, int level, ulong chunkCount)
     {
         // Fold the incoming CV into a stack-local working buffer so we can merge in place without allocating an array
         // per tree level.
@@ -363,9 +436,8 @@ public sealed class Blake3
         cv[..8].CopyTo(working);
 
         // BLAKE3 specifies merging one level for every trailing zero of the post-completion chunk count: each such bit
-        // marks a balanced subtree boundary completing at this chunk.
-        ulong completed = chunkIdx + 1;
-        int mergeCount = System.Numerics.BitOperations.TrailingZeroCount(completed);
+        // marks a balanced subtree boundary completing here. The subtree's own levels are already inside its CV.
+        int mergeCount = BitOperations.TrailingZeroCount(chunkCount) - level;
 
         for (int i = 0; i < mergeCount; i++)
         {

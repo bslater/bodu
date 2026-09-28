@@ -10,8 +10,9 @@ using System.Runtime.Intrinsics;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// The instruction-set shims of the 128-bit kernel: each rotation and lane rotation of each shim is held to its
-/// definition, so a shim that runs only on ARM64 is checked operation by operation wherever that hardware runs the suite.
+/// The instruction-set shims of the 128-bit kernel: each rotation, lane rotation and transpose of each shim is held to
+/// its definition, so a shim that runs only on ARM64 is checked operation by operation wherever that hardware runs the
+/// suite.
 /// </summary>
 public sealed partial class Blake2sCoreTests
 {
@@ -106,5 +107,43 @@ public sealed partial class Blake2sCoreTests
             lanes[(3 + places) % 4]);
 
         Assert.AreEqual(expected, rotate(Vector128.Create(lanes[0], lanes[1], lanes[2], lanes[3])));
+    }
+
+    /// <summary>
+    /// Verifies that each shim transposes four rows of four words, so that each row afterwards holds what was the
+    /// matching column.
+    /// </summary>
+    /// <param name="isa">The shim's instruction set.</param>
+    [TestMethod]
+    [DataRow("Ssse3")]
+    [DataRow("AdvSimd")]
+    [DataRow("Avx512")]
+    public void Transpose_ForEachIsa_ShouldExchangeRowsAndColumns(string isa)
+    {
+        Blake2sCore.KernelKind kind = ParseSupportedKernel(isa);
+        Vector128<uint> row0 = Vector128.Create(0x00U, 0x01U, 0x02U, 0x03U);
+        Vector128<uint> row1 = Vector128.Create(0x10U, 0x11U, 0x12U, 0x13U);
+        Vector128<uint> row2 = Vector128.Create(0x20U, 0x21U, 0x22U, 0x23U);
+        Vector128<uint> row3 = Vector128.Create(0x30U, 0x31U, 0x32U, 0x33U);
+
+        switch (kind)
+        {
+            case Blake2sCore.KernelKind.Ssse3:
+                Blake2sCore.Ssse3Isa.Transpose(ref row0, ref row1, ref row2, ref row3);
+                break;
+
+            case Blake2sCore.KernelKind.AdvSimd:
+                Blake2sCore.AdvSimdIsa.Transpose(ref row0, ref row1, ref row2, ref row3);
+                break;
+
+            default:
+                Blake2sCore.Avx512Isa.Transpose(ref row0, ref row1, ref row2, ref row3);
+                break;
+        }
+
+        Assert.AreEqual(Vector128.Create(0x00U, 0x10U, 0x20U, 0x30U), row0);
+        Assert.AreEqual(Vector128.Create(0x01U, 0x11U, 0x21U, 0x31U), row1);
+        Assert.AreEqual(Vector128.Create(0x02U, 0x12U, 0x22U, 0x32U), row2);
+        Assert.AreEqual(Vector128.Create(0x03U, 0x13U, 0x23U, 0x33U), row3);
     }
 }

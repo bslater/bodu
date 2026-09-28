@@ -13,8 +13,8 @@ namespace Bodu.Security.Cryptography;
 internal static partial class Blake2sCore
 {
     /// <summary>
-    /// Supplies the rotations with SSSE3 — by 16 and 8 bits a <c>PSHUFB</c>, by 12 and 7 bits a pair of shifts — and
-    /// the lane rotations with <c>PSHUFD</c>.
+    /// Supplies the rotations with SSSE3 — by 16 and 8 bits a <c>PSHUFB</c>, by 12 and 7 bits a pair of shifts — the
+    /// lane rotations with <c>PSHUFD</c>, and the transpose with SSE2's unpacks.
     /// </summary>
     internal readonly struct Ssse3Isa
         : IVector128Isa
@@ -81,5 +81,26 @@ internal static partial class Blake2sCore
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector128<uint> RotateLanes3(Vector128<uint> value) =>
             Sse2.Shuffle(value, 0b10_01_00_11);
+
+        /// <summary>
+        /// Transposes four rows of four words, interleaving words and then word pairs with <c>PUNPCK</c>.
+        /// </summary>
+        /// <param name="row0">The first row, replaced by the first column.</param>
+        /// <param name="row1">The second row, replaced by the second column.</param>
+        /// <param name="row2">The third row, replaced by the third column.</param>
+        /// <param name="row3">The fourth row, replaced by the fourth column.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Transpose(ref Vector128<uint> row0, ref Vector128<uint> row1, ref Vector128<uint> row2, ref Vector128<uint> row3)
+        {
+            Vector128<ulong> low01 = Sse2.UnpackLow(row0, row1).AsUInt64();
+            Vector128<ulong> high01 = Sse2.UnpackHigh(row0, row1).AsUInt64();
+            Vector128<ulong> low23 = Sse2.UnpackLow(row2, row3).AsUInt64();
+            Vector128<ulong> high23 = Sse2.UnpackHigh(row2, row3).AsUInt64();
+
+            row0 = Sse2.UnpackLow(low01, low23).AsUInt32();
+            row1 = Sse2.UnpackHigh(low01, low23).AsUInt32();
+            row2 = Sse2.UnpackLow(high01, high23).AsUInt32();
+            row3 = Sse2.UnpackHigh(high01, high23).AsUInt32();
+        }
     }
 }
