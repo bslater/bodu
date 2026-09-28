@@ -105,7 +105,8 @@ public sealed class XChaCha20Poly1305
     /// <remarks>
     /// Derives the 256-bit ChaCha20 subkey from the key and the first 128 bits of the nonce via HChaCha20, then returns
     /// a ChaCha20 engine under that subkey with a 96-bit nonce formed as four zero bytes followed by the trailing 64
-    /// bits of the extended nonce.
+    /// bits of the extended nonce. <see cref="IAeadTransform.Encrypt" /> and <see cref="IAeadTransform.Decrypt" /> draw
+    /// the same keystream from a value on the stack instead.
     /// </remarks>
     protected override IStreamCipher CreateEngine()
     {
@@ -114,14 +115,78 @@ public sealed class XChaCha20Poly1305
 
         try
         {
-            ChaCha20StreamCipher.HChaCha20(Key, Nonce[..ChaCha20StreamCipher.HChaChaNonceSizeBytes], subkey);
-            Nonce.Slice(ChaCha20StreamCipher.HChaChaNonceSizeBytes, 8).CopyTo(chachaNonce[4..]);
-
+            DeriveChaCha20KeyAndNonce(subkey, chachaNonce);
             return new ChaCha20StreamCipher(subkey, chachaNonce, initialCounter: 0);
         }
         finally
         {
             CryptographicOperations.ZeroMemory(subkey);
         }
+    }
+
+    /// <inheritdoc />
+    private protected override int SealMessage(ReadOnlySpan<byte> associatedData, ReadOnlySpan<byte> plaintext, Span<byte> output)
+    {
+        ChaCha20Core.Keystream keystream = default;
+
+        try
+        {
+            InitializeKeystream(ref keystream);
+            return Poly1305AeadCore.SealRfc8439(ref keystream, associatedData, plaintext, output);
+        }
+        finally
+        {
+            keystream.Clear();
+        }
+    }
+
+    /// <inheritdoc />
+    private protected override int OpenMessage(ReadOnlySpan<byte> associatedData, ReadOnlySpan<byte> ciphertextWithTag, Span<byte> output)
+    {
+        ChaCha20Core.Keystream keystream = default;
+
+        try
+        {
+            InitializeKeystream(ref keystream);
+            return Poly1305AeadCore.OpenRfc8439(ref keystream, associatedData, ciphertextWithTag, output);
+        }
+        finally
+        {
+            keystream.Clear();
+        }
+    }
+
+    /// <summary>
+    /// Seeds a ChaCha20 keystream in place with this message's subkey and nonce, positioned at block counter 0.
+    /// </summary>
+    /// <param name="keystream">The keystream to seed.</param>
+    private void InitializeKeystream(ref ChaCha20Core.Keystream keystream)
+    {
+        Span<byte> subkey = stackalloc byte[ChaCha20StreamCipher.KeySizeBytes];
+        Span<byte> chachaNonce = stackalloc byte[ChaCha20StreamCipher.NonceSizeBytes];
+
+        try
+        {
+            DeriveChaCha20KeyAndNonce(subkey, chachaNonce);
+            keystream.Initialize(subkey, chachaNonce, counter: 0);
+        }
+        finally
+        {
+            CryptographicOperations.ZeroMemory(subkey);
+        }
+    }
+
+    /// <summary>
+    /// Derives this message's ChaCha20 key and nonce: HChaCha20 over the key and the first 128 bits of the nonce, and
+    /// four zero bytes followed by the trailing 64 bits of the nonce.
+    /// </summary>
+    /// <param name="subkey">Receives the 32-byte subkey.</param>
+    /// <param name="chachaNonce">Receives the 12-byte ChaCha20 nonce.</param>
+    private void DeriveChaCha20KeyAndNonce(Span<byte> subkey, Span<byte> chachaNonce)
+    {
+        ChaCha20StreamCipher.HChaCha20(Key, Nonce[..ChaCha20StreamCipher.HChaChaNonceSizeBytes], subkey);
+
+        chachaNonce[..4].Clear();
+        Nonce.Slice(ChaCha20StreamCipher.HChaChaNonceSizeBytes, 8).CopyTo(chachaNonce[4..]);
     }
 }

@@ -171,6 +171,46 @@ public sealed class XSalsa20Poly1305
         Span<byte> output) =>
         Poly1305AeadCore.OpenSecretbox(engine, ciphertextWithTag, output);
 
+    /// <inheritdoc />
+    /// <remarks>
+    /// Applies the secretbox framing <see cref="SealCore" /> applies, over the keystream <see cref="CreateEngine" />
+    /// produces, drawn from a value on the stack.
+    /// </remarks>
+    private protected override int SealMessage(ReadOnlySpan<byte> associatedData, ReadOnlySpan<byte> plaintext, Span<byte> output)
+    {
+        Salsa20Core.Keystream keystream = default;
+
+        try
+        {
+            XSalsa20EngineFactory.InitializeKeystream(Key, Nonce, ref keystream);
+            return Poly1305AeadCore.SealSecretbox(ref keystream, plaintext, output);
+        }
+        finally
+        {
+            keystream.Clear();
+        }
+    }
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// Applies the secretbox framing <see cref="OpenCore" /> applies, over the keystream <see cref="CreateEngine" />
+    /// produces, drawn from a value on the stack.
+    /// </remarks>
+    private protected override int OpenMessage(ReadOnlySpan<byte> associatedData, ReadOnlySpan<byte> ciphertextWithTag, Span<byte> output)
+    {
+        Salsa20Core.Keystream keystream = default;
+
+        try
+        {
+            XSalsa20EngineFactory.InitializeKeystream(Key, Nonce, ref keystream);
+            return Poly1305AeadCore.OpenSecretbox(ref keystream, ciphertextWithTag, output);
+        }
+        finally
+        {
+            keystream.Clear();
+        }
+    }
+
     /// <summary>
     /// Validates the source and destination buffers for a layout conversion and returns the ciphertext length.
     /// </summary>
