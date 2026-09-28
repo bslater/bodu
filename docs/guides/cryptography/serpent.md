@@ -7,7 +7,7 @@ title: Using Serpent
 Serpent is the AES finalist by Anderson, Biham, and Knudsen: a 32-round substitution–permutation network over a 128-bit block with 128-, 192-, or 256-bit keys. `Bodu.Security.Cryptography` ships it in two very different forms. <xref:Bodu.Security.Cryptography.Serpent128> is the standard cipher, verified against the NESSIE submission vectors. <xref:Bodu.Security.Cryptography.Serpent256>, <xref:Bodu.Security.Cryptography.Serpent512>, and <xref:Bodu.Security.Cryptography.Serpent1024> are **Bodu-defined, non-standard, tweakable wide-block constructions** that reuse Serpent's S-boxes over a wider state — they interoperate with nothing but themselves.
 
 > [!NOTE]
-> Like the rest of the library, these implementations are not independently audited and offer best-effort, not guaranteed, side-channel resistance. The source states that control flow is constant-time but each 4-bit S-box substitution reads a 16-byte table at a data-dependent index, so the implementation is **not** hardened against cache-timing attacks.
+> Like the rest of the library, these implementations are not independently audited and offer best-effort, not guaranteed, side-channel resistance. Each S-box is computed as a Boolean circuit (Osvik's) and the linear transform with rotations, shifts and XOR, so no table is read and no branch depends on the key or the data.
 
 ## The family at a glance
 
@@ -139,5 +139,5 @@ They exist for experiments that want Serpent's S-box structure over a wider stat
 - [AES-family block ciphers](aes-family.md) — Serpent-128 beside AES, Twofish, and Camellia.
 - [Using Threefish-256](threefish-256.md) — the reviewed tweakable alternative.
 - [Modes, transforms, and factories](cipher-composition-reference.md) — what the wrappers and engines plug into.
-- [Security guarantees and limitations](security-posture.md) — the table-lookup timing caveat in context.
+- [Security guarantees and limitations](security-posture.md) — the constant-time claims by primitive.
 - **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.

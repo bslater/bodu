@@ -200,7 +200,7 @@ A raw block cipher gives confidentiality only. For new designs, start from the A
 | Skipjack | <xref:Bodu.Security.Cryptography.Skipjack> | 64 | 80 | — | Withdrawn (NIST) | Interoperability with legacy government-format data only. |
 
 > [!WARNING]
-> Camellia, Twofish, Serpent, Blowfish, Skipjack, Tiger, Whirlpool, and Snefru are table-driven: their control flow is constant-time but the S-box reads are data-dependent, and the source states they are **not hardened** against cache-timing attacks. The ARX designs (BLAKE2, BLAKE3, Threefish, ChaCha20, Salsa20) and the AES path (hardware) do not have that caveat. See [Security guarantees and limitations](security-posture.md#constant-time-claims-by-primitive).
+> Camellia, Twofish, Blowfish, Skipjack, Tiger, Whirlpool, and Snefru are table-driven: their control flow is constant-time but the S-box reads are data-dependent, and the source states they are **not hardened** against cache-timing attacks. The ARX designs (BLAKE2, BLAKE3, Threefish, ChaCha20, Salsa20), Serpent (whose S-boxes are Boolean circuits), and the AES path (hardware) do not have that caveat. See [Security guarantees and limitations](security-posture.md#constant-time-claims-by-primitive).
 
 ## API summary
 
