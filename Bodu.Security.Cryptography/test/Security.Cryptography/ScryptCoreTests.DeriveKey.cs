@@ -137,4 +137,27 @@ public sealed partial class ScryptCoreTests
                 workspace.Dispose();
         }
     }
+
+    /// <summary>
+    /// Verifies that a derivation through each kernel reproduces each light OpenSSL corpus row.
+    /// </summary>
+    /// <param name="kernel">The kernel's name.</param>
+    [TestMethod]
+    [DataRow("Scalar")]
+    [DataRow("Sse2")]
+    [DataRow("AdvSimd")]
+    public void DeriveKey_ForEachKernel_ShouldMatchOpenSslCorpus(string kernel)
+    {
+        var options = new ScryptCore.MixOptions(1, kernel: ParseSupportedKernel(kernel), pool: CreatePool());
+
+        foreach (object[] row in ScryptTests.OpenSslCorpusLight())
+        {
+            var vector = (KdfKnownAnswer)row[0];
+            byte[] key = new byte[vector.OutputLength];
+
+            ScryptCore.DeriveKey(vector.Password, vector.Salt, vector.CostN, vector.BlockSizeR, vector.Parallelism, key, options);
+
+            Assert.AreEqual(vector.ExpectedHex, Convert.ToHexString(key).ToLowerInvariant(), vector.Name);
+        }
+    }
 }

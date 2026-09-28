@@ -58,4 +58,48 @@ public sealed partial class ScryptCoreTests
 
         CollectionAssert.AreEqual(expected, actual);
     }
+
+    /// <summary>
+    /// Verifies that ROMix through each kernel reproduces RFC 7914, Section 10's vector, with <c>V</c> and the scratch
+    /// filled with garbage beforehand.
+    /// </summary>
+    /// <param name="kernel">The kernel's name.</param>
+    [TestMethod]
+    [DataRow("Scalar")]
+    [DataRow("Sse2")]
+    [DataRow("AdvSimd")]
+    public void ROMix_ForEachKernel_ShouldMatchRfc7914Vector(string kernel)
+    {
+        uint[] block = ToWords(RomixInputHex);
+
+        ScryptCore.ROMix(block, 16, 1, RandomWords(16 * 32, seed: 5), RandomWords(32, seed: 6), ParseSupportedKernel(kernel));
+
+        Assert.AreEqual(RomixOutputHex, ToHex(block));
+    }
+
+    /// <summary>
+    /// Verifies that ROMix through each vector kernel matches the scalar kernel on seeded random blocks, across costs
+    /// and block sizes.
+    /// </summary>
+    /// <param name="kernel">The kernel's name.</param>
+    [TestMethod]
+    [DataRow("Sse2")]
+    [DataRow("AdvSimd")]
+    public void ROMix_ForEachKernel_ShouldMatchScalarKernel(string kernel)
+    {
+        ScryptCore.KernelKind kind = ParseSupportedKernel(kernel);
+
+        foreach ((int costN, int blockSizeR) in new[] { (2, 1), (4, 3), (16, 2), (64, 5), (1024, 8) })
+        {
+            int unitWords = 32 * blockSizeR;
+            uint[] input = RandomWords(unitWords, seed: costN + (100 * blockSizeR));
+            uint[] expected = (uint[])input.Clone();
+            uint[] actual = (uint[])input.Clone();
+
+            ScryptCore.ROMix(expected, costN, blockSizeR, new uint[costN * unitWords], new uint[unitWords], ScryptCore.KernelKind.Scalar);
+            ScryptCore.ROMix(actual, costN, blockSizeR, new uint[costN * unitWords], new uint[unitWords], kind);
+
+            CollectionAssert.AreEqual(expected, actual, $"N = {costN}, r = {blockSizeR}");
+        }
+    }
 }

@@ -6,7 +6,6 @@
 
 using System.Buffers;
 using System.Buffers.Binary;
-using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
@@ -25,13 +24,18 @@ namespace Bodu.Security.Cryptography;
 /// into BlockMix's reads instead of writing it out first.
 /// </para>
 /// <para>
+/// ROMix is generic over an <see cref="IScryptKernel" />, BlockMix for one instruction set, so each kernel runs in a
+/// loop the JIT specializes for it: the scalar kernel everywhere, and a 128-bit kernel over SSE2 on x64 or AdvSimd on
+/// ARM64. Every kernel produces the same key.
+/// </para>
+/// <para>
 /// <c>V</c> and the ROMix scratch live in a <see cref="Workspace" /> in native memory, taken from the
 /// <see cref="NativeBufferPool" /> Argon2 also uses, so a derivation neither allocates them on the collected heap nor
 /// provokes a gen2 collection.
 /// </para>
 /// <para>
-/// Every buffer that holds a password-derived word — <c>B</c>, <c>V</c>, and the ROMix scratch — is cleared before it is
-/// released. Values the JIT keeps in registers or spills to its own stack slots are beyond the library's reach.
+/// Every buffer that holds a password-derived word — <c>B</c>, <c>V</c>, and the ROMix scratch — is cleared before it
+/// is released. Values the JIT keeps in registers or spills to its own stack slots are beyond the library's reach.
 /// </para>
 /// </remarks>
 [SkipLocalsInit]
@@ -112,11 +116,12 @@ internal static partial class ScryptCore
                 BinaryPrimitives.ReverseEndianness(words, words);
 
             // Step 2: B_i = scryptROMix(r, B_i, N) for each of the p independent blocks.
+            KernelKind kernel = options.ResolveKernel();
             int workers = options.ResolveWorkers(parallelization, (long)costN * unitWords * sizeof(uint));
             if (workers > 1)
-                MixInParallel(rented, (int)totalBytes, costN, blockSizeR, parallelization, workers, options.Pool);
+                MixInParallel(rented, (int)totalBytes, costN, blockSizeR, parallelization, workers, kernel, options.Pool);
             else
-                Mix(words, costN, blockSizeR, options.Pool);
+                Mix(words, costN, blockSizeR, kernel, options.Pool);
 
             if (!BitConverter.IsLittleEndian)
                 BinaryPrimitives.ReverseEndianness(words, words);
@@ -137,14 +142,15 @@ internal static partial class ScryptCore
     /// <param name="words">The <c>p</c> units of <c>B</c>, as 32-bit words, processed in place.</param>
     /// <param name="costN">The CPU/memory cost parameter <c>N</c>.</param>
     /// <param name="blockSizeR">The block-size parameter <c>r</c>.</param>
+    /// <param name="kernel">The BlockMix kernel; not <see cref="KernelKind.Auto" />.</param>
     /// <param name="pool">The pool the workspace is taken from and returned to.</param>
-    private static void Mix(Span<uint> words, int costN, int blockSizeR, NativeBufferPool pool)
+    private static void Mix(Span<uint> words, int costN, int blockSizeR, KernelKind kernel, NativeBufferPool pool)
     {
         int unitWords = 2 * blockSizeR * BlockWords;
 
         using Workspace workspace = Workspace.Rent(costN, unitWords, pool);
         for (int offset = 0; offset < words.Length; offset += unitWords)
-            ROMix(words.Slice(offset, unitWords), costN, blockSizeR, workspace.Chain, workspace.Scratch);
+            ROMix(words.Slice(offset, unitWords), costN, blockSizeR, workspace.Chain, workspace.Scratch, kernel);
     }
 
     /// <summary>
@@ -156,6 +162,7 @@ internal static partial class ScryptCore
     /// <param name="blockSizeR">The block-size parameter <c>r</c>.</param>
     /// <param name="parallelization">The number of units, <c>p</c>.</param>
     /// <param name="workers">The number of threads, the calling thread included.</param>
+    /// <param name="kernel">The BlockMix kernel; not <see cref="KernelKind.Auto" />.</param>
     /// <param name="pool">The pool the workspaces are taken from and returned to.</param>
     /// <remarks>
     /// <para>
@@ -169,7 +176,7 @@ internal static partial class ScryptCore
     /// every worker has stopped, so <c>B</c> is never cleared or returned while a worker could still write to it.
     /// </para>
     /// </remarks>
-    private static void MixInParallel(byte[] b, int length, int costN, int blockSizeR, int parallelization, int workers, NativeBufferPool pool)
+    private static void MixInParallel(byte[] b, int length, int costN, int blockSizeR, int parallelization, int workers, KernelKind kernel, NativeBufferPool pool)
     {
         int unitWords = 2 * blockSizeR * BlockWords;
         int nextUnit = -1;
@@ -187,7 +194,7 @@ internal static partial class ScryptCore
                 using Workspace workspace = Workspace.Rent(costN, unitWords, pool);
                 do
                 {
-                    ROMix(words.Slice(unit * unitWords, unitWords), costN, blockSizeR, workspace.Chain, workspace.Scratch);
+                    ROMix(words.Slice(unit * unitWords, unitWords), costN, blockSizeR, workspace.Chain, workspace.Scratch, kernel);
                     unit = Interlocked.Increment(ref nextUnit);
                 }
                 while (unit < parallelization);
@@ -200,8 +207,90 @@ internal static partial class ScryptCore
     }
 
     /// <summary>
+    /// Selects the widest BlockMix kernel the processor supports and the process allows: AdvSimd on ARM64, then SSE2 on
+    /// x64, then the scalar kernel.
+    /// </summary>
+    /// <returns>The kernel dispatch runs; never <see cref="KernelKind.Auto" />.</returns>
+    /// <remarks>
+    /// Every gate honors the <see cref="SimdCapabilities.DisableSimdSwitchName" /> switch, which pins the scalar
+    /// kernel.
+    /// </remarks>
+    internal static KernelKind SelectKernel()
+    {
+        if (SimdCapabilities.AdvSimd)
+            return KernelKind.AdvSimd;
+
+        return SimdCapabilities.Sse2 ? KernelKind.Sse2 : KernelKind.Scalar;
+    }
+
+    /// <summary>
+    /// Determines whether the processor can run the specified BlockMix kernel, whether or not the process allows vector
+    /// code.
+    /// </summary>
+    /// <param name="kernel">The kernel.</param>
+    /// <returns>
+    /// <see langword="true" /> if the processor supports every instruction the kernel uses; otherwise,
+    /// <see langword="false" />.
+    /// </returns>
+    internal static bool IsSupported(KernelKind kernel) => kernel switch
+    {
+        KernelKind.Auto or KernelKind.Scalar => true,
+        KernelKind.Sse2 => System.Runtime.Intrinsics.X86.Sse2.IsSupported,
+        KernelKind.AdvSimd => System.Runtime.Intrinsics.Arm.AdvSimd.Arm64.IsSupported,
+        _ => false,
+    };
+
+    /// <summary>
+    /// Applies <c>scryptROMix</c> to a single 128·r-byte block in place (RFC 7914, Section 5), with the kernel dispatch
+    /// selects.
+    /// </summary>
+    /// <param name="block">The 128·r-byte block <c>X</c>, as 32-bit words, processed in place.</param>
+    /// <param name="costN">The CPU/memory cost parameter <c>N</c>.</param>
+    /// <param name="blockSizeR">The block-size parameter <c>r</c>.</param>
+    /// <param name="v">The <c>N</c> units of <c>V</c>; their contents on entry are ignored.</param>
+    /// <param name="scratch">One unit of working space; its contents on entry are ignored.</param>
+    internal static void ROMix(Span<uint> block, int costN, int blockSizeR, Span<uint> v, Span<uint> scratch) =>
+        ROMix(block, costN, blockSizeR, v, scratch, SelectKernel());
+
+    /// <summary>
+    /// Applies <c>scryptROMix</c> to a single 128·r-byte block in place (RFC 7914, Section 5), with the specified
+    /// kernel.
+    /// </summary>
+    /// <param name="block">The 128·r-byte block <c>X</c>, as 32-bit words, processed in place.</param>
+    /// <param name="costN">The CPU/memory cost parameter <c>N</c>.</param>
+    /// <param name="blockSizeR">The block-size parameter <c>r</c>.</param>
+    /// <param name="v">The <c>N</c> units of <c>V</c>; their contents on entry are ignored.</param>
+    /// <param name="scratch">One unit of working space; its contents on entry are ignored.</param>
+    /// <param name="kernel">
+    /// The BlockMix kernel; <see cref="KernelKind.Auto" /> for the one dispatch selects. Any other kind must be one the
+    /// processor supports.
+    /// </param>
+    /// <remarks>
+    /// The kernel is chosen once per unit; each branch runs a loop the JIT specializes for its kernel, so no block pays
+    /// for the choice.
+    /// </remarks>
+    internal static void ROMix(Span<uint> block, int costN, int blockSizeR, Span<uint> v, Span<uint> scratch, KernelKind kernel)
+    {
+        switch (kernel == KernelKind.Auto ? SelectKernel() : kernel)
+        {
+            case KernelKind.AdvSimd:
+                ROMix<Vector128Kernel<AdvSimdIsa>>(block, costN, blockSizeR, v, scratch);
+                break;
+
+            case KernelKind.Sse2:
+                ROMix<Vector128Kernel<Sse2Isa>>(block, costN, blockSizeR, v, scratch);
+                break;
+
+            default:
+                ROMix<ScalarKernel>(block, costN, blockSizeR, v, scratch);
+                break;
+        }
+    }
+
+    /// <summary>
     /// Applies <c>scryptROMix</c> to a single 128·r-byte block in place (RFC 7914, Section 5).
     /// </summary>
+    /// <typeparam name="TKernel">The BlockMix kernel.</typeparam>
     /// <param name="block">The 128·r-byte block <c>X</c>, as 32-bit words, processed in place.</param>
     /// <param name="costN">The CPU/memory cost parameter <c>N</c>.</param>
     /// <param name="blockSizeR">The block-size parameter <c>r</c>.</param>
@@ -209,15 +298,20 @@ internal static partial class ScryptCore
     /// <param name="scratch">One unit of working space; its contents on entry are ignored.</param>
     /// <remarks>
     /// Every unit of <paramref name="v" /> is written before it can be read, so its contents on entry cannot affect the
-    /// result. Clearing <paramref name="v" /> and <paramref name="scratch" /> afterwards is the caller's responsibility.
+    /// result. Clearing <paramref name="v" /> and <paramref name="scratch" /> afterwards is the caller's
+    /// responsibility.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-    internal static void ROMix(Span<uint> block, int costN, int blockSizeR, Span<uint> v, Span<uint> scratch)
+    private static void ROMix<TKernel>(Span<uint> block, int costN, int blockSizeR, Span<uint> v, Span<uint> scratch)
+        where TKernel : struct, IScryptKernel
     {
         int unitWords = block.Length;
         ref uint x = ref MemoryMarshal.GetReference(block);
         ref uint y = ref MemoryMarshal.GetReference(scratch);
         ref uint v0 = ref MemoryMarshal.GetReference(v);
+
+        // The unit stays in the kernel's word order from here until the end, V included.
+        TKernel.Import(ref x, 2 * blockSizeR);
 
         // V[0] = X and V[i + 1] = BlockMix(V[i]): each link is written in place, and the last one becomes X.
         block.CopyTo(v);
@@ -225,163 +319,26 @@ internal static partial class ScryptCore
         for (int i = 1; i < costN; i++)
         {
             ref uint next = ref Unsafe.Add(ref link, unitWords);
-            BlockMix(ref link, ref next, blockSizeR);
+            TKernel.BlockMix(ref link, ref next, blockSizeR);
             link = ref next;
         }
 
-        BlockMix(ref link, ref x, blockSizeR);
+        TKernel.BlockMix(ref link, ref x, blockSizeR);
 
         // X = BlockMix(X xor V[j]), with j = Integerify(X) mod N. N is a power of two no greater than 2^30, so the
-        // index is the low word of X's last 64-byte block masked to N; the result alternates between the block and the
-        // scratch, and N being even leaves it in the block.
+        // index is the low word of X's last 64-byte block masked to N — word 0, which every kernel keeps first. The
+        // result alternates between the block and the scratch, and N being even leaves it in the block.
         int integerify = unitWords - BlockWords;
         uint mask = (uint)costN - 1;
         for (int i = 0; i < costN; i += 2)
         {
             nint j = (nint)(Unsafe.Add(ref x, integerify) & mask);
-            BlockMixXor(ref x, ref Unsafe.Add(ref v0, j * unitWords), ref y, blockSizeR);
+            TKernel.BlockMixXor(ref x, ref Unsafe.Add(ref v0, j * unitWords), ref y, blockSizeR);
 
             j = (nint)(Unsafe.Add(ref y, integerify) & mask);
-            BlockMixXor(ref y, ref Unsafe.Add(ref v0, j * unitWords), ref x, blockSizeR);
-        }
-    }
-
-    /// <summary>
-    /// Applies <c>scryptBlockMix</c> to <paramref name="input" />, writing the shuffled result to
-    /// <paramref name="output" /> (RFC 7914, Section 4).
-    /// </summary>
-    /// <param name="input">The first of the 2·r 64-byte input blocks, as 32-bit words.</param>
-    /// <param name="output">The first word of the destination; it must not overlap the input.</param>
-    /// <param name="blockSizeR">The block-size parameter <c>r</c>.</param>
-    /// <remarks>
-    /// Each Salsa20/8 result is computed in its place in the output: even-indexed results fill the first half and
-    /// odd-indexed ones the second, and each result is the chaining value for the next.
-    /// </remarks>
-    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-    private static void BlockMix(ref uint input, ref uint output, int blockSizeR)
-    {
-        int blocks = 2 * blockSizeR;
-        ref uint previous = ref Unsafe.Add(ref input, (blocks - 1) * BlockWords);
-
-        for (int i = 0; i < blocks; i++)
-        {
-            ref uint source = ref Unsafe.Add(ref input, i * BlockWords);
-            ref uint destination = ref Unsafe.Add(ref output, ((i >> 1) + ((i & 1) * blockSizeR)) * BlockWords);
-            for (int k = 0; k < BlockWords; k++)
-                Unsafe.Add(ref destination, k) = Unsafe.Add(ref previous, k) ^ Unsafe.Add(ref source, k);
-
-            Salsa20_8(ref destination);
-            previous = ref destination;
-        }
-    }
-
-    /// <summary>
-    /// Applies <c>scryptBlockMix</c> to <c><paramref name="x" /> xor <paramref name="v" /></c>, writing the shuffled
-    /// result to <paramref name="output" />, without writing the XOR out first.
-    /// </summary>
-    /// <param name="x">The first word of the ROMix state <c>X</c>.</param>
-    /// <param name="v">The first word of the chain unit <c>V[j]</c>.</param>
-    /// <param name="output">The first word of the destination; it must overlap neither input.</param>
-    /// <param name="blockSizeR">The block-size parameter <c>r</c>.</param>
-    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-    private static void BlockMixXor(ref uint x, ref uint v, ref uint output, int blockSizeR)
-    {
-        int blocks = 2 * blockSizeR;
-        int last = (blocks - 1) * BlockWords;
-
-        // The first chaining value is the last block of X xor V[j]; every later one is the previous result.
-        ref uint destination = ref output;
-        for (int k = 0; k < BlockWords; k++)
-        {
-            Unsafe.Add(ref destination, k) =
-                Unsafe.Add(ref x, last + k) ^ Unsafe.Add(ref v, last + k) ^ Unsafe.Add(ref x, k) ^ Unsafe.Add(ref v, k);
+            TKernel.BlockMixXor(ref y, ref Unsafe.Add(ref v0, j * unitWords), ref x, blockSizeR);
         }
 
-        Salsa20_8(ref destination);
-        ref uint previous = ref destination;
-
-        for (int i = 1; i < blocks; i++)
-        {
-            int offset = i * BlockWords;
-            destination = ref Unsafe.Add(ref output, ((i >> 1) + ((i & 1) * blockSizeR)) * BlockWords);
-            for (int k = 0; k < BlockWords; k++)
-                Unsafe.Add(ref destination, k) = Unsafe.Add(ref previous, k) ^ Unsafe.Add(ref x, offset + k) ^ Unsafe.Add(ref v, offset + k);
-
-            Salsa20_8(ref destination);
-            previous = ref destination;
-        }
-    }
-
-    /// <summary>
-    /// Applies the Salsa20/8 core in place: <c>B = B + doubleround^4(B)</c> (RFC 7914, Section 3).
-    /// </summary>
-    /// <param name="b">The first of the sixteen 32-bit state words, transformed in place.</param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static void Salsa20_8(ref uint b)
-    {
-        uint x0 = b;
-        uint x1 = Unsafe.Add(ref b, 1);
-        uint x2 = Unsafe.Add(ref b, 2);
-        uint x3 = Unsafe.Add(ref b, 3);
-        uint x4 = Unsafe.Add(ref b, 4);
-        uint x5 = Unsafe.Add(ref b, 5);
-        uint x6 = Unsafe.Add(ref b, 6);
-        uint x7 = Unsafe.Add(ref b, 7);
-        uint x8 = Unsafe.Add(ref b, 8);
-        uint x9 = Unsafe.Add(ref b, 9);
-        uint x10 = Unsafe.Add(ref b, 10);
-        uint x11 = Unsafe.Add(ref b, 11);
-        uint x12 = Unsafe.Add(ref b, 12);
-        uint x13 = Unsafe.Add(ref b, 13);
-        uint x14 = Unsafe.Add(ref b, 14);
-        uint x15 = Unsafe.Add(ref b, 15);
-
-        for (int i = 0; i < 8; i += 2)
-        {
-            // Column round.
-            QuarterRound(ref x0, ref x4, ref x8, ref x12);
-            QuarterRound(ref x5, ref x9, ref x13, ref x1);
-            QuarterRound(ref x10, ref x14, ref x2, ref x6);
-            QuarterRound(ref x15, ref x3, ref x7, ref x11);
-
-            // Row round.
-            QuarterRound(ref x0, ref x1, ref x2, ref x3);
-            QuarterRound(ref x5, ref x6, ref x7, ref x4);
-            QuarterRound(ref x10, ref x11, ref x8, ref x9);
-            QuarterRound(ref x15, ref x12, ref x13, ref x14);
-        }
-
-        b += x0;
-        Unsafe.Add(ref b, 1) += x1;
-        Unsafe.Add(ref b, 2) += x2;
-        Unsafe.Add(ref b, 3) += x3;
-        Unsafe.Add(ref b, 4) += x4;
-        Unsafe.Add(ref b, 5) += x5;
-        Unsafe.Add(ref b, 6) += x6;
-        Unsafe.Add(ref b, 7) += x7;
-        Unsafe.Add(ref b, 8) += x8;
-        Unsafe.Add(ref b, 9) += x9;
-        Unsafe.Add(ref b, 10) += x10;
-        Unsafe.Add(ref b, 11) += x11;
-        Unsafe.Add(ref b, 12) += x12;
-        Unsafe.Add(ref b, 13) += x13;
-        Unsafe.Add(ref b, 14) += x14;
-        Unsafe.Add(ref b, 15) += x15;
-    }
-
-    /// <summary>
-    /// Applies the Salsa20 quarter-round to four state words in place.
-    /// </summary>
-    /// <param name="a">The first state word, updated in place.</param>
-    /// <param name="b">The second state word, updated in place.</param>
-    /// <param name="c">The third state word, updated in place.</param>
-    /// <param name="d">The fourth state word, updated in place.</param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static void QuarterRound(ref uint a, ref uint b, ref uint c, ref uint d)
-    {
-        b ^= BitOperations.RotateLeft(a + d, 7);
-        c ^= BitOperations.RotateLeft(b + a, 9);
-        d ^= BitOperations.RotateLeft(c + b, 13);
-        a ^= BitOperations.RotateLeft(d + c, 18);
+        TKernel.Export(ref x, 2 * blockSizeR);
     }
 }

@@ -10,9 +10,9 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Reuses the native buffers that hold the working memory of the memory-hard key-derivation functions — Argon2's
-/// memory matrix and scrypt's <c>V</c> — so a steady stream of derivations neither allocates that memory per call nor
-/// pays the operating system for fresh pages each time.
+/// Reuses the native buffers that hold the working memory of the memory-hard key-derivation functions — Argon2's memory
+/// matrix and scrypt's <c>V</c> — so a steady stream of derivations neither allocates that memory per call nor pays the
+/// operating system for fresh pages each time.
 /// </summary>
 /// <remarks>
 /// <para>

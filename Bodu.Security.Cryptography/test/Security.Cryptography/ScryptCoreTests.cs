@@ -37,6 +37,23 @@ public sealed partial class ScryptCoreTests
         "fdbabe1c9d3472007856e7190d01e9fe7c6ad7cbc8237830e77376634b373162" +
         "2eaf30d92e22a3886ff109279d9830dac727afb94a83ee6d8360cbdfa2cc0640";
 
+    /// <summary>RFC 7914, Section 8's Salsa20/8 core input.</summary>
+    private const string SalsaInputHex =
+        "7e879a214f3ec9867ca940e641718f26baee555b8c61c1b50df846116dcd3b1d" +
+        "ee24f319df9b3d8514121e4b5ac5aa3276021d2909c74829edebc68db8b8c25e";
+
+    /// <summary>RFC 7914, Section 8's Salsa20/8 core output.</summary>
+    private const string SalsaOutputHex =
+        "a41f859c6608cc993b81cacb020cef05044b2181a2fd337dfd7b1c6396682f29" +
+        "b4393168e3c9e6bcfe6bc5b7a06d96bae424cc102c91745c24ad673dc7618f81";
+
+    /// <summary>RFC 7914, Section 9's scryptBlockMix output for <see cref="RomixInputHex" />, with <c>r = 1</c>.</summary>
+    private const string BlockMixOutputHex =
+        "a41f859c6608cc993b81cacb020cef05044b2181a2fd337dfd7b1c6396682f29" +
+        "b4393168e3c9e6bcfe6bc5b7a06d96bae424cc102c91745c24ad673dc7618f81" +
+        "20edc975323881a80540f64c162dcd3c21077cfe5f8d5fe2b1a4168f953678b7" +
+        "7d3b3d803b60e4ab920996e59b4d53b65d2a225877d5edf5842cb9f14eefe425";
+
     /// <summary>An idle timeout long enough that a pool's own timer never fires during a test.</summary>
     private static readonly TimeSpan LongIdleTimeout = TimeSpan.FromHours(1);
 
@@ -75,6 +92,64 @@ public sealed partial class ScryptCoreTests
     /// <returns>The pool.</returns>
     private static NativeBufferPool CreatePool(int maxRetainedBuffers = 4) =>
         new(maxRetainedBuffers, 64L * 1024 * 1024, LongIdleTimeout, TimeProvider.System);
+
+    /// <summary>
+    /// Returns the operations of the named kernel, or reports the test inconclusive when the processor cannot run it.
+    /// </summary>
+    /// <param name="kernel">The kernel's name.</param>
+    /// <returns>The kernel's operations, taking and returning blocks in RFC 7914's word order.</returns>
+    private static KernelOperations OperationsOf(string kernel) =>
+        ParseSupportedKernel(kernel) switch
+        {
+            ScryptCore.KernelKind.Sse2 => OperationsOf<ScryptCore.Vector128Kernel<ScryptCore.Sse2Isa>>(),
+            ScryptCore.KernelKind.AdvSimd => OperationsOf<ScryptCore.Vector128Kernel<ScryptCore.AdvSimdIsa>>(),
+            _ => OperationsOf<ScryptCore.ScalarKernel>(),
+        };
+
+    /// <summary>
+    /// Returns the operations of a kernel, each converting its blocks into the kernel's word order and back.
+    /// </summary>
+    /// <typeparam name="TKernel">The kernel.</typeparam>
+    /// <returns>The kernel's operations.</returns>
+    private static KernelOperations OperationsOf<TKernel>()
+        where TKernel : struct, ScryptCore.IScryptKernel =>
+        new(
+            block =>
+            {
+                TKernel.Import(ref block[0], 1);
+                TKernel.Salsa20_8(ref block[0]);
+                TKernel.Export(ref block[0], 1);
+            },
+            (input, output, blockSizeR) =>
+            {
+                uint[] source = (uint[])input.Clone();
+                TKernel.Import(ref source[0], 2 * blockSizeR);
+                TKernel.BlockMix(ref source[0], ref output[0], blockSizeR);
+                TKernel.Export(ref output[0], 2 * blockSizeR);
+            },
+            (x, v, output, blockSizeR) =>
+            {
+                uint[] first = (uint[])x.Clone();
+                uint[] second = (uint[])v.Clone();
+                TKernel.Import(ref first[0], 2 * blockSizeR);
+                TKernel.Import(ref second[0], 2 * blockSizeR);
+                TKernel.BlockMixXor(ref first[0], ref second[0], ref output[0], blockSizeR);
+                TKernel.Export(ref output[0], 2 * blockSizeR);
+            });
+
+    /// <summary>
+    /// Parses a kernel's name, reporting the test inconclusive when the processor cannot run the kernel.
+    /// </summary>
+    /// <param name="name">The kernel's name.</param>
+    /// <returns>The kernel.</returns>
+    private static ScryptCore.KernelKind ParseSupportedKernel(string name)
+    {
+        ScryptCore.KernelKind kernel = Enum.Parse<ScryptCore.KernelKind>(name);
+        if (!ScryptCore.IsSupported(kernel))
+            Assert.Inconclusive($"The {name} kernel cannot run on this processor.");
+
+        return kernel;
+    }
 
     /// <summary>
     /// Returns a deterministic pseudo-random sequence of words.

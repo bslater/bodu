@@ -26,6 +26,7 @@ public sealed class SimdOptOutTests
         Assert.IsFalse(SimdCapabilities.Pclmulqdq, "Expected the disable switch to force the carry-less GHASH gate off.");
         Assert.IsFalse(SimdCapabilities.Avx2, "Expected the disable switch to force Avx2 off.");
         Assert.IsFalse(SimdCapabilities.Ssse3, "Expected the disable switch to force Ssse3 off.");
+        Assert.IsFalse(SimdCapabilities.Sse2, "Expected the disable switch to force Sse2 off.");
         Assert.IsFalse(SimdCapabilities.AdvSimd, "Expected the disable switch to force AdvSimd off.");
         Assert.IsFalse(SimdCapabilities.Pmull, "Expected the disable switch to force the polynomial-multiply GHASH gate off.");
     }
@@ -38,6 +39,35 @@ public sealed class SimdOptOutTests
     public void Argon2CoreSelectKernel_WhenSimdDisabled_ShouldReturnTheScalarKernel()
     {
         Assert.AreEqual(Argon2Core.KernelKind.Scalar, Argon2Core.SelectKernel());
+    }
+
+    /// <summary>
+    /// Verifies that with SIMD disabled, scrypt dispatches to its scalar BlockMix kernel whatever the processor supports.
+    /// </summary>
+    [TestMethod]
+    public void ScryptCoreSelectKernel_WhenSimdDisabled_ShouldReturnTheScalarKernel()
+    {
+        Assert.AreEqual(ScryptCore.KernelKind.Scalar, ScryptCore.SelectKernel());
+    }
+
+    /// <summary>
+    /// Verifies that with SIMD disabled, scrypt — mixing through the scalar kernel, on one thread and on several —
+    /// still reproduces RFC 7914, Section 12's first two vectors.
+    /// </summary>
+    [TestMethod]
+    public void ScryptDeriveKey_WhenSimdDisabled_ShouldMatchRfc7914Vectors()
+    {
+        byte[] empty = Scrypt.DeriveKey([], [], 16, 1, 1, 64);
+        byte[] nacl = new Scrypt(1024, 8, 16, maxDegreeOfParallelism: 4).GetBytes("password"u8, "NaCl"u8, 64);
+
+        Assert.AreEqual(
+            "77d6576238657b203b19ca42c18a0497f16b4844e3074ae8dfdffa3fede21442" +
+            "fcd0069ded0948f8326a753a0fc81f17e8d3e0fb2e0d3628cf35e20c38d18906",
+            Convert.ToHexString(empty).ToLowerInvariant());
+        Assert.AreEqual(
+            "fdbabe1c9d3472007856e7190d01e9fe7c6ad7cbc8237830e77376634b373162" +
+            "2eaf30d92e22a3886ff109279d9830dac727afb94a83ee6d8360cbdfa2cc0640",
+            Convert.ToHexString(nacl).ToLowerInvariant());
     }
 
     /// <summary>

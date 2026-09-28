@@ -17,10 +17,10 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// Several primitives dispatch to a vector kernel when the host supports it and fall back to a scalar reference
 /// implementation otherwise: BLAKE2b, BLAKE2s, BLAKE3, Threefish-256/512/1024, and CubeHash to AVX-512; GHASH and
-/// POLYVAL to the carry-less multiply on x64 or the polynomial multiply on ARM64; and Argon2 to AVX2, to SSSE3 on other
-/// x64 hosts, or to AdvSimd on ARM64. The properties here replace a bare <c>IsSupported</c> check at each dispatch site
-/// so a caller can force the scalar paths for the whole process by enabling the <see cref="DisableSimdSwitchName" />
-/// feature switch.
+/// POLYVAL to the carry-less multiply on x64 or the polynomial multiply on ARM64; Argon2 to AVX2, to SSSE3 on other x64
+/// hosts, or to AdvSimd on ARM64; and scrypt's Salsa20/8 to SSE2 on x64 or AdvSimd on ARM64. The properties here
+/// replace a bare <c>IsSupported</c> check at each dispatch site so a caller can force the scalar paths for the whole
+/// process by enabling the <see cref="DisableSimdSwitchName" /> feature switch.
 /// </para>
 /// <para>
 /// The switch exists for <strong>determinism, reproducibility, and audit</strong> — pinning execution to the single
@@ -117,6 +117,22 @@ internal static class SimdCapabilities
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => System.Runtime.Intrinsics.X86.Ssse3.IsSupported && !s_disabled;
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether the SSE2 (128-bit integer, x64) code paths should run.
+    /// </summary>
+    /// <value>
+    /// <see langword="true" /> if <see cref="System.Runtime.Intrinsics.X86.Sse2.IsSupported" /> and the disable switch
+    /// is off; otherwise, <see langword="false" />.
+    /// </value>
+    /// <remarks>
+    /// SSE2 belongs to the x64 baseline, so on x64 only the disable switch closes this gate.
+    /// </remarks>
+    internal static bool Sse2
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => System.Runtime.Intrinsics.X86.Sse2.IsSupported && !s_disabled;
     }
 
     /// <summary>

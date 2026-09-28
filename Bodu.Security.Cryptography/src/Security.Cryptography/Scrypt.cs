@@ -27,9 +27,9 @@ namespace Bodu.Security.Cryptography;
 /// own, so the time falls and the memory rises with the threads; the derived key never depends on them.
 /// </para>
 /// <para>
-/// The working memory — <c>V</c>, <c>128 · N · r</c> bytes — is held in native memory and reused across derivations,
-/// in the same reserve as Argon2's matrix, so a derivation neither allocates it on the collected heap nor waits for it
-/// to be zeroed. Up to one buffer per processor stays reserved — cleared — for up to thirty seconds after the last
+/// The working memory — <c>V</c>, <c>128 · N · r</c> bytes — is held in native memory and reused across derivations, in
+/// the same reserve as Argon2's matrix, so a derivation neither allocates it on the collected heap nor waits for it to
+/// be zeroed. Up to one buffer per processor stays reserved — cleared — for up to thirty seconds after the last
 /// derivation; the <c>Bodu.Security.Cryptography.Argon2.DisableMatrixReuse</c> <see cref="AppContext" /> switch
 /// releases each buffer as soon as its derivation ends instead. Every buffer holding a password-derived value is
 /// cleared before it is released; values the JIT keeps in registers or its own stack slots are beyond the library's
@@ -147,8 +147,8 @@ public sealed class Scrypt
     /// <para>
     /// Unlike Argon2's lanes, which share one memory matrix, each scrypt unit that runs at once holds its own <c>V</c>
     /// of <c>128 · N · r</c> bytes, so a derivation on <c>t</c> threads needs <c>t</c> times the memory of one on the
-    /// calling thread. That is why the default is <c>1</c>: a service that verifies many passwords at once already keeps
-    /// every core busy, and would only multiply its memory.
+    /// calling thread. That is why the default is <c>1</c>: a service that verifies many passwords at once already
+    /// keeps every core busy, and would only multiply its memory.
     /// </para>
     /// <para>
     /// A derivation keeps its working memory within the 2 GiB ceiling on a single <c>V</c> however high the bound,
@@ -345,8 +345,8 @@ public sealed class Scrypt
     /// </exception>
     /// <remarks>
     /// The bound lets a hash with several units (<c>p</c> greater than 1) verify faster at the cost of memory; the
-    /// result never depends on it. The working memory stays within the 2 GiB ceiling on a single <c>V</c> whatever
-    /// the encoded hash asks for; see <see cref="MaxDegreeOfParallelism" />.
+    /// result never depends on it. The working memory stays within the 2 GiB ceiling on a single <c>V</c> whatever the
+    /// encoded hash asks for; see <see cref="MaxDegreeOfParallelism" />.
     /// </remarks>
     public static bool Verify(string encoded, ReadOnlySpan<byte> password, int maxDegreeOfParallelism)
     {

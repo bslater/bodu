@@ -175,6 +175,11 @@ the processor supports, so an x64 pass covers the kernel, its PCLMULQDQ shim and
 the scalar kernel. Only the ARM64 shim, `Ghash.PmullIsa.cs`, built on the
 cryptography extension's `PMULL`, cannot run there.
 
+scrypt's BlockMix kernel is the third instance. Its 128-bit kernel is written once
+over `Vector128` and specialized by a shim of three lane rotations; the scrypt
+tests drive the SSE2 and scalar kernels explicitly on x64, so only the ARM64 shim,
+`ScryptCore.AdvSimd.cs`, cannot run there.
+
 `tools/New-CoverageMatrix.ps1` therefore treats `*.AdvSimd.cs` and
 `*.PmullIsa.cs` as hardware-gated whenever no collecting host is ARM64 — judged
 from the `arch` field every collection manifest records — and reports them as
@@ -183,8 +188,10 @@ applies only on positive evidence: a collection with no recorded architecture
 reports the files as measured. The shims are not untested: the ARM64 job in
 `.github/workflows/build-test.yml` runs both cryptography suites on GitHub's
 hosted ARM64 runner, where the Argon2 shim tests hold each member to its scalar
-definition, the vector corpus runs through the AdvSimd kernel, and the GHASH
-tests hold the PMULL kernel to the RFC 8452 values and to a bit-serial reference.
+definition, the vector corpus runs through the AdvSimd kernel, the GHASH
+tests hold the PMULL kernel to the RFC 8452 values and to a bit-serial reference,
+and the scrypt tests hold the AdvSimd BlockMix kernel to RFC 7914's vectors and to
+the scalar kernel.
 
 ### The switch itself
 

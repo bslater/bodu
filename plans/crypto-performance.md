@@ -1,6 +1,6 @@
 # Implementation plan: faster primitives across Bodu.Security.Cryptography
 
-**Status:** In progress on `claude/argon2-prototype-co27tu` (W0–W2 done, §10) · **Source:** the assessment run on
+**Status:** In progress on `claude/argon2-prototype-co27tu` (W0–W3 done, §10) · **Source:** the assessment run on
 2026-09-27 after the Argon2 work (§1) · **Target:** `Bodu.Security.Cryptography`, next lock-step release
 
 The Argon2 work ([`argon2-performance.md`](argon2-performance.md)) used four techniques: a
@@ -616,3 +616,59 @@ Correctness work found on the way, each fixed test-first:
 - **Long-message coverage.** Every mode is now cross-checked on messages of up to
   20,000 bytes against the platform (`AesGcm`, `AesCcm`, CBC, CFB) or against a
   block-at-a-time reference built from its specification on the platform's AES.
+
+### W3 — scrypt (done)
+
+| Measure | Baseline | Result | Target |
+|---|---|---|---|
+| N=2¹⁴ r=8 p=1 | 104.3 ms (OpenSSL 51.9 ms) | 32.9 ms | ≤ 50 ms — met |
+| Allocation per call, N=2¹⁴ r=8 p=1 | 16.8 MB, 10 gen2 per round | 83 B, no gen2 | ≤ 4 KiB, no gen2 — met |
+| N=2¹⁴ r=8 p=4, bound 4 | 374.3 ms (no bound existed) | 41.5 ms | ≤ 120 ms — met |
+| N=2¹⁴ r=8 p=4, one thread | 374.3 ms (OpenSSL 204.5 ms) | 122.1 ms | — |
+| N=2¹⁷ r=8 p=1 | 800.0 ms, 134 MB (OpenSSL 502.2 ms) | 270.9 ms, 80 B | — |
+| N=2¹⁴ r=8 p=1, scalar kernel | — | 52.0 ms | — |
+
+The baseline was measured at the start of the workstream; §1 recorded 112 ms for the
+same cost. Each step, at N=2¹⁴ r=8 p=1: the loop rewrite took it to 65 ms, native `V` to
+51 ms, and the vector kernel to 33 ms. On .NET 8, N=2¹⁴ r=8 p=1 takes 35.9 ms, p=4 with
+bound 4 takes 42.0 ms, and N=2¹⁷ takes 306 ms.
+
+How it was done, and where it departs from the design above:
+
+- **T1, the loops.** Salsa20/8 runs on sixteen locals. BlockMix computes each result in
+  its place in the output, and its second form folds `X xor V[j]` into its reads, so
+  the XOR is never written out. ROMix writes each link of the chain straight into `V`.
+  On one core this alone matches OpenSSL.
+- **T2, memory.** `Argon2MatrixPool` is now `NativeBufferPool`. Argon2's behavior is
+  unchanged, and its `DisableMatrixReuse` switch keeps its name and now turns retention
+  off for every renter. scrypt rents `V` and its scratch as one `ScryptCore.Workspace`,
+  which clears every word it spanned before the buffer goes back to the pool. `B` is
+  rented from the array pool and read as words in place.
+- **T3, threads.** `Scrypt(ScryptParameters, int)` and `Scrypt(int, int, int, int)` take
+  the bound, `MaxDegreeOfParallelism` reports it, and a `Verify` overload takes it too.
+  Threads claim units from a shared counter and rent a workspace only once they hold a
+  unit. Two rules were added to the design:
+  - Units under 1 MiB of `V` stay on the calling thread.
+  - The threads are capped so their `V`s together stay within the 2 GiB ceiling on one
+    `V`. An untrusted encoded hash therefore cannot multiply what a verification
+    allocates, whatever the bound.
+- **T4, the kernel.** ROMix is generic over `IScryptKernel`, a scalar kernel and one
+  `Vector128Kernel<TIsa>`. Its `Sse2Isa` and `AdvSimdIsa` shims supply only the three
+  lane rotations (`PSHUFD` and `EXT`). The words are permuted into the diagonal order
+  once per ROMix unit, not once per BlockMix call as §4 proposed; `V` holds blocks in
+  that order. Word 0 stays first, so the `Integerify` read is the same in both orders.
+  AVX-512's `VPROLD` for the four rotations was tried: 9% faster at N=2¹⁴, nothing at
+  N=2¹⁷, where memory dominates. It was not worth another kernel.
+- **Tests.** RFC 7914's intermediate vectors (§8 Salsa20/8, §9 BlockMix, §10 ROMix)
+  now run through every kernel, beside §12's end-to-end vectors. An 80-row corpus
+  generated with OpenSSL's `EVP_PBE_scrypt` replaces the recorded corpus §4 planned: it
+  is an independent oracle rather than the old code's own output, and the old code
+  matched every row. Also added:
+  - a kernel sweep against the scalar kernel on seeded units;
+  - a thread sweep over the corpus rows with p > 1 at bounds 2, 3, 4 and −1;
+  - ROMix over a garbage-filled `V`;
+  - the workspace's round trip through the pool.
+- **ARM64.** Under qemu ARM64 emulation the AdvSimd shim, every per-kernel vector and
+  sweep, and the threaded derivations pass. Long, allocation-heavy runs crash inside
+  `libcoreclr` under the emulator. The pre-W3 code crashes the same way on the same
+  corpus, so the emulator is at fault; the ARM64 CI job runs the suite on real hardware.

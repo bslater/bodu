@@ -10,7 +10,8 @@ internal static partial class ScryptCore
 {
     /// <summary>
     /// Describes how a derivation runs its ROMix units: how many threads it may use, from what unit size they are worth
-    /// dividing among threads, and which pool supplies their memory. None of it changes the derived key.
+    /// dividing among threads, which BlockMix kernel runs, and which pool supplies their memory. None of it changes the
+    /// derived key.
     /// </summary>
     internal readonly struct MixOptions
     {
@@ -28,16 +29,22 @@ internal static partial class ScryptCore
         /// there are processors.
         /// </param>
         /// <param name="minimumParallelUnitBytes">The smallest <c>V</c>, in bytes, whose units are divided.</param>
+        /// <param name="kernel">
+        /// The BlockMix kernel; <see cref="KernelKind.Auto" /> for the one dispatch selects. Any other kind must be one
+        /// the processor supports.
+        /// </param>
         /// <param name="pool">
         /// The pool every unit's workspace is taken from and returned to; <see langword="null" /> for the shared pool.
         /// </param>
         internal MixOptions(
             int maxDegreeOfParallelism,
             long minimumParallelUnitBytes = DefaultMinimumParallelUnitBytes,
+            KernelKind kernel = KernelKind.Auto,
             NativeBufferPool? pool = null)
         {
             MaxDegreeOfParallelism = maxDegreeOfParallelism;
             MinimumParallelUnitBytes = minimumParallelUnitBytes;
+            Kernel = kernel;
             _pool = pool;
         }
 
@@ -53,9 +60,21 @@ internal static partial class ScryptCore
         internal long MinimumParallelUnitBytes { get; }
 
         /// <summary>
+        /// Gets the BlockMix kernel the units run, or <see cref="KernelKind.Auto" /> for the one dispatch selects.
+        /// </summary>
+        internal KernelKind Kernel { get; }
+
+        /// <summary>
         /// Gets the pool every unit's workspace is taken from and returned to.
         /// </summary>
         internal NativeBufferPool Pool => _pool ?? NativeBufferPool.Shared;
+
+        /// <summary>
+        /// Returns the BlockMix kernel the units run: the one these options name, or the one dispatch selects.
+        /// </summary>
+        /// <returns>A kind other than <see cref="KernelKind.Auto" />.</returns>
+        internal KernelKind ResolveKernel() =>
+            Kernel == KernelKind.Auto ? SelectKernel() : Kernel;
 
         /// <summary>
         /// Returns the number of threads that run a derivation's units.
@@ -72,10 +91,10 @@ internal static partial class ScryptCore
         /// <c>V</c> is smaller than <see cref="MinimumParallelUnitBytes" />, and on platforms without threads.
         /// </para>
         /// <para>
-        /// Each unit that runs at once holds its own <c>V</c>, so the threads are also capped at the number of
-        /// <c>V</c>s that fit in <see cref="ScryptParameters.MaxMemoryBytes" />, the ceiling on a single one: a
-        /// derivation's working memory stays within that ceiling however high the bound, which is what keeps an
-        /// untrusted encoded hash from multiplying it.
+        /// Each unit that runs at once holds its own <c>V</c>, so the threads are also capped at the number of <c>V</c>s
+        /// that fit in <see cref="ScryptParameters.MaxMemoryBytes" />, the ceiling on a single one: a derivation's
+        /// working memory stays within that ceiling however high the bound, which is what keeps an untrusted encoded
+        /// hash from multiplying it.
         /// </para>
         /// </remarks>
         internal int ResolveWorkers(int parallelization, long unitBytes)
