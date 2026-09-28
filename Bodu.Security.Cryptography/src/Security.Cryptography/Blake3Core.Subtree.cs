@@ -226,8 +226,9 @@ internal static partial class Blake3Core
     }
 
     /// <summary>
-    /// Compresses equally spaced inputs of whole blocks, each from the key to its chaining value: eight at a time on
-    /// the 256-bit kernel, up to four on the 128-bit kernel, and a lone input block by block.
+    /// Compresses equally spaced inputs of whole blocks, each from the key to its chaining value: sixteen at a time on
+    /// the 512-bit kernel, eight on the 256-bit kernel, up to four on the 128-bit kernel, and a lone input block by
+    /// block.
     /// </summary>
     /// <param name="kernel">
     /// The kernel; <see cref="KernelKind.Auto" /> for the one dispatch selects. Any other kind must be one the
@@ -268,14 +269,19 @@ internal static partial class Blake3Core
         {
             int lanes = kernel switch
             {
-                KernelKind.Avx512 or KernelKind.Avx2 when count > 4 => Math.Min(count, 8),
-                KernelKind.Avx512 or KernelKind.Avx2 or KernelKind.Ssse3 or KernelKind.AdvSimd when count > 1 => Math.Min(count, 4),
+                KernelKind.Avx512Wide when count > 8 => Math.Min(count, 16),
+                KernelKind.Avx512Wide or KernelKind.Avx512 or KernelKind.Avx2 when count > 4 => Math.Min(count, 8),
+                KernelKind.Avx512Wide or KernelKind.Avx512 or KernelKind.Avx2 or KernelKind.Ssse3 or KernelKind.AdvSimd when count > 1 => Math.Min(count, 4),
                 _ => 1,
             };
 
             switch (kernel)
             {
-                case KernelKind.Avx512 when lanes > 4:
+                case KernelKind.Avx512Wide when lanes > 8:
+                    Vector512Kernel.HashMany(ref input, stride, lanes, blocks, ref key, counter, incrementCounter, flags, flagsStart, flagsEnd, ref output);
+                    break;
+
+                case KernelKind.Avx512Wide or KernelKind.Avx512 when lanes > 4:
                     Vector256Kernel<Avx512Isa>.HashMany(ref input, stride, lanes, blocks, ref key, counter, incrementCounter, flags, flagsStart, flagsEnd, ref output);
                     break;
 
@@ -283,7 +289,7 @@ internal static partial class Blake3Core
                     Vector256Kernel<Avx2Isa>.HashMany(ref input, stride, lanes, blocks, ref key, counter, incrementCounter, flags, flagsStart, flagsEnd, ref output);
                     break;
 
-                case KernelKind.Avx512 when lanes > 1:
+                case KernelKind.Avx512Wide or KernelKind.Avx512 when lanes > 1:
                     Vector128Kernel<Blake2sCore.Avx512Isa>.HashMany(ref input, stride, lanes, blocks, ref key, counter, incrementCounter, flags, flagsStart, flagsEnd, ref output);
                     break;
 

@@ -10,7 +10,7 @@ public sealed partial class Blake3CoreTests
 {
     /// <summary>
     /// Verifies that each kernel compresses every chunk of a run exactly as compressing the chunks one block at a time
-    /// does, for every run length up to three groups of eight lanes and a counter whose low word wraps inside the run.
+    /// does, for every run length up to two groups of sixteen lanes and a remainder and a counter whose low word wraps inside the run.
     /// </summary>
     /// <param name="kernel">The kernel's name.</param>
     [TestMethod]
@@ -19,12 +19,13 @@ public sealed partial class Blake3CoreTests
     [DataRow("AdvSimd")]
     [DataRow("Avx2")]
     [DataRow("Avx512")]
+    [DataRow("Avx512Wide")]
     public void CompressChunks_ForEachKernel_ShouldMatchChunkByChunkCompression(string kernel)
     {
         Blake3Core.KernelKind kind = ParseSupportedKernel(kernel);
         var random = new Random(0x3C3C);
 
-        for (int count = 0; count <= 25; count++)
+        for (int count = 0; count <= 40; count++)
         {
             byte[] chunks = new byte[count * Blake3Core.ChunkBytes];
             random.NextBytes(chunks);

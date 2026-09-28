@@ -42,13 +42,26 @@ public sealed partial class Blake3CoreTests
     }
 
     /// <summary>
-    /// Verifies that dispatch prefers the AVX-512 kernels wherever their gate is open.
+    /// Verifies that dispatch prefers the sixteen-way AVX-512 kernels wherever their gate is open and the runtime
+    /// prefers 512-bit vectors.
     /// </summary>
     [TestMethod]
-    public void SelectKernel_WhenAvx512IsAvailable_ShouldReturnAvx512()
+    public void SelectKernel_WhenAvx512AndVector512AreAvailable_ShouldReturnAvx512Wide()
     {
-        if (!SimdCapabilities.Avx512FVL)
-            Assert.Inconclusive("AVX-512VL is not available on this processor.");
+        if (!SimdCapabilities.Avx512FVL || !System.Runtime.Intrinsics.Vector512.IsHardwareAccelerated)
+            Assert.Inconclusive("AVX-512VL is not available, or the runtime does not prefer 512-bit vectors, on this processor.");
+
+        Assert.AreEqual(Blake3Core.KernelKind.Avx512Wide, Blake3Core.SelectKernel());
+    }
+
+    /// <summary>
+    /// Verifies that dispatch keeps to the eight-way AVX-512 kernels where the runtime does not prefer 512-bit vectors.
+    /// </summary>
+    [TestMethod]
+    public void SelectKernel_WhenAvx512IsAvailableWithoutVector512_ShouldReturnAvx512()
+    {
+        if (!SimdCapabilities.Avx512FVL || System.Runtime.Intrinsics.Vector512.IsHardwareAccelerated)
+            Assert.Inconclusive("AVX-512VL is not available, or the runtime prefers 512-bit vectors, on this processor.");
 
         Assert.AreEqual(Blake3Core.KernelKind.Avx512, Blake3Core.SelectKernel());
     }
@@ -101,6 +114,7 @@ public sealed partial class Blake3CoreTests
         Assert.AreEqual(System.Runtime.Intrinsics.X86.Ssse3.IsSupported, Blake3Core.IsSupported(Blake3Core.KernelKind.Ssse3));
         Assert.AreEqual(avx2, Blake3Core.IsSupported(Blake3Core.KernelKind.Avx2));
         Assert.AreEqual(avx2 && System.Runtime.Intrinsics.X86.Avx512F.VL.IsSupported, Blake3Core.IsSupported(Blake3Core.KernelKind.Avx512));
+        Assert.AreEqual(avx2 && System.Runtime.Intrinsics.X86.Avx512F.VL.IsSupported, Blake3Core.IsSupported(Blake3Core.KernelKind.Avx512Wide));
         Assert.AreEqual(System.Runtime.Intrinsics.Arm.AdvSimd.Arm64.IsSupported, Blake3Core.IsSupported(Blake3Core.KernelKind.AdvSimd));
     }
 }

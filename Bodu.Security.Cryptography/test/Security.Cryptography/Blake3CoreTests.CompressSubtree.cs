@@ -19,6 +19,7 @@ public sealed partial class Blake3CoreTests
     [DataRow("AdvSimd")]
     [DataRow("Avx2")]
     [DataRow("Avx512")]
+    [DataRow("Avx512Wide")]
     public void CompressSubtree_ForEachKernel_ShouldMatchSpecificationTree(string kernel)
     {
         Blake3Core.KernelKind kind = ParseSupportedKernel(kernel);

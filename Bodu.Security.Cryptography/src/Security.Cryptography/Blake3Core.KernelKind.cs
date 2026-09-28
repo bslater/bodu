@@ -34,13 +34,20 @@ internal static partial class Blake3Core
         AdvSimd,
 
         /// <summary>
-        /// The kernels on x64 with AVX2: the SSSE3 kernel for one block.
+        /// The kernels on x64 with AVX2: eight inputs at once over 256-bit vectors, and the SSSE3 kernel for fewer.
         /// </summary>
         Avx2,
 
         /// <summary>
-        /// The kernels on x64 with AVX-512VL's rotations: the 128-bit kernel for one block.
+        /// The kernels on x64 with AVX-512VL's rotations: eight inputs at once over 256-bit vectors, and the 128-bit
+        /// kernel for fewer.
         /// </summary>
         Avx512,
+
+        /// <summary>
+        /// The <see cref="Avx512" /> kernels, with sixteen inputs at once over 512-bit vectors for runs of more than
+        /// eight: the kind dispatch selects where the runtime prefers 512-bit vectors.
+        /// </summary>
+        Avx512Wide,
     }
 }

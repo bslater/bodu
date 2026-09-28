@@ -21,6 +21,7 @@ public sealed partial class Blake3CoreTests
     [DataRow("AdvSimd")]
     [DataRow("Avx2")]
     [DataRow("Avx512")]
+    [DataRow("Avx512Wide")]
     public void Compress_ForEachKernel_ShouldMatchReferenceHashVectors(string kernel)
     {
         Blake3Core.KernelKind kind = ParseSupportedKernel(kernel);
@@ -40,6 +41,7 @@ public sealed partial class Blake3CoreTests
     [DataRow("AdvSimd")]
     [DataRow("Avx2")]
     [DataRow("Avx512")]
+    [DataRow("Avx512Wide")]
     public void Compress_ForEachKernel_ShouldMatchReferenceKeyedHashVectors(string kernel)
     {
         Blake3Core.KernelKind kind = ParseSupportedKernel(kernel);
@@ -59,6 +61,7 @@ public sealed partial class Blake3CoreTests
     [DataRow("AdvSimd")]
     [DataRow("Avx2")]
     [DataRow("Avx512")]
+    [DataRow("Avx512Wide")]
     public void Compress_ForEachKernel_ShouldMatchReferenceDeriveKeyVectors(string kernel)
     {
         Blake3Core.KernelKind kind = ParseSupportedKernel(kernel);
@@ -77,6 +80,7 @@ public sealed partial class Blake3CoreTests
     [DataRow("AdvSimd")]
     [DataRow("Avx2")]
     [DataRow("Avx512")]
+    [DataRow("Avx512Wide")]
     public void Compress_ForEachKernel_ShouldMatchScalarKernel(string kernel)
     {
         Blake3Core.KernelKind kind = ParseSupportedKernel(kernel);

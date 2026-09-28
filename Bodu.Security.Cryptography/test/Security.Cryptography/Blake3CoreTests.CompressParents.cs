@@ -10,7 +10,7 @@ public sealed partial class Blake3CoreTests
 {
     /// <summary>
     /// Verifies that each kernel compresses every parent of a run exactly as compressing the parents one at a time
-    /// does, for every run length up to three groups of eight lanes.
+    /// does, for every run length up to two groups of sixteen lanes and a remainder.
     /// </summary>
     /// <param name="kernel">The kernel's name.</param>
     [TestMethod]
@@ -19,12 +19,13 @@ public sealed partial class Blake3CoreTests
     [DataRow("AdvSimd")]
     [DataRow("Avx2")]
     [DataRow("Avx512")]
+    [DataRow("Avx512Wide")]
     public void CompressParents_ForEachKernel_ShouldMatchParentByParentCompression(string kernel)
     {
         Blake3Core.KernelKind kind = ParseSupportedKernel(kernel);
         var random = new Random(0x3D3D);
 
-        for (int count = 0; count <= 25; count++)
+        for (int count = 0; count <= 40; count++)
         {
             byte[] children = new byte[count * Blake3Core.BlockBytes];
             random.NextBytes(children);
@@ -50,12 +51,13 @@ public sealed partial class Blake3CoreTests
     [DataRow("AdvSimd")]
     [DataRow("Avx2")]
     [DataRow("Avx512")]
+    [DataRow("Avx512Wide")]
     public void CompressParents_WhenChainingValuesOverlayChildren_ShouldMatchSeparateOutput(string kernel)
     {
         Blake3Core.KernelKind kind = ParseSupportedKernel(kernel);
         var random = new Random(0x3D3E);
 
-        for (int count = 1; count <= 25; count++)
+        for (int count = 1; count <= 40; count++)
         {
             byte[] children = new byte[count * Blake3Core.BlockBytes];
             random.NextBytes(children);

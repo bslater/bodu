@@ -7,6 +7,7 @@
 using System.Buffers.Binary;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Runtime.Intrinsics;
 
 namespace Bodu.Security.Cryptography;
 
@@ -18,10 +19,11 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// <see cref="Compress(Span{uint}, ReadOnlySpan{byte}, ulong, uint, uint)" /> compresses one 64-byte block into an
 /// eight-word chaining value. <see cref="CompressChunks" /> and <see cref="CompressParents" /> compress many inputs at
-/// once, one to a lane: eight on the 256-bit kernel over AVX2 or AVX-512VL, and four on the 128-bit kernel over SSSE3
-/// or AdvSimd. <see cref="CompressSubtree(ReadOnlySpan{byte}, ReadOnlySpan{uint}, ulong, uint, Span{uint})" /> builds a
-/// complete subtree from both. Dispatch picks the widest kernel the processor supports and the process allows; every
-/// kernel produces the same chaining values.
+/// once, one to a lane: sixteen on the 512-bit kernel over AVX-512F, eight on the 256-bit kernel over AVX2 or
+/// AVX-512VL, and four on the 128-bit kernel over SSSE3 or AdvSimd.
+/// <see cref="CompressSubtree(ReadOnlySpan{byte}, ReadOnlySpan{uint}, ulong, uint, Span{uint})" /> builds a complete
+/// subtree from both. Dispatch picks the widest kernel the processor supports and the process allows; every kernel
+/// produces the same chaining values.
 /// </para>
 /// <para>
 /// The one-block kernels read the message words straight from the block and keep the working vector in registers, so
@@ -165,6 +167,7 @@ internal static partial class Blake3Core
         switch (kernel == KernelKind.Auto ? SelectKernel() : kernel)
         {
             case KernelKind.Avx512:
+            case KernelKind.Avx512Wide:
                 Vector128Kernel<Blake2sCore.Avx512Isa>.Compress(ref cv, ref m, counter, blockLength, flags);
                 break;
 
@@ -189,13 +192,20 @@ internal static partial class Blake3Core
     /// </summary>
     /// <returns>The kernel dispatch runs; never <see cref="KernelKind.Auto" />.</returns>
     /// <remarks>
+    /// <para>
     /// Every gate honors the <see cref="SimdCapabilities.DisableSimdSwitchName" /> switch, which pins the scalar
     /// kernel.
+    /// </para>
+    /// <para>
+    /// AVX-512 takes the sixteen-way kernel only where <see cref="Vector512.IsHardwareAccelerated" /> holds. The
+    /// runtime clears it on processors whose clock drops under sustained 512-bit work, so there the eight-way kernel
+    /// runs instead; <c>DOTNET_PreferredVectorBitWidth=512</c> opts such a processor in.
+    /// </para>
     /// </remarks>
     internal static KernelKind SelectKernel()
     {
         if (SimdCapabilities.Avx512FVL)
-            return KernelKind.Avx512;
+            return Vector512.IsHardwareAccelerated ? KernelKind.Avx512Wide : KernelKind.Avx512;
 
         if (SimdCapabilities.Avx2)
             return KernelKind.Avx2;
@@ -220,7 +230,7 @@ internal static partial class Blake3Core
         KernelKind.Ssse3 => System.Runtime.Intrinsics.X86.Ssse3.IsSupported,
         KernelKind.AdvSimd => System.Runtime.Intrinsics.Arm.AdvSimd.Arm64.IsSupported,
         KernelKind.Avx2 => System.Runtime.Intrinsics.X86.Avx2.IsSupported,
-        KernelKind.Avx512 => System.Runtime.Intrinsics.X86.Avx2.IsSupported && System.Runtime.Intrinsics.X86.Avx512F.VL.IsSupported,
+        KernelKind.Avx512 or KernelKind.Avx512Wide => System.Runtime.Intrinsics.X86.Avx2.IsSupported && System.Runtime.Intrinsics.X86.Avx512F.VL.IsSupported,
         _ => false,
     };
 
