@@ -181,7 +181,9 @@ internal static class CryptoHarness
             Measure("aead", "Bodu AES-128-OCB 1 MiB", BulkLength, () => { using var ocb = new OcbModeTransform(aes, iv16); ocb.Encrypt(bulk, output); });
             Measure("aead", "Bodu AES-128-SIV 1 MiB", BulkLength, () => { using var siv = new SivModeTransform(aes, aes2, iv16); siv.Encrypt(bulk, output); });
             Measure("mode", "Bodu AES-128-CTR 1 MiB", BulkLength, () => { using var ctr = new CtrModeTransform(aes, iv16); ctr.Transform(bulk, output.AsSpan(0, BulkLength), encrypt: true); });
+            Measure("mode", "Bodu AES-128-CBC encrypt 1 MiB", BulkLength, () => { using var cbc = new CbcModeTransform(aes, iv16); cbc.Transform(bulk, output.AsSpan(0, BulkLength), encrypt: true); });
             Measure("mode", "Bodu AES-128-CBC decrypt 1 MiB", BulkLength, () => { using var cbc = new CbcModeTransform(aes, iv16); cbc.Transform(bulk, output.AsSpan(0, BulkLength), encrypt: false); });
+            Measure("mode", "Bodu AES-128-CFB decrypt 1 MiB", BulkLength, () => { using var cfb = new CfbModeTransform(aes, iv16); cfb.Transform(bulk, output.AsSpan(0, BulkLength), encrypt: false); });
             Measure("mode", "Bodu AES-128-XTS 1 MiB", BulkLength, () => { using var xts = new XtsModeTransform(aes, aes2, iv16); xts.Transform(bulk, output.AsSpan(0, BulkLength), encrypt: true); });
             Measure("mode", "Bodu AES-128-ECB bulk 1 MiB", BulkLength, () => aes.EncryptBlocks(bulk, output));
         }

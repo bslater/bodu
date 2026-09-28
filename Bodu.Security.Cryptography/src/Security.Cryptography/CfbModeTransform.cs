@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Runtime.CompilerServices;
+
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
@@ -98,18 +100,25 @@ public sealed class CfbModeTransform
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, 0, input.Length);
         CryptographyThrowHelper.ThrowIfInvalidOverlap(input, output);
 
+        if (!encrypt)
+        {
+            DecryptRuns(input, output, blockSize);
+            return input.Length;
+        }
+
+        // CFB encryption is sequential: each block's keystream is the encryption of the previous ciphertext block.
         Span<byte> feedback = stackalloc byte[blockSize];
 
-        for (int offset = 0; offset < input.Length; offset += blockSize)
+        try
         {
-            ReadOnlySpan<byte> inBlock = input.Slice(offset, blockSize);
-            Span<byte> outBlock = output.Slice(offset, blockSize);
-
-            // Encrypt the current IV (used as feedback input)
-            _cipher.Encrypt(_currentIv, feedback);
-
-            if (encrypt)
+            for (int offset = 0; offset < input.Length; offset += blockSize)
             {
+                ReadOnlySpan<byte> inBlock = input.Slice(offset, blockSize);
+                Span<byte> outBlock = output.Slice(offset, blockSize);
+
+                // Encrypt the current IV (used as feedback input)
+                _cipher.Encrypt(_currentIv, feedback);
+
                 // XOR plaintext with encrypted feedback to produce ciphertext
                 for (int i = 0; i < blockSize; i++)
                     outBlock[i] = (byte)(inBlock[i] ^ feedback[i]);
@@ -117,18 +126,60 @@ public sealed class CfbModeTransform
                 // Update IV to current ciphertext block
                 outBlock.CopyTo(_currentIv);
             }
-            else
-            {
-                // Take the ciphertext block as the next feedback first: decrypting in place overwrites it below.
-                inBlock.CopyTo(_currentIv);
-
-                // XOR ciphertext with encrypted feedback to produce plaintext
-                for (int i = 0; i < blockSize; i++)
-                    outBlock[i] = (byte)(_currentIv[i] ^ feedback[i]);
-            }
+        }
+        finally
+        {
+            CryptographyHelper.Clear(feedback);
         }
 
         return input.Length;
+    }
+
+    /// <summary>
+    /// Decrypts whole blocks a run at a time: the run's feedback inputs — the current IV and every ciphertext block but
+    /// the last — are copied aside, encrypted with one multi-block call, and XORed with the ciphertext.
+    /// </summary>
+    /// <param name="input">The ciphertext, a whole number of blocks.</param>
+    /// <param name="output">The destination; may be the same memory as <paramref name="input" />.</param>
+    /// <param name="blockSize">The cipher's block size, in bytes.</param>
+    /// <remarks>
+    /// Everything a run needs from its ciphertext is copied before the run's output is written, so exact aliasing is
+    /// safe; the IV becomes the run's last ciphertext block.
+    /// </remarks>
+    [SkipLocalsInit]
+    private void DecryptRuns(ReadOnlySpan<byte> input, Span<byte> output, int blockSize)
+    {
+        int batchLength = CounterKeystream.BatchLength(blockSize);
+        Span<byte> feedback = batchLength <= CounterKeystream.BatchBytes ? stackalloc byte[batchLength] : new byte[batchLength];
+        Span<byte> keystream = batchLength <= CounterKeystream.BatchBytes ? stackalloc byte[batchLength] : new byte[batchLength];
+        Span<byte> nextIv = stackalloc byte[blockSize];
+        int used = 0;
+
+        try
+        {
+            int offset = 0;
+            while (offset < input.Length)
+            {
+                int length = Math.Min(batchLength, input.Length - offset);
+                ReadOnlySpan<byte> run = input.Slice(offset, length);
+                used = Math.Max(used, length);
+
+                _currentIv.CopyTo(feedback);
+                run[..^blockSize].CopyTo(feedback.Slice(blockSize));
+                run[^blockSize..].CopyTo(nextIv);
+
+                CounterKeystream.Apply(_cipher, feedback[..length], keystream, run, output.Slice(offset, length));
+
+                nextIv.CopyTo(_currentIv);
+                offset += length;
+            }
+        }
+        finally
+        {
+            CryptographyHelper.Clear(keystream[..used]);
+            CryptographyHelper.Clear(feedback[..used]);
+            CryptographyHelper.Clear(nextIv);
+        }
     }
 
     /// <summary>
