@@ -340,38 +340,71 @@ internal struct Poly1305Core
     /// <param name="low">The sum of the products' low 44 bits.</param>
     /// <param name="high">The sum of the products shifted right 44 bits.</param>
     /// <remarks>
+    /// <para>
     /// The factors keep every product below 2^94, so a product shifted right 44 bits fits in 64 bits, and three of
     /// either part sum without overflow.
+    /// </para>
+    /// <para>
+    /// The high half of the product comes from <c>mulx</c> on x64 with BMI2 and from <c>umulh</c> on ARM64. Without
+    /// either, <see cref="Math.BigMul(ulong, ulong, out ulong)" /> is a call per product, so
+    /// <see cref="SplitProduct" /> forms the split from three 64-bit multiplies inline instead.
+    /// </para>
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void AddProduct(ulong left, ulong right, ref ulong low, ref ulong high)
     {
-        ulong product = left * right;
-        low += product & Mask44;
-        high += (MultiplyHigh(left, right) << 20) | (product >> 44);
+        if (Bmi2.X64.IsSupported || ArmBase.Arm64.IsSupported)
+        {
+            ulong product = left * right;
+            low += product & Mask44;
+            high += (MultiplyHigh(left, right) << 20) | (product >> 44);
+        }
+        else
+        {
+            high += SplitProduct(left, right, out ulong productLow);
+            low += productLow;
+        }
     }
 
     /// <summary>
-    /// Returns the high 64 bits of the 128-bit product of two 64-bit values.
+    /// Splits the product of an accumulator limb and a limb of <c>r</c> or <c>20 · r</c> at bit 44, with three 64-bit
+    /// multiplies: for processors without an instruction for the high half of a 64 × 64-bit product.
+    /// </summary>
+    /// <param name="left">The first factor, below 2^46: an accumulator limb.</param>
+    /// <param name="right">The second factor, below 2^49: a limb of <c>r</c> or of <c>20 · r</c>.</param>
+    /// <param name="low">Receives the product's low 44 bits.</param>
+    /// <returns>The product shifted right 44 bits.</returns>
+    /// <remarks>
+    /// With <c>left = a1 · 2^32 + a0</c> and <c>right = b1 · 2^32 + b0</c>, the product is
+    /// <c>(a1 · right + a0 · b1) · 2^32 + a0 · b0</c>. The bounds keep <c>a1 · right</c> below 2^63, so that sum, with
+    /// the carry out of <c>a0 · b0</c>, is below 2^64: it is exactly the product's bits from 32 upward, from which both
+    /// parts of the split follow.
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static ulong SplitProduct(ulong left, ulong right, out ulong low)
+    {
+        ulong leftLow = (uint)left;
+        ulong lowProduct = leftLow * (uint)right;
+        ulong upper = ((left >> 32) * right) + (leftLow * (right >> 32)) + (lowProduct >> 32);
+
+        low = ((upper << 32) | (uint)lowProduct) & Mask44;
+        return upper >> 12;
+    }
+
+    /// <summary>
+    /// Returns the high 64 bits of the 128-bit product of two 64-bit values, through <c>mulx</c> on x64 with BMI2 or
+    /// <c>umulh</c> on ARM64.
     /// </summary>
     /// <param name="left">The first factor.</param>
     /// <param name="right">The second factor.</param>
     /// <returns>The high half of the product.</returns>
     /// <remarks>
-    /// The high-half instructions keep the result in a register; <see cref="Math.BigMul(ulong, ulong, out ulong)" />
-    /// returns its low half through memory, and serves only processors with neither instruction.
+    /// Callers check that one of the two instructions is available; <see cref="SplitProduct" /> serves processors with
+    /// neither.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static ulong MultiplyHigh(ulong left, ulong right)
-    {
-        if (Bmi2.X64.IsSupported)
-            return Bmi2.X64.MultiplyNoFlags(left, right);
-
-        if (ArmBase.Arm64.IsSupported)
-            return ArmBase.Arm64.MultiplyHigh(left, right);
-
-        return Math.BigMul(left, right, out _);
-    }
+    private static ulong MultiplyHigh(ulong left, ulong right) =>
+        Bmi2.X64.IsSupported ? Bmi2.X64.MultiplyNoFlags(left, right) : ArmBase.Arm64.MultiplyHigh(left, right);
 
     /// <summary>
     /// Reads eight message bytes as a little-endian 64-bit value.
