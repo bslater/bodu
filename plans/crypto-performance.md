@@ -1,6 +1,6 @@
 # Implementation plan: faster primitives across Bodu.Security.Cryptography
 
-**Status:** In progress on `claude/argon2-prototype-co27tu` (W0–W4 done, §10) · **Source:** the assessment run on
+**Status:** In progress on `claude/argon2-prototype-co27tu` (W0–W5 done, §10) · **Source:** the assessment run on
 2026-09-27 after the Argon2 work (§1) · **Target:** `Bodu.Security.Cryptography`, next lock-step release
 
 The Argon2 work ([`argon2-performance.md`](argon2-performance.md)) used four techniques: a
@@ -725,3 +725,94 @@ How it was done, and where it departs from the design above:
   blake2-kat.json vectors and the shim tests. The BLAKE2s sweep's
   `CollectionAssert.AreEqual` faults inside MSTest under the emulator. The same sweep
   checked with a span comparison matches the scalar kernel on all 1,000 samples.
+
+### W5 — BLAKE3 (done)
+
+| Measure (1 MiB, one thread) | Baseline | Result | Target |
+|---|---|---|---|
+| AVX2 host | 86.8 MiB/s (scalar code) | 1,409–1,557 MiB/s | ≥ 1 GiB/s — met |
+| AVX-512, eight-way (this host's default) | 280.8 MiB/s | 2,699 MiB/s | — |
+| AVX-512, sixteen-way (`DOTNET_PreferredVectorBitWidth=512`) | 280.8 MiB/s | 3,441 MiB/s | — |
+| SSSE3 only | 86.8 MiB/s | 885 MiB/s | — |
+| Scalar | 86.8 MiB/s | 382 MiB/s | — |
+| 64-byte message, AVX-512 / scalar | 0.35 / 0.86 µs | 0.23 / 0.28 µs | — |
+
+| Measure, all four cores (`maxDegreeOfParallelism: -1`) | One thread | Four threads |
+|---|---|---|
+| 1 MiB, AVX-512 eight-way | 2,699 MiB/s | 7,701 MiB/s |
+| 16 MiB, AVX-512 eight-way | 2,145 MiB/s | 9,231 MiB/s |
+| 16 MiB, AVX-512 sixteen-way | 2,437 MiB/s | 11,812 MiB/s |
+| 16 MiB, AVX2 | 1,237 MiB/s | 4,570 MiB/s |
+| 16 MiB, scalar | 404 MiB/s | 1,449 MiB/s |
+
+§1's baseline of 82 MiB/s came from an earlier run; the table uses this workstream's
+own measurements. On .NET 8 one thread runs at 2,571 MiB/s with AVX-512 (3,608 MiB/s
+sixteen-way), 1,399–1,498 MiB/s on AVX2, 784 MiB/s on SSSE3 and 401 MiB/s scalar. A
+hash still allocates only its 32-byte digest on one thread; on several, each write
+that divides allocates about 2.4 KB, most of it `Parallel.For`'s own.
+
+How it was done, and where it departs from the design above:
+
+- **T1, the one-block kernels.** The compression function moved into an internal
+  `Blake3Core`. Its scalar kernel writes out the seven rounds with the schedule resolved
+  to constant indices, and a `Vector128Kernel<TIsa>` runs one block over the BLAKE2s
+  shims — BLAKE3's `G` is BLAKE2s's, rotations included — on AVX-512VL, SSSE3 (also on
+  AVX2 hosts) and AdvSimd. Blake3 reads blocks straight from the caller's span, and
+  builds each parent block on the stack, clearing it after the compression. This alone
+  took one thread from 87 to 469 MiB/s on AVX2 and 360 MiB/s scalar.
+- **T4, many chunks at once.** Kernels that give each lane its own input compress
+  whole chunks, and whole levels of parents, many at a time:
+  - eight-way over `Vector256`, with AVX2's byte shuffles or AVX-512VL's `VPRORD`, and
+    message words in and chaining values out through 8×8 transposes;
+  - four-way over `Vector128` on the BLAKE2s shims, which gained a 4×4 transpose;
+  - sixteen-way over `Vector512`, whose 16×16 transpose ends in two rounds of
+    `VSHUFI32X4`.
+  `CompressSubtree` compresses up to 64 chunks per batch and reduces their chaining
+  values level by level in place, so the only copy of state it keeps is 2 KiB on the
+  stack, cleared on return. `Blake3.HashCore` brings the stream to a chunk boundary,
+  then hashes the largest aligned power-of-two runs of whole chunks as subtrees. It
+  leaves at least one byte behind, so the final block stays deferred and the root is
+  never compressed early; each subtree's chaining value joins the stack one level up
+  per doubling.
+- **The runtime's 512-bit preference.** The sixteen-way kernel beats the eight-way one
+  by 27–40% on this Cascade Lake host, but the runtime clears
+  `Vector512.IsHardwareAccelerated` here, because sustained 512-bit work lowers the
+  clock. It therefore runs as its own kind, `Avx512Wide`, selected only where the
+  runtime prefers 512-bit vectors; elsewhere AVX-512 hosts keep the eight-way kernel.
+  The tests drive it explicitly wherever AVX-512 runs, and the coverage matrix now
+  classifies `*.Vector512.cs` with the AVX-512 files.
+- **T3, threads.** `Blake3(int maxDegreeOfParallelism)` and `MaxDegreeOfParallelism`
+  are the one API addition G5 anticipated. The default is `1`. The hasher plans the
+  aligned subtrees of each write, and `Blake3Core.CompressSubtrees` computes them all in
+  one parallel job, as scrypt's units are: 64-chunk parts are claimed from a shared
+  counter by the calling thread and the workers, and each subtree's parts are joined
+  on the calling thread. Writes with fewer than 256 whole chunks stay on the calling
+  thread. The parallel branch is a method of its own, because the compiler allocates
+  a lambda's captures on entry to the method that declares them, and that had added
+  80 bytes to every single-threaded hash.
+- **Tests.** The core has a minimal specification-shaped BLAKE3 of its own, so
+  every kernel is driven explicitly:
+  - the official test_vectors.json in all three modes, keyed hash and key
+    derivation included, which `Blake3` does not expose;
+  - a sweep of each kernel against the scalar one;
+  - the many-input kernels against chunk-by-chunk and parent-by-parent compression,
+    over every lane remainder up to 40 and counters whose low word wraps, with parents
+    reduced in place;
+  - subtrees of 1 to 256 chunks against the specification's tree;
+  - the parallel plans against the calling thread's, at every thread bound.
+
+  On the public class, large, ragged and threaded writes are held to small-write
+  streaming, which never takes the subtree path. Around subtree and part
+  boundaries, every bound's digest is held to the calling thread's.
+- **ARM64.** Under qemu the AdvSimd transpose and rotations pass, as do all three
+  modes of the official vectors through the AdvSimd kernel and the parallel subtree
+  plans. The emulator again faults inside MSTest's `CollectionAssert`, so the
+  sweeps were re-checked with a span comparison, and all of them match the scalar
+  kernel:
+  - 1,000 compressions;
+  - every chunk and parent count up to 40, parents in place too;
+  - subtrees of 1 to 256 chunks.
+- **Found along the way.** On .NET 8, BLAKE2b's 128-bit kernel (SSSE3 hosts, and the
+  AdvSimd kernel on ARM64) runs at 181 MiB/s, below its own scalar kernel's 507; on
+  .NET 10 it runs at 582. W4 measured that tier on .NET 10 only. It is taken up
+  next, before W6.

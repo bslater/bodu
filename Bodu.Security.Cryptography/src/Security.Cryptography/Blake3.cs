@@ -89,6 +89,9 @@ public sealed class Blake3
     /// <summary>Output length in bytes.</summary>
     private const int OutLen = 32;
 
+    /// <summary>The most subtrees one write is divided into. A write of under 2 GiB needs at most 42: up to 21 that complete the subtrees earlier writes left open, and up to 21 more, one per set bit of its remaining chunk count.</summary>
+    private const int MaxSubtrees = 64;
+
     /// <summary>Running chaining value for the chunk currently being compressed.</summary>
     /// <remarks>
     /// Reset to the IV at the start of each new chunk (when the first block of a chunk is processed) and updated in
@@ -100,16 +103,44 @@ public sealed class Blake3
     /// <summary>Chaining-value stack used to build parent nodes as chunks complete. Laid out as a flat 8-word slice per level, indexed by <see cref="_cvStackDepth" />, so per-level pushes and merges run without per-level array allocations.</summary>
     private readonly uint[] _cvStack = new uint[MaxCvStackDepth * 8];
 
+    /// <summary>The greatest number of threads one write may use; see <see cref="MaxDegreeOfParallelism" />.</summary>
+    private readonly int _maxDegreeOfParallelism;
+
     /// <summary>Current depth of <see cref="_cvStack" /> — the number of 8-word CV slices currently live, with the active top slice occupying words <c>[(_cvStackDepth - 1) * 8, _cvStackDepth * 8)</c> when non-zero.</summary>
     private int _cvStackDepth;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Blake3" /> class, configured to produce a 256-bit digest.
     /// </summary>
+    /// <remarks>
+    /// Every hash runs on the calling thread; see <see cref="MaxDegreeOfParallelism" />.
+    /// </remarks>
     public Blake3()
+        : this(maxDegreeOfParallelism: 1)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Blake3" /> class, configured to produce a 256-bit digest, with the
+    /// specified bound on the threads each write may use.
+    /// </summary>
+    /// <param name="maxDegreeOfParallelism">
+    /// The greatest number of threads one write may use, the calling thread included; <c>-1</c> for up to one per
+    /// processor.
+    /// </param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="maxDegreeOfParallelism" /> is zero or less than <c>-1</c>.
+    /// </exception>
+    /// <remarks>
+    /// The digest never depends on the bound; see <see cref="MaxDegreeOfParallelism" />.
+    /// </remarks>
+    public Blake3(int maxDegreeOfParallelism)
         : base(BlockSize * 8)
     {
+        CryptographyThrowHelper.ThrowIfDegreeOfParallelismInvalid(maxDegreeOfParallelism);
+
         HashSizeValue = 256;
+        _maxDegreeOfParallelism = maxDegreeOfParallelism;
         Blake3Core.InitializationVector.CopyTo(_chunkCv);
     }
 
@@ -123,6 +154,36 @@ public sealed class Blake3
         {
             ThrowIfDisposed();
             return "BLAKE3";
+        }
+    }
+
+    /// <summary>
+    /// Gets the greatest number of threads one write may use to hash its input.
+    /// </summary>
+    /// <value>
+    /// <c>1</c>, the default, hashes every write on the calling thread. A larger value, or <c>-1</c> for up to one
+    /// thread per processor, lets the whole chunks of a large write be hashed on several threads at once. The digest
+    /// never depends on this value.
+    /// </value>
+    /// <remarks>
+    /// <para>
+    /// BLAKE3's tree makes every complete subtree independent of the others, so a large write is divided into parts of
+    /// 64 KiB, claimed by the calling thread and the workers as each finishes the last, and the parts' chaining values
+    /// are joined on the calling thread. A write of less than 256 KiB of whole chunks stays on the calling thread,
+    /// where waking other threads would cost more than they save.
+    /// </para>
+    /// <para>
+    /// The default is <c>1</c> because a service that hashes many inputs at once already keeps every core busy, and
+    /// would only add hand-offs. Raise it to hash one large input faster: a file, a download, a snapshot.
+    /// </para>
+    /// </remarks>
+    /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
+    public int MaxDegreeOfParallelism
+    {
+        get
+        {
+            ThrowIfDisposed();
+            return _maxDegreeOfParallelism;
         }
     }
 
@@ -376,29 +437,43 @@ public sealed class Blake3
     /// <remarks>
     /// Each subtree is the largest run of whole chunks that leaves at least one byte behind, holds a power of two of
     /// chunks, and starts on a multiple of its own length, which makes it a node of the tree whatever input follows.
-    /// Its chaining value joins the stack as a chunk's would, one level up for every doubling of its size.
+    /// The subtrees are hashed together, on up to <see cref="_maxDegreeOfParallelism" /> threads, and their chaining
+    /// values join the stack in order, each as a chunk's would, one level up for every doubling of its size.
     /// </remarks>
     private int HashSubtrees(ReadOnlySpan<byte> source)
     {
-        Span<uint> chainingValue = stackalloc uint[8];
-        ulong chunkCount = _totalBytes / ChunkSize;
+        Span<int> subtreeChunks = stackalloc int[MaxSubtrees];
+        ulong firstChunk = _totalBytes / ChunkSize;
+        ulong chunkCount = firstChunk;
+        int subtrees = 0;
         int consumed = 0;
 
-        while (source.Length - consumed > ChunkSize)
+        while (source.Length - consumed > ChunkSize && subtrees < MaxSubtrees)
         {
             int chunks = 1 << BitOperations.Log2((uint)((source.Length - consumed - 1) / ChunkSize));
             if (chunkCount != 0)
                 chunks = (int)Math.Min((ulong)chunks, 1UL << BitOperations.TrailingZeroCount(chunkCount));
 
-            Blake3Core.CompressSubtree(source.Slice(consumed, chunks * ChunkSize), Blake3Core.InitializationVector, chunkCount, 0, chainingValue);
-
+            subtreeChunks[subtrees++] = chunks;
             chunkCount += (ulong)chunks;
             consumed += chunks * ChunkSize;
-            PushSubtreeCv(chainingValue, BitOperations.Log2((uint)chunks), chunkCount);
+        }
+
+        Span<byte> chainingValues = stackalloc byte[MaxSubtrees * Blake3Core.ChainingValueBytes];
+        Blake3Core.CompressSubtrees(source[..consumed], subtreeChunks[..subtrees], Blake3Core.InitializationVector, firstChunk, 0, _maxDegreeOfParallelism, chainingValues);
+
+        Span<uint> chainingValue = stackalloc uint[8];
+        chunkCount = firstChunk;
+        for (int subtree = 0; subtree < subtrees; subtree++)
+        {
+            Blake3Core.LoadChainingValue(chainingValues[(subtree * Blake3Core.ChainingValueBytes)..], chainingValue);
+            chunkCount += (ulong)subtreeChunks[subtree];
+            PushSubtreeCv(chainingValue, BitOperations.Log2((uint)subtreeChunks[subtree]), chunkCount);
         }
 
         _totalBytes += (ulong)consumed;
         chainingValue.Clear();
+        CryptographicOperations.ZeroMemory(chainingValues[..(subtrees * Blake3Core.ChainingValueBytes)]);
 
         return consumed;
     }

@@ -13,25 +13,24 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography.Benchmarks;
 
 /// <summary>
-/// Measures throughput, latency, and allocation for the primitives the cross-library performance plan
-/// (<c>plans/crypto-performance.md</c>) targets, next to the BCL and — on Linux — OpenSSL on the same machine.
+/// Measures throughput, latency, and allocation for the primitives the cross-library performance plan (<c>plans/crypto-performance.md</c>)
+/// targets, next to the BCL and — on Linux — OpenSSL on the same machine.
 /// </summary>
 /// <remarks>
 /// <para>
 /// Run with <c>--crypto-harness</c>, optionally followed by case filters: a case runs when its <c>group/name</c>
-/// contains any filter, ignoring case (for example <c>--crypto-harness SHAKE scrypt</c>). <c>--round &lt;seconds&gt;</c>
-/// sets the length of each of the five measured rounds (0.4 s by default).
+/// contains any filter, ignoring case (for example <c>--crypto-harness SHAKE scrypt</c>).
+/// <c>--round &lt;seconds&gt;</c> sets the length of each of the five measured rounds (0.4 s by default).
 /// </para>
 /// <para>
-/// Each case is warmed up until it has run at least 60 times or for half a second, capped at 1.5 s so the slowest
-/// cases still finish, which is long enough for tiered compilation to promote the hot methods. The reported time is
-/// the median of five rounds; allocation is the process-wide allocation per operation over all five.
+/// Each case is warmed up until it has run at least 60 times or for half a second, capped at 1.5 s so the slowest cases
+/// still finish, which is long enough for tiered compilation to promote the hot methods. The reported time is the
+/// median of five rounds; allocation is the process-wide allocation per operation over all five.
 /// </para>
 /// <para>
 /// Built with <c>-p:BoduCryptoBaseline=1.0.0</c>, the same source measures the published package. SIMD tiers are
-/// selected with the runtime's switches: <c>DOTNET_EnableAVX512F=0</c> (.NET 8) or <c>DOTNET_EnableAVX512=0</c>
-/// (.NET 10) removes AVX-512, <c>DOTNET_EnableAVX2=0</c> AVX2, and <c>DOTNET_EnableHWIntrinsic=0</c> every vector
-/// path.
+/// selected with the runtime's switches: <c>DOTNET_EnableAVX512F=0</c> (.NET 8) or <c>DOTNET_EnableAVX512=0</c> (.NET
+/// 10) removes AVX-512, <c>DOTNET_EnableAVX2=0</c> AVX2, and <c>DOTNET_EnableHWIntrinsic=0</c> every vector path.
 /// </para>
 /// </remarks>
 internal static class CryptoHarness
@@ -57,7 +56,9 @@ internal static class CryptoHarness
     /// <summary>
     /// Runs the harness.
     /// </summary>
-    /// <param name="args">The arguments after <c>--crypto-harness</c>: case filters, and <c>--round &lt;seconds&gt;</c>.</param>
+    /// <param name="args">
+    /// The arguments after <c>--crypto-harness</c>: case filters, and <c>--round &lt;seconds&gt;</c>.
+    /// </param>
     internal static void Run(string[] args)
     {
         var filters = new List<string>();
@@ -103,6 +104,17 @@ internal static class CryptoHarness
         {
             Measure("hash", $"Bodu {name} 1 MiB", BulkLength, () => algorithm.TryComputeHash(bulk, digest, out _));
             Measure("hash", $"Bodu {name} 64 B", SmallLength, () => algorithm.TryComputeHash(small, digest, out _));
+        }
+
+        // BLAKE3's tree lets one large input use every core; the bound is opt-in, so both sides are measured.
+        byte[] large = Random(16 * BulkLength, 11);
+        using (var blake3 = new Blake3())
+            Measure("hash", "Bodu BLAKE3 16 MiB", large.Length, () => blake3.TryComputeHash(large, digest, out _));
+
+        using (var blake3 = new Blake3(maxDegreeOfParallelism: -1))
+        {
+            Measure("hash", "Bodu BLAKE3 1 MiB, all cores", BulkLength, () => blake3.TryComputeHash(bulk, digest, out _));
+            Measure("hash", "Bodu BLAKE3 16 MiB, all cores", large.Length, () => blake3.TryComputeHash(large, digest, out _));
         }
 
         Measure("hash", "BCL SHA-256 1 MiB", BulkLength, () => SHA256.HashData(bulk, digest));
@@ -279,7 +291,9 @@ internal static class CryptoHarness
     /// </summary>
     /// <param name="group">The case's group, printed first and matched by the filters.</param>
     /// <param name="name">The case's name.</param>
-    /// <param name="bytesPerOperation">The bytes each operation processes, or 0 to report operations per second.</param>
+    /// <param name="bytesPerOperation">
+    /// The bytes each operation processes, or 0 to report operations per second.
+    /// </param>
     /// <param name="operation">The operation to measure.</param>
     private static void Measure(string group, string name, long bytesPerOperation, Action operation)
     {
@@ -348,7 +362,9 @@ internal static class CryptoHarness
     /// <summary>
     /// Describes the build and the host the numbers come from.
     /// </summary>
-    /// <returns>The package version under test, the runtime, the processor count, and the vector sets enabled.</returns>
+    /// <returns>
+    /// The package version under test, the runtime, the processor count, and the vector sets enabled.
+    /// </returns>
     private static string Describe()
     {
         string version = typeof(Scrypt).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "unknown";

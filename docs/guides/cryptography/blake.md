@@ -105,7 +105,18 @@ byte[] hash = hasher.ComputeHash(payload);   // always 32 bytes (256 bits)
 
 BLAKE3's output is fixed at 256 bits in this implementation. The underlying spec supports XOF-style squeezing of arbitrary-length output by repeatedly invoking the root compression; that surface is not exposed by `Bodu.Security.Cryptography.Blake3` — reach for `Bodu.Security.Cryptography.Shake` if you need a true XOF.
 
-BLAKE3's headline feature is the tree structure: input is split into 1024-byte chunks, each chunk is compressed block-by-block, and chunk chaining values are folded pairwise up a binary tree until a single root remains. The tree topology means hashing long inputs is naturally parallelisable across cores — though this implementation does the tree synchronously.
+BLAKE3's headline feature is the tree structure: input is split into 1024-byte chunks, each chunk is compressed block-by-block, and chunk chaining values are folded pairwise up a binary tree until a single root remains. No chunk depends on another, so this implementation compresses whole chunks many at once, one to each lane of a vector register — sixteen, eight or four depending on the processor (see [Hardware acceleration](hardware-acceleration.md)) — and a write of a few kilobytes or more runs several times faster than BLAKE2b.
+
+### Hashing on several threads
+
+The same independence lets one large input use several cores. Pass a bound on the threads each write may use:
+
+```csharp
+using var hasher = new Blake3(maxDegreeOfParallelism: -1);   // up to one thread per processor
+byte[] hash = hasher.ComputeHash(largeFile);                  // same digest as new Blake3()
+```
+
+The digest never depends on the bound. A write with at least 256 KiB of whole chunks is divided into 64 KiB parts, which the calling thread and the workers claim as each finishes the last; a smaller write stays on the calling thread. The default is `1`: a service that hashes many inputs at once already keeps every core busy, so raise the bound to hash one large input — a file, a download, a snapshot — faster.
 
 ### Streaming
 

@@ -86,8 +86,9 @@ was being established:
 ## Hardware-gated SIMD paths (the AVX512 split)
 
 `Bodu.Security.Cryptography` ships hardware-accelerated implementations
-(`ThreefishBlockCipher.{256,512,1024}.Avx512.cs`, `Blake2b/2s/3.Avx512.cs`,
-…) alongside scalar fallbacks. The JIT selects exactly one path per process
+(`ThreefishBlockCipher.{256,512,1024}.Avx512.cs`, the `Blake2bCore` /
+`Blake2sCore` / `Blake3Core` `.Avx512.cs` shims, BLAKE3's 512-bit
+`Blake3Core.Vector512.cs`, …) alongside scalar fallbacks. The JIT selects exactly one path per process
 based on the CPU, so **no single machine can cover both**:
 
 - On an **AVX512-capable** host the existing known-answer tests drive the
@@ -156,8 +157,9 @@ wall clock for nothing.
 
 **This does not retire the `n/a (hardware-gated)` classification** in
 `tools/New-CoverageMatrix.ps1`. A single-pass local run on a machine without
-AVX-512 still cannot execute the intrinsic files, and reporting them as 0% there
-would be wrong. The classification stays for that case; after a dual pass it
+AVX-512 still cannot execute the intrinsic files — every `*.Avx512.cs`, and the
+512-bit `*.Vector512.cs` kernels, which the script classifies with them — and
+reporting them as 0% there would be wrong. The classification stays for that case; after a dual pass it
 simply never triggers, because neither path is unreachable any more.
 
 ### ARM64: the AdvSimd and PMULL files
@@ -181,6 +183,9 @@ tests drive the SSE2 and scalar kernels explicitly on x64, so only the ARM64 shi
 `ScryptCore.AdvSimd.cs`, cannot run there. The BLAKE2 core tests likewise drive every
 x64 kernel explicitly; BLAKE2b's 128-bit kernel reuses Argon2's shims, so its ARM64
 shim is `Argon2Core.AdvSimd.cs` again, and BLAKE2s's is `Blake2sCore.AdvSimd.cs`.
+BLAKE3's 128-bit kernels reuse the BLAKE2s shims, so on ARM64 they too run through
+`Blake2sCore.AdvSimd.cs`; its 256- and 512-bit kernels are x64-only, and the
+512-bit one, `Blake3Core.Vector512.cs`, is classified with the AVX-512 files.
 
 `tools/New-CoverageMatrix.ps1` therefore treats `*.AdvSimd.cs` and
 `*.PmullIsa.cs` as hardware-gated whenever no collecting host is ARM64 — judged
@@ -211,9 +216,10 @@ and a second writer in a second assembly would corrupt it.
 
 Run on its own, that assembly executes the scalar implementations at 87–95% and
 every Threefish `*.Avx512.cs` file at **0%** — measured proof that the switch is
-engaged and the intrinsic path is not running. The BLAKE intrinsic files show
-four lines of their static constructor, which initialize the rotation constants
-whenever the type is touched; no intrinsic compute code executes.
+engaged and the intrinsic path is not running. The BLAKE intrinsic files of the
+time showed four lines of their static constructor, which initialized rotation
+constants whenever the type was touched; no intrinsic compute code executed. The
+BLAKE kernels have since moved to shim structs with no static state.
 
 Adding it changed the package figure not at all, which is the point: it buys
 confidence in the feature, and a second independent source of scalar coverage

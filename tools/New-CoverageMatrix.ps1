@@ -23,9 +23,9 @@
       3. Hardware-gated paths. The JIT selects exactly one of the AVX-512 or scalar implementations
          per process, so a single run cannot cover both, and the ARM64 implementations (the AdvSimd
          and PMULL instruction-set shims) run only on ARM64. Files that the collecting host could not
-         possibly execute - *.Avx512.cs on a host without AVX-512, *.AdvSimd.cs and *.PmullIsa.cs on a
-         host that is not ARM64 - are reported as n/a and excluded from the denominator rather than as
-         0%.
+         possibly execute - *.Avx512.cs and the 512-bit *.Vector512.cs kernels on a host without
+         AVX-512, *.AdvSimd.cs and *.PmullIsa.cs on a host that is not ARM64 - are reported as n/a and
+         excluded from the denominator rather than as 0%.
 
 .PARAMETER ReportPath
     Merged Cobertura report. Default: artifacts/coverage/report/Cobertura.xml.
@@ -352,7 +352,7 @@ foreach ($relative in @($files.Keys)) {
 # ---------------------------------------------------------------------------------------------------------------
 $hardwareGated = @()
 if ($avx512 -eq 'false') {
-    $hardwareGated = @($files.Keys | Where-Object { $_ -like '*.Avx512.cs' })
+    $hardwareGated = @($files.Keys | Where-Object { $_ -like '*.Avx512.cs' -or $_ -like '*.Vector512.cs' })
 }
 elseif ($avx512 -ne 'true') {
     # Gate only on positive evidence that the host could not execute these paths. Excluding code
