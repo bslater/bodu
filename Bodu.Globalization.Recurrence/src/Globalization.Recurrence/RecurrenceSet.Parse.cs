@@ -149,7 +149,7 @@ public sealed partial class RecurrenceSet : IParsable<RecurrenceSet>
             }
 
             string name = nameSpan.Trim().ToString();
-            string value = line[(colon + 1) ..].Trim();
+            string value = line[(colon + 1)..].Trim();
 
             if (name.Equals("DTSTART", StringComparison.OrdinalIgnoreCase))
             {

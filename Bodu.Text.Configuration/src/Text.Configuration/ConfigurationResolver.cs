@@ -143,7 +143,7 @@ internal sealed class ConfigurationResolver
 
         string normalizedRoot = pathRoot.Replace('\\', '/').TrimEnd('/');
         return normalizedTarget.StartsWith(normalizedRoot + "/", comparison)
-            ? normalizedTarget[(normalizedRoot.Length + 1) ..]
+            ? normalizedTarget[(normalizedRoot.Length + 1)..]
             : string.Equals(normalizedTarget, normalizedRoot, comparison)
                 ? Path.GetFileName(normalizedTarget)
                 : normalizedTarget;

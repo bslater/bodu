@@ -161,7 +161,7 @@ public sealed class AhoCorasickAutomaton<TValue>
         var result = new KeyValuePair<string, TValue>[_patterns.Count];
         for (int i = 0; i < _patterns.Count; i++)
         {
-            AhoCorasickNode<TValue> node = AhoCorasickCore.Find(_root, _patterns[i].AsSpan()) !;
+            AhoCorasickNode<TValue> node = AhoCorasickCore.Find(_root, _patterns[i].AsSpan())!;
             result[i] = new KeyValuePair<string, TValue>(_patterns[i], node.Value);
         }
 

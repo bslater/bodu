@@ -253,7 +253,7 @@ public static partial class IniSerializer
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
     private static object ReadRootDictionary(IniNormalizedDocument document, Type targetType, Type valueType, IniSerializerOptions options)
     {
-        var dictionary = (IDictionary)Activator.CreateInstance(ConcreteDictionaryType(targetType, valueType)) !;
+        var dictionary = (IDictionary)Activator.CreateInstance(ConcreteDictionaryType(targetType, valueType))!;
 
         if (TryGetStringKeyedDictionary(valueType, out Type? nestedValueType))
         {
@@ -295,7 +295,7 @@ public static partial class IniSerializer
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
     private static object ReadRootPoco(IniNormalizedDocument document, Type targetType, IniSerializerOptions options)
     {
-        object instance = Activator.CreateInstance(targetType) !;
+        object instance = Activator.CreateInstance(targetType)!;
         (instance as IOnDeserializing)?.OnDeserializing();
 
         StringComparison comparison = options.PropertyNameCaseInsensitive ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
@@ -353,14 +353,14 @@ public static partial class IniSerializer
     {
         if (TryGetStringKeyedDictionary(targetType, out Type? valueType))
         {
-            var dictionary = (IDictionary)Activator.CreateInstance(ConcreteDictionaryType(targetType, valueType)) !;
+            var dictionary = (IDictionary)Activator.CreateInstance(ConcreteDictionaryType(targetType, valueType))!;
             foreach ((string key, string raw) in entries)
                 dictionary[key] = ConvertFromString(raw, valueType, key);
 
             return dictionary;
         }
 
-        object instance = Activator.CreateInstance(targetType) !;
+        object instance = Activator.CreateInstance(targetType)!;
         (instance as IOnDeserializing)?.OnDeserializing();
 
         StringComparison comparison = options.PropertyNameCaseInsensitive ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
@@ -432,7 +432,7 @@ public static partial class IniSerializer
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
     private static object BuildEntryDictionary(List<KeyValuePair<string, string>> entries, Type dictionaryType, Type valueType)
     {
-        var dictionary = (IDictionary)Activator.CreateInstance(ConcreteDictionaryType(dictionaryType, valueType)) !;
+        var dictionary = (IDictionary)Activator.CreateInstance(ConcreteDictionaryType(dictionaryType, valueType))!;
         foreach ((string key, string raw) in entries)
             dictionary[key] = ConvertFromString(raw, valueType, key);
 

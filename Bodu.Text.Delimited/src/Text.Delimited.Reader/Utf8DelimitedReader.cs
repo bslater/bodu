@@ -458,7 +458,7 @@ public ref struct Utf8DelimitedReader
 
             if (_options.AllowComments && b == (byte)_options.EffectiveCommentChar)
             {
-                while (_position < _data.Length && _data[_position] is not((byte)'\n' or (byte)'\r'))
+                while (_position < _data.Length && _data[_position] is not ((byte)'\n' or (byte)'\r'))
                     _position++;
 
                 continue;

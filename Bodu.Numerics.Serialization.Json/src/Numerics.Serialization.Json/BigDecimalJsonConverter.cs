@@ -112,7 +112,7 @@ public sealed class BigDecimalJsonConverter
         if (reader.TokenType != JsonTokenType.String)
             throw new JsonException(NumericsJsonResourceStrings.Json_Invalid_ExpectedCompactString_BigDecimal);
 
-        string text = reader.GetString() !;
+        string text = reader.GetString()!;
         return BigDecimal.TryParse(text, CultureInfo.InvariantCulture, out BigDecimal result)
             ? result
             : throw new JsonException(
@@ -146,7 +146,7 @@ public sealed class BigDecimalJsonConverter
             if (reader.TokenType != JsonTokenType.PropertyName)
                 throw new JsonException(NumericsJsonResourceStrings.Json_Invalid_ExpectedPropertyName);
 
-            string propertyName = reader.GetString() !;
+            string propertyName = reader.GetString()!;
             if (!reader.Read())
                 throw new JsonException(NumericsJsonResourceStrings.Json_Invalid_UnexpectedEnd);
 

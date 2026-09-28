@@ -174,7 +174,7 @@ public ref struct Utf8IniReader
     {
         int textStart = _position + 1;
         int end = textStart;
-        while (end < _data.Length && _data[end] is not((byte)'\n' or (byte)'\r'))
+        while (end < _data.Length && _data[end] is not ((byte)'\n' or (byte)'\r'))
             end++;
 
         _position = end;
@@ -201,7 +201,7 @@ public ref struct Utf8IniReader
         _position++; // consume '['
 
         int start = _position;
-        while (_position < _data.Length && _data[_position] is not((byte)']' or (byte)'\n' or (byte)'\r'))
+        while (_position < _data.Length && _data[_position] is not ((byte)']' or (byte)'\n' or (byte)'\r'))
             _position++;
 
         if (_position >= _data.Length || _data[_position] != (byte)']')
@@ -230,7 +230,7 @@ public ref struct Utf8IniReader
         int entryLine = _line;
         int keyStart = _position;
 
-        while (_position < _data.Length && _data[_position] is not((byte)'=' or (byte)'\n' or (byte)'\r'))
+        while (_position < _data.Length && _data[_position] is not ((byte)'=' or (byte)'\n' or (byte)'\r'))
             _position++;
 
         if (_position >= _data.Length || _data[_position] != (byte)'=')
@@ -243,7 +243,7 @@ public ref struct Utf8IniReader
         _position++; // consume '='
 
         int valueStart = _position;
-        while (_position < _data.Length && _data[_position] is not((byte)'\n' or (byte)'\r'))
+        while (_position < _data.Length && _data[_position] is not ((byte)'\n' or (byte)'\r'))
             _position++;
 
         (int trimmedValueStart, int valueLength) = Trim(valueStart, _position);
@@ -286,7 +286,7 @@ public ref struct Utf8IniReader
     /// </summary>
     private void SkipToEndOfLine()
     {
-        while (_position < _data.Length && _data[_position] is not((byte)'\n' or (byte)'\r'))
+        while (_position < _data.Length && _data[_position] is not ((byte)'\n' or (byte)'\r'))
             _position++;
     }
 

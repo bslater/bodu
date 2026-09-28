@@ -191,7 +191,7 @@ internal sealed class CfbDirectory
             {
                 int childSid = storage.Children[i];
                 CfbDirectoryEntry child = _entries[childSid]!;
-                if (child.Type is not(CompoundEntryType.Storage or CompoundEntryType.RootStorage))
+                if (child.Type is not (CompoundEntryType.Storage or CompoundEntryType.RootStorage))
                     continue;
 
                 if (queued[childSid])

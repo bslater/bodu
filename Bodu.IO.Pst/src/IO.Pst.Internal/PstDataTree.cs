@@ -125,7 +125,7 @@ internal static class PstDataTree
     /// <exception cref="PstFileFormatException">The block is not a well-formed tree block.</exception>
     private static (byte Level, int Count) ParseTreeBlock(PstLayout layout, byte[] block, ulong blockId)
     {
-        if (block.Length < 8 || block[0] != DataTreeBlockType || block[1] is not(1 or 2))
+        if (block.Length < 8 || block[0] != DataTreeBlockType || block[1] is not (1 or 2))
         {
             throw new PstFileFormatException(string.Format(
                 CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstDataTree, blockId), PstFileError.InvalidDataTree);

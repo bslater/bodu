@@ -435,7 +435,7 @@ public sealed partial class CronExpression : IParsable<CronExpression>
             if (dash > 0)
             {
                 if (!TryResolveValue(range[..dash], min, max, names, out lo)
-                    || !TryResolveValue(range[(dash + 1) ..], min, max, names, out hi))
+                    || !TryResolveValue(range[(dash + 1)..], min, max, names, out hi))
                 {
                     return false;
                 }
