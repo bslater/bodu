@@ -5,8 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Buffers.Binary;
-using System.Numerics;
-using System.Runtime.CompilerServices;
+using System.Globalization;
 using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
@@ -27,53 +26,34 @@ namespace Bodu.Security.Cryptography;
 /// The round function follows RFC 8439 Section 2 exactly: a 4×4 matrix of 32-bit little-endian words seeded with the
 /// constant <c>"expand 32-byte k"</c>, the key, a 32-bit block counter, and the 96-bit nonce, transformed by twenty
 /// rounds (ten column-round / diagonal-round double rounds) of the quarter-round operation, then added word-wise to the
-/// original state and serialized little-endian.
+/// original state and serialized little-endian. <see cref="ChaCha20Core" /> computes it, one block at a time for
+/// <see cref="NextKeystreamBlock(Span{byte})" /> and in runs of 4, 8 or 16 blocks for
+/// <see cref="XorKeystreamBlocks(ReadOnlySpan{byte}, Span{byte})" />.
 /// </para>
 /// </remarks>
 /// <seealso href="https://www.rfc-editor.org/rfc/rfc8439">RFC 8439 — ChaCha20 and Poly1305 for IETF Protocols</seealso>
 /// <seealso href="https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-xchacha">draft-irtf-cfrg-xchacha — XChaCha:
 /// eXtended-nonce ChaCha and AEAD_XChaCha20_Poly1305</seealso> <seealso cref="ChaCha20" /> <seealso cref="XChaCha20" />
 internal sealed class ChaCha20StreamCipher
-    : IStreamCipher
+    : IBulkStreamCipher
 {
     /// <summary>The required key length, in bytes (256 bits).</summary>
-    internal const int KeySizeBytes = 32;
+    internal const int KeySizeBytes = ChaCha20Core.KeyBytes;
 
     /// <summary>The ChaCha20 nonce length, in bytes (96 bits), as specified by RFC 8439.</summary>
-    internal const int NonceSizeBytes = 12;
+    internal const int NonceSizeBytes = ChaCha20Core.NonceBytes;
 
     /// <summary>The HChaCha20 input nonce length, in bytes (128 bits), consumed during XChaCha20 subkey derivation.</summary>
     internal const int HChaChaNonceSizeBytes = 16;
 
     /// <summary>The keystream block length, in bytes (512 bits).</summary>
-    internal const int BlockSizeBytes = 64;
+    internal const int BlockSizeBytes = ChaCha20Core.BlockBytes;
 
     /// <summary>The number of ChaCha20 rounds (ten column-round / diagonal-round double rounds).</summary>
     private const int Rounds = 20;
 
-    /// <summary>The first little-endian word of the ASCII constant <c>"expand 32-byte k"</c>.</summary>
-    private const uint Sigma0 = 0x61707865;
-
-    /// <summary>The second little-endian word of the ASCII constant <c>"expand 32-byte k"</c>.</summary>
-    private const uint Sigma1 = 0x3320646e;
-
-    /// <summary>The third little-endian word of the ASCII constant <c>"expand 32-byte k"</c>.</summary>
-    private const uint Sigma2 = 0x79622d32;
-
-    /// <summary>The fourth little-endian word of the ASCII constant <c>"expand 32-byte k"</c>.</summary>
-    private const uint Sigma3 = 0x6b206574;
-
-    /// <summary>The 256-bit key expanded into eight little-endian 32-bit words.</summary>
-    private readonly uint[] _key = new uint[8];
-
-    /// <summary>The first 32-bit little-endian word of the 96-bit nonce.</summary>
-    private readonly uint _nonce0;
-
-    /// <summary>The second 32-bit little-endian word of the 96-bit nonce.</summary>
-    private readonly uint _nonce1;
-
-    /// <summary>The third 32-bit little-endian word of the 96-bit nonce.</summary>
-    private readonly uint _nonce2;
+    /// <summary>The ChaCha20 state: the constant, the key and the nonce, its counter word unused.</summary>
+    private readonly uint[] _state = new uint[ChaCha20Core.StateWords];
 
     /// <summary>The block counter supplied at construction for the first keystream block.</summary>
     private readonly uint _initialCounter;
@@ -94,18 +74,16 @@ internal sealed class ChaCha20StreamCipher
     /// <param name="key">The 32-byte (256-bit) key.</param>
     /// <param name="nonce">The 12-byte (96-bit) nonce.</param>
     /// <param name="initialCounter">The block counter for the first keystream block.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="key" /> is not 32 bytes long, or <paramref name="nonce" /> is not 12 bytes long.
+    /// </exception>
     /// <remarks>
     /// The key and nonce are expanded into little-endian 32-bit words and copied into the engine; the caller's buffers
-    /// are not retained. The caller is responsible for validating the lengths.
+    /// are not retained.
     /// </remarks>
     internal ChaCha20StreamCipher(ReadOnlySpan<byte> key, ReadOnlySpan<byte> nonce, uint initialCounter)
     {
-        for (int i = 0; i < 8; i++)
-            _key[i] = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(i * 4, 4));
-
-        _nonce0 = BinaryPrimitives.ReadUInt32LittleEndian(nonce.Slice(0, 4));
-        _nonce1 = BinaryPrimitives.ReadUInt32LittleEndian(nonce.Slice(4, 4));
-        _nonce2 = BinaryPrimitives.ReadUInt32LittleEndian(nonce.Slice(8, 4));
+        ChaCha20Core.Initialize(_state, key, nonce);
 
         _initialCounter = initialCounter;
         _counter = initialCounter;
@@ -131,49 +109,40 @@ internal sealed class ChaCha20StreamCipher
         if (_counter == _initialCounter)
             _counterExhausted = true;
 
-        // Initial state: constants | key | counter | nonce.
-        uint j0 = Sigma0, j1 = Sigma1, j2 = Sigma2, j3 = Sigma3;
-        uint j4 = _key[0], j5 = _key[1], j6 = _key[2], j7 = _key[3];
-        uint j8 = _key[4], j9 = _key[5], j10 = _key[6], j11 = _key[7];
-        uint j12 = counter, j13 = _nonce0, j14 = _nonce1, j15 = _nonce2;
+        ChaCha20Core.Block(_state, counter, destination);
+    }
 
-        uint x0 = j0, x1 = j1, x2 = j2, x3 = j3;
-        uint x4 = j4, x5 = j5, x6 = j6, x7 = j7;
-        uint x8 = j8, x9 = j9, x10 = j10, x11 = j11;
-        uint x12 = j12, x13 = j13, x14 = j14, x15 = j15;
+    /// <inheritdoc />
+    /// <remarks>
+    /// The keystream holds 2^32 blocks from the initial counter. A request for more than remain writes the blocks that
+    /// do, latches exhaustion, and then throws, as the same number of calls to
+    /// <see cref="NextKeystreamBlock(Span{byte})" /> would.
+    /// </remarks>
+    public void XorKeystreamBlocks(ReadOnlySpan<byte> input, Span<byte> output)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        if (input.Length % BlockSizeBytes != 0) throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_InputLengthBlockMultiple, BlockSizeBytes), nameof(input));
+        ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, input.Length);
 
-        for (int i = 0; i < Rounds; i += 2)
-        {
-            // Column round.
-            QuarterRound(ref x0, ref x4, ref x8, ref x12);
-            QuarterRound(ref x1, ref x5, ref x9, ref x13);
-            QuarterRound(ref x2, ref x6, ref x10, ref x14);
-            QuarterRound(ref x3, ref x7, ref x11, ref x15);
+        int blocks = input.Length / BlockSizeBytes;
+        if (blocks == 0)
+            return;
 
-            // Diagonal round.
-            QuarterRound(ref x0, ref x5, ref x10, ref x15);
-            QuarterRound(ref x1, ref x6, ref x11, ref x12);
-            QuarterRound(ref x2, ref x7, ref x8, ref x13);
-            QuarterRound(ref x3, ref x4, ref x9, ref x14);
-        }
+        if (_counterExhausted)
+            throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_StreamCounterExhausted);
 
-        // Add the original state back in, then serialize little-endian.
-        BinaryPrimitives.WriteUInt32LittleEndian(destination.Slice(0, 4), x0 + j0);
-        BinaryPrimitives.WriteUInt32LittleEndian(destination.Slice(4, 4), x1 + j1);
-        BinaryPrimitives.WriteUInt32LittleEndian(destination.Slice(8, 4), x2 + j2);
-        BinaryPrimitives.WriteUInt32LittleEndian(destination.Slice(12, 4), x3 + j3);
-        BinaryPrimitives.WriteUInt32LittleEndian(destination.Slice(16, 4), x4 + j4);
-        BinaryPrimitives.WriteUInt32LittleEndian(destination.Slice(20, 4), x5 + j5);
-        BinaryPrimitives.WriteUInt32LittleEndian(destination.Slice(24, 4), x6 + j6);
-        BinaryPrimitives.WriteUInt32LittleEndian(destination.Slice(28, 4), x7 + j7);
-        BinaryPrimitives.WriteUInt32LittleEndian(destination.Slice(32, 4), x8 + j8);
-        BinaryPrimitives.WriteUInt32LittleEndian(destination.Slice(36, 4), x9 + j9);
-        BinaryPrimitives.WriteUInt32LittleEndian(destination.Slice(40, 4), x10 + j10);
-        BinaryPrimitives.WriteUInt32LittleEndian(destination.Slice(44, 4), x11 + j11);
-        BinaryPrimitives.WriteUInt32LittleEndian(destination.Slice(48, 4), x12 + j12);
-        BinaryPrimitives.WriteUInt32LittleEndian(destination.Slice(52, 4), x13 + j13);
-        BinaryPrimitives.WriteUInt32LittleEndian(destination.Slice(56, 4), x14 + j14);
-        BinaryPrimitives.WriteUInt32LittleEndian(destination.Slice(60, 4), x15 + j15);
+        // The blocks that remain: 2^32 from the initial counter, less those already emitted.
+        ulong remaining = (1UL << 32) - (uint)(_counter - _initialCounter);
+        int available = (int)Math.Min((ulong)blocks, remaining);
+
+        ChaCha20Core.XorBlocks(_state, _counter, input.Slice(0, available * BlockSizeBytes), output);
+
+        _counter += (uint)available;
+        if (_counter == _initialCounter)
+            _counterExhausted = true;
+
+        if (available < blocks)
+            throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_StreamCounterExhausted);
     }
 
     /// <summary>
@@ -190,7 +159,7 @@ internal sealed class ChaCha20StreamCipher
     /// </remarks>
     internal static void HChaCha20(ReadOnlySpan<byte> key, ReadOnlySpan<byte> nonce, Span<byte> subkey)
     {
-        uint x0 = Sigma0, x1 = Sigma1, x2 = Sigma2, x3 = Sigma3;
+        uint x0 = ChaCha20Core.Sigma0, x1 = ChaCha20Core.Sigma1, x2 = ChaCha20Core.Sigma2, x3 = ChaCha20Core.Sigma3;
         uint x4 = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(0, 4));
         uint x5 = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(4, 4));
         uint x6 = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(8, 4));
@@ -206,15 +175,15 @@ internal sealed class ChaCha20StreamCipher
 
         for (int i = 0; i < Rounds; i += 2)
         {
-            QuarterRound(ref x0, ref x4, ref x8, ref x12);
-            QuarterRound(ref x1, ref x5, ref x9, ref x13);
-            QuarterRound(ref x2, ref x6, ref x10, ref x14);
-            QuarterRound(ref x3, ref x7, ref x11, ref x15);
+            ChaCha20Core.QuarterRound(ref x0, ref x4, ref x8, ref x12);
+            ChaCha20Core.QuarterRound(ref x1, ref x5, ref x9, ref x13);
+            ChaCha20Core.QuarterRound(ref x2, ref x6, ref x10, ref x14);
+            ChaCha20Core.QuarterRound(ref x3, ref x7, ref x11, ref x15);
 
-            QuarterRound(ref x0, ref x5, ref x10, ref x15);
-            QuarterRound(ref x1, ref x6, ref x11, ref x12);
-            QuarterRound(ref x2, ref x7, ref x8, ref x13);
-            QuarterRound(ref x3, ref x4, ref x9, ref x14);
+            ChaCha20Core.QuarterRound(ref x0, ref x5, ref x10, ref x15);
+            ChaCha20Core.QuarterRound(ref x1, ref x6, ref x11, ref x12);
+            ChaCha20Core.QuarterRound(ref x2, ref x7, ref x8, ref x13);
+            ChaCha20Core.QuarterRound(ref x3, ref x4, ref x9, ref x14);
         }
 
         // Subkey = first four words || last four words (no state add-back).
@@ -234,24 +203,7 @@ internal sealed class ChaCha20StreamCipher
         if (_disposed)
             return;
 
-        CryptographyHelper.Clear(_key);
+        CryptographyHelper.Clear(_state);
         _disposed = true;
-    }
-
-    /// <summary>
-    /// Applies the ChaCha20 quarter-round operation to four state words in place, per RFC 8439 Section 2.1.
-    /// </summary>
-    /// <param name="a">The first state word.</param>
-    /// <param name="b">The second state word.</param>
-    /// <param name="c">The third state word.</param>
-    /// <param name="d">The fourth state word.</param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1107:Code should not contain multiple statements on one line", Justification = "The grouped add / XOR / rotate steps mirror the RFC 8439 quarter-round definition and preserve a compact, specification-like layout.")]
-    private static void QuarterRound(ref uint a, ref uint b, ref uint c, ref uint d)
-    {
-        a += b; d ^= a; d = BitOperations.RotateLeft(d, 16);
-        c += d; b ^= c; b = BitOperations.RotateLeft(b, 12);
-        a += b; d ^= a; d = BitOperations.RotateLeft(d, 8);
-        c += d; b ^= c; b = BitOperations.RotateLeft(b, 7);
     }
 }

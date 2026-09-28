@@ -63,6 +63,16 @@ public sealed class SimdOptOutTests
     }
 
     /// <summary>
+    /// Verifies that with SIMD disabled, ChaCha20 and Salsa20, which share the dispatch, take their scalar block
+    /// functions whatever the processor supports.
+    /// </summary>
+    [TestMethod]
+    public void ChaCha20CoreSelectKernel_WhenSimdDisabled_ShouldReturnTheScalarKernel()
+    {
+        Assert.AreEqual(ChaCha20Core.KernelKind.Scalar, ChaCha20Core.SelectKernel());
+    }
+
+    /// <summary>
     /// Verifies that with SIMD disabled, scrypt dispatches to its scalar BlockMix kernel whatever the processor supports.
     /// </summary>
     [TestMethod]

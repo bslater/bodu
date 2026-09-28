@@ -101,4 +101,86 @@ public class Poly1305AeadCoreTests
             _ = Poly1305AeadCore.OpenRfc8439(engine, s_associatedData, ciphertextWithTag, output);
         });
     }
+
+    /// <summary>
+    /// Verifies that sealing under the RFC 8439 framing with an engine that produces keystream in bulk matches sealing
+    /// with the same engine one block at a time, for every message length from empty to past the widest kernel's run.
+    /// </summary>
+    [TestMethod]
+    public void SealRfc8439_WhenEngineHasNoBulkPath_ShouldMatchTheBulkEngine()
+    {
+        var random = new Random(0x5EA1_0001);
+        byte[] associatedData = new byte[13];
+        random.NextBytes(associatedData);
+
+        foreach (int length in Enumerable.Range(0, 300).Concat([1024, 1029, 4099]))
+        {
+            byte[] plaintext = new byte[length];
+            random.NextBytes(plaintext);
+            byte[] expected = new byte[length + Poly1305AeadCore.TagBytes];
+            byte[] actual = new byte[length + Poly1305AeadCore.TagBytes];
+            using var single = new SingleBlockStreamCipher(new ChaCha20StreamCipher(s_key, s_nonce, initialCounter: 0));
+            using var bulk = new ChaCha20StreamCipher(s_key, s_nonce, initialCounter: 0);
+
+            _ = Poly1305AeadCore.SealRfc8439(single, associatedData, plaintext, expected);
+            _ = Poly1305AeadCore.SealRfc8439(bulk, associatedData, plaintext, actual);
+
+            CollectionAssert.AreEqual(expected, actual, $"length {length}");
+        }
+    }
+
+    /// <summary>
+    /// Verifies that opening under the RFC 8439 framing with an engine that produces keystream in bulk recovers every
+    /// plaintext, of every length from empty to past the widest kernel's run, sealed one keystream block at a time.
+    /// </summary>
+    [TestMethod]
+    public void OpenRfc8439_WhenSealedOneBlockAtATime_ShouldRecoverPlaintext()
+    {
+        var random = new Random(0x5EA1_0002);
+
+        foreach (int length in Enumerable.Range(0, 300).Concat([1024, 1029, 4099]))
+        {
+            byte[] plaintext = new byte[length];
+            random.NextBytes(plaintext);
+            byte[] sealedMessage = new byte[length + Poly1305AeadCore.TagBytes];
+            byte[] recovered = new byte[length];
+            using var single = new SingleBlockStreamCipher(new ChaCha20StreamCipher(s_key, s_nonce, initialCounter: 0));
+            using var bulk = new ChaCha20StreamCipher(s_key, s_nonce, initialCounter: 0);
+
+            _ = Poly1305AeadCore.SealRfc8439(single, s_associatedData, plaintext, sealedMessage);
+            _ = Poly1305AeadCore.OpenRfc8439(bulk, s_associatedData, sealedMessage, recovered);
+
+            CollectionAssert.AreEqual(plaintext, recovered, $"length {length}");
+        }
+    }
+
+    /// <summary>
+    /// Verifies that sealing under the secretbox framing with an engine that produces keystream in bulk matches sealing
+    /// with the same engine one block at a time, for every message length from empty to past the widest kernel's run,
+    /// including those that end within the counter-0 block's trailing 32 bytes.
+    /// </summary>
+    [TestMethod]
+    public void SealSecretbox_WhenEngineHasNoBulkPath_ShouldMatchTheBulkEngine()
+    {
+        var random = new Random(0x5EA1_0003);
+        byte[] key = new byte[32];
+        byte[] nonce = new byte[8];
+        random.NextBytes(key);
+        random.NextBytes(nonce);
+
+        foreach (int length in Enumerable.Range(0, 300).Concat([1024, 1029, 4099]))
+        {
+            byte[] plaintext = new byte[length];
+            random.NextBytes(plaintext);
+            byte[] expected = new byte[length + Poly1305AeadCore.TagBytes];
+            byte[] actual = new byte[length + Poly1305AeadCore.TagBytes];
+            using var single = new SingleBlockStreamCipher(new Salsa20StreamCipher(key, nonce, initialCounter: 0));
+            using var bulk = new Salsa20StreamCipher(key, nonce, initialCounter: 0);
+
+            _ = Poly1305AeadCore.SealSecretbox(single, plaintext, expected);
+            _ = Poly1305AeadCore.SealSecretbox(bulk, plaintext, actual);
+
+            CollectionAssert.AreEqual(expected, actual, $"length {length}");
+        }
+    }
 }

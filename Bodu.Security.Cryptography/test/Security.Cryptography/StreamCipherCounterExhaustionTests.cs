@@ -121,6 +121,133 @@ public sealed class StreamCipherCounterExhaustionTests
         }
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ChaCha20StreamCipher.XorKeystreamBlocks" />, asked for more blocks than remain before
+    /// the 32-bit counter returns to its initial value, writes the blocks that remain, latches, and throws
+    /// <see cref="CryptographicException" />, as the same number of single-block calls would.
+    /// </summary>
+    [TestMethod]
+    public void ChaCha20StreamCipher_XorKeystreamBlocks_WhenRequestPassesExhaustion_ShouldWriteRemainingBlocksThenThrow()
+    {
+        byte[] key = new byte[32];
+        byte[] nonce = new byte[12];
+        var cipher = new ChaCha20StreamCipher(key, nonce, initialCounter: 1u);
+        var reference = new ChaCha20StreamCipher(key, nonce, initialCounter: 1u);
+
+        // Three blocks remain before the counter returns to 1: those with counters 0xFFFFFFFE, 0xFFFFFFFF and 0.
+        SetField(cipher, "_counter", 0xFFFF_FFFEu);
+        SetField(reference, "_counter", 0xFFFF_FFFEu);
+
+        byte[] input = new byte[5 * 64];
+        byte[] output = new byte[input.Length];
+
+        Assert.ThrowsExactly<CryptographicException>(() =>
+        {
+            cipher.XorKeystreamBlocks(input, output);
+        });
+
+        byte[] expected = new byte[3 * 64];
+        for (int block = 0; block < 3; block++)
+            reference.NextKeystreamBlock(expected.AsSpan(block * 64, 64));
+
+        CollectionAssert.AreEqual(expected, output[..(3 * 64)]);
+        Assert.IsTrue(output.AsSpan(3 * 64).IndexOfAnyExcept((byte)0) < 0, "No block past exhaustion may be written.");
+        Assert.ThrowsExactly<CryptographicException>(() =>
+        {
+            cipher.NextKeystreamBlock(new byte[64]);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ChaCha20StreamCipher.XorKeystreamBlocks" />, asked for exactly the blocks that remain,
+    /// writes them without throwing and latches, so the next call throws <see cref="CryptographicException" />.
+    /// </summary>
+    [TestMethod]
+    public void ChaCha20StreamCipher_XorKeystreamBlocks_WhenRequestEndsAtExhaustion_ShouldLatchWithoutThrowing()
+    {
+        var cipher = new ChaCha20StreamCipher(new byte[32], new byte[12], initialCounter: 1u);
+        SetField(cipher, "_counter", 0xFFFF_FFFEu);
+        byte[] blocks = new byte[3 * 64];
+
+        cipher.XorKeystreamBlocks(blocks, blocks);
+
+        Assert.ThrowsExactly<CryptographicException>(() =>
+        {
+            cipher.XorKeystreamBlocks(new byte[64], new byte[64]);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ChaCha20StreamCipher.XorKeystreamBlocks" /> throws <see cref="CryptographicException" />
+    /// once the exhaustion latch is set.
+    /// </summary>
+    [TestMethod]
+    public void ChaCha20StreamCipher_XorKeystreamBlocks_WhenExhaustionLatched_ShouldThrowCryptographicException()
+    {
+        var cipher = new ChaCha20StreamCipher(new byte[32], new byte[12], initialCounter: 0u);
+        SetField(cipher, "_counterExhausted", true);
+        byte[] blocks = new byte[4 * 64];
+
+        Assert.ThrowsExactly<CryptographicException>(() =>
+        {
+            cipher.XorKeystreamBlocks(blocks, blocks);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Salsa20StreamCipher.XorKeystreamBlocks" />, asked for more blocks than remain before
+    /// the 64-bit counter returns to its initial value, writes the blocks that remain, latches, and throws
+    /// <see cref="CryptographicException" />, as the same number of single-block calls would.
+    /// </summary>
+    [TestMethod]
+    public void Salsa20StreamCipher_XorKeystreamBlocks_WhenRequestPassesExhaustion_ShouldWriteRemainingBlocksThenThrow()
+    {
+        byte[] key = new byte[32];
+        byte[] nonce = new byte[8];
+        var cipher = new Salsa20StreamCipher(key, nonce, initialCounter: 1uL);
+        var reference = new Salsa20StreamCipher(key, nonce, initialCounter: 1uL);
+
+        // Three blocks remain before the counter returns to 1: those with counters 2^64 − 2, 2^64 − 1 and 0.
+        SetField(cipher, "_counter", ulong.MaxValue - 1);
+        SetField(reference, "_counter", ulong.MaxValue - 1);
+
+        byte[] input = new byte[5 * 64];
+        byte[] output = new byte[input.Length];
+
+        Assert.ThrowsExactly<CryptographicException>(() =>
+        {
+            cipher.XorKeystreamBlocks(input, output);
+        });
+
+        byte[] expected = new byte[3 * 64];
+        for (int block = 0; block < 3; block++)
+            reference.NextKeystreamBlock(expected.AsSpan(block * 64, 64));
+
+        CollectionAssert.AreEqual(expected, output[..(3 * 64)]);
+        Assert.IsTrue(output.AsSpan(3 * 64).IndexOfAnyExcept((byte)0) < 0, "No block past exhaustion may be written.");
+        Assert.ThrowsExactly<CryptographicException>(() =>
+        {
+            cipher.NextKeystreamBlock(new byte[64]);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Salsa20StreamCipher.XorKeystreamBlocks" /> throws <see cref="CryptographicException" />
+    /// once the exhaustion latch is set.
+    /// </summary>
+    [TestMethod]
+    public void Salsa20StreamCipher_XorKeystreamBlocks_WhenExhaustionLatched_ShouldThrowCryptographicException()
+    {
+        var cipher = new Salsa20StreamCipher(new byte[32], new byte[8], initialCounter: 0uL);
+        SetField(cipher, "_counterExhausted", true);
+        byte[] blocks = new byte[4 * 64];
+
+        Assert.ThrowsExactly<CryptographicException>(() =>
+        {
+            cipher.XorKeystreamBlocks(blocks, blocks);
+        });
+    }
+
     private static void SetField(object instance, string fieldName, object value)
     {
         FieldInfo? field = instance.GetType().GetField(fieldName, BindingFlags.NonPublic | BindingFlags.Instance);

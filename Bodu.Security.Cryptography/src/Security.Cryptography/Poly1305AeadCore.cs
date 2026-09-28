@@ -252,8 +252,7 @@ internal static class Poly1305AeadCore
         Span<byte> output)
     {
         int head = Math.Min(SecretboxKeystreamOffset, input.Length);
-        for (int i = 0; i < head; i++)
-            output[i] = (byte)(input[i] ^ block0[SecretboxKeystreamOffset + i]);
+        CryptographyHelper.Xor(input[..head], block0.Slice(SecretboxKeystreamOffset, head), output[..head]);
 
         if (input.Length > SecretboxKeystreamOffset)
             XorKeystream(engine, input[SecretboxKeystreamOffset..], output[SecretboxKeystreamOffset..]);
@@ -266,20 +265,33 @@ internal static class Poly1305AeadCore
     /// <param name="engine">The keystream engine to advance.</param>
     /// <param name="input">The data to combine with the keystream.</param>
     /// <param name="output">Receives the XOR result; must be at least <c>input.Length</c> bytes.</param>
+    /// <remarks>
+    /// Whole blocks go to an <see cref="IBulkStreamCipher" /> engine in one call; a partial last block, and every block
+    /// of any other engine, takes one keystream block at a time.
+    /// </remarks>
     private static void XorKeystream(IStreamCipher engine, ReadOnlySpan<byte> input, Span<byte> output)
     {
+        int offset = 0;
+
+        if (engine is IBulkStreamCipher bulk)
+        {
+            offset = input.Length / KeystreamBlockBytes * KeystreamBlockBytes;
+            bulk.XorKeystreamBlocks(input[..offset], output);
+        }
+
+        if (offset == input.Length)
+            return;
+
         Span<byte> keystream = stackalloc byte[KeystreamBlockBytes];
 
         try
         {
-            int offset = 0;
             while (offset < input.Length)
             {
                 engine.NextKeystreamBlock(keystream);
 
                 int count = Math.Min(KeystreamBlockBytes, input.Length - offset);
-                for (int i = 0; i < count; i++)
-                    output[offset + i] = (byte)(input[offset + i] ^ keystream[i]);
+                CryptographyHelper.Xor(input.Slice(offset, count), keystream, output.Slice(offset, count));
 
                 offset += count;
             }
