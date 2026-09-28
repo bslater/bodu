@@ -158,6 +158,11 @@ jobs:
           # reported test failure - an aborted or crashed test host, or a run that discovers no
           # tests at all, exits non-zero with nothing named. Without this summary the only
           # evidence is "exit code 1" with the responsible project scrolled out of reach.
+          #
+          # The TRX logger takes LogFilePrefix, not LogFileName: every project runs once per
+          # target framework, and with a fixed file name the second run overwrites the first's
+          # TRX, so the uploaded record held only one framework's results. The prefix form writes
+          # <name>_<framework>_<timestamp>.trx, one file per run.
           status=0
           failed=""
 
@@ -170,7 +175,7 @@ jobs:
               --no-build \
               --settings test.runsettings \
               --results-directory "${{ github.workspace }}/TestResults/$name" \
-              --logger "trx;LogFileName=$name.trx" \
+              --logger "trx;LogFilePrefix=$name" \
               --logger "console;verbosity=normal" || rc=$?
             echo "::endgroup::"
 
