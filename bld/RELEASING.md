@@ -24,10 +24,11 @@ manifest at [`release-manifest.txt`](release-manifest.txt).
   enforces both that and the tier↔stream agreement, because nothing else
   reconciles a package's README tier with the version it actually publishes at.
 
-  A single package still breaks rank out of band by setting
-  `BoduPackageVersionOverride` to a literal version; that is reported in the
-  build log and, on a manifest package, will fail the stream check until the
-  tier and the override agree.
+  A Stable package can also break rank out of band, shipping ahead of
+  `BoduBaseVersion` at a literal `BoduPackageVersionOverride`: see
+  [Out-of-band single-package release](#out-of-band-single-package-release).
+  The stream check accepts that override only while it is ahead of
+  `BoduBaseVersion`.
 - **The tag is a label, not a version.** Nothing passes a version to
   `dotnet pack` — each package's version comes from the properties above. A run
   tagged `v1.0.0` therefore publishes the Stable tier at 1.0.0 and the preview
@@ -206,14 +207,33 @@ written down first and would have produced a window of failing runs.
 
 1. Append the wave's package ids to `bld/release-manifest.txt`.
 2. Bump `BoduBaseVersion` (e.g. the coordinated Calendar wave is slated
-   `1.1.0`).
+   `1.2.0`; `Bodu.Security.Cryptography` ships `1.1.0` out of band, so the
+   lock-step stream has to move past it).
 3. Tag `v<new-version>` and push. Existing packages re-publish at the new
    lock-step version; the new wave publishes for the first time.
 4. After publish, bump `BoduPackageValidationBaseline` to the new version.
 
-## Out-of-band single-package fix
+## Out-of-band single-package release
 
-Set `<BoduPackageVersionOverride>` in the affected csproj (reported in build
-output so the divergence is auditable), release, then remove the override
-when the next lock-step version catches up. Such a package may pin its own
-`PackageValidationBaselineVersion` until then.
+A Stable package can ship ahead of the lock-step version when it has changes
+worth releasing on their own, whether a fix or a feature release.
+`Bodu.Security.Cryptography` 1.1.0 is the first.
+
+1. In the package's csproj, set `<BoduPackageVersionOverride>` to the literal
+   version, above `BoduBaseVersion`. Pin `PackageValidationBaselineVersion`
+   to the package's own last release, so the strict ApiCompat comparison runs
+   against what its consumers have now rather than the shared baseline.
+2. `check-release-manifest.sh` accepts the override while it is ahead of
+   `BoduBaseVersion` and prints it as a notice; the build log reports it too.
+3. Release the package on its own from master: Actions → **Release** → *Run
+   workflow*, with `packages` set to the package id. Run it first with
+   `publish` unchecked and inspect `nuget-packages-publish`, then again with
+   `publish` checked. **Do not push a `v*` tag**: a tag releases the whole
+   manifest at `BoduBaseVersion`.
+4. For release notes, tag the released commit with a name that does not start
+   with `v` (e.g. `Bodu.Security.Cryptography-1.1.0`), so neither the release
+   nor the docs workflow triggers, and attach a GitHub Release to that tag.
+5. The next lock-step release must move past the out-of-band version, because
+   that version is already on nuget.org for this package. When
+   `BoduBaseVersion` reaches it, the manifest check fails until the override
+   and the pinned baseline are removed.
