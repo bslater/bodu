@@ -1,6 +1,6 @@
 # Implementation plan: faster primitives across Bodu.Security.Cryptography
 
-**Status:** In progress on `claude/argon2-prototype-co27tu` (W0–W5 done, §10) · **Source:** the assessment run on
+**Status:** Done on `claude/argon2-prototype-co27tu` (W0–W10; results in §10) · **Source:** the assessment run on
 2026-09-27 after the Argon2 work (§1) · **Target:** `Bodu.Security.Cryptography`, next lock-step release
 
 The Argon2 work ([`argon2-performance.md`](argon2-performance.md)) used four techniques: a
@@ -1230,3 +1230,55 @@ How it was done, and where it departs from the design above:
   - **A four-way Keccak.** Â, the mask vector y and the secret vectors are expanded
     from independent SHAKE streams, four or more at a time. A `Vector256<ulong>`
     permutation would run four streams at once.
+
+### W10 — lower priority (done)
+
+| Measure | Baseline | Result |
+|---|---|---|
+| CubeHash, 1 MiB, AVX-512 | 258 / 390 MiB/s | 382 / 387 MiB/s |
+| CubeHash, 1 MiB, AVX-512 off (AVX2) | 24 / 21 MiB/s | 377 / 333 MiB/s |
+| CubeHash, 1 MiB, AVX2 off (SSSE3) | 24 / 21 MiB/s | 276 / 227 MiB/s |
+| CubeHash, 64-byte message, any vector kernel | 6.5–7.4 µs | 0.60–0.83 µs |
+| Whirlpool, 1 MiB | 33.7 / 43.6 MiB/s | 73–80 MiB/s |
+| Whirlpool, 64-byte message | 3.40 / 2.80 µs | 1.68–1.74 µs |
+
+Figures are .NET 10 / .NET 8 where they differ. The CubeHash and Whirlpool baselines were
+measured the same day at `ee89d80` and `5c7bf86`, the commits before each change. W10
+had no targets.
+
+How it was done:
+
+- **CubeHash (W10a).**
+  - Without AVX-512 CubeHash ran its rounds one word at a time, through a scratch buffer
+    for each exchange. The round function moved into a new `CubeHashCore`, whose kernels
+    hold the whole 1024-bit state in registers for a run of rounds: two 512-bit
+    registers under AVX-512F, four 256-bit under AVX2, or eight 128-bit over ChaCha20's
+    SSSE3 and AdvSimd rotation shims.
+  - A round's exchanges pair words 8, 4, 2 and 1 apart. In 128-bit registers the first
+    two move whole registers, so the kernel writes them into which register each result
+    lands in, at no cost; the 256-bit kernel swaps register halves for the second. The
+    exchanges of the upper words, 2 and 1 apart, stay within 128-bit lanes: one
+    `pshufd` each.
+  - The AVX-512 kernel's permutation indices became constants of the method instead of
+    static readonly fields, which took it from 258 to 382 MiB/s on .NET 10.
+  - The AVX2 kernel comes close to the AVX-512 one: each round depends on the one
+    before, so the dependency chain, not the register width, bounds it.
+  - `CubeHashCoreTests` hold each vector kernel to the scalar kernel over seeded states
+    and 0 to 160 rounds. The SHA-3 ShortMsgKAT digests pass with AVX-512 disabled and
+    with AVX2 disabled, so they run through each x64 kernel. Under qemu the AdvSimd
+    kernel matched the scalar kernel, and dispatch there chose it for all 1,024
+    ShortMsgKAT digests, which matched; the emulator faulted reading the KAT test's
+    attributes, so that check ran as a temporary probe.
+- **Whirlpool (W10b).**
+  - Each block took five eight-word stack buffers, wrote every round's key and state to
+    scratch and copied them back, twenty 64-byte copies a block, and bounds-checked
+    every one of its 1,280 table lookups.
+  - The key and state now alternate between two buffers each; the ten rounds are an
+    even number, so both end where they began. The table is indexed by reference, since
+    every index is a column number shifted left by 8 ORed with one byte, below the
+    table's 8 × 256 entries. The round keys, zero except for their first word, became
+    one array of ten constants.
+  - The ISO/IEC 10118-3 and NESSIE vectors for all three revisions and the OpenSSL
+    reference set pass unchanged.
+- **Camellia and Twofish.** As planned, no kernel work. Their modes gained from W2's
+  batching of whole blocks, which W2 records for Twofish-CTR (83.7 to 89.4 MiB/s).
