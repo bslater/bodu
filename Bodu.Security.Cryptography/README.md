@@ -12,7 +12,7 @@ Read this before using the library for anything that matters.
 
 - **Not independently audited.** These are managed, from-scratch implementations. They are pinned to published known-answer vectors for *functional* correctness, but they have **not** undergone an independent security audit. Treat them as suitable for development, interop with non-FIPS systems, research, and education — not as a drop-in for a hardened production provider.
 - **Not FIPS-validated.** This is not a FIPS 140-2 / 140-3 cryptographic module. For FIPS-validated AES, SHA-2, RNG, and similar primitives use the platform-provided `System.Security.Cryptography` types and the underlying OS provider.
-- **Side-channel resistance is best-effort, not guaranteed.** Constant-time behaviour is implemented where practical: tag and hash comparisons use `CryptographicOperations.FixedTimeEquals` and padding removal is branchless. Work is ongoing to remove secret-dependent branches and table lookups from GHASH and the software table-based ciphers (Blowfish, Twofish, Camellia, Tiger, Whirlpool, Snefru). Managed code runs on a JIT and GC the library does not control, so timing/cache invariance cannot be guaranteed end-to-end regardless. For workloads with a real side-channel adversary, prefer the hardware-backed BCL primitives.
+- **Side-channel resistance is best-effort, not guaranteed.** Constant-time behaviour is implemented where practical: tag and hash comparisons use `CryptographicOperations.FixedTimeEquals` and padding removal is branchless. GHASH and POLYVAL (behind GCM, GMAC and GCM-SIV) neither branch on nor index memory by the key or the data on any path, the portable fallback included. The software table-based algorithms — Blowfish, Twofish, Camellia, Tiger, Whirlpool and Snefru — still index tables by secret-dependent values. Managed code runs on a JIT and GC the library does not control, so timing/cache invariance cannot be guaranteed end-to-end regardless. For workloads with a real side-channel adversary, prefer the hardware-backed BCL primitives.
 - **AES delegates to the BCL.** `AesBlockCipher` wraps the platform `System.Security.Cryptography.Aes` (hardware-accelerated, constant-time, FIPS-validated). Everything else in the package is a bespoke managed implementation.
 - **This is a toolbox, not a safe-by-default API.** ECB, `NoPadding`, raw CBC, and unauthenticated stream ciphers are all first-class. Prefer an AEAD mode (GCM, EAX, OCB, or a nonce-misuse-resistant SIV / GCM-SIV) unless you have a specific reason not to, and read the per-type remarks for the failure modes.
 
@@ -27,6 +27,7 @@ The primitives provided here exist mainly to cover what the BCL does not ship (B
 | AES (wrapper) | NIST FIPS 197 | 128, 192, 256 | 128 | Recommended | NIST FIPS 197 |
 | Camellia | RFC 3713 | 128, 192, 256 | 128 | Recommended | RFC 3713 |
 | Serpent | AES candidate (Anderson, Biham, Knudsen) | 128, 192, 256 | 128 | Recommended | AES-candidate official vectors |
+| Twofish | AES finalist (Schneier et al., 1998) | 128, 192, 256 | 128 | Recommended | Twofish reference vectors (`ecb_tbl`) |
 | Threefish 256 / 512 / 1024 | Skein reference (NIST SHA-3 entry) | 256 / 512 / 1024 | 256 / 512 / 1024 | Recommended for keyed-tweak use | Skein 1.3 reference |
 | Blowfish | Schneier (1993) | 32–448 | 64 | Legacy only — SWEET32 above ~32 GiB | Schneier reference vectors |
 | Skipjack | NIST FIPS PUB 185 (1994) | 80 | 64 | Legacy / educational only | FIPS PUB 185 |
@@ -69,6 +70,10 @@ Private key material is zeroed on dispose and exports return defensive copies.
 | ML-KEM 512 / 768 / 1024 | post-quantum KEM | NIST FIPS 203 | ek 800/1184/1568, dk 1632/2400/3168, ct 768/1088/1568, secret 32 | Implicit rejection (tampered ciphertexts never throw); §7.2/§7.3 import checks | NIST ACVP |
 | ML-DSA 44 / 65 / 87 | post-quantum signature | NIST FIPS 204 | pk 1312/1952/2592, sk 2560/4032/4896, sig 2420/3309/4627 | Hedged by default with `DeterministicSigning` opt-in; context strings up to 255 bytes; HashML-DSA not implemented | NIST ACVP |
 
+### Hybrid public-key encryption (HPKE)
+
+`Hpke` implements RFC 9180 in all four modes — Base, PSK, Auth and AuthPSK — with the `DHKEM(X25519, HKDF-SHA256)` KEM, HKDF-SHA256, HKDF-SHA384 or HKDF-SHA512, and AES-128-GCM, AES-256-GCM, ChaCha20-Poly1305 or export-only as the AEAD. `Hpke.Seal` and `Hpke.Open` handle a single message; `HpkeSender` and `HpkeReceiver` hold a context for a sequence of messages and derive exporter secrets with `Export`. A context checks its message counter before doing any cryptographic work, so it refuses the message that would reuse a nonce rather than sealing it. The suite is pinned to the RFC 9180 test vectors; see the [HPKE guide](https://bslater.github.io/bodu/guides/cryptography/hpke.html).
+
 ### Block cipher modes (unauthenticated)
 
 | Mode | Notes |
@@ -103,6 +108,16 @@ PKCS#7, ANSI X9.23, ISO 7816-4, ISO 10126, zero-padding, and `None`. All are exe
 | Snefru | hash | Merkle (1990) | 128 / 256 | Legacy / educational | Software table-based |
 
 Non-cryptographic hashes and checksums — FNV-1a, Adler-32, CRC-3 through CRC-64, and Fletcher-16/32/64 — live in the sibling `Bodu.IO.Hashing` package.
+
+### Key derivation and password hashing
+
+| Algorithm | Type | Standard | Status | Notes |
+|---|---|---|---|---|
+| Argon2id / Argon2i / Argon2d | password hash + KDF | RFC 9106 | Recommended (Argon2id) | Memory-hard; versions 0x13 and 0x10; optional secret and associated data; `Hash` / `Verify` over PHC strings |
+| scrypt | password hash + KDF | RFC 7914 | Recommended | Memory-hard, `128 · N · r` bytes per unit; `Hash` / `Verify` over PHC strings |
+| HKDF | extract-and-expand KDF | RFC 5869 | Recommended | SHA-1 and SHA-2; mirrors the BCL's `HKDF`, and the platform type is preferable where it covers your need |
+
+Argon2 and scrypt can divide a derivation across threads (see [Multithreading](#multithreading)), and both keep their working memory in pooled native memory: set the `Bodu.Security.Cryptography.Argon2.DisableMatrixReuse` switch to release it after every call instead. See the [Argon2](https://bslater.github.io/bodu/guides/cryptography/argon2.html), [scrypt](https://bslater.github.io/bodu/guides/cryptography/scrypt.html) and [HKDF](https://bslater.github.io/bodu/guides/cryptography/hkdf.html) guides.
 
 ### Merkle trees
 
@@ -141,7 +156,7 @@ bool included = tree.VerifyInclusionOfLeafHash(
     path: path.Select(step => (ReadOnlyMemory<byte>)step).ToArray());
 ```
 
-The [Merkle tree sample](https://github.com/bslater/bodu/tree/master/samples/Security.Cryptography/Bodu.Security.Cryptography.Samples.MerkleTrees) runs each of these as a scenario.
+See the [Merkle tree guide](https://bslater.github.io/bodu/guides/cryptography/merkle-trees.html); the [Merkle tree sample](https://github.com/bslater/bodu/tree/master/samples/Security.Cryptography/Bodu.Security.Cryptography.Samples.MerkleTrees) runs each of these as a scenario.
 
 ### One-time passwords
 
@@ -150,7 +165,7 @@ The [Merkle tree sample](https://github.com/bslater/bodu/tree/master/samples/Sec
 | `Hotp` | counter-based OTP | RFC 4226 | `GenerateCode` / `VerifyCode`; look-ahead resynchronization |
 | `Totp` | time-based OTP | RFC 6238 | Time-derived counter over `Hotp`; clock-drift verification window |
 
-Static, span-based, and built on the BCL one-shot HMAC (`OtpHashAlgorithm` selects SHA-1/256/512). Verification is constant-time. Secrets are raw bytes — decode a Base32 `otpauth://` secret with `Bodu.Text.Encoding.Base32` first. See the [HOTP/TOTP guide](https://github.com/bodu/bodu).
+Static, span-based, and built on the BCL one-shot HMAC (`OtpHashAlgorithm` selects SHA-1/256/512). Verification is constant-time. Secrets are raw bytes — decode a Base32 `otpauth://` secret with `Bodu.Text.Encoding.Base32` first. See the [HOTP/TOTP guide](https://bslater.github.io/bodu/guides/cryptography/one-time-passwords.html).
 
 ## Lifecycle and disposal guarantees
 
@@ -162,9 +177,26 @@ Static, span-based, and built on the BCL one-shot HMAC (`OtpHashAlgorithm` selec
 
 ## Hardware acceleration
 
-`Blake2b`, `Blake2s`, `Blake3`, `Threefish256` / `Threefish512` / `Threefish1024`, and `CubeHash` ship an AVX-512 vectorised path alongside a scalar reference implementation, and dispatch to it automatically when the host CPU supports it. `Argon2d` / `Argon2i` / `Argon2id` compress blocks with AVX2, else SSSE3 on x64 or AdvSimd on ARM64. Every path produces bit-identical output.
+These primitives dispatch to vector, carry-less-multiply or wide-multiply instructions where the processor has them, and to a portable implementation where it does not. Every path produces bit-identical output: the test suite holds each kernel to its portable counterpart and to the published vectors, and CI runs it on both x64 and ARM64.
 
-Set the process-wide feature switch **`Bodu.Security.Cryptography.DisableSimd`** to `true` to force the scalar path — useful for reproducibility, differential testing, or audit. It is read once, before first use of any accelerated primitive, so set it via `runtimeconfig.json` / a `<RuntimeHostConfigurationOption>` item or an early `AppContext.SetSwitch(...)`. The paths are equivalent (BLAKE2/3 and Threefish are ARX and constant-time in both forms); the switch is not a security control. See the [hardware-acceleration guide](https://github.com/bodu/bodu) for details.
+| Primitive | x64 | ARM64 |
+|---|---|---|
+| AES, in every mode | the platform `Aes` (AES-NI where the OS provider uses it) | the platform `Aes` (the AES instructions where the OS provider uses them) |
+| GHASH and POLYVAL (GCM, GMAC, GCM-SIV) | PCLMULQDQ | PMULL |
+| ChaCha20, XChaCha20, Salsa20, XSalsa20 | AVX-512 (16 blocks at a time), AVX2 (8) or SSSE3 (4) | AdvSimd (4) |
+| Poly1305, X25519, Ed25519 | BMI2 `mulx` for 64-bit products | `umulh` for 64-bit products |
+| BLAKE2b | AVX-512 or AVX2, else SSSE3 | AdvSimd |
+| BLAKE2s | AVX-512 or SSSE3 | AdvSimd |
+| BLAKE3 | AVX-512 (16 chunks at a time), AVX2 (8) or SSSE3 (4) | AdvSimd (4) |
+| CubeHash | AVX-512, AVX2 or SSSE3 | AdvSimd |
+| Serpent-128, over several blocks | AVX-512 or AVX2 (8 blocks at a time), else SSSE3 (4) | AdvSimd (4) |
+| Threefish-256 / 512 / 1024 | AVX-512 | — |
+| Argon2 | AVX2, else SSSE3 | AdvSimd |
+| scrypt | SSE2 | AdvSimd |
+
+The 16-wide ChaCha20, Salsa20 and BLAKE3 kernels run where .NET accelerates 512-bit vectors (`Vector512.IsHardwareAccelerated`); other AVX-512 processors run the 8-wide kernels.
+
+Set the process-wide feature switch **`Bodu.Security.Cryptography.DisableSimd`** to `true` to force the portable path in place of every vector and carry-less-multiply kernel above (AES and the 64-bit multiplies are unaffected) — useful for reproducibility, differential testing, or audit. It is read once, before first use of any accelerated primitive, so set it via `runtimeconfig.json` / a `<RuntimeHostConfigurationOption>` item or an early `AppContext.SetSwitch(...)`. The paths are equivalent (the ARX designs such as BLAKE2/3, ChaCha20 and Threefish are constant-time in both forms); the switch is not a security control. See the [hardware-acceleration guide](https://bslater.github.io/bodu/guides/cryptography/hardware-acceleration.html) for details.
 
 ## Multithreading
 
