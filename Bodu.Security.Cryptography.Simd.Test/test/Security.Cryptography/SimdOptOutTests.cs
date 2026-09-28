@@ -53,6 +53,16 @@ public sealed class SimdOptOutTests
     }
 
     /// <summary>
+    /// Verifies that with SIMD disabled, BLAKE3 dispatches to its scalar compression kernel whatever the processor
+    /// supports, so the linked BLAKE3 vectors in this assembly hold the scalar kernel to them.
+    /// </summary>
+    [TestMethod]
+    public void Blake3CoreSelectKernel_WhenSimdDisabled_ShouldReturnTheScalarKernel()
+    {
+        Assert.AreEqual(Blake3Core.KernelKind.Scalar, Blake3Core.SelectKernel());
+    }
+
+    /// <summary>
     /// Verifies that with SIMD disabled, scrypt dispatches to its scalar BlockMix kernel whatever the processor supports.
     /// </summary>
     [TestMethod]

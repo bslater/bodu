@@ -4,12 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Buffers.Binary;
 using System.Globalization;
-using System.Runtime.CompilerServices;
-using System.Runtime.Intrinsics.X86;
 using System.Security.Cryptography;
-using Bodu.Extensions;
 
 namespace Bodu.Security.Cryptography;
 
@@ -77,55 +73,20 @@ namespace Bodu.Security.Cryptography;
 /// </code>
 /// </example>
 /// <seealso cref="Blake2b"/> <seealso cref="Blake2s"/>
-public sealed partial class Blake3
+public sealed class Blake3
     : DeferredFinalBlockHashAlgorithm
 {
     /// <summary>Size, in bytes, of a single compression input block.</summary>
-    private new const int BlockSize = 64;
+    private new const int BlockSize = Blake3Core.BlockBytes;
 
     /// <summary>Size, in bytes, of a single input chunk (leaf of the hash tree).</summary>
-    private const int ChunkSize = 1024;
-
-    /// <summary>The flag applied to the last compression block of every chunk.</summary>
-    private const uint FlagChunkEnd = 2u;
-
-    // ---- domain-separation flags (§2.5 of the BLAKE3 specification) ----
-
-    /// <summary>The flag applied to the first compression block of every chunk.</summary>
-    private const uint FlagChunkStart = 1u;
-
-    /// <summary>The flag applied to every parent (non-leaf) node compression call.</summary>
-    private const uint FlagParent = 4u;
-
-    /// <summary>The flag applied to the root compression call to enable output extraction.</summary>
-    private const uint FlagRoot = 8u;
+    private const int ChunkSize = Blake3Core.ChunkBytes;
 
     /// <summary>Maximum possible depth of the chaining-value stack. BLAKE3 supports up to <c>2^54</c> chunks per message, so the Merkle tree height is bounded at 54 — any well-formed input fits within this bound.</summary>
     private const int MaxCvStackDepth = 54;
 
     /// <summary>Output length in bytes.</summary>
     private const int OutLen = 32;
-
-    /// <summary>The BLAKE3 initialization vector, taken from the fractional parts of the square roots of the first eight prime numbers, identical to the SHA-256 IV.</summary>
-    private static readonly uint[] s_iv =
-    [
-        0x6A09E667u, 0xBB67AE85u, 0x3C6EF372u, 0xA54FF53Au,
-        0x510E527Fu, 0x9B05688Cu, 0x1F83D9ABu, 0x5BE0CD19u,
-    ];
-
-    /// <summary>The per-round message word permutation table (§2.4 of the BLAKE3 specification). Each row gives the 16 message-word indices consumed by a single round's G calls.</summary>
-#pragma warning disable SA1025 // Code should not contain multiple whitespace in a row
-    private static readonly byte[,] s_msgSchedule =
-    {
-        {  0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15 },
-        {  2,  6,  3, 10,  7,  0,  4, 13,  1, 11, 12,  5,  9, 14, 15,  8 },
-        {  3,  4, 10, 12, 13,  2,  7, 14,  6,  5,  9,  0, 11, 15,  8,  1 },
-        { 10,  7, 12,  9, 14,  3, 13, 15,  4,  0, 11,  2,  5,  8,  1,  6 },
-        { 12, 13,  9, 11, 15, 10, 14,  8,  7,  2,  5,  3,  0,  1,  6,  4 },
-        {  9, 14, 11,  5,  8, 12, 15,  1, 13,  3,  0, 10,  2,  6,  4,  7 },
-        { 11, 15,  5,  0,  1,  9,  8,  6, 14, 10,  2, 12,  3,  4,  7, 13 },
-    };
-#pragma warning restore SA1025 // Code should not contain multiple whitespace in a row
 
     /// <summary>Running chaining value for the chunk currently being compressed.</summary>
     /// <remarks>
@@ -138,9 +99,6 @@ public sealed partial class Blake3
     /// <summary>Chaining-value stack used to build parent nodes as chunks complete. Laid out as a flat 8-word slice per level, indexed by <see cref="_cvStackDepth" />, so per-level pushes and merges run without per-level array allocations.</summary>
     private readonly uint[] _cvStack = new uint[MaxCvStackDepth * 8];
 
-    /// <summary>Pre-allocated 16-word scratch buffer used by <see cref="ParentCv" /> to assemble the concatenation of a left and a right child chaining value before invoking <see cref="Compress" />. Reusing this field removes the per-call <c>uint[16]</c> allocation that would otherwise occur at every tree-merge step.</summary>
-    private readonly uint[] _parentBlockWords = new uint[16];
-
     /// <summary>Current depth of <see cref="_cvStack" /> — the number of 8-word CV slices currently live, with the active top slice occupying words <c>[(_cvStackDepth - 1) * 8, _cvStackDepth * 8)</c> when non-zero.</summary>
     private int _cvStackDepth;
 
@@ -151,7 +109,7 @@ public sealed partial class Blake3
         : base(BlockSize * 8)
     {
         HashSizeValue = 256;
-        s_iv.CopyTo(_chunkCv, 0);
+        Blake3Core.InitializationVector.CopyTo(_chunkCv);
     }
 
     /// <inheritdoc />
@@ -194,7 +152,7 @@ public sealed partial class Blake3
         base.Initialize();
         CryptographyHelper.Clear(_cvStack);
         _cvStackDepth = 0;
-        s_iv.CopyTo(_chunkCv, 0);
+        Blake3Core.InitializationVector.CopyTo(_chunkCv);
     }
 
     /// <inheritdoc />
@@ -215,7 +173,6 @@ public sealed partial class Blake3
             CryptographyHelper.Clear(_cvStack);
             _cvStackDepth = 0;
 
-            CryptographyHelper.Clear(_parentBlockWords);
             CryptographyHelper.Clear(_chunkCv);
         }
 
@@ -265,25 +222,18 @@ public sealed partial class Blake3
 
         // Each new chunk begins from the IV.
         if (isFirstBlock)
-            s_iv.CopyTo(_chunkCv, 0);
+            Blake3Core.InitializationVector.CopyTo(_chunkCv);
 
         uint flags = 0u;
-        if (isFirstBlock) flags |= FlagChunkStart;
-        if (isLastBlock) flags |= FlagChunkEnd;
+        if (isFirstBlock) flags |= Blake3Core.ChunkStart;
+        if (isLastBlock) flags |= Blake3Core.ChunkEnd;
 
-        // FlagRoot is applied on the final block only when no earlier chunks exist on the stack,
-        // meaning this is the sole chunk and therefore the root.  For multi-chunk inputs the root
-        // merge is deferred to ProcessFinalBlock so that FlagRoot lands on the final parent compression.
-        if (isFinal && _cvStackDepth == 0) flags |= FlagRoot;
+        // The root flag is applied on the final block only when no earlier chunks exist on the stack, meaning this is
+        // the sole chunk and therefore the root. For multi-chunk inputs the root merge is deferred to
+        // ProcessFinalBlock so that the root flag lands on the final parent compression.
+        if (isFinal && _cvStackDepth == 0) flags |= Blake3Core.Root;
 
-        Span<uint> blockWords = stackalloc uint[16];
-        ReadBlockWords(block, blockWords);
-
-        Span<uint> state = stackalloc uint[16];
-        Compress(_chunkCv, blockWords, chunkIndex, blockLen, flags, state);
-
-        for (int i = 0; i < 8; i++)
-            _chunkCv[i] = state[i];
+        Blake3Core.Compress(_chunkCv, block, chunkIndex, blockLen, flags);
 
         // Completed non-final chunks are pushed to the stack for pairwise tree merging.
         // PushChunkCv copies the CV into its merge buffer immediately, so the caller's _chunkCv may be reused for the
@@ -294,10 +244,10 @@ public sealed partial class Blake3
 
     /// <inheritdoc />
     /// <remarks>
-    /// For single-chunk input the root chaining value is already in <see cref="_chunkCv" /> (with
-    /// <see cref="FlagRoot" /> applied during <see cref="ProcessBlock" />). For multi-chunk input the CV stack is
-    /// folded into the final chunk's chaining value via <see cref="MergeStackWithFinalChunk" />, which applies
-    /// <see cref="FlagRoot" /> on the last parent compression.
+    /// For single-chunk input the root chaining value is already in <see cref="_chunkCv" /> (with the root flag applied
+    /// during <see cref="ProcessBlock" />). For multi-chunk input the CV stack is folded into the final chunk's
+    /// chaining value via <see cref="MergeStackWithFinalChunk" />, which applies the root flag on the last parent
+    /// compression.
     /// </remarks>
     protected override byte[] ProcessFinalBlock()
     {
@@ -309,144 +259,39 @@ public sealed partial class Blake3
             MergeStackWithFinalChunk(_chunkCv, rootCv);
 
         byte[] digest = new byte[OutLen];
-
-        for (int i = 0; i < 8; i++)
-            BinaryPrimitives.WriteUInt32LittleEndian(digest.AsSpan(i * 4), rootCv[i]);
+        Blake3Core.StoreChainingValue(rootCv, digest);
 
         return digest;
     }
 
     /// <summary>
-    /// Performs the BLAKE3 compression function, transforming a chaining value and a 16-word message block into a
-    /// 16-word output state.
+    /// Computes a parent node chaining value by compressing the concatenation of a left and a right child chaining
+    /// value, writing the 8-word result into <paramref name="output" />.
     /// </summary>
-    /// <param name="cv">The 8-word input chaining value. Must have a length of at least 8.</param>
-    /// <param name="blockWords">
-    /// The 16-word message block in little-endian order. Must have a length of at least 16.
+    /// <param name="leftCv">The 8-word chaining value of the left child.</param>
+    /// <param name="rightCv">The 8-word chaining value of the right child.</param>
+    /// <param name="isRoot">
+    /// <see langword="true" /> if this parent node is the root of the hash tree, causing the root flag to be applied.
     /// </param>
-    /// <param name="counter">The 64-bit chunk counter encoding the position of this chunk in the input stream.</param>
-    /// <param name="blockLen">The number of input bytes represented by <paramref name="blockWords" /> (0–64).</param>
-    /// <param name="flags">
-    /// The bitwise OR of any applicable domain-separation flags (<see cref="FlagChunkStart" />,
-    /// <see cref="FlagChunkEnd" />, <see cref="FlagParent" />, <see cref="FlagRoot" />).
-    /// </param>
-    /// <param name="state">
-    /// Receives the 16-word post-compression state, whose first eight words form the updated chaining value. Must have
-    /// a length of at least 16.
+    /// <param name="output">
+    /// Destination for the resulting 8-word parent chaining value. Must have a length of at least 8.
     /// </param>
     /// <remarks>
-    /// Dispatches to an AVX-512 vectorised implementation when supported by the host, falling back to a scalar
-    /// reference implementation otherwise. Dispatch is gated by <see cref="SimdCapabilities.Avx512FVL" />, which
-    /// combines the hardware intrinsic with the process-wide SIMD opt-out; on hosts without AVX-512 it still folds to a
-    /// compile-time constant that removes the branch, otherwise it reduces to a single cached-boolean load.
+    /// Both inputs are encoded into the parent block before any write to <paramref name="output" />, so callers may
+    /// safely alias <paramref name="rightCv" /> with <paramref name="output" /> to fold tree levels in place without an
+    /// intermediate buffer. The block is cleared before the method returns.
     /// </remarks>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static void Compress(ReadOnlySpan<uint> cv, ReadOnlySpan<uint> blockWords, ulong counter, uint blockLen, uint flags, Span<uint> state)
+    private static void ParentCv(ReadOnlySpan<uint> leftCv, ReadOnlySpan<uint> rightCv, bool isRoot, Span<uint> output)
     {
-        if (SimdCapabilities.Avx512FVL)
-            CompressAvx512(cv, blockWords, counter, blockLen, flags, state);
-        else
-            CompressScalar(cv, blockWords, counter, blockLen, flags, state);
-    }
+        Span<byte> block = stackalloc byte[Blake3Core.BlockBytes];
+        Blake3Core.StoreChainingValue(leftCv, block);
+        Blake3Core.StoreChainingValue(rightCv, block[Blake3Core.ChainingValueBytes..]);
 
-    /// <summary>
-    /// Scalar reference implementation of the BLAKE3 compression function used as a fallback on hosts without AVX-512 +
-    /// VL support. Implements §2.4 of the BLAKE3 specification directly on a 16-element <see cref="uint" /> array.
-    /// </summary>
-    /// <param name="cv">The 8-word input chaining value.</param>
-    /// <param name="blockWords">The 16-word message block.</param>
-    /// <param name="counter">The 64-bit chunk counter.</param>
-    /// <param name="blockLen">The number of input bytes in the block.</param>
-    /// <param name="flags">The BLAKE3 domain-separation flags for the block.</param>
-    /// <param name="state">Receives the 16-word output state produced by the compression function.</param>
-    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-    private static void CompressScalar(ReadOnlySpan<uint> cv, ReadOnlySpan<uint> blockWords, ulong counter, uint blockLen, uint flags, Span<uint> state)
-    {
-        // Upper half: chaining value.
-        state[0] = cv[0];
-        state[1] = cv[1];
-        state[2] = cv[2];
-        state[3] = cv[3];
-        state[4] = cv[4];
-        state[5] = cv[5];
-        state[6] = cv[6];
-        state[7] = cv[7];
+        // Parent nodes always use the key — the IV, for the unkeyed hash — as their chaining value input, counter 0.
+        Blake3Core.InitializationVector.CopyTo(output);
+        Blake3Core.Compress(output, block, 0UL, Blake3Core.BlockBytes, isRoot ? Blake3Core.Parent | Blake3Core.Root : Blake3Core.Parent);
 
-        // Lower half: IV words, counter split into two 32-bit halves, block length, flags.
-        state[8] = s_iv[0];
-        state[9] = s_iv[1];
-        state[10] = s_iv[2];
-        state[11] = s_iv[3];
-        state[12] = (uint)counter;
-        state[13] = (uint)(counter >> 32);
-        state[14] = blockLen;
-        state[15] = flags;
-
-        // Seven rounds of column then diagonal mixing, each using a permuted view of the message block.
-        for (int round = 0; round < 7; round++)
-        {
-            // Column step.
-            G(state, 0, 4, 8, 12, blockWords[s_msgSchedule[round, 0]], blockWords[s_msgSchedule[round, 1]]);
-            G(state, 1, 5, 9, 13, blockWords[s_msgSchedule[round, 2]], blockWords[s_msgSchedule[round, 3]]);
-            G(state, 2, 6, 10, 14, blockWords[s_msgSchedule[round, 4]], blockWords[s_msgSchedule[round, 5]]);
-            G(state, 3, 7, 11, 15, blockWords[s_msgSchedule[round, 6]], blockWords[s_msgSchedule[round, 7]]);
-
-            // Diagonal step.
-            G(state, 0, 5, 10, 15, blockWords[s_msgSchedule[round, 8]], blockWords[s_msgSchedule[round, 9]]);
-            G(state, 1, 6, 11, 12, blockWords[s_msgSchedule[round, 10]], blockWords[s_msgSchedule[round, 11]]);
-            G(state, 2, 7, 8, 13, blockWords[s_msgSchedule[round, 12]], blockWords[s_msgSchedule[round, 13]]);
-            G(state, 3, 4, 9, 14, blockWords[s_msgSchedule[round, 14]], blockWords[s_msgSchedule[round, 15]]);
-        }
-
-        // Finalize: XOR the two halves of the state.
-        for (int i = 0; i < 8; i++)
-            state[i] ^= state[i + 8];
-
-        // Mix the original chaining value into the high half.
-        for (int i = 8; i < 16; i++)
-            state[i] ^= cv[i - 8];
-    }
-
-    /// <summary>
-    /// Applies the BLAKE3 quarter-round mixing function <c>G</c> to four positions in the working state, using two
-    /// message words <paramref name="mx" /> and <paramref name="my" />.
-    /// </summary>
-    /// <param name="state">The 16-word working state array, modified in place.</param>
-    /// <param name="a">Index of the first state word.</param>
-    /// <param name="b">Index of the second state word.</param>
-    /// <param name="c">Index of the third state word.</param>
-    /// <param name="d">Index of the fourth state word.</param>
-    /// <param name="mx">First message word for this mixing step.</param>
-    /// <param name="my">Second message word for this mixing step.</param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static void G(Span<uint> state, int a, int b, int c, int d, uint mx, uint my)
-    {
-        state[a] = state[a] + state[b] + mx;
-        state[d] = (state[d] ^ state[a]).RotateBitsRightUnchecked(16);
-        state[c] = state[c] + state[d];
-        state[b] = (state[b] ^ state[c]).RotateBitsRightUnchecked(12);
-        state[a] = state[a] + state[b] + my;
-        state[d] = (state[d] ^ state[a]).RotateBitsRightUnchecked(8);
-        state[c] = state[c] + state[d];
-        state[b] = (state[b] ^ state[c]).RotateBitsRightUnchecked(7);
-    }
-
-    /// <summary>
-    /// Reads exactly 64 bytes from <paramref name="block" /> into a 16-element little-endian uint32 word array,
-    /// zero-padding any bytes beyond the actual block length.
-    /// </summary>
-    /// <param name="block">The raw block bytes to interpret (0–64 bytes).</param>
-    /// <param name="words">
-    /// Receives the 16 little-endian uint32 words representing the block. Must have a length of at least 16.
-    /// </param>
-    private static void ReadBlockWords(ReadOnlySpan<byte> block, Span<uint> words)
-    {
-        Span<byte> padded = stackalloc byte[BlockSize];
-        padded.Clear();
-        block.CopyTo(padded);
-
-        for (int i = 0; i < 16; i++)
-            words[i] = BinaryPrimitives.ReadUInt32LittleEndian(padded[(i * 4)..]);
+        CryptographicOperations.ZeroMemory(block);
     }
 
     /// <summary>
@@ -455,14 +300,14 @@ public sealed partial class Blake3
     /// </summary>
     /// <param name="rightCv">
     /// The chaining value of the final chunk. This value is kept out of <see cref="_cvStack" /> until finalization so
-    /// the last parent merge can be marked with <see cref="FlagRoot" />.
+    /// the last parent merge can be marked with the root flag.
     /// </param>
     /// <param name="output">Destination for the 8-word root chaining value. Must have a length of at least 8.</param>
     /// <remarks>
     /// <para>
     /// Intermediate chunks may already have been folded into balanced subtrees on <see cref="_cvStack" />. Finalization
     /// differs from normal chunk pushing because the final chunk must not be pre-merged as a non-root parent. Instead,
-    /// the stack is folded into the final chunk from right to left, applying <see cref="FlagRoot" /> to the last parent
+    /// the stack is folded into the final chunk from right to left, applying the root flag to the last parent
     /// compression.
     /// </para>
     /// </remarks>
@@ -481,43 +326,7 @@ public sealed partial class Blake3
         }
 
         working.CopyTo(output);
-    }
-
-    /// <summary>
-    /// Computes a parent node chaining value by compressing the concatenation of a left and a right child chaining
-    /// value, writing the 8-word result into <paramref name="output" />.
-    /// </summary>
-    /// <param name="leftCv">The 8-word chaining value of the left child.</param>
-    /// <param name="rightCv">The 8-word chaining value of the right child.</param>
-    /// <param name="isRoot">
-    /// <see langword="true" /> if this parent node is the root of the hash tree, causing <see cref="FlagRoot" /> to be
-    /// applied.
-    /// </param>
-    /// <param name="output">
-    /// Destination for the resulting 8-word parent chaining value. Must have a length of at least 8.
-    /// </param>
-    /// <remarks>
-    /// Both inputs are copied into <see cref="_parentBlockWords" /> before any write to <paramref name="output" />, so
-    /// callers may safely alias <paramref name="rightCv" /> with <paramref name="output" /> to fold tree levels in
-    /// place without an intermediate buffer.
-    /// </remarks>
-    private void ParentCv(ReadOnlySpan<uint> leftCv, ReadOnlySpan<uint> rightCv, bool isRoot, Span<uint> output)
-    {
-        // Materialise both children into the scratch field BEFORE writing the output span. This is what makes the
-        // (rightCv, output) aliasing in PushChunkCv / MergeStackWithFinalChunk safe.
-        leftCv.CopyTo(_parentBlockWords.AsSpan(0, 8));
-        rightCv.CopyTo(_parentBlockWords.AsSpan(8, 8));
-
-        uint flags = FlagParent;
-
-        if (isRoot)
-            flags |= FlagRoot;
-
-        // Parent nodes always use the IV as their chaining value input, counter = 0.
-        Span<uint> outState = stackalloc uint[16];
-        Compress(s_iv, _parentBlockWords, 0UL, BlockSize, flags, outState);
-
-        outState[..8].CopyTo(output);
+        working.Clear();
     }
 
     // ---- tree-merging stack helpers ----
@@ -573,5 +382,6 @@ public sealed partial class Blake3
 
         working.CopyTo(_cvStack.AsSpan(_cvStackDepth * 8, 8));
         _cvStackDepth++;
+        working.Clear();
     }
 }
