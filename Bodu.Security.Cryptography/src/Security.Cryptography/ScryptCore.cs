@@ -8,6 +8,7 @@ using System.Buffers;
 using System.Buffers.Binary;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 
@@ -49,30 +50,10 @@ internal static partial class ScryptCore
     /// <param name="blockSizeR">The block-size parameter <c>r</c>.</param>
     /// <param name="parallelization">The parallelization parameter <c>p</c>.</param>
     /// <param name="output">The destination buffer; its length is the derived-key length <c>dkLen</c>.</param>
-    /// <exception cref="CryptographicException">
-    /// <c>B</c> cannot be represented as a single managed array, or <c>V</c> as a single span.
-    /// </exception>
-    /// <exception cref="OutOfMemoryException"><c>V</c> cannot be allocated.</exception>
-    internal static void DeriveKey(
-        ReadOnlySpan<byte> password,
-        ReadOnlySpan<byte> salt,
-        int costN,
-        int blockSizeR,
-        int parallelization,
-        Span<byte> output) =>
-        DeriveKey(password, salt, costN, blockSizeR, parallelization, output, NativeBufferPool.Shared);
-
-    /// <summary>
-    /// Derives <paramref name="output" />.Length bytes from the password and salt using scrypt with the given cost
-    /// parameters, taking <c>V</c> from the specified pool.
-    /// </summary>
-    /// <param name="password">The password <c>P</c>.</param>
-    /// <param name="salt">The salt <c>S</c>.</param>
-    /// <param name="costN">The CPU/memory cost parameter <c>N</c> (a power of two greater than one).</param>
-    /// <param name="blockSizeR">The block-size parameter <c>r</c>.</param>
-    /// <param name="parallelization">The parallelization parameter <c>p</c>.</param>
-    /// <param name="output">The destination buffer; its length is the derived-key length <c>dkLen</c>.</param>
-    /// <param name="pool">The pool the workspace is taken from and returned to.</param>
+    /// <param name="maxDegreeOfParallelism">
+    /// The greatest number of threads the derivation may use, the calling thread included; <c>-1</c> for up to one per
+    /// processor.
+    /// </param>
     /// <exception cref="CryptographicException">
     /// <c>B</c> cannot be represented as a single managed array, or <c>V</c> as a single span.
     /// </exception>
@@ -84,7 +65,32 @@ internal static partial class ScryptCore
         int blockSizeR,
         int parallelization,
         Span<byte> output,
-        NativeBufferPool pool)
+        int maxDegreeOfParallelism) =>
+        DeriveKey(password, salt, costN, blockSizeR, parallelization, output, new MixOptions(maxDegreeOfParallelism));
+
+    /// <summary>
+    /// Derives <paramref name="output" />.Length bytes from the password and salt using scrypt with the given cost
+    /// parameters, running the ROMix units as <paramref name="options" /> describe.
+    /// </summary>
+    /// <param name="password">The password <c>P</c>.</param>
+    /// <param name="salt">The salt <c>S</c>.</param>
+    /// <param name="costN">The CPU/memory cost parameter <c>N</c> (a power of two greater than one).</param>
+    /// <param name="blockSizeR">The block-size parameter <c>r</c>.</param>
+    /// <param name="parallelization">The parallelization parameter <c>p</c>.</param>
+    /// <param name="output">The destination buffer; its length is the derived-key length <c>dkLen</c>.</param>
+    /// <param name="options">How the ROMix units run.</param>
+    /// <exception cref="CryptographicException">
+    /// <c>B</c> cannot be represented as a single managed array, or <c>V</c> as a single span.
+    /// </exception>
+    /// <exception cref="OutOfMemoryException"><c>V</c> cannot be allocated.</exception>
+    internal static void DeriveKey(
+        ReadOnlySpan<byte> password,
+        ReadOnlySpan<byte> salt,
+        int costN,
+        int blockSizeR,
+        int parallelization,
+        Span<byte> output,
+        in MixOptions options)
     {
         int unitWords = 2 * blockSizeR * BlockWords;   // 32*r words = 128*r bytes per ROMix unit
         long totalBytes = (long)parallelization * unitWords * sizeof(uint);
@@ -106,11 +112,11 @@ internal static partial class ScryptCore
                 BinaryPrimitives.ReverseEndianness(words, words);
 
             // Step 2: B_i = scryptROMix(r, B_i, N) for each of the p independent blocks.
-            using (Workspace workspace = Workspace.Rent(costN, unitWords, pool))
-            {
-                for (int i = 0; i < parallelization; i++)
-                    ROMix(words.Slice(i * unitWords, unitWords), costN, blockSizeR, workspace.Chain, workspace.Scratch);
-            }
+            int workers = options.ResolveWorkers(parallelization, (long)costN * unitWords * sizeof(uint));
+            if (workers > 1)
+                MixInParallel(rented, (int)totalBytes, costN, blockSizeR, parallelization, workers, options.Pool);
+            else
+                Mix(words, costN, blockSizeR, options.Pool);
 
             if (!BitConverter.IsLittleEndian)
                 BinaryPrimitives.ReverseEndianness(words, words);
@@ -122,6 +128,74 @@ internal static partial class ScryptCore
         {
             CryptographicOperations.ZeroMemory(b);
             ArrayPool<byte>.Shared.Return(rented);
+        }
+    }
+
+    /// <summary>
+    /// Applies ROMix to every unit of <c>B</c> on the calling thread, with one workspace reused across the units.
+    /// </summary>
+    /// <param name="words">The <c>p</c> units of <c>B</c>, as 32-bit words, processed in place.</param>
+    /// <param name="costN">The CPU/memory cost parameter <c>N</c>.</param>
+    /// <param name="blockSizeR">The block-size parameter <c>r</c>.</param>
+    /// <param name="pool">The pool the workspace is taken from and returned to.</param>
+    private static void Mix(Span<uint> words, int costN, int blockSizeR, NativeBufferPool pool)
+    {
+        int unitWords = 2 * blockSizeR * BlockWords;
+
+        using Workspace workspace = Workspace.Rent(costN, unitWords, pool);
+        for (int offset = 0; offset < words.Length; offset += unitWords)
+            ROMix(words.Slice(offset, unitWords), costN, blockSizeR, workspace.Chain, workspace.Scratch);
+    }
+
+    /// <summary>
+    /// Applies ROMix to every unit of <c>B</c>, dividing the units among threads, each with a workspace of its own.
+    /// </summary>
+    /// <param name="b">The array holding <c>B</c>.</param>
+    /// <param name="length">The length of <c>B</c>, in bytes.</param>
+    /// <param name="costN">The CPU/memory cost parameter <c>N</c>.</param>
+    /// <param name="blockSizeR">The block-size parameter <c>r</c>.</param>
+    /// <param name="parallelization">The number of units, <c>p</c>.</param>
+    /// <param name="workers">The number of threads, the calling thread included.</param>
+    /// <param name="pool">The pool the workspaces are taken from and returned to.</param>
+    /// <remarks>
+    /// <para>
+    /// Each thread claims units from a shared counter until none are left, and takes its workspace only once it has
+    /// claimed one, so a thread that starts after the work is done allocates nothing. The calling thread claims units
+    /// too, and runs them all if no worker arrives, so a starved thread pool slows a derivation down but never stalls
+    /// it. The default scheduler is named explicitly so a scheduler the caller runs under is never used.
+    /// </para>
+    /// <para>
+    /// A fault in a unit surfaces as itself rather than wrapped in an <see cref="AggregateException" />, and only after
+    /// every worker has stopped, so <c>B</c> is never cleared or returned while a worker could still write to it.
+    /// </para>
+    /// </remarks>
+    private static void MixInParallel(byte[] b, int length, int costN, int blockSizeR, int parallelization, int workers, NativeBufferPool pool)
+    {
+        int unitWords = 2 * blockSizeR * BlockWords;
+        int nextUnit = -1;
+        var options = new ParallelOptions { MaxDegreeOfParallelism = workers, TaskScheduler = TaskScheduler.Default };
+
+        try
+        {
+            Parallel.For(0, workers, options, _ =>
+            {
+                int unit = Interlocked.Increment(ref nextUnit);
+                if (unit >= parallelization)
+                    return;
+
+                Span<uint> words = MemoryMarshal.Cast<byte, uint>(b.AsSpan(0, length));
+                using Workspace workspace = Workspace.Rent(costN, unitWords, pool);
+                do
+                {
+                    ROMix(words.Slice(unit * unitWords, unitWords), costN, blockSizeR, workspace.Chain, workspace.Scratch);
+                    unit = Interlocked.Increment(ref nextUnit);
+                }
+                while (unit < parallelization);
+            });
+        }
+        catch (AggregateException ex) when (ex.InnerExceptions.Count > 0)
+        {
+            ExceptionDispatchInfo.Capture(ex.InnerExceptions[0]).Throw();
         }
     }
 

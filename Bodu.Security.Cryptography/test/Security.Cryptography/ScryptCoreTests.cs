@@ -6,6 +6,7 @@
 
 using System.Buffers.Binary;
 using System.Text;
+using Bodu.Security.Cryptography.Infrastructure;
 
 namespace Bodu.Security.Cryptography;
 
@@ -40,16 +41,32 @@ public sealed partial class ScryptCoreTests
     private static readonly TimeSpan LongIdleTimeout = TimeSpan.FromHours(1);
 
     /// <summary>
-    /// Derives RFC 7914, Section 12's second vector with the workspace taken from the specified pool.
+    /// Gets the light OpenSSL corpus rows with more than one unit, the rows a derivation can divide among threads.
+    /// </summary>
+    /// <returns>One row per vector.</returns>
+    public static IEnumerable<object[]> OpenSslCorpusWithSeveralUnits() =>
+        ScryptTests.OpenSslCorpusLight().Where(static row => ((KdfKnownAnswer)row[0]).Parallelism > 1);
+
+    /// <summary>
+    /// Derives RFC 7914, Section 12's second vector — sixteen units of 1 MiB — as the options describe.
+    /// </summary>
+    /// <param name="options">How the derivation runs its units.</param>
+    /// <returns>The derived key, as lowercase hex.</returns>
+    private static string DeriveSecondRfc7914Key(ScryptCore.MixOptions options)
+    {
+        byte[] key = new byte[64];
+        ScryptCore.DeriveKey(Encoding.ASCII.GetBytes("password"), Encoding.ASCII.GetBytes("NaCl"), 1024, 8, 16, key, options);
+        return Convert.ToHexString(key).ToLowerInvariant();
+    }
+
+    /// <summary>
+    /// Derives RFC 7914, Section 12's second vector on the calling thread, with the workspace taken from the specified
+    /// pool.
     /// </summary>
     /// <param name="pool">The pool the derivation takes its workspace from.</param>
     /// <returns>The derived key, as lowercase hex.</returns>
-    private static string DeriveSecondRfc7914Key(NativeBufferPool pool)
-    {
-        byte[] key = new byte[64];
-        ScryptCore.DeriveKey(Encoding.ASCII.GetBytes("password"), Encoding.ASCII.GetBytes("NaCl"), 1024, 8, 16, key, pool);
-        return Convert.ToHexString(key).ToLowerInvariant();
-    }
+    private static string DeriveSecondRfc7914Key(NativeBufferPool pool) =>
+        DeriveSecondRfc7914Key(new ScryptCore.MixOptions(1, pool: pool));
 
     /// <summary>
     /// Creates a pool that retains up to the specified number of buffers of up to 64 MiB, released after an hour idle.

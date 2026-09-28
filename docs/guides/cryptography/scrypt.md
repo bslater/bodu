@@ -22,7 +22,7 @@ scrypt's cost is set by <xref:Bodu.Security.Cryptography.ScryptParameters>:
 |---|---|---|
 | `CostN` (`N`) | CPU/memory cost | **Required.** Must be a power of two greater than one. The dominant cost knob. |
 | `BlockSizeR` (`r`) | Block size | **Required.** Tunes the memory/bandwidth mix; 8 is the conventional value. |
-| `Parallelization` (`p`) | Independent iterations | **Required.** Usually 1. |
+| `Parallelization` (`p`) | Independent iterations | **Required.** Usually 1. More than 1 can run on threads — see [Running the units on threads](#running-the-units-on-threads). |
 
 Peak memory is approximately `128 * N * r` bytes. RFC 7914, Section 2 suggests **`N = 16384`, `r = 8`, `p = 1`** (about 16 MiB) for interactive logins, scaling `N` up for more sensitive secrets. The key-derivation envelope uses PBKDF2-HMAC-SHA256, supplied by the platform. Construction validates the parameters and throws <xref:System.ArgumentOutOfRangeException> when `CostN` is not a power of two greater than one, or `BlockSizeR` / `Parallelization` is below 1.
 
@@ -82,6 +82,24 @@ The `ln` field is `log2(N)` (so `N = 16384` encodes as `ln=14`). `Verify` re-der
 ## Choosing parameters
 
 Hold `r = 8` and `p = 1`, then raise `N` (always a power of two) until verification fits your latency budget on the hardware that will run it. Each doubling of `N` doubles both time and memory. If you need more memory without more time, increase `r` instead. Remember that `128 * N * r` bytes must be available per concurrent derivation — size `N` against your server's memory and expected login concurrency, not just latency.
+
+## Running the units on threads
+
+A cost with `p` greater than 1 has `p` independent units. By default a derivation runs them one after another on the calling thread; a bound lets them run at once:
+
+```csharp
+using Bodu.Security.Cryptography;
+
+// Four units on up to four threads: about a quarter of the time, four times the memory.
+var scrypt = new Scrypt(costN: 16384, blockSizeR: 8, parallelization: 4, maxDegreeOfParallelism: 4);
+byte[] key = scrypt.GetBytes(password, salt, length: 32);
+
+bool ok = Scrypt.Verify(stored, candidate, maxDegreeOfParallelism: 4);
+```
+
+`1`, the default, keeps a derivation on the calling thread; a larger value caps the threads, and `-1` allows up to one per processor. `0` or anything below `-1` throws <xref:System.ArgumentOutOfRangeException>. The key never depends on the bound.
+
+Unlike Argon2's lanes, which share one memory matrix, each scrypt unit that runs at once needs its own `V`: a derivation on `t` threads uses `t * 128 * N * r` bytes. That is why the default is `1` — a login service that already verifies many passwords at once keeps its cores busy anyway, and would only multiply its memory. Two safeguards hold whatever the bound. A derivation keeps its working memory within the 2 GiB ceiling on a single `V`, running on fewer threads when its units are large, so an encoded hash from an untrusted source cannot multiply the memory a verification takes. And units under 1 MiB of `V` each stay on the calling thread, where handing them to other threads would cost more than it saves.
 
 ## Memory
 

@@ -206,7 +206,8 @@ internal static class CryptoHarness
     }
 
     /// <summary>
-    /// Measures scrypt at the interactive and OWASP-minimum costs, next to OpenSSL's scrypt, with Argon2id for scale.
+    /// Measures scrypt at the interactive and OWASP-minimum costs, next to OpenSSL's scrypt, with Argon2id for scale;
+    /// the four-unit cost runs again with its units on four threads.
     /// </summary>
     private static void RunKeyDerivation()
     {
@@ -221,6 +222,9 @@ internal static class CryptoHarness
             if (OpenSsl.IsAvailable)
                 Measure("kdf", $"OpenSSL scrypt {parameters}", 0, () => OpenSsl.Scrypt(password, salt, 1UL << log2N, (ulong)r, (ulong)p, key));
         }
+
+        var threaded = new Scrypt(1 << 14, 8, 4, maxDegreeOfParallelism: 4);
+        Measure("kdf", "Bodu scrypt N=2^14 r=8 p=4 bound 4", 0, () => threaded.DeriveKey(password, salt, key));
 
         var argon2 = new Argon2Parameters { MemoryKiB = 19 * 1024, Iterations = 2, Parallelism = 1 };
         Measure("kdf", "Bodu Argon2id m=19 MiB t=2 p=1", 0, () => Argon2id.DeriveKey(password, salt, argon2));

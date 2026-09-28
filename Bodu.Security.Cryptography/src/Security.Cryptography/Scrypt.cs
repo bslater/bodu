@@ -22,6 +22,11 @@ namespace Bodu.Security.Cryptography;
 /// then derives keys or PHC password hashes. The static one-shot methods are provided for convenience.
 /// </para>
 /// <para>
+/// By default a derivation runs its <see cref="ScryptParameters.Parallelization" /> units one after another on the
+/// calling thread. <see cref="MaxDegreeOfParallelism" /> lets them run at once instead, each with a <c>V</c> of its
+/// own, so the time falls and the memory rises with the threads; the derived key never depends on them.
+/// </para>
+/// <para>
 /// The working memory — <c>V</c>, <c>128 · N · r</c> bytes — is held in native memory and reused across derivations,
 /// in the same reserve as Argon2's matrix, so a derivation neither allocates it on the collected heap nor waits for it
 /// to be zeroed. Up to one buffer per processor stays reserved — cleared — for up to thirty seconds after the last
@@ -47,12 +52,40 @@ public sealed class Scrypt
     /// <exception cref="ArgumentOutOfRangeException">
     /// A cost parameter in <paramref name="parameters" /> falls outside the range permitted by RFC 7914.
     /// </exception>
+    /// <remarks>
+    /// Every derivation runs on the calling thread; see <see cref="MaxDegreeOfParallelism" />.
+    /// </remarks>
     public Scrypt(ScryptParameters parameters)
+        : this(parameters, maxDegreeOfParallelism: 1)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Scrypt" /> class with the specified cost parameters and bound on
+    /// the threads each derivation may use.
+    /// </summary>
+    /// <param name="parameters">The cost parameters governing the derivation.</param>
+    /// <param name="maxDegreeOfParallelism">
+    /// The greatest number of threads one derivation may use, the calling thread included; <c>-1</c> for up to one per
+    /// processor.
+    /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="parameters" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// A cost parameter in <paramref name="parameters" /> falls outside the range permitted by RFC 7914, or
+    /// <paramref name="maxDegreeOfParallelism" /> is zero or less than <c>-1</c>.
+    /// </exception>
+    /// <remarks>
+    /// Each unit that runs at once holds its own <c>V</c> of <c>128 · N · r</c> bytes, so a derivation on several
+    /// threads needs that much memory for each of them; see <see cref="MaxDegreeOfParallelism" />.
+    /// </remarks>
+    public Scrypt(ScryptParameters parameters, int maxDegreeOfParallelism)
     {
         ThrowHelper.ThrowIfNull(parameters);
+        CryptographyThrowHelper.ThrowIfDegreeOfParallelismInvalid(maxDegreeOfParallelism);
         parameters.Validate();
 
         Parameters = parameters;
+        MaxDegreeOfParallelism = maxDegreeOfParallelism;
     }
 
     /// <summary>
@@ -64,15 +97,67 @@ public sealed class Scrypt
     /// <exception cref="ArgumentOutOfRangeException">
     /// A cost parameter falls outside the range permitted by RFC 7914.
     /// </exception>
+    /// <remarks>
+    /// Every derivation runs on the calling thread; see <see cref="MaxDegreeOfParallelism" />.
+    /// </remarks>
     public Scrypt(int costN, int blockSizeR, int parallelization)
-        : this(new ScryptParameters { CostN = costN, BlockSizeR = blockSizeR, Parallelization = parallelization })
-    { }
+        : this(costN, blockSizeR, parallelization, maxDegreeOfParallelism: 1)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Scrypt" /> class with the specified cost parameters and bound on
+    /// the threads each derivation may use.
+    /// </summary>
+    /// <param name="costN">The CPU/memory cost parameter <c>N</c> — a power of two greater than one.</param>
+    /// <param name="blockSizeR">The block-size parameter <c>r</c>.</param>
+    /// <param name="parallelization">The parallelization parameter <c>p</c>.</param>
+    /// <param name="maxDegreeOfParallelism">
+    /// The greatest number of threads one derivation may use, the calling thread included; <c>-1</c> for up to one per
+    /// processor.
+    /// </param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// A cost parameter falls outside the range permitted by RFC 7914, or <paramref name="maxDegreeOfParallelism" /> is
+    /// zero or less than <c>-1</c>.
+    /// </exception>
+    /// <remarks>
+    /// Each unit that runs at once holds its own <c>V</c> of <c>128 · N · r</c> bytes, so a derivation on several
+    /// threads needs that much memory for each of them; see <see cref="MaxDegreeOfParallelism" />.
+    /// </remarks>
+    public Scrypt(int costN, int blockSizeR, int parallelization, int maxDegreeOfParallelism)
+        : this(new ScryptParameters { CostN = costN, BlockSizeR = blockSizeR, Parallelization = parallelization }, maxDegreeOfParallelism)
+    {
+    }
 
     /// <summary>
     /// Gets the cost parameters bound to this instance.
     /// </summary>
     /// <value>The <see cref="ScryptParameters" /> supplied at construction.</value>
     public ScryptParameters Parameters { get; }
+
+    /// <summary>
+    /// Gets the greatest number of threads one derivation by this instance may use, the calling thread included.
+    /// </summary>
+    /// <value>
+    /// <c>1</c>, the default, runs a derivation's <see cref="ScryptParameters.Parallelization" /> units one after
+    /// another on the calling thread. A larger value, or <c>-1</c> for up to one thread per processor, lets them run at
+    /// once, on no more threads than there are units. The derived key never depends on this value.
+    /// </value>
+    /// <remarks>
+    /// <para>
+    /// Unlike Argon2's lanes, which share one memory matrix, each scrypt unit that runs at once holds its own <c>V</c>
+    /// of <c>128 · N · r</c> bytes, so a derivation on <c>t</c> threads needs <c>t</c> times the memory of one on the
+    /// calling thread. That is why the default is <c>1</c>: a service that verifies many passwords at once already keeps
+    /// every core busy, and would only multiply its memory.
+    /// </para>
+    /// <para>
+    /// A derivation keeps its working memory within the 2 GiB ceiling on a single <c>V</c> however high the bound,
+    /// running on fewer threads when its units are large, so an encoded hash from an untrusted source cannot multiply
+    /// the memory a verification takes. It stays on the calling thread when its units are small — under 1 MiB of
+    /// <c>V</c> each — where handing them to other threads costs more than it saves.
+    /// </para>
+    /// </remarks>
+    public int MaxDegreeOfParallelism { get; }
 
     /// <summary>
     /// Derives a key of the requested length from the supplied password and salt.
@@ -87,7 +172,7 @@ public sealed class Scrypt
         ThrowIfInvalidLength(length);
 
         byte[] output = new byte[length];
-        ScryptCore.DeriveKey(password, salt, Parameters.CostN, Parameters.BlockSizeR, Parameters.Parallelization, output);
+        ScryptCore.DeriveKey(password, salt, Parameters.CostN, Parameters.BlockSizeR, Parameters.Parallelization, output, MaxDegreeOfParallelism);
         return output;
     }
 
@@ -102,7 +187,7 @@ public sealed class Scrypt
     {
         ThrowIfInvalidLength(destination.Length);
 
-        ScryptCore.DeriveKey(password, salt, Parameters.CostN, Parameters.BlockSizeR, Parameters.Parallelization, destination);
+        ScryptCore.DeriveKey(password, salt, Parameters.CostN, Parameters.BlockSizeR, Parameters.Parallelization, destination, MaxDegreeOfParallelism);
     }
 
     /// <summary>
@@ -135,7 +220,7 @@ public sealed class Scrypt
 
         try
         {
-            ScryptCore.DeriveKey(password, salt, Parameters.CostN, Parameters.BlockSizeR, Parameters.Parallelization, hash);
+            ScryptCore.DeriveKey(password, salt, Parameters.CostN, Parameters.BlockSizeR, Parameters.Parallelization, hash, MaxDegreeOfParallelism);
 
             return Encode(Parameters, salt, hash);
         }
@@ -222,12 +307,51 @@ public sealed class Scrypt
     /// <see langword="true" /> if the password matches the encoded hash; otherwise, <see langword="false" />.
     /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="encoded" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// The cost parameters in <paramref name="encoded" /> fall outside the range permitted by RFC 7914 or the memory
+    /// ceiling.
+    /// </exception>
     /// <exception cref="FormatException">
     /// <paramref name="encoded" /> is not a well-formed scrypt PHC string.
     /// </exception>
-    public static bool Verify(string encoded, ReadOnlySpan<byte> password)
+    /// <remarks>
+    /// The derivation runs on the calling thread.
+    /// </remarks>
+    public static bool Verify(string encoded, ReadOnlySpan<byte> password) =>
+        Verify(encoded, password, maxDegreeOfParallelism: 1);
+
+    /// <summary>
+    /// Verifies a password against a scrypt PHC encoded-hash string, with a bound on the threads the derivation may
+    /// use.
+    /// </summary>
+    /// <param name="encoded">
+    /// The PHC encoded-hash string produced by <see cref="Hash(ReadOnlySpan{byte}, ReadOnlySpan{byte}, int)" />.
+    /// </param>
+    /// <param name="password">The password to verify.</param>
+    /// <param name="maxDegreeOfParallelism">
+    /// The greatest number of threads the derivation may use, the calling thread included; <c>-1</c> for up to one per
+    /// processor.
+    /// </param>
+    /// <returns>
+    /// <see langword="true" /> if the password matches the encoded hash; otherwise, <see langword="false" />.
+    /// </returns>
+    /// <exception cref="ArgumentNullException"><paramref name="encoded" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="maxDegreeOfParallelism" /> is zero or less than <c>-1</c>, or the cost parameters in
+    /// <paramref name="encoded" /> fall outside the range permitted by RFC 7914 or the memory ceiling.
+    /// </exception>
+    /// <exception cref="FormatException">
+    /// <paramref name="encoded" /> is not a well-formed scrypt PHC string.
+    /// </exception>
+    /// <remarks>
+    /// The bound lets a hash with several units (<c>p</c> greater than 1) verify faster at the cost of memory; the
+    /// result never depends on it. The working memory stays within the 2 GiB ceiling on a single <c>V</c> whatever
+    /// the encoded hash asks for; see <see cref="MaxDegreeOfParallelism" />.
+    /// </remarks>
+    public static bool Verify(string encoded, ReadOnlySpan<byte> password, int maxDegreeOfParallelism)
     {
         ThrowHelper.ThrowIfNull(encoded);
+        CryptographyThrowHelper.ThrowIfDegreeOfParallelismInvalid(maxDegreeOfParallelism);
 
         (int costN, int blockSizeR, int parallelization, byte[]? salt, byte[]? hash) = Decode(encoded);
 
@@ -240,7 +364,7 @@ public sealed class Scrypt
             new ScryptParameters { CostN = costN, BlockSizeR = blockSizeR, Parallelization = parallelization }.Validate();
 
             computed = new byte[hash.Length];
-            ScryptCore.DeriveKey(password, salt, costN, blockSizeR, parallelization, computed);
+            ScryptCore.DeriveKey(password, salt, costN, blockSizeR, parallelization, computed, maxDegreeOfParallelism);
 
             return CryptographicOperations.FixedTimeEquals(computed, hash);
         }

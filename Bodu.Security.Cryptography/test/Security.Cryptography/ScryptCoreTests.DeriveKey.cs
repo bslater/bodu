@@ -4,6 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Security.Cryptography.Infrastructure;
+using Bodu.Test.Kat;
+
 namespace Bodu.Security.Cryptography;
 
 public sealed partial class ScryptCoreTests
@@ -68,5 +71,70 @@ public sealed partial class ScryptCoreTests
 
         Assert.AreEqual(Rfc7914SecondKeyHex, key);
         Assert.AreEqual(0, pool.RetainedCount);
+    }
+
+    /// <summary>
+    /// Verifies that dividing a derivation's units among threads — at every bound from two to one per processor —
+    /// reproduces each OpenSSL corpus row with more than one unit.
+    /// </summary>
+    /// <param name="vector">The corpus row under test.</param>
+    [TestMethod]
+    [DynamicData(nameof(OpenSslCorpusWithSeveralUnits), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void DeriveKey_WhenUnitsRunOnThreads_ShouldMatchOpenSslCorpusRow(KdfKnownAnswer vector)
+    {
+        foreach (int bound in new[] { 2, 3, 4, -1 })
+        {
+            byte[] key = new byte[vector.OutputLength];
+            var options = new ScryptCore.MixOptions(bound, minimumParallelUnitBytes: 0, pool: CreatePool());
+
+            ScryptCore.DeriveKey(vector.Password, vector.Salt, vector.CostN, vector.BlockSizeR, vector.Parallelism, key, options);
+
+            Assert.AreEqual(vector.ExpectedHex, Convert.ToHexString(key).ToLowerInvariant(), $"bound {bound}");
+        }
+    }
+
+    /// <summary>
+    /// Verifies that a derivation divided among threads by default — sixteen units of 1 MiB, the threshold — produces
+    /// RFC 7914's key.
+    /// </summary>
+    [TestMethod]
+    public void DeriveKey_WhenUnitsReachTheParallelThreshold_ShouldMatchRfc7914Key()
+    {
+        string key = DeriveSecondRfc7914Key(new ScryptCore.MixOptions(4, pool: CreatePool()));
+
+        Assert.AreEqual(Rfc7914SecondKeyHex, key);
+    }
+
+    /// <summary>
+    /// Verifies that a derivation divided among threads returns each thread's workspace to the pool — never more than
+    /// the bound — and leaves every one of them all zero.
+    /// </summary>
+    [TestMethod]
+    public void DeriveKey_WhenUnitsRunOnThreads_ShouldReturnEveryWorkspaceAllZero()
+    {
+        NativeBufferPool pool = CreatePool(maxRetainedBuffers: 16);
+
+        _ = DeriveSecondRfc7914Key(new ScryptCore.MixOptions(4, pool: pool));
+
+        int retained = pool.RetainedCount;
+        Assert.IsTrue(retained is >= 1 and <= 4, $"retained {retained}");
+
+        var reused = new List<ScryptCore.Workspace>();
+        try
+        {
+            for (int i = 0; i < retained; i++)
+                reused.Add(ScryptCore.Workspace.Rent(1024, 32 * 8, pool));
+
+            foreach (ScryptCore.Workspace workspace in reused)
+            {
+                Assert.IsFalse(workspace.Chain.ContainsAnyExcept(0u));
+                Assert.IsFalse(workspace.Scratch.ContainsAnyExcept(0u));
+            }
+        }
+        finally
+        {
+            foreach (ScryptCore.Workspace workspace in reused)
+                workspace.Dispose();
+        }
     }
 }
