@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Buffers;
+
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
@@ -12,10 +14,16 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Polynomials are held as 256 <see cref="int" /> coefficients in [0, q) with q = 8380417; centered values are folded
-/// modulo q and re-centered at the packing boundaries and norm checks. Coefficient reductions use the C# remainder
-/// operator with the constant modulus, which the JIT lowers to multiply-and-shift sequences rather than data-dependent
-/// division.
+/// Polynomials are held as 256 <see cref="int" /> coefficients and vectors of them flat, polynomial i at offset 256i,
+/// in workspaces rented from <see cref="ArrayPool{T}.Shared" /> and cleared before they are returned. Between
+/// operations coefficients lie in [0, q) with q = 8380417; centered values are folded modulo q and re-centered at the
+/// packing boundaries and norm checks.
+/// </para>
+/// <para>
+/// Within the transforms and products, coefficients are reduced by Montgomery reduction and a Barrett-style reduction
+/// (see the Reduction partial): fixed sequences of multiplications, shifts and masks, never a division. Of the two
+/// factors in each coefficient-wise product, the one fixed for the whole operation — the matrix Â, ŝ₁, ŝ₂, t̂₀, or
+/// t̂₁·2ᵈ — is held in Montgomery form, so each product needs a single reduction and comes out exact.
 /// </para>
 /// <para>
 /// The number of rejection-loop restarts during signing is public by design (FIPS 204 §3.5); the per-iteration work is
@@ -29,6 +37,9 @@ internal static partial class MLDsaEngine
 
     /// <summary>The coefficient modulus q = 8380417.</summary>
     internal const int Q = 8380417;
+
+    /// <summary>2^13 · 2^64 mod q: <see cref="MontgomeryReduce" /> of a coefficient of t₁ times this is t₁ · 2ᵈ in Montgomery form.</summary>
+    private const long PowerOfTwoDMontgomery = 6346488;
 
     /// <summary>
     /// Runs ML-DSA.KeyGen_internal (FIPS 204 Algorithm 6) from the 32-byte seed ξ, producing the encoded key pair.
@@ -67,28 +78,40 @@ internal static partial class MLDsaEngine
         ReadOnlySpan<byte> rhoPrime = expanded.Slice(32, 64);
         ReadOnlySpan<byte> capK = expanded[96..];
 
-        int[][] s1 = SamplePolyVector(parameters, rhoPrime, l, 0);
-        int[][] s2 = SamplePolyVector(parameters, rhoPrime, k, l);
+        int length = ((2 * l) + (2 * k) + 1) * N;
+        int[] rented = ArrayPool<int>.Shared.Rent(length);
 
-        // t = NTT⁻¹(Â ∘ NTT(s₁)) + s₂.
-        int[][] s1Hat = ClonePolyVector(s1);
-        foreach (int[] poly in s1Hat)
-            Ntt(poly);
-
-        int[][] t = MultiplyMatrixVector(parameters, rho, s1Hat);
-        for (int i = 0; i < k; i++)
+        try
         {
-            InvNtt(t[i]);
-            AddInto(t[i], s2[i]);
+            Span<int> workspace = rented.AsSpan(0, length);
+            Span<int> s1 = workspace.Slice(0, l * N);
+            Span<int> s1Hat = workspace.Slice(l * N, l * N);
+            Span<int> s2 = workspace.Slice(2 * l * N, k * N);
+            Span<int> t = workspace.Slice(((2 * l) + k) * N, k * N);
+            Span<int> entry = workspace.Slice(((2 * l) + (2 * k)) * N, N);
+
+            SampleSecretVector(parameters, rhoPrime, 0, s1);
+            SampleSecretVector(parameters, rhoPrime, l, s2);
+
+            // t = NTT⁻¹(Â ∘ NTT(s₁)) + s₂, with ŝ₁ held in Montgomery form for the products.
+            s1.CopyTo(s1Hat);
+            ToNttMontgomery(s1Hat);
+            MultiplyMatrixVector(parameters, rho, s1Hat, t, entry);
+
+            for (int i = 0; i < k; i++)
+            {
+                Span<int> ti = t.Slice(i * N, N);
+                InvNtt(ti);
+                AddInto(ti, s2.Slice(i * N, N));
+            }
+
+            EncodeKeys(parameters, rho, capK, t, s1, s2, publicKey, privateKey);
         }
-
-        EncodeKeys(parameters, rho, capK, t, s1, s2, publicKey, privateKey);
-
-        CryptographyHelper.Clear(expanded);
-        ClearPolyVector(s1);
-        ClearPolyVector(s1Hat);
-        ClearPolyVector(s2);
-        ClearPolyVector(t);
+        finally
+        {
+            CryptographyHelper.Clear(expanded);
+            ReturnWorkspace(rented, length);
+        }
     }
 
     /// <summary>
@@ -118,146 +141,151 @@ internal static partial class MLDsaEngine
         int k = parameters.K;
         int l = parameters.L;
 
-        DecodePrivateKey(
-            parameters, privateKey,
-            out ReadOnlySpan<byte> rho, out ReadOnlySpan<byte> capK, out ReadOnlySpan<byte> tr, out int[][]? s1Hat, out int[][]? s2Hat, out int[][]? t0Hat);
+        // Â, ŝ₁, ŝ₂ and t̂₀, then y, ŷ, z, w, w₁, w − cs₂, the hints, c and one product.
+        int length = ((k * l) + (4 * l) + (6 * k) + 2) * N;
+        int[] rented = ArrayPool<int>.Shared.Rent(length);
 
-        // ŝ₁, ŝ₂, t̂₀ are kept in the NTT domain for the per-iteration products.
-        foreach (int[] poly in s1Hat)
-            Ntt(poly);
-        foreach (int[] poly in s2Hat)
-            Ntt(poly);
-        foreach (int[] poly in t0Hat)
-            Ntt(poly);
-
-        int[][][] matrix = ExpandA(parameters, rho);
-
-        // μ = H(tr ‖ M′, 64); ρ″ = H(K ‖ rnd ‖ μ, 64).
         Span<byte> mu = stackalloc byte[64];
-        ComputeMu(tr, context, message, mu);
-
         Span<byte> rhoDoublePrime = stackalloc byte[64];
-        var seedSponge = KeccakSponge.CreateShake256();
-        seedSponge.Absorb(capK);
-        seedSponge.Absorb(rnd);
-        seedSponge.Absorb(mu);
-        seedSponge.Squeeze(rhoDoublePrime);
-        seedSponge.Clear();
+        Span<byte> w1Encoded = stackalloc byte[32 * parameters.W1Bits * k];
 
-        int[][] y = CreatePolyVector(l);
-        int[][] w = CreatePolyVector(k);
-        int[][] w1 = CreatePolyVector(k);
-        int[][] z = CreatePolyVector(l);
-        int[][] wMinusCs2 = CreatePolyVector(k);
-        int[][] hints = CreatePolyVector(k);
-        int[] c = new int[N];
-        int[] product = new int[N];
-        Span<byte> commitmentHash = signature[..(parameters.Lambda / 4)];
-        byte[] w1Encoded = new byte[32 * parameters.W1Bits * k];
-
-        for (int kappa = 0; ; kappa += l)
+        try
         {
-            // y = ExpandMask(ρ″, κ); w = NTT⁻¹(Â ∘ NTT(y)); w₁ = HighBits(w).
-            for (int r = 0; r < l; r++)
-                ExpandMask(parameters, rhoDoublePrime, kappa + r, y[r]);
+            Span<int> workspace = rented.AsSpan(0, length);
+            Span<int> matrix = TakePolynomials(ref workspace, k * l);
+            Span<int> s1Hat = TakePolynomials(ref workspace, l);
+            Span<int> s2Hat = TakePolynomials(ref workspace, k);
+            Span<int> t0Hat = TakePolynomials(ref workspace, k);
+            Span<int> y = TakePolynomials(ref workspace, l);
+            Span<int> yHat = TakePolynomials(ref workspace, l);
+            Span<int> z = TakePolynomials(ref workspace, l);
+            Span<int> w = TakePolynomials(ref workspace, k);
+            Span<int> w1 = TakePolynomials(ref workspace, k);
+            Span<int> wMinusCs2 = TakePolynomials(ref workspace, k);
+            Span<int> hints = TakePolynomials(ref workspace, k);
+            Span<int> c = TakePolynomials(ref workspace, 1);
+            Span<int> product = TakePolynomials(ref workspace, 1);
 
-            int[][] yHat = ClonePolyVector(y);
-            foreach (int[] poly in yHat)
-                Ntt(poly);
+            DecodePrivateKey(
+                parameters, privateKey, out ReadOnlySpan<byte> rho, out ReadOnlySpan<byte> capK, out ReadOnlySpan<byte> tr, s1Hat, s2Hat, t0Hat);
 
-            for (int i = 0; i < k; i++)
+            // ŝ₁, ŝ₂, t̂₀ and Â are kept in the NTT domain, in Montgomery form, for the per-iteration products.
+            ToNttMontgomery(s1Hat);
+            ToNttMontgomery(s2Hat);
+            ToNttMontgomery(t0Hat);
+            ExpandMatrix(parameters, rho, matrix);
+
+            // μ = H(tr ‖ M′, 64); ρ″ = H(K ‖ rnd ‖ μ, 64).
+            ComputeMu(tr, context, message, mu);
+
+            var seedSponge = KeccakSponge.CreateShake256();
+            seedSponge.Absorb(capK);
+            seedSponge.Absorb(rnd);
+            seedSponge.Absorb(mu);
+            seedSponge.Squeeze(rhoDoublePrime);
+            seedSponge.Clear();
+
+            Span<byte> commitmentHash = signature[..(parameters.Lambda / 4)];
+
+            for (int kappa = 0; ; kappa += l)
             {
-                Array.Clear(w[i]);
-                for (int s = 0; s < l; s++)
+                // y = ExpandMask(ρ″, κ); w = NTT⁻¹(Â ∘ NTT(y)); w₁ = HighBits(w).
+                for (int r = 0; r < l; r++)
+                    ExpandMask(parameters, rhoDoublePrime, kappa + r, y.Slice(r * N, N));
+
+                y.CopyTo(yHat);
+                for (int r = 0; r < l; r++)
+                    Ntt(yHat.Slice(r * N, N));
+
+                for (int i = 0; i < k; i++)
                 {
-                    MultiplyNtt(matrix[i][s], yHat[s], product);
-                    AddInto(w[i], product);
+                    Span<int> wi = w.Slice(i * N, N);
+                    wi.Clear();
+                    for (int s = 0; s < l; s++)
+                        MultiplyAccumulateNtt(matrix.Slice(((i * l) + s) * N, N), yHat.Slice(s * N, N), wi);
+
+                    InvNtt(wi);
+                    for (int j = 0; j < N; j++)
+                        w1[(i * N) + j] = HighBits(parameters.Gamma2, wi[j]);
                 }
 
-                InvNtt(w[i]);
-                for (int j = 0; j < N; j++)
-                    w1[i][j] = HighBits(parameters.Gamma2, w[i][j]);
-            }
+                // c̃ = H(μ ‖ w1Encode(w₁), λ/4); c = SampleInBall(c̃); ĉ = NTT(c).
+                W1Encode(parameters, w1, w1Encoded);
+                KeccakSponge.Shake256(mu, w1Encoded, commitmentHash);
+                SampleInBall(parameters, commitmentHash, c);
+                Ntt(c);
 
-            ClearPolyVector(yHat);
+                // Each restart attempt computes z, r₀, and the hints in full and makes a single accept-or-restart
+                // decision at the end. The number of restarts is public by design (FIPS 204 §3.5), but the work within one
+                // attempt is kept independent of which check ultimately fails so a failed attempt is not distinguishable,
+                // by the work it performs, from any other.
+                bool rejected = false;
 
-            // c̃ = H(μ ‖ w1Encode(w₁), λ/4); c = SampleInBall(c̃); ĉ = NTT(c).
-            W1Encode(parameters, w1, w1Encoded);
-            KeccakSponge.Shake256(mu, w1Encoded, commitmentHash);
-            SampleInBall(parameters, commitmentHash, c);
-            Ntt(c);
-
-            // Each restart attempt computes z, r₀, and the hints in full and makes a single accept-or-restart decision
-            // at the end. The number of restarts is public by design (FIPS 204 §3.5), but the work within one attempt is
-            // kept independent of which check ultimately fails so a failed attempt is not distinguishable, by the work it
-            // performs, from any other.
-            bool rejected = false;
-
-            // z = y + NTT⁻¹(ĉ ∘ ŝ₁); reject when ‖z‖∞ ≥ γ₁ − β.
-            for (int r = 0; r < l; r++)
-            {
-                MultiplyNtt(c, s1Hat[r], product);
-                InvNtt(product);
-                for (int j = 0; j < N; j++)
-                    z[r][j] = (y[r][j] + product[j]) % Q;
-
-                rejected |= InfinityNorm(z[r]) >= parameters.Gamma1 - parameters.Beta;
-            }
-
-            // r₀ = LowBits(w − NTT⁻¹(ĉ ∘ ŝ₂)); reject when ‖r₀‖∞ ≥ γ₂ − β.
-            for (int i = 0; i < k; i++)
-            {
-                MultiplyNtt(c, s2Hat[i], product);
-                InvNtt(product);
-                for (int j = 0; j < N; j++)
-                    wMinusCs2[i][j] = (w[i][j] - product[j] + Q) % Q;
-
-                int lowNorm = 0;
-                for (int j = 0; j < N; j++)
+                // z = y + NTT⁻¹(ĉ ∘ ŝ₁); reject when ‖z‖∞ ≥ γ₁ − β.
+                for (int r = 0; r < l; r++)
                 {
-                    Decompose(parameters.Gamma2, wMinusCs2[i][j], out _, out int r0);
-                    lowNorm = Math.Max(lowNorm, Math.Abs(r0));
+                    MultiplyNtt(s1Hat.Slice(r * N, N), c, product);
+                    InvNtt(product);
+
+                    Span<int> zr = z.Slice(r * N, N);
+                    ReadOnlySpan<int> yr = y.Slice(r * N, N);
+                    for (int j = 0; j < N; j++)
+                        zr[j] = Canonicalize(yr[j] + product[j] - Q);
+
+                    rejected |= InfinityNorm(zr) >= parameters.Gamma1 - parameters.Beta;
                 }
 
-                rejected |= lowNorm >= parameters.Gamma2 - parameters.Beta;
-            }
-
-            // h = MakeHint(−⟨ĉ ∘ t̂₀⟩, w − cs₂ + ct₀); reject when ‖ct₀‖∞ ≥ γ₂ or the hint weight exceeds ω.
-            int hintWeight = 0;
-            for (int i = 0; i < k; i++)
-            {
-                MultiplyNtt(c, t0Hat[i], product);
-                InvNtt(product);
-
-                rejected |= InfinityNorm(product) >= parameters.Gamma2;
-
-                for (int j = 0; j < N; j++)
+                // r₀ = LowBits(w − NTT⁻¹(ĉ ∘ ŝ₂)); reject when ‖r₀‖∞ ≥ γ₂ − β.
+                for (int i = 0; i < k; i++)
                 {
-                    int negated = (Q - product[j]) % Q;
-                    int basis = (wMinusCs2[i][j] + product[j]) % Q;
-                    hints[i][j] = MakeHint(parameters.Gamma2, negated, basis);
-                    hintWeight += hints[i][j];
+                    MultiplyNtt(s2Hat.Slice(i * N, N), c, product);
+                    InvNtt(product);
+
+                    Span<int> ri = wMinusCs2.Slice(i * N, N);
+                    ReadOnlySpan<int> wi = w.Slice(i * N, N);
+                    int lowNorm = 0;
+                    for (int j = 0; j < N; j++)
+                    {
+                        ri[j] = Canonicalize(wi[j] - product[j]);
+                        Decompose(parameters.Gamma2, ri[j], out _, out int r0);
+                        lowNorm = Math.Max(lowNorm, Math.Abs(r0));
+                    }
+
+                    rejected |= lowNorm >= parameters.Gamma2 - parameters.Beta;
                 }
+
+                // h = MakeHint(−⟨ĉ ∘ t̂₀⟩, w − cs₂ + ct₀); reject when ‖ct₀‖∞ ≥ γ₂ or the hint weight exceeds ω.
+                int hintWeight = 0;
+                for (int i = 0; i < k; i++)
+                {
+                    MultiplyNtt(t0Hat.Slice(i * N, N), c, product);
+                    InvNtt(product);
+
+                    rejected |= InfinityNorm(product) >= parameters.Gamma2;
+
+                    for (int j = 0; j < N; j++)
+                    {
+                        int negated = Canonicalize(-product[j]);
+                        int basis = Canonicalize(wMinusCs2[(i * N) + j] + product[j] - Q);
+                        int hint = MakeHint(parameters.Gamma2, negated, basis);
+                        hints[(i * N) + j] = hint;
+                        hintWeight += hint;
+                    }
+                }
+
+                if (rejected || hintWeight > parameters.Omega)
+                    continue;
+
+                EncodeSignature(parameters, z, hints, signature);
+                break;
             }
-
-            if (rejected || hintWeight > parameters.Omega)
-                continue;
-
-            EncodeSignature(parameters, z, hints, signature);
-            break;
         }
-
-        CryptographyHelper.Clear(rhoDoublePrime);
-        CryptographyHelper.Clear(mu);
-        CryptographyHelper.Clear(c);
-        CryptographyHelper.Clear(product);
-        ClearPolyVector(s1Hat);
-        ClearPolyVector(s2Hat);
-        ClearPolyVector(t0Hat);
-        ClearPolyVector(y);
-        ClearPolyVector(z);
-        ClearPolyVector(w);
-        ClearPolyVector(wMinusCs2);
+        finally
+        {
+            CryptographyHelper.Clear(rhoDoublePrime);
+            CryptographyHelper.Clear(mu);
+            ReturnWorkspace(rented, length);
+        }
     }
 
     /// <summary>
@@ -294,75 +322,89 @@ internal static partial class MLDsaEngine
         ReadOnlySpan<byte> zPacked = signature.Slice(parameters.Lambda / 4, l * zBytes);
         ReadOnlySpan<byte> hintPacked = signature[((parameters.Lambda / 4) + (l * zBytes))..];
 
-        // Decode z and reject ‖z‖∞ ≥ γ₁ − β; reject non-canonical hint encodings.
-        int[][] z = CreatePolyVector(l);
-        for (int r = 0; r < l; r++)
-        {
-            BitUnpackSigned(parameters.Gamma1Bits, parameters.Gamma1, zPacked.Slice(r * zBytes, zBytes), z[r]);
-            if (InfinityNorm(z[r]) >= parameters.Gamma1 - parameters.Beta)
-                return false;
-        }
+        // Â, then z, the hints, w₁, c, t₁, w and one product.
+        int length = ((k * l) + l + (2 * k) + 4) * N;
+        int[] rented = ArrayPool<int>.Shared.Rent(length);
 
-        int[][] hints = CreatePolyVector(k);
-        if (!TryHintBitUnpack(parameters, hintPacked, hints))
-            return false;
-
-        // μ = H(H(pk, 64) ‖ M′, 64).
         Span<byte> tr = stackalloc byte[64];
-        var trSponge = KeccakSponge.CreateShake256();
-        trSponge.Absorb(publicKey);
-        trSponge.Squeeze(tr);
-        trSponge.Clear();
-
         Span<byte> mu = stackalloc byte[64];
-        ComputeMu(tr, context, message, mu);
+        Span<byte> expectedHash = stackalloc byte[64];
+        Span<byte> w1Encoded = stackalloc byte[32 * parameters.W1Bits * k];
 
-        int[] c = new int[N];
-        SampleInBall(parameters, commitmentHash, c);
-        Ntt(c);
-
-        foreach (int[] poly in z)
-            Ntt(poly);
-
-        int[][][] matrix = ExpandA(parameters, rho);
-
-        // w′ ≈ NTT⁻¹(Â ∘ ẑ − ĉ ∘ NTT(t₁·2ᵈ)); w₁′ = UseHint(h, w′).
-        int[] t1 = new int[N];
-        int[] w = new int[N];
-        int[] product = new int[N];
-        int[][] w1 = CreatePolyVector(k);
-
-        for (int i = 0; i < k; i++)
+        try
         {
-            Array.Clear(w);
-            for (int s = 0; s < l; s++)
+            Span<int> workspace = rented.AsSpan(0, length);
+            Span<int> matrix = TakePolynomials(ref workspace, k * l);
+            Span<int> z = TakePolynomials(ref workspace, l);
+            Span<int> hints = TakePolynomials(ref workspace, k);
+            Span<int> w1 = TakePolynomials(ref workspace, k);
+            Span<int> c = TakePolynomials(ref workspace, 1);
+            Span<int> t1 = TakePolynomials(ref workspace, 1);
+            Span<int> w = TakePolynomials(ref workspace, 1);
+            Span<int> product = TakePolynomials(ref workspace, 1);
+
+            // Decode z and reject ‖z‖∞ ≥ γ₁ − β; reject non-canonical hint encodings.
+            for (int r = 0; r < l; r++)
             {
-                MultiplyNtt(matrix[i][s], z[s], product);
-                AddInto(w, product);
+                Span<int> zr = z.Slice(r * N, N);
+                BitUnpackSigned(parameters.Gamma1Bits, parameters.Gamma1, zPacked.Slice(r * zBytes, zBytes), zr);
+                if (InfinityNorm(zr) >= parameters.Gamma1 - parameters.Beta)
+                    return false;
             }
 
-            SimpleBitUnpack(10, publicKey.Slice(32 + (i * 320), 320), t1);
-            for (int j = 0; j < N; j++)
-                t1[j] = (int)(((long)t1[j] << D) % Q);
+            if (!TryHintBitUnpack(parameters, hintPacked, hints))
+                return false;
 
-            Ntt(t1);
-            MultiplyNtt(c, t1, product);
-            SubtractFrom(w, product);
-            InvNtt(w);
+            // μ = H(H(pk, 64) ‖ M′, 64).
+            var trSponge = KeccakSponge.CreateShake256();
+            trSponge.Absorb(publicKey);
+            trSponge.Squeeze(tr);
+            trSponge.Clear();
 
-            for (int j = 0; j < N; j++)
-                w1[i][j] = UseHint(parameters.Gamma2, hints[i][j], w[j]);
+            ComputeMu(tr, context, message, mu);
+
+            SampleInBall(parameters, commitmentHash, c);
+            Ntt(c);
+
+            for (int r = 0; r < l; r++)
+                Ntt(z.Slice(r * N, N));
+
+            ExpandMatrix(parameters, rho, matrix);
+
+            // w′ ≈ NTT⁻¹(Â ∘ ẑ − ĉ ∘ NTT(t₁·2ᵈ)); w₁′ = UseHint(h, w′). t₁·2ᵈ is formed in Montgomery form, so its
+            // transform multiplies ĉ exactly.
+            for (int i = 0; i < k; i++)
+            {
+                w.Clear();
+                for (int s = 0; s < l; s++)
+                    MultiplyAccumulateNtt(matrix.Slice(((i * l) + s) * N, N), z.Slice(s * N, N), w);
+
+                SimpleBitUnpack(10, publicKey.Slice(32 + (i * 320), 320), t1);
+                for (int j = 0; j < N; j++)
+                    t1[j] = MontgomeryReduce(t1[j] * PowerOfTwoDMontgomery);
+
+                Ntt(t1);
+                MultiplyNtt(t1, c, product);
+                for (int j = 0; j < N; j++)
+                    w[j] -= product[j];
+
+                InvNtt(w);
+
+                for (int j = 0; j < N; j++)
+                    w1[(i * N) + j] = UseHint(parameters.Gamma2, hints[(i * N) + j], w[j]);
+            }
+
+            // Valid iff c̃ = H(μ ‖ w1Encode(w₁′), λ/4).
+            W1Encode(parameters, w1, w1Encoded);
+            KeccakSponge.Shake256(mu, w1Encoded, expectedHash[..(parameters.Lambda / 4)]);
+
+            return System.Security.Cryptography.CryptographicOperations.FixedTimeEquals(
+                commitmentHash, expectedHash[..(parameters.Lambda / 4)]);
         }
-
-        // Valid iff c̃ = H(μ ‖ w1Encode(w₁′), λ/4).
-        byte[] w1Encoded = new byte[32 * parameters.W1Bits * k];
-        W1Encode(parameters, w1, w1Encoded);
-
-        Span<byte> expectedHash = stackalloc byte[64];
-        KeccakSponge.Shake256(mu, w1Encoded, expectedHash[..(parameters.Lambda / 4)]);
-
-        return System.Security.Cryptography.CryptographicOperations.FixedTimeEquals(
-            commitmentHash, expectedHash[..(parameters.Lambda / 4)]);
+        finally
+        {
+            ReturnWorkspace(rented, length);
+        }
     }
 
     /// <summary>
@@ -383,59 +425,97 @@ internal static partial class MLDsaEngine
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(publicKey, parameters.PublicKeySize);
 
         int k = parameters.K;
+        int l = parameters.L;
 
-        // s₁/s₂ are rejected here when packed outside [−η, η]; t₀ spans the full d-bit range, so it is validated below
-        // by comparing the decoded low bits against those recomputed from s₁/s₂.
-        bool valid = DecodePrivateKey(
-            parameters, privateKey,
-            out ReadOnlySpan<byte> rho, out _, out ReadOnlySpan<byte> tr, out int[][]? s1, out int[][]? s2, out int[][]? t0);
-
-        // t = NTT⁻¹(Â ∘ NTT(s₁)) + s₂ = t₁·2ᵈ + t₀; rebuild t₁ and the pk encoding from it.
-        int[][] s1Hat = ClonePolyVector(s1);
-        foreach (int[] poly in s1Hat)
-            Ntt(poly);
-
-        int[][] t = MultiplyMatrixVector(parameters, rho, s1Hat);
-        int[] t1 = new int[N];
-        rho.CopyTo(publicKey[..32]);
-
-        bool t0Matches = true;
-        for (int i = 0; i < k; i++)
-        {
-            InvNtt(t[i]);
-            AddInto(t[i], s2[i]);
-
-            for (int j = 0; j < N; j++)
-            {
-                Power2Round(t[i][j], out t1[j], out int recomputedT0);
-
-                // The encoded t₀ stores the centered low bits folded into [0, q); unfold before comparing. The scan has
-                // no early exit so a corrupted coefficient is not revealed by timing.
-                int decodedT0 = t0[i][j];
-                if (decodedT0 > (Q - 1) / 2)
-                    decodedT0 -= Q;
-
-                t0Matches &= decodedT0 == recomputedT0;
-            }
-
-            SimpleBitPack(10, t1, publicKey.Slice(32 + (i * 320), 320));
-        }
+        // s₁, ŝ₁, s₂, t₀, t, one matrix entry and t₁.
+        int length = ((2 * l) + (3 * k) + 2) * N;
+        int[] rented = ArrayPool<int>.Shared.Rent(length);
 
         Span<byte> actualTr = stackalloc byte[64];
-        var trSponge = KeccakSponge.CreateShake256();
-        trSponge.Absorb(publicKey);
-        trSponge.Squeeze(actualTr);
-        trSponge.Clear();
 
-        bool matches = System.Security.Cryptography.CryptographicOperations.FixedTimeEquals(tr, actualTr);
+        try
+        {
+            Span<int> workspace = rented.AsSpan(0, length);
+            Span<int> s1 = TakePolynomials(ref workspace, l);
+            Span<int> s1Hat = TakePolynomials(ref workspace, l);
+            Span<int> s2 = TakePolynomials(ref workspace, k);
+            Span<int> t0 = TakePolynomials(ref workspace, k);
+            Span<int> t = TakePolynomials(ref workspace, k);
+            Span<int> entry = TakePolynomials(ref workspace, 1);
+            Span<int> t1 = TakePolynomials(ref workspace, 1);
 
-        ClearPolyVector(s1);
-        ClearPolyVector(s1Hat);
-        ClearPolyVector(s2);
-        ClearPolyVector(t0);
-        ClearPolyVector(t);
+            // s₁/s₂ are rejected here when packed outside [−η, η]; t₀ spans the full d-bit range, so it is validated
+            // below by comparing the decoded low bits against those recomputed from s₁/s₂.
+            bool valid = DecodePrivateKey(
+                parameters, privateKey, out ReadOnlySpan<byte> rho, out _, out ReadOnlySpan<byte> tr, s1, s2, t0);
 
-        return valid & t0Matches & matches;
+            // t = NTT⁻¹(Â ∘ NTT(s₁)) + s₂ = t₁·2ᵈ + t₀; rebuild t₁ and the pk encoding from it.
+            s1.CopyTo(s1Hat);
+            ToNttMontgomery(s1Hat);
+            MultiplyMatrixVector(parameters, rho, s1Hat, t, entry);
+            rho.CopyTo(publicKey[..32]);
+
+            bool t0Matches = true;
+            for (int i = 0; i < k; i++)
+            {
+                Span<int> ti = t.Slice(i * N, N);
+                InvNtt(ti);
+                AddInto(ti, s2.Slice(i * N, N));
+
+                for (int j = 0; j < N; j++)
+                {
+                    Power2Round(ti[j], out t1[j], out int recomputedT0);
+
+                    // The encoded t₀ stores the centered low bits folded into [0, q); unfold before comparing, through a
+                    // mask rather than a branch. The scan has no early exit so a corrupted coefficient is not revealed
+                    // by timing.
+                    int decodedT0 = t0[(i * N) + j];
+                    decodedT0 -= Q & ((((Q - 1) / 2) - decodedT0) >> 31);
+
+                    t0Matches &= decodedT0 == recomputedT0;
+                }
+
+                SimpleBitPack(10, t1, publicKey.Slice(32 + (i * 320), 320));
+            }
+
+            var trSponge = KeccakSponge.CreateShake256();
+            trSponge.Absorb(publicKey);
+            trSponge.Squeeze(actualTr);
+            trSponge.Clear();
+
+            bool matches = System.Security.Cryptography.CryptographicOperations.FixedTimeEquals(tr, actualTr);
+
+            return valid & t0Matches & matches;
+        }
+        finally
+        {
+            ReturnWorkspace(rented, length);
+        }
+    }
+
+    /// <summary>
+    /// Expands the public matrix Â from ρ (FIPS 204 Algorithm 32 / ExpandA), in Montgomery form.
+    /// </summary>
+    /// <param name="parameters">The parameter set.</param>
+    /// <param name="rho">The 32-byte matrix seed.</param>
+    /// <param name="matrix">
+    /// The span receiving the k·ℓ NTT-domain polynomials in Montgomery form, entry (r, s) at offset (r·ℓ + s)·256.
+    /// </param>
+    /// <exception cref="ArgumentException">A span does not have its exact required length.</exception>
+    internal static void ExpandMatrix(MLDsaParameters parameters, ReadOnlySpan<byte> rho, Span<int> matrix)
+    {
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(rho, 32);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(matrix, parameters.K * parameters.L * N);
+
+        for (int r = 0; r < parameters.K; r++)
+        {
+            for (int s = 0; s < parameters.L; s++)
+            {
+                Span<int> entry = matrix.Slice(((r * parameters.L) + s) * N, N);
+                RejNttPoly(rho, (byte)s, (byte)r, entry);
+                ToMontgomery(entry);
+            }
+        }
     }
 
     /// <summary>
@@ -462,51 +542,45 @@ internal static partial class MLDsaEngine
     }
 
     /// <summary>
-    /// Expands the public matrix Â from ρ (FIPS 204 Algorithm 32 / ExpandA).
+    /// Computes Â ∘ v̂ for an NTT-domain vector in Montgomery form, sampling each entry of Â as it is needed.
     /// </summary>
     /// <param name="parameters">The parameter set.</param>
     /// <param name="rho">The 32-byte matrix seed.</param>
-    /// <returns>The k×ℓ matrix of NTT-domain polynomials.</returns>
-    private static int[][][] ExpandA(MLDsaParameters parameters, ReadOnlySpan<byte> rho)
+    /// <param name="montgomeryVector">The ℓ NTT-domain polynomials, in Montgomery form.</param>
+    /// <param name="result">The span receiving the k unreduced NTT-domain products.</param>
+    /// <param name="entry">Scratch for one entry of Â.</param>
+    private static void MultiplyMatrixVector(
+        MLDsaParameters parameters,
+        ReadOnlySpan<byte> rho,
+        ReadOnlySpan<int> montgomeryVector,
+        Span<int> result,
+        Span<int> entry)
     {
-        int[][][] matrix = new int[parameters.K][][];
-        for (int r = 0; r < parameters.K; r++)
+        for (int i = 0; i < parameters.K; i++)
         {
-            matrix[r] = new int[parameters.L][];
+            Span<int> ri = result.Slice(i * N, N);
+            ri.Clear();
+
             for (int s = 0; s < parameters.L; s++)
             {
-                matrix[r][s] = new int[N];
-                RejNttPoly(rho, (byte)s, (byte)r, matrix[r][s]);
+                RejNttPoly(rho, (byte)s, (byte)i, entry);
+                MultiplyAccumulateNtt(montgomeryVector.Slice(s * N, N), entry, ri);
             }
         }
-
-        return matrix;
     }
 
     /// <summary>
-    /// Computes Â ∘ v̂ for an NTT-domain vector, returning the k accumulated NTT-domain products.
+    /// Transforms each polynomial of a vector to the NTT domain and converts it to Montgomery form, in place.
     /// </summary>
-    /// <param name="parameters">The parameter set.</param>
-    /// <param name="rho">The 32-byte matrix seed.</param>
-    /// <param name="vectorHat">The ℓ NTT-domain polynomials.</param>
-    /// <returns>The k NTT-domain result polynomials.</returns>
-    private static int[][] MultiplyMatrixVector(MLDsaParameters parameters, ReadOnlySpan<byte> rho, int[][] vectorHat)
+    /// <param name="vector">The polynomials, coefficients in [0, q).</param>
+    private static void ToNttMontgomery(Span<int> vector)
     {
-        int[][] result = CreatePolyVector(parameters.K);
-        int[] row = new int[N];
-        int[] product = new int[N];
-
-        for (int i = 0; i < parameters.K; i++)
+        for (int offset = 0; offset < vector.Length; offset += N)
         {
-            for (int s = 0; s < parameters.L; s++)
-            {
-                RejNttPoly(rho, (byte)s, (byte)i, row);
-                MultiplyNtt(row, vectorHat[s], product);
-                AddInto(result[i], product);
-            }
+            Span<int> poly = vector.Slice(offset, N);
+            Ntt(poly);
+            ToMontgomery(poly);
         }
-
-        return result;
     }
 
     /// <summary>
@@ -514,16 +588,14 @@ internal static partial class MLDsaEngine
     /// </summary>
     /// <param name="parameters">The parameter set.</param>
     /// <param name="rhoPrime">The 64-byte secret expansion seed.</param>
-    /// <param name="count">The number of polynomials to sample.</param>
     /// <param name="nonceBase">The starting nonce (0 for s₁, ℓ for s₂).</param>
-    /// <returns>The sampled polynomials with centered coefficients folded into [0, q).</returns>
-    private static int[][] SamplePolyVector(MLDsaParameters parameters, ReadOnlySpan<byte> rhoPrime, int count, int nonceBase)
+    /// <param name="vector">
+    /// The span receiving the polynomials, centered coefficients folded into [0, q); its length fixes their number.
+    /// </param>
+    private static void SampleSecretVector(MLDsaParameters parameters, ReadOnlySpan<byte> rhoPrime, int nonceBase, Span<int> vector)
     {
-        int[][] vector = CreatePolyVector(count);
-        for (int r = 0; r < count; r++)
-            RejBoundedPoly(parameters.Eta, rhoPrime, nonceBase + r, vector[r]);
-
-        return vector;
+        for (int r = 0; r < vector.Length / N; r++)
+            RejBoundedPoly(parameters.Eta, rhoPrime, nonceBase + r, vector.Slice(r * N, N));
     }
 
     /// <summary>
@@ -541,9 +613,9 @@ internal static partial class MLDsaEngine
         MLDsaParameters parameters,
         ReadOnlySpan<byte> rho,
         ReadOnlySpan<byte> capK,
-        int[][] t,
-        int[][] s1,
-        int[][] s2,
+        ReadOnlySpan<int> t,
+        ReadOnlySpan<int> s1,
+        ReadOnlySpan<int> s2,
         Span<byte> publicKey,
         Span<byte> privateKey)
     {
@@ -551,8 +623,8 @@ internal static partial class MLDsaEngine
         int l = parameters.L;
         int etaBytes = 32 * parameters.EtaBits;
 
-        int[] t1 = new int[N];
-        int[] t0 = new int[N];
+        Span<int> t1 = stackalloc int[N];
+        Span<int> t0 = stackalloc int[N];
 
         rho.CopyTo(publicKey[..32]);
         rho.CopyTo(privateKey[..32]);
@@ -563,8 +635,8 @@ internal static partial class MLDsaEngine
         {
             for (int j = 0; j < N; j++)
             {
-                Power2Round(t[i][j], out t1[j], out int low);
-                t0[j] = (low + Q) % Q;
+                Power2Round(t[(i * N) + j], out t1[j], out int low);
+                t0[j] = Canonicalize(low);
             }
 
             SimpleBitPack(10, t1, publicKey.Slice(32 + (i * 320), 320));
@@ -572,10 +644,10 @@ internal static partial class MLDsaEngine
         }
 
         for (int r = 0; r < l; r++)
-            BitPackSigned(parameters.EtaBits, parameters.Eta, s1[r], privateKey.Slice(128 + (r * etaBytes), etaBytes));
+            BitPackSigned(parameters.EtaBits, parameters.Eta, s1.Slice(r * N, N), privateKey.Slice(128 + (r * etaBytes), etaBytes));
 
         for (int r = 0; r < k; r++)
-            BitPackSigned(parameters.EtaBits, parameters.Eta, s2[r], privateKey.Slice(128 + ((l + r) * etaBytes), etaBytes));
+            BitPackSigned(parameters.EtaBits, parameters.Eta, s2.Slice(r * N, N), privateKey.Slice(128 + ((l + r) * etaBytes), etaBytes));
 
         // tr = H(pk, 64) is stored inside the private key for the signing digest.
         Span<byte> tr = privateKey.Slice(64, 64);
@@ -595,9 +667,9 @@ internal static partial class MLDsaEngine
     /// <param name="rho">Receives the 32-byte matrix seed slice.</param>
     /// <param name="capK">Receives the 32-byte signing seed slice.</param>
     /// <param name="tr">Receives the 64-byte public-key hash slice.</param>
-    /// <param name="s1">Receives the ℓ decoded s₁ polynomials.</param>
-    /// <param name="s2">Receives the k decoded s₂ polynomials.</param>
-    /// <param name="t0">Receives the k decoded t₀ polynomials.</param>
+    /// <param name="s1">The span receiving the ℓ decoded s₁ polynomials.</param>
+    /// <param name="s2">The span receiving the k decoded s₂ polynomials.</param>
+    /// <param name="t0">The span receiving the k decoded t₀ polynomials.</param>
     /// <returns>
     /// <see langword="true" /> when every s₁/s₂ coefficient is packed within its canonical [−η, η] range; otherwise,
     /// <see langword="false" />. The t₀ packing spans the full d-bit range, so its consistency is validated separately
@@ -609,9 +681,9 @@ internal static partial class MLDsaEngine
         out ReadOnlySpan<byte> rho,
         out ReadOnlySpan<byte> capK,
         out ReadOnlySpan<byte> tr,
-        out int[][] s1,
-        out int[][] s2,
-        out int[][] t0)
+        Span<int> s1,
+        Span<int> s2,
+        Span<int> t0)
     {
         int k = parameters.K;
         int l = parameters.L;
@@ -624,18 +696,15 @@ internal static partial class MLDsaEngine
 
         bool valid = true;
 
-        s1 = CreatePolyVector(l);
         for (int r = 0; r < l; r++)
-            valid &= TryBitUnpackSigned(parameters.EtaBits, parameters.Eta, maxEncoded, privateKey.Slice(128 + (r * etaBytes), etaBytes), s1[r]);
+            valid &= TryBitUnpackSigned(parameters.EtaBits, parameters.Eta, maxEncoded, privateKey.Slice(128 + (r * etaBytes), etaBytes), s1.Slice(r * N, N));
 
-        s2 = CreatePolyVector(k);
         for (int r = 0; r < k; r++)
-            valid &= TryBitUnpackSigned(parameters.EtaBits, parameters.Eta, maxEncoded, privateKey.Slice(128 + ((l + r) * etaBytes), etaBytes), s2[r]);
+            valid &= TryBitUnpackSigned(parameters.EtaBits, parameters.Eta, maxEncoded, privateKey.Slice(128 + ((l + r) * etaBytes), etaBytes), s2.Slice(r * N, N));
 
-        t0 = CreatePolyVector(k);
         ReadOnlySpan<byte> t0Section = privateKey[(128 + ((k + l) * etaBytes))..];
         for (int r = 0; r < k; r++)
-            BitUnpackSigned(13, 1 << (D - 1), t0Section.Slice(r * 32 * 13, 32 * 13), t0[r]);
+            BitUnpackSigned(13, 1 << (D - 1), t0Section.Slice(r * 32 * 13, 32 * 13), t0.Slice(r * N, N));
 
         return valid;
     }
@@ -648,52 +717,39 @@ internal static partial class MLDsaEngine
     /// <param name="z">The ℓ response polynomials.</param>
     /// <param name="hints">The k hint polynomials.</param>
     /// <param name="signature">The full signature buffer; the commitment hash occupies its first λ/4 bytes.</param>
-    private static void EncodeSignature(MLDsaParameters parameters, int[][] z, int[][] hints, Span<byte> signature)
+    private static void EncodeSignature(MLDsaParameters parameters, ReadOnlySpan<int> z, ReadOnlySpan<int> hints, Span<byte> signature)
     {
         int zBytes = 32 * parameters.Gamma1Bits;
         Span<byte> zSection = signature.Slice(parameters.Lambda / 4, parameters.L * zBytes);
 
         for (int r = 0; r < parameters.L; r++)
-            BitPackSigned(parameters.Gamma1Bits, parameters.Gamma1, z[r], zSection.Slice(r * zBytes, zBytes));
+            BitPackSigned(parameters.Gamma1Bits, parameters.Gamma1, z.Slice(r * N, N), zSection.Slice(r * zBytes, zBytes));
 
         HintBitPack(parameters, hints, signature[((parameters.Lambda / 4) + (parameters.L * zBytes))..]);
     }
 
     /// <summary>
-    /// Allocates a vector of zeroed 256-coefficient polynomials.
+    /// Takes the next <paramref name="count" /> polynomials from the front of a workspace, advancing it past them.
     /// </summary>
-    /// <param name="count">The number of polynomials.</param>
-    /// <returns>The allocated vector.</returns>
-    private static int[][] CreatePolyVector(int count)
+    /// <param name="workspace">The remaining workspace, advanced past the polynomials taken.</param>
+    /// <param name="count">The number of 256-coefficient polynomials to take.</param>
+    /// <returns>The polynomials taken.</returns>
+    private static Span<int> TakePolynomials(ref Span<int> workspace, int count)
     {
-        int[][] vector = new int[count][];
-        for (int i = 0; i < count; i++)
-            vector[i] = new int[N];
-
-        return vector;
+        int length = count * N;
+        Span<int> taken = workspace[..length];
+        workspace = workspace[length..];
+        return taken;
     }
 
     /// <summary>
-    /// Deep-copies a polynomial vector.
+    /// Clears the used part of a rented workspace, which holds secret-derived values, and returns it to the pool.
     /// </summary>
-    /// <param name="source">The vector to copy.</param>
-    /// <returns>The copy.</returns>
-    private static int[][] ClonePolyVector(int[][] source)
+    /// <param name="rented">The array rented from <see cref="ArrayPool{T}.Shared" />.</param>
+    /// <param name="length">The number of leading elements that were used.</param>
+    private static void ReturnWorkspace(int[] rented, int length)
     {
-        int[][] copy = new int[source.Length][];
-        for (int i = 0; i < source.Length; i++)
-            copy[i] = (int[])source[i].Clone();
-
-        return copy;
-    }
-
-    /// <summary>
-    /// Zeroes every polynomial of a vector holding secret-derived values.
-    /// </summary>
-    /// <param name="vector">The vector to clear.</param>
-    private static void ClearPolyVector(int[][] vector)
-    {
-        foreach (int[] poly in vector)
-            CryptographyHelper.Clear(poly);
+        CryptographyHelper.Clear(rented.AsSpan(0, length));
+        ArrayPool<int>.Shared.Return(rented);
     }
 }

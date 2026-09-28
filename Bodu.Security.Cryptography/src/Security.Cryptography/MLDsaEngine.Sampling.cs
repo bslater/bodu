@@ -106,13 +106,13 @@ internal static partial class MLDsaEngine
     {
         if (eta == 2 && halfByte < 15)
         {
-            coefficient = ((2 - (halfByte % 5)) + Q) % Q;
+            coefficient = Canonicalize(2 - (halfByte % 5));
             return true;
         }
 
         if (eta == 4 && halfByte < 9)
         {
-            coefficient = ((4 - halfByte) + Q) % Q;
+            coefficient = Canonicalize(4 - halfByte);
             return true;
         }
 
