@@ -57,7 +57,7 @@ namespace Bodu.Security.Cryptography;
 /// </example>
 /// <seealso cref="Serpent128"/>
 public sealed class Serpent128Cipher
-    : SerpentBlockCipherBase
+    : SerpentBlockCipherBase, IBlockCipher
 {
     /// <summary>Length of the Serpent block is 128 bits (16 bytes). Internal constant kept for span-length validation; callers should read <see cref="BlockSize" /> instead.</summary>
     private const int BlockSizeBits = 128;
@@ -133,6 +133,46 @@ public sealed class Serpent128Cipher
         }
 
         SerpentCore.DecryptBlock(_roundKeys, input, output);
+    }
+
+    /// <inheritdoc />
+    /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="input" /> is not a whole number of blocks, or <paramref name="output" /> is shorter than
+    /// <paramref name="input" />.
+    /// </exception>
+    /// <remarks>
+    /// Encrypts eight blocks at a time over 256-bit vectors, and four over 128-bit vectors, where the processor offers
+    /// them, one block to each lane; the rest go one at a time. <paramref name="output" /> may be the same memory as
+    /// <paramref name="input" />.
+    /// </remarks>
+    void IBlockCipher.EncryptBlocks(ReadOnlySpan<byte> input, Span<byte> output)
+    {
+        ThrowIfDisposed();
+        CryptographyThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf(input, BlockSizeBits / 8, throwIfZero: false);
+        ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, input.Length);
+
+        SerpentCore.EncryptBlocks(_roundKeys, input, output);
+    }
+
+    /// <inheritdoc />
+    /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="input" /> is not a whole number of blocks, or <paramref name="output" /> is shorter than
+    /// <paramref name="input" />.
+    /// </exception>
+    /// <remarks>
+    /// Decrypts eight or four blocks at a time where the processor offers the vectors, as
+    /// <see cref="IBlockCipher.EncryptBlocks" /> encrypts them. <paramref name="output" /> may be the same memory as
+    /// <paramref name="input" />.
+    /// </remarks>
+    void IBlockCipher.DecryptBlocks(ReadOnlySpan<byte> input, Span<byte> output)
+    {
+        ThrowIfDisposed();
+        CryptographyThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf(input, BlockSizeBits / 8, throwIfZero: false);
+        ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, input.Length);
+
+        SerpentCore.DecryptBlocks(_roundKeys, input, output);
     }
 
     /// <inheritdoc />

@@ -45,6 +45,8 @@ keyed.Encrypt(Convert.FromHexString("33B3DC87EDDD9B0F6A1F407D14919365"), ciphert
 
 An engine validates lengths strictly: a key that is not 16, 24, or 32 bytes throws `ArgumentException` (`key`), and `Encrypt` / `Decrypt` throw `ArgumentException` unless both spans are exactly 16 bytes.
 
+Runs of independent blocks go faster through `IBlockCipher.EncryptBlocks` / `DecryptBlocks`, which the ECB, CTR, XTS and OCB modes already use: `Serpent128Cipher` processes eight or four blocks at once there on processors with vector instructions (see [Hardware acceleration](hardware-acceleration.md)), and one at a time elsewhere, with identical output.
+
 ## Pattern 2 — Serpent-128 through the wrapper
 
 `Serpent128` behaves like every other <xref:Bodu.Security.Cryptography.ExtendedSymmetricAlgorithm>: set `Key`, `IV`, `BlockMode`, and `Padding`, then use `CreateEncryptor` / `CryptoStream` or the one-shot extensions. `Serpent128.Create()` is the factory-style equivalent of `new Serpent128()`. The default key size is 128 bits; set `KeySize` **before** assigning or generating a longer key.

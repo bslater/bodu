@@ -44,7 +44,7 @@ What is **not** covered: arrays you allocate and hand to the library (`byte[] ke
 
 ## SIMD determinism and the `DisableSimd` switch
 
-BLAKE2b, BLAKE2s, BLAKE3, ChaCha20, Salsa20, Threefish-256/512/1024, and CubeHash carry AVX-512 kernels; BLAKE2, BLAKE3, ChaCha20, Salsa20, Argon2, and scrypt also carry AVX2, SSSE3 or SSE2, and ARM64 AdvSimd kernels; GHASH and POLYVAL in GCM / GCM-SIV have PCLMULQDQ and PMULL paths. All of them produce **bit-identical output** to their scalar reference — the switch exists for reproducibility and audit, not safety. The feature switch `Bodu.Security.Cryptography.DisableSimd` forces the scalar path for the whole process:
+BLAKE2b, BLAKE2s, BLAKE3, ChaCha20, Salsa20, Serpent-128, Threefish-256/512/1024, and CubeHash carry AVX-512 kernels; BLAKE2, BLAKE3, ChaCha20, Salsa20, Serpent-128, Argon2, and scrypt also carry AVX2, SSSE3 or SSE2, and ARM64 AdvSimd kernels; GHASH and POLYVAL in GCM / GCM-SIV have PCLMULQDQ and PMULL paths. All of them produce **bit-identical output** to their scalar reference — the switch exists for reproducibility and audit, not safety. The feature switch `Bodu.Security.Cryptography.DisableSimd` forces the scalar path for the whole process:
 
 ```xml
 <ItemGroup>

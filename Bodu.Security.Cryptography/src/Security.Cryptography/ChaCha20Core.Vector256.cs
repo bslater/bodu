@@ -141,8 +141,11 @@ internal static partial class ChaCha20Core
         /// <param name="row1">The second row, replaced by the second column of each lane.</param>
         /// <param name="row2">The third row, replaced by the third column of each lane.</param>
         /// <param name="row3">The fourth row, replaced by the fourth column of each lane.</param>
+        /// <remarks>
+        /// <see cref="SerpentCore" />'s eight-block kernel shares this step to move blocks in and out of word order.
+        /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void Transpose(ref Vector256<uint> row0, ref Vector256<uint> row1, ref Vector256<uint> row2, ref Vector256<uint> row3)
+        internal static void Transpose(ref Vector256<uint> row0, ref Vector256<uint> row1, ref Vector256<uint> row2, ref Vector256<uint> row3)
         {
             Vector256<ulong> low01 = Avx2.UnpackLow(row0, row1).AsUInt64();
             Vector256<ulong> high01 = Avx2.UnpackHigh(row0, row1).AsUInt64();
