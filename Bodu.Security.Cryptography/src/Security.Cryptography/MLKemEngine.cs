@@ -12,10 +12,11 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Polynomials are held as 256 <see cref="int" /> coefficients in [0, q) with q = 3329. Coefficient reductions use the
-/// C# remainder operator with the constant modulus, which the JIT lowers to multiply-and-shift sequences rather than
-/// data-dependent division. The decapsulation re-encryption comparison and the secret selection between the real and
-/// implicit-rejection keys are byte-wise constant-time.
+/// Polynomials are held as 256 <see cref="int" /> coefficients in [0, q) with q = 3329 between operations. Within the
+/// transforms and products, coefficients are reduced by Montgomery and Barrett reduction (see the Reduction partial):
+/// fixed sequences of multiplications, shifts and masks, never a division, so their timing does not depend on the
+/// values. The decapsulation re-encryption comparison and the secret selection between the real and implicit-rejection
+/// keys are byte-wise constant-time.
 /// </para>
 /// </remarks>
 internal static partial class MLKemEngine
@@ -341,7 +342,7 @@ internal static partial class MLKemEngine
         Span<int> message = stackalloc int[N];
         ByteDecode(1, m, message);
         for (int i = 0; i < N; i++)
-            v[i] = (v[i] + Decompress(1, message[i])) % Q;
+            v[i] = Canonicalize(v[i] + Decompress(1, message[i]) - Q);
 
         CompressEncode(parameters.Dv, v, ciphertext[(k * 32 * parameters.Du)..]);
 
@@ -394,7 +395,7 @@ internal static partial class MLKemEngine
 
         Span<int> message = stackalloc int[N];
         for (int i = 0; i < N; i++)
-            message[i] = Compress(1, (v[i] - w[i] + (Q * 2)) % Q);
+            message[i] = Compress(1, Canonicalize(v[i] - w[i]));
 
         ByteEncode(1, message, m);
 
@@ -416,7 +417,7 @@ internal static partial class MLKemEngine
     private static void AddInto(Span<int> accumulator, ReadOnlySpan<int> source)
     {
         for (int i = 0; i < N; i++)
-            accumulator[i] = (accumulator[i] + source[i]) % Q;
+            accumulator[i] = Canonicalize(accumulator[i] + source[i] - Q);
     }
 
     /// <summary>

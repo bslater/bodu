@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Buffers.Binary;
+
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
@@ -67,8 +69,15 @@ internal static partial class MLKemEngine
     /// <param name="seed">The 32-byte PRF seed (σ or r).</param>
     /// <param name="counter">The domain-separation counter byte N.</param>
     /// <param name="destination">The span receiving 256 coefficients in [0, q).</param>
-    private static void SamplePolyCbd(int eta, ReadOnlySpan<byte> seed, byte counter, Span<int> destination)
+    /// <remarks>
+    /// Coefficient i is the sum of η stream bits minus the sum of the next η. The bits are counted a word at a time:
+    /// adding a word's bits to its bits shifted right by one (and, for η = 3, by two) leaves each η-bit field holding
+    /// the count of its own bits, from which every coefficient in the word reads off with a shift and a mask.
+    /// </remarks>
+    internal static void SamplePolyCbd(int eta, ReadOnlySpan<byte> seed, byte counter, Span<int> destination)
     {
+        ArgumentOutOfRangeException.ThrowIfLessThan(destination.Length, N, nameof(destination));
+
         Span<byte> counterByte = stackalloc byte[1];
         counterByte[0] = counter;
 
@@ -76,29 +85,40 @@ internal static partial class MLKemEngine
         Span<byte> bytes = stream[..(64 * eta)];
         KeccakSponge.Shake256(seed, counterByte, bytes);
 
-        for (int i = 0; i < N; i++)
+        if (eta == 2)
         {
-            int positive = 0;
-            int negative = 0;
-
-            for (int j = 0; j < eta; j++)
+            // Four bytes hold eight coefficients of four bits each: two bits for the positive count, two for the negative.
+            for (int i = 0; i < N / 8; i++)
             {
-                positive += GetBit(bytes, (2 * i * eta) + j);
-                negative += GetBit(bytes, (2 * i * eta) + eta + j);
-            }
+                uint word = BinaryPrimitives.ReadUInt32LittleEndian(bytes.Slice(4 * i, 4));
+                uint counts = (word & 0x5555_5555) + ((word >> 1) & 0x5555_5555);
 
-            destination[i] = (positive - negative + Q) % Q;
+                for (int j = 0; j < 8; j++)
+                {
+                    int positive = (int)((counts >> (4 * j)) & 3);
+                    int negative = (int)((counts >> ((4 * j) + 2)) & 3);
+                    destination[(8 * i) + j] = Canonicalize(positive - negative);
+                }
+            }
+        }
+        else
+        {
+            // Three bytes hold four coefficients of six bits each: three bits for the positive count, three for the
+            // negative.
+            for (int i = 0; i < N / 4; i++)
+            {
+                uint word = (uint)(bytes[3 * i] | (bytes[(3 * i) + 1] << 8) | (bytes[(3 * i) + 2] << 16));
+                uint counts = (word & 0x24_9249) + ((word >> 1) & 0x24_9249) + ((word >> 2) & 0x24_9249);
+
+                for (int j = 0; j < 4; j++)
+                {
+                    int positive = (int)((counts >> (6 * j)) & 7);
+                    int negative = (int)((counts >> ((6 * j) + 3)) & 7);
+                    destination[(4 * i) + j] = Canonicalize(positive - negative);
+                }
+            }
         }
 
         CryptographyHelper.Clear(stream);
     }
-
-    /// <summary>
-    /// Reads a single bit from a little-endian bit stream.
-    /// </summary>
-    /// <param name="bytes">The source bytes.</param>
-    /// <param name="bitIndex">The zero-based bit index.</param>
-    /// <returns>0 or 1.</returns>
-    private static int GetBit(ReadOnlySpan<byte> bytes, int bitIndex) =>
-        (bytes[bitIndex >> 3] >> (bitIndex & 7)) & 1;
 }
