@@ -99,8 +99,9 @@ internal readonly partial struct Ed25519Point
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(baseScalar, 32);
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(pointScalar, 32);
 
-        // pointTable[d] = [d]·point; the base multiples reuse window 0 of the fixed-base table (s_baseTable[0][d] = d·B).
-        var pointTable = new Ed25519Point[WindowSize];
+        // pointTable[d] = [d]·point, on the stack; the base multiples reuse window 0 of the fixed-base table
+        // (s_baseTable[0][d] = d·B).
+        Span<Ed25519Point> pointTable = stackalloc Ed25519Point[WindowSize];
         pointTable[0] = Identity;
         for (int d = 1; d < WindowSize; d++)
             pointTable[d] = pointTable[d - 1].Add(point);

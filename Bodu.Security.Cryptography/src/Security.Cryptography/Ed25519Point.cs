@@ -159,7 +159,7 @@ internal readonly partial struct Ed25519Point
     /// </summary>
     /// <param name="other">The point to add.</param>
     /// <returns>The sum of the two points.</returns>
-    internal readonly Ed25519Point Add(Ed25519Point other)
+    internal readonly Ed25519Point Add(in Ed25519Point other)
     {
         var a = Curve25519FieldElement.Multiply(
             Curve25519FieldElement.Subtract(_y, _x),
@@ -276,18 +276,37 @@ internal readonly partial struct Ed25519Point
     /// </remarks>
     internal readonly bool IsSmallOrder()
     {
-        // [8]P via three doublings; a point of order dividing 8 collapses to the identity (0, 1), which encodes as the
-        // single byte 0x01 followed by zeros.
+        // [8]P via three doublings; a point of order dividing 8 collapses to the identity (0, 1), which in projective
+        // coordinates is X = 0 with Y = Z, so no inversion is needed to recognize it.
         Ed25519Point multiple = Double().Double().Double();
 
-        Span<byte> encoded = stackalloc byte[EncodedSizeInBytes];
-        multiple.Encode(encoded);
+        bool xIsZero = multiple._x.IsZeroConstantTime();
+        bool yEqualsZ = AreEqual(multiple._y, multiple._z);
 
-        int difference = encoded[0] ^ 0x01;
-        for (int i = 1; i < EncodedSizeInBytes; i++)
-            difference |= encoded[i];
+        return xIsZero & yEqualsZ;
+    }
 
-        return difference == 0;
+    /// <summary>
+    /// Determines whether two points are the same point, comparing their projective coordinates without inverting.
+    /// </summary>
+    /// <param name="left">The first point.</param>
+    /// <param name="right">The second point.</param>
+    /// <returns><see langword="true" /> when the points are equal; otherwise, <see langword="false" />.</returns>
+    /// <remarks>
+    /// Two points are equal when x₁ = x₂ and y₁ = y₂, that is, when X₁·Z₂ = X₂·Z₁ and Y₁·Z₂ = Y₂·Z₁: four
+    /// multiplications, where comparing encodings would cost an inversion for each point. Both coordinates are compared
+    /// on every call.
+    /// </remarks>
+    internal static bool AreEqual(in Ed25519Point left, in Ed25519Point right)
+    {
+        bool xEqual = AreEqual(
+            Curve25519FieldElement.Multiply(left._x, right._z),
+            Curve25519FieldElement.Multiply(right._x, left._z));
+        bool yEqual = AreEqual(
+            Curve25519FieldElement.Multiply(left._y, right._z),
+            Curve25519FieldElement.Multiply(right._y, left._z));
+
+        return xEqual & yEqual;
     }
 
     /// <summary>

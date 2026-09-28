@@ -396,13 +396,11 @@ public sealed partial class Ed25519
         Ed25519Scalar.Reduce(digest, k);
 
         // [S]B == R + [k]A  ⇔  [S]B + [k](−A) == R. The single variable-time double-scalar multiplication shares its
-        // doublings between the two terms; every input here is public, so variable-time evaluation is acceptable.
-        Span<byte> left = stackalloc byte[32];
-        Span<byte> right = stackalloc byte[32];
-        Ed25519Point.DoubleScalarMultBaseVartime(sEncoded, k, publicPoint.Negate()).Encode(left);
-        rPoint.Encode(right);
+        // doublings between the two terms; every input here is public, so variable-time evaluation is acceptable. The
+        // points are compared in projective coordinates, which spares the two inversions that encoding them would cost.
+        Ed25519Point combination = Ed25519Point.DoubleScalarMultBaseVartime(sEncoded, k, publicPoint.Negate());
 
-        return left.SequenceEqual(right);
+        return Ed25519Point.AreEqual(combination, rPoint);
     }
 
     /// <summary>
