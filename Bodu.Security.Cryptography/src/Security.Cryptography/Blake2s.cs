@@ -242,68 +242,7 @@ public sealed partial class Blake2s
             return;
         }
 
-        ProcessBlockScalar(block, totalBytesIncludingThisBlock, isFinal);
-    }
-
-    /// <summary>
-    /// Compresses a single 64-byte block using the scalar reference BLAKE2s implementation.
-    /// </summary>
-    /// <param name="block">The 64-byte block to compress.</param>
-    /// <param name="totalBytesIncludingThisBlock">The cumulative byte count including this block.</param>
-    /// <param name="isFinal"><see langword="true" /> if this is the final block.</param>
-    /// <remarks>
-    /// Invoked by <see cref="ProcessBlock" /> on hosts without AVX-512 + VL support. Implements the reference
-    /// 16-element working-vector form of the BLAKE2s <c>F</c> compression function directly from RFC 7693.
-    /// </remarks>
-    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-    private void ProcessBlockScalar(ReadOnlySpan<byte> block, ulong totalBytesIncludingThisBlock, bool isFinal)
-    {
-        // Read the 16 message words in little-endian order.
-        Span<uint> m = stackalloc uint[16];
-        for (int i = 0; i < 16; i++)
-            m[i] = BinaryPrimitives.ReadUInt32LittleEndian(block.Slice(i * 4, 4));
-
-        // Initialize the 16-element working vector.
-        Span<uint> v =
-        [
-            _h[0],
-            _h[1],
-            _h[2],
-            _h[3],
-            _h[4],
-            _h[5],
-            _h[6],
-            _h[7],
-            s_iv[0],
-            s_iv[1],
-            s_iv[2],
-            s_iv[3],
-            s_iv[4] ^ (uint)(totalBytesIncludingThisBlock & 0xFFFFFFFFUL),   // counter low word
-            s_iv[5] ^ (uint)(totalBytesIncludingThisBlock >> 32),            // counter high word
-            s_iv[6],
-            s_iv[7],
-        ];
-        if (isFinal)
-            v[14] = ~v[14];
-
-        // 10 rounds of G mixing.
-        for (int r = 0; r < 10; r++)
-        {
-            byte[] s = Blake2Constants.Sigma[r % 10];
-
-            G(v, 0, 4, 8, 12, m[s[0]], m[s[1]]);
-            G(v, 1, 5, 9, 13, m[s[2]], m[s[3]]);
-            G(v, 2, 6, 10, 14, m[s[4]], m[s[5]]);
-            G(v, 3, 7, 11, 15, m[s[6]], m[s[7]]);
-            G(v, 0, 5, 10, 15, m[s[8]], m[s[9]]);
-            G(v, 1, 6, 11, 12, m[s[10]], m[s[11]]);
-            G(v, 2, 7, 8, 13, m[s[12]], m[s[13]]);
-            G(v, 3, 4, 9, 14, m[s[14]], m[s[15]]);
-        }
-
-        // Fold the working vector back into the hash state.
-        for (int i = 0; i < 8; i++)
-            _h[i] ^= v[i] ^ v[i + 8];
+        Blake2sCore.Compress(Blake2sCore.KernelKind.Scalar, _h, block, totalBytesIncludingThisBlock, isFinal);
     }
 
     /// <inheritdoc />
@@ -343,34 +282,11 @@ public sealed partial class Blake2s
     /// </remarks>
     protected override void InitializeHashState()
     {
-        s_iv.CopyTo(_h, 0);
+        Blake2sCore.InitializationVector.CopyTo(_h);
 
         // Parameter block: fan-out=1, max depth=1, digest length=nn, key length=kk.
         int nn = HashSizeValue / 8;
         int kk = KeyValue?.Length ?? 0;
         _h[0] ^= 0x01010000U ^ ((uint)kk << 8) ^ (uint)nn;
-    }
-
-    /// <summary>
-    /// Applies the BLAKE2s <c>G</c> mixing function to four elements of the working vector.
-    /// </summary>
-    /// <param name="v">The 16-element working vector.</param>
-    /// <param name="a">Index of the first element.</param>
-    /// <param name="b">Index of the second element.</param>
-    /// <param name="c">Index of the third element.</param>
-    /// <param name="d">Index of the fourth element.</param>
-    /// <param name="x">The first message word for this mix.</param>
-    /// <param name="y">The second message word for this mix.</param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static void G(Span<uint> v, int a, int b, int c, int d, uint x, uint y)
-    {
-        v[a] += v[b] + x;
-        v[d] = (v[d] ^ v[a]).RotateBitsRightUnchecked(16);
-        v[c] += v[d];
-        v[b] = (v[b] ^ v[c]).RotateBitsRightUnchecked(12);
-        v[a] += v[b] + y;
-        v[d] = (v[d] ^ v[a]).RotateBitsRightUnchecked(8);
-        v[c] += v[d];
-        v[b] = (v[b] ^ v[c]).RotateBitsRightUnchecked(7);
     }
 }

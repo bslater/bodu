@@ -48,7 +48,7 @@ internal static partial class Argon2Blake2b
             Debug.Assert(block.Length == BlockSizeBytes, "The block buffer must be 128 bytes.");
             Debug.Assert(digestLength is >= 1 and <= MaxDigestBytes, "The digest length must be 1 to 64 bytes.");
 
-            s_iv.CopyTo(state);
+            Blake2bCore.InitializationVector.CopyTo(state);
 
             // Parameter block: digest length, key length (0), fanout (1), depth (1) packed into the first word.
             state[0] ^= 0x0101_0000UL ^ (ulong)(uint)digestLength;
@@ -73,7 +73,7 @@ internal static partial class Argon2Blake2b
                 if (_filled == BlockSizeBytes)
                 {
                     _counter += BlockSizeBytes;
-                    Compress(_state, _block, _counter, last: false);
+                    Blake2bCore.Compress(_state, _block, _counter, last: false);
                     _filled = 0;
                 }
 
@@ -108,7 +108,7 @@ internal static partial class Argon2Blake2b
 
             _counter += (ulong)_filled;
             _block[_filled..].Clear();
-            Compress(_state, _block, _counter, last: true);
+            Blake2bCore.Compress(_state, _block, _counter, last: true);
 
             Span<byte> digest = stackalloc byte[MaxDigestBytes];
             for (int i = 0; i < StateWords; i++)
