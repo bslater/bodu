@@ -43,12 +43,15 @@ public sealed partial class ConcurrentHashSet<T>
     private sealed class Node
     {
         /// <summary>The split-order key: <c>(ReverseBits(hash) &lt;&lt; 1) | 1</c> for data nodes, <c>ReverseBits(bucket) &lt;&lt; 1</c> for sentinels. Unused (zero) for markers.</summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Member of a private nested type, so only the enclosing set can reach it; its lock-free algorithm reads the node state directly and updates the mutable fields through Volatile and Interlocked by-reference operations, which require fields.")]
         internal readonly ulong _key;
 
         /// <summary>The element stored in a data node; the type's default value for sentinels and markers.</summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Member of a private nested type, so only the enclosing set can reach it; its lock-free algorithm reads the node state directly and updates the mutable fields through Volatile and Interlocked by-reference operations, which require fields.")]
         internal readonly T _item;
 
         /// <summary>Indicates whether this node is a deletion marker rather than a list member.</summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Member of a private nested type, so only the enclosing set can reach it; its lock-free algorithm reads the node state directly and updates the mutable fields through Volatile and Interlocked by-reference operations, which require fields.")]
         internal readonly bool _isMarker;
 
         /// <summary>The next node in split-order, or <see langword="null" /> at the end of the list.</summary>
@@ -58,6 +61,7 @@ public sealed partial class ConcurrentHashSet<T>
         /// references a marker, the owning node is logically deleted and the marker's <see cref="_next" /> is the real
         /// successor.
         /// </remarks>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Member of a private nested type, so only the enclosing set can reach it; its lock-free algorithm reads the node state directly and updates the mutable fields through Volatile and Interlocked by-reference operations, which require fields.")]
         internal Node? _next;
 
         /// <summary>

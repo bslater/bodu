@@ -83,6 +83,7 @@ public abstract class TweakableSymmetricAlgorithm
         "SA1306:Field names should begin with lower-case letter",
         Justification = "The field intentionally follows the protected field naming pattern used by HashAlgorithm, such as HashSizeValue, because it forms part of the inherited algorithm-state surface for derived cryptographic types.")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Follows the BCL protected field naming convention (like LegalKeySizesValue on SymmetricAlgorithm) so that derived tweakable cipher types can read the legal tweak sizes without virtual dispatch.")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1051:Do not declare visible instance fields", Justification = "A protected field that derived types in other assemblies compile against; converting it to a property would be a binary-breaking change to the published derivation surface.")]
     [MaybeNull]
     protected KeySizes[] LegalTweakSizesValue = null!;
 
@@ -96,6 +97,7 @@ public abstract class TweakableSymmetricAlgorithm
        "SA1306:Field names should begin with lower-case letter",
        Justification = "The field intentionally follows the protected field naming pattern used by HashAlgorithm, such as HashSizeValue, because it forms part of the inherited algorithm-state surface for derived cryptographic types.")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Follows the BCL protected field naming convention (like KeySizeValue on SymmetricAlgorithm) so that derived tweakable cipher types can read the tweak size without virtual dispatch.")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1051:Do not declare visible instance fields", Justification = "A protected field that derived types in other assemblies compile against; converting it to a property would be a binary-breaking change to the published derivation surface.")]
     protected int TweakSizeValue = 0;
 
     /// <summary>Stores the current tweak value used by the algorithm.</summary>
@@ -109,6 +111,7 @@ public abstract class TweakableSymmetricAlgorithm
         "SA1306:Field names should begin with lower-case letter",
         Justification = "The field intentionally follows the protected field naming pattern used by HashAlgorithm, such as HashSizeValue, because it forms part of the inherited algorithm-state surface for derived cryptographic types.")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Follows the BCL protected field naming convention (like IVValue on SymmetricAlgorithm) so that derived tweakable cipher types can read and clear tweak material directly without virtual dispatch.")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1051:Do not declare visible instance fields", Justification = "A protected field that derived types in other assemblies compile against; converting it to a property would be a binary-breaking change to the published derivation surface.")]
     protected byte[]? TweakValue = null;
 
     /// <summary>Indicates whether this instance has been disposed.</summary>

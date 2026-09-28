@@ -64,6 +64,8 @@ public abstract class KeyedBlockHashAlgorithm
         "StyleCop.CSharp.NamingRules",
         "SA1306:Field names should begin with lower-case letter",
         Justification = "The field intentionally follows the protected field naming pattern used by HashAlgorithm, such as HashSizeValue, because it forms part of the inherited algorithm-state surface for derived cryptographic types.")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Follows the BCL protected field naming convention (like KeySizeValue on SymmetricAlgorithm) so that derived keyed hash types can read the key size without virtual dispatch.")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1051:Do not declare visible instance fields", Justification = "A protected field that derived types in other assemblies compile against; converting it to a property would be a binary-breaking change to the published derivation surface.")]
     protected readonly int KeySizeValue;
 
     /// <summary>Internal storage for the key used by the algorithm. Always assigned via defensive copy and cleared on disposal.</summary>
@@ -78,6 +80,8 @@ public abstract class KeyedBlockHashAlgorithm
         "StyleCop.CSharp.NamingRules",
         "SA1306:Field names should begin with lower-case letter",
         Justification = "The field intentionally follows the protected field naming pattern used by HashAlgorithm, such as HashSizeValue, because it forms part of the inherited algorithm-state surface for derived cryptographic types.")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Follows the BCL protected field naming convention (like KeyValue on KeyedHashAlgorithm) so that derived keyed hash types can read and clear key material directly without virtual dispatch.")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1051:Do not declare visible instance fields", Justification = "A protected field that derived types in other assemblies compile against; converting it to a property would be a binary-breaking change to the published derivation surface.")]
     protected byte[]? KeyValue;
 
     /// <summary>

@@ -41,21 +41,27 @@ internal sealed class OrderedSetStorage<T>
     private const int MaxLoadFactorDenominator = 4;
 
     /// <summary>The equality comparer used for element identity and hash-table lookup.</summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Backing store of an internal sealed type shared by the ordered hash-set family: the owning collections and their enumerators index these fields directly on hot paths, and no code outside the assembly can reach them.")]
     internal readonly IEqualityComparer<T> _comparer;
 
     /// <summary>The one-based bucket heads used by the open-addressing hash table.</summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Backing store of an internal sealed type shared by the ordered hash-set family: the owning collections and their enumerators index these fields directly on hot paths, and no code outside the assembly can reach them.")]
     internal int[] _buckets;
 
     /// <summary>The one-based chain links for entries stored in each bucket.</summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Backing store of an internal sealed type shared by the ordered hash-set family: the owning collections and their enumerators index these fields directly on hot paths, and no code outside the assembly can reach them.")]
     internal int[] _next;
 
     /// <summary>The contiguous element storage that preserves insertion order.</summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Backing store of an internal sealed type shared by the ordered hash-set family: the owning collections and their enumerators index these fields directly on hot paths, and no code outside the assembly can reach them.")]
     internal T[] _items;
 
     /// <summary>The number of active elements stored in <see cref="_items" />.</summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Backing store of an internal sealed type shared by the ordered hash-set family: the owning collections and their enumerators index these fields directly on hot paths, and no code outside the assembly can reach them.")]
     internal int _count;
 
     /// <summary>The mutation version used to detect changes during enumeration.</summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Backing store of an internal sealed type shared by the ordered hash-set family: the owning collections and their enumerators index these fields directly on hot paths, and no code outside the assembly can reach them.")]
     internal int _version;
 
     /// <summary>

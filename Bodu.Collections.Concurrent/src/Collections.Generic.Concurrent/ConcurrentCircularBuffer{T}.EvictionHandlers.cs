@@ -22,11 +22,15 @@ public sealed partial class ConcurrentCircularBuffer<T>
     /// </summary>
     private sealed class EvictionHandlers
     {
-        /// <summary>The multicast delegate the invocation list was materialized from.</summary>
-        internal readonly Action<T> Source;
+        /// <summary>
+        /// Gets the multicast delegate the invocation list was materialized from.
+        /// </summary>
+        internal Action<T> Source { get; }
 
-        /// <summary>The materialized invocation list of <see cref="Source" />.</summary>
-        internal readonly Delegate[] Handlers;
+        /// <summary>
+        /// Gets the materialized invocation list of <see cref="Source" />.
+        /// </summary>
+        internal Delegate[] Handlers { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EvictionHandlers" /> class.
