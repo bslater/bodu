@@ -9,7 +9,7 @@
       <meta name="viewport" content="width=device-width">
       <meta name="title" content="Class Blake3 | BODU ">
     
-    <meta name="description" content="AVX-512 vectorised implementation of the BLAKE3 compression function. The 16-word working state is laid out as four  rows (a, b, c, d), so the four parallel G calls in each column step collapse into a single SIMD G operation. The diagonal step reuses the same kernel by shifting the b, c, d rows by 1/2/3 lanes via PSHUFD, running G, then shifting back — the canonical ChaCha-style vectorisation pattern that BLAKE3 inherits from BLAKE2.">
+    <meta name="description" content="Computes a 256-bit cryptographic hash using the BLAKE3 algorithm designed by Jack O&#39;Connor, Jean-Philippe Aumasson, Samuel Neves, and Zooko Wilcox-O&#39;Hearn. This class cannot be inherited.">
       <link rel="shortcut icon" href="../images/favicon.svg">
       <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
       <link rel="stylesheet" href="../styles/docfx.css">
@@ -83,11 +83,8 @@
 
 
   <h1 id="Bodu_Security_Cryptography_Blake3" data-uid="Bodu.Security.Cryptography.Blake3" class="text-break">Class Blake3</h1>
-  <div class="markdown level0 summary"><p>AVX-512 vectorised implementation of the BLAKE3 compression function. The 16-word working state is laid out as four
-<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.runtime.intrinsics.vector128-1">Vector128&lt;T&gt;</a> rows (<code>a, b, c, d</code>), so the four parallel <code>G</code> calls in each column step
-collapse into a single SIMD <code>G</code> operation. The diagonal step reuses the same kernel by shifting the
-<code>b, c, d</code> rows by 1/2/3 lanes via <code>PSHUFD</code>, running <code>G</code>, then shifting back — the canonical
-ChaCha-style vectorisation pattern that BLAKE3 inherits from BLAKE2.</p>
+  <div class="markdown level0 summary"><p>Computes a 256-bit cryptographic hash using the <code>BLAKE3</code> algorithm designed by Jack O'Connor, Jean-Philippe
+Aumasson, Samuel Neves, and Zooko Wilcox-O'Hearn. This class cannot be inherited.</p>
 </div>
   <div class="markdown level0 conceptual"></div>
   <div class="inheritance">
@@ -177,9 +174,40 @@ ChaCha-style vectorisation pattern that BLAKE3 inherits from BLAKE2.</p>
   </div>
   <h5 id="Bodu_Security_Cryptography_Blake3_remarks"><strong>Remarks</strong></h5>
   <div class="markdown level0 remarks"><p>
-Gated on <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.runtime.intrinsics.x86.avx512f.vl.issupported">IsSupported</a> because the rotations use the AVX-512VL VPRORD variant on
-<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.runtime.intrinsics.vector128-1">Vector128&lt;T&gt;</a>. The SIMD <code>G</code> kernel is identical to <a class="xref" href="Bodu.Security.Cryptography.Blake2s.html">Blake2s</a>'s because BLAKE3 reuses
-the same four rotation amounts (16, 12, 8, 7); only the round count, message schedule, and finalization differ.
+BLAKE3 is a cryptographic hash function that combines the speed of non-cryptographic hashes with strong security
+guarantees. It is based on a binary tree structure where each leaf (chunk) processes up to 1024 bytes of input and
+each internal (parent) node combines two child chaining values. All compression is performed by a single ARX-based
+function derived from the BLAKE2 and ChaCha families.
+</p>
+<p>
+Input is divided into 1024-byte chunks, each compressed block-by-block into an 8-word (256-bit) chaining value. When
+more than one chunk exists the chaining values are folded pairwise into parent nodes until a single root chaining
+value remains. The root compression call is distinguished by the <code>ROOT</code> domain-separation flag, which enables
+XOF-style output extraction; this implementation fixes the output length at 256 bits.
+</p>
+<p>
+This implementation inherits its 64-byte residual buffer, running byte counter, and defer-on-full-block buffering
+loop from <a class="xref" href="Bodu.Security.Cryptography.DeferredFinalBlockHashAlgorithm.html">DeferredFinalBlockHashAlgorithm</a>. The final 64-byte block is not compressed until
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm.hashfinal">HashFinal()</a> is called, ensuring that chunk-level and tree-level domain flags can be
+applied correctly.
+</p>
+<p>
+This implementation supports the standard, unkeyed hash mode only. Keyed-hash and key-derivation modes are not
+exposed.
+</p>
+<p>
+<strong>Parameters at a glance.</strong>
+</p>
+<ul><li>Output size: 256 bits (32 bytes), fixed.</li><li>Block size: 64 bytes; chunk size: 1024 bytes (the leaf of the hash tree).</li><li>
+Construction: binary Merkle tree over chunks, ARX compression derived from BLAKE2 / ChaCha.
+</li><li>Mode: standard unkeyed hash only — keyed hash and KDF modes are not exposed.</li></ul>
+<p>
+<strong>When to choose BLAKE3.</strong> Reach for BLAKE3 when raw throughput on long inputs is the priority — its
+tree structure is naturally parallel-friendly and outperforms <a class="xref" href="Bodu.Security.Cryptography.Blake2b.html">Blake2b</a>, SHA-2, and SHA-3 on
+multi-megabyte messages. For short inputs the difference shrinks and any of the BLAKE2 / SHA-2 variants is fine. Use
+<a class="xref" href="Bodu.Security.Cryptography.Blake2b.html">Blake2b</a> if a configurable output size or RFC 7693-compatible MAC mode is required; use
+<a class="xref" href="Bodu.Security.Cryptography.MerkleTree.html">MerkleTree</a> if you want RFC 6962's tree, its proofs, and explicit control over the block size and the
+underlying leaf hash.
 </p>
 </div>
   <h5 id="Bodu_Security_Cryptography_Blake3_examples"><strong>Examples</strong></h5>
@@ -201,6 +229,14 @@ byte[] digest = blake3.ComputeHash(message);</code></pre>
           <a class="xref" href="Bodu.Security.Cryptography.Blake3.-ctor.html#Bodu_Security_Cryptography_Blake3__ctor">Blake3()</a>
         </td>
         <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Security.Cryptography.Blake3.html">Blake3</a> class, configured to produce a 256-bit digest.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_Blake3__ctor_System_Int32_" data-uid="Bodu.Security.Cryptography.Blake3.#ctor(System.Int32)">
+          <a class="xref" href="Bodu.Security.Cryptography.Blake3.-ctor.html#Bodu_Security_Cryptography_Blake3__ctor_System_Int32_">Blake3(int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Security.Cryptography.Blake3.html">Blake3</a> class, configured to produce a 256-bit digest, with the
+specified bound on the threads each write may use.</p>
 </td>
       </tr>
     </tbody>
@@ -239,6 +275,13 @@ byte[] digest = blake3.ComputeHash(message);</code></pre>
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm.transformblock">TransformBlock(byte[], int, int, byte[], int)</a> call.</p>
 </td>
       </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_Blake3_MaxDegreeOfParallelism" data-uid="Bodu.Security.Cryptography.Blake3.MaxDegreeOfParallelism">
+          <a class="xref" href="Bodu.Security.Cryptography.Blake3.MaxDegreeOfParallelism.html#Bodu_Security_Cryptography_Blake3_MaxDegreeOfParallelism">MaxDegreeOfParallelism</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the greatest number of threads one write may use to hash its input.</p>
+</td>
+      </tr>
     </tbody>
   </table>
   <h3 id="methods">Methods
@@ -256,6 +299,15 @@ byte[] digest = blake3.ComputeHash(message);</code></pre>
           <a class="xref" href="Bodu.Security.Cryptography.Blake3.Dispose.html#Bodu_Security_Cryptography_Blake3_Dispose_System_Boolean_">Dispose(bool)</a>
         </td>
         <td class="markdown level1 summary"><p>Releases the resources used by the algorithm and zeros the residual buffer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_Blake3_HashCore_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.Blake3.HashCore(System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.Security.Cryptography.Blake3.HashCore.html#Bodu_Security_Cryptography_Blake3_HashCore_System_ReadOnlySpan_System_Byte__">HashCore(ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Consumes the supplied input span. Whole chunks that start on a chunk boundary and are followed by more input are
+hashed as complete subtrees, many chunks at once; everything else goes through the block-by-block path of the
+base class, which keeps the final block deferred.</p>
 </td>
       </tr>
       <tr>
@@ -462,7 +514,7 @@ with <code>isFinal: true</code> for the last time.</p>
             <span class="pull-right">
               <a href="#top">Back to top</a>
             </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 40068ba · Built: 2026-09-26 (UTC)</span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: da55dd5 · Built: 2026-09-28 (UTC)</span>
       
           </div>
         </div>

@@ -88,7 +88,8 @@
 
 <a id="Bodu_Security_Cryptography_GcmSivModeTransform__ctor_" data-uid="Bodu.Security.Cryptography.GcmSivModeTransform.#ctor*"></a>
 <h4 id="Bodu_Security_Cryptography_GcmSivModeTransform__ctor_Bodu_Security_Cryptography_IBlockCipher_System_Func_System_Byte___Bodu_Security_Cryptography_IBlockCipher__System_Byte___" data-uid="Bodu.Security.Cryptography.GcmSivModeTransform.#ctor(Bodu.Security.Cryptography.IBlockCipher,System.Func{System.Byte[],Bodu.Security.Cryptography.IBlockCipher},System.Byte[])">GcmSivModeTransform(IBlockCipher, Func&lt;byte[], IBlockCipher&gt;, byte[])</h4>
-<div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Security.Cryptography.GcmSivModeTransform.html">GcmSivModeTransform</a> class.</p>
+<div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Security.Cryptography.GcmSivModeTransform.html">GcmSivModeTransform</a> class, reading the key-generating key's
+size from <code class="paramref">masterCipher</code>.</p>
 </div>
 <div class="markdown level1 conceptual"></div>
 <h5 class="declaration">Declaration</h5>
@@ -108,8 +109,7 @@
     <tr>
       <td><a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a></td>
       <td><span class="parametername">masterCipher</span></td>
-      <td><p>The block cipher keyed with the master key. Used for per-message key derivation (four encrypt calls). Must have
-a 16-byte block size.</p>
+      <td><p>The block cipher keyed with the master key. Used for per-message key derivation. Must have a 16-byte block size.</p>
 </td>
     </tr>
     <tr>
@@ -128,6 +128,12 @@ size. A defensive copy is taken.</p>
     </tr>
   </tbody>
 </table>
+<h5 id="Bodu_Security_Cryptography_GcmSivModeTransform__ctor_Bodu_Security_Cryptography_IBlockCipher_System_Func_System_Byte___Bodu_Security_Cryptography_IBlockCipher__System_Byte____remarks">Remarks</h5>
+<div class="markdown level1 remarks"><p>An <a class="xref" href="Bodu.Security.Cryptography.AesBlockCipher.html">AesBlockCipher</a> created with a 256-bit key derives a 256-bit message-encryption key, as RFC
+8452 specifies for AEAD_AES_256_GCM_SIV. Every other master cipher derives a 128-bit one, including AES-192,
+which RFC 8452 does not define. To use a 256-bit key-generating key through another <a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a>,
+call the overload that takes the key size.</p>
+</div>
 <h5 class="exceptions">Exceptions</h5>
 <table class="table table-bordered table-condensed">
   <thead>
@@ -145,6 +151,90 @@ size. A defensive copy is taken.</p>
     <tr>
       <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></td>
       <td><p><code class="paramref">iv</code> length does not equal the cipher block size.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></td>
+      <td><p><code class="paramref">cipherFactory</code> returned <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<a id="Bodu_Security_Cryptography_GcmSivModeTransform__ctor_" data-uid="Bodu.Security.Cryptography.GcmSivModeTransform.#ctor*"></a>
+<h4 id="Bodu_Security_Cryptography_GcmSivModeTransform__ctor_Bodu_Security_Cryptography_IBlockCipher_System_Func_System_Byte___Bodu_Security_Cryptography_IBlockCipher__System_Byte___System_Int32_" data-uid="Bodu.Security.Cryptography.GcmSivModeTransform.#ctor(Bodu.Security.Cryptography.IBlockCipher,System.Func{System.Byte[],Bodu.Security.Cryptography.IBlockCipher},System.Byte[],System.Int32)">GcmSivModeTransform(IBlockCipher, Func&lt;byte[], IBlockCipher&gt;, byte[], int)</h4>
+<div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Security.Cryptography.GcmSivModeTransform.html">GcmSivModeTransform</a> class for a key-generating key of the
+specified size.</p>
+</div>
+<div class="markdown level1 conceptual"></div>
+<h5 class="declaration">Declaration</h5>
+<div class="codewrapper">
+  <pre><code class="lang-csharp hljs">public GcmSivModeTransform(IBlockCipher masterCipher, Func&lt;byte[], IBlockCipher&gt; cipherFactory, byte[] iv, int keySize)</code></pre>
+</div>
+<h5 class="parameters">Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a></td>
+      <td><span class="parametername">masterCipher</span></td>
+      <td><p>The block cipher keyed with the master key. Used for per-message key derivation. Must have a 16-byte block size.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[], <a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a>&gt;</td>
+      <td><span class="parametername">cipherFactory</span></td>
+      <td><p>A factory that creates a fresh <a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a> instance keyed with the supplied byte array. Called
+once to produce the per-message encryption cipher.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</td>
+      <td><span class="parametername">iv</span></td>
+      <td><p>The initialization vector. The first 12 bytes are used as the GCM-SIV nonce. Must equal the master cipher block
+size. A defensive copy is taken.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></td>
+      <td><span class="parametername">keySize</span></td>
+      <td><p>The size, in bits, of the key-generating key <code class="paramref">masterCipher</code> is keyed with.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 id="Bodu_Security_Cryptography_GcmSivModeTransform__ctor_Bodu_Security_Cryptography_IBlockCipher_System_Func_System_Byte___Bodu_Security_Cryptography_IBlockCipher__System_Byte___System_Int32__remarks">Remarks</h5>
+<div class="markdown level1 remarks"><p>RFC 8452 defines GCM-SIV for 128- and 256-bit key-generating keys, and derives a message-encryption key of the
+same size: four cipher blocks for 128 bits, six for 256. That key is what <code class="paramref">cipherFactory</code>
+receives.</p>
+</div>
+<h5 class="exceptions">Exceptions</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Condition</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></td>
+      <td><p>Any argument is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></td>
+      <td><p><code class="paramref">iv</code> length does not equal the cipher block size.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></td>
+      <td><p><code class="paramref">keySize</code> is neither 128 nor 256.</p>
 </td>
     </tr>
     <tr>
@@ -189,7 +279,7 @@ size. A defensive copy is taken.</p>
             <span class="pull-right">
               <a href="#top">Back to top</a>
             </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 40068ba · Built: 2026-09-26 (UTC)</span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: da55dd5 · Built: 2026-09-28 (UTC)</span>
       
           </div>
         </div>

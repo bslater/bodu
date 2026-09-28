@@ -126,6 +126,20 @@ cost of large-scale custom-hardware attacks. An instance binds a set of cost <a 
 then derives keys or PHC password hashes. The static one-shot methods are provided for convenience.
 </p>
 <p>
+By default a derivation runs its <a class="xref" href="Bodu.Security.Cryptography.ScryptParameters.Parallelization.html#Bodu_Security_Cryptography_ScryptParameters_Parallelization">Parallelization</a> units one after another on the
+calling thread. <a class="xref" href="Bodu.Security.Cryptography.Scrypt.MaxDegreeOfParallelism.html#Bodu_Security_Cryptography_Scrypt_MaxDegreeOfParallelism">MaxDegreeOfParallelism</a> lets them run at once instead, each with a <code>V</code> of its
+own, so the time falls and the memory rises with the threads; the derived key never depends on them.
+</p>
+<p>
+The working memory — <code>V</code>, <code>128 · N · r</code> bytes — is held in native memory and reused across derivations, in
+the same reserve as Argon2's matrix, so a derivation neither allocates it on the collected heap nor waits for it to
+be zeroed. Up to one buffer per processor stays reserved — cleared — for up to thirty seconds after the last
+derivation; the <code>Bodu.Security.Cryptography.Argon2.DisableMatrixReuse</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.appcontext">AppContext</a> switch
+releases each buffer as soon as its derivation ends instead. Every buffer holding a password-derived value is
+cleared before it is released; values the JIT keeps in registers or its own stack slots are beyond the library's
+reach.
+</p>
+<p>
 This implementation is not independently audited and offers best-effort, not guaranteed, side-channel resistance.
 </p>
 </div>
@@ -147,10 +161,26 @@ This implementation is not independently audited and offers best-effort, not gua
 </td>
       </tr>
       <tr>
+        <td id="Bodu_Security_Cryptography_Scrypt__ctor_Bodu_Security_Cryptography_ScryptParameters_System_Int32_" data-uid="Bodu.Security.Cryptography.Scrypt.#ctor(Bodu.Security.Cryptography.ScryptParameters,System.Int32)">
+          <a class="xref" href="Bodu.Security.Cryptography.Scrypt.-ctor.html#Bodu_Security_Cryptography_Scrypt__ctor_Bodu_Security_Cryptography_ScryptParameters_System_Int32_">Scrypt(ScryptParameters, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Security.Cryptography.Scrypt.html">Scrypt</a> class with the specified cost parameters and bound on
+the threads each derivation may use.</p>
+</td>
+      </tr>
+      <tr>
         <td id="Bodu_Security_Cryptography_Scrypt__ctor_System_Int32_System_Int32_System_Int32_" data-uid="Bodu.Security.Cryptography.Scrypt.#ctor(System.Int32,System.Int32,System.Int32)">
           <a class="xref" href="Bodu.Security.Cryptography.Scrypt.-ctor.html#Bodu_Security_Cryptography_Scrypt__ctor_System_Int32_System_Int32_System_Int32_">Scrypt(int, int, int)</a>
         </td>
         <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Security.Cryptography.Scrypt.html">Scrypt</a> class with the specified cost parameters.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_Scrypt__ctor_System_Int32_System_Int32_System_Int32_System_Int32_" data-uid="Bodu.Security.Cryptography.Scrypt.#ctor(System.Int32,System.Int32,System.Int32,System.Int32)">
+          <a class="xref" href="Bodu.Security.Cryptography.Scrypt.-ctor.html#Bodu_Security_Cryptography_Scrypt__ctor_System_Int32_System_Int32_System_Int32_System_Int32_">Scrypt(int, int, int, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Security.Cryptography.Scrypt.html">Scrypt</a> class with the specified cost parameters and bound on
+the threads each derivation may use.</p>
 </td>
       </tr>
     </tbody>
@@ -165,6 +195,13 @@ This implementation is not independently audited and offers best-effort, not gua
       </tr>
     </thead>
     <tbody>
+      <tr>
+        <td id="Bodu_Security_Cryptography_Scrypt_MaxDegreeOfParallelism" data-uid="Bodu.Security.Cryptography.Scrypt.MaxDegreeOfParallelism">
+          <a class="xref" href="Bodu.Security.Cryptography.Scrypt.MaxDegreeOfParallelism.html#Bodu_Security_Cryptography_Scrypt_MaxDegreeOfParallelism">MaxDegreeOfParallelism</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the greatest number of threads one derivation by this instance may use, the calling thread included.</p>
+</td>
+      </tr>
       <tr>
         <td id="Bodu_Security_Cryptography_Scrypt_Parameters" data-uid="Bodu.Security.Cryptography.Scrypt.Parameters">
           <a class="xref" href="Bodu.Security.Cryptography.Scrypt.Parameters.html#Bodu_Security_Cryptography_Scrypt_Parameters">Parameters</a>
@@ -248,6 +285,14 @@ encoded-hash string.</p>
         <td class="markdown level1 summary"><p>Verifies a password against a scrypt PHC encoded-hash string.</p>
 </td>
       </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_Scrypt_Verify_System_String_System_ReadOnlySpan_System_Byte__System_Int32_" data-uid="Bodu.Security.Cryptography.Scrypt.Verify(System.String,System.ReadOnlySpan{System.Byte},System.Int32)">
+          <a class="xref" href="Bodu.Security.Cryptography.Scrypt.Verify.html#Bodu_Security_Cryptography_Scrypt_Verify_System_String_System_ReadOnlySpan_System_Byte__System_Int32_">Verify(string, ReadOnlySpan&lt;byte&gt;, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Verifies a password against a scrypt PHC encoded-hash string, with a bound on the threads the derivation may
+use.</p>
+</td>
+      </tr>
     </tbody>
   </table>
   <h3 id="extensionmethods">Extension Methods</h3>
@@ -302,7 +347,7 @@ encoded-hash string.</p>
             <span class="pull-right">
               <a href="#top">Back to top</a>
             </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 40068ba · Built: 2026-09-26 (UTC)</span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: da55dd5 · Built: 2026-09-28 (UTC)</span>
       
           </div>
         </div>

@@ -98752,6 +98752,18 @@ references:
   commentId: Overload:Bodu.Security.Cryptography.Argon2.Hash
   fullName: Bodu.Security.Cryptography.Argon2.Hash
   nameWithType: Argon2.Hash
+- uid: Bodu.Security.Cryptography.Argon2.MaxDegreeOfParallelism
+  name: MaxDegreeOfParallelism
+  href: api/Bodu.Security.Cryptography.Argon2.MaxDegreeOfParallelism.html#Bodu_Security_Cryptography_Argon2_MaxDegreeOfParallelism
+  commentId: P:Bodu.Security.Cryptography.Argon2.MaxDegreeOfParallelism
+  fullName: Bodu.Security.Cryptography.Argon2.MaxDegreeOfParallelism
+  nameWithType: Argon2.MaxDegreeOfParallelism
+- uid: Bodu.Security.Cryptography.Argon2.MaxDegreeOfParallelism*
+  name: MaxDegreeOfParallelism
+  href: api/Bodu.Security.Cryptography.Argon2.MaxDegreeOfParallelism.html
+  commentId: Overload:Bodu.Security.Cryptography.Argon2.MaxDegreeOfParallelism
+  fullName: Bodu.Security.Cryptography.Argon2.MaxDegreeOfParallelism
+  nameWithType: Argon2.MaxDegreeOfParallelism
 - uid: Bodu.Security.Cryptography.Argon2.Parameters
   name: Parameters
   href: api/Bodu.Security.Cryptography.Argon2.Parameters.html#Bodu_Security_Cryptography_Argon2_Parameters
@@ -98782,6 +98794,15 @@ references:
   fullName.vb: Bodu.Security.Cryptography.Argon2.Verify(String, System.ReadOnlySpan(Of Byte), System.ReadOnlySpan(Of Byte))
   nameWithType: Argon2.Verify(string, ReadOnlySpan<byte>, ReadOnlySpan<byte>)
   nameWithType.vb: Argon2.Verify(String, ReadOnlySpan(Of Byte), ReadOnlySpan(Of Byte))
+- uid: Bodu.Security.Cryptography.Argon2.Verify(System.String,System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte},System.Int32)
+  name: Verify(string, ReadOnlySpan<byte>, ReadOnlySpan<byte>, int)
+  href: api/Bodu.Security.Cryptography.Argon2.Verify.html#Bodu_Security_Cryptography_Argon2_Verify_System_String_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__System_Int32_
+  commentId: M:Bodu.Security.Cryptography.Argon2.Verify(System.String,System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte},System.Int32)
+  name.vb: Verify(String, ReadOnlySpan(Of Byte), ReadOnlySpan(Of Byte), Integer)
+  fullName: Bodu.Security.Cryptography.Argon2.Verify(string, System.ReadOnlySpan<byte>, System.ReadOnlySpan<byte>, int)
+  fullName.vb: Bodu.Security.Cryptography.Argon2.Verify(String, System.ReadOnlySpan(Of Byte), System.ReadOnlySpan(Of Byte), Integer)
+  nameWithType: Argon2.Verify(string, ReadOnlySpan<byte>, ReadOnlySpan<byte>, int)
+  nameWithType.vb: Argon2.Verify(String, ReadOnlySpan(Of Byte), ReadOnlySpan(Of Byte), Integer)
 - uid: Bodu.Security.Cryptography.Argon2.Verify*
   name: Verify
   href: api/Bodu.Security.Cryptography.Argon2.Verify.html
@@ -98893,6 +98914,15 @@ references:
   fullName.vb: Bodu.Security.Cryptography.Argon2d.New(Bodu.Security.Cryptography.Argon2Parameters)
   nameWithType: Argon2d.Argon2d(Argon2Parameters)
   nameWithType.vb: Argon2d.New(Argon2Parameters)
+- uid: Bodu.Security.Cryptography.Argon2d.#ctor(Bodu.Security.Cryptography.Argon2Parameters,System.Int32)
+  name: Argon2d(Argon2Parameters, int)
+  href: api/Bodu.Security.Cryptography.Argon2d.-ctor.html#Bodu_Security_Cryptography_Argon2d__ctor_Bodu_Security_Cryptography_Argon2Parameters_System_Int32_
+  commentId: M:Bodu.Security.Cryptography.Argon2d.#ctor(Bodu.Security.Cryptography.Argon2Parameters,System.Int32)
+  name.vb: New(Argon2Parameters, Integer)
+  fullName: Bodu.Security.Cryptography.Argon2d.Argon2d(Bodu.Security.Cryptography.Argon2Parameters, int)
+  fullName.vb: Bodu.Security.Cryptography.Argon2d.New(Bodu.Security.Cryptography.Argon2Parameters, Integer)
+  nameWithType: Argon2d.Argon2d(Argon2Parameters, int)
+  nameWithType.vb: Argon2d.New(Argon2Parameters, Integer)
 - uid: Bodu.Security.Cryptography.Argon2d.#ctor*
   name: Argon2d
   href: api/Bodu.Security.Cryptography.Argon2d.-ctor.html
@@ -98971,6 +99001,15 @@ references:
   fullName.vb: Bodu.Security.Cryptography.Argon2i.New(Bodu.Security.Cryptography.Argon2Parameters)
   nameWithType: Argon2i.Argon2i(Argon2Parameters)
   nameWithType.vb: Argon2i.New(Argon2Parameters)
+- uid: Bodu.Security.Cryptography.Argon2i.#ctor(Bodu.Security.Cryptography.Argon2Parameters,System.Int32)
+  name: Argon2i(Argon2Parameters, int)
+  href: api/Bodu.Security.Cryptography.Argon2i.-ctor.html#Bodu_Security_Cryptography_Argon2i__ctor_Bodu_Security_Cryptography_Argon2Parameters_System_Int32_
+  commentId: M:Bodu.Security.Cryptography.Argon2i.#ctor(Bodu.Security.Cryptography.Argon2Parameters,System.Int32)
+  name.vb: New(Argon2Parameters, Integer)
+  fullName: Bodu.Security.Cryptography.Argon2i.Argon2i(Bodu.Security.Cryptography.Argon2Parameters, int)
+  fullName.vb: Bodu.Security.Cryptography.Argon2i.New(Bodu.Security.Cryptography.Argon2Parameters, Integer)
+  nameWithType: Argon2i.Argon2i(Argon2Parameters, int)
+  nameWithType.vb: Argon2i.New(Argon2Parameters, Integer)
 - uid: Bodu.Security.Cryptography.Argon2i.#ctor*
   name: Argon2i
   href: api/Bodu.Security.Cryptography.Argon2i.-ctor.html
@@ -99049,6 +99088,15 @@ references:
   fullName.vb: Bodu.Security.Cryptography.Argon2id.New(Bodu.Security.Cryptography.Argon2Parameters)
   nameWithType: Argon2id.Argon2id(Argon2Parameters)
   nameWithType.vb: Argon2id.New(Argon2Parameters)
+- uid: Bodu.Security.Cryptography.Argon2id.#ctor(Bodu.Security.Cryptography.Argon2Parameters,System.Int32)
+  name: Argon2id(Argon2Parameters, int)
+  href: api/Bodu.Security.Cryptography.Argon2id.-ctor.html#Bodu_Security_Cryptography_Argon2id__ctor_Bodu_Security_Cryptography_Argon2Parameters_System_Int32_
+  commentId: M:Bodu.Security.Cryptography.Argon2id.#ctor(Bodu.Security.Cryptography.Argon2Parameters,System.Int32)
+  name.vb: New(Argon2Parameters, Integer)
+  fullName: Bodu.Security.Cryptography.Argon2id.Argon2id(Bodu.Security.Cryptography.Argon2Parameters, int)
+  fullName.vb: Bodu.Security.Cryptography.Argon2id.New(Bodu.Security.Cryptography.Argon2Parameters, Integer)
+  nameWithType: Argon2id.Argon2id(Argon2Parameters, int)
+  nameWithType.vb: Argon2id.New(Argon2Parameters, Integer)
 - uid: Bodu.Security.Cryptography.Argon2id.#ctor*
   name: Argon2id
   href: api/Bodu.Security.Cryptography.Argon2id.-ctor.html
@@ -100161,6 +100209,15 @@ references:
   fullName.vb: Bodu.Security.Cryptography.Blake3.New()
   nameWithType: Blake3.Blake3()
   nameWithType.vb: Blake3.New()
+- uid: Bodu.Security.Cryptography.Blake3.#ctor(System.Int32)
+  name: Blake3(int)
+  href: api/Bodu.Security.Cryptography.Blake3.-ctor.html#Bodu_Security_Cryptography_Blake3__ctor_System_Int32_
+  commentId: M:Bodu.Security.Cryptography.Blake3.#ctor(System.Int32)
+  name.vb: New(Integer)
+  fullName: Bodu.Security.Cryptography.Blake3.Blake3(int)
+  fullName.vb: Bodu.Security.Cryptography.Blake3.New(Integer)
+  nameWithType: Blake3.Blake3(int)
+  nameWithType.vb: Blake3.New(Integer)
 - uid: Bodu.Security.Cryptography.Blake3.#ctor*
   name: Blake3
   href: api/Bodu.Security.Cryptography.Blake3.-ctor.html
@@ -100221,6 +100278,21 @@ references:
   commentId: Overload:Bodu.Security.Cryptography.Blake3.Dispose
   fullName: Bodu.Security.Cryptography.Blake3.Dispose
   nameWithType: Blake3.Dispose
+- uid: Bodu.Security.Cryptography.Blake3.HashCore(System.ReadOnlySpan{System.Byte})
+  name: HashCore(ReadOnlySpan<byte>)
+  href: api/Bodu.Security.Cryptography.Blake3.HashCore.html#Bodu_Security_Cryptography_Blake3_HashCore_System_ReadOnlySpan_System_Byte__
+  commentId: M:Bodu.Security.Cryptography.Blake3.HashCore(System.ReadOnlySpan{System.Byte})
+  name.vb: HashCore(ReadOnlySpan(Of Byte))
+  fullName: Bodu.Security.Cryptography.Blake3.HashCore(System.ReadOnlySpan<byte>)
+  fullName.vb: Bodu.Security.Cryptography.Blake3.HashCore(System.ReadOnlySpan(Of Byte))
+  nameWithType: Blake3.HashCore(ReadOnlySpan<byte>)
+  nameWithType.vb: Blake3.HashCore(ReadOnlySpan(Of Byte))
+- uid: Bodu.Security.Cryptography.Blake3.HashCore*
+  name: HashCore
+  href: api/Bodu.Security.Cryptography.Blake3.HashCore.html
+  commentId: Overload:Bodu.Security.Cryptography.Blake3.HashCore
+  fullName: Bodu.Security.Cryptography.Blake3.HashCore
+  nameWithType: Blake3.HashCore
 - uid: Bodu.Security.Cryptography.Blake3.Initialize
   name: Initialize()
   href: api/Bodu.Security.Cryptography.Blake3.Initialize.html#Bodu_Security_Cryptography_Blake3_Initialize
@@ -100233,6 +100305,18 @@ references:
   commentId: Overload:Bodu.Security.Cryptography.Blake3.Initialize
   fullName: Bodu.Security.Cryptography.Blake3.Initialize
   nameWithType: Blake3.Initialize
+- uid: Bodu.Security.Cryptography.Blake3.MaxDegreeOfParallelism
+  name: MaxDegreeOfParallelism
+  href: api/Bodu.Security.Cryptography.Blake3.MaxDegreeOfParallelism.html#Bodu_Security_Cryptography_Blake3_MaxDegreeOfParallelism
+  commentId: P:Bodu.Security.Cryptography.Blake3.MaxDegreeOfParallelism
+  fullName: Bodu.Security.Cryptography.Blake3.MaxDegreeOfParallelism
+  nameWithType: Blake3.MaxDegreeOfParallelism
+- uid: Bodu.Security.Cryptography.Blake3.MaxDegreeOfParallelism*
+  name: MaxDegreeOfParallelism
+  href: api/Bodu.Security.Cryptography.Blake3.MaxDegreeOfParallelism.html
+  commentId: Overload:Bodu.Security.Cryptography.Blake3.MaxDegreeOfParallelism
+  fullName: Bodu.Security.Cryptography.Blake3.MaxDegreeOfParallelism
+  nameWithType: Blake3.MaxDegreeOfParallelism
 - uid: Bodu.Security.Cryptography.Blake3.ProcessBlock(System.ReadOnlySpan{System.Byte},System.UInt64,System.Boolean)
   name: ProcessBlock(ReadOnlySpan<byte>, ulong, bool)
   href: api/Bodu.Security.Cryptography.Blake3.ProcessBlock.html#Bodu_Security_Cryptography_Blake3_ProcessBlock_System_ReadOnlySpan_System_Byte__System_UInt64_System_Boolean_
@@ -103513,6 +103597,15 @@ references:
   fullName.vb: Bodu.Security.Cryptography.GcmSivModeTransform.New(Bodu.Security.Cryptography.IBlockCipher, System.Func(Of Byte(), Bodu.Security.Cryptography.IBlockCipher), Byte())
   nameWithType: GcmSivModeTransform.GcmSivModeTransform(IBlockCipher, Func<byte[], IBlockCipher>, byte[])
   nameWithType.vb: GcmSivModeTransform.New(IBlockCipher, Func(Of Byte(), IBlockCipher), Byte())
+- uid: Bodu.Security.Cryptography.GcmSivModeTransform.#ctor(Bodu.Security.Cryptography.IBlockCipher,System.Func{System.Byte[],Bodu.Security.Cryptography.IBlockCipher},System.Byte[],System.Int32)
+  name: GcmSivModeTransform(IBlockCipher, Func<byte[], IBlockCipher>, byte[], int)
+  href: api/Bodu.Security.Cryptography.GcmSivModeTransform.-ctor.html#Bodu_Security_Cryptography_GcmSivModeTransform__ctor_Bodu_Security_Cryptography_IBlockCipher_System_Func_System_Byte___Bodu_Security_Cryptography_IBlockCipher__System_Byte___System_Int32_
+  commentId: M:Bodu.Security.Cryptography.GcmSivModeTransform.#ctor(Bodu.Security.Cryptography.IBlockCipher,System.Func{System.Byte[],Bodu.Security.Cryptography.IBlockCipher},System.Byte[],System.Int32)
+  name.vb: New(IBlockCipher, Func(Of Byte(), IBlockCipher), Byte(), Integer)
+  fullName: Bodu.Security.Cryptography.GcmSivModeTransform.GcmSivModeTransform(Bodu.Security.Cryptography.IBlockCipher, System.Func<byte[], Bodu.Security.Cryptography.IBlockCipher>, byte[], int)
+  fullName.vb: Bodu.Security.Cryptography.GcmSivModeTransform.New(Bodu.Security.Cryptography.IBlockCipher, System.Func(Of Byte(), Bodu.Security.Cryptography.IBlockCipher), Byte(), Integer)
+  nameWithType: GcmSivModeTransform.GcmSivModeTransform(IBlockCipher, Func<byte[], IBlockCipher>, byte[], int)
+  nameWithType.vb: GcmSivModeTransform.New(IBlockCipher, Func(Of Byte(), IBlockCipher), Byte(), Integer)
 - uid: Bodu.Security.Cryptography.GcmSivModeTransform.#ctor*
   name: GcmSivModeTransform
   href: api/Bodu.Security.Cryptography.GcmSivModeTransform.-ctor.html
@@ -107714,6 +107807,33 @@ references:
   commentId: Overload:Bodu.Security.Cryptography.Poly1305.Dispose
   fullName: Bodu.Security.Cryptography.Poly1305.Dispose
   nameWithType: Poly1305.Dispose
+- uid: Bodu.Security.Cryptography.Poly1305.HashCore(System.ReadOnlySpan{System.Byte})
+  name: HashCore(ReadOnlySpan<byte>)
+  href: api/Bodu.Security.Cryptography.Poly1305.HashCore.html#Bodu_Security_Cryptography_Poly1305_HashCore_System_ReadOnlySpan_System_Byte__
+  commentId: M:Bodu.Security.Cryptography.Poly1305.HashCore(System.ReadOnlySpan{System.Byte})
+  name.vb: HashCore(ReadOnlySpan(Of Byte))
+  fullName: Bodu.Security.Cryptography.Poly1305.HashCore(System.ReadOnlySpan<byte>)
+  fullName.vb: Bodu.Security.Cryptography.Poly1305.HashCore(System.ReadOnlySpan(Of Byte))
+  nameWithType: Poly1305.HashCore(ReadOnlySpan<byte>)
+  nameWithType.vb: Poly1305.HashCore(ReadOnlySpan(Of Byte))
+- uid: Bodu.Security.Cryptography.Poly1305.HashCore*
+  name: HashCore
+  href: api/Bodu.Security.Cryptography.Poly1305.HashCore.html
+  commentId: Overload:Bodu.Security.Cryptography.Poly1305.HashCore
+  fullName: Bodu.Security.Cryptography.Poly1305.HashCore
+  nameWithType: Poly1305.HashCore
+- uid: Bodu.Security.Cryptography.Poly1305.HashFinal
+  name: HashFinal()
+  href: api/Bodu.Security.Cryptography.Poly1305.HashFinal.html#Bodu_Security_Cryptography_Poly1305_HashFinal
+  commentId: M:Bodu.Security.Cryptography.Poly1305.HashFinal
+  fullName: Bodu.Security.Cryptography.Poly1305.HashFinal()
+  nameWithType: Poly1305.HashFinal()
+- uid: Bodu.Security.Cryptography.Poly1305.HashFinal*
+  name: HashFinal
+  href: api/Bodu.Security.Cryptography.Poly1305.HashFinal.html
+  commentId: Overload:Bodu.Security.Cryptography.Poly1305.HashFinal
+  fullName: Bodu.Security.Cryptography.Poly1305.HashFinal
+  nameWithType: Poly1305.HashFinal
 - uid: Bodu.Security.Cryptography.Poly1305.Key
   name: Key
   href: api/Bodu.Security.Cryptography.Poly1305.Key.html#Bodu_Security_Cryptography_Poly1305_Key
@@ -108281,6 +108401,15 @@ references:
   fullName.vb: Bodu.Security.Cryptography.Scrypt.New(Bodu.Security.Cryptography.ScryptParameters)
   nameWithType: Scrypt.Scrypt(ScryptParameters)
   nameWithType.vb: Scrypt.New(ScryptParameters)
+- uid: Bodu.Security.Cryptography.Scrypt.#ctor(Bodu.Security.Cryptography.ScryptParameters,System.Int32)
+  name: Scrypt(ScryptParameters, int)
+  href: api/Bodu.Security.Cryptography.Scrypt.-ctor.html#Bodu_Security_Cryptography_Scrypt__ctor_Bodu_Security_Cryptography_ScryptParameters_System_Int32_
+  commentId: M:Bodu.Security.Cryptography.Scrypt.#ctor(Bodu.Security.Cryptography.ScryptParameters,System.Int32)
+  name.vb: New(ScryptParameters, Integer)
+  fullName: Bodu.Security.Cryptography.Scrypt.Scrypt(Bodu.Security.Cryptography.ScryptParameters, int)
+  fullName.vb: Bodu.Security.Cryptography.Scrypt.New(Bodu.Security.Cryptography.ScryptParameters, Integer)
+  nameWithType: Scrypt.Scrypt(ScryptParameters, int)
+  nameWithType.vb: Scrypt.New(ScryptParameters, Integer)
 - uid: Bodu.Security.Cryptography.Scrypt.#ctor(System.Int32,System.Int32,System.Int32)
   name: Scrypt(int, int, int)
   href: api/Bodu.Security.Cryptography.Scrypt.-ctor.html#Bodu_Security_Cryptography_Scrypt__ctor_System_Int32_System_Int32_System_Int32_
@@ -108290,6 +108419,15 @@ references:
   fullName.vb: Bodu.Security.Cryptography.Scrypt.New(Integer, Integer, Integer)
   nameWithType: Scrypt.Scrypt(int, int, int)
   nameWithType.vb: Scrypt.New(Integer, Integer, Integer)
+- uid: Bodu.Security.Cryptography.Scrypt.#ctor(System.Int32,System.Int32,System.Int32,System.Int32)
+  name: Scrypt(int, int, int, int)
+  href: api/Bodu.Security.Cryptography.Scrypt.-ctor.html#Bodu_Security_Cryptography_Scrypt__ctor_System_Int32_System_Int32_System_Int32_System_Int32_
+  commentId: M:Bodu.Security.Cryptography.Scrypt.#ctor(System.Int32,System.Int32,System.Int32,System.Int32)
+  name.vb: New(Integer, Integer, Integer, Integer)
+  fullName: Bodu.Security.Cryptography.Scrypt.Scrypt(int, int, int, int)
+  fullName.vb: Bodu.Security.Cryptography.Scrypt.New(Integer, Integer, Integer, Integer)
+  nameWithType: Scrypt.Scrypt(int, int, int, int)
+  nameWithType.vb: Scrypt.New(Integer, Integer, Integer, Integer)
 - uid: Bodu.Security.Cryptography.Scrypt.#ctor*
   name: Scrypt
   href: api/Bodu.Security.Cryptography.Scrypt.-ctor.html
@@ -108389,6 +108527,18 @@ references:
   commentId: Overload:Bodu.Security.Cryptography.Scrypt.Hash
   fullName: Bodu.Security.Cryptography.Scrypt.Hash
   nameWithType: Scrypt.Hash
+- uid: Bodu.Security.Cryptography.Scrypt.MaxDegreeOfParallelism
+  name: MaxDegreeOfParallelism
+  href: api/Bodu.Security.Cryptography.Scrypt.MaxDegreeOfParallelism.html#Bodu_Security_Cryptography_Scrypt_MaxDegreeOfParallelism
+  commentId: P:Bodu.Security.Cryptography.Scrypt.MaxDegreeOfParallelism
+  fullName: Bodu.Security.Cryptography.Scrypt.MaxDegreeOfParallelism
+  nameWithType: Scrypt.MaxDegreeOfParallelism
+- uid: Bodu.Security.Cryptography.Scrypt.MaxDegreeOfParallelism*
+  name: MaxDegreeOfParallelism
+  href: api/Bodu.Security.Cryptography.Scrypt.MaxDegreeOfParallelism.html
+  commentId: Overload:Bodu.Security.Cryptography.Scrypt.MaxDegreeOfParallelism
+  fullName: Bodu.Security.Cryptography.Scrypt.MaxDegreeOfParallelism
+  nameWithType: Scrypt.MaxDegreeOfParallelism
 - uid: Bodu.Security.Cryptography.Scrypt.Parameters
   name: Parameters
   href: api/Bodu.Security.Cryptography.Scrypt.Parameters.html#Bodu_Security_Cryptography_Scrypt_Parameters
@@ -108410,6 +108560,15 @@ references:
   fullName.vb: Bodu.Security.Cryptography.Scrypt.Verify(String, System.ReadOnlySpan(Of Byte))
   nameWithType: Scrypt.Verify(string, ReadOnlySpan<byte>)
   nameWithType.vb: Scrypt.Verify(String, ReadOnlySpan(Of Byte))
+- uid: Bodu.Security.Cryptography.Scrypt.Verify(System.String,System.ReadOnlySpan{System.Byte},System.Int32)
+  name: Verify(string, ReadOnlySpan<byte>, int)
+  href: api/Bodu.Security.Cryptography.Scrypt.Verify.html#Bodu_Security_Cryptography_Scrypt_Verify_System_String_System_ReadOnlySpan_System_Byte__System_Int32_
+  commentId: M:Bodu.Security.Cryptography.Scrypt.Verify(System.String,System.ReadOnlySpan{System.Byte},System.Int32)
+  name.vb: Verify(String, ReadOnlySpan(Of Byte), Integer)
+  fullName: Bodu.Security.Cryptography.Scrypt.Verify(string, System.ReadOnlySpan<byte>, int)
+  fullName.vb: Bodu.Security.Cryptography.Scrypt.Verify(String, System.ReadOnlySpan(Of Byte), Integer)
+  nameWithType: Scrypt.Verify(string, ReadOnlySpan<byte>, int)
+  nameWithType.vb: Scrypt.Verify(String, ReadOnlySpan(Of Byte), Integer)
 - uid: Bodu.Security.Cryptography.Scrypt.Verify*
   name: Verify
   href: api/Bodu.Security.Cryptography.Scrypt.Verify.html

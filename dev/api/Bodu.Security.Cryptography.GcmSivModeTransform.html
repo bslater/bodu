@@ -135,14 +135,19 @@ doubles as the CTR counter base — but swaps GHASH for <b>POLYVAL</b>, which is
 reflection that makes little-endian processing efficient on modern processors.
 </p>
 <p>
-GCM-SIV derives per-message authentication and encryption keys from the master key and a 12-byte nonce using four
-cipher calls with little-endian counters (RFC 8452 Section 4):
-<pre><code class="lang-csharp">K_auth = E_K(LE32(0) || nonce)[0..7] || E_K(LE32(1) || nonce)[0..7]   (16 bytes)
-K_enc  = E_K(LE32(2) || nonce)[0..7] || E_K(LE32(3) || nonce)[0..7]   (16 bytes)</code></pre>
+GCM-SIV derives per-message authentication and encryption keys from the master key and a 12-byte nonce by encrypting
+blocks that carry little-endian counters (RFC 8452 Section 4). The encryption key is as long as the master key, so a
+128-bit master key takes four blocks and a 256-bit one six, encrypted in one multi-block call:
+<pre><code class="lang-csharp">K_auth = E_K(LE32(0) || nonce)[0..7] || E_K(LE32(1) || nonce)[0..7]                      (16 bytes)
+K_enc  = E_K(LE32(2) || nonce)[0..7] || E_K(LE32(3) || nonce)[0..7]                      (16 bytes, 128-bit K)
+K_enc  = E_K(LE32(2) || nonce)[0..7] || ... || E_K(LE32(5) || nonce)[0..7]               (32 bytes, 256-bit K)</code></pre>
 
 <p>
-POLYVAL is computed via the GHASH isomorphism: each field element is reflected (byte-reversed + bit-reversed within
-each byte) before GHASH multiplication, and the result is reflected back.
+POLYVAL runs on the library's GHASH kernels through RFC 8452 Appendix A's isomorphism with GHASH, folding four
+blocks into each reduction on processors with a carry-less multiply (<code>PCLMULQDQ</code> on x64, <code>PMULL</code> on ARM64)
+and using a constant-time scalar multiply elsewhere. The associated data is hashed when it is supplied, so only the
+16-byte POLYVAL state is kept until the message is processed, and the keystream is produced a 4 KiB run of counter
+blocks at a time.
 </p>
 <p>
 Because GCM-SIV must create a fresh cipher instance keyed with the derived <code>K_enc</code>, a
@@ -191,7 +196,16 @@ byte[] sealed_ = sivlike.Encrypt(plaintext, associatedData: header);</code></pre
         <td id="Bodu_Security_Cryptography_GcmSivModeTransform__ctor_Bodu_Security_Cryptography_IBlockCipher_System_Func_System_Byte___Bodu_Security_Cryptography_IBlockCipher__System_Byte___" data-uid="Bodu.Security.Cryptography.GcmSivModeTransform.#ctor(Bodu.Security.Cryptography.IBlockCipher,System.Func{System.Byte[],Bodu.Security.Cryptography.IBlockCipher},System.Byte[])">
           <a class="xref" href="Bodu.Security.Cryptography.GcmSivModeTransform.-ctor.html#Bodu_Security_Cryptography_GcmSivModeTransform__ctor_Bodu_Security_Cryptography_IBlockCipher_System_Func_System_Byte___Bodu_Security_Cryptography_IBlockCipher__System_Byte___">GcmSivModeTransform(IBlockCipher, Func&lt;byte[], IBlockCipher&gt;, byte[])</a>
         </td>
-        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Security.Cryptography.GcmSivModeTransform.html">GcmSivModeTransform</a> class.</p>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Security.Cryptography.GcmSivModeTransform.html">GcmSivModeTransform</a> class, reading the key-generating key's
+size from <code class="paramref">masterCipher</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_GcmSivModeTransform__ctor_Bodu_Security_Cryptography_IBlockCipher_System_Func_System_Byte___Bodu_Security_Cryptography_IBlockCipher__System_Byte___System_Int32_" data-uid="Bodu.Security.Cryptography.GcmSivModeTransform.#ctor(Bodu.Security.Cryptography.IBlockCipher,System.Func{System.Byte[],Bodu.Security.Cryptography.IBlockCipher},System.Byte[],System.Int32)">
+          <a class="xref" href="Bodu.Security.Cryptography.GcmSivModeTransform.-ctor.html#Bodu_Security_Cryptography_GcmSivModeTransform__ctor_Bodu_Security_Cryptography_IBlockCipher_System_Func_System_Byte___Bodu_Security_Cryptography_IBlockCipher__System_Byte___System_Int32_">GcmSivModeTransform(IBlockCipher, Func&lt;byte[], IBlockCipher&gt;, byte[], int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Security.Cryptography.GcmSivModeTransform.html">GcmSivModeTransform</a> class for a key-generating key of the
+specified size.</p>
 </td>
       </tr>
     </tbody>
@@ -236,8 +250,8 @@ byte[] sealed_ = sivlike.Encrypt(plaintext, associatedData: header);</code></pre
         <td id="Bodu_Security_Cryptography_GcmSivModeTransform_Dispose" data-uid="Bodu.Security.Cryptography.GcmSivModeTransform.Dispose">
           <a class="xref" href="Bodu.Security.Cryptography.GcmSivModeTransform.Dispose.html#Bodu_Security_Cryptography_GcmSivModeTransform_Dispose">Dispose()</a>
         </td>
-        <td class="markdown level1 summary"><p>Releases the resources used by this instance and clears retained authentication key, nonce, associated-data
-state, and the derived encryption cipher.</p>
+        <td class="markdown level1 summary"><p>Releases the resources used by this instance and clears the retained authentication key, nonce, and
+associated-data state, and disposes the derived encryption cipher.</p>
 </td>
       </tr>
       <tr>
@@ -340,7 +354,7 @@ state, and the derived encryption cipher.</p>
             <span class="pull-right">
               <a href="#top">Back to top</a>
             </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 40068ba · Built: 2026-09-26 (UTC)</span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: da55dd5 · Built: 2026-09-28 (UTC)</span>
       
           </div>
         </div>
