@@ -57,8 +57,8 @@ internal static partial class Blake2bCore
             Vector128<ulong> d0 = Vector128.Create(Iv4 ^ counter, Iv5);
             Vector128<ulong> d1 = Vector128.Create(Iv6 ^ finalization, Iv7);
 
-            // A loop over the rounds, unlike the other kernels' written-out rounds, keeps the method within the JIT's
-            // inlining budget: with every round written out, the last rounds' G calls stay calls, and the rows spill.
+            // A loop over the rounds keeps the method within the JIT's inlining budget: with every round written out, the
+            // last rounds' G calls stay calls, and the rows spill.
             ref byte sigma = ref MemoryMarshal.GetReference(Sigma);
             for (int round = 0; round < 12; round++)
             {

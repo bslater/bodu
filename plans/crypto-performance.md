@@ -1,6 +1,6 @@
 # Implementation plan: faster primitives across Bodu.Security.Cryptography
 
-**Status:** In progress on `claude/argon2-prototype-co27tu` (W0–W3 done, §10) · **Source:** the assessment run on
+**Status:** In progress on `claude/argon2-prototype-co27tu` (W0–W4 done, §10) · **Source:** the assessment run on
 2026-09-27 after the Argon2 work (§1) · **Target:** `Bodu.Security.Cryptography`, next lock-step release
 
 The Argon2 work ([`argon2-performance.md`](argon2-performance.md)) used four techniques: a
@@ -672,3 +672,56 @@ How it was done, and where it departs from the design above:
   sweep, and the threaded derivations pass. Long, allocation-heavy runs crash inside
   `libcoreclr` under the emulator. The pre-W3 code crashes the same way on the same
   corpus, so the emulator is at fault; the ARM64 CI job runs the suite on real hardware.
+
+### W4 — BLAKE2b and BLAKE2s (done)
+
+| Measure (1 MiB) | Baseline | Result | Target |
+|---|---|---|---|
+| BLAKE2b, scalar kernel | 150.6 MiB/s | 512.3 MiB/s | ≥ 450 MiB/s — met |
+| BLAKE2b, AVX2 host | 151.5 MiB/s (scalar code) | 693.1 MiB/s | ≥ 650 MiB/s — met |
+| BLAKE2b, AVX-512 | 669.0 MiB/s (OpenSSL 664.5) | 830.5 MiB/s | — |
+| BLAKE2b, SSSE3 only | 151.5 MiB/s | 571.2 MiB/s | — |
+| BLAKE2s, scalar kernel | 96.7 MiB/s | 316.3 MiB/s | ≥ 300 MiB/s — met |
+| BLAKE2s, SSSE3 / AVX2 host | 94.4 MiB/s | 411.2 MiB/s | — |
+| BLAKE2s, AVX-512 | 518.9 MiB/s (OpenSSL 418.8) | 522.9 MiB/s | — |
+| 64-byte message, BLAKE2b / BLAKE2s, scalar | 0.94 / 0.75 µs | 0.35 / 0.29 µs | — |
+
+§1's BLAKE2s baseline of 78 MiB/s came from an earlier run; the table uses this
+workstream's own measurements. On .NET 8: BLAKE2b runs at 867 MiB/s with AVX-512,
+678 MiB/s on AVX2 and 508 MiB/s scalar; BLAKE2s at 503, 431 and 312 MiB/s.
+
+How it was done, and where it departs from the design above:
+
+- **T1, the scalar kernels.** The compression functions moved into two internal cores,
+  `Blake2bCore` and `Blake2sCore`. Their scalar kernels write out every round with σ
+  resolved to constant indices; each `G` reads its message words straight from the
+  block, and the sixteen working words stay in locals. `Argon2Blake2b` drives
+  `Blake2bCore` instead of keeping a second copy of the scalar code.
+- **T4, BLAKE2b.** One `Vector256Kernel<TIsa>` replaces the AVX-512 kernel and adds the
+  AVX2 tier. Its shim holds only the four rotations of `G`: VPRORQ on AVX-512VL; on
+  AVX2, VPSHUFD, VPSHUFB and an add-and-shift, as Argon2 does. Immediate rotations in
+  place of variable ones made the AVX-512 path 24% faster. A
+  `Vector128Kernel<TIsa>` over Argon2's `IVector128Isa` shims serves SSSE3-only x64 and
+  ARM64, splicing row halves with `UpperThenLower`.
+- **T4, BLAKE2s.** Its whole state fits four 128-bit rows, so one
+  `Vector128Kernel<TIsa>` serves all three tiers. The shim holds the four rotations and
+  three lane rotations: VPRORD and PSHUFD on AVX-512VL; PSHUFB, shifts and PSHUFD on
+  SSSE3; REV32, TBL, SLI and EXT on ARM64. AVX2 adds nothing to a single BLAKE2s
+  state, so AVX2 hosts take the SSSE3 kernel, VEX-encoded.
+- **The JIT's inlining budget.** Written out in full, the vector kernels outgrew it:
+  the 128-bit ones on .NET 10, and BLAKE2b's 256-bit one on .NET 8, whose budget is
+  smaller. The last rounds' `G`, `Round` and `Load` calls stayed calls, the rows spilled
+  to memory, and the kernels ran below scalar speed (178, 138 and 224 MiB/s). All three
+  now loop over their rounds and read σ from a table, at no measurable cost. The scalar
+  kernels stay written out, and the disassembly on both runtimes confirms they inline
+  fully.
+- **Tests.** Both cores have a minimal BLAKE2 built on the compression function alone,
+  so every kernel is driven explicitly, whichever one dispatch picks:
+  - RFC 7693's worked examples and every entry of the official blake2-kat.json;
+  - a sweep against the scalar kernel over random states, blocks, counters and
+    finalization flags;
+  - each shim operation checked against its definition.
+- **ARM64.** Under qemu ARM64 emulation both AdvSimd kernels pass the RFC examples, the
+  blake2-kat.json vectors and the shim tests. The BLAKE2s sweep's
+  `CollectionAssert.AreEqual` faults inside MSTest under the emulator. The same sweep
+  checked with a span comparison matches the scalar kernel on all 1,000 samples.

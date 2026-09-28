@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Blake2bCore.Vector256.cs" company="Bodu Pty. Ltd.">
+// <copyright file="Blake2sCore.Vector128.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -7,52 +7,48 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics;
-using System.Runtime.Intrinsics.X86;
 
 namespace Bodu.Security.Cryptography;
 
-internal static partial class Blake2bCore
+internal static partial class Blake2sCore
 {
     /// <summary>
-    /// The 256-bit implementation of the BLAKE2b compression function, written once over <see cref="Vector256{T}" />
+    /// The 128-bit implementation of the BLAKE2s compression function, written once over <see cref="Vector128{T}" />
     /// and specialized for an instruction set by <typeparamref name="TIsa" />.
     /// </summary>
-    /// <typeparam name="TIsa">The instruction set supplying the four rotations of <c>G</c>.</typeparam>
+    /// <typeparam name="TIsa">
+    /// The instruction set supplying the rotations of <c>G</c> and the lane rotations.
+    /// </typeparam>
     /// <remarks>
-    /// <para>
     /// The working vector is held as four rows of four words, so lane <c>i</c> of the rows is column <c>i</c> and one
     /// vector <c>G</c> mixes all four columns. Rotating the second, third and fourth rows by one, two and three lanes
-    /// turns the diagonals into columns for the second half of a round, and rotating them back restores the rows.
-    /// </para>
-    /// <para>
-    /// Each round's message words are gathered straight from the block as the schedule σ names them. The lane rotations
-    /// are AVX2's <c>VPERMQ</c> on every host that runs this kernel.
-    /// </para>
+    /// turns the diagonals into columns for the second half of a round, and rotating them back restores the rows. Each
+    /// round's message words are gathered straight from the block as the schedule σ names them.
     /// </remarks>
-    internal readonly struct Vector256Kernel<TIsa>
-        where TIsa : struct, IVector256Isa
+    internal readonly struct Vector128Kernel<TIsa>
+        where TIsa : struct, IVector128Isa
     {
         /// <summary>
         /// Compresses one block into the chaining state.
         /// </summary>
         /// <param name="h">The first of the eight chaining-state words, updated in place.</param>
-        /// <param name="block">The first byte of the 128-byte block.</param>
+        /// <param name="block">The first byte of the 64-byte block.</param>
         /// <param name="counter">The number of message bytes compressed so far, this block included.</param>
         /// <param name="finalization">All ones for the final block; otherwise zero.</param>
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-        internal static void Compress(ref ulong h, ref byte block, ulong counter, ulong finalization)
+        internal static void Compress(ref uint h, ref byte block, ulong counter, uint finalization)
         {
-            Vector256<ulong> h0 = Vector256.LoadUnsafe(ref h);
-            Vector256<ulong> h1 = Vector256.LoadUnsafe(ref h, 4);
-            Vector256<ulong> a = h0;
-            Vector256<ulong> b = h1;
-            Vector256<ulong> c = Vector256.Create(Iv0, Iv1, Iv2, Iv3);
-            Vector256<ulong> d = Vector256.Create(Iv4 ^ counter, Iv5, Iv6 ^ finalization, Iv7);
+            Vector128<uint> h0 = Vector128.LoadUnsafe(ref h);
+            Vector128<uint> h1 = Vector128.LoadUnsafe(ref h, 4);
+            Vector128<uint> a = h0;
+            Vector128<uint> b = h1;
+            Vector128<uint> c = Vector128.Create(Iv0, Iv1, Iv2, Iv3);
+            Vector128<uint> d = Vector128.Create(Iv4 ^ (uint)counter, Iv5 ^ (uint)(counter >> 32), Iv6 ^ finalization, Iv7);
 
-            // A loop over the rounds keeps the method within the JIT's inlining budget on every supported runtime: with
-            // every round written out, .NET 8 leaves the later rounds' Round and Load calls as calls, and the rows spill.
+            // A loop over the rounds keeps the method within the JIT's inlining budget: with every round written out, the
+            // later rounds' Round and Load calls stay calls, and the rows spill.
             ref byte sigma = ref MemoryMarshal.GetReference(Sigma);
-            for (int round = 0; round < 12; round++)
+            for (int round = 0; round < 10; round++)
             {
                 ref byte s = ref Unsafe.Add(ref sigma, round * 16);
 
@@ -84,30 +80,30 @@ internal static partial class Blake2bCore
         /// <param name="diagonalY">The second message word of each diagonal's <c>G</c>.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void Round(
-            ref Vector256<ulong> a,
-            ref Vector256<ulong> b,
-            ref Vector256<ulong> c,
-            ref Vector256<ulong> d,
-            Vector256<ulong> columnX,
-            Vector256<ulong> columnY,
-            Vector256<ulong> diagonalX,
-            Vector256<ulong> diagonalY)
+            ref Vector128<uint> a,
+            ref Vector128<uint> b,
+            ref Vector128<uint> c,
+            ref Vector128<uint> d,
+            Vector128<uint> columnX,
+            Vector128<uint> columnY,
+            Vector128<uint> diagonalX,
+            Vector128<uint> diagonalY)
         {
             G(ref a, ref b, ref c, ref d, columnX, columnY);
 
-            b = Avx2.Permute4x64(b, 0b00_11_10_01);
-            c = Avx2.Permute4x64(c, 0b01_00_11_10);
-            d = Avx2.Permute4x64(d, 0b10_01_00_11);
+            b = TIsa.RotateLanes1(b);
+            c = TIsa.RotateLanes2(c);
+            d = TIsa.RotateLanes3(d);
 
             G(ref a, ref b, ref c, ref d, diagonalX, diagonalY);
 
-            b = Avx2.Permute4x64(b, 0b10_01_00_11);
-            c = Avx2.Permute4x64(c, 0b01_00_11_10);
-            d = Avx2.Permute4x64(d, 0b00_11_10_01);
+            b = TIsa.RotateLanes3(b);
+            c = TIsa.RotateLanes2(c);
+            d = TIsa.RotateLanes1(d);
         }
 
         /// <summary>
-        /// The BLAKE2b mixing function <c>G</c>, applied to four columns (or diagonals) at once.
+        /// The BLAKE2s mixing function <c>G</c>, applied to four columns (or diagonals) at once.
         /// </summary>
         /// <param name="a">The first row.</param>
         /// <param name="b">The second row.</param>
@@ -116,16 +112,16 @@ internal static partial class Blake2bCore
         /// <param name="x">The first message word of each <c>G</c>.</param>
         /// <param name="y">The second message word of each <c>G</c>.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void G(ref Vector256<ulong> a, ref Vector256<ulong> b, ref Vector256<ulong> c, ref Vector256<ulong> d, Vector256<ulong> x, Vector256<ulong> y)
+        private static void G(ref Vector128<uint> a, ref Vector128<uint> b, ref Vector128<uint> c, ref Vector128<uint> d, Vector128<uint> x, Vector128<uint> y)
         {
             a += b + x;
-            d = TIsa.RotateRight32(d ^ a);
-            c += d;
-            b = TIsa.RotateRight24(b ^ c);
-            a += b + y;
             d = TIsa.RotateRight16(d ^ a);
             c += d;
-            b = TIsa.RotateRight63(b ^ c);
+            b = TIsa.RotateRight12(b ^ c);
+            a += b + y;
+            d = TIsa.RotateRight8(d ^ a);
+            c += d;
+            b = TIsa.RotateRight7(b ^ c);
         }
 
         /// <summary>
@@ -139,8 +135,8 @@ internal static partial class Blake2bCore
         /// <param name="k3">The σ entry naming the word for lane 3.</param>
         /// <returns>The four words.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static Vector256<ulong> Load(ref byte block, ref byte schedule, int k0, int k1, int k2, int k3) =>
-            Vector256.Create(
+        private static Vector128<uint> Load(ref byte block, ref byte schedule, int k0, int k1, int k2, int k3) =>
+            Vector128.Create(
                 M(ref block, Unsafe.Add(ref schedule, k0)),
                 M(ref block, Unsafe.Add(ref schedule, k1)),
                 M(ref block, Unsafe.Add(ref schedule, k2)),

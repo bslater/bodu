@@ -175,10 +175,12 @@ the processor supports, so an x64 pass covers the kernel, its PCLMULQDQ shim and
 the scalar kernel. Only the ARM64 shim, `Ghash.PmullIsa.cs`, built on the
 cryptography extension's `PMULL`, cannot run there.
 
-scrypt's BlockMix kernel is the third instance. Its 128-bit kernel is written once
+scrypt's BlockMix kernel and the BLAKE2 compression kernels follow it too. Its 128-bit kernel is written once
 over `Vector128` and specialized by a shim of three lane rotations; the scrypt
 tests drive the SSE2 and scalar kernels explicitly on x64, so only the ARM64 shim,
-`ScryptCore.AdvSimd.cs`, cannot run there.
+`ScryptCore.AdvSimd.cs`, cannot run there. The BLAKE2 core tests likewise drive every
+x64 kernel explicitly; BLAKE2b's 128-bit kernel reuses Argon2's shims, so its ARM64
+shim is `Argon2Core.AdvSimd.cs` again, and BLAKE2s's is `Blake2sCore.AdvSimd.cs`.
 
 `tools/New-CoverageMatrix.ps1` therefore treats `*.AdvSimd.cs` and
 `*.PmullIsa.cs` as hardware-gated whenever no collecting host is ARM64 — judged

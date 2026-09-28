@@ -60,8 +60,7 @@ internal static partial class Blake2bCore
     /// per round, rounds 10 and 11 repeating rounds 0 and 1.
     /// </summary>
     /// <remarks>
-    /// The scalar and 256-bit kernels write their rounds out with these indices as constants; the 128-bit kernel reads
-    /// them from here.
+    /// The scalar kernel writes its rounds out with these indices as constants; the vector kernels read them from here.
     /// </remarks>
     internal static ReadOnlySpan<byte> Sigma =>
     [
