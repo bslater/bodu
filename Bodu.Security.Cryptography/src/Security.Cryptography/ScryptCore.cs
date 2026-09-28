@@ -4,9 +4,11 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Buffers;
 using System.Buffers.Binary;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
@@ -15,6 +17,18 @@ namespace Bodu.Security.Cryptography;
 /// Implements the scrypt sequential memory-hard function defined by RFC 7914 — the PBKDF2-HMAC-SHA256 envelope, the
 /// <c>scryptROMix</c> and <c>scryptBlockMix</c> mixing functions, and the Salsa20/8 core.
 /// </summary>
+/// <remarks>
+/// <para>
+/// ROMix writes each link of its chain straight into <c>V</c>, and BlockMix writes each Salsa20/8 result straight into
+/// its place in the output, so no 64-byte block is copied on its way through. The second loop folds <c>X xor V[j]</c>
+/// into BlockMix's reads instead of writing it out first.
+/// </para>
+/// <para>
+/// Every buffer that holds a password-derived word — <c>B</c>, <c>V</c>, and the ROMix scratch — is cleared before it is
+/// released. Values the JIT keeps in registers or spills to its own stack slots are beyond the library's reach.
+/// </para>
+/// </remarks>
+[SkipLocalsInit]
 internal static class ScryptCore
 {
     /// <summary>The number of 32-bit words in a Salsa20 block (64 bytes).</summary>
@@ -42,152 +56,215 @@ internal static class ScryptCore
         Span<byte> output)
     {
         int unitWords = 2 * blockSizeR * BlockWords;   // 32*r words = 128*r bytes per ROMix unit
-        long totalBytes = (long)parallelization * unitWords * 4;
-        long vWords = (long)costN * unitWords;
+        long totalBytes = (long)parallelization * unitWords * sizeof(uint);
+        long vWords = ((long)costN + 1) * unitWords;
         if (totalBytes > Array.MaxLength || vWords > Array.MaxLength)
             throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_KdfMemoryExceedsLimit);
 
-        // Step 1: B = PBKDF2-HMAC-SHA256(P, S, 1, p * 128 * r).
-        byte[] b = Rfc2898DeriveBytes.Pbkdf2(password, salt, iterations: 1, HashAlgorithmName.SHA256, parallelization * 128 * blockSizeR);
+        byte[] rented = ArrayPool<byte>.Shared.Rent((int)totalBytes);
+        Span<byte> b = rented.AsSpan(0, (int)totalBytes);
 
-        uint[] words = new uint[parallelization * unitWords];
-        BytesToWordsLE(b, words);
-
-        // The p ROMix units run sequentially and are all the same shape, so their scratch buffers — including the
-        // large V array (128·r·N bytes) — are allocated once here and reused across units instead of being
-        // reallocated and re-zeroed per unit.
-        uint[] x = new uint[unitWords];
-        uint[] y = new uint[unitWords];
-        uint[] v = new uint[costN * unitWords];
+        // V holds the N links of the chain, and one more unit at its end serves as ROMix's scratch.
+        uint[] v = new uint[vWords];
 
         try
         {
-            // Step 2: B_i = scryptROMix(r, B_i, N) for each of the p independent blocks.
-            for (int i = 0; i < parallelization; i++)
-                ROMix(words.AsSpan(i * unitWords, unitWords), costN, blockSizeR, x, y, v);
+            // Step 1: B = PBKDF2-HMAC-SHA256(P, S, 1, p * 128 * r).
+            Rfc2898DeriveBytes.Pbkdf2(password, salt, b, iterations: 1, HashAlgorithmName.SHA256);
 
-            WordsToBytesLE(words, b);
+            // B's bytes are its little-endian words, so the words are B itself on a little-endian processor.
+            Span<uint> words = MemoryMarshal.Cast<byte, uint>(b);
+            if (!BitConverter.IsLittleEndian)
+                BinaryPrimitives.ReverseEndianness(words, words);
+
+            // Step 2: B_i = scryptROMix(r, B_i, N) for each of the p independent blocks.
+            Span<uint> chain = v.AsSpan(0, costN * unitWords);
+            Span<uint> scratch = v.AsSpan(costN * unitWords, unitWords);
+            for (int i = 0; i < parallelization; i++)
+                ROMix(words.Slice(i * unitWords, unitWords), costN, blockSizeR, chain, scratch);
+
+            if (!BitConverter.IsLittleEndian)
+                BinaryPrimitives.ReverseEndianness(words, words);
 
             // Step 3: DK = PBKDF2-HMAC-SHA256(P, B, 1, dkLen).
             Rfc2898DeriveBytes.Pbkdf2(password, b, output, iterations: 1, HashAlgorithmName.SHA256);
         }
         finally
         {
-            CryptographyHelper.Clear(words);
-            CryptographyHelper.Clear(b);
+            CryptographicOperations.ZeroMemory(b);
+            ArrayPool<byte>.Shared.Return(rented);
             CryptographyHelper.Clear(v);
-            CryptographyHelper.Clear(x);
-            CryptographyHelper.Clear(y);
         }
     }
 
     /// <summary>
-    /// Applies <c>scryptROMix</c> to a single 128*r-byte block in place (RFC 7914, Section 5).
+    /// Applies <c>scryptROMix</c> to a single 128·r-byte block in place (RFC 7914, Section 5).
     /// </summary>
-    /// <param name="block">The 128·r-byte block, as 32-bit words, processed in place.</param>
+    /// <param name="block">The 128·r-byte block <c>X</c>, as 32-bit words, processed in place.</param>
     /// <param name="costN">The CPU/memory cost parameter <c>N</c>.</param>
     /// <param name="blockSizeR">The block-size parameter <c>r</c>.</param>
-    /// <param name="x">A caller-owned scratch buffer of <c>unitWords</c> length. Contents on entry are ignored.</param>
-    /// <param name="y">A caller-owned scratch buffer of <c>unitWords</c> length. Contents on entry are ignored.</param>
-    /// <param name="v">
-    /// A caller-owned scratch buffer of <c>costN · unitWords</c> length. Contents on entry are ignored.
-    /// </param>
+    /// <param name="v">The <c>N</c> units of <c>V</c>; their contents on entry are ignored.</param>
+    /// <param name="scratch">One unit of working space; its contents on entry are ignored.</param>
     /// <remarks>
-    /// The three scratch buffers are supplied by the caller and reused across the <c>p</c> sequential ROMix units;
-    /// zeroization of their sensitive contents is the caller's responsibility (performed once after all units
-    /// complete).
+    /// Every unit of <paramref name="v" /> is written before it can be read, so its contents on entry cannot affect the
+    /// result. Clearing <paramref name="v" /> and <paramref name="scratch" /> afterwards is the caller's responsibility.
     /// </remarks>
-    private static void ROMix(Span<uint> block, int costN, int blockSizeR, uint[] x, uint[] y, uint[] v)
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+    private static void ROMix(Span<uint> block, int costN, int blockSizeR, Span<uint> v, Span<uint> scratch)
     {
         int unitWords = block.Length;
+        ref uint x = ref MemoryMarshal.GetReference(block);
+        ref uint y = ref MemoryMarshal.GetReference(scratch);
+        ref uint v0 = ref MemoryMarshal.GetReference(v);
 
-        // Seed X from the input block; V/Y are fully overwritten below before being read.
-        block.CopyTo(x);
-
-        for (int i = 0; i < costN; i++)
+        // V[0] = X and V[i + 1] = BlockMix(V[i]): each link is written in place, and the last one becomes X.
+        block.CopyTo(v);
+        ref uint link = ref v0;
+        for (int i = 1; i < costN; i++)
         {
-            x.AsSpan().CopyTo(v.AsSpan(i * unitWords, unitWords));
-            BlockMix(x, y, blockSizeR);
-            (x, y) = (y, x);
+            ref uint next = ref Unsafe.Add(ref link, unitWords);
+            BlockMix(ref link, ref next, blockSizeR);
+            link = ref next;
         }
 
-        for (int i = 0; i < costN; i++)
+        BlockMix(ref link, ref x, blockSizeR);
+
+        // X = BlockMix(X xor V[j]), with j = Integerify(X) mod N. N is a power of two no greater than 2^30, so the
+        // index is the low word of X's last 64-byte block masked to N; the result alternates between the block and the
+        // scratch, and N being even leaves it in the block.
+        int integerify = unitWords - BlockWords;
+        uint mask = (uint)costN - 1;
+        for (int i = 0; i < costN; i += 2)
         {
-            int j = (int)(Integerify(x, blockSizeR) % (ulong)costN);
-            ReadOnlySpan<uint> vj = v.AsSpan(j * unitWords, unitWords);
-            for (int k = 0; k < unitWords; k++)
-                x[k] ^= vj[k];
+            nint j = (nint)(Unsafe.Add(ref x, integerify) & mask);
+            BlockMixXor(ref x, ref Unsafe.Add(ref v0, j * unitWords), ref y, blockSizeR);
 
-            BlockMix(x, y, blockSizeR);
-            (x, y) = (y, x);
+            j = (nint)(Unsafe.Add(ref y, integerify) & mask);
+            BlockMixXor(ref y, ref Unsafe.Add(ref v0, j * unitWords), ref x, blockSizeR);
         }
-
-        x.AsSpan().CopyTo(block);
     }
 
     /// <summary>
-    /// Applies <c>scryptBlockMix</c>, writing the shuffled result to <paramref name="output" /> (RFC 7914, Section 4).
+    /// Applies <c>scryptBlockMix</c> to <paramref name="input" />, writing the shuffled result to
+    /// <paramref name="output" /> (RFC 7914, Section 4).
     /// </summary>
-    /// <param name="input">The 2·r 64-byte input blocks, as 32-bit words.</param>
-    /// <param name="output">The destination that receives the shuffled blocks.</param>
+    /// <param name="input">The first of the 2·r 64-byte input blocks, as 32-bit words.</param>
+    /// <param name="output">The first word of the destination; it must not overlap the input.</param>
     /// <param name="blockSizeR">The block-size parameter <c>r</c>.</param>
-    private static void BlockMix(ReadOnlySpan<uint> input, Span<uint> output, int blockSizeR)
+    /// <remarks>
+    /// Each Salsa20/8 result is computed in its place in the output: even-indexed results fill the first half and
+    /// odd-indexed ones the second, and each result is the chaining value for the next.
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+    private static void BlockMix(ref uint input, ref uint output, int blockSizeR)
     {
         int blocks = 2 * blockSizeR;
-
-        Span<uint> x = stackalloc uint[BlockWords];
-        input.Slice((blocks - 1) * BlockWords, BlockWords).CopyTo(x);
+        ref uint previous = ref Unsafe.Add(ref input, (blocks - 1) * BlockWords);
 
         for (int i = 0; i < blocks; i++)
         {
-            ReadOnlySpan<uint> bi = input.Slice(i * BlockWords, BlockWords);
-            for (int j = 0; j < BlockWords; j++)
-                x[j] ^= bi[j];
+            ref uint source = ref Unsafe.Add(ref input, i * BlockWords);
+            ref uint destination = ref Unsafe.Add(ref output, ((i >> 1) + ((i & 1) * blockSizeR)) * BlockWords);
+            for (int k = 0; k < BlockWords; k++)
+                Unsafe.Add(ref destination, k) = Unsafe.Add(ref previous, k) ^ Unsafe.Add(ref source, k);
 
-            Salsa20_8(x);
-
-            // Even-indexed results occupy the first half; odd-indexed the second.
-            int dest = (i % 2 == 0) ? (i / 2) : (blockSizeR + ((i - 1) / 2));
-            x.CopyTo(output.Slice(dest * BlockWords, BlockWords));
+            Salsa20_8(ref destination);
+            previous = ref destination;
         }
     }
 
     /// <summary>
-    /// Interprets the last 64-byte block as a little-endian integer (RFC 7914, Section 5).
+    /// Applies <c>scryptBlockMix</c> to <c><paramref name="x" /> xor <paramref name="v" /></c>, writing the shuffled
+    /// result to <paramref name="output" />, without writing the XOR out first.
     /// </summary>
-    /// <param name="block">The block whose final 64-byte sub-block is interpreted.</param>
+    /// <param name="x">The first word of the ROMix state <c>X</c>.</param>
+    /// <param name="v">The first word of the chain unit <c>V[j]</c>.</param>
+    /// <param name="output">The first word of the destination; it must overlap neither input.</param>
     /// <param name="blockSizeR">The block-size parameter <c>r</c>.</param>
-    /// <returns>The little-endian integer value of the final 64-byte sub-block.</returns>
-    private static ulong Integerify(ReadOnlySpan<uint> block, int blockSizeR)
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+    private static void BlockMixXor(ref uint x, ref uint v, ref uint output, int blockSizeR)
     {
-        int offset = ((2 * blockSizeR) - 1) * BlockWords;
-        return ((ulong)block[offset + 1] << 32) | block[offset];
+        int blocks = 2 * blockSizeR;
+        int last = (blocks - 1) * BlockWords;
+
+        // The first chaining value is the last block of X xor V[j]; every later one is the previous result.
+        ref uint destination = ref output;
+        for (int k = 0; k < BlockWords; k++)
+        {
+            Unsafe.Add(ref destination, k) =
+                Unsafe.Add(ref x, last + k) ^ Unsafe.Add(ref v, last + k) ^ Unsafe.Add(ref x, k) ^ Unsafe.Add(ref v, k);
+        }
+
+        Salsa20_8(ref destination);
+        ref uint previous = ref destination;
+
+        for (int i = 1; i < blocks; i++)
+        {
+            int offset = i * BlockWords;
+            destination = ref Unsafe.Add(ref output, ((i >> 1) + ((i & 1) * blockSizeR)) * BlockWords);
+            for (int k = 0; k < BlockWords; k++)
+                Unsafe.Add(ref destination, k) = Unsafe.Add(ref previous, k) ^ Unsafe.Add(ref x, offset + k) ^ Unsafe.Add(ref v, offset + k);
+
+            Salsa20_8(ref destination);
+            previous = ref destination;
+        }
     }
 
     /// <summary>
     /// Applies the Salsa20/8 core in place: <c>B = B + doubleround^4(B)</c> (RFC 7914, Section 3).
     /// </summary>
-    /// <param name="b">The sixteen 32-bit state words transformed in place.</param>
-    private static void Salsa20_8(Span<uint> b)
+    /// <param name="b">The first of the sixteen 32-bit state words, transformed in place.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static void Salsa20_8(ref uint b)
     {
-        Span<uint> x = stackalloc uint[BlockWords];
-        b.CopyTo(x);
+        uint x0 = b;
+        uint x1 = Unsafe.Add(ref b, 1);
+        uint x2 = Unsafe.Add(ref b, 2);
+        uint x3 = Unsafe.Add(ref b, 3);
+        uint x4 = Unsafe.Add(ref b, 4);
+        uint x5 = Unsafe.Add(ref b, 5);
+        uint x6 = Unsafe.Add(ref b, 6);
+        uint x7 = Unsafe.Add(ref b, 7);
+        uint x8 = Unsafe.Add(ref b, 8);
+        uint x9 = Unsafe.Add(ref b, 9);
+        uint x10 = Unsafe.Add(ref b, 10);
+        uint x11 = Unsafe.Add(ref b, 11);
+        uint x12 = Unsafe.Add(ref b, 12);
+        uint x13 = Unsafe.Add(ref b, 13);
+        uint x14 = Unsafe.Add(ref b, 14);
+        uint x15 = Unsafe.Add(ref b, 15);
 
         for (int i = 0; i < 8; i += 2)
         {
-            QuarterRound(ref x[0], ref x[4], ref x[8], ref x[12]);
-            QuarterRound(ref x[5], ref x[9], ref x[13], ref x[1]);
-            QuarterRound(ref x[10], ref x[14], ref x[2], ref x[6]);
-            QuarterRound(ref x[15], ref x[3], ref x[7], ref x[11]);
+            // Column round.
+            QuarterRound(ref x0, ref x4, ref x8, ref x12);
+            QuarterRound(ref x5, ref x9, ref x13, ref x1);
+            QuarterRound(ref x10, ref x14, ref x2, ref x6);
+            QuarterRound(ref x15, ref x3, ref x7, ref x11);
 
-            QuarterRound(ref x[0], ref x[1], ref x[2], ref x[3]);
-            QuarterRound(ref x[5], ref x[6], ref x[7], ref x[4]);
-            QuarterRound(ref x[10], ref x[11], ref x[8], ref x[9]);
-            QuarterRound(ref x[15], ref x[12], ref x[13], ref x[14]);
+            // Row round.
+            QuarterRound(ref x0, ref x1, ref x2, ref x3);
+            QuarterRound(ref x5, ref x6, ref x7, ref x4);
+            QuarterRound(ref x10, ref x11, ref x8, ref x9);
+            QuarterRound(ref x15, ref x12, ref x13, ref x14);
         }
 
-        for (int i = 0; i < BlockWords; i++)
-            b[i] += x[i];
+        b += x0;
+        Unsafe.Add(ref b, 1) += x1;
+        Unsafe.Add(ref b, 2) += x2;
+        Unsafe.Add(ref b, 3) += x3;
+        Unsafe.Add(ref b, 4) += x4;
+        Unsafe.Add(ref b, 5) += x5;
+        Unsafe.Add(ref b, 6) += x6;
+        Unsafe.Add(ref b, 7) += x7;
+        Unsafe.Add(ref b, 8) += x8;
+        Unsafe.Add(ref b, 9) += x9;
+        Unsafe.Add(ref b, 10) += x10;
+        Unsafe.Add(ref b, 11) += x11;
+        Unsafe.Add(ref b, 12) += x12;
+        Unsafe.Add(ref b, 13) += x13;
+        Unsafe.Add(ref b, 14) += x14;
+        Unsafe.Add(ref b, 15) += x15;
     }
 
     /// <summary>
@@ -198,34 +275,11 @@ internal static class ScryptCore
     /// <param name="c">The third state word, updated in place.</param>
     /// <param name="d">The fourth state word, updated in place.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1107:Code should not contain multiple statements on one line", Justification = "The grouped add / rotate / XOR steps mirror the Salsa20 quarter-round definition.")]
     private static void QuarterRound(ref uint a, ref uint b, ref uint c, ref uint d)
     {
         b ^= BitOperations.RotateLeft(a + d, 7);
         c ^= BitOperations.RotateLeft(b + a, 9);
         d ^= BitOperations.RotateLeft(c + b, 13);
         a ^= BitOperations.RotateLeft(d + c, 18);
-    }
-
-    /// <summary>
-    /// Converts a little-endian byte buffer into 32-bit words.
-    /// </summary>
-    /// <param name="source">The little-endian byte buffer to read.</param>
-    /// <param name="destination">The span that receives the decoded 32-bit words.</param>
-    private static void BytesToWordsLE(ReadOnlySpan<byte> source, Span<uint> destination)
-    {
-        for (int i = 0; i < destination.Length; i++)
-            destination[i] = BinaryPrimitives.ReadUInt32LittleEndian(source.Slice(i * 4, 4));
-    }
-
-    /// <summary>
-    /// Converts 32-bit words into a little-endian byte buffer.
-    /// </summary>
-    /// <param name="source">The 32-bit words to encode.</param>
-    /// <param name="destination">The span that receives the little-endian bytes.</param>
-    private static void WordsToBytesLE(ReadOnlySpan<uint> source, Span<byte> destination)
-    {
-        for (int i = 0; i < source.Length; i++)
-            BinaryPrimitives.WriteUInt32LittleEndian(destination.Slice(i * 4, 4), source[i]);
     }
 }
