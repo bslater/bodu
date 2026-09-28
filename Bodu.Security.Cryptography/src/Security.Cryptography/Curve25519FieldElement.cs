@@ -108,7 +108,7 @@ internal readonly struct Curve25519FieldElement
     /// <param name="source">The element conditionally copied.</param>
     /// <param name="condition">The move condition. Must be exactly 0 or 1.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static void ConditionalMove(ref Curve25519FieldElement destination, Curve25519FieldElement source, ulong condition)
+    internal static void ConditionalMove(ref Curve25519FieldElement destination, in Curve25519FieldElement source, ulong condition)
     {
         ulong mask = 0UL - condition;
 

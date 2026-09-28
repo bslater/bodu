@@ -13,7 +13,7 @@ namespace Bodu.Security.Cryptography;
 /// published RFC 7748 test vectors.
 /// </summary>
 [TestClass]
-public class Curve25519Tests
+public partial class Curve25519Tests
 {
     // ── ScalarMult (RFC 7748 §5.2) ────────────────────────────────────────────────────────────
 
@@ -76,31 +76,7 @@ public class Curve25519Tests
         CollectionAssert.AreEqual(original, scalar);
     }
 
-    // ── ScalarMultBase / Diffie-Hellman (RFC 7748 §6.1) ───────────────────────────────────────
-
-    /// <summary>
-    /// Verifies that <see cref="Curve25519.ScalarMultBase" /> derives the public keys published in the RFC 7748 §6.1
-    /// Diffie-Hellman example.
-    /// </summary>
-    [TestMethod]
-    [DataRow(
-        "RFC 7748 §6.1 Alice",
-        "77076d0a7318a57d3c16c17251b26645df4c2f87ebc0992ab177fba51db92c2a",
-        "8520f0098930a754748b7ddcb43ef75a0dbf3a0d26381af4eba4a98eaa9b4e6a")]
-    [DataRow(
-        "RFC 7748 §6.1 Bob",
-        "5dab087e624a8a4b79e17f8b83800ee66f3bb1292618b6fd1c2f8b27ff88e0eb",
-        "de9edb7d7b7dc1b4d35b61c2ece435373f8343c85b78674dadfc7e146f882b4f")]
-    public void ScalarMultBase_WhenGivenRfc7748PrivateKey_ShouldProducePublishedPublicKey(
-        string testName, string privateHex, string expectedPublicHex)
-    {
-        _ = testName;
-
-        byte[] destination = new byte[Curve25519.PointSizeInBytes];
-        Curve25519.ScalarMultBase(Convert.FromHexString(privateHex), destination);
-
-        CollectionAssert.AreEqual(Convert.FromHexString(expectedPublicHex), destination);
-    }
+    // ── Diffie-Hellman (RFC 7748 §6.1) ────────────────────────────────────────────────────────
 
     /// <summary>
     /// Verifies that both sides of the RFC 7748 §6.1 Diffie-Hellman exchange derive the published shared secret.

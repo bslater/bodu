@@ -14,11 +14,13 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// Point addition uses the unified extended-coordinate formula of Hisil, Wong, Carter, and Dawson. Because the curve
 /// parameter a = −1 is a square modulo p and d is a non-square, the formula is complete: it is correct for every input
-/// pair, including doubling and the identity, so no secret-dependent branching is required. This trades the peak speed
-/// of the ref10 formula set for a substantially smaller and more reviewable implementation.
+/// pair, including doubling and the identity, so no secret-dependent branching is required. Doubling uses the same
+/// paper's dedicated formula, which is complete as well and needs four squarings and four multiplications instead of
+/// nine multiplications. This trades the peak speed of the ref10 formula set for a substantially smaller and more
+/// reviewable implementation.
 /// </para>
 /// </remarks>
-internal partial struct Ed25519Point
+internal readonly partial struct Ed25519Point
 {
     /// <summary>The curve constant d = −121665/121666 mod p, decoded from its canonical encoding at type initialization.</summary>
     private static readonly Curve25519FieldElement s_d = Curve25519FieldElement.FromBytes(
@@ -36,16 +38,16 @@ internal partial struct Ed25519Point
         "5866666666666666666666666666666666666666666666666666666666666666");
 
     /// <summary>The X coordinate of the extended representation.</summary>
-    private Curve25519FieldElement _x;
+    private readonly Curve25519FieldElement _x;
 
     /// <summary>The Y coordinate of the extended representation.</summary>
-    private Curve25519FieldElement _y;
+    private readonly Curve25519FieldElement _y;
 
     /// <summary>The Z coordinate of the extended representation.</summary>
-    private Curve25519FieldElement _z;
+    private readonly Curve25519FieldElement _z;
 
     /// <summary>The extended coordinate T = XY/Z.</summary>
-    private Curve25519FieldElement _t;
+    private readonly Curve25519FieldElement _t;
 
     /// <summary>The size, in bytes, of an encoded point.</summary>
     internal const int EncodedSizeInBytes = 32;
@@ -186,11 +188,39 @@ internal partial struct Ed25519Point
     /// </summary>
     /// <returns>The point added to itself.</returns>
     /// <remarks>
-    /// Delegates to the complete <see cref="Add" /> formula, which is valid for equal operands; the dedicated doubling
-    /// formula is omitted in favor of a single audited code path.
+    /// <para>
+    /// Uses the dedicated extended-coordinate doubling of Hisil, Wong, Carter, and Dawson (dbl-2008-hwcd) for a = −1:
+    /// four squarings and four multiplications, where <see cref="Add" /> needs nine multiplications. It does not read
+    /// T, and it is complete: the new Z is (y² − x²)(y² − x² − 2) up to a factor, and since d is a non-square neither
+    /// factor can vanish for a point on the curve, so it is correct for every point, the identity and the points of
+    /// small order included.
+    /// </para>
+    /// <para>
+    /// The formula gives the point (E·F : G·H : F·G : E·H), where E = (X + Y)² − X² − Y², G = Y² − X², F = G − 2Z², and
+    /// H = −(X² + Y²). This computes −F and −H instead, which negates all four coordinates and leaves the point
+    /// unchanged.
+    /// </para>
     /// </remarks>
-    internal readonly Ed25519Point Double() =>
-        Add(this);
+    internal readonly Ed25519Point Double()
+    {
+        var xx = Curve25519FieldElement.Square(_x);
+        var yy = Curve25519FieldElement.Square(_y);
+        var zz = Curve25519FieldElement.Square(_z);
+        var sum = Curve25519FieldElement.Square(Curve25519FieldElement.Add(_x, _y));
+
+        var negatedH = Curve25519FieldElement.Add(xx, yy);
+        var e = Curve25519FieldElement.Subtract(sum, negatedH);
+        var g = Curve25519FieldElement.Subtract(yy, xx);
+
+        // G is re-reduced because it is subtracted in turn, and Subtract requires tight operands.
+        var negatedF = Curve25519FieldElement.Subtract(Curve25519FieldElement.Add(zz, zz), Curve25519FieldElement.Reduce(g));
+
+        return new Ed25519Point(
+            Curve25519FieldElement.Multiply(e, negatedF),
+            Curve25519FieldElement.Multiply(g, negatedH),
+            Curve25519FieldElement.Multiply(negatedF, g),
+            Curve25519FieldElement.Multiply(e, negatedH));
+    }
 
     /// <summary>
     /// Writes the canonical 32-byte RFC 8032 encoding of this point: the y coordinate in little-endian order with the
@@ -210,6 +240,28 @@ internal partial struct Ed25519Point
 
         if (x.IsNegative())
             destination[31] |= 0x80;
+    }
+
+    /// <summary>
+    /// Writes the u-coordinate of this point's image on Curve25519 under the birational map u = (1 + y) / (1 − y), in
+    /// the 32-byte little-endian encoding X25519 uses.
+    /// </summary>
+    /// <param name="destination">The 32-byte span that receives the encoding.</param>
+    /// <exception cref="ArgumentException"><paramref name="destination" /> is not exactly 32 bytes.</exception>
+    /// <remarks>
+    /// In projective coordinates u = (Z + Y) / (Z − Y), so the map costs one inversion and one multiplication. The map
+    /// carries the Ed25519 base point to the X25519 base point u = 9 and respects scalar multiplication. The identity,
+    /// where Z = Y, has no image; it encodes as zero.
+    /// </remarks>
+    internal readonly void EncodeMontgomeryU(Span<byte> destination)
+    {
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(destination, EncodedSizeInBytes);
+
+        var u = Curve25519FieldElement.Multiply(
+            Curve25519FieldElement.Add(_z, _y),
+            Curve25519FieldElement.Invert(Curve25519FieldElement.Subtract(_z, _y)));
+
+        u.ToBytes(destination);
     }
 
     /// <summary>

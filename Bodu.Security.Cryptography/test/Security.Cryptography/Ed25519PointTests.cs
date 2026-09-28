@@ -10,7 +10,7 @@ namespace Bodu.Security.Cryptography;
 /// Contains unit tests for the <see cref="Ed25519Point" /> group operations and the RFC 8032 point codec.
 /// </summary>
 [TestClass]
-public class Ed25519PointTests
+public partial class Ed25519PointTests
 {
     /// <summary>
     /// The canonical encoding of the Ed25519 base point.
@@ -21,6 +21,11 @@ public class Ed25519PointTests
     /// The canonical encoding of the identity element (0, 1).
     /// </summary>
     private const string IdentityHex = "0100000000000000000000000000000000000000000000000000000000000000";
+
+    /// <summary>
+    /// The canonical encoding of the base point's image on Curve25519, the X25519 base point u = 9.
+    /// </summary>
+    private const string MontgomeryNineHex = "0900000000000000000000000000000000000000000000000000000000000000";
 
     /// <summary>
     /// Verifies that <see cref="Ed25519Point.BasePoint" /> re-encodes to its canonical RFC 8032 encoding.
@@ -47,21 +52,6 @@ public class Ed25519PointTests
 
         Ed25519Point.BasePoint.Add(Ed25519Point.BasePoint.Negate()).Encode(sum);
         CollectionAssert.AreEqual(Convert.FromHexString(IdentityHex), sum);
-    }
-
-    /// <summary>
-    /// Verifies that doubling the base point matches adding it to itself through an independently constructed copy.
-    /// </summary>
-    [TestMethod]
-    public void Double_WhenComparedToSelfAddition_ShouldProduceSameResult()
-    {
-        byte[] doubled = new byte[Ed25519Point.EncodedSizeInBytes];
-        byte[] added = new byte[Ed25519Point.EncodedSizeInBytes];
-
-        Ed25519Point.BasePoint.Double().Encode(doubled);
-        Ed25519Point.BasePoint.Add(Ed25519Point.BasePoint).Encode(added);
-
-        CollectionAssert.AreEqual(doubled, added);
     }
 
     /// <summary>
