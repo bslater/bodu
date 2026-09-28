@@ -64,6 +64,8 @@ bool ok = verifier.VerifyData(message, signature);
 
 `ImportPrivateKey` cross-checks the embedded public-key hash and throws <xref:System.ArgumentException> on a key whose secret vectors do not match.
 
+An instance keeps what FIPS 204 derives from its key on every operation — the matrix Â, the public-key hash tr, and the key's vectors in the form the arithmetic uses — from the moment the key is generated or imported, so reuse one instance for many signatures or verifications rather than importing the key for each. Beside the encoded keys these take about 32, 53 and 87 KiB for ML-DSA-44, 65 and 87, or 20, 36 and 64 KiB for a public key alone; the secret vectors are zeroed with the private key when the instance is disposed.
+
 ## Context strings
 
 ML-DSA signing accepts an optional **context** string of up to 255 bytes that domain-separates signatures across applications: a signature created with a context verifies **only** when the same context is supplied at verification. Use it to stop a signature minted for one purpose from being replayed in another.

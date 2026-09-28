@@ -1136,3 +1136,97 @@ How it was done, and where it departs from the design above:
   - **Register pressure.** The multiply has 14 inputs and 10 partial sums for 15 x64
     registers, which leaves about 130 stack references. Four 64-bit limbs would need
     add-with-carry, which .NET does not expose.
+
+### W9 — ML-KEM and ML-DSA beyond Keccak (done)
+
+| Measure | Baseline | Result | Target |
+|---|---|---|---|
+| ML-KEM-768 encapsulate / decapsulate | 109–125 / 144–155 µs | 41–51 / 60–80 µs | ≤ 60 / ≤ 80 µs — met |
+| ML-KEM-768 key generation | 95–115 µs | 75–80 µs | — |
+| ML-DSA-65 sign | 1.82–2.28 ms | 0.79–0.85 ms | ≤ 1 ms — met |
+| ML-DSA-65 sign, allocation | about 119 KB | 3,336 B, the signature | ≤ 8 KiB — met |
+| ML-DSA-65 verify | 305–391 µs, 54,904 B | 68–73 µs, nothing | — |
+| ML-DSA-65 key generation | 322–354 µs | 302–328 µs | — |
+
+The baselines were re-measured the same day at `e7c08bb`, the commit before W9, in runs
+alternating with the results. Each range spans three runs on each runtime: .NET 8 and
+.NET 10 measure the same within noise. On this machine a single harness row can move by
+10–15% from one run to the next, so ranges rather than single figures are recorded.
+
+How it was done, and where it departs from the design above:
+
+- **ML-KEM arithmetic (W9a).**
+  - Every butterfly, base-case product and sum reduced with `% Q`. A Reduction partial of
+    `MLKemEngine` supplies the reductions FIPS 203 implementations use instead.
+    - `MontgomeryReduce`, with R = 2^16, reduces the twiddle products. The twiddles are
+      stored multiplied by 2^16, so the reduction gives the plain product.
+    - `BarrettReduce` returns the centered representative of the inverse transform's
+      sums.
+    - `ReduceWide`, a Barrett reduction for values below 2^36, reduces each base-case
+      output coefficient once, as a single sum of products.
+  - The forward transform leaves its sums unreduced, since seven layers keep them within
+    (−8q, 8q), and reduces once at the end.
+  - The binomial sampler counted its PRF stream a bit at a time. It now counts a word at
+    a time: adding a word to itself shifted right leaves each η-bit field holding the
+    count of its own bits.
+- **ML-KEM caching (W9b).**
+  - Every operation re-derived H(ek), the matrix Â, and the vectors t̂ and ŝ decoded
+    from 12-bit packing. `MLKemKeyMaterial` keeps them from when the key is set, as
+    FIPS 203 permits.
+  - Key generation hands over the matrix and both vectors, and the decapsulation key
+    carries H(ek), so a generated key costs nothing extra to cache. An imported key
+    derives them once.
+  - The caches take about 8, 15 and 24 KiB for ML-KEM-512, 768 and 1024.
+- **ML-DSA arithmetic and storage (W9c).**
+  - `MLDsaEngine` gained the same kind of Reduction partial, with Montgomery R = 2^32,
+    a `Reduce32` for sums below 2^31, and `Freeze`.
+  - Of the two factors in each coefficient-wise product, the one fixed for the whole
+    operation is held in Montgomery form, so every product needs a single reduction.
+    That covers Â, ŝ₁, ŝ₂, t̂₀ and NTT(t₁·2ᵈ).
+  - `Decompose` and `HighBits` divided by 2γ₂. They now use the reference
+    implementation's multiply-and-shift quotients, so no secret coefficient reaches a
+    divider, whose timing on some processors depends on its operands. The signed bit
+    packing and `MakeHint` are branch-free.
+  - Each operation built jagged arrays of polynomials, and signing cloned y on each
+    rejection attempt. Key generation, signing and verification now each rent one
+    flat workspace from `ArrayPool<int>`, carve their polynomials from it, and clear it
+    on return. Signing allocates only the signature it returns.
+- **ML-DSA caching (W9d).**
+  - Every signature re-derived Â (about 118 µs for ML-DSA-65) and the 17 transforms of
+    s₁, s₂ and t₀. Every verification re-derived Â, tr = H(pk) and the six transforms
+    of t₁·2ᵈ. `MLDsaKeyMaterial` keeps them from when the key is set.
+  - Key generation and private-key import hand over Â and NTT(s₁), which they compute
+    anyway. The transform is linear, so NTT(t₁·2ᵈ) = Â ∘ ŝ₁ + ŝ₂ − t̂₀, formed from
+    values already at hand rather than by k more transforms. Every value is brought to
+    the representative the `Expand` methods produce, so the caches do not depend on how
+    the key was set.
+  - The caches take about 32, 53 and 87 KiB for ML-DSA-44, 65 and 87. Building them
+    costs key generation about 70 µs, which W9c's arithmetic more than repays.
+  - The inverse transform now takes coefficients below q, as the reference
+    implementation's does. Only the matrix-vector sums need reducing first, so 17 of
+    the 23 inverse transforms in each signing attempt skip that pass. The final scaling
+    by 256⁻¹ folds into the last layer.
+- **Tests.**
+  - The replaced remainder-operator code moved into the tests as `MLKemReference` and
+    `MLDsaReference`. The reductions are held to plain integer arithmetic at and
+    around their input bounds, and the transforms, products and samplers to the
+    references over edge and seeded polynomials.
+  - `Decompose` is checked against the division-based reference over every
+    coefficient in [0, q), for both values of γ₂, in the Regression tier. The inverse
+    transform is checked with inputs that drive its last layer's sum and difference to
+    256(q − 1).
+  - Key generation's and import's hand-overs are held to what the `Expand` methods
+    derive from the encoded keys, the high-order vector formed by linearity included.
+  - The `KeyReuse` partials of both contracts hold many operations on one key, and key
+    replacement, to the engines' uncached overloads. The `*KeyMaterialTests` check that
+    every way of setting a key keeps the same values, and that `Clear` zeroes the
+    secret ones.
+  - The NIST ACVP and Wycheproof vectors pass unchanged through the cached paths.
+- **Left for later (the design's T4).**
+  - **A SIMD transform.** The scalar butterfly is 16 instructions around three dependent
+    multiplications. A signing attempt runs 29 transforms, about 60% of its time. An
+    AVX2 transform over eight 32-bit lanes would cut that several times over, as the
+    reference implementation's AVX2 code does. The targets are met without it.
+  - **A four-way Keccak.** Â, the mask vector y and the secret vectors are expanded
+    from independent SHAKE streams, four or more at a time. A `Vector256<ulong>`
+    permutation would run four streams at once.
