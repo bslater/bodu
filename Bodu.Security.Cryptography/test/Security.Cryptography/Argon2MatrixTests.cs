@@ -17,6 +17,6 @@ public sealed partial class Argon2MatrixTests
     /// Creates a pool private to one test, retaining up to four buffers of up to 1 MiB.
     /// </summary>
     /// <returns>The pool.</returns>
-    private static Argon2MatrixPool CreatePool() =>
+    private static NativeBufferPool CreatePool() =>
         new(4, 1024 * 1024, TimeSpan.FromHours(1), TimeProvider.System);
 }

@@ -22,6 +22,15 @@ namespace Bodu.Security.Cryptography;
 /// then derives keys or PHC password hashes. The static one-shot methods are provided for convenience.
 /// </para>
 /// <para>
+/// The working memory — <c>V</c>, <c>128 · N · r</c> bytes — is held in native memory and reused across derivations,
+/// in the same reserve as Argon2's matrix, so a derivation neither allocates it on the collected heap nor waits for it
+/// to be zeroed. Up to one buffer per processor stays reserved — cleared — for up to thirty seconds after the last
+/// derivation; the <c>Bodu.Security.Cryptography.Argon2.DisableMatrixReuse</c> <see cref="AppContext" /> switch
+/// releases each buffer as soon as its derivation ends instead. Every buffer holding a password-derived value is
+/// cleared before it is released; values the JIT keeps in registers or its own stack slots are beyond the library's
+/// reach.
+/// </para>
+/// <para>
 /// This implementation is not independently audited and offers best-effort, not guaranteed, side-channel resistance.
 /// </para>
 /// </remarks>

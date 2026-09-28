@@ -1,12 +1,12 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Argon2MatrixPoolTests.ManualTimeProvider.cs" company="Bodu Pty. Ltd.">
+// <copyright file="NativeBufferPoolTests.ManualTimeProvider.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Security.Cryptography;
 
-public sealed partial class Argon2MatrixPoolTests
+public sealed partial class NativeBufferPoolTests
 {
     /// <summary>
     /// A clock whose timestamp moves only when a test advances it, so idle release can be tested without waiting.

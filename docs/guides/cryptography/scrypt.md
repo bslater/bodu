@@ -83,6 +83,10 @@ The `ln` field is `log2(N)` (so `N = 16384` encodes as `ln=14`). `Verify` re-der
 
 Hold `r = 8` and `p = 1`, then raise `N` (always a power of two) until verification fits your latency budget on the hardware that will run it. Each doubling of `N` doubles both time and memory. If you need more memory without more time, increase `r` instead. Remember that `128 * N * r` bytes must be available per concurrent derivation — size `N` against your server's memory and expected login concurrency, not just latency.
 
+## Memory
+
+scrypt's working memory — `V`, `128 * N * r` bytes — lives in native memory, not on the managed heap, so a derivation allocates no large array and provokes no gen2 collection. It shares [Argon2](argon2.md)'s reserve: so that a burst of logins does not map fresh pages every time, up to one buffer per processor (of up to 256 MiB each) stays reserved for 30 seconds after the last derivation — cleared, so what stays resident is zeros. Setting the `AppContext` switch `Bodu.Security.Cryptography.Argon2.DisableMatrixReuse` (named for Argon2, which introduced it) releases each buffer as soon as its derivation ends instead. `V`, the PBKDF2 output `B`, and every other buffer that held a password-derived value are cleared before they are released; values the JIT keeps in registers or its own stack slots are beyond the library's reach.
+
 ## What scrypt is not
 
 - **Not the current default for new systems.** Argon2id (RFC 9106) is the more recent design and the general recommendation; choose scrypt for interoperability or to match an existing store. See [Using Argon2](argon2.md).

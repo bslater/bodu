@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Argon2MatrixPoolTests.cs" company="Bodu Pty. Ltd.">
+// <copyright file="NativeBufferPoolTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -7,11 +7,12 @@
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Tests for <see cref="Argon2MatrixPool" />, the bounded, idle-trimmed pool of native matrix buffers, grouped into
-/// member-named partial files. Each test uses its own pool, so none observes another's buffers.
+/// Tests for <see cref="NativeBufferPool" />, the bounded, idle-trimmed pool of native buffers, grouped into
+/// member-named partial files. The tests rent through <see cref="Argon2Matrix" />, the pool's first client; each uses
+/// its own pool, so none observes another's buffers.
 /// </summary>
 [TestClass]
-public sealed partial class Argon2MatrixPoolTests
+public sealed partial class NativeBufferPoolTests
 {
     /// <summary>The number of bytes in a memory block.</summary>
     private const int BlockBytes = Argon2Matrix.WordsPerBlock * sizeof(ulong);
@@ -24,7 +25,7 @@ public sealed partial class Argon2MatrixPoolTests
     /// </summary>
     /// <param name="timeProvider">The pool's clock; the system clock when <see langword="null" />.</param>
     /// <returns>The pool.</returns>
-    private static Argon2MatrixPool CreatePool(TimeProvider? timeProvider = null) =>
+    private static NativeBufferPool CreatePool(TimeProvider? timeProvider = null) =>
         new(4, 1024 * 1024, LongIdleTimeout, timeProvider ?? TimeProvider.System);
 
     /// <summary>

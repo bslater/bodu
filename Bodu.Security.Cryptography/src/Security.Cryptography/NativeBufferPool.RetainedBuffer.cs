@@ -1,12 +1,12 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Argon2MatrixPool.RetainedBuffer.cs" company="Bodu Pty. Ltd.">
+// <copyright file="NativeBufferPool.RetainedBuffer.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Security.Cryptography;
 
-internal sealed partial class Argon2MatrixPool
+internal sealed partial class NativeBufferPool
 {
     /// <summary>
     /// Describes one retained buffer.

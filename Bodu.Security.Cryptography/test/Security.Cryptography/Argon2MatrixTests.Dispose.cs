@@ -14,7 +14,7 @@ public sealed partial class Argon2MatrixTests
     [TestMethod]
     public void Dispose_WhenCalledTwice_ShouldReturnTheBufferOnce()
     {
-        Argon2MatrixPool pool = CreatePool();
+        NativeBufferPool pool = CreatePool();
         Argon2Matrix matrix = Argon2Matrix.Rent(16, pool);
 
         matrix.Dispose();

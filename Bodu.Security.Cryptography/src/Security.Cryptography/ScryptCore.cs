@@ -24,12 +24,17 @@ namespace Bodu.Security.Cryptography;
 /// into BlockMix's reads instead of writing it out first.
 /// </para>
 /// <para>
+/// <c>V</c> and the ROMix scratch live in a <see cref="Workspace" /> in native memory, taken from the
+/// <see cref="NativeBufferPool" /> Argon2 also uses, so a derivation neither allocates them on the collected heap nor
+/// provokes a gen2 collection.
+/// </para>
+/// <para>
 /// Every buffer that holds a password-derived word — <c>B</c>, <c>V</c>, and the ROMix scratch — is cleared before it is
 /// released. Values the JIT keeps in registers or spills to its own stack slots are beyond the library's reach.
 /// </para>
 /// </remarks>
 [SkipLocalsInit]
-internal static class ScryptCore
+internal static partial class ScryptCore
 {
     /// <summary>The number of 32-bit words in a Salsa20 block (64 bytes).</summary>
     private const int BlockWords = 16;
@@ -45,27 +50,50 @@ internal static class ScryptCore
     /// <param name="parallelization">The parallelization parameter <c>p</c>.</param>
     /// <param name="output">The destination buffer; its length is the derived-key length <c>dkLen</c>.</param>
     /// <exception cref="CryptographicException">
-    /// The requested memory size cannot be represented as a single managed array.
+    /// <c>B</c> cannot be represented as a single managed array, or <c>V</c> as a single span.
     /// </exception>
+    /// <exception cref="OutOfMemoryException"><c>V</c> cannot be allocated.</exception>
     internal static void DeriveKey(
         ReadOnlySpan<byte> password,
         ReadOnlySpan<byte> salt,
         int costN,
         int blockSizeR,
         int parallelization,
-        Span<byte> output)
+        Span<byte> output) =>
+        DeriveKey(password, salt, costN, blockSizeR, parallelization, output, NativeBufferPool.Shared);
+
+    /// <summary>
+    /// Derives <paramref name="output" />.Length bytes from the password and salt using scrypt with the given cost
+    /// parameters, taking <c>V</c> from the specified pool.
+    /// </summary>
+    /// <param name="password">The password <c>P</c>.</param>
+    /// <param name="salt">The salt <c>S</c>.</param>
+    /// <param name="costN">The CPU/memory cost parameter <c>N</c> (a power of two greater than one).</param>
+    /// <param name="blockSizeR">The block-size parameter <c>r</c>.</param>
+    /// <param name="parallelization">The parallelization parameter <c>p</c>.</param>
+    /// <param name="output">The destination buffer; its length is the derived-key length <c>dkLen</c>.</param>
+    /// <param name="pool">The pool the workspace is taken from and returned to.</param>
+    /// <exception cref="CryptographicException">
+    /// <c>B</c> cannot be represented as a single managed array, or <c>V</c> as a single span.
+    /// </exception>
+    /// <exception cref="OutOfMemoryException"><c>V</c> cannot be allocated.</exception>
+    internal static void DeriveKey(
+        ReadOnlySpan<byte> password,
+        ReadOnlySpan<byte> salt,
+        int costN,
+        int blockSizeR,
+        int parallelization,
+        Span<byte> output,
+        NativeBufferPool pool)
     {
         int unitWords = 2 * blockSizeR * BlockWords;   // 32*r words = 128*r bytes per ROMix unit
         long totalBytes = (long)parallelization * unitWords * sizeof(uint);
-        long vWords = ((long)costN + 1) * unitWords;
-        if (totalBytes > Array.MaxLength || vWords > Array.MaxLength)
+        long workspaceWords = ((long)costN + 1) * unitWords;
+        if (totalBytes > Array.MaxLength || workspaceWords > int.MaxValue)
             throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_KdfMemoryExceedsLimit);
 
         byte[] rented = ArrayPool<byte>.Shared.Rent((int)totalBytes);
         Span<byte> b = rented.AsSpan(0, (int)totalBytes);
-
-        // V holds the N links of the chain, and one more unit at its end serves as ROMix's scratch.
-        uint[] v = new uint[vWords];
 
         try
         {
@@ -78,10 +106,11 @@ internal static class ScryptCore
                 BinaryPrimitives.ReverseEndianness(words, words);
 
             // Step 2: B_i = scryptROMix(r, B_i, N) for each of the p independent blocks.
-            Span<uint> chain = v.AsSpan(0, costN * unitWords);
-            Span<uint> scratch = v.AsSpan(costN * unitWords, unitWords);
-            for (int i = 0; i < parallelization; i++)
-                ROMix(words.Slice(i * unitWords, unitWords), costN, blockSizeR, chain, scratch);
+            using (Workspace workspace = Workspace.Rent(costN, unitWords, pool))
+            {
+                for (int i = 0; i < parallelization; i++)
+                    ROMix(words.Slice(i * unitWords, unitWords), costN, blockSizeR, workspace.Chain, workspace.Scratch);
+            }
 
             if (!BitConverter.IsLittleEndian)
                 BinaryPrimitives.ReverseEndianness(words, words);
@@ -93,7 +122,6 @@ internal static class ScryptCore
         {
             CryptographicOperations.ZeroMemory(b);
             ArrayPool<byte>.Shared.Return(rented);
-            CryptographyHelper.Clear(v);
         }
     }
 
@@ -110,7 +138,7 @@ internal static class ScryptCore
     /// result. Clearing <paramref name="v" /> and <paramref name="scratch" /> afterwards is the caller's responsibility.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-    private static void ROMix(Span<uint> block, int costN, int blockSizeR, Span<uint> v, Span<uint> scratch)
+    internal static void ROMix(Span<uint> block, int costN, int blockSizeR, Span<uint> v, Span<uint> scratch)
     {
         int unitWords = block.Length;
         ref uint x = ref MemoryMarshal.GetReference(block);

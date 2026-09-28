@@ -1,12 +1,12 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Argon2MatrixPoolTests.TrimIdle.cs" company="Bodu Pty. Ltd.">
+// <copyright file="NativeBufferPoolTests.TrimIdle.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Security.Cryptography;
 
-public sealed partial class Argon2MatrixPoolTests
+public sealed partial class NativeBufferPoolTests
 {
     /// <summary>
     /// Verifies that a buffer left unused for the idle timeout is freed, so a process that stops deriving gives the
@@ -16,7 +16,7 @@ public sealed partial class Argon2MatrixPoolTests
     public void TrimIdle_WhenABufferHasBeenIdleForTheTimeout_ShouldFreeIt()
     {
         var clock = new ManualTimeProvider();
-        Argon2MatrixPool pool = CreatePool(clock);
+        NativeBufferPool pool = CreatePool(clock);
         Argon2Matrix.Rent(16, pool).Dispose();
 
         clock.Advance(LongIdleTimeout);
@@ -32,7 +32,7 @@ public sealed partial class Argon2MatrixPoolTests
     public void TrimIdle_WhenABufferWasReturnedRecently_ShouldKeepIt()
     {
         var clock = new ManualTimeProvider();
-        Argon2MatrixPool pool = CreatePool(clock);
+        NativeBufferPool pool = CreatePool(clock);
         Argon2Matrix.Rent(16, pool).Dispose();
 
         clock.Advance(LongIdleTimeout - TimeSpan.FromSeconds(1));
@@ -48,7 +48,7 @@ public sealed partial class Argon2MatrixPoolTests
     public void TrimIdle_WhenBuffersWereReturnedAtDifferentTimes_ShouldFreeOnlyTheIdleOnes()
     {
         var clock = new ManualTimeProvider();
-        Argon2MatrixPool pool = CreatePool(clock);
+        NativeBufferPool pool = CreatePool(clock);
         Argon2Matrix older = Argon2Matrix.Rent(16, pool);
         Argon2Matrix newer = Argon2Matrix.Rent(16, pool);
         older.Dispose();

@@ -14,7 +14,7 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The matrix lives outside the collected heap, in a buffer taken from <see cref="Argon2MatrixPool" />, so a derivation
+/// The matrix lives outside the collected heap, in a buffer taken from <see cref="NativeBufferPool" />, so a derivation
 /// neither allocates a large managed array nor leaves one for a gen2 collection. On disposal every block the derivation
 /// could have written is cleared before the buffer goes back to the pool, which is what keeps every pooled buffer all
 /// zero.
@@ -35,7 +35,7 @@ internal sealed unsafe class Argon2Matrix
     private const int BlockBytes = WordsPerBlock * sizeof(ulong);
 
     /// <summary>The pool the buffer came from and returns to.</summary>
-    private readonly Argon2MatrixPool _pool;
+    private readonly NativeBufferPool _pool;
 
     /// <summary>The size of the buffer, in bytes, which may exceed the blocks in use.</summary>
     private readonly nuint _capacity;
@@ -50,7 +50,7 @@ internal sealed unsafe class Argon2Matrix
     /// <param name="words">The buffer.</param>
     /// <param name="capacity">The buffer's size, in bytes.</param>
     /// <param name="blockCount">The number of blocks in use.</param>
-    private Argon2Matrix(Argon2MatrixPool pool, ulong* words, nuint capacity, int blockCount)
+    private Argon2Matrix(NativeBufferPool pool, ulong* words, nuint capacity, int blockCount)
     {
         _pool = pool;
         _words = words;
@@ -70,7 +70,7 @@ internal sealed unsafe class Argon2Matrix
     /// <returns>A matrix the caller owns and must dispose.</returns>
     /// <exception cref="OutOfMemoryException">The matrix cannot be allocated.</exception>
     internal static Argon2Matrix Rent(int blockCount) =>
-        Rent(blockCount, Argon2MatrixPool.Shared);
+        Rent(blockCount, NativeBufferPool.Shared);
 
     /// <summary>
     /// Obtains a matrix of the specified number of blocks from the specified pool.
@@ -79,7 +79,7 @@ internal sealed unsafe class Argon2Matrix
     /// <param name="pool">The pool to take the buffer from and return it to.</param>
     /// <returns>A matrix the caller owns and must dispose.</returns>
     /// <exception cref="OutOfMemoryException">The matrix cannot be allocated.</exception>
-    internal static Argon2Matrix Rent(int blockCount, Argon2MatrixPool pool)
+    internal static Argon2Matrix Rent(int blockCount, NativeBufferPool pool)
     {
         byte* buffer = pool.Rent((nuint)blockCount * BlockBytes, out nuint capacity);
         return new Argon2Matrix(pool, (ulong*)buffer, capacity, blockCount);
@@ -123,7 +123,7 @@ internal sealed unsafe class Argon2Matrix
         _words = null;
 
         // Only the blocks in use can hold anything; the rest of a larger pooled buffer is still zero from its last use.
-        Argon2MatrixPool.Clear((byte*)words, (nuint)BlockCount * BlockBytes);
+        NativeBufferPool.Clear((byte*)words, (nuint)BlockCount * BlockBytes);
         _pool.Return((byte*)words, _capacity);
     }
 }

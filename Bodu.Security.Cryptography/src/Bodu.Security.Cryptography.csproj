@@ -8,9 +8,10 @@
     <IsAotCompatible Condition="'$(BoduTfmIsNetCore)' == 'true'">true</IsAotCompatible>
 
     <!--
-      Argon2 holds its memory matrix in native memory (Argon2Matrix, reused through Argon2MatrixPool), so the matrix
-      never reaches the collected heap; the pointer code is confined to those two types. Unsafe code also enables
-      [SkipLocalsInit] on the Argon2 core, whose scratch buffers are all written before they are read.
+      Argon2's memory matrix and scrypt's V live in native memory (Argon2Matrix and ScryptCore.Workspace, reused
+      through NativeBufferPool), so neither reaches the collected heap; the pointer code is confined to those three
+      types. Unsafe code also enables [SkipLocalsInit] on the Argon2 and scrypt cores, whose scratch buffers are all
+      written before they are read.
     -->
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Title>Bodu — Cryptography</Title>

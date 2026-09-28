@@ -1,12 +1,12 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Argon2MatrixPoolTests.Return.cs" company="Bodu Pty. Ltd.">
+// <copyright file="NativeBufferPoolTests.Return.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Security.Cryptography;
 
-public sealed partial class Argon2MatrixPoolTests
+public sealed partial class NativeBufferPoolTests
 {
     /// <summary>
     /// Verifies that a buffer comes back from the pool all zero after a matrix that wrote every block of it is disposed,
@@ -15,7 +15,7 @@ public sealed partial class Argon2MatrixPoolTests
     [TestMethod]
     public void Return_WhenMatrixWroteEveryBlock_ShouldLeaveTheBufferAllZero()
     {
-        Argon2MatrixPool pool = CreatePool();
+        NativeBufferPool pool = CreatePool();
         using (Argon2Matrix written = Argon2Matrix.Rent(16, pool))
             FillWithPattern(written);
 
@@ -31,7 +31,7 @@ public sealed partial class Argon2MatrixPoolTests
     [TestMethod]
     public void Return_WhenSmallerMatrixReusedALargerBuffer_ShouldLeaveTheWholeBufferAllZero()
     {
-        Argon2MatrixPool pool = CreatePool();
+        NativeBufferPool pool = CreatePool();
         using (Argon2Matrix first = Argon2Matrix.Rent(64, pool))
             FillWithPattern(first);
 
@@ -49,7 +49,7 @@ public sealed partial class Argon2MatrixPoolTests
     [TestMethod]
     public void Return_WhenThePoolIsFull_ShouldFreeTheBuffer()
     {
-        var pool = new Argon2MatrixPool(1, 1024 * 1024, LongIdleTimeout, TimeProvider.System);
+        var pool = new NativeBufferPool(1, 1024 * 1024, LongIdleTimeout, TimeProvider.System);
         Argon2Matrix first = Argon2Matrix.Rent(16, pool);
         Argon2Matrix second = Argon2Matrix.Rent(16, pool);
 
@@ -65,7 +65,7 @@ public sealed partial class Argon2MatrixPoolTests
     [TestMethod]
     public void Return_WhenTheBufferExceedsTheRetentionSize_ShouldFreeIt()
     {
-        var pool = new Argon2MatrixPool(4, 8 * BlockBytes, LongIdleTimeout, TimeProvider.System);
+        var pool = new NativeBufferPool(4, 8 * BlockBytes, LongIdleTimeout, TimeProvider.System);
 
         Argon2Matrix.Rent(16, pool).Dispose();
 
@@ -74,12 +74,12 @@ public sealed partial class Argon2MatrixPoolTests
 
     /// <summary>
     /// Verifies that a pool that retains nothing — the shared pool's behavior when the
-    /// <see cref="Argon2MatrixPool.DisableReuseSwitchName" /> switch is set — frees every buffer.
+    /// <see cref="NativeBufferPool.DisableReuseSwitchName" /> switch is set — frees every buffer.
     /// </summary>
     [TestMethod]
     public void Return_WhenRetentionIsDisabled_ShouldFreeTheBuffer()
     {
-        var pool = new Argon2MatrixPool(0, 1024 * 1024, LongIdleTimeout, TimeProvider.System);
+        var pool = new NativeBufferPool(0, 1024 * 1024, LongIdleTimeout, TimeProvider.System);
 
         Argon2Matrix.Rent(16, pool).Dispose();
 
@@ -94,7 +94,7 @@ public sealed partial class Argon2MatrixPoolTests
     public void Return_WhenExecutionContextFlowIsAlreadySuppressed_ShouldStartTheIdleTimer()
     {
         var clock = new ManualTimeProvider();
-        Argon2MatrixPool pool = CreatePool(clock);
+        NativeBufferPool pool = CreatePool(clock);
         Argon2Matrix matrix = Argon2Matrix.Rent(16, pool);
 
         using (ExecutionContext.SuppressFlow())

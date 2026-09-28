@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Argon2MatrixPool.cs" company="Bodu Pty. Ltd.">
+// <copyright file="NativeBufferPool.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -10,28 +10,31 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Reuses the native buffers that hold Argon2 memory matrices, so a steady stream of derivations neither allocates a
-/// matrix per call nor pays the operating system for fresh pages each time.
+/// Reuses the native buffers that hold the working memory of the memory-hard key-derivation functions — Argon2's
+/// memory matrix and scrypt's <c>V</c> — so a steady stream of derivations neither allocates that memory per call nor
+/// pays the operating system for fresh pages each time.
 /// </summary>
 /// <remarks>
 /// <para>
-/// A buffer is cleared by its <see cref="Argon2Matrix" /> before it comes back, so every buffer the pool holds is
-/// entirely zero: nothing derived from a password outlives the derivation that produced it. The pool keeps at most
-/// <see cref="MaxRetainedBuffers" /> buffers of at most <see cref="MaxRetainedBufferBytes" /> each, and releases any
-/// buffer left unused for <see cref="IdleTimeout" />, so a process that stops deriving gives the memory back.
+/// Each renter clears what it wrote before the buffer comes back, so every buffer the pool holds is entirely zero:
+/// nothing derived from a password outlives the derivation that produced it. The pool keeps at most
+/// <see cref="MaxRetainedBuffers" /> buffers of at most <see cref="MaxRetainedBufferBytes" /> each, whichever function
+/// used them last, and releases any buffer left unused for <see cref="IdleTimeout" />, so a process that stops deriving
+/// gives the memory back.
 /// </para>
 /// <para>
-/// Setting the <see cref="DisableReuseSwitchName" /> <see cref="AppContext" /> switch turns retention off: every buffer
-/// is then freed when its derivation ends. The switch is read once, when the shared pool is created.
+/// Setting the <see cref="DisableReuseSwitchName" /> <see cref="AppContext" /> switch turns retention off for every
+/// renter: each buffer is then freed when its derivation ends. The switch keeps the name it was introduced under, for
+/// Argon2, and is read once, when the shared pool is created.
 /// </para>
 /// <para>
-/// Allocation from native memory keeps the matrix off the collected heap altogether; a freed or trimmed buffer goes
+/// Allocation from native memory keeps that memory off the collected heap altogether; a freed or trimmed buffer goes
 /// back to the operating system at once instead of waiting for a gen2 collection.
 /// </para>
 /// </remarks>
-internal sealed unsafe partial class Argon2MatrixPool
+internal sealed unsafe partial class NativeBufferPool
 {
-    /// <summary>The name of the <see cref="AppContext" /> switch that, when enabled, frees every matrix as soon as its derivation ends.</summary>
+    /// <summary>The name of the <see cref="AppContext" /> switch that, when enabled, frees every buffer as soon as its derivation ends.</summary>
     internal const string DisableReuseSwitchName = "Bodu.Security.Cryptography.Argon2.DisableMatrixReuse";
 
     /// <summary>The largest buffer the shared pool retains, in bytes: 256 MiB, four times RFC 9106's second recommended memory cost.</summary>
@@ -61,13 +64,13 @@ internal sealed unsafe partial class Argon2MatrixPool
     private ITimer? _idleTimer;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Argon2MatrixPool" /> class.
+    /// Initializes a new instance of the <see cref="NativeBufferPool" /> class.
     /// </summary>
     /// <param name="maxRetainedBuffers">The greatest number of buffers to retain; zero retains none.</param>
     /// <param name="maxRetainedBufferBytes">The largest buffer to retain, in bytes.</param>
     /// <param name="idleTimeout">The time a retained buffer may go unused before it is freed.</param>
     /// <param name="timeProvider">The clock that stamps returned buffers and drives the idle timer.</param>
-    internal Argon2MatrixPool(int maxRetainedBuffers, long maxRetainedBufferBytes, TimeSpan idleTimeout, TimeProvider timeProvider)
+    internal NativeBufferPool(int maxRetainedBuffers, long maxRetainedBufferBytes, TimeSpan idleTimeout, TimeProvider timeProvider)
     {
         MaxRetainedBuffers = maxRetainedBuffers;
         MaxRetainedBufferBytes = maxRetainedBufferBytes;
@@ -79,7 +82,7 @@ internal sealed unsafe partial class Argon2MatrixPool
     /// Gets the pool every derivation uses: up to one retained buffer per processor, each up to 256 MiB, released after
     /// thirty idle seconds — or none at all when the <see cref="DisableReuseSwitchName" /> switch is set.
     /// </summary>
-    internal static Argon2MatrixPool Shared { get; } = new(
+    internal static NativeBufferPool Shared { get; } = new(
         AppContext.TryGetSwitch(DisableReuseSwitchName, out bool disabled) && disabled ? 0 : Environment.ProcessorCount,
         DefaultMaxRetainedBufferBytes,
         DefaultIdleTimeout,
@@ -257,5 +260,5 @@ internal sealed unsafe partial class Argon2MatrixPool
     /// </summary>
     /// <returns>The running timer.</returns>
     private ITimer CreateIdleTimer() =>
-        _timeProvider.CreateTimer(static state => ((Argon2MatrixPool)state!).TrimIdle(), this, IdleTimeout, IdleTimeout);
+        _timeProvider.CreateTimer(static state => ((NativeBufferPool)state!).TrimIdle(), this, IdleTimeout, IdleTimeout);
 }

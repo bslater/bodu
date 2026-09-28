@@ -1,12 +1,12 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Argon2MatrixPoolTests.Rent.cs" company="Bodu Pty. Ltd.">
+// <copyright file="NativeBufferPoolTests.Rent.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Security.Cryptography;
 
-public sealed partial class Argon2MatrixPoolTests
+public sealed partial class NativeBufferPoolTests
 {
     /// <summary>
     /// Verifies that renting from an empty pool yields a matrix of the requested blocks whose every block can be written.
@@ -14,7 +14,7 @@ public sealed partial class Argon2MatrixPoolTests
     [TestMethod]
     public void Rent_WhenNothingIsRetained_ShouldAllocateTheRequestedBlocks()
     {
-        Argon2MatrixPool pool = CreatePool();
+        NativeBufferPool pool = CreatePool();
 
         using Argon2Matrix matrix = Argon2Matrix.Rent(16, pool);
         FillWithPattern(matrix);
@@ -29,7 +29,7 @@ public sealed partial class Argon2MatrixPoolTests
     [TestMethod]
     public void Rent_WhenABufferIsRetained_ShouldReuseIt()
     {
-        Argon2MatrixPool pool = CreatePool();
+        NativeBufferPool pool = CreatePool();
         Argon2Matrix.Rent(16, pool).Dispose();
 
         using Argon2Matrix matrix = Argon2Matrix.Rent(16, pool);
@@ -44,7 +44,7 @@ public sealed partial class Argon2MatrixPoolTests
     [TestMethod]
     public void Rent_WhenSeveralBuffersFit_ShouldTakeTheSmallest()
     {
-        Argon2MatrixPool pool = CreatePool();
+        NativeBufferPool pool = CreatePool();
         Argon2Matrix large = Argon2Matrix.Rent(64, pool);
         Argon2Matrix small = Argon2Matrix.Rent(16, pool);
         large.Dispose();
@@ -62,7 +62,7 @@ public sealed partial class Argon2MatrixPoolTests
     [TestMethod]
     public void Shared_WhenCreated_ShouldUseTheDocumentedDefaults()
     {
-        Argon2MatrixPool shared = Argon2MatrixPool.Shared;
+        NativeBufferPool shared = NativeBufferPool.Shared;
 
         Assert.AreEqual(Environment.ProcessorCount, shared.MaxRetainedBuffers);
         Assert.AreEqual(256L * 1024 * 1024, shared.MaxRetainedBufferBytes);

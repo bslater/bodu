@@ -89,7 +89,7 @@ public sealed partial class Argon2CoreTests
     [DynamicData(nameof(PoisonableVectors), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void DeriveTag_WhenMatrixStartsWithGarbage_ShouldMatchKnownTag(KdfKnownAnswer vector)
     {
-        var pool = new Argon2MatrixPool(0, 0, TimeSpan.FromHours(1), TimeProvider.System);
+        var pool = new NativeBufferPool(0, 0, TimeSpan.FromHours(1), TimeProvider.System);
 
         foreach (int bound in new[] { 1, 4 })
         {
@@ -161,7 +161,7 @@ public sealed partial class Argon2CoreTests
         byte[] password = new byte[16];
         byte[] salt = new byte[16];
         byte[] tag = new byte[parameters.TagLength];
-        var pool = new Argon2MatrixPool(0, 0, TimeSpan.FromHours(1), TimeProvider.System);
+        var pool = new NativeBufferPool(0, 0, TimeSpan.FromHours(1), TimeProvider.System);
         using Argon2Matrix matrix = Argon2Matrix.Rent((3 * LaneLength) + 2, pool);
 
         ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
