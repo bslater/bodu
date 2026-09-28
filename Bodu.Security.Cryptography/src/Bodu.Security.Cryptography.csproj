@@ -11,7 +11,7 @@
       check fails until they are gone.
     -->
     <BoduPackageVersionOverride>1.1.0</BoduPackageVersionOverride>
-    <PackageValidationBaselineVersion Condition="'$(BoduSignAssembly)' == 'true'">1.0.0</PackageValidationBaselineVersion>
+    <PackageValidationBaselineVersion Condition="'$(BoduSignAssembly)' == 'true'">1.1.0</PackageValidationBaselineVersion>
     <RootNamespace>Bodu</RootNamespace>
     <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
     <IsAotCompatible Condition="'$(BoduTfmIsNetCore)' == 'true'">true</IsAotCompatible>

@@ -230,10 +230,14 @@ worth releasing on their own, whether a fix or a feature release.
    `publish` unchecked and inspect `nuget-packages-publish`, then again with
    `publish` checked. **Do not push a `v*` tag**: a tag releases the whole
    manifest at `BoduBaseVersion`.
-4. For release notes, tag the released commit with a name that does not start
+4. Once nuget.org lists the package, move the pinned
+   `PackageValidationBaselineVersion` up to the version just published. Until
+   then the strict comparison runs against the release before it, so removing
+   an API the out-of-band release added would still pass it.
+5. For release notes, tag the released commit with a name that does not start
    with `v` (e.g. `Bodu.Security.Cryptography-1.1.0`), so neither the release
    nor the docs workflow triggers, and attach a GitHub Release to that tag.
-5. The next lock-step release must move past the out-of-band version, because
+6. The next lock-step release must move past the out-of-band version, because
    that version is already on nuget.org for this package. When
    `BoduBaseVersion` reaches it, the manifest check fails until the override
    and the pinned baseline are removed.
