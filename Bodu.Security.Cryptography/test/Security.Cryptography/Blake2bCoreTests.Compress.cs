@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Reflection;
 using System.Text;
 using Bodu.Security.Cryptography.Infrastructure;
 
@@ -83,5 +84,28 @@ public sealed partial class Blake2bCoreTests
 
             CollectionAssert.AreEqual(expected, actual, $"sample {sample}");
         }
+    }
+
+    /// <summary>
+    /// Verifies that every kernel forbids inlining, so it is compiled on its own rather than into the dispatcher.
+    /// </summary>
+    /// <remarks>
+    /// Under .NET 8's dynamic PGO the dispatcher inlined whichever kernel it found hot, ran out of inlining budget
+    /// inside it, and left the kernel's own <c>G</c>, message loads and lane rotations as calls: BLAKE2b's 128-bit
+    /// kernel ran at a third of its speed, below the scalar kernel. A kernel that cannot be inlined is compiled on its
+    /// own, with its own budget, whatever the profile says.
+    /// </remarks>
+    [TestMethod]
+    public void Compress_ForEachKernel_ShouldForbidInliningIntoTheDispatcher()
+    {
+        MethodInfo[] kernels =
+        [
+            typeof(Blake2bCore).GetMethod("CompressScalar", BindingFlags.NonPublic | BindingFlags.Static)!,
+            typeof(Blake2bCore.Vector128Kernel<>).GetMethod("Compress", BindingFlags.NonPublic | BindingFlags.Static)!,
+            typeof(Blake2bCore.Vector256Kernel<>).GetMethod("Compress", BindingFlags.NonPublic | BindingFlags.Static)!,
+        ];
+
+        foreach (MethodInfo kernel in kernels)
+            Assert.IsTrue(kernel.MethodImplementationFlags.HasFlag(MethodImplAttributes.NoInlining), $"{kernel.DeclaringType!.Name}.{kernel.Name}");
     }
 }
