@@ -4,14 +4,28 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Numerics;
+
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Contains unit tests for the <see cref="Curve25519FieldElement" /> GF(2^255 − 19) arithmetic struct.
 /// </summary>
 [TestClass]
-public class Curve25519FieldElementTests
+public partial class Curve25519FieldElementTests
 {
+    /// <summary>The field prime p = 2^255 − 19.</summary>
+    private static readonly BigInteger s_prime = BigInteger.Pow(2, 255) - 19;
+
+    /// <summary>
+    /// The exclusive bound on the limbs that <see cref="Curve25519FieldElement.Multiply" /> and
+    /// <see cref="Curve25519FieldElement.Square" /> accept: 2^54.
+    /// </summary>
+    private const ulong OperandLimbBound = 1UL << 54;
+
+    /// <summary>The exclusive bound on the limbs of a loosely reduced element: 2^52.</summary>
+    private const ulong LooseLimbBound = 1UL << 52;
+
     /// <summary>
     /// The canonical little-endian encoding of the field prime p = 2^255 − 19.
     /// </summary>
@@ -91,20 +105,6 @@ public class Curve25519FieldElementTests
     // ── Arithmetic identities ─────────────────────────────────────────────────────────────────
 
     /// <summary>
-    /// Verifies that multiplying an element by <see cref="Curve25519FieldElement.One" /> yields the same element.
-    /// </summary>
-    [TestMethod]
-    public void Multiply_WhenMultipliedByOne_ShouldReturnSameValue()
-    {
-        byte[] encoded = Convert.FromHexString("e6db6867583030db3594c1a424b15f7c726624ec26b3353b10a903a6d0ab1c4c");
-        var element = Curve25519FieldElement.FromBytes(encoded);
-
-        var product = Curve25519FieldElement.Multiply(element, Curve25519FieldElement.One);
-
-        CollectionAssert.AreEqual(encoded, ToArray(product));
-    }
-
-    /// <summary>
     /// Verifies that multiplying an element by its <see cref="Curve25519FieldElement.Invert" /> result yields one.
     /// </summary>
     [TestMethod]
@@ -136,23 +136,6 @@ public class Curve25519FieldElementTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Curve25519FieldElement.MultiplySmall" /> matches a full multiplication by the same
-    /// constant.
-    /// </summary>
-    [TestMethod]
-    public void MultiplySmall_WhenComparedToFullMultiply_ShouldProduceSameResult()
-    {
-        var element = Curve25519FieldElement.FromBytes(
-            Convert.FromHexString("8520f0098930a754748b7ddcb43ef75a0dbf3a0d26381af4eba4a98eaa9b4e6a"));
-        var factor = new Curve25519FieldElement(121665, 0, 0, 0, 0);
-
-        var viaSmall = Curve25519FieldElement.MultiplySmall(element, 121665);
-        var viaFull = Curve25519FieldElement.Multiply(element, factor);
-
-        CollectionAssert.AreEqual(ToArray(viaFull), ToArray(viaSmall));
-    }
-
-    /// <summary>
     /// Verifies the fixed-exponent identity (z^(2^252 − 3))^8 · z^7 = z^(p + 2) = z^3, which exercises the
     /// <see cref="Curve25519FieldElement.Pow22523" /> addition chain end to end via Fermat's little theorem.
     /// </summary>
@@ -173,26 +156,6 @@ public class Curve25519FieldElementTests
 
         // By Fermat, z^p = z, so z^(p+2) = z^3.
         CollectionAssert.AreEqual(ToArray(z3), ToArray(left));
-    }
-
-    /// <summary>
-    /// Verifies that negating a loose subtraction result after <see cref="Curve25519FieldElement.Reduce" /> yields
-    /// the correct additive inverse. Without the intermediate reduction the second subtraction underflows, which is
-    /// the failure mode originally hit by Ed25519 point decompression.
-    /// </summary>
-    [TestMethod]
-    public void Reduce_WhenNegatingLooseSubtractionResult_ShouldYieldAdditiveInverse()
-    {
-        var a = Curve25519FieldElement.FromBytes(
-            Convert.FromHexString("d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a"));
-
-        // u = a² − 1 as a loose (unreduced) value, then −u via Reduce; u + (−u) must be zero.
-        var u = Curve25519FieldElement.Subtract(
-            Curve25519FieldElement.Square(a), Curve25519FieldElement.One);
-        var negated = Curve25519FieldElement.Subtract(
-            Curve25519FieldElement.Zero, Curve25519FieldElement.Reduce(u));
-
-        Assert.IsTrue(Curve25519FieldElement.Reduce(Curve25519FieldElement.Add(Curve25519FieldElement.Reduce(u), negated)).IsZeroConstantTime());
     }
 
     // ── Constant-time helpers ─────────────────────────────────────────────────────────────────
@@ -272,4 +235,76 @@ public class Curve25519FieldElementTests
 
         return encoded;
     }
+
+    /// <summary>
+    /// Returns the integer an element's limbs represent, without reducing it.
+    /// </summary>
+    /// <param name="element">The element to evaluate.</param>
+    /// <returns>The sum of each limb times 2^(51 · index).</returns>
+    private static BigInteger ToBigInteger(in Curve25519FieldElement element) =>
+        element._l0
+        + ((BigInteger)element._l1 << 51)
+        + ((BigInteger)element._l2 << 102)
+        + ((BigInteger)element._l3 << 153)
+        + ((BigInteger)element._l4 << 204);
+
+    /// <summary>
+    /// Returns the value an element represents, reduced modulo p.
+    /// </summary>
+    /// <param name="element">The element to evaluate.</param>
+    /// <returns>The value in <c>[0, p)</c>.</returns>
+    private static BigInteger ValueModPrime(in Curve25519FieldElement element) =>
+        ToBigInteger(element) % s_prime;
+
+    /// <summary>
+    /// Returns an element whose limbs are drawn at random below a bound.
+    /// </summary>
+    /// <param name="random">The seeded generator.</param>
+    /// <param name="limbBound">The exclusive bound on every limb; a power of two.</param>
+    /// <returns>The element.</returns>
+    private static Curve25519FieldElement RandomElement(Random random, ulong limbBound) =>
+        new(
+            (ulong)random.NextInt64() & (limbBound - 1),
+            (ulong)random.NextInt64() & (limbBound - 1),
+            (ulong)random.NextInt64() & (limbBound - 1),
+            (ulong)random.NextInt64() & (limbBound - 1),
+            (ulong)random.NextInt64() & (limbBound - 1));
+
+    /// <summary>
+    /// Returns elements whose limbs sit at and around the operand bound, the limb width, and the prime.
+    /// </summary>
+    /// <returns>The edge-case elements.</returns>
+    private static Curve25519FieldElement[] EdgeElements()
+    {
+        const ulong Largest = OperandLimbBound - 1;
+        const ulong LimbMask = (1UL << 51) - 1;
+
+        return
+        [
+            Curve25519FieldElement.Zero,
+            Curve25519FieldElement.One,
+            new(LimbMask, LimbMask, LimbMask, LimbMask, LimbMask),
+            new(LimbMask - 18, LimbMask, LimbMask, LimbMask, LimbMask),
+            new(LimbMask - 19, LimbMask, LimbMask, LimbMask, LimbMask),
+            new(LooseLimbBound - 1, LooseLimbBound - 1, LooseLimbBound - 1, LooseLimbBound - 1, LooseLimbBound - 1),
+            new((1UL << 53) - 1, (1UL << 53) - 1, (1UL << 53) - 1, (1UL << 53) - 1, (1UL << 53) - 1),
+            new(Largest, Largest, Largest, Largest, Largest),
+            new(Largest, 0, Largest, 0, Largest),
+            new(0, Largest, 0, Largest, 0),
+            new(0, 0, 0, 0, Largest),
+            new(Largest, 1, 1UL << 51, 0xFFFF_FFFF, 1UL << 32),
+        ];
+    }
+
+    /// <summary>
+    /// Returns whether every limb of an element is below the loose-reduction bound 2^52.
+    /// </summary>
+    /// <param name="element">The element to inspect.</param>
+    /// <returns><see langword="true" /> when every limb is below 2^52; otherwise, <see langword="false" />.</returns>
+    private static bool IsLooselyReduced(in Curve25519FieldElement element) =>
+        element._l0 < LooseLimbBound
+        && element._l1 < LooseLimbBound
+        && element._l2 < LooseLimbBound
+        && element._l3 < LooseLimbBound
+        && element._l4 < LooseLimbBound;
 }

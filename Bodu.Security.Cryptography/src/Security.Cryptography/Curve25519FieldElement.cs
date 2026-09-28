@@ -6,6 +6,8 @@
 
 using System.Buffers.Binary;
 using System.Runtime.CompilerServices;
+using System.Runtime.Intrinsics.Arm;
+using System.Runtime.Intrinsics.X86;
 
 namespace Bodu.Security.Cryptography;
 
@@ -16,7 +18,13 @@ namespace Bodu.Security.Cryptography;
 /// <remarks>
 /// <para>
 /// All arithmetic is branch-free with respect to the element values so that secret-dependent timing variation is
-/// avoided. Products are accumulated in <see cref="UInt128" /> before being carried back into 51-bit limbs.
+/// avoided.
+/// </para>
+/// <para>
+/// A product is formed from 25 limb products, a square from 15. Limb products that land at or above 2^255 fold back
+/// through 2^255 ≡ 19 (mod p); the factor is scaled by 19 beforehand, so every limb product is a single 64 × 64-bit
+/// multiplication. Each is split at bit 51 as it is formed, and each result limb is summed in two 64-bit parts, the
+/// products' low 51 bits and the products shifted right 51 bits, so no 128-bit arithmetic is needed.
 /// </para>
 /// <para>
 /// <strong>Reduction contract.</strong> An element is <em>loosely reduced</em> when every limb is below 2^52.
@@ -28,22 +36,22 @@ namespace Bodu.Security.Cryptography;
 /// comfortably within the bound required by <see cref="Multiply" />.
 /// </para>
 /// </remarks>
-internal struct Curve25519FieldElement
+internal readonly struct Curve25519FieldElement
 {
     /// <summary>Limb 0 of the radix-2^51 representation (bits 0–50 of the element value).</summary>
-    internal ulong _l0;
+    internal readonly ulong _l0;
 
     /// <summary>Limb 1 of the radix-2^51 representation (bits 51–101 of the element value).</summary>
-    internal ulong _l1;
+    internal readonly ulong _l1;
 
     /// <summary>Limb 2 of the radix-2^51 representation (bits 102–152 of the element value).</summary>
-    internal ulong _l2;
+    internal readonly ulong _l2;
 
     /// <summary>Limb 3 of the radix-2^51 representation (bits 153–203 of the element value).</summary>
-    internal ulong _l3;
+    internal readonly ulong _l3;
 
     /// <summary>Limb 4 of the radix-2^51 representation (bits 204–254 of the element value).</summary>
-    internal ulong _l4;
+    internal readonly ulong _l4;
 
     /// <summary>The number of bytes in the canonical little-endian encoding of a field element.</summary>
     internal const int EncodedSizeInBytes = 32;
@@ -104,11 +112,12 @@ internal struct Curve25519FieldElement
     {
         ulong mask = 0UL - condition;
 
-        destination._l0 ^= mask & (destination._l0 ^ source._l0);
-        destination._l1 ^= mask & (destination._l1 ^ source._l1);
-        destination._l2 ^= mask & (destination._l2 ^ source._l2);
-        destination._l3 ^= mask & (destination._l3 ^ source._l3);
-        destination._l4 ^= mask & (destination._l4 ^ source._l4);
+        destination = new Curve25519FieldElement(
+            destination._l0 ^ (mask & (destination._l0 ^ source._l0)),
+            destination._l1 ^ (mask & (destination._l1 ^ source._l1)),
+            destination._l2 ^ (mask & (destination._l2 ^ source._l2)),
+            destination._l3 ^ (mask & (destination._l3 ^ source._l3)),
+            destination._l4 ^ (mask & (destination._l4 ^ source._l4)));
     }
 
     /// <summary>
@@ -129,17 +138,8 @@ internal struct Curve25519FieldElement
         ulong x3 = mask & (left._l3 ^ right._l3);
         ulong x4 = mask & (left._l4 ^ right._l4);
 
-        left._l0 ^= x0;
-        left._l1 ^= x1;
-        left._l2 ^= x2;
-        left._l3 ^= x3;
-        left._l4 ^= x4;
-
-        right._l0 ^= x0;
-        right._l1 ^= x1;
-        right._l2 ^= x2;
-        right._l3 ^= x3;
-        right._l4 ^= x4;
+        left = new Curve25519FieldElement(left._l0 ^ x0, left._l1 ^ x1, left._l2 ^ x2, left._l3 ^ x3, left._l4 ^ x4);
+        right = new Curve25519FieldElement(right._l0 ^ x0, right._l1 ^ x1, right._l2 ^ x2, right._l3 ^ x3, right._l4 ^ x4);
     }
 
     /// <summary>
@@ -237,25 +237,50 @@ internal struct Curve25519FieldElement
     /// <returns>The product with all limbs below 2^52.</returns>
     /// <remarks>
     /// Uses the schoolbook 5×5 limb product with the high limbs folded back through the identity 2^255 ≡ 19 (mod p).
-    /// Partial products are accumulated in <see cref="UInt128" />, which cannot overflow for the permitted operand
-    /// bounds.
+    /// The operand bounds keep every limb product below 2^113 and every part of a result limb's sum below 2^64.
     /// </remarks>
-    internal static Curve25519FieldElement Multiply(Curve25519FieldElement left, Curve25519FieldElement right)
+    internal static Curve25519FieldElement Multiply(in Curve25519FieldElement left, in Curve25519FieldElement right)
     {
         ulong f0 = left._l0, f1 = left._l1, f2 = left._l2, f3 = left._l3, f4 = left._l4;
         ulong g0 = right._l0, g1 = right._l1, g2 = right._l2, g3 = right._l3, g4 = right._l4;
+        ulong g1By19 = 19 * g1, g2By19 = 19 * g2, g3By19 = 19 * g3, g4By19 = 19 * g4;
 
-        UInt128 t0 = ((UInt128)f0 * g0)
-                   + ((UInt128)19 * (((UInt128)f1 * g4) + ((UInt128)f2 * g3) + ((UInt128)f3 * g2) + ((UInt128)f4 * g1)));
-        UInt128 t1 = ((UInt128)f0 * g1) + ((UInt128)f1 * g0)
-                   + ((UInt128)19 * (((UInt128)f2 * g4) + ((UInt128)f3 * g3) + ((UInt128)f4 * g2)));
-        UInt128 t2 = ((UInt128)f0 * g2) + ((UInt128)f1 * g1) + ((UInt128)f2 * g0)
-                   + ((UInt128)19 * (((UInt128)f3 * g4) + ((UInt128)f4 * g3)));
-        UInt128 t3 = ((UInt128)f0 * g3) + ((UInt128)f1 * g2) + ((UInt128)f2 * g1) + ((UInt128)f3 * g0)
-                   + ((UInt128)19 * ((UInt128)f4 * g4));
-        UInt128 t4 = ((UInt128)f0 * g4) + ((UInt128)f1 * g3) + ((UInt128)f2 * g2) + ((UInt128)f3 * g1) + ((UInt128)f4 * g0);
+        ulong low0 = 0, high0 = 0;
+        AddProduct(f0, g0, ref low0, ref high0);
+        AddProduct(f1, g4By19, ref low0, ref high0);
+        AddProduct(f2, g3By19, ref low0, ref high0);
+        AddProduct(f3, g2By19, ref low0, ref high0);
+        AddProduct(f4, g1By19, ref low0, ref high0);
 
-        return CarryReduce(t0, t1, t2, t3, t4);
+        ulong low1 = 0, high1 = 0;
+        AddProduct(f0, g1, ref low1, ref high1);
+        AddProduct(f1, g0, ref low1, ref high1);
+        AddProduct(f2, g4By19, ref low1, ref high1);
+        AddProduct(f3, g3By19, ref low1, ref high1);
+        AddProduct(f4, g2By19, ref low1, ref high1);
+
+        ulong low2 = 0, high2 = 0;
+        AddProduct(f0, g2, ref low2, ref high2);
+        AddProduct(f1, g1, ref low2, ref high2);
+        AddProduct(f2, g0, ref low2, ref high2);
+        AddProduct(f3, g4By19, ref low2, ref high2);
+        AddProduct(f4, g3By19, ref low2, ref high2);
+
+        ulong low3 = 0, high3 = 0;
+        AddProduct(f0, g3, ref low3, ref high3);
+        AddProduct(f1, g2, ref low3, ref high3);
+        AddProduct(f2, g1, ref low3, ref high3);
+        AddProduct(f3, g0, ref low3, ref high3);
+        AddProduct(f4, g4By19, ref low3, ref high3);
+
+        ulong low4 = 0, high4 = 0;
+        AddProduct(f0, g4, ref low4, ref high4);
+        AddProduct(f1, g3, ref low4, ref high4);
+        AddProduct(f2, g2, ref low4, ref high4);
+        AddProduct(f3, g1, ref low4, ref high4);
+        AddProduct(f4, g0, ref low4, ref high4);
+
+        return Carry(low0, high0, low1, high1, low2, high2, low3, high3, low4, high4);
     }
 
     /// <summary>
@@ -264,15 +289,16 @@ internal struct Curve25519FieldElement
     /// <param name="value">The element to scale. Limbs must be below 2^54.</param>
     /// <param name="factor">The small constant factor, such as the curve constant 121665.</param>
     /// <returns>The scaled element with all limbs below 2^52.</returns>
-    internal static Curve25519FieldElement MultiplySmall(Curve25519FieldElement value, uint factor)
+    internal static Curve25519FieldElement MultiplySmall(in Curve25519FieldElement value, uint factor)
     {
-        UInt128 t0 = (UInt128)value._l0 * factor;
-        UInt128 t1 = (UInt128)value._l1 * factor;
-        UInt128 t2 = (UInt128)value._l2 * factor;
-        UInt128 t3 = (UInt128)value._l3 * factor;
-        UInt128 t4 = (UInt128)value._l4 * factor;
+        ulong low0 = 0, high0 = 0, low1 = 0, high1 = 0, low2 = 0, high2 = 0, low3 = 0, high3 = 0, low4 = 0, high4 = 0;
+        AddProduct(value._l0, factor, ref low0, ref high0);
+        AddProduct(value._l1, factor, ref low1, ref high1);
+        AddProduct(value._l2, factor, ref low2, ref high2);
+        AddProduct(value._l3, factor, ref low3, ref high3);
+        AddProduct(value._l4, factor, ref low4, ref high4);
 
-        return CarryReduce(t0, t1, t2, t3, t4);
+        return Carry(low0, high0, low1, high1, low2, high2, low3, high3, low4, high4);
     }
 
     /// <summary>
@@ -348,16 +374,56 @@ internal struct Curve25519FieldElement
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static Curve25519FieldElement Reduce(Curve25519FieldElement value) =>
-        CarryReduce(value._l0, value._l1, value._l2, value._l3, value._l4);
+        Carry(value._l0, 0, value._l1, 0, value._l2, 0, value._l3, 0, value._l4, 0);
 
     /// <summary>
     /// Squares a field element modulo p, returning a loosely reduced result.
     /// </summary>
     /// <param name="value">The element to square. Limbs must be below 2^54.</param>
     /// <returns>The square with all limbs below 2^52.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static Curve25519FieldElement Square(Curve25519FieldElement value) =>
-        Multiply(value, value);
+    /// <remarks>
+    /// Each cross product appears twice in a square, so it is formed once from a doubled limb: 15 limb products instead
+    /// of <see cref="Multiply" />'s 25. The operand bounds keep every limb product below 2^114 and every part of a
+    /// result limb's sum below 2^64.
+    /// </remarks>
+    internal static Curve25519FieldElement Square(in Curve25519FieldElement value)
+    {
+        ulong f0 = value._l0, f1 = value._l1, f2 = value._l2, f3 = value._l3, f4 = value._l4;
+        ulong f0By2 = 2 * f0, f1By2 = 2 * f1, f2By2 = 2 * f2, f3By2 = 2 * f3;
+        ulong f3By19 = 19 * f3, f4By19 = 19 * f4;
+
+        // Limb 0: f0² + 19 · 2 · (f1 · f4 + f2 · f3).
+        ulong low0 = 0, high0 = 0;
+        AddProduct(f0, f0, ref low0, ref high0);
+        AddProduct(f1By2, f4By19, ref low0, ref high0);
+        AddProduct(f2By2, f3By19, ref low0, ref high0);
+
+        // Limb 1: 2 · f0 · f1 + 19 · (2 · f2 · f4 + f3²).
+        ulong low1 = 0, high1 = 0;
+        AddProduct(f0By2, f1, ref low1, ref high1);
+        AddProduct(f2By2, f4By19, ref low1, ref high1);
+        AddProduct(f3, f3By19, ref low1, ref high1);
+
+        // Limb 2: 2 · f0 · f2 + f1² + 19 · 2 · f3 · f4.
+        ulong low2 = 0, high2 = 0;
+        AddProduct(f0By2, f2, ref low2, ref high2);
+        AddProduct(f1, f1, ref low2, ref high2);
+        AddProduct(f3By2, f4By19, ref low2, ref high2);
+
+        // Limb 3: 2 · f0 · f3 + 2 · f1 · f2 + 19 · f4².
+        ulong low3 = 0, high3 = 0;
+        AddProduct(f0By2, f3, ref low3, ref high3);
+        AddProduct(f1By2, f2, ref low3, ref high3);
+        AddProduct(f4, f4By19, ref low3, ref high3);
+
+        // Limb 4: 2 · f0 · f4 + 2 · f1 · f3 + f2².
+        ulong low4 = 0, high4 = 0;
+        AddProduct(f0By2, f4, ref low4, ref high4);
+        AddProduct(f1By2, f3, ref low4, ref high4);
+        AddProduct(f2, f2, ref low4, ref high4);
+
+        return Carry(low0, high0, low1, high1, low2, high2, low3, high3, low4, high4);
+    }
 
     /// <summary>
     /// Subtracts <paramref name="right" /> from <paramref name="left" /> limb-wise, biasing by 4p to keep every limb
@@ -476,35 +542,81 @@ internal struct Curve25519FieldElement
     }
 
     /// <summary>
-    /// Carries the wide partial sums of a limb product back into a loosely reduced element, folding the bit-255
-    /// overflow through 2^255 ≡ 19 (mod p).
+    /// Adds a 64 × 64-bit limb product to a result limb's sum held as two parts: the product's low 51 bits to one, and
+    /// the rest, the product shifted right 51 bits, to the other.
     /// </summary>
-    /// <param name="t0">Wide partial sum for limb 0.</param>
-    /// <param name="t1">Wide partial sum for limb 1.</param>
-    /// <param name="t2">Wide partial sum for limb 2.</param>
-    /// <param name="t3">Wide partial sum for limb 3.</param>
-    /// <param name="t4">Wide partial sum for limb 4.</param>
-    /// <returns>The reduced element with all limbs below 2^52.</returns>
-    private static Curve25519FieldElement CarryReduce(UInt128 t0, UInt128 t1, UInt128 t2, UInt128 t3, UInt128 t4)
+    /// <param name="left">The first factor, below 2^55.</param>
+    /// <param name="right">The second factor, below 2^59.</param>
+    /// <param name="low">The sum of the products' low 51 bits.</param>
+    /// <param name="high">The sum of the products shifted right 51 bits.</param>
+    /// <remarks>
+    /// The high half of the product comes from <c>mulx</c> on x64 with BMI2 and from <c>umulh</c> on ARM64. Without
+    /// either, <see cref="Math.BigMul(ulong, ulong, out ulong)" /> is a call per product, so
+    /// <see cref="SplitProduct" /> forms the split from four 64-bit multiplies inline instead.
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static void AddProduct(ulong left, ulong right, ref ulong low, ref ulong high)
     {
-        ulong r0 = (ulong)t0 & LimbMask;
-        ulong carry = (ulong)(t0 >> 51);
+        if (Bmi2.X64.IsSupported || ArmBase.Arm64.IsSupported)
+        {
+            ulong product = left * right;
+            low += product & LimbMask;
+            high += (MultiplyHigh(left, right) << 13) | (product >> 51);
+        }
+        else
+        {
+            high += SplitProduct(left, right, out ulong productLow);
+            low += productLow;
+        }
+    }
 
-        t1 += carry;
-        ulong r1 = (ulong)t1 & LimbMask;
-        carry = (ulong)(t1 >> 51);
+    /// <summary>
+    /// Carries the two-part sums of a product's result limbs back into a loosely reduced element, folding the overflow
+    /// above bit 254 through 2^255 ≡ 19 (mod p).
+    /// </summary>
+    /// <param name="low0">The sum of the low 51 bits of limb 0's products.</param>
+    /// <param name="high0">The sum of limb 0's products shifted right 51 bits.</param>
+    /// <param name="low1">The sum of the low 51 bits of limb 1's products.</param>
+    /// <param name="high1">The sum of limb 1's products shifted right 51 bits.</param>
+    /// <param name="low2">The sum of the low 51 bits of limb 2's products.</param>
+    /// <param name="high2">The sum of limb 2's products shifted right 51 bits.</param>
+    /// <param name="low3">The sum of the low 51 bits of limb 3's products.</param>
+    /// <param name="high3">The sum of limb 3's products shifted right 51 bits.</param>
+    /// <param name="low4">The sum of the low 51 bits of limb 4's products.</param>
+    /// <param name="high4">The sum of limb 4's products shifted right 51 bits.</param>
+    /// <returns>The reduced element with all limbs below 2^52.</returns>
+    /// <remarks>
+    /// Limb i's value is <c>low_i + high_i · 2^51</c>. Its carry into limb i + 1 is <c>high_i</c> plus whatever
+    /// <c>low_i</c> holds above bit 50. Limb 4 has no products scaled by 19, so its carry stays below 2^60 and its
+    /// fold, multiplied by 19, still fits in 64 bits.
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static Curve25519FieldElement Carry(
+        ulong low0,
+        ulong high0,
+        ulong low1,
+        ulong high1,
+        ulong low2,
+        ulong high2,
+        ulong low3,
+        ulong high3,
+        ulong low4,
+        ulong high4)
+    {
+        ulong r0 = low0 & LimbMask;
+        low1 += (low0 >> 51) + high0;
 
-        t2 += carry;
-        ulong r2 = (ulong)t2 & LimbMask;
-        carry = (ulong)(t2 >> 51);
+        ulong r1 = low1 & LimbMask;
+        low2 += (low1 >> 51) + high1;
 
-        t3 += carry;
-        ulong r3 = (ulong)t3 & LimbMask;
-        carry = (ulong)(t3 >> 51);
+        ulong r2 = low2 & LimbMask;
+        low3 += (low2 >> 51) + high2;
 
-        t4 += carry;
-        ulong r4 = (ulong)t4 & LimbMask;
-        carry = (ulong)(t4 >> 51);
+        ulong r3 = low3 & LimbMask;
+        low4 += (low3 >> 51) + high3;
+
+        ulong r4 = low4 & LimbMask;
+        ulong carry = (low4 >> 51) + high4;
 
         // Fold the overflow above bit 254 back into limb 0 (2^255 ≡ 19), then settle the remaining small carries.
         r0 += carry * 19;
@@ -518,5 +630,47 @@ internal struct Curve25519FieldElement
         r2 += carry;
 
         return new Curve25519FieldElement(r0, r1, r2, r3, r4);
+    }
+
+    /// <summary>
+    /// Returns the high 64 bits of the 128-bit product of two 64-bit values, through <c>mulx</c> on x64 with BMI2 or
+    /// <c>umulh</c> on ARM64.
+    /// </summary>
+    /// <param name="left">The first factor.</param>
+    /// <param name="right">The second factor.</param>
+    /// <returns>The high half of the product.</returns>
+    /// <remarks>
+    /// Callers check that one of the two instructions is available; <see cref="SplitProduct" /> serves processors with
+    /// neither.
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static ulong MultiplyHigh(ulong left, ulong right) =>
+        Bmi2.X64.IsSupported ? Bmi2.X64.MultiplyNoFlags(left, right) : ArmBase.Arm64.MultiplyHigh(left, right);
+
+    /// <summary>
+    /// Splits the product of two limb factors at bit 51 with four 64-bit multiplies: for processors without an
+    /// instruction for the high half of a 64 × 64-bit product.
+    /// </summary>
+    /// <param name="left">The first factor, below 2^55.</param>
+    /// <param name="right">The second factor, below 2^59.</param>
+    /// <param name="low">Receives the product's low 51 bits.</param>
+    /// <returns>The product shifted right 51 bits.</returns>
+    /// <remarks>
+    /// With <c>left = a1 · 2^32 + a0</c> and <c>right = b1 · 2^32 + b0</c>, the product is
+    /// <c>a1 · b1 · 2^64 + m · 2^32 + (a0 · b0 mod 2^32)</c>, where <c>m = a1 · b0 + a0 · b1 + ⌊a0 · b0 / 2^32⌋</c>.
+    /// The bounds keep <c>m</c> below 2^60 and <c>a1 · b1</c> below 2^50, so the product shifted right 51 bits is
+    /// <c>a1 · b1 · 2^13 + ⌊m / 2^19⌋</c> and fits in 64 bits.
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static ulong SplitProduct(ulong left, ulong right, out ulong low)
+    {
+        ulong leftLow = (uint)left, leftHigh = left >> 32;
+        ulong rightLow = (uint)right, rightHigh = right >> 32;
+
+        ulong lowProduct = leftLow * rightLow;
+        ulong middle = (leftHigh * rightLow) + (leftLow * rightHigh) + (lowProduct >> 32);
+
+        low = ((middle << 32) | (uint)lowProduct) & LimbMask;
+        return ((leftHigh * rightHigh) << 13) + (middle >> 19);
     }
 }
