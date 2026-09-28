@@ -25,6 +25,19 @@ public partial class MLKemEngineTests
         (int)(((value % Q) + Q) % Q);
 
     /// <summary>
+    /// Returns the engine parameters for a rank.
+    /// </summary>
+    /// <param name="k">The rank: 2, 3 or 4.</param>
+    /// <returns>The parameter set.</returns>
+    private static MLKemParameters Parameters(int k) =>
+        k switch
+        {
+            2 => MLKemParameters.MLKem512,
+            3 => MLKemParameters.MLKem768,
+            _ => MLKemParameters.MLKem1024,
+        };
+
+    /// <summary>
     /// Returns polynomials whose coefficients sit at the ends of [0, q) and at a few patterns, then seeded ones.
     /// </summary>
     /// <returns>The polynomials.</returns>
