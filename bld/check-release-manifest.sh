@@ -33,7 +33,10 @@
 #                   ships at BoduPreviewVersion via <BoduPackageVersionOverride> in its own csproj.
 #                   Nothing else reconciles those, so a package promoted to Stable but left on the
 #                   preview stream (or a preview package with no override) would publish at the wrong
-#                   version and only be noticed on nuget.org, where it cannot be taken back.
+#                   version and only be noticed on nuget.org, where it cannot be taken back. A Stable
+#                   package may also ship out of band, at a literal override ahead of BoduBaseVersion
+#                   (bld/RELEASING.md); the check fails once BoduBaseVersion catches up with it, so the
+#                   override cannot outlive the release it was made for.
 #
 # Withheld packages (named in the manifest's comment block) are deliberately absent and are not
 # checked — they do not ship, so they owe consumers nothing.
@@ -55,6 +58,14 @@ fail() {
     printf '::error file=bld/release-manifest.txt::%s\n' "$message"
     printf '  VIOLATION: %s\n' "$message"
     violations=$((violations + 1))
+}
+
+# Emits a GitHub Actions notice annotation plus a human-readable line, for a deliberate state worth
+# seeing in every run that is not a violation.
+note() {
+    local message="$1"
+    printf '::notice file=bld/release-manifest.txt::%s\n' "$message"
+    printf '  NOTE: %s\n' "$message"
 }
 
 if [ ! -f "$manifest" ]; then
@@ -111,8 +122,19 @@ check_tier_and_stream() {
     override="$(sed -n 's:.*<BoduPackageVersionOverride>\(.*\)</BoduPackageVersionOverride>.*:\1:p' "$project" | head -1)"
     case "$tier" in
         Stable)
-            if [ -n "$override" ]; then
-                fail "$id: tiered Stable but its csproj sets <BoduPackageVersionOverride>$override</BoduPackageVersionOverride>, so it would ship on the preview stream instead of BoduBaseVersion $base_version. Remove the override when promoting a package to Stable."
+            if [ "$override" = '$(BoduPreviewVersion)' ]; then
+                fail "$id: tiered Stable but its csproj sets <BoduPackageVersionOverride>\$(BoduPreviewVersion)</BoduPackageVersionOverride>, so it would ship on the preview stream ($preview_version) instead of BoduBaseVersion $base_version. Remove the override when promoting a package to Stable."
+            elif [ -n "$override" ]; then
+                # An out-of-band release: a Stable package may ship ahead of the lock-step version, and
+                # only ahead of it. Once BoduBaseVersion reaches the override the package must rejoin
+                # the stream, and the stream must pass a version this package has already published.
+                if ! printf '%s' "$override" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+                    fail "$id: tiered Stable but its csproj sets <BoduPackageVersionOverride>$override</BoduPackageVersionOverride>. A Stable package leaves the lock-step stream only for an out-of-band release, at a literal MAJOR.MINOR.PATCH version ahead of BoduBaseVersion $base_version (bld/RELEASING.md)."
+                elif [ "$(version_gt "$override" "$base_version")" != 1 ]; then
+                    fail "$id: ships out of band at $override, but BoduBaseVersion $base_version has caught up with it. Remove the override (and any pinned PackageValidationBaselineVersion) so the package rejoins the lock-step stream, and keep BoduBaseVersion above $override: this package has already published $override, and nuget.org cannot take it back."
+                else
+                    note "$id ships out of band at $override, ahead of BoduBaseVersion $base_version. Remove its override once BoduBaseVersion moves past $override."
+                fi
             fi
             ;;
         Preview|Experimental)
