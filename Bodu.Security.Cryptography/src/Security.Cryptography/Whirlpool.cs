@@ -6,6 +6,7 @@
 
 using System.Buffers.Binary;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
@@ -234,42 +235,54 @@ public sealed partial class Whirlpool
     }
 
     /// <inheritdoc />
+    /// <remarks>
+    /// The cipher's key and state each alternate between two eight-word buffers on the stack, one read and the other
+    /// written by each round, so no round copies its result back. Whirlpool has ten rounds, an even number, so both end
+    /// in the buffers they started in.
+    /// </remarks>
     protected override void ProcessBlock(ReadOnlySpan<byte> block)
     {
         VariantTables tables = GetTables(_version);
-        ulong[] mul = tables.Multiplication;
-        ulong[][] rcon = tables.RoundKeys;
+        ref ulong mul = ref MemoryMarshal.GetArrayDataReference(tables.Multiplication);
+        ReadOnlySpan<ulong> constants = tables.RoundConstants;
 
-        Span<ulong> message = stackalloc ulong[8];
-        Span<ulong> key = stackalloc ulong[8];
-        Span<ulong> state = stackalloc ulong[8];
-        Span<ulong> tempKey = stackalloc ulong[8];
-        Span<ulong> tempState = stackalloc ulong[8];
+        // The message, the key and the cipher state twice each, and the key schedule's round key (c_r, 0, ..., 0).
+        Span<ulong> words = stackalloc ulong[48];
+        ref ulong message = ref MemoryMarshal.GetReference(words);
+        ref ulong key = ref Unsafe.Add(ref message, 8);
+        ref ulong nextKey = ref Unsafe.Add(ref message, 16);
+        ref ulong state = ref Unsafe.Add(ref message, 24);
+        ref ulong nextState = ref Unsafe.Add(ref message, 32);
+        ref ulong roundConstant = ref Unsafe.Add(ref message, 40);
+        words.Slice(41, 7).Clear();
 
         // Read the message block (big-endian) and initialize the round key from the hash state.
         // The first sigma step XORs the message against the initial key to seed the cipher state.
         for (int i = 0; i < 8; i++)
         {
-            message[i] = BinaryPrimitives.ReadUInt64BigEndian(block.Slice(i * 8, 8));
-            key[i] = _state[i];
-            state[i] = message[i] ^ key[i];
+            ulong word = BinaryPrimitives.ReadUInt64BigEndian(block.Slice(i * 8, 8));
+            Unsafe.Add(ref message, i) = word;
+            Unsafe.Add(ref key, i) = _state[i];
+            Unsafe.Add(ref state, i) = word ^ _state[i];
         }
 
-        for (int r = 0; r < RoundCount; r++)
+        for (int r = 0; r < RoundCount; r += 2)
         {
-            // Evolve the round key by one application of the non-linear round function with the
-            // variant-specific constant in column 0 and zeros elsewhere.
-            ApplyRound(key, rcon[r], tempKey, mul);
-            tempKey.CopyTo(key);
+            // Evolve the round key by one application of the non-linear round function with the variant-specific
+            // constant in column 0 and zeros elsewhere, then apply the same round function to the cipher state with
+            // the newly evolved round key. The second half of the pass runs the next round back the other way.
+            roundConstant = constants[r];
+            ApplyRound(ref key, ref roundConstant, ref nextKey, ref mul);
+            ApplyRound(ref state, ref nextKey, ref nextState, ref mul);
 
-            // Apply the same round function to the cipher state using the newly evolved round key.
-            ApplyRound(state, key, tempState, mul);
-            tempState.CopyTo(state);
+            roundConstant = constants[r + 1];
+            ApplyRound(ref nextKey, ref roundConstant, ref key, ref mul);
+            ApplyRound(ref nextState, ref key, ref state, ref mul);
         }
 
         // Miyaguchi–Preneel finalization: H_{i+1} = W_{H_i}(M) ⊕ M ⊕ H_i.
         for (int i = 0; i < 8; i++)
-            _state[i] ^= state[i] ^ message[i];
+            _state[i] ^= Unsafe.Add(ref state, i) ^ Unsafe.Add(ref message, i);
     }
 
     /// <inheritdoc />
@@ -283,99 +296,103 @@ public sealed partial class Whirlpool
     }
 
     /// <summary>
-    /// Applies one round of the Whirlpool <c>W</c> cipher to <paramref name="state" />, combining the non-linear
-    /// substitution, shift-column, MixRows and AddRoundKey operations via the precomputed multiplication table
-    /// <paramref name="mul" />.
+    /// Applies one round of the Whirlpool <c>W</c> cipher to eight input words, combining the non-linear substitution,
+    /// shift-column, MixRows and AddRoundKey operations via the precomputed multiplication table.
     /// </summary>
-    /// <param name="state">The eight 64-bit input words.</param>
-    /// <param name="roundKey">The eight 64-bit round-key words XORed into the round output.</param>
-    /// <param name="output">The span that receives the round output; must have length 8.</param>
-    /// <param name="mul">The flat 8 × 256 multiplication table for the active variant.</param>
+    /// <param name="input">The first of the eight 64-bit input words.</param>
+    /// <param name="roundKey">The first of the eight 64-bit round-key words XORed into the round output.</param>
+    /// <param name="output">
+    /// The first of the eight words that receive the round output; not overlapping the input.
+    /// </param>
+    /// <param name="mul">The first entry of the variant's flat 8 × 256 multiplication table.</param>
+    /// <remarks>
+    /// Each table index is a column number shifted left by 8 and ORed with one byte of an input word, so it is always
+    /// below 8 × 256, the table's length: the lookups need no bounds check.
+    /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static void ApplyRound(ReadOnlySpan<ulong> state, ReadOnlySpan<ulong> roundKey, Span<ulong> output, ulong[] mul)
+    private static void ApplyRound(ref ulong input, ref ulong roundKey, ref ulong output, ref ulong mul)
     {
-        const ulong M = 0xFF;
-        ulong s0 = state[0], s1 = state[1], s2 = state[2], s3 = state[3];
-        ulong s4 = state[4], s5 = state[5], s6 = state[6], s7 = state[7];
+        ulong s0 = input, s1 = Unsafe.Add(ref input, 1), s2 = Unsafe.Add(ref input, 2), s3 = Unsafe.Add(ref input, 3);
+        ulong s4 = Unsafe.Add(ref input, 4), s5 = Unsafe.Add(ref input, 5), s6 = Unsafe.Add(ref input, 6), s7 = Unsafe.Add(ref input, 7);
 
-        output[0] = mul[(s0 >> 56) & M]
-                  ^ mul[0x100 | ((s7 >> 48) & M)]
-                  ^ mul[0x200 | ((s6 >> 40) & M)]
-                  ^ mul[0x300 | ((s5 >> 32) & M)]
-                  ^ mul[0x400 | ((s4 >> 24) & M)]
-                  ^ mul[0x500 | ((s3 >> 16) & M)]
-                  ^ mul[0x600 | ((s2 >> 8) & M)]
-                  ^ mul[0x700 | (s1 & M)]
-                  ^ roundKey[0];
+        output = Unsafe.Add(ref mul, (byte)(s0 >> 56))
+            ^ Unsafe.Add(ref mul, 0x100 | (byte)(s7 >> 48))
+            ^ Unsafe.Add(ref mul, 0x200 | (byte)(s6 >> 40))
+            ^ Unsafe.Add(ref mul, 0x300 | (byte)(s5 >> 32))
+            ^ Unsafe.Add(ref mul, 0x400 | (byte)(s4 >> 24))
+            ^ Unsafe.Add(ref mul, 0x500 | (byte)(s3 >> 16))
+            ^ Unsafe.Add(ref mul, 0x600 | (byte)(s2 >> 8))
+            ^ Unsafe.Add(ref mul, 0x700 | (byte)s1)
+            ^ roundKey;
 
-        output[1] = mul[(s1 >> 56) & M]
-                  ^ mul[0x100 | ((s0 >> 48) & M)]
-                  ^ mul[0x200 | ((s7 >> 40) & M)]
-                  ^ mul[0x300 | ((s6 >> 32) & M)]
-                  ^ mul[0x400 | ((s5 >> 24) & M)]
-                  ^ mul[0x500 | ((s4 >> 16) & M)]
-                  ^ mul[0x600 | ((s3 >> 8) & M)]
-                  ^ mul[0x700 | (s2 & M)]
-                  ^ roundKey[1];
+        Unsafe.Add(ref output, 1) = Unsafe.Add(ref mul, (byte)(s1 >> 56))
+            ^ Unsafe.Add(ref mul, 0x100 | (byte)(s0 >> 48))
+            ^ Unsafe.Add(ref mul, 0x200 | (byte)(s7 >> 40))
+            ^ Unsafe.Add(ref mul, 0x300 | (byte)(s6 >> 32))
+            ^ Unsafe.Add(ref mul, 0x400 | (byte)(s5 >> 24))
+            ^ Unsafe.Add(ref mul, 0x500 | (byte)(s4 >> 16))
+            ^ Unsafe.Add(ref mul, 0x600 | (byte)(s3 >> 8))
+            ^ Unsafe.Add(ref mul, 0x700 | (byte)s2)
+            ^ Unsafe.Add(ref roundKey, 1);
 
-        output[2] = mul[(s2 >> 56) & M]
-                  ^ mul[0x100 | ((s1 >> 48) & M)]
-                  ^ mul[0x200 | ((s0 >> 40) & M)]
-                  ^ mul[0x300 | ((s7 >> 32) & M)]
-                  ^ mul[0x400 | ((s6 >> 24) & M)]
-                  ^ mul[0x500 | ((s5 >> 16) & M)]
-                  ^ mul[0x600 | ((s4 >> 8) & M)]
-                  ^ mul[0x700 | (s3 & M)]
-                  ^ roundKey[2];
+        Unsafe.Add(ref output, 2) = Unsafe.Add(ref mul, (byte)(s2 >> 56))
+            ^ Unsafe.Add(ref mul, 0x100 | (byte)(s1 >> 48))
+            ^ Unsafe.Add(ref mul, 0x200 | (byte)(s0 >> 40))
+            ^ Unsafe.Add(ref mul, 0x300 | (byte)(s7 >> 32))
+            ^ Unsafe.Add(ref mul, 0x400 | (byte)(s6 >> 24))
+            ^ Unsafe.Add(ref mul, 0x500 | (byte)(s5 >> 16))
+            ^ Unsafe.Add(ref mul, 0x600 | (byte)(s4 >> 8))
+            ^ Unsafe.Add(ref mul, 0x700 | (byte)s3)
+            ^ Unsafe.Add(ref roundKey, 2);
 
-        output[3] = mul[(s3 >> 56) & M]
-                  ^ mul[0x100 | ((s2 >> 48) & M)]
-                  ^ mul[0x200 | ((s1 >> 40) & M)]
-                  ^ mul[0x300 | ((s0 >> 32) & M)]
-                  ^ mul[0x400 | ((s7 >> 24) & M)]
-                  ^ mul[0x500 | ((s6 >> 16) & M)]
-                  ^ mul[0x600 | ((s5 >> 8) & M)]
-                  ^ mul[0x700 | (s4 & M)]
-                  ^ roundKey[3];
+        Unsafe.Add(ref output, 3) = Unsafe.Add(ref mul, (byte)(s3 >> 56))
+            ^ Unsafe.Add(ref mul, 0x100 | (byte)(s2 >> 48))
+            ^ Unsafe.Add(ref mul, 0x200 | (byte)(s1 >> 40))
+            ^ Unsafe.Add(ref mul, 0x300 | (byte)(s0 >> 32))
+            ^ Unsafe.Add(ref mul, 0x400 | (byte)(s7 >> 24))
+            ^ Unsafe.Add(ref mul, 0x500 | (byte)(s6 >> 16))
+            ^ Unsafe.Add(ref mul, 0x600 | (byte)(s5 >> 8))
+            ^ Unsafe.Add(ref mul, 0x700 | (byte)s4)
+            ^ Unsafe.Add(ref roundKey, 3);
 
-        output[4] = mul[(s4 >> 56) & M]
-                  ^ mul[0x100 | ((s3 >> 48) & M)]
-                  ^ mul[0x200 | ((s2 >> 40) & M)]
-                  ^ mul[0x300 | ((s1 >> 32) & M)]
-                  ^ mul[0x400 | ((s0 >> 24) & M)]
-                  ^ mul[0x500 | ((s7 >> 16) & M)]
-                  ^ mul[0x600 | ((s6 >> 8) & M)]
-                  ^ mul[0x700 | (s5 & M)]
-                  ^ roundKey[4];
+        Unsafe.Add(ref output, 4) = Unsafe.Add(ref mul, (byte)(s4 >> 56))
+            ^ Unsafe.Add(ref mul, 0x100 | (byte)(s3 >> 48))
+            ^ Unsafe.Add(ref mul, 0x200 | (byte)(s2 >> 40))
+            ^ Unsafe.Add(ref mul, 0x300 | (byte)(s1 >> 32))
+            ^ Unsafe.Add(ref mul, 0x400 | (byte)(s0 >> 24))
+            ^ Unsafe.Add(ref mul, 0x500 | (byte)(s7 >> 16))
+            ^ Unsafe.Add(ref mul, 0x600 | (byte)(s6 >> 8))
+            ^ Unsafe.Add(ref mul, 0x700 | (byte)s5)
+            ^ Unsafe.Add(ref roundKey, 4);
 
-        output[5] = mul[(s5 >> 56) & M]
-                  ^ mul[0x100 | ((s4 >> 48) & M)]
-                  ^ mul[0x200 | ((s3 >> 40) & M)]
-                  ^ mul[0x300 | ((s2 >> 32) & M)]
-                  ^ mul[0x400 | ((s1 >> 24) & M)]
-                  ^ mul[0x500 | ((s0 >> 16) & M)]
-                  ^ mul[0x600 | ((s7 >> 8) & M)]
-                  ^ mul[0x700 | (s6 & M)]
-                  ^ roundKey[5];
+        Unsafe.Add(ref output, 5) = Unsafe.Add(ref mul, (byte)(s5 >> 56))
+            ^ Unsafe.Add(ref mul, 0x100 | (byte)(s4 >> 48))
+            ^ Unsafe.Add(ref mul, 0x200 | (byte)(s3 >> 40))
+            ^ Unsafe.Add(ref mul, 0x300 | (byte)(s2 >> 32))
+            ^ Unsafe.Add(ref mul, 0x400 | (byte)(s1 >> 24))
+            ^ Unsafe.Add(ref mul, 0x500 | (byte)(s0 >> 16))
+            ^ Unsafe.Add(ref mul, 0x600 | (byte)(s7 >> 8))
+            ^ Unsafe.Add(ref mul, 0x700 | (byte)s6)
+            ^ Unsafe.Add(ref roundKey, 5);
 
-        output[6] = mul[(s6 >> 56) & M]
-                  ^ mul[0x100 | ((s5 >> 48) & M)]
-                  ^ mul[0x200 | ((s4 >> 40) & M)]
-                  ^ mul[0x300 | ((s3 >> 32) & M)]
-                  ^ mul[0x400 | ((s2 >> 24) & M)]
-                  ^ mul[0x500 | ((s1 >> 16) & M)]
-                  ^ mul[0x600 | ((s0 >> 8) & M)]
-                  ^ mul[0x700 | (s7 & M)]
-                  ^ roundKey[6];
+        Unsafe.Add(ref output, 6) = Unsafe.Add(ref mul, (byte)(s6 >> 56))
+            ^ Unsafe.Add(ref mul, 0x100 | (byte)(s5 >> 48))
+            ^ Unsafe.Add(ref mul, 0x200 | (byte)(s4 >> 40))
+            ^ Unsafe.Add(ref mul, 0x300 | (byte)(s3 >> 32))
+            ^ Unsafe.Add(ref mul, 0x400 | (byte)(s2 >> 24))
+            ^ Unsafe.Add(ref mul, 0x500 | (byte)(s1 >> 16))
+            ^ Unsafe.Add(ref mul, 0x600 | (byte)(s0 >> 8))
+            ^ Unsafe.Add(ref mul, 0x700 | (byte)s7)
+            ^ Unsafe.Add(ref roundKey, 6);
 
-        output[7] = mul[(s7 >> 56) & M]
-                  ^ mul[0x100 | ((s6 >> 48) & M)]
-                  ^ mul[0x200 | ((s5 >> 40) & M)]
-                  ^ mul[0x300 | ((s4 >> 32) & M)]
-                  ^ mul[0x400 | ((s3 >> 24) & M)]
-                  ^ mul[0x500 | ((s2 >> 16) & M)]
-                  ^ mul[0x600 | ((s1 >> 8) & M)]
-                  ^ mul[0x700 | (s0 & M)]
-                  ^ roundKey[7];
+        Unsafe.Add(ref output, 7) = Unsafe.Add(ref mul, (byte)(s7 >> 56))
+            ^ Unsafe.Add(ref mul, 0x100 | (byte)(s6 >> 48))
+            ^ Unsafe.Add(ref mul, 0x200 | (byte)(s5 >> 40))
+            ^ Unsafe.Add(ref mul, 0x300 | (byte)(s4 >> 32))
+            ^ Unsafe.Add(ref mul, 0x400 | (byte)(s3 >> 24))
+            ^ Unsafe.Add(ref mul, 0x500 | (byte)(s2 >> 16))
+            ^ Unsafe.Add(ref mul, 0x600 | (byte)(s1 >> 8))
+            ^ Unsafe.Add(ref mul, 0x700 | (byte)s0)
+            ^ Unsafe.Add(ref roundKey, 7);
     }
 }

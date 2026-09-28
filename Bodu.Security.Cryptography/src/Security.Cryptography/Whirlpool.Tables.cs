@@ -59,23 +59,12 @@ public sealed partial class Whirlpool
     /// <returns>The freshly constructed or already-cached <see cref="VariantTables" /> instance.</returns>
     private static VariantTables BuildAndCacheTables(ref VariantTables? slot, byte[] sbox, byte[] mds)
     {
-        ulong[] mul = BuildMultiplicationTable(sbox, mds);
-        ulong[] constants = BuildRoundConstants(sbox);
-
-        ulong[][] roundKeys = new ulong[RoundCount][];
-        for (int i = 0; i < RoundCount; i++)
-        {
-            ulong[] rk = new ulong[8];
-            rk[0] = constants[i];
-            roundKeys[i] = rk;
-        }
-
-        VariantTables tables = new(mul, roundKeys);
+        VariantTables tables = new(BuildMultiplicationTable(sbox, mds), BuildRoundConstants(sbox));
         return Interlocked.CompareExchange(ref slot, tables, null) ?? tables;
     }
 
     /// <summary>
-    /// Immutable carrier for the per-variant multiplication table and round-key schedule.
+    /// Immutable carrier for the per-variant multiplication table and round constants.
     /// </summary>
     private sealed class VariantTables
     {
@@ -83,11 +72,11 @@ public sealed partial class Whirlpool
         /// Initializes a new instance of the <see cref="VariantTables" /> class.
         /// </summary>
         /// <param name="multiplication">The flat 8 × 256 multiplication table.</param>
-        /// <param name="roundKeys">The ten round keys, each holding the round constant in column 0.</param>
-        public VariantTables(ulong[] multiplication, ulong[][] roundKeys)
+        /// <param name="roundConstants">The ten round constants, column 0 of each round key.</param>
+        public VariantTables(ulong[] multiplication, ulong[] roundConstants)
         {
             Multiplication = multiplication;
-            RoundKeys = roundKeys;
+            RoundConstants = roundConstants;
         }
 
         /// <summary>
@@ -97,10 +86,10 @@ public sealed partial class Whirlpool
         public ulong[] Multiplication { get; }
 
         /// <summary>
-        /// Gets the ten round keys driving the <c>W</c> key schedule. Each entry has the round constant in index 0 and
-        /// zeros elsewhere.
+        /// Gets the ten round constants driving the <c>W</c> key schedule: column 0 of each round key, whose other
+        /// columns are zero.
         /// </summary>
-        /// <value>The shared round-key schedule for the variant.</value>
-        public ulong[][] RoundKeys { get; }
+        /// <value>The shared round constants for the variant.</value>
+        public ulong[] RoundConstants { get; }
     }
 }
