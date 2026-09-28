@@ -1041,3 +1041,98 @@ How it was done, and where it departs from the design above:
     word rotation and the tweak injection every fourth round stay.
   - CTR runs at about three quarters of `EncryptBlocks`, the rest going to the counter
     blocks and the XOR. That cost is W2's and applies to every block cipher.
+
+### W8 — Curve25519 and Ed25519 (done)
+
+| Measure | Baseline | Result | Target |
+|---|---|---|---|
+| X25519 shared secret | 208–239 µs | 90–94 µs | ≤ 150 µs — met |
+| X25519 key generation | 204–232 µs | 49–51 µs | ≤ 70 µs — met |
+| Ed25519 sign | 87–100 µs | 51–56 µs | ≤ 80 µs — met |
+| Ed25519 verify | 363–413 µs | 136–150 µs | ≤ 200 µs — met |
+| Ed25519 verify, allocation | 2,720 B | 136 B, the `IncrementalHash` | — |
+| Without BMI2: X25519 shared secret / key generation | 367–450 / 371–435 µs | 234–259 / 105–122 µs | — |
+| Without BMI2: Ed25519 sign / verify | 139–153 / 681–780 µs | 108–118 / 368–385 µs | — |
+
+The baselines were re-measured the same day at `e63fe20`, whose curve code is 1.0.0's;
+they sit a little below §1's 246 / 222 / 105 / 388 µs. Each range spans three runs on
+each runtime: .NET 8 and .NET 10 now measure the same within noise. "Without BMI2" is
+`DOTNET_EnableBMI2=0` on .NET 8 and `DOTNET_EnableAVX2=0` on .NET 10, which also
+disables BMI2 there.
+
+How it was done, and where it departs from the design above:
+
+- **The field multiply (W8a).** The design assumed the multiply was sound and aimed at
+  the operation counts around it. In fact the multiply was the main cost.
+  - It summed its 25 limb products in `UInt128` and scaled the folded sums by 19 as
+    128-bit values. The JIT left 8 calls to `UInt128`'s multiply operator and 6 to its
+    addition operator in every multiply.
+  - The folded factors are now scaled by 19 before multiplying, so every limb product is
+    a single 64 × 64-bit multiplication. Each product is split at bit 51 as it is
+    formed, as Poly1305's core splits at bit 44 (W6).
+  - Each result limb is summed in two 64-bit parts, the products' low 51 bits and the
+    products shifted right 51 bits. The operand bounds keep both below 2^64.
+  - The high half comes from `mulx` with BMI2 and from `umulh` on ARM64. Without either,
+    `Math.BigMul` would be a call per product, so `SplitProduct` forms the split from
+    four 64-bit multiplies inline. A scratch comparison measured the `imul`-plus-`mulx`
+    pair faster than `mulx` returning both halves through a pointer, and faster than
+    `Math.BigMul`.
+  - Squaring is now dedicated: each cross product is formed once from a doubled limb,
+    15 limb products instead of 25.
+  - The operands are passed by `in`-reference, which measured about 15% faster than by
+    value. `Curve25519FieldElement` and `Ed25519Point` became `readonly` structs, so
+    that passing them by reference cannot cost a defensive copy.
+- **Doubling and key generation (W8b).**
+  - `Ed25519Point.Double` delegated to the unified addition, nine multiplications. It is
+    now dbl-2008-hwcd for a = −1, four squarings and four multiplications, and it never
+    reads T. It is complete, because d is a non-square. It forms −F and −H rather than F
+    and H, which negates all four coordinates and leaves the point unchanged.
+  - X25519 key generation ran the 255-step ladder on u = 9. It now forms [s]B from
+    Ed25519's fixed-base table, in constant time, and maps the result across with
+    u = (Z + Y) / (Z − Y), one inversion.
+  - The table scan had copied each 160-byte entry by value, 16 per window. It now
+    selects the coordinates one field element at a time by reference, which took key
+    generation from 54–70 to 46–57 µs in the runs made at the time.
+- **Verification (W8c).**
+  - The combination [S]B + [k](−A) is compared with R in projective coordinates, four
+    multiplications, instead of by encoding both points, two inversions.
+  - `IsSmallOrder` recognizes the identity as X = 0 and Y = Z instead of encoding [8]P.
+    That removes a third inversion from every verification and from every public-key
+    import.
+  - The 16-entry table of multiples of the public point is on the stack.
+- **Tests.**
+  - `Multiply`, `Square`, `MultiplySmall` and `Reduce` are held to `BigInteger`
+    arithmetic modulo p, with limbs at and around their bounds and over 10,000 seeded
+    values each. The tests also check that results stay loosely reduced, and hold
+    `Square` to `Multiply`.
+  - `SplitProduct` is held to `UInt128` products at its bounds and over 100,000 seeded
+    pairs. The curve tests also pass with BMI2 disabled, which runs it end to end.
+  - The doubling is held to self-addition on seeded multiples and on all eight
+    small-order points. A point added to a doubled point must give the same sum, which
+    checks T. Corrupting T fails ten tests.
+  - The map is pinned at the base point and the identity, and held to the ladder on
+    seeded multiples. Fixed-base key generation is held to the ladder over 256 boundary
+    and seeded scalars.
+  - `AreEqual` is tested on one point reached along two routes, on a point and its
+    negation (same y), and on the identity and the point of order 2 (same x). Dropping
+    either coordinate from the comparison fails those tests.
+  - The RFC 7748 and RFC 8032 vectors and the full Wycheproof Ed25519 set still pass.
+    The field element, point and Curve25519 tests moved into member partials.
+- **ARM64.** Under qemu the `umulh` path matched the replaced `UInt128` arithmetic on
+  `Multiply`, `Square` and `MultiplySmall`, and matched the RFC 7748 vectors: 9,002
+  checks with no mismatches. The emulator faulted while reading some tests' attributes,
+  so the check ran as a temporary probe.
+- **Left for later.**
+  - **Fixed-base table layout.** Each of its 64 windows costs about 390 ns of addition
+    and 220 ns of constant-time scan. Signed radix-16 digits and a table in cached form
+    (Y + X, Y − X, 2Z, 2dT) would halve the scan and save a multiplication per addition:
+    roughly a quarter off signing and key generation.
+  - **Verification's doublings.** The 256 doublings are now about half of verification.
+    Three of each window's four doublings feed another doubling and could skip T, saving
+    a multiplication each. A width-5 NAF for the public point and a larger table of odd
+    base multiples would cut the roughly 120 additions.
+  - **Hash allocation.** Signing and verification each allocate an `IncrementalHash`,
+    136 bytes. A short message could be hashed from a stack buffer instead.
+  - **Register pressure.** The multiply has 14 inputs and 10 partial sums for 15 x64
+    registers, which leaves about 130 stack references. Four 64-bit limbs would need
+    add-with-carry, which .NET does not expose.
