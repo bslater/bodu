@@ -22,5 +22,15 @@ internal static partial class Blake2bCore
         /// The portable scalar kernel, which runs everywhere.
         /// </summary>
         Scalar,
+
+        /// <summary>
+        /// The 256-bit kernel on x64, over AVX2.
+        /// </summary>
+        Avx2,
+
+        /// <summary>
+        /// The 256-bit kernel on x64, over AVX2 with AVX-512VL's rotations.
+        /// </summary>
+        Avx512,
     }
 }

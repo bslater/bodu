@@ -17,6 +17,8 @@ public sealed partial class Blake2bCoreTests
     /// <param name="kernel">The kernel's name.</param>
     [TestMethod]
     [DataRow("Scalar")]
+    [DataRow("Avx2")]
+    [DataRow("Avx512")]
     public void Compress_ForEachKernel_ShouldMatchRfc7693Example(string kernel)
     {
         byte[] digest = Hash(ParseSupportedKernel(kernel), [], Encoding.ASCII.GetBytes("abc"), 64);
@@ -31,6 +33,8 @@ public sealed partial class Blake2bCoreTests
     /// <param name="kernel">The kernel's name.</param>
     [TestMethod]
     [DataRow("Scalar")]
+    [DataRow("Avx2")]
+    [DataRow("Avx512")]
     public void Compress_ForEachKernel_ShouldMatchReferenceVectors(string kernel)
     {
         Blake2bCore.KernelKind kind = ParseSupportedKernel(kernel);
@@ -40,6 +44,38 @@ public sealed partial class Blake2bCoreTests
             byte[] digest = Hash(kind, vector.Key ?? [], vector.Message, vector.Digest.Length);
 
             CollectionAssert.AreEqual(vector.Digest, digest, vector.Name);
+        }
+    }
+
+    /// <summary>
+    /// Verifies that each vector kernel leaves the same chaining state as the scalar kernel on seeded random states,
+    /// blocks and counters, with and without the finalization flag.
+    /// </summary>
+    /// <param name="kernel">The kernel's name.</param>
+    [TestMethod]
+    [DataRow("Avx2")]
+    [DataRow("Avx512")]
+    public void Compress_ForEachKernel_ShouldMatchScalarKernel(string kernel)
+    {
+        Blake2bCore.KernelKind kind = ParseSupportedKernel(kernel);
+        var random = new Random(0x2B2B);
+        byte[] block = new byte[Blake2bCore.BlockBytes];
+
+        for (int sample = 0; sample < 1000; sample++)
+        {
+            ulong[] expected = new ulong[Blake2bCore.StateWords];
+            for (int i = 0; i < expected.Length; i++)
+                expected[i] = (ulong)random.NextInt64() ^ ((ulong)random.Next() << 63);
+
+            ulong[] actual = (ulong[])expected.Clone();
+            random.NextBytes(block);
+            ulong counter = sample % 3 == 0 ? ulong.MaxValue - (ulong)sample : (ulong)random.NextInt64();
+            bool last = sample % 2 == 0;
+
+            Blake2bCore.Compress(Blake2bCore.KernelKind.Scalar, expected, block, counter, last);
+            Blake2bCore.Compress(kind, actual, block, counter, last);
+
+            CollectionAssert.AreEqual(expected, actual, $"sample {sample}");
         }
     }
 }

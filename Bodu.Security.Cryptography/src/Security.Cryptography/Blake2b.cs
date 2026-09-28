@@ -89,15 +89,6 @@ public sealed partial class Blake2b
     /// <summary>Convenience constant for the byte length of <see cref="BlockSizeValue" />, used when slicing or allocating <see cref="byte" /> buffers from the bit-valued constant.</summary>
     private const int BlockSizeBytesValue = BlockSizeValue / 8;
 
-    /// <summary>The SHA-512 initialization constants used as the BLAKE2b IV.</summary>
-    private static readonly ulong[] s_iv =
-    [
-        0x6A09E667F3BCC908UL, 0xBB67AE8584CAA73BUL,
-        0x3C6EF372FE94F82BUL, 0xA54FF53A5F1D36F1UL,
-        0x510E527FADE682D1UL, 0x9B05688C2B3E6C1FUL,
-        0x1F83D9ABFB41BD6BUL, 0x5BE0CD19137E2179UL,
-    ];
-
     /// <summary>The eight 64-bit internal hash state words.</summary>
     private readonly ulong[] _h = new ulong[8];
 
@@ -232,21 +223,11 @@ public sealed partial class Blake2b
     /// <see langword="true" /> if this is the final block; causes the finalization flag word to be inverted.
     /// </param>
     /// <remarks>
-    /// Dispatches to an AVX-512 vectorised implementation when supported by the host, falling back to a scalar
-    /// reference implementation otherwise. Dispatch is gated by <see cref="SimdCapabilities.Avx512FVL" />, which
-    /// combines the hardware intrinsic with the process-wide SIMD opt-out; on hosts without AVX-512 it still folds to a
-    /// compile-time constant that removes the branch, otherwise it reduces to a single cached-boolean load.
+    /// Compression runs on the widest kernel <see cref="Blake2bCore" /> selects: AVX-512, then AVX2, then the scalar
+    /// kernel, each gate honoring the process-wide SIMD opt-out.
     /// </remarks>
-    protected override void ProcessBlock(ReadOnlySpan<byte> block, ulong totalBytesIncludingThisBlock, bool isFinal)
-    {
-        if (SimdCapabilities.Avx512FVL)
-        {
-            ProcessBlockAvx512(block, totalBytesIncludingThisBlock, isFinal);
-            return;
-        }
-
-        Blake2bCore.Compress(Blake2bCore.KernelKind.Scalar, _h, block, totalBytesIncludingThisBlock, isFinal);
-    }
+    protected override void ProcessBlock(ReadOnlySpan<byte> block, ulong totalBytesIncludingThisBlock, bool isFinal) =>
+        Blake2bCore.Compress(_h, block, totalBytesIncludingThisBlock, isFinal);
 
     /// <inheritdoc />
     /// <remarks>

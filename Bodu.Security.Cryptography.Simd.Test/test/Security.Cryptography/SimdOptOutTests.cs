@@ -42,6 +42,17 @@ public sealed class SimdOptOutTests
     }
 
     /// <summary>
+    /// Verifies that with SIMD disabled, BLAKE2b and BLAKE2s dispatch to their scalar compression kernels whatever the
+    /// processor supports, so the linked BLAKE2 vectors in this assembly hold the scalar kernels to them.
+    /// </summary>
+    [TestMethod]
+    public void Blake2SelectKernel_WhenSimdDisabled_ShouldReturnTheScalarKernels()
+    {
+        Assert.AreEqual(Blake2bCore.KernelKind.Scalar, Blake2bCore.SelectKernel());
+        Assert.AreEqual(Blake2sCore.KernelKind.Scalar, Blake2sCore.SelectKernel());
+    }
+
+    /// <summary>
     /// Verifies that with SIMD disabled, scrypt dispatches to its scalar BlockMix kernel whatever the processor supports.
     /// </summary>
     [TestMethod]

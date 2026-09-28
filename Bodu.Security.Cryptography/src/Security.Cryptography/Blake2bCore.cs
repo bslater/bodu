@@ -90,6 +90,14 @@ internal static partial class Blake2bCore
 
         switch (kernel == KernelKind.Auto ? SelectKernel() : kernel)
         {
+            case KernelKind.Avx512:
+                Vector256Kernel<Avx512Isa>.Compress(ref h, ref m, counter, finalization);
+                break;
+
+            case KernelKind.Avx2:
+                Vector256Kernel<Avx2Isa>.Compress(ref h, ref m, counter, finalization);
+                break;
+
             default:
                 CompressScalar(ref h, ref m, counter, finalization);
                 break;
@@ -97,15 +105,21 @@ internal static partial class Blake2bCore
     }
 
     /// <summary>
-    /// Selects the widest kernel the processor supports and the process allows.
+    /// Selects the widest kernel the processor supports and the process allows: AVX-512, then AVX2, then the scalar
+    /// kernel.
     /// </summary>
     /// <returns>The kernel dispatch runs; never <see cref="KernelKind.Auto" />.</returns>
     /// <remarks>
     /// Every gate honors the <see cref="SimdCapabilities.DisableSimdSwitchName" /> switch, which pins the scalar
     /// kernel.
     /// </remarks>
-    internal static KernelKind SelectKernel() =>
-        KernelKind.Scalar;
+    internal static KernelKind SelectKernel()
+    {
+        if (SimdCapabilities.Avx512FVL)
+            return KernelKind.Avx512;
+
+        return SimdCapabilities.Avx2 ? KernelKind.Avx2 : KernelKind.Scalar;
+    }
 
     /// <summary>
     /// Determines whether the processor can run the specified kernel, whether or not the process allows vector code.
@@ -118,6 +132,8 @@ internal static partial class Blake2bCore
     internal static bool IsSupported(KernelKind kernel) => kernel switch
     {
         KernelKind.Auto or KernelKind.Scalar => true,
+        KernelKind.Avx2 => System.Runtime.Intrinsics.X86.Avx2.IsSupported,
+        KernelKind.Avx512 => System.Runtime.Intrinsics.X86.Avx2.IsSupported && System.Runtime.Intrinsics.X86.Avx512F.VL.IsSupported,
         _ => false,
     };
 }

@@ -40,4 +40,41 @@ public sealed partial class Blake2bCoreTests
     {
         Assert.IsFalse(Blake2bCore.IsSupported((Blake2bCore.KernelKind)99));
     }
+
+    /// <summary>
+    /// Verifies that dispatch prefers the AVX-512 kernel wherever its gate is open.
+    /// </summary>
+    [TestMethod]
+    public void SelectKernel_WhenAvx512IsAvailable_ShouldReturnAvx512()
+    {
+        if (!SimdCapabilities.Avx512FVL)
+            Assert.Inconclusive("AVX-512VL is not available on this processor.");
+
+        Assert.AreEqual(Blake2bCore.KernelKind.Avx512, Blake2bCore.SelectKernel());
+    }
+
+    /// <summary>
+    /// Verifies that dispatch falls back to the AVX2 kernel on an x64 processor without AVX-512.
+    /// </summary>
+    [TestMethod]
+    public void SelectKernel_WhenAvx2IsTheWidestGateOpen_ShouldReturnAvx2()
+    {
+        if (!SimdCapabilities.Avx2 || SimdCapabilities.Avx512FVL)
+            Assert.Inconclusive("The processor is not an x64 processor with AVX2 and without AVX-512.");
+
+        Assert.AreEqual(Blake2bCore.KernelKind.Avx2, Blake2bCore.SelectKernel());
+    }
+
+    /// <summary>
+    /// Verifies that each vector kernel is reported as supported exactly when the processor has its instruction sets,
+    /// whatever the process's SIMD switch says.
+    /// </summary>
+    [TestMethod]
+    public void IsSupported_WhenKernelIsVectorized_ShouldFollowTheProcessor()
+    {
+        bool avx2 = System.Runtime.Intrinsics.X86.Avx2.IsSupported;
+
+        Assert.AreEqual(avx2, Blake2bCore.IsSupported(Blake2bCore.KernelKind.Avx2));
+        Assert.AreEqual(avx2 && System.Runtime.Intrinsics.X86.Avx512F.VL.IsSupported, Blake2bCore.IsSupported(Blake2bCore.KernelKind.Avx512));
+    }
 }
