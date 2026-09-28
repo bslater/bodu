@@ -825,3 +825,127 @@ How it was done, and where it departs from the design above:
     GHASH kernel compiles the same either way; the difference lies in how PGO lays out
     and devirtualizes the BCL's OpenSSL AES path under `AesBlockCipher.TransformBlocks`.
     It is not pursued here.
+
+### W6 — ChaCha20, Salsa20, Poly1305 and the Poly1305 AEADs (done)
+
+| Measure (1 MiB unless noted) | Baseline | Result | Target |
+|---|---|---|---|
+| ChaCha20, AVX2 | 286 MiB/s | 1,163–1,446 MiB/s | ≥ 1 GiB/s — met |
+| ChaCha20, AVX-512 eight-way (this host's default) | 286 MiB/s | 3,103 MiB/s | — |
+| ChaCha20, AVX-512 sixteen-way (`DOTNET_PreferredVectorBitWidth=512`) | 286 MiB/s | 3,836 MiB/s | — |
+| ChaCha20, SSSE3 / scalar | 299 / 295 MiB/s | 774 / 307 MiB/s | — |
+| Salsa20, AVX-512 eight-way / sixteen-way | 356 MiB/s | 3,155 / 3,858 MiB/s | — |
+| Salsa20, AVX2 / SSSE3 / scalar | 353 / 346 / 351 MiB/s | 729–1,205 / 608 / 398 MiB/s | — |
+| XChaCha20-Poly1305 | 141 MiB/s | 761 MiB/s; 561–585 MiB/s on AVX2 | ≥ 500 MiB/s — met |
+| XChaCha20-Poly1305, allocation per message | 624 B | 80 B, the instance itself; `Encrypt` / `Decrypt` 0 B | nothing beyond the output — met, see below |
+| XChaCha20-Poly1305, 64-byte message | 1.40 µs | 0.82–0.86 µs | — |
+| XSalsa20-Poly1305 (secretbox) | 150 MiB/s; 656 B | 689 MiB/s; 80 B | — |
+| Poly1305 | 441 MiB/s | 1,110–1,131 MiB/s | ≥ 1 GiB/s — met |
+| Poly1305 without BMI2 / scalar | 446 / 438 MiB/s | 600–720 / 618–687 MiB/s | — |
+
+The baselines were measured the same day at `e63fe20`, the commit before W6, whose
+stream ciphers, Poly1305 and AEADs are 1.0.0's; they agree with §1. On .NET 8 the
+results match within noise: ChaCha20 3,130 MiB/s, Salsa20 3,317 MiB/s,
+XChaCha20-Poly1305 807 MiB/s and Poly1305 1,110 MiB/s. The AVX2 tier moved between
+processes on this shared host, by up to a quarter for ChaCha20 and more for Salsa20, so
+it is given as a range over both runtimes. The sixteen-way figures need
+`DOTNET_PreferredVectorBitWidth=512`, because this host does not prefer 512-bit vectors
+by default (see W5).
+
+How it was done, and where it departs from the design above:
+
+- **T1, Poly1305 (W6a).** `Poly1305Core` is a struct holding the whole authenticator.
+  - `r` is split into limbs of 44, 44 and 42 bits, with 20·r1 and 20·r2 precomputed.
+    Blocks are read straight from the caller's span.
+  - Each of a block's nine products is split at bit 44 as it is formed, so the limb sums
+    stay in 64 bits with no 128-bit carries. The design's `UInt128` sums measured about
+    8% slower: .NET routes the low half of a `UInt128` product through memory, and every
+    `UInt128` add compiles to add, cmp, setb and movzx.
+  - The high half of each product comes from `mulx` on x64 with BMI2 and `umulh` on
+    ARM64. Without either, `Math.BigMul` is a call into the BCL's software fallback for
+    every product. That path fell to 316–345 MiB/s, below the old 26-bit code, and was
+    found while measuring this section (see below).
+  - The public `Poly1305` feeds the core from `HashCore`; the AEADs keep one on the
+    stack.
+- **T4, keystream in bulk (W6b).** `ChaCha20Core` and `Salsa20Core` own the block
+  functions: a scalar one, and kernels that keep one state word of 4, 8 or 16
+  consecutive blocks in each vector, with the counters in successive lanes.
+  - `Vector128Kernel<TIsa>` runs over SSSE3, AdvSimd and AVX-512VL, and
+    `Vector256Kernel<TIsa>` over AVX2 and AVX-512VL. `Vector512Kernel` is BLAKE3's
+    `Avx512Wide` kind, selected only where the runtime prefers 512-bit vectors.
+  - Rotations by 16 and 8 bits are byte shuffles (`rev32` and `tbl` on ARM64) and the
+    rest shift pairs; AVX-512 has `vprold`.
+  - The words go back into block order through 4×4 transposes, `vperm2i128` for eight
+    blocks, and `vshufi32x4` rounds for sixteen.
+  - Salsa20 shares the kernel kinds, shims and transposes. Its 64-bit counter carries
+    into the high word lane by lane. The scalar quarter rounds use Bodu.Core's internal
+    `RotateBitsLeftUnchecked`.
+  - The engines expose the kernels through the internal
+    `IBulkStreamCipher.XorKeystreamBlocks`, which `StreamCipherTransform` and the AEADs
+    call for whole blocks. A request past the end of the keystream writes the blocks
+    that remain, latches exhaustion and throws, as the same run of single-block calls
+    would.
+- **Allocation-free messages (W6c).** The `Poly1305AeadCore` framings are generic over
+  an internal `IKeystreamSource` passed by reference.
+  - The sealed AEADs seed a `ChaCha20Core.Keystream` or `Salsa20Core.Keystream` on the
+    stack for each message and clear it afterwards. These values hold the state inline
+    and draw on the same block functions and kernels as the engines.
+  - `Poly1305AeadTransform` keeps its key and nonce in an inline buffer.
+  - `Encrypt` and `Decrypt` go through `private protected` hooks. Their default is the
+    old path: `CreateEngine`, then `SealCore` / `OpenCore`. A type derived in another
+    assembly therefore behaves as before, and the public API is unchanged.
+  - A message now allocates nothing but the single-use instance the API requires:
+    80 bytes, where it was 624. Making the transforms reusable across nonces would
+    remove that too, but it is an API change outside G5, so it is left for a later
+    version.
+- **Tests.**
+  - Every kernel, driven explicitly, is held to the block function one block at a
+    time: at every block count from 0 to 40 plus 47, 48, 49, 64 and 100, in place,
+    across ChaCha20's counter wrap and Salsa20's carry and wrap, and through each shim's
+    rotations and transposes.
+  - The block functions are pinned to RFC 8439 2.3.2 and A.1 and to the eSTREAM
+    Salsa20 vectors. The RFC 8439 reader now parses A.1's "Block Counter" spelling.
+  - `StreamCipherTransform` is checked at split points around block boundaries and
+    against an engine with no bulk path.
+  - The Poly1305 core is compared with the replaced radix-2^26 code over seeded
+    messages, piece-wise feeds, padded segments and limbs at their largest.
+  - Each AEAD framing's stack path is held to its engine path over every length up to
+    299, plus 1,024, 1,029 and 4,099 bytes.
+  - `EngineBackedXChaCha20Poly1305` derives from `Poly1305AeadTransform` the way another
+    assembly must, and runs the whole AEAD contract through the base engine path. A
+    reflection test holds each sealed AEAD's protected `CreateEngine`, `SealCore` and
+    `OpenCore` to `Encrypt` and `Decrypt`.
+  - The contract asserts that `Encrypt` and `Decrypt` allocate 0 bytes, checked red
+    first.
+  - The SIMD-off assembly checks that dispatch falls to the scalar kernel, and now also
+    runs the XChaCha draft and libsodium secretbox vectors.
+- **ARM64.** Under qemu the AdvSimd rotations, transposes and kernels matched the scalar
+  block function over every block count and counter case: 4,052 checks, confirmed with
+  a span comparison because the emulator faults inside MSTest's `CollectionAssert`. The
+  Poly1305 core's differential and edge tests pass on the `umulh` path.
+- **Found along the way, and fixed.** On x64 without BMI2 — pre-Haswell processors, the
+  Pentium and Celeron parts that disable VEX encodings, and
+  `DOTNET_EnableHWIntrinsic=0` — the core's `Math.BigMul` fallback was nine calls per
+  block. `Poly1305Core.SplitProduct` now forms the split inline from three 64-bit
+  multiplies:
+  - Write `left = a1·2^32 + a0` and `right = b1·2^32 + b0`; the product is
+    `(a1·right + a0·b1)·2^32 + a0·b0`.
+  - Accumulator limbs stay below 2^46 and limbs of r and 20·r below 2^49, so `a1·right`
+    stays below 2^63.
+  - That sum, plus the carry out of `a0·b0`, is therefore exactly the product's bits
+    from 32 upward.
+
+  Without BMI2 Poly1305 went from 316–345 to 600–720 MiB/s, and XChaCha20-Poly1305
+  with neither AVX2 nor BMI2 from 250 to 366–372 MiB/s. The split is held to `UInt128`
+  products at its bounds and over 100,000 seeded pairs.
+- **Left for later.**
+  - Poly1305 is now the AEADs' bottleneck: at 1 MiB the keystream takes about 0.33 ms
+    and the MAC about 0.9 ms. OpenSSL and BoringSSL run Poly1305 several blocks at a
+    time on 26-bit limbs in AVX2 or AVX-512 registers; that would roughly double the
+    AEADs, but it is beyond W6's targets.
+  - A 64-byte message costs three scalar block computations: HChaCha20, the Poly1305
+    key block and the message block. Producing the key block and the first message
+    blocks in one four-way kernel call would shorten it.
+  - Salsa20 trails ChaCha20 on AVX2 because none of its rotations (7, 9, 13, 18) is
+    byte-aligned, so each is a shift pair. Where AVX-512's `vprold` is available the
+    two run at the same speed.
