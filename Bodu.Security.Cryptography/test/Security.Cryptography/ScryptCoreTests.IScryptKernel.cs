@@ -20,7 +20,7 @@ public sealed partial class ScryptCoreTests
     [DataRow("Scalar")]
     [DataRow("Sse2")]
     [DataRow("AdvSimd")]
-    public void Salsa20_8_ForEachKernel_ShouldMatchRfc7914Vector(string kernel)
+    public void Salsa20_8_WhenGivenRfc7914Input_ForEachKernel_ShouldMatchRfc7914Vector(string kernel)
     {
         uint[] block = ToWords(SalsaInputHex);
 
@@ -37,7 +37,7 @@ public sealed partial class ScryptCoreTests
     [DataRow("Scalar")]
     [DataRow("Sse2")]
     [DataRow("AdvSimd")]
-    public void BlockMix_ForEachKernel_ShouldMatchRfc7914Vector(string kernel)
+    public void BlockMix_WhenGivenRfc7914Input_ForEachKernel_ShouldMatchRfc7914Vector(string kernel)
     {
         uint[] output = new uint[32];
 
@@ -53,7 +53,7 @@ public sealed partial class ScryptCoreTests
     [TestMethod]
     [DataRow("Sse2")]
     [DataRow("AdvSimd")]
-    public void BlockMix_ForEachKernel_ShouldMatchScalarKernel(string kernel)
+    public void BlockMix_WhenUnitsAreRandom_ForEachKernel_ShouldMatchScalarKernel(string kernel)
     {
         KernelOperations operations = OperationsOf(kernel);
         KernelOperations scalar = OperationsOf(nameof(ScryptCore.KernelKind.Scalar));
@@ -83,7 +83,7 @@ public sealed partial class ScryptCoreTests
     [DataRow("Scalar")]
     [DataRow("Sse2")]
     [DataRow("AdvSimd")]
-    public void BlockMixXor_ForEachKernel_ShouldMatchBlockMixOfTheXor(string kernel)
+    public void BlockMixXor_WhenUnitsAreRandom_ForEachKernel_ShouldMatchBlockMixOfTheXor(string kernel)
     {
         KernelOperations operations = OperationsOf(kernel);
 
@@ -113,7 +113,7 @@ public sealed partial class ScryptCoreTests
     [DataRow("Scalar")]
     [DataRow("Sse2")]
     [DataRow("AdvSimd")]
-    public void Import_ForEachKernel_ShouldKeepWordZeroFirstAndRoundTripThroughExport(string kernel)
+    public void Import_WhenWordsAreNumbered_ForEachKernel_ShouldKeepWordZeroFirstAndRoundTripThroughExport(string kernel)
     {
         uint[] unit = new uint[32 * 3];
         for (int i = 0; i < unit.Length; i++)

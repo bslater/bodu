@@ -24,7 +24,7 @@ public sealed partial class GhashTests
     [TestMethod]
     [DataRow("Pclmulqdq")]
     [DataRow("Pmull")]
-    public void MultiplyLower_ForEachIsa_ShouldMultiplyTheLowHalvesWithoutCarries(string isa)
+    public void MultiplyLower_WhenGivenBoundaryAndRandomOperands_ForEachIsa_ShouldMultiplyTheLowHalvesWithoutCarries(string isa)
     {
         Func<Vector128<ulong>, Vector128<ulong>, Vector128<ulong>> multiply = IsPclmulqdq(isa)
             ? Ghash.PclmulqdqIsa.MultiplyLower
@@ -41,7 +41,7 @@ public sealed partial class GhashTests
     [TestMethod]
     [DataRow("Pclmulqdq")]
     [DataRow("Pmull")]
-    public void MultiplyUpper_ForEachIsa_ShouldMultiplyTheHighHalvesWithoutCarries(string isa)
+    public void MultiplyUpper_WhenGivenBoundaryAndRandomOperands_ForEachIsa_ShouldMultiplyTheHighHalvesWithoutCarries(string isa)
     {
         Func<Vector128<ulong>, Vector128<ulong>, Vector128<ulong>> multiply = IsPclmulqdq(isa)
             ? Ghash.PclmulqdqIsa.MultiplyUpper
@@ -58,7 +58,7 @@ public sealed partial class GhashTests
     [TestMethod]
     [DataRow("Pclmulqdq")]
     [DataRow("Pmull")]
-    public void MultiplyLowerUpper_ForEachIsa_ShouldMultiplyTheCrossHalvesWithoutCarries(string isa)
+    public void MultiplyLowerUpper_WhenGivenBoundaryAndRandomOperands_ForEachIsa_ShouldMultiplyTheCrossHalvesWithoutCarries(string isa)
     {
         Func<Vector128<ulong>, Vector128<ulong>, Vector128<ulong>> multiply = IsPclmulqdq(isa)
             ? Ghash.PclmulqdqIsa.MultiplyLowerUpper
@@ -75,7 +75,7 @@ public sealed partial class GhashTests
     [TestMethod]
     [DataRow("Pclmulqdq")]
     [DataRow("Pmull")]
-    public void MultiplyUpperLower_ForEachIsa_ShouldMultiplyTheCrossHalvesWithoutCarries(string isa)
+    public void MultiplyUpperLower_WhenGivenBoundaryAndRandomOperands_ForEachIsa_ShouldMultiplyTheCrossHalvesWithoutCarries(string isa)
     {
         Func<Vector128<ulong>, Vector128<ulong>, Vector128<ulong>> multiply = IsPclmulqdq(isa)
             ? Ghash.PclmulqdqIsa.MultiplyUpperLower
@@ -92,7 +92,7 @@ public sealed partial class GhashTests
     [TestMethod]
     [DataRow("Pclmulqdq")]
     [DataRow("Pmull")]
-    public void ReverseBytes_ForEachIsa_ShouldReverseTheSixteenBytes(string isa)
+    public void ReverseBytes_WhenGivenBoundaryAndRandomBlocks_ForEachIsa_ShouldReverseTheSixteenBytes(string isa)
     {
         Func<Vector128<byte>, Vector128<byte>> reverse = IsPclmulqdq(isa)
             ? Ghash.PclmulqdqIsa.ReverseBytes
@@ -114,7 +114,7 @@ public sealed partial class GhashTests
     [DataRow("Pmull", 4)]
     [DataRow("Pmull", 8)]
     [DataRow("Pmull", 12)]
-    public void ShiftBytesLeft_ForEachIsa_ShouldShiftTowardTheHighEnd(string isa, int bytes)
+    public void ShiftBytesLeft_WhenShiftingByWholeWords_ForEachIsa_ShouldShiftTowardTheHighEnd(string isa, int bytes)
     {
         bool pclmulqdq = IsPclmulqdq(isa);
         Func<Vector128<byte>, Vector128<byte>> shift = bytes switch
@@ -140,7 +140,7 @@ public sealed partial class GhashTests
     [DataRow("Pmull", 4)]
     [DataRow("Pmull", 8)]
     [DataRow("Pmull", 12)]
-    public void ShiftBytesRight_ForEachIsa_ShouldShiftTowardTheLowEnd(string isa, int bytes)
+    public void ShiftBytesRight_WhenShiftingByWholeWords_ForEachIsa_ShouldShiftTowardTheLowEnd(string isa, int bytes)
     {
         bool pclmulqdq = IsPclmulqdq(isa);
         Func<Vector128<byte>, Vector128<byte>> shift = bytes switch

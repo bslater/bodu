@@ -28,7 +28,7 @@ public sealed partial class Blake3CoreTests
     [DataRow("Avx512", 12)]
     [DataRow("Avx512", 8)]
     [DataRow("Avx512", 7)]
-    public void RotateRight_ForEachIsa_ShouldRotateEachWord(string isa, int bits)
+    public void RotateRight_WhenCountIsOneBlake3Uses_ForEachIsa_ShouldRotateEachWord(string isa, int bits)
     {
         Func<Vector256<uint>, Vector256<uint>> rotate = (ParseSupportedKernel(isa), bits) switch
         {

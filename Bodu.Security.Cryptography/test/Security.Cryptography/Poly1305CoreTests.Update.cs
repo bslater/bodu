@@ -22,7 +22,7 @@ public sealed partial class Poly1305CoreTests
         typeof(Poly1305Tests),
         DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public void Update_WithRfc8439AppendixA3Vector_ShouldProduceTag(MessageDigestKnownAnswer vector)
+    public void Update_WhenGivenRfc8439AppendixA3Vector_ShouldProduceTag(MessageDigestKnownAnswer vector)
     {
         CollectionAssert.AreEqual(vector.Digest, ComputeTag(vector.Key!, vector.Message), vector.Name);
     }

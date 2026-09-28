@@ -16,7 +16,7 @@ public sealed partial class Salsa20StreamCipherTests
     [TestMethod]
     [DataRow(16)]
     [DataRow(32)]
-    public void XorKeystreamBlocks_ShouldMatchSuccessiveKeystreamBlocks(int keyBytes)
+    public void XorKeystreamBlocks_WhenBlockCountVaries_ShouldMatchSuccessiveKeystreamBlocks(int keyBytes)
     {
         var random = new Random(0x5A15_1001 + keyBytes);
 

@@ -162,7 +162,7 @@ public sealed partial class EaxModeTransformTests
         nameof(EaxKatVectors),
         DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public void Encrypt_WithEaxPaperVector_ShouldProduceExpectedCiphertextAndTag(AeadKnownAnswer vector)
+    public void Encrypt_WhenGivenEaxPaperVector_ShouldProduceExpectedCiphertextAndTag(AeadKnownAnswer vector)
         => AssertKatEncrypt(vector);
 
     /// <summary>
@@ -174,7 +174,7 @@ public sealed partial class EaxModeTransformTests
         nameof(EaxKatVectors),
         DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public void Decrypt_WithEaxPaperVector_ShouldRecoverOriginalPlaintext(AeadKnownAnswer vector)
+    public void Decrypt_WhenGivenEaxPaperVector_ShouldRecoverOriginalPlaintext(AeadKnownAnswer vector)
         => AssertKatDecrypt(vector);
 
     // ── Project Wycheproof ───────────────────────────────────────────────────────────────────
@@ -206,7 +206,7 @@ public sealed partial class EaxModeTransformTests
         nameof(WycheproofValidVectors),
         DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public void Encrypt_WithWycheproofVector_ShouldMatchExpected(AeadKnownAnswer vector)
+    public void Encrypt_WhenGivenWycheproofVector_ShouldMatchExpected(AeadKnownAnswer vector)
     {
         using var cipher = new AesBlockCipher(vector.Key!);
         using var transform = CreateWycheproofTransform(cipher, vector);
@@ -228,7 +228,7 @@ public sealed partial class EaxModeTransformTests
         nameof(WycheproofValidVectors),
         DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public void Decrypt_WithWycheproofVector_ShouldRecoverPlaintext(AeadKnownAnswer vector)
+    public void Decrypt_WhenGivenWycheproofVector_ShouldRecoverPlaintext(AeadKnownAnswer vector)
     {
         using var cipher = new AesBlockCipher(vector.Key!);
         using var transform = CreateWycheproofTransform(cipher, vector);
@@ -251,7 +251,7 @@ public sealed partial class EaxModeTransformTests
         nameof(WycheproofInvalidVectors),
         DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public void Decrypt_WithWycheproofInvalidVector_ShouldThrowCryptographicException(AeadKnownAnswer vector)
+    public void Decrypt_WhenGivenInvalidWycheproofVector_ShouldThrowCryptographicException(AeadKnownAnswer vector)
     {
         using var cipher = new AesBlockCipher(vector.Key!);
         using var transform = CreateWycheproofTransform(cipher, vector);

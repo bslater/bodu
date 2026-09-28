@@ -68,7 +68,7 @@ public sealed partial class SivModeTransformTests
         nameof(SivKatA1),
         DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public void Encrypt_WithRfc5297A1Vector_ShouldMatchExpected(AeadKnownAnswer vector)
+    public void Encrypt_WhenGivenRfc5297A1Vector_ShouldMatchExpected(AeadKnownAnswer vector)
     {
         using var s2vCipher = new AesBlockCipherFixture(vector.Key[..16]);
         using var ctrCipher = new AesBlockCipherFixture(vector.Key[16..]);
@@ -92,7 +92,7 @@ public sealed partial class SivModeTransformTests
         nameof(SivKatA1),
         DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public void Decrypt_WithRfc5297A1Vector_ShouldRecoverPlaintext(AeadKnownAnswer vector)
+    public void Decrypt_WhenGivenRfc5297A1Vector_ShouldRecoverPlaintext(AeadKnownAnswer vector)
     {
         using var s2vCipher = new AesBlockCipherFixture(vector.Key[..16]);
         using var ctrCipher = new AesBlockCipherFixture(vector.Key[16..]);
@@ -158,7 +158,7 @@ public sealed partial class SivModeTransformTests
         nameof(WycheproofVectors),
         DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public void Encrypt_WithWycheproofVector_ShouldMatchExpected(AeadKnownAnswer vector)
+    public void Encrypt_WhenGivenWycheproofVector_ShouldMatchExpected(AeadKnownAnswer vector)
     {
         byte[] key = vector.Key!;
         int half = key.Length / 2;
@@ -183,7 +183,7 @@ public sealed partial class SivModeTransformTests
         nameof(WycheproofVectors),
         DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public void Decrypt_WithWycheproofVector_ShouldRecoverPlaintext(AeadKnownAnswer vector)
+    public void Decrypt_WhenGivenWycheproofVector_ShouldRecoverPlaintext(AeadKnownAnswer vector)
     {
         byte[] key = vector.Key!;
         int half = key.Length / 2;

@@ -12,7 +12,7 @@ public sealed partial class CmacTests
     /// Verifies that the subkeys derived under the RFC 4493 example key match the published <c>K1</c> and <c>K2</c>.
     /// </summary>
     [TestMethod]
-    public void DeriveSubkeys_ForRfc4493Key_ShouldMatchPublishedSubkeys()
+    public void DeriveSubkeys_WhenGivenRfc4493Key_ShouldMatchPublishedSubkeys()
     {
         using var cipher = new AesBlockCipher(s_rfc4493Key);
         byte[] k1 = new byte[16];

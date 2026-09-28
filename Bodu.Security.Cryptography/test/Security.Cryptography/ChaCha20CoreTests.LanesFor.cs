@@ -32,7 +32,7 @@ public sealed partial class ChaCha20CoreTests
     [DataRow("Avx512Wide", 16, 16)]
     [DataRow("Avx512Wide", 7, 4)]
     [DataRow("Avx512Wide", 1, 1)]
-    public void LanesFor_ForEachKernel_ShouldTakeTheWidestRunThatFits(string kernel, int remaining, int expected)
+    public void LanesFor_WhenGivenRemainingBlocks_ForEachKernel_ShouldTakeTheWidestRunThatFits(string kernel, int remaining, int expected)
     {
         Assert.AreEqual(expected, ChaCha20Core.LanesFor(Enum.Parse<ChaCha20Core.KernelKind>(kernel), remaining));
     }

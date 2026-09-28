@@ -34,7 +34,7 @@ public sealed partial class Blake2sCoreTests
     [DataRow("Avx512", 12)]
     [DataRow("Avx512", 8)]
     [DataRow("Avx512", 7)]
-    public void RotateRight_ForEachIsa_ShouldRotateEachWord(string isa, int bits)
+    public void RotateRight_WhenCountIsOneBlake2sUses_ForEachIsa_ShouldRotateEachWord(string isa, int bits)
     {
         Func<Vector128<uint>, Vector128<uint>> rotate = (ParseSupportedKernel(isa), bits) switch
         {
@@ -84,7 +84,7 @@ public sealed partial class Blake2sCoreTests
     [DataRow("Avx512", 1)]
     [DataRow("Avx512", 2)]
     [DataRow("Avx512", 3)]
-    public void RotateLanes_ForEachIsa_ShouldTakeEachLaneFromItsSuccessor(string isa, int places)
+    public void RotateLanes_WhenRotatingByOneToThreePlaces_ForEachIsa_ShouldTakeEachLaneFromItsSuccessor(string isa, int places)
     {
         Func<Vector128<uint>, Vector128<uint>> rotate = (ParseSupportedKernel(isa), places) switch
         {
@@ -118,7 +118,7 @@ public sealed partial class Blake2sCoreTests
     [DataRow("Ssse3")]
     [DataRow("AdvSimd")]
     [DataRow("Avx512")]
-    public void Transpose_ForEachIsa_ShouldExchangeRowsAndColumns(string isa)
+    public void Transpose_WhenGivenFourRows_ForEachIsa_ShouldExchangeRowsAndColumns(string isa)
     {
         Blake2sCore.KernelKind kind = ParseSupportedKernel(isa);
         Vector128<uint> row0 = Vector128.Create(0x00U, 0x01U, 0x02U, 0x03U);

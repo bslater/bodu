@@ -28,7 +28,7 @@ public sealed partial class Blake2bCoreTests
     [DataRow("Avx512", 24)]
     [DataRow("Avx512", 16)]
     [DataRow("Avx512", 63)]
-    public void RotateRight_ForEachIsa_ShouldRotateEachWord(string isa, int bits)
+    public void RotateRight_WhenCountIsOneBlake2bUses_ForEachIsa_ShouldRotateEachWord(string isa, int bits)
     {
         bool avx2 = ParseSupportedKernel(isa) == Blake2bCore.KernelKind.Avx2;
         Func<Vector256<ulong>, Vector256<ulong>> rotate = bits switch

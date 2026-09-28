@@ -114,7 +114,7 @@ public partial class Blake3Tests
     [DataRow(192)]
     [DataRow(256)]
     [DataRow(512)]
-    public void ChunkingPattern_AroundSubtreeBoundaries_ShouldMatchSmallWrites(int chunks)
+    public void ChunkingPattern_WhenLengthStraddlesASubtreeBoundary_ShouldMatchSmallWrites(int chunks)
     {
         foreach (int delta in new[] { -1, 0, 1 })
         {

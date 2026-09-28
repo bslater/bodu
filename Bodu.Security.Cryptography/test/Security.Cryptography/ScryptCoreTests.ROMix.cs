@@ -68,7 +68,7 @@ public sealed partial class ScryptCoreTests
     [DataRow("Scalar")]
     [DataRow("Sse2")]
     [DataRow("AdvSimd")]
-    public void ROMix_ForEachKernel_ShouldMatchRfc7914Vector(string kernel)
+    public void ROMix_WhenScratchHoldsGarbage_ForEachKernel_ShouldMatchRfc7914Vector(string kernel)
     {
         uint[] block = ToWords(RomixInputHex);
 
@@ -85,7 +85,7 @@ public sealed partial class ScryptCoreTests
     [TestMethod]
     [DataRow("Sse2")]
     [DataRow("AdvSimd")]
-    public void ROMix_ForEachKernel_ShouldMatchScalarKernel(string kernel)
+    public void ROMix_WhenBlocksAreRandom_ForEachKernel_ShouldMatchScalarKernel(string kernel)
     {
         ScryptCore.KernelKind kind = ParseSupportedKernel(kernel);
 

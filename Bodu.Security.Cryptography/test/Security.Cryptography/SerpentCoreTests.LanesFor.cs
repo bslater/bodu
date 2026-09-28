@@ -28,7 +28,7 @@ public sealed partial class SerpentCoreTests
     [DataRow("Avx512", 3, 1)]
     [DataRow("Avx512", 7, 4)]
     [DataRow("Avx512", 100, 8)]
-    public void LanesFor_ForEachKernel_ShouldTakeTheWidestRunThatFits(string kernel, int remaining, int expected)
+    public void LanesFor_WhenGivenRemainingBlocks_ForEachKernel_ShouldTakeTheWidestRunThatFits(string kernel, int remaining, int expected)
     {
         Assert.AreEqual(expected, SerpentCore.LanesFor(Enum.Parse<SerpentCore.KernelKind>(kernel), remaining));
     }

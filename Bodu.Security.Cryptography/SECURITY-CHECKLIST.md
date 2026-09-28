@@ -86,21 +86,22 @@ scrypt's SSE2 and AdvSimd BlockMix kernels, and the BLAKE2b and BLAKE2s compress
       `IVector128Isa` remarks).
 - [ ] **Bit-identical to the scalar reference.** A differential test compares the kernel with the
       scalar path on seeded random inputs (`Argon2CoreTests.FillBlock_*`,
-      `GhashTests.Update_*_ShouldMatchBitSerialReference*`, `ScryptCoreTests.BlockMix_ForEachKernel_*`,
-      `ScryptCoreTests.ROMix_ForEachKernel_ShouldMatchScalarKernel`,
-      `Blake2bCoreTests` / `Blake2sCoreTests.Compress_ForEachKernel_ShouldMatchScalarKernel`).
+      `GhashTests.Update_*_ShouldMatchBitSerialReference*`,
+      `ScryptCoreTests.BlockMix_WhenUnitsAreRandom_ForEachKernel_ShouldMatchScalarKernel`,
+      `ScryptCoreTests.ROMix_WhenBlocksAreRandom_ForEachKernel_ShouldMatchScalarKernel`,
+      `Blake2bCoreTests` / `Blake2sCoreTests.Compress_WhenStatesAreRandom_ForEachKernel_ShouldMatchScalarKernel`).
 - [ ] **Every kernel meets the published vectors.** The vector corpus runs through each kernel the
       host supports, not only the one dispatch picks
       (`Argon2CoreTests.DeriveTag_WhenEachSupportedKernelFillsTheMatrix_*`,
       `GhashTests.Update_*_ShouldMatchPublishedValue`, `ScryptCoreTests.*_ForEachKernel_*` over RFC
       7914's Salsa20/8, BlockMix and ROMix vectors and the OpenSSL corpus, and the BLAKE2 cores'
-      `Compress_ForEachKernel_*` over RFC 7693's examples and the official blake2-kat.json), and
+      `Compress_WhenHashing*_ForEachKernel_*` over RFC 7693's examples and the official blake2-kat.json), and
       `Bodu.Security.Cryptography.Simd.Test` holds the scalar path to the same vectors.
 - [ ] **Gated and switchable.** Dispatch goes through a `SimdCapabilities` gate that honours the
       `DisableSimd` switch, and `SimdOptOutTests` asserts the gate is closed under it.
 - [ ] **Architecture-only code runs somewhere.** Every shim operation has a test against its scalar
       definition (`Argon2CoreTests.*_ForEachIsa_*`, `GhashTests.*_ForEachIsa_*`,
-      `ScryptCoreTests.RotateLanes_ForEachIsa_*`, `Blake2bCoreTests.RotateRight_ForEachIsa_*`,
+      `ScryptCoreTests.RotateLanes_*_ForEachIsa_*`, `Blake2bCoreTests.RotateRight_*_ForEachIsa_*`,
       `Blake2sCoreTests.*_ForEachIsa_*`), and ARM64-only
       files (`*.AdvSimd.cs`, `*.PmullIsa.cs`) run in `build-test.yml`'s ARM64 job, which
       `SimdCapabilitiesTests.AdvSimd_WhenProcessIsArm64_*` fails if the gate is closed there.

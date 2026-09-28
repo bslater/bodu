@@ -13,7 +13,7 @@ public sealed partial class ChaCha20StreamCipherTests
     /// blocks one at a time, and leaves the engine where those draws leave it.
     /// </summary>
     [TestMethod]
-    public void XorKeystreamBlocks_ShouldMatchSuccessiveKeystreamBlocks()
+    public void XorKeystreamBlocks_WhenBlockCountVaries_ShouldMatchSuccessiveKeystreamBlocks()
     {
         var random = new Random(0x0C4A_1001);
 

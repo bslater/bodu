@@ -95,7 +95,7 @@ public sealed partial class SerpentCoreTests
     /// Serpent-128 ran at less than half its speed.
     /// </remarks>
     [TestMethod]
-    public void EncryptBlock_ShouldForbidInliningIntoItsCallers()
+    public void EncryptBlock_WhenDeclared_ShouldForbidInliningIntoItsCallers()
     {
         MethodInfo method = typeof(SerpentCore).GetMethod("EncryptBlock", BindingFlags.NonPublic | BindingFlags.Static)!;
 

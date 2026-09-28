@@ -20,7 +20,7 @@ public sealed partial class Salsa20CoreTests
     [DataRow("Avx2")]
     [DataRow("Avx512")]
     [DataRow("Avx512Wide")]
-    public void XorBlocks_ForEachKernel_ShouldMatchBlockByBlock(string kernel)
+    public void XorBlocks_WhenRunLengthVaries_ForEachKernel_ShouldMatchBlockByBlock(string kernel)
     {
         ChaCha20Core.KernelKind kind = ParseSupportedKernel(kernel);
         var random = new Random(0x5A15_0002);

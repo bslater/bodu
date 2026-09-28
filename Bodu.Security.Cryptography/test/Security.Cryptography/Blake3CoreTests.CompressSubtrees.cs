@@ -34,7 +34,7 @@ public sealed partial class Blake3CoreTests
     [DataRow(3)]
     [DataRow(4)]
     [DataRow(-1)]
-    public void CompressSubtrees_ForEachThreadBound_ShouldMatchSubtreeBySubtree(int maxDegreeOfParallelism)
+    public void CompressSubtrees_WhenDividedAmongThreads_ForEachThreadBound_ShouldMatchSubtreeBySubtree(int maxDegreeOfParallelism)
     {
         var random = new Random(0x3F3F);
 
@@ -77,7 +77,7 @@ public sealed partial class Blake3CoreTests
     [DataRow("Avx2")]
     [DataRow("Avx512")]
     [DataRow("Avx512Wide")]
-    public void CompressSubtrees_ForEachKernel_ShouldMatchScalarKernelOnOneThread(string kernel)
+    public void CompressSubtrees_WhenDividedAmongThreads_ForEachKernel_ShouldMatchScalarKernelOnOneThread(string kernel)
     {
         Blake3Core.KernelKind kind = ParseSupportedKernel(kernel);
         int[] plan = [256, 128, 64, 1];

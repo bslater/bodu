@@ -18,7 +18,7 @@ public sealed partial class ChaCha20CoreTests
     /// Verifies that the block function reproduces the serialized block of RFC 8439 Section 2.3.2.
     /// </summary>
     [TestMethod]
-    public void Block_WithRfc8439Section232Vector_ShouldProduceSerializedBlock()
+    public void Block_WhenGivenRfc8439Section232Vector_ShouldProduceSerializedBlock()
     {
         uint[] state = new uint[ChaCha20Core.StateWords];
         ChaCha20Core.Initialize(
@@ -46,7 +46,7 @@ public sealed partial class ChaCha20CoreTests
         nameof(Rfc8439BlockFunctionData),
         DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public void Block_WithRfc8439AppendixA1Vector_ShouldProduceKeystream(StreamCipherKnownAnswer vector)
+    public void Block_WhenGivenRfc8439AppendixA1Vector_ShouldProduceKeystream(StreamCipherKnownAnswer vector)
     {
         uint[] state = new uint[ChaCha20Core.StateWords];
         ChaCha20Core.Initialize(state, vector.Key, vector.Nonce);

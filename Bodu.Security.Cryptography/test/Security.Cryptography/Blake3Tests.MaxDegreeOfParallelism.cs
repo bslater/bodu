@@ -67,7 +67,7 @@ public partial class Blake3Tests
     [DataRow(3)]
     [DataRow(4)]
     [DataRow(-1)]
-    public void ComputeHash_ForEachThreadBound_ShouldMatchCallingThreadDigest(int maxDegreeOfParallelism)
+    public void ComputeHash_WhenLengthStraddlesADivisionBoundary_ForEachThreadBound_ShouldMatchCallingThreadDigest(int maxDegreeOfParallelism)
     {
         int[] lengths =
         [

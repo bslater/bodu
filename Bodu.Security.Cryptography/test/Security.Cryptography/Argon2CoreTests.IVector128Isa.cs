@@ -25,7 +25,7 @@ public sealed partial class Argon2CoreTests
     [TestMethod]
     [DataRow("Ssse3")]
     [DataRow("AdvSimd")]
-    public void MultiplyLow_ForEachIsa_ShouldMultiplyTheLowHalvesIntoFullProducts(string isa)
+    public void MultiplyLow_WhenGivenBoundaryAndRandomOperands_ForEachIsa_ShouldMultiplyTheLowHalvesIntoFullProducts(string isa)
     {
         Func<Vector128<ulong>, Vector128<ulong>, Vector128<ulong>> multiplyLow = ParseSupportedKernel(isa) == Argon2Core.KernelKind.Ssse3
             ? Argon2Core.Ssse3Isa.MultiplyLow
@@ -51,7 +51,7 @@ public sealed partial class Argon2CoreTests
     [DataRow("AdvSimd", 32)]
     [DataRow("AdvSimd", 24)]
     [DataRow("AdvSimd", 16)]
-    public void RotateRight_ForEachIsa_ShouldRotateEachWord(string isa, int bits)
+    public void RotateRight_WhenCountIsOneArgon2Uses_ForEachIsa_ShouldRotateEachWord(string isa, int bits)
     {
         bool ssse3 = ParseSupportedKernel(isa) == Argon2Core.KernelKind.Ssse3;
         Func<Vector128<ulong>, Vector128<ulong>> rotate = bits switch
@@ -76,7 +76,7 @@ public sealed partial class Argon2CoreTests
     [TestMethod]
     [DataRow("Ssse3")]
     [DataRow("AdvSimd")]
-    public void UpperThenLower_ForEachIsa_ShouldTakeOneWordFromEachVector(string isa)
+    public void UpperThenLower_WhenGivenBoundaryAndRandomOperands_ForEachIsa_ShouldTakeOneWordFromEachVector(string isa)
     {
         Func<Vector128<ulong>, Vector128<ulong>, Vector128<ulong>> upperThenLower = ParseSupportedKernel(isa) == Argon2Core.KernelKind.Ssse3
             ? Argon2Core.Ssse3Isa.UpperThenLower

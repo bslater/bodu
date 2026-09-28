@@ -20,7 +20,7 @@ public sealed partial class Blake3CoreTests
     [DataRow("Avx2")]
     [DataRow("Avx512")]
     [DataRow("Avx512Wide")]
-    public void CompressParents_ForEachKernel_ShouldMatchParentByParentCompression(string kernel)
+    public void CompressParents_WhenRunLengthVaries_ForEachKernel_ShouldMatchParentByParentCompression(string kernel)
     {
         Blake3Core.KernelKind kind = ParseSupportedKernel(kernel);
         var random = new Random(0x3D3D);

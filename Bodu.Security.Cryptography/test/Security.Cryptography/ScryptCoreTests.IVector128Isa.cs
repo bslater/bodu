@@ -26,7 +26,7 @@ public sealed partial class ScryptCoreTests
     [DataRow("AdvSimd", 1)]
     [DataRow("AdvSimd", 2)]
     [DataRow("AdvSimd", 3)]
-    public void RotateLanes_ForEachIsa_ShouldTakeEachLaneFromItsSuccessor(string isa, int places)
+    public void RotateLanes_WhenRotatingByOneToThreePlaces_ForEachIsa_ShouldTakeEachLaneFromItsSuccessor(string isa, int places)
     {
         bool sse2 = ParseSupportedKernel(isa) == ScryptCore.KernelKind.Sse2;
         Func<Vector128<uint>, Vector128<uint>> rotate = places switch

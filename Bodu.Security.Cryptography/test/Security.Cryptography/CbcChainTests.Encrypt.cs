@@ -15,7 +15,7 @@ public sealed partial class CbcChainTests
     /// natively, at every length on both sides of the chained-call threshold.
     /// </summary>
     [TestMethod]
-    public void Encrypt_ForACipherThatChains_ShouldMatchPlatformCbc()
+    public void Encrypt_WhenLengthVaries_ForACipherThatChains_ShouldMatchPlatformCbc()
     {
         byte[] key = AesReference.RandomBytes(16, 71);
         using var cipher = new AesBlockCipher(key);
@@ -28,7 +28,7 @@ public sealed partial class CbcChainTests
     /// only single blocks.
     /// </summary>
     [TestMethod]
-    public void Encrypt_ForACipherThatDoesNotChain_ShouldMatchPlatformCbc()
+    public void Encrypt_WhenLengthVaries_ForACipherThatDoesNotChain_ShouldMatchPlatformCbc()
     {
         byte[] key = AesReference.RandomBytes(16, 72);
         using var cipher = new AesBlockCipherFixture(key);

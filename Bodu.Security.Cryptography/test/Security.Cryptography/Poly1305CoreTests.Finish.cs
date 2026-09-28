@@ -110,7 +110,7 @@ public sealed partial class Poly1305CoreTests
     /// once the tag is written.
     /// </summary>
     [TestMethod]
-    public void Finish_ShouldClearTheCore()
+    public void Finish_WhenTagIsWritten_ShouldClearTheCore()
     {
         var random = new Random(0x1305_0008);
         Poly1305Core core = default;

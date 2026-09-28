@@ -18,7 +18,7 @@ public sealed partial class CubeHashCoreTests
     [DataRow("AdvSimd")]
     [DataRow("Avx2")]
     [DataRow("Avx512")]
-    public void PerformRounds_ForEachKernel_ShouldMatchTheScalarKernel(string kernel)
+    public void PerformRounds_WhenStatesAreRandom_ForEachKernel_ShouldMatchTheScalarKernel(string kernel)
     {
         CubeHashCore.KernelKind kind = ParseSupportedKernel(kernel);
         var random = new Random(0x0C0B_0001);

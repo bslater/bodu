@@ -21,7 +21,7 @@ public sealed partial class Blake2sCoreTests
     [DataRow("Ssse3")]
     [DataRow("AdvSimd")]
     [DataRow("Avx512")]
-    public void Compress_ForEachKernel_ShouldMatchRfc7693Example(string kernel)
+    public void Compress_WhenHashingAbc_ForEachKernel_ShouldMatchRfc7693Example(string kernel)
     {
         byte[] digest = Hash(ParseSupportedKernel(kernel), [], Encoding.ASCII.GetBytes("abc"), 32);
 
@@ -38,7 +38,7 @@ public sealed partial class Blake2sCoreTests
     [DataRow("Ssse3")]
     [DataRow("AdvSimd")]
     [DataRow("Avx512")]
-    public void Compress_ForEachKernel_ShouldMatchReferenceVectors(string kernel)
+    public void Compress_WhenHashingReferenceMessages_ForEachKernel_ShouldMatchReferenceVectors(string kernel)
     {
         Blake2sCore.KernelKind kind = ParseSupportedKernel(kernel);
 
@@ -59,7 +59,7 @@ public sealed partial class Blake2sCoreTests
     [DataRow("Ssse3")]
     [DataRow("AdvSimd")]
     [DataRow("Avx512")]
-    public void Compress_ForEachKernel_ShouldMatchScalarKernel(string kernel)
+    public void Compress_WhenStatesAreRandom_ForEachKernel_ShouldMatchScalarKernel(string kernel)
     {
         Blake2sCore.KernelKind kind = ParseSupportedKernel(kernel);
         var random = new Random(0x2525);
@@ -93,7 +93,7 @@ public sealed partial class Blake2sCoreTests
     /// own, with its own budget, whatever the profile says.
     /// </remarks>
     [TestMethod]
-    public void Compress_ForEachKernel_ShouldForbidInliningIntoTheDispatcher()
+    public void Compress_WhenDeclared_ForEachKernel_ShouldForbidInliningIntoTheDispatcher()
     {
         MethodInfo[] kernels =
         [

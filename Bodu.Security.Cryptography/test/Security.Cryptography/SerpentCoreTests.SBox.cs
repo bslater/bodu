@@ -24,7 +24,7 @@ public sealed partial class SerpentCoreTests
     [DataRow(5)]
     [DataRow(6)]
     [DataRow(7)]
-    public void SBox_ForEachIndex_ShouldMatchTheTable(int index)
+    public void SBox_WhenGivenBitslicedInputs_ForEachIndex_ShouldMatchTheTable(int index)
     {
         foreach (uint[] input in BitslicedInputs)
         {
@@ -66,7 +66,7 @@ public sealed partial class SerpentCoreTests
     /// Serpent-128 ran at less than half its speed.
     /// </remarks>
     [TestMethod]
-    public void SBox_ShouldForbidInliningIntoItsCallers()
+    public void SBox_WhenDeclared_ShouldForbidInliningIntoItsCallers()
     {
         MethodInfo method = typeof(SerpentCore).GetMethod("SBox", BindingFlags.NonPublic | BindingFlags.Static)!;
 

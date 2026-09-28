@@ -16,7 +16,7 @@ public sealed partial class Poly1305CoreTests
     /// update of every alignment, and that the core then carries on unpadded.
     /// </summary>
     [TestMethod]
-    public void UpdatePadded_ShouldMatchUpdateOfZeroPaddedData()
+    public void UpdatePadded_WhenSegmentLengthVaries_ShouldMatchUpdateOfZeroPaddedData()
     {
         var random = new Random(0x1305_0005);
 
@@ -51,7 +51,7 @@ public sealed partial class Poly1305CoreTests
     /// their lengths — reproduces the tag of the Section 2.8.2 example under its published one-time key.
     /// </summary>
     [TestMethod]
-    public void UpdatePadded_WithRfc8439AeadExample_ShouldProduceTag()
+    public void UpdatePadded_WhenGivenRfc8439AeadExample_ShouldProduceTag()
     {
         byte[] key = Convert.FromHexString("7BAC2B252DB447AF09B67A55A4E955840AE1D6731075D9EB2A9375783ED553FF");
         byte[] associatedData = Convert.FromHexString("50515253C0C1C2C3C4C5C6C7");

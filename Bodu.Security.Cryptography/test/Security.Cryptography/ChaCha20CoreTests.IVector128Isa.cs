@@ -43,7 +43,7 @@ public sealed partial class ChaCha20CoreTests
     [DataRow("Avx512", 13)]
     [DataRow("Avx512", 16)]
     [DataRow("Avx512", 18)]
-    public void RotateLeft_ForEach128BitIsa_ShouldRotateEveryLane(string isa, int bits)
+    public void RotateLeft_WhenCountIsOneChaChaOrSalsaUses_ForEach128BitIsa_ShouldRotateEveryLane(string isa, int bits)
     {
         Func<Vector128<uint>, int, Vector128<uint>> rotate = ParseSupportedKernel(isa) switch
         {
@@ -75,7 +75,7 @@ public sealed partial class ChaCha20CoreTests
     [DataRow("Ssse3")]
     [DataRow("AdvSimd")]
     [DataRow("Avx512")]
-    public void Transpose_ForEach128BitIsa_ShouldTransposeTheRows(string isa)
+    public void Transpose_WhenGivenFourRows_ForEach128BitIsa_ShouldTransposeTheRows(string isa)
     {
         Vector128<uint> row0 = Vector128.Create(0u, 1u, 2u, 3u);
         Vector128<uint> row1 = Vector128.Create(4u, 5u, 6u, 7u);

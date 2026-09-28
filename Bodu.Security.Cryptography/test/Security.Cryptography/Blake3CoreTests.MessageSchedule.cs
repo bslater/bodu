@@ -13,7 +13,7 @@ public sealed partial class Blake3CoreTests
     /// one the BLAKE3 message permutation applied once more.
     /// </summary>
     [TestMethod]
-    public void MessageSchedule_ForEachRound_ShouldApplyThePermutationOnceMore()
+    public void MessageSchedule_WhenReadRoundByRound_ShouldApplyThePermutationOnceMore()
     {
         ReadOnlySpan<byte> permutation = [2, 6, 3, 10, 7, 0, 4, 13, 1, 11, 12, 5, 9, 14, 15, 8];
         ReadOnlySpan<byte> schedule = Blake3Core.MessageSchedule;

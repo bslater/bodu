@@ -20,7 +20,7 @@ public sealed partial class Blake3CoreTests
     [DataRow("Avx2")]
     [DataRow("Avx512")]
     [DataRow("Avx512Wide")]
-    public void CompressSubtree_ForEachKernel_ShouldMatchSpecificationTree(string kernel)
+    public void CompressSubtree_WhenSubtreeSpansOneTo256Chunks_ForEachKernel_ShouldMatchSpecificationTree(string kernel)
     {
         Blake3Core.KernelKind kind = ParseSupportedKernel(kernel);
         var random = new Random(0x3E3E);

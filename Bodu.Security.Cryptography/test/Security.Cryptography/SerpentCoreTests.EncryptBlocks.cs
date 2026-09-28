@@ -22,7 +22,7 @@ public sealed partial class SerpentCoreTests
     [DataRow("AdvSimd")]
     [DataRow("Avx2")]
     [DataRow("Avx512")]
-    public void EncryptBlocks_ForEachKernel_ShouldMatchEncryptBlockPerBlock(string kernel)
+    public void EncryptBlocks_WhenRunLengthVaries_ForEachKernel_ShouldMatchEncryptBlockPerBlock(string kernel)
     {
         SerpentCore.KernelKind kind = ParseSupportedKernel(kernel);
         var random = new Random(0x5E4F_5001);
@@ -111,7 +111,7 @@ public sealed partial class SerpentCoreTests
     /// inlining budget and leave the S-box circuits as calls.
     /// </remarks>
     [TestMethod]
-    public void EncryptBlocks_ForEachVectorKernel_ShouldForbidInliningIntoTheDispatcher()
+    public void EncryptBlocks_WhenDeclared_ForEachVectorKernel_ShouldForbidInliningIntoTheDispatcher()
     {
         MethodInfo[] kernels =
         [

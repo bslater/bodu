@@ -13,7 +13,7 @@ public sealed partial class SerpentCoreTests
     /// the linear transform.
     /// </summary>
     [TestMethod]
-    public void InverseLinearTransform_ShouldMatchTheReferenceAndUndoTheTransform()
+    public void InverseLinearTransform_WhenGivenBitslicedInputs_ShouldMatchTheReferenceAndUndoTheTransform()
     {
         foreach (uint[] input in BitslicedInputs)
         {

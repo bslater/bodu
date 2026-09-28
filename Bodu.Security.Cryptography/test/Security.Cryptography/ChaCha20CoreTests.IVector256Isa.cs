@@ -36,7 +36,7 @@ public sealed partial class ChaCha20CoreTests
     [DataRow("Avx512", 13)]
     [DataRow("Avx512", 16)]
     [DataRow("Avx512", 18)]
-    public void RotateLeft_ForEach256BitIsa_ShouldRotateEveryLane(string isa, int bits)
+    public void RotateLeft_WhenCountIsOneChaChaOrSalsaUses_ForEach256BitIsa_ShouldRotateEveryLane(string isa, int bits)
     {
         Func<Vector256<uint>, int, Vector256<uint>> rotate = ParseSupportedKernel(isa) switch
         {

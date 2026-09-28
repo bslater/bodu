@@ -23,7 +23,7 @@ public sealed partial class Blake3CoreTests
     [DataRow("Avx2")]
     [DataRow("Avx512")]
     [DataRow("Avx512Wide")]
-    public void Compress_ForEachKernel_ShouldMatchReferenceHashVectors(string kernel)
+    public void Compress_WhenHashingReferenceInputs_ForEachKernel_ShouldMatchReferenceHashVectors(string kernel)
     {
         Blake3Core.KernelKind kind = ParseSupportedKernel(kernel);
 
@@ -43,7 +43,7 @@ public sealed partial class Blake3CoreTests
     [DataRow("Avx2")]
     [DataRow("Avx512")]
     [DataRow("Avx512Wide")]
-    public void Compress_ForEachKernel_ShouldMatchReferenceKeyedHashVectors(string kernel)
+    public void Compress_WhenHashingReferenceInputsUnderKey_ForEachKernel_ShouldMatchReferenceKeyedHashVectors(string kernel)
     {
         Blake3Core.KernelKind kind = ParseSupportedKernel(kernel);
 
@@ -63,7 +63,7 @@ public sealed partial class Blake3CoreTests
     [DataRow("Avx2")]
     [DataRow("Avx512")]
     [DataRow("Avx512Wide")]
-    public void Compress_ForEachKernel_ShouldMatchReferenceDeriveKeyVectors(string kernel)
+    public void Compress_WhenDerivingReferenceKeys_ForEachKernel_ShouldMatchReferenceDeriveKeyVectors(string kernel)
     {
         Blake3Core.KernelKind kind = ParseSupportedKernel(kernel);
 
@@ -82,7 +82,7 @@ public sealed partial class Blake3CoreTests
     [DataRow("Avx2")]
     [DataRow("Avx512")]
     [DataRow("Avx512Wide")]
-    public void Compress_ForEachKernel_ShouldMatchScalarKernel(string kernel)
+    public void Compress_WhenInputsAreRandom_ForEachKernel_ShouldMatchScalarKernel(string kernel)
     {
         Blake3Core.KernelKind kind = ParseSupportedKernel(kernel);
         var random = new Random(0x3333);
@@ -165,7 +165,7 @@ public sealed partial class Blake3CoreTests
     /// own, with its own budget, whatever the profile says.
     /// </remarks>
     [TestMethod]
-    public void Compress_ForEachKernel_ShouldForbidInliningIntoTheDispatcher()
+    public void Compress_WhenDeclared_ForEachKernel_ShouldForbidInliningIntoTheDispatcher()
     {
         MethodInfo[] kernels =
         [

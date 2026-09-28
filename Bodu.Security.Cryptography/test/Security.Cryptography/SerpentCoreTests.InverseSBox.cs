@@ -24,7 +24,7 @@ public sealed partial class SerpentCoreTests
     [DataRow(5)]
     [DataRow(6)]
     [DataRow(7)]
-    public void InverseSBox_ForEachIndex_ShouldMatchTheTable(int index)
+    public void InverseSBox_WhenGivenBitslicedInputs_ForEachIndex_ShouldMatchTheTable(int index)
     {
         foreach (uint[] input in BitslicedInputs)
         {
@@ -51,7 +51,7 @@ public sealed partial class SerpentCoreTests
     [DataRow(5)]
     [DataRow(6)]
     [DataRow(7)]
-    public void InverseSBox_AfterSBox_ShouldRestoreTheWords(int index)
+    public void InverseSBox_WhenAppliedAfterSBox_ShouldRestoreTheWords(int index)
     {
         foreach (uint[] input in BitslicedInputs)
         {
@@ -92,7 +92,7 @@ public sealed partial class SerpentCoreTests
     /// Serpent-128 ran at less than half its speed.
     /// </remarks>
     [TestMethod]
-    public void InverseSBox_ShouldForbidInliningIntoItsCallers()
+    public void InverseSBox_WhenDeclared_ShouldForbidInliningIntoItsCallers()
     {
         MethodInfo method = typeof(SerpentCore).GetMethod("InverseSBox", BindingFlags.NonPublic | BindingFlags.Static)!;
 

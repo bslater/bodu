@@ -19,7 +19,7 @@ public sealed partial class CmacTests
     [DataRow(16, "070a16b46b4d4144f79bdd9dd04a287c")]
     [DataRow(40, "dfa66747de9ae63030ca32611497c827")]
     [DataRow(64, "51f0bebf7e3b9d92fc49741779363cfe")]
-    public void Finish_ForRfc4493Example_ShouldMatchPublishedMac(int length, string expected)
+    public void Finish_WhenGivenRfc4493Example_ShouldMatchPublishedMac(int length, string expected)
     {
         using var cipher = new AesBlockCipher(s_rfc4493Key);
 

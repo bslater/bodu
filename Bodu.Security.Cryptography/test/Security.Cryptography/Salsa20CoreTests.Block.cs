@@ -32,7 +32,7 @@ public sealed partial class Salsa20CoreTests
         "80000000000000000000000000000000",
         "0000000000000000",
         "4DFA5E481DA23EA09A31022050859936DA52FCEE218005164F267CB65F5CFD7F2B4F97E0FF16924A52DF269515110A07F9E460BC65EF95DA58F740B7D1DBB0AA")]
-    public void Block_WithPublishedVector_ShouldProduceFirstKeystreamBlock(string testName, string key, string nonce, string keystream)
+    public void Block_WhenGivenPublishedVector_ShouldProduceFirstKeystreamBlock(string testName, string key, string nonce, string keystream)
     {
         uint[] state = new uint[Salsa20Core.StateWords];
         Salsa20Core.Initialize(state, Convert.FromHexString(key), Convert.FromHexString(nonce));

@@ -22,7 +22,7 @@ public sealed partial class Blake3CoreTests
     [DataRow("Avx2")]
     [DataRow("Avx512")]
     [DataRow("Avx512Wide")]
-    public void CompressChunks_ForEachKernel_ShouldMatchChunkByChunkCompression(string kernel)
+    public void CompressChunks_WhenRunLengthVaries_ForEachKernel_ShouldMatchChunkByChunkCompression(string kernel)
     {
         Blake3Core.KernelKind kind = ParseSupportedKernel(kernel);
         var random = new Random(0x3C3C);
@@ -120,7 +120,7 @@ public sealed partial class Blake3CoreTests
     /// own, with its own budget, whatever the profile says.
     /// </remarks>
     [TestMethod]
-    public void CompressChunks_ForEachKernel_ShouldForbidInliningIntoTheDispatcher()
+    public void CompressChunks_WhenDeclared_ForEachKernel_ShouldForbidInliningIntoTheDispatcher()
     {
         MethodInfo[] kernels =
         [

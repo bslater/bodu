@@ -160,7 +160,7 @@ public sealed partial class CcmModeTransformTests
         nameof(WycheproofValidVectors),
         DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public void Encrypt_WithWycheproofVector_ShouldMatchExpected(AeadKnownAnswer vector)
+    public void Encrypt_WhenGivenWycheproofVector_ShouldMatchExpected(AeadKnownAnswer vector)
     {
         using var cipher = new AesBlockCipher(vector.Key!);
         using var transform = CreateWycheproofTransform(cipher, vector);
@@ -182,7 +182,7 @@ public sealed partial class CcmModeTransformTests
         nameof(WycheproofValidVectors),
         DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public void Decrypt_WithWycheproofVector_ShouldRecoverPlaintext(AeadKnownAnswer vector)
+    public void Decrypt_WhenGivenWycheproofVector_ShouldRecoverPlaintext(AeadKnownAnswer vector)
     {
         using var cipher = new AesBlockCipher(vector.Key!);
         using var transform = CreateWycheproofTransform(cipher, vector);
@@ -205,7 +205,7 @@ public sealed partial class CcmModeTransformTests
         nameof(WycheproofInvalidVectors),
         DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public void Decrypt_WithWycheproofInvalidVector_ShouldThrowCryptographicException(AeadKnownAnswer vector)
+    public void Decrypt_WhenGivenInvalidWycheproofVector_ShouldThrowCryptographicException(AeadKnownAnswer vector)
     {
         using var cipher = new AesBlockCipher(vector.Key!);
         using var transform = CreateWycheproofTransform(cipher, vector);

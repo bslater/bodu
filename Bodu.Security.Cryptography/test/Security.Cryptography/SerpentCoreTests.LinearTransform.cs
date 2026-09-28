@@ -12,7 +12,7 @@ public sealed partial class SerpentCoreTests
     /// Verifies that the linear transform matches the reference implementation.
     /// </summary>
     [TestMethod]
-    public void LinearTransform_ShouldMatchTheReference()
+    public void LinearTransform_WhenGivenBitslicedInputs_ShouldMatchTheReference()
     {
         foreach (uint[] input in BitslicedInputs)
         {

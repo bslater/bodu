@@ -169,7 +169,7 @@ public sealed partial class GcmSivModeTransformTests
         nameof(GcmSivRfc8452Vectors),
         DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public void Encrypt_WithRfc8452Vector_ShouldMatchExpected(AeadKnownAnswer vector)
+    public void Encrypt_WhenGivenRfc8452Vector_ShouldMatchExpected(AeadKnownAnswer vector)
     {
         byte[] expected = vector.CiphertextWithTag;
 
@@ -190,7 +190,7 @@ public sealed partial class GcmSivModeTransformTests
         nameof(GcmSivRfc8452Vectors),
         DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public void Decrypt_WithRfc8452Vector_ShouldRecoverPlaintext(AeadKnownAnswer vector)
+    public void Decrypt_WhenGivenRfc8452Vector_ShouldRecoverPlaintext(AeadKnownAnswer vector)
     {
         byte[] ciphertextTag = vector.CiphertextWithTag;
 
@@ -278,7 +278,7 @@ public sealed partial class GcmSivModeTransformTests
     /// Verifies that <see cref="GcmSivModeTransform.EncryptThenDecrypt" />, with RandomKey, returns the expected value.
     /// </summary>
     [TestMethod]
-    public void EncryptThenDecrypt_WithRandomKey_ShouldRoundTrip()
+    public void EncryptThenDecrypt_WhenKeyIsRandom_ShouldRoundTrip()
     {
         var rng = RandomNumberGenerator.Create();
         byte[] key = new byte[16];
@@ -388,7 +388,7 @@ public sealed partial class GcmSivModeTransformTests
         nameof(WycheproofValidVectors),
         DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public void Encrypt_WithWycheproofVector_ShouldMatchExpected(AeadKnownAnswer vector)
+    public void Encrypt_WhenGivenWycheproofVector_ShouldMatchExpected(AeadKnownAnswer vector)
     {
         using var cipher = new AesBlockCipher(vector.Key!);
         using var transform = CreateWycheproofTransform(cipher, vector);
@@ -410,7 +410,7 @@ public sealed partial class GcmSivModeTransformTests
         nameof(WycheproofValidVectors),
         DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public void Decrypt_WithWycheproofVector_ShouldRecoverPlaintext(AeadKnownAnswer vector)
+    public void Decrypt_WhenGivenWycheproofVector_ShouldRecoverPlaintext(AeadKnownAnswer vector)
     {
         using var cipher = new AesBlockCipher(vector.Key!);
         using var transform = CreateWycheproofTransform(cipher, vector);
@@ -433,7 +433,7 @@ public sealed partial class GcmSivModeTransformTests
         nameof(WycheproofInvalidVectors),
         DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public void Decrypt_WithWycheproofInvalidVector_ShouldThrowCryptographicException(AeadKnownAnswer vector)
+    public void Decrypt_WhenGivenInvalidWycheproofVector_ShouldThrowCryptographicException(AeadKnownAnswer vector)
     {
         using var cipher = new AesBlockCipher(vector.Key!);
         using var transform = CreateWycheproofTransform(cipher, vector);

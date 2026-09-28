@@ -146,7 +146,7 @@ public sealed partial class ScryptCoreTests
     [DataRow("Scalar")]
     [DataRow("Sse2")]
     [DataRow("AdvSimd")]
-    public void DeriveKey_ForEachKernel_ShouldMatchOpenSslCorpus(string kernel)
+    public void DeriveKey_WhenGivenLightCorpusRows_ForEachKernel_ShouldMatchOpenSslCorpus(string kernel)
     {
         var options = new ScryptCore.MixOptions(1, kernel: ParseSupportedKernel(kernel), pool: CreatePool());
 

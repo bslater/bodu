@@ -20,7 +20,7 @@ public sealed partial class SerpentCoreTests
     [DataRow("AdvSimd")]
     [DataRow("Avx2")]
     [DataRow("Avx512")]
-    public void DecryptBlocks_ForEachKernel_ShouldMatchDecryptBlockPerBlock(string kernel)
+    public void DecryptBlocks_WhenRunLengthVaries_ForEachKernel_ShouldMatchDecryptBlockPerBlock(string kernel)
     {
         SerpentCore.KernelKind kind = ParseSupportedKernel(kernel);
         var random = new Random(0x5E4F_6001);
