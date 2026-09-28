@@ -109,4 +109,4 @@ and rewrites the destination from scratch. Incremental in-place editing that rew
 sectors of an existing file (the COM `IStorage`/`Commit` transacted model), encryption, and
 damaged-file recovery remain out of scope.
 
-Part of the [Bodu](https://github.com/bodu/bodu) utility library.
+Part of the [Bodu](https://github.com/bslater/bodu) utility library.

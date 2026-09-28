@@ -49,4 +49,4 @@ The provider logs through `Microsoft.Extensions.Logging`. Pass an `ILogger` to t
 constructor, or let the DI registration wire one for you; when no logger is supplied it
 defaults to `NullLogger.Instance`, so logging is opt-in and free when unused.
 
-Part of the [Bodu](https://github.com/bodu/bodu) utility library.
+Part of the [Bodu](https://github.com/bslater/bodu) utility library.

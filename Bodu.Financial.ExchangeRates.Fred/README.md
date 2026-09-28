@@ -69,4 +69,4 @@ services
     .AddFredExchangeRates(configuration, configure: o => o.ApiKey = "…");
 ```
 
-Part of the [Bodu](https://github.com/bodu/bodu) utility library.
+Part of the [Bodu](https://github.com/bslater/bodu) utility library.

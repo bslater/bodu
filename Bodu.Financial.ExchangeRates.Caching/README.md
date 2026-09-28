@@ -176,4 +176,4 @@ Two ages travel with a cache-served rate and are deliberately distinct:
 has no key and reads back `null`. The SQLite and distributed caches persist it the same way through their own additive
 fields.
 
-Part of the [Bodu](https://github.com/bodu/bodu) utility library.
+Part of the [Bodu](https://github.com/bslater/bodu) utility library.

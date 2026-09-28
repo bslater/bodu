@@ -88,4 +88,4 @@ model, number-format application, and formula evaluation — use
 built on this package. Decrypting a password-protected workbook is not supported; such a stream is
 reported, not read.
 
-Part of the [Bodu](https://github.com/bodu/bodu) utility library.
+Part of the [Bodu](https://github.com/bslater/bodu) utility library.
