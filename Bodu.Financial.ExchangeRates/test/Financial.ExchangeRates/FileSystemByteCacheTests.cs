@@ -125,7 +125,7 @@ public sealed partial class FileSystemByteCacheTests
     }
 
     /// <summary>
-    /// A minimal concrete byte cache exposing the protected core operations for testing.
+    /// A minimal concrete byte cache over string keys, stored as <c>{key}.bin</c>.
     /// </summary>
     private sealed class TestByteCache
         : FileSystemByteCache<string>
@@ -137,23 +137,6 @@ public sealed partial class FileSystemByteCacheTests
         /// <param name="logger">The optional degradation logger.</param>
         public TestByteCache(string? directory, ILogger? logger = null)
             : base(directory, "bodu-byte-cache-tests", logger) { }
-
-        /// <summary>
-        /// Stores the payload for a key through the protected core.
-        /// </summary>
-        /// <param name="key">The download-unit key.</param>
-        /// <param name="bytes">The payload.</param>
-        public void Store(string key, byte[] bytes) => StoreCore(key, bytes);
-
-        /// <summary>
-        /// Attempts to read the payload for a key through the protected core.
-        /// </summary>
-        /// <param name="key">The download-unit key.</param>
-        /// <param name="refreshInterval">The maximum acceptable file age.</param>
-        /// <param name="bytes">The payload read, when fresh.</param>
-        /// <returns><see langword="true" /> when fresh bytes were read.</returns>
-        public bool TryGet(string key, TimeSpan refreshInterval, out byte[]? bytes) =>
-            TryGetCore(key, refreshInterval, out bytes);
 
         /// <inheritdoc />
         protected override string GetFileName(string key) => $"{key}.bin";
