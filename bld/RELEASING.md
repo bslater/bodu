@@ -42,7 +42,9 @@ manifest at [`release-manifest.txt`](release-manifest.txt).
   package ids to the manifest **with the version they will first ship at**,
   bump `BoduBaseVersion`, tag the new version. Earlier packages re-publish at
   the new coherent version; `--skip-duplicate` makes re-pushing an unchanged
-  version a no-op.
+  version a no-op. The run lists every package it skips that way, and stops a
+  release that would publish nothing: see
+  [Versions already on nuget.org](#versions-already-on-nugetorg).
 - **The manifest records first-shipped versions.** Each line is
   `<PackageId> <first-shipped-version>`. That version is *not* what the run
   publishes (`BoduBaseVersion` is) — it is a permanent note of when the
@@ -118,6 +120,12 @@ uploads two artifacts without pushing anything:
 - `nuget-packages` — everything that packed (debugging aid).
 - `nuget-packages-publish` — exactly what a tag would publish. Inspect this.
 
+It also looks up every staged package on nuget.org and reports which versions a
+publish would push and which it would skip, with a warning when it would publish
+nothing at all (see
+[Versions already on nuget.org](#versions-already-on-nugetorg)). Check that
+before tagging.
+
 A local (public-signed) dry run of the same pack:
 
 ```shell
@@ -142,6 +150,29 @@ because nothing runs. This happened on 1.0.0, and the only symptom was an absent
 release run. After pushing a tag, confirm the Release workflow actually started
 before assuming the release is under way; if it did not, check the tag's case
 first.
+
+### Versions already on nuget.org
+
+nuget.org never accepts a version twice, and the push passes `--skip-duplicate`,
+so a staged version nuget.org already holds is skipped rather than failing the
+run. That is deliberate: it is how a release leaves a stream it did not bump
+unchanged, and how a re-run finishes a partial publish. It would also let a
+release whose versions were never bumped skip every package and still report
+success, so before requesting a key the run looks up each staged package on
+nuget.org, together with the commit the published version was built from:
+
+- **Not on nuget.org:** the push publishes it.
+- **On nuget.org from this commit:** an earlier attempt of this run, or an
+  earlier run on this commit, already pushed it, and the push skips it.
+- **On nuget.org from another commit:** an earlier release. The push skips it,
+  and a notice on the run lists it.
+
+If nothing staged is new and nothing was pushed from this commit, the release
+would publish nothing: a publish run fails at that point, before a key is
+requested, and a dry run warns. Bump `BoduBaseVersion`, `BoduPreviewVersion` or
+the package's `BoduPackageVersionOverride` first. A package that cannot be looked
+up is reported as well, and stops a publish run only when it leaves the run
+unable to confirm that anything is new.
 
 ## Post-publish
 

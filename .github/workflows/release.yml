@@ -536,6 +536,123 @@ jobs:
           retention-days: 90
           if-no-files-found: error
 
+      - name: Check nuget.org for versions already published
+        # Runs in a dry run too, so the dry run shows ahead of a tag what a publish run would push,
+        # skip or refuse. A publish run that would publish nothing stops here, before a key is
+        # requested.
+        shell: bash
+        env:
+          PUBLISHING: ${{ github.event_name == 'push' || github.event.inputs.publish == 'true' }}
+          RELEASE_COMMIT: ${{ github.sha }}
+        run: |
+          # nuget.org never accepts a version twice, and the push passes --skip-duplicate, so a
+          # staged version nuget.org already holds is skipped rather than failing. That is how a
+          # lock-step release leaves a stream it did not bump unchanged, and how a re-run finishes a
+          # partial publish. It also lets a release whose versions were never bumped skip every
+          # package and still report success, so each staged package is looked up first. A version
+          # nuget.org holds from the commit being released was pushed by an earlier attempt; one
+          # from any other commit belongs to an earlier release.
+          new=(); this_commit=(); earlier=(); unchecked=()
+          misses=0
+          for nupkg in "$PUBLISH_DIR"/*.nupkg; do
+            nuspec="$(unzip -p "$nupkg" '*.nuspec' || true)"
+            id="$(sed -n '/<id>/{s:.*<id>\(.*\)</id>.*:\1:p;q}' <<< "$nuspec")"
+            version="$(sed -n '/<version>/{s:.*<version>\(.*\)</version>.*:\1:p;q}' <<< "$nuspec")"
+            if [ -z "$id" ] || [ -z "$version" ]; then
+              unchecked+=("$(basename "$nupkg") (no id or version in its nuspec)")
+              continue
+            fi
+            # nuget.org addresses a version without its build metadata, in lower case.
+            lookup_version="${version%%+*}"
+
+            # Three failed lookups in a row mean nuget.org is not answering; waiting out every
+            # remaining lookup's timeout would only run into the job's.
+            if [ "$misses" -ge 3 ]; then
+              unchecked+=("$id $version (not looked up after three lookups in a row failed)")
+              continue
+            fi
+
+            # The flat container serves the nuspec of every version nuget.org holds, listed or not,
+            # and 404 for a version it does not. The nuspec records the commit the package was
+            # built from.
+            status="$(curl -sS --connect-timeout 10 --max-time 30 --retry 2 -o "$RUNNER_TEMP/published.nuspec" -w '%{http_code}' \
+              "https://api.nuget.org/v3-flatcontainer/${id,,}/${lookup_version,,}/${id,,}.nuspec" || true)"
+            case "$status" in
+              404)
+                misses=0
+                new+=("$id $version")
+                ;;
+              200)
+                misses=0
+                commit="$(sed -n '/<repository /{s:.* commit="\([0-9a-f]*\)".*:\1:p;q}' "$RUNNER_TEMP/published.nuspec")"
+                if [ -n "$commit" ] && [ "$commit" = "$RELEASE_COMMIT" ]; then
+                  this_commit+=("$id $version")
+                else
+                  short="${commit:0:7}"
+                  earlier+=("$id $version (built from ${short:-an unrecorded commit})")
+                fi
+                ;;
+              *)
+                misses=$((misses + 1))
+                if [ "${status:-000}" = 000 ]; then reason="no response"; else reason="HTTP $status"; fi
+                unchecked+=("$id $version ($reason from nuget.org)")
+                ;;
+            esac
+          done
+
+          # Prints one group of the breakdown: a heading with its count, then one line per package.
+          report() {
+            local heading="$1" item
+            shift
+            echo "$heading: $#"
+            for item in "$@"; do
+              echo "  $item"
+            done
+          }
+
+          # Formats a list for an annotation: the first five items, then how many more the log lists.
+          summarize() {
+            local text
+            text="$(printf '%s, ' "${@:1:5}")"
+            text="${text%, }"
+            if [ "$#" -gt 5 ]; then
+              text="$text, and $(( $# - 5 )) more listed in the log"
+            fi
+            printf '%s' "$text"
+          }
+
+          report "Not yet on nuget.org, so the push publishes them" "${new[@]}"
+          report "On nuget.org from this commit, pushed by an earlier attempt; the push skips them" "${this_commit[@]}"
+          report "On nuget.org from an earlier release; the push skips them" "${earlier[@]}"
+          report "Could not be checked" "${unchecked[@]}"
+
+          if [ "$PUBLISHING" = true ]; then
+            level=error; outcome="Nothing was pushed."
+          else
+            level=warning; outcome="A publish run would stop here."
+          fi
+
+          # Nothing new, and nothing already pushed from this commit: the release would publish
+          # nothing, or this run cannot tell whether it would.
+          if [ "${#new[@]}" -eq 0 ] && [ "${#this_commit[@]}" -eq 0 ]; then
+            if [ "${#unchecked[@]}" -eq 0 ]; then
+              echo "::$level::Every staged package is already on nuget.org at the version this run built, from an earlier release, so this release would publish nothing. $outcome Bump BoduBaseVersion or BoduPreviewVersion in bld/Versioning.props, or a package's BoduPackageVersionOverride, and release again."
+            else
+              echo "::$level::No staged package could be confirmed as new on nuget.org, because ${#unchecked[@]} could not be checked: $(summarize "${unchecked[@]}"). $outcome Re-run once they can be checked."
+            fi
+            if [ "$PUBLISHING" = true ]; then
+              exit 1
+            fi
+            exit 0
+          fi
+
+          if [ "${#earlier[@]}" -gt 0 ]; then
+            echo "::notice::${#earlier[@]} staged package(s) are already on nuget.org at the version this run built, so the push skips them: $(summarize "${earlier[@]}")."
+          fi
+          if [ "${#unchecked[@]}" -gt 0 ]; then
+            echo "::warning::${#unchecked[@]} staged package(s) could not be checked against nuget.org: $(summarize "${unchecked[@]}"). The push still pushes them and skips any that nuget.org already holds."
+          fi
+
       # Exchanges this run's GitHub OIDC token for a short-lived nuget.org API key. Runs only when
       # the job will actually publish, so a dry run never mints a credential.
       - name: Acquire a short-lived nuget.org key (trusted publishing)
@@ -557,9 +674,9 @@ jobs:
             exit 1
           fi
 
-          # --skip-duplicate keeps a re-run idempotent, but it also means an already-published
-          # version is reported as skipped rather than failing. Count what actually pushed so a
-          # scope or policy problem cannot masquerade as a clean release.
+          # --skip-duplicate skips a version nuget.org already holds: a stream this release did not
+          # bump, or a package an earlier attempt pushed. The check before the key was requested
+          # listed those, and stopped the run if nothing here was new.
           expected=$(ls "$PUBLISH_DIR"/*.nupkg | wc -l)
           echo "Pushing $expected package(s) to nuget.org."
           dotnet nuget push "$PUBLISH_DIR"/*.nupkg \
