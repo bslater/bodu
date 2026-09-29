@@ -44,7 +44,7 @@ byte[] recovered = dec.Decrypt(sealed_, associatedData: aad);        // throws C
 
 `Encrypt` / `Decrypt` come from <xref:Bodu.Security.Cryptography.Extensions.AeadTransformExtensions>, which size and allocate the array; `TagSize` is 128 bits, and `XChaCha20Poly1305.KeySize` / `NonceSize` are 256 / 192.
 
-The span overloads that write into your own buffer allocate nothing: the instance holds the key and nonce, and each message's keystream and Poly1305 state live on the stack, so the only allocation a message makes is the single-use instance itself. Whole 64-byte blocks of keystream are produced many at a time on processors with vector instructions — see [Hardware acceleration](hardware-acceleration.md).
+The span overloads that write into your own buffer allocate nothing: the instance holds the key and nonce, and each message's keystream and Poly1305 state live on the stack, so the only allocation a message makes is the single-use instance itself. Whole 64-byte blocks of keystream are produced many at a time on processors with vector instructions, and on x64 Poly1305 absorbs a message of 512 bytes or more several blocks at a time as well — see [Hardware acceleration](hardware-acceleration.md).
 
 > [!WARNING]
 > Name the `associatedData:` argument. `Poly1305AeadTransform` also has a public `Encrypt(ReadOnlySpan<byte> plaintext, Span<byte> output, ReadOnlySpan<byte> associatedData = default)`; with two positional `byte[]` arguments that overload wins, your AAD array becomes the **output buffer**, and the call returns an `int`. `Encrypt(plaintext)` with a single argument is unambiguous.

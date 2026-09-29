@@ -184,7 +184,8 @@ These primitives dispatch to vector, carry-less-multiply or wide-multiply instru
 | AES, in every mode | the platform `Aes` (AES-NI where the OS provider uses it) | the platform `Aes` (the AES instructions where the OS provider uses them) |
 | GHASH and POLYVAL (GCM, GMAC, GCM-SIV) | PCLMULQDQ | PMULL |
 | ChaCha20, XChaCha20, Salsa20, XSalsa20 | AVX-512 (16 blocks at a time), AVX2 (8) or SSSE3 (4) | AdvSimd (4) |
-| Poly1305, X25519, Ed25519 | BMI2 `mulx` for 64-bit products | `umulh` for 64-bit products |
+| Poly1305 (and the Poly1305 AEADs) | AVX-512 (8 blocks at a time) or AVX2 (4) from 512 bytes; BMI2 `mulx` for 64-bit products below that | `umulh` for 64-bit products |
+| X25519, Ed25519 | BMI2 `mulx` for 64-bit products | `umulh` for 64-bit products |
 | BLAKE2b | AVX-512 or AVX2, else SSSE3 | AdvSimd |
 | BLAKE2s | AVX-512 or SSSE3 | AdvSimd |
 | BLAKE3 | AVX-512 (16 chunks at a time), AVX2 (8) or SSSE3 (4) | AdvSimd (4) |
@@ -194,7 +195,7 @@ These primitives dispatch to vector, carry-less-multiply or wide-multiply instru
 | Argon2 | AVX2, else SSSE3 | AdvSimd |
 | scrypt | SSE2 | AdvSimd |
 
-The 16-wide ChaCha20, Salsa20 and BLAKE3 kernels run where .NET accelerates 512-bit vectors (`Vector512.IsHardwareAccelerated`); other AVX-512 processors run the 8-wide kernels.
+The 16-wide ChaCha20, Salsa20 and BLAKE3 kernels, and the 8-wide Poly1305 kernel, run where .NET accelerates 512-bit vectors (`Vector512.IsHardwareAccelerated`); other AVX-512 processors run the next narrower kernels.
 
 Set the process-wide feature switch **`Bodu.Security.Cryptography.DisableSimd`** to `true` to force the portable path in place of every vector and carry-less-multiply kernel above (AES and the 64-bit multiplies are unaffected) — useful for reproducibility, differential testing, or audit. It is read once, before first use of any accelerated primitive, so set it via `runtimeconfig.json` / a `<RuntimeHostConfigurationOption>` item or an early `AppContext.SetSwitch(...)`. The paths are equivalent (the ARX designs such as BLAKE2/3, ChaCha20 and Threefish are constant-time in both forms); the switch is not a security control. See the [hardware-acceleration guide](https://bslater.github.io/bodu/guides/cryptography/hardware-acceleration.html) for details.
 
