@@ -1,7 +1,8 @@
 # Implementation plan: faster primitives across Bodu.Security.Cryptography
 
 **Status:** Done and released: W0–W10 merged in #710 and shipped in `Bodu.Security.Cryptography` 1.1.0,
-released out of band (#711); results in §10, where each workstream's "Left for later" items remain open ·
+released out of band (#711); results in §10, whose "Left for later" items are planned in
+[`crypto-performance-followups.md`](crypto-performance-followups.md) ·
 **Source:** the assessment run on 2026-09-27 after the Argon2 work (§1) · **Target:** `Bodu.Security.Cryptography`
 1.1.0
 
