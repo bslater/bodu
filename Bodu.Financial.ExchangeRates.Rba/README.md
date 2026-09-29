@@ -93,4 +93,4 @@ loaded; at `Debug` you additionally see when downloads start; only at `Trace` do
 line per rate observation (which can be thousands per era — keep it for targeted
 debugging).
 
-Part of the [Bodu](https://github.com/bodu/bodu) utility library.
+Part of the [Bodu](https://github.com/bslater/bodu) utility library.

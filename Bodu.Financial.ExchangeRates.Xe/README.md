@@ -119,4 +119,4 @@ defaults to `NullLogger.Instance`, so logging is entirely opt-in and free when u
 | A pair download failed (logged, then re-thrown) | `Warning` | `DownloadFailedLogLevel` |
 | A synchronous lookup triggered a blocking network fetch | `Warning` | `SynchronousNetworkFetchLogLevel` |
 
-Part of the [Bodu](https://github.com/bodu/bodu) utility library.
+Part of the [Bodu](https://github.com/bslater/bodu) utility library.
