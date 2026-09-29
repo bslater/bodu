@@ -77,7 +77,7 @@ downlevel reach uses `$(BoduMultiTargetFrameworks)` (`net8.0;net10.0;netstandard
 consumers, whereas removing `net8.0` would strand everyone still on the .NET 8 LTS runtime. Drop it
 only as a deliberate major-version decision.
 
-Two things to know when writing code that must compile on both legs. First, the SDK defines the
+Three things to know when writing code that must compile on both legs. First, the SDK defines the
 `NETx_0_OR_GREATER` symbols cumulatively, so `NET8_0_OR_GREATER` is true on the `net10.0` leg too —
 gate genuinely net10-only code on `NET10_0_OR_GREATER`, never on the absence of a lower symbol.
 Second, `net10.0` widens the BCL, which can make a Bodu extension method ambiguous with a new
@@ -91,6 +91,15 @@ unlike `Array.Reverse`) and matches both the neighbouring `SpanExtensions.ToReve
 `To*` convention for materializing a new collection. Note that
 `[OverloadResolutionPriority]` cannot fix this class of collision — it is not consulted between
 candidates from different declaring types.
+Third, the .NET 8 JIT inlines less than the .NET 10 JIT, so an `[AggressiveInlining]` wrapper that costs
+nothing on `net10.0` can cost a great deal on `net8.0` inside a heavily unrolled method: each call is one
+more inline, and enough of them exhaust .NET 8's per-method inlining budget, after which the method's own
+helpers stop being inlined. The scalar BLAKE2 `G` functions are the instance: through Bodu.Core's
+`RotateBitsRightUnchecked` their scalar path ran about 3.4 times slower on .NET 8, and exactly as fast
+on .NET 10. They therefore rotate through the extension under `NET10_0_OR_GREATER` and call
+`BitOperations` directly on `net8.0`. Before routing a hot, unrolled path through a wrapper, compare the
+generated code on both legs (`DOTNET_JitDisasm` with `DOTNET_TieredCompilation=0`), and switch on the
+framework only where the two legs actually differ.
 
 Compiling and testing the solution requires the **.NET 10 SDK**, pinned via the repository-root `global.json` (`10.0.100`, `rollForward: latestMinor`): the sources use C# 14 language features and the `.slnx` solution format, neither of which the 8.0 SDK supports. The separate `Bodu.CodeStyle` solution pins its own SDK via `Bodu.CodeStyle/global.json` and is unaffected.
 
