@@ -7,6 +7,7 @@
 using System.Buffers.Binary;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.Arm;
 using System.Runtime.Intrinsics.X86;
 using System.Security.Cryptography;
@@ -27,13 +28,22 @@ namespace Bodu.Security.Cryptography;
 /// depends only on the message length.
 /// </para>
 /// <para>
+/// Long runs of whole blocks go through vector kernels instead, which give each 64-bit lane a block of its own: four
+/// lanes with AVX2 and eight with AVX-512. In a vector the accumulator and <c>r</c> are five limbs of 26 bits, because
+/// the only vector multiply is 32 × 32 → 64 bits. Each lane multiplies by <c>r⁴</c> (or <c>r⁸</c>) per group of blocks,
+/// and by the power of <c>r</c> its last block needs at the end, so the lanes sum to exactly the accumulator the scalar
+/// loop reaches. Each run computes its powers of <c>r</c> afresh, with three to eight scalar multiplications, so
+/// <see cref="SelectKernel" /> keeps runs too short to repay them on the scalar loop, at thresholds measured on both
+/// runtimes.
+/// </para>
+/// <para>
 /// The core is a mutable struct that callers keep in a field or a local and use in place. It holds a partial block
-/// between calls to <see cref="Update" />, and <see cref="Finish" /> clears the whole struct, key included, once the
-/// tag is written.
+/// between calls to <see cref="Update(ReadOnlySpan{byte})" />, and <see cref="Finish" /> clears the whole struct, key
+/// included, once the tag is written.
 /// </para>
 /// </remarks>
 [StructLayout(LayoutKind.Sequential)]
-internal struct Poly1305Core
+internal partial struct Poly1305Core
 {
     /// <summary>The number of bytes in a Poly1305 one-time key: <c>r</c> followed by <c>s</c>.</summary>
     internal const int KeyBytes = 32;
@@ -52,6 +62,33 @@ internal struct Poly1305Core
 
     /// <summary>The bit a full block sets above its 128 message bits, 2^128, as it falls in the top limb, which starts at 2^88.</summary>
     private const ulong FullBlockBit = 1UL << 40;
+
+    /// <summary>The mask of a 26-bit limb, the width the vector kernels work in.</summary>
+    private const ulong Mask26 = (1UL << 26) - 1;
+
+    /// <summary>The bit a full block sets above its 128 message bits, 2^128, as it falls in the top 26-bit limb, which starts at 2^104.</summary>
+    private const ulong FullBlockBit26 = 1UL << 24;
+
+    /// <summary>The shortest run of whole blocks, in bytes, that dispatch gives the four-lane AVX2 kernel.</summary>
+    /// <remarks>
+    /// Below it, computing the powers of <c>r</c> costs more than the lanes save: measured on .NET 8 and .NET 10, the
+    /// kernel first beats the scalar loop at 192 to 256 bytes.
+    /// </remarks>
+    internal const int Avx2MinimumBytes = 256;
+
+    /// <summary>The shortest run of whole blocks, in bytes, that dispatch gives the AVX2 kernel's paired loop, where AVX-512VL provides its registers.</summary>
+    /// <remarks>
+    /// Below it, computing <c>r⁸</c> costs more than pairing the groups saves: measured on .NET 8 and .NET 10, the
+    /// paired loop first beats the one-group loop at 512 bytes to 1 KiB.
+    /// </remarks>
+    internal const int Avx2PairedMinimumBytes = 1024;
+
+    /// <summary>The shortest run of whole blocks, in bytes, that dispatch gives the eight-lane AVX-512 kernel.</summary>
+    /// <remarks>
+    /// Below it, the four lanes of the AVX2 kernel finish first: measured on .NET 8 and .NET 10, the crossover lies
+    /// between 2 and 4 KiB.
+    /// </remarks>
+    internal const int Avx512MinimumBytes = 4096;
 
     /// <summary>The first limb of the clamped key half <c>r</c>.</summary>
     private ulong _r0;
@@ -131,7 +168,28 @@ internal struct Poly1305Core
     /// Absorbs message bytes, holding back a partial block until more arrive or <see cref="Finish" /> is called.
     /// </summary>
     /// <param name="data">The message bytes.</param>
-    internal void Update(ReadOnlySpan<byte> data)
+    internal void Update(ReadOnlySpan<byte> data) =>
+        Update(KernelKind.Auto, data);
+
+    /// <summary>
+    /// Absorbs message bytes through the specified kernel, holding back a partial block until more arrive or
+    /// <see cref="Finish" /> is called.
+    /// </summary>
+    /// <param name="kernel">
+    /// The kernel for the run of whole blocks, or <see cref="KernelKind.Auto" /> for the one dispatch selects.
+    /// </param>
+    /// <param name="data">The message bytes.</param>
+    /// <exception cref="PlatformNotSupportedException">
+    /// <paramref name="kernel" /> names a kernel the processor does not support, and the run of whole blocks is long
+    /// enough to reach it.
+    /// </exception>
+    /// <remarks>
+    /// Every kernel produces the accumulator of the scalar loop. A kernel named explicitly runs whenever the whole
+    /// blocks fill at least one group of its lanes, whatever the thresholds <see cref="SelectKernel" /> applies, so
+    /// that tests can drive it over short messages; the blocks after its last whole group, and everything shorter, go
+    /// through the scalar loop.
+    /// </remarks>
+    internal void Update(KernelKind kernel, ReadOnlySpan<byte> data)
     {
         if (_pendingLength > 0)
         {
@@ -151,7 +209,7 @@ internal struct Poly1305Core
         int whole = data.Length & ~(BlockBytes - 1);
         if (whole > 0)
         {
-            Blocks(data[..whole], FullBlockBit);
+            FullBlocks(kernel, data[..whole]);
             data = data[whole..];
         }
 
@@ -267,6 +325,100 @@ internal struct Poly1305Core
         CryptographicOperations.ZeroMemory(MemoryMarshal.AsBytes(MemoryMarshal.CreateSpan(ref this, 1)));
 
     /// <summary>
+    /// Selects the kernel for a run of whole blocks: AVX-512 for long runs, AVX2 for shorter ones — two groups at a
+    /// time from <see cref="Avx2PairedMinimumBytes" /> where AVX-512VL's registers hold them — and the scalar loop
+    /// below <see cref="Avx2MinimumBytes" /> or where neither is available.
+    /// </summary>
+    /// <param name="length">The length of the run, in bytes.</param>
+    /// <returns>The kernel dispatch runs; never <see cref="KernelKind.Auto" />.</returns>
+    /// <remarks>
+    /// <para>
+    /// Every gate honors the <see cref="SimdCapabilities.DisableSimdSwitchName" /> switch, which pins the scalar loop.
+    /// </para>
+    /// <para>
+    /// AVX-512 runs only where <see cref="Vector512.IsHardwareAccelerated" /> holds. The runtime clears it on
+    /// processors whose clock drops under sustained 512-bit work, so there the AVX2 kernel runs instead;
+    /// <c>DOTNET_PreferredVectorBitWidth=512</c> opts such a processor in.
+    /// </para>
+    /// </remarks>
+    internal static KernelKind SelectKernel(int length)
+    {
+        if (length >= Avx512MinimumBytes && SimdCapabilities.Avx512F && Vector512.IsHardwareAccelerated)
+            return KernelKind.Avx512;
+
+        if (length < Avx2MinimumBytes || !SimdCapabilities.Avx2)
+            return KernelKind.Scalar;
+
+        return length >= Avx2PairedMinimumBytes && SimdCapabilities.Avx512FVL ? KernelKind.Avx2Paired : KernelKind.Avx2;
+    }
+
+    /// <summary>
+    /// Determines whether the processor can run the specified kernel, whether or not the process allows vector code.
+    /// </summary>
+    /// <param name="kernel">The kernel.</param>
+    /// <returns>
+    /// <see langword="true" /> if the processor supports every instruction the kernel uses; otherwise,
+    /// <see langword="false" />.
+    /// </returns>
+    internal static bool IsSupported(KernelKind kernel) => kernel switch
+    {
+        KernelKind.Auto or KernelKind.Scalar => true,
+        KernelKind.Avx2 or KernelKind.Avx2Paired => Avx2.IsSupported,
+        KernelKind.Avx512 => Avx512F.IsSupported,
+        _ => false,
+    };
+
+    /// <summary>
+    /// Returns the number of blocks a group of the specified kernel takes at once: one for each of its lanes.
+    /// </summary>
+    /// <param name="kernel">The kernel; not <see cref="KernelKind.Auto" />.</param>
+    /// <returns>8 for AVX-512, 4 for either AVX2 loop, and 1 for the scalar loop.</returns>
+    internal static int LanesFor(KernelKind kernel) => kernel switch
+    {
+        KernelKind.Avx512 => 8,
+        KernelKind.Avx2 or KernelKind.Avx2Paired => 4,
+        _ => 1,
+    };
+
+    /// <summary>
+    /// Absorbs a run of whole message blocks: the groups of blocks that fill the kernel's lanes through the kernel, and
+    /// the blocks after them through the scalar loop.
+    /// </summary>
+    /// <param name="kernel">The kernel, or <see cref="KernelKind.Auto" /> for the one dispatch selects.</param>
+    /// <param name="blocks">The blocks, a whole number of 16 bytes.</param>
+    /// <exception cref="PlatformNotSupportedException">
+    /// <paramref name="kernel" /> names a kernel the processor does not support, and <paramref name="blocks" /> fills
+    /// at least one group of its lanes.
+    /// </exception>
+    private void FullBlocks(KernelKind kernel, ReadOnlySpan<byte> blocks)
+    {
+        if (kernel == KernelKind.Auto)
+            kernel = SelectKernel(blocks.Length);
+
+        int lanes = LanesFor(kernel);
+        if (lanes > 1)
+        {
+            int groups = blocks.Length / (lanes * BlockBytes);
+            if (groups > 0)
+            {
+                ref byte message = ref MemoryMarshal.GetReference(blocks);
+                if (kernel == KernelKind.Avx512)
+                    Vector512Kernel.Blocks(ref this, ref message, groups);
+                else if (kernel == KernelKind.Avx2Paired)
+                    Vector256Kernel.BlocksPaired(ref this, ref message, groups);
+                else
+                    Vector256Kernel.Blocks(ref this, ref message, groups);
+
+                int absorbed = groups * lanes * BlockBytes;
+                blocks = blocks[absorbed..];
+            }
+        }
+
+        if (!blocks.IsEmpty)
+            Blocks(blocks, FullBlockBit);
+    }
+
+    /// <summary>
     /// Absorbs whole 16-byte blocks: for each, adds it to the accumulator and multiplies by <c>r</c> modulo 2^130 − 5.
     /// </summary>
     /// <param name="blocks">The blocks, a multiple of 16 bytes.</param>
@@ -294,41 +446,64 @@ internal struct Poly1305Core
             h1 += ((t0 >> 44) | (t1 << 20)) & Mask44;
             h2 += ((t1 >> 24) & Mask42) | highBit;
 
-            // The limb sums of h·r, each product split at bit 44 as it is formed: sum k is highK · 2^44 + lowK.
-            ulong low0 = 0;
-            ulong high0 = 0;
-            ulong low1 = 0;
-            ulong high1 = 0;
-            ulong low2 = 0;
-            ulong high2 = 0;
-            AddProduct(h0, r0, ref low0, ref high0);
-            AddProduct(h1, s2, ref low0, ref high0);
-            AddProduct(h2, s1, ref low0, ref high0);
-            AddProduct(h0, r1, ref low1, ref high1);
-            AddProduct(h1, r0, ref low1, ref high1);
-            AddProduct(h2, s2, ref low1, ref high1);
-            AddProduct(h0, r2, ref low2, ref high2);
-            AddProduct(h1, r1, ref low2, ref high2);
-            AddProduct(h2, r0, ref low2, ref high2);
-
-            // A partial reduction: each limb back under its width, what passes 2^130 folded into the first times 5.
-            ulong c = high0 + (low0 >> 44);
-            h0 = low0 & Mask44;
-            low1 += c;
-            c = high1 + (low1 >> 44);
-            h1 = low1 & Mask44;
-            low2 += c;
-            c = (high2 << 2) + (low2 >> 42);
-            h2 = low2 & Mask42;
-            h0 += c * 5;
-            c = h0 >> 44;
-            h0 &= Mask44;
-            h1 += c;
+            Multiply(ref h0, ref h1, ref h2, r0, r1, r2, s1, s2);
         }
 
         _h0 = h0;
         _h1 = h1;
         _h2 = h2;
+    }
+
+    /// <summary>
+    /// Multiplies a value by another modulo 2^130 − 5, both in limbs of 44, 44 and 42 bits, and reduces the product
+    /// partially: every limb back under its width, apart from a small excess the second may carry.
+    /// </summary>
+    /// <param name="h0">The first limb of the value, replaced by the first limb of the product.</param>
+    /// <param name="h1">The second limb of the value, replaced by the second limb of the product.</param>
+    /// <param name="h2">The third limb of the value, replaced by the third limb of the product.</param>
+    /// <param name="r0">The first limb of the multiplier.</param>
+    /// <param name="r1">The second limb of the multiplier.</param>
+    /// <param name="r2">The third limb of the multiplier.</param>
+    /// <param name="s1"><c>20 · r1</c>.</param>
+    /// <param name="s2"><c>20 · r2</c>.</param>
+    /// <remarks>
+    /// The value's limbs may be as large as the accumulator's once a block is added, below 2^46, and the multiplier's
+    /// as large as a partially reduced product's, so a product can serve as either factor of the next multiplication:
+    /// the vector kernels form the powers of <c>r</c> this way.
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static void Multiply(ref ulong h0, ref ulong h1, ref ulong h2, ulong r0, ulong r1, ulong r2, ulong s1, ulong s2)
+    {
+        // The limb sums of h·r, each product split at bit 44 as it is formed: sum k is highK · 2^44 + lowK.
+        ulong low0 = 0;
+        ulong high0 = 0;
+        ulong low1 = 0;
+        ulong high1 = 0;
+        ulong low2 = 0;
+        ulong high2 = 0;
+        AddProduct(h0, r0, ref low0, ref high0);
+        AddProduct(h1, s2, ref low0, ref high0);
+        AddProduct(h2, s1, ref low0, ref high0);
+        AddProduct(h0, r1, ref low1, ref high1);
+        AddProduct(h1, r0, ref low1, ref high1);
+        AddProduct(h2, s2, ref low1, ref high1);
+        AddProduct(h0, r2, ref low2, ref high2);
+        AddProduct(h1, r1, ref low2, ref high2);
+        AddProduct(h2, r0, ref low2, ref high2);
+
+        // A partial reduction: each limb back under its width, what passes 2^130 folded into the first times 5.
+        ulong c = high0 + (low0 >> 44);
+        h0 = low0 & Mask44;
+        low1 += c;
+        c = high1 + (low1 >> 44);
+        h1 = low1 & Mask44;
+        low2 += c;
+        c = (high2 << 2) + (low2 >> 42);
+        h2 = low2 & Mask42;
+        h0 += c * 5;
+        c = h0 >> 44;
+        h0 &= Mask44;
+        h1 += c;
     }
 
     /// <summary>

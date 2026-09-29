@@ -73,6 +73,21 @@ public sealed class SimdOptOutTests
     }
 
     /// <summary>
+    /// Verifies that with SIMD disabled, Poly1305 absorbs every run of whole blocks, however long, through its scalar
+    /// loop, whatever the processor supports.
+    /// </summary>
+    /// <param name="length">The length of the run, in bytes.</param>
+    [TestMethod]
+    [DataRow(Poly1305Core.Avx2MinimumBytes)]
+    [DataRow(Poly1305Core.Avx2PairedMinimumBytes)]
+    [DataRow(Poly1305Core.Avx512MinimumBytes)]
+    [DataRow(1 << 20)]
+    public void Poly1305CoreSelectKernel_WhenSimdDisabled_ShouldReturnTheScalarLoop(int length)
+    {
+        Assert.AreEqual(Poly1305Core.KernelKind.Scalar, Poly1305Core.SelectKernel(length));
+    }
+
+    /// <summary>
     /// Verifies that with SIMD disabled, Serpent-128 encrypts and decrypts runs of blocks with its scalar rounds, one
     /// block at a time, whatever the processor supports.
     /// </summary>

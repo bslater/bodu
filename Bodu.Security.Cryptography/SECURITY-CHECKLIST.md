@@ -77,7 +77,8 @@ Every public `Import*` method is a trust boundary and must reject malformed inpu
 
 Applies when adding or changing any SIMD kernel — the AVX-512 kernels, the GHASH / POLYVAL
 kernels (PCLMULQDQ, PMULL and the scalar multiply), Argon2's AVX2, SSSE3 and AdvSimd kernels,
-scrypt's SSE2 and AdvSimd BlockMix kernels, and the BLAKE2b and BLAKE2s compression kernels.
+scrypt's SSE2 and AdvSimd BlockMix kernels, the BLAKE2b and BLAKE2s compression kernels, and
+Poly1305's AVX2 and AVX-512 block kernels.
 
 - [ ] **Data-independent.** The kernel uses arithmetic, rotations, XORs and shuffles by constant
       indices only — no branch on, and no memory access indexed by, the data. Anything the algorithm
@@ -89,13 +90,15 @@ scrypt's SSE2 and AdvSimd BlockMix kernels, and the BLAKE2b and BLAKE2s compress
       `GhashTests.Update_*_ShouldMatchBitSerialReference*`,
       `ScryptCoreTests.BlockMix_WhenUnitsAreRandom_ForEachKernel_ShouldMatchScalarKernel`,
       `ScryptCoreTests.ROMix_WhenBlocksAreRandom_ForEachKernel_ShouldMatchScalarKernel`,
-      `Blake2bCoreTests` / `Blake2sCoreTests.Compress_WhenStatesAreRandom_ForEachKernel_ShouldMatchScalarKernel`).
+      `Blake2bCoreTests` / `Blake2sCoreTests.Compress_WhenStatesAreRandom_ForEachKernel_ShouldMatchScalarKernel`,
+      `Poly1305CoreTests.Update_*_ForEachKernel_ShouldMatchReferenceImplementation`).
 - [ ] **Every kernel meets the published vectors.** The vector corpus runs through each kernel the
       host supports, not only the one dispatch picks
       (`Argon2CoreTests.DeriveTag_WhenEachSupportedKernelFillsTheMatrix_*`,
       `GhashTests.Update_*_ShouldMatchPublishedValue`, `ScryptCoreTests.*_ForEachKernel_*` over RFC
       7914's Salsa20/8, BlockMix and ROMix vectors and the OpenSSL corpus, and the BLAKE2 cores'
-      `Compress_WhenHashing*_ForEachKernel_*` over RFC 7693's examples and the official blake2-kat.json), and
+      `Compress_WhenHashing*_ForEachKernel_*` over RFC 7693's examples and the official blake2-kat.json,
+      and `Poly1305CoreTests.Update_WhenGivenRfc8439AppendixA3Vector_ForEachKernel_ShouldProduceTag`), and
       `Bodu.Security.Cryptography.Simd.Test` holds the scalar path to the same vectors.
 - [ ] **Gated and switchable.** Dispatch goes through a `SimdCapabilities` gate that honours the
       `DisableSimd` switch, and `SimdOptOutTests` asserts the gate is closed under it.
@@ -107,5 +110,6 @@ scrypt's SSE2 and AdvSimd BlockMix kernels, and the BLAKE2b and BLAKE2s compress
       `SimdCapabilitiesTests.AdvSimd_WhenProcessIsArm64_*` fails if the gate is closed there.
 - [ ] **Scratch is cleared.** Scratch holding secret-derived words is cleared when the kernel's
       caller finishes with it (Argon2's per-segment scratch, H0 and the matrix; scrypt's `B`, `V` and
-      ROMix scratch; `Argon2CoreTests.DeriveTag_WhenMatrixStartsWithGarbage_*` and
+      ROMix scratch; the powers of `r` a Poly1305 kernel run computes on the stack, cleared as the run
+      ends; `Argon2CoreTests.DeriveTag_WhenMatrixStartsWithGarbage_*` and
       `ScryptCoreTests.ROMix_*Garbage*` show neither needs zeroing before use).

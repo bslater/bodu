@@ -12,23 +12,36 @@ namespace Bodu.Security.Cryptography;
 /// Tests for <see cref="Poly1305Core" />, the Poly1305 authenticator behind <see cref="Poly1305" /> and the Poly1305
 /// AEADs, grouped into member-named partial files. Tags are held to the published RFC 8439 vectors and, over seeded
 /// keys, messages and ways of splitting them, to <see cref="Poly1305Reference" />, the radix-2^26 arithmetic the core
-/// replaced.
+/// replaced. Every block loop — the scalar loop and each vector kernel, driven explicitly whichever one dispatch picks —
+/// is held to both.
 /// </summary>
 [TestClass]
 public sealed partial class Poly1305CoreTests
 {
     /// <summary>
-    /// Computes a tag with one call each to <see cref="Poly1305Core.Initialize" />, <see cref="Poly1305Core.Update" />
-    /// and <see cref="Poly1305Core.Finish" />.
+    /// Computes a tag with one call each to <see cref="Poly1305Core.Initialize" />,
+    /// <see cref="Poly1305Core.Update(ReadOnlySpan{byte})" /> and <see cref="Poly1305Core.Finish" />.
     /// </summary>
     /// <param name="key">The 32-byte one-time key.</param>
     /// <param name="message">The message.</param>
     /// <returns>The 16-byte tag.</returns>
-    private static byte[] ComputeTag(ReadOnlySpan<byte> key, ReadOnlySpan<byte> message)
+    private static byte[] ComputeTag(ReadOnlySpan<byte> key, ReadOnlySpan<byte> message) =>
+        ComputeTag(Poly1305Core.KernelKind.Auto, key, message);
+
+    /// <summary>
+    /// Computes a tag with one call each to <see cref="Poly1305Core.Initialize" />,
+    /// <see cref="Poly1305Core.Update(Poly1305Core.KernelKind, ReadOnlySpan{byte})" /> through the specified kernel, and
+    /// <see cref="Poly1305Core.Finish" />.
+    /// </summary>
+    /// <param name="kernel">The kernel for the run of whole blocks.</param>
+    /// <param name="key">The 32-byte one-time key.</param>
+    /// <param name="message">The message.</param>
+    /// <returns>The 16-byte tag.</returns>
+    private static byte[] ComputeTag(Poly1305Core.KernelKind kernel, ReadOnlySpan<byte> key, ReadOnlySpan<byte> message)
     {
         Poly1305Core core = default;
         core.Initialize(key);
-        core.Update(message);
+        core.Update(kernel, message);
 
         byte[] tag = new byte[Poly1305Core.TagBytes];
         core.Finish(tag);
@@ -36,15 +49,28 @@ public sealed partial class Poly1305CoreTests
     }
 
     /// <summary>
-    /// Computes a tag with the message fed to <see cref="Poly1305Core.Update" /> in seeded random pieces, empty pieces
-    /// included.
+    /// Computes a tag with the message fed to <see cref="Poly1305Core.Update(ReadOnlySpan{byte})" /> in seeded random
+    /// pieces, empty pieces included.
     /// </summary>
     /// <param name="key">The 32-byte one-time key.</param>
     /// <param name="message">The message.</param>
     /// <param name="random">The source of the piece lengths.</param>
     /// <param name="maxPiece">The longest piece, in bytes.</param>
     /// <returns>The 16-byte tag.</returns>
-    private static byte[] ComputeTagInPieces(ReadOnlySpan<byte> key, ReadOnlySpan<byte> message, Random random, int maxPiece)
+    private static byte[] ComputeTagInPieces(ReadOnlySpan<byte> key, ReadOnlySpan<byte> message, Random random, int maxPiece) =>
+        ComputeTagInPieces(Poly1305Core.KernelKind.Auto, key, message, random, maxPiece);
+
+    /// <summary>
+    /// Computes a tag with the message fed to <see cref="Poly1305Core.Update(Poly1305Core.KernelKind, ReadOnlySpan{byte})" />
+    /// through the specified kernel, in seeded random pieces, empty pieces included.
+    /// </summary>
+    /// <param name="kernel">The kernel for each piece's run of whole blocks.</param>
+    /// <param name="key">The 32-byte one-time key.</param>
+    /// <param name="message">The message.</param>
+    /// <param name="random">The source of the piece lengths.</param>
+    /// <param name="maxPiece">The longest piece, in bytes.</param>
+    /// <returns>The 16-byte tag.</returns>
+    private static byte[] ComputeTagInPieces(Poly1305Core.KernelKind kernel, ReadOnlySpan<byte> key, ReadOnlySpan<byte> message, Random random, int maxPiece)
     {
         Poly1305Core core = default;
         core.Initialize(key);
@@ -53,13 +79,27 @@ public sealed partial class Poly1305CoreTests
         while (offset < message.Length)
         {
             int piece = Math.Min(random.Next(maxPiece + 1), message.Length - offset);
-            core.Update(message.Slice(offset, piece));
+            core.Update(kernel, message.Slice(offset, piece));
             offset += piece;
         }
 
         byte[] tag = new byte[Poly1305Core.TagBytes];
         core.Finish(tag);
         return tag;
+    }
+
+    /// <summary>
+    /// Parses a kernel name, marking the test inconclusive when the processor cannot run that kernel.
+    /// </summary>
+    /// <param name="name">The kernel's name.</param>
+    /// <returns>The kernel.</returns>
+    private static Poly1305Core.KernelKind ParseSupportedKernel(string name)
+    {
+        Poly1305Core.KernelKind kernel = Enum.Parse<Poly1305Core.KernelKind>(name);
+        if (!Poly1305Core.IsSupported(kernel))
+            Assert.Inconclusive($"The {name} kernel cannot run on this processor.");
+
+        return kernel;
     }
 
     /// <summary>
