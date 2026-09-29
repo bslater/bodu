@@ -28,9 +28,10 @@ public partial class SequencedDictionaryTests
     public void KeyCollection_WhenContainsCalled_ShouldReportMembership()
     {
         SequencedDictionary<string, int> dictionary = CreatePopulated();
+        ICollection<string> keys = dictionary.Keys;
 
-        Assert.IsTrue(dictionary.Keys.Contains("b"));
-        Assert.IsFalse(dictionary.Keys.Contains("missing"));
+        Assert.IsTrue(keys.Contains("b"));
+        Assert.IsFalse(keys.Contains("missing"));
     }
 
     /// <summary>

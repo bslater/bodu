@@ -63,7 +63,10 @@ public partial class CompoundFileTests
         cts.Cancel();
 
         byte[] buffer = new byte[16];
-        await Assert.ThrowsAsync<OperationCanceledException>(async () => await cursor.ReadAsync(buffer.AsMemory(), cts.Token));
+        await Assert.ThrowsAsync<OperationCanceledException>(async () =>
+        {
+            _ = await cursor.ReadAsync(buffer.AsMemory(), cts.Token);
+        });
     }
 
     /// <summary>
