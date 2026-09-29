@@ -63,7 +63,7 @@ public static partial class DateOnlyExtensions
     /// <param name="date">The date value whose year and month are used to determine the result.</param>
     /// <param name="calendar">
     /// An optional <see cref="Calendar" /> instance used to evaluate the result. If <see langword="null" />, the
-    /// calendar of <see cref="CultureInfo.CurrentCulture" /> is used.
+    /// <see cref="DateTimeFormatInfo.Calendar" /> of <see cref="CultureInfo.CurrentCulture" /> is used.
     /// </param>
     /// <returns>
     /// The total number of days in the specified month and year of <paramref name="date" />, based on the rules of the
@@ -76,8 +76,8 @@ public static partial class DateOnlyExtensions
     /// <paramref name="date" /> is first projected into the target calendar, so the result is equivalent to
     /// <c>calendar.GetDaysInMonth(calendar.GetYear(dateTime), calendar.GetMonth(dateTime))</c> for the
     /// <see cref="DateTime" /> at midnight of <paramref name="date" /> — the length of the calendar's own month
-    /// containing the date, not the Gregorian month. The current culture's calendar is used if
-    /// <paramref name="calendar" /> is <see langword="null" />.
+    /// containing the date, not the Gregorian month. If <paramref name="calendar" /> is <see langword="null" />, the
+    /// <see cref="DateTimeFormatInfo.Calendar" /> of <see cref="CultureInfo.CurrentCulture" /> is used.
     /// </para>
     /// <para>
     /// This method does not account for leap months. For calendars that support leap months or multiple eras, consider
@@ -86,7 +86,7 @@ public static partial class DateOnlyExtensions
     /// </remarks>
     public static int DaysInMonth(this DateOnly date, Calendar? calendar)
     {
-        Calendar target = calendar ?? CultureInfo.CurrentCulture.Calendar;
+        Calendar target = calendar ?? CultureInfo.CurrentCulture.DateTimeFormat.Calendar;
         var dateTime = date.ToDateTime(TimeOnly.MinValue);
 
         return target.GetDaysInMonth(target.GetYear(dateTime), target.GetMonth(dateTime));

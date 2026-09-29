@@ -21,8 +21,10 @@ public static partial class DateTimeExtensions
     /// </returns>
     /// <remarks>
     /// <para>
-    /// This overload uses the calendar defined by <see cref="CultureInfo.CurrentCulture" />. The result may vary
-    /// depending on the calendar system (e.g. Gregorian, Hebrew, Hijri).
+    /// This overload uses the calendar the current culture is set to use: the
+    /// <see cref="DateTimeFormatInfo.Calendar" /> of <see cref="CultureInfo.CurrentCulture" />, which is not
+    /// necessarily the culture's default <see cref="CultureInfo.Calendar" />. The result may vary depending on the
+    /// calendar system (e.g. Gregorian, Hebrew, Hijri).
     /// </para>
     /// </remarks>
     public static int DaysInYear(this DateTime dateTime) => dateTime.DaysInYear((Calendar?)null);
@@ -33,8 +35,8 @@ public static partial class DateTimeExtensions
     /// </summary>
     /// <param name="dateTime">The date and time value whose year is used to determine the result.</param>
     /// <param name="calendar">
-    /// An optional <see cref="Calendar" /> used to evaluate the result. If <see langword="null" />, the calendar of
-    /// <see cref="CultureInfo.CurrentCulture" /> is used.
+    /// An optional <see cref="Calendar" /> used to evaluate the result. If <see langword="null" />, the
+    /// <see cref="DateTimeFormatInfo.Calendar" /> of <see cref="CultureInfo.CurrentCulture" /> is used.
     /// </param>
     /// <returns>
     /// The number of days in the year of <paramref name="dateTime" />, based on the supplied or fallback calendar.
@@ -43,7 +45,8 @@ public static partial class DateTimeExtensions
     /// <para>
     /// Use this overload when you want to explicitly calculate based on a specific calendar system (e.g.
     /// <see cref="GregorianCalendar" />, <see cref="HebrewCalendar" />). If <paramref name="calendar" /> is
-    /// <see langword="null" />, the calendar of <see cref="CultureInfo.CurrentCulture" /> is used.
+    /// <see langword="null" />, the <see cref="DateTimeFormatInfo.Calendar" /> of
+    /// <see cref="CultureInfo.CurrentCulture" /> is used.
     /// </para>
     /// <para>
     /// <paramref name="dateTime" /> is first projected into the target calendar, so the result is equivalent to
@@ -53,7 +56,7 @@ public static partial class DateTimeExtensions
     /// </remarks>
     public static int DaysInYear(this DateTime dateTime, Calendar? calendar)
     {
-        Calendar target = calendar ?? CultureInfo.CurrentCulture.Calendar;
+        Calendar target = calendar ?? CultureInfo.CurrentCulture.DateTimeFormat.Calendar;
 
         return target.GetDaysInYear(target.GetYear(dateTime));
     }
