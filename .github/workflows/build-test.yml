@@ -102,11 +102,11 @@ jobs:
 
       - name: Build
         run: |
-          # Warnings are errors here, and only here: any compiler or analyzer warning fails the pull
-          # request, while a local build still reports it as a warning. A deliberate finding is
-          # suppressed at its site with a justification, as the existing suppressions are. MSBuild,
-          # SDK and NuGet warnings are not promoted (that would take -warnaserror), so a newly
-          # published package advisory cannot fail unrelated pull requests.
+          # Warnings are errors in CI, here and in release.yml's test gate: any compiler or analyzer
+          # warning fails the pull request, while a local build still reports it as a warning. A
+          # deliberate finding is suppressed at its site with a justification, as the existing
+          # suppressions are. MSBuild, SDK and NuGet warnings are not promoted (that would take
+          # -warnaserror), so a newly published package advisory cannot fail unrelated pull requests.
           for proj in $TEST_PROJECTS; do
             echo "::group::Build $proj"
             dotnet build "$proj" --configuration Release --no-restore -p:TreatWarningsAsErrors=true
@@ -483,11 +483,11 @@ jobs:
 
       - name: Build
         run: |
-          # Warnings are errors here, and only here: any compiler or analyzer warning fails the pull
-          # request, while a local build still reports it as a warning. A deliberate finding is
-          # suppressed at its site with a justification, as the existing suppressions are. MSBuild,
-          # SDK and NuGet warnings are not promoted (that would take -warnaserror), so a newly
-          # published package advisory cannot fail unrelated pull requests.
+          # Warnings are errors in CI, here and in release.yml's test gate: any compiler or analyzer
+          # warning fails the pull request, while a local build still reports it as a warning. A
+          # deliberate finding is suppressed at its site with a justification, as the existing
+          # suppressions are. MSBuild, SDK and NuGet warnings are not promoted (that would take
+          # -warnaserror), so a newly published package advisory cannot fail unrelated pull requests.
           for proj in $TEST_PROJECTS; do
             echo "::group::Build $proj"
             dotnet build "$proj" --configuration Release --no-restore -p:TreatWarningsAsErrors=true
