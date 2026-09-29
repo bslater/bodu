@@ -155,8 +155,9 @@ internal sealed class PstHeapNode
     {
         if (!TryGetItem(hid, out ReadOnlyMemory<byte> item))
         {
-            throw new PstFileFormatException(string.Format(
-                CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstHeapId, hid, new PstNodeId(NodeId)), PstFileError.InvalidHeap);
+            throw new PstFileFormatException(
+                string.Format(CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstHeapId, hid, new PstNodeId(NodeId)),
+                PstFileError.InvalidHeap);
         }
 
         return item;

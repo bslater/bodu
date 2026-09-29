@@ -172,7 +172,7 @@ internal static class BoeRateCsvParser
     /// On return, the series descriptors for the columns present, keyed by quote ISO code.
     /// </param>
     /// <returns>A per-column array of series descriptors; <see langword="null" /> for unmapped columns.</returns>
-    private static BoeSeries?[] MapColumns(IReadOnlyList<string> headers, Dictionary<string, BoeSeries> byCode, out Dictionary<string, BoeSeries> present)
+    private static BoeSeries?[] MapColumns(List<string> headers, Dictionary<string, BoeSeries> byCode, out Dictionary<string, BoeSeries> present)
     {
         var columns = new BoeSeries?[headers.Count];
         var found = new Dictionary<string, BoeSeries>(StringComparer.Ordinal);

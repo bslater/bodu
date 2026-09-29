@@ -4,8 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Text.Serialization;
 using System.Globalization;
+using Bodu.Text.Serialization;
 using Bodu.Text.Toml.Reader;
 using Bodu.Text.Toml.Writer;
 

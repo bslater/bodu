@@ -30,9 +30,6 @@ namespace Bodu.Text.Toml.Reader;
 /// </remarks>
 internal sealed class TomlDocumentBuilder
 {
-    /// <summary>The flat row store, with the document root table at index 0.</summary>
-    private readonly List<TomlReaderRow> _rows = [];
-
     /// <summary>The child count at which a table switches from a linear sibling scan to a hashed key index.</summary>
     /// <remarks>
     /// Small tables scan their sibling chain directly, so a typical document allocates neither collection below. Only a
@@ -40,6 +37,9 @@ internal sealed class TomlDocumentBuilder
     /// linear key scan per inserted key) into O(n) while leaving small-document allocation unchanged.
     /// </remarks>
     private const int ChildIndexThreshold = 1024;
+
+    /// <summary>The flat row store, with the document root table at index 0.</summary>
+    private readonly List<TomlReaderRow> _rows = [];
 
     /// <summary>Maps each keyed child of an indexed table to its row index by (parent row, key); lazily allocated.</summary>
     private Dictionary<(int Parent, string Key), int>? _childIndex;

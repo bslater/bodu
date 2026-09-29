@@ -77,17 +77,18 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
           submodules: recursive
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v6
         with:
-          dotnet-version: |
-            8.0.x
-            10.0.x
+          # The .NET 10 SDK is the exact version global.json pins, so an SDK upgrade is a deliberate
+          # change. The .NET 8 SDK beside it builds the Bodu.CodeStyle solution and runs the net8.0 legs.
+          global-json-file: global.json
+          dotnet-version: 8.0.x
 
       - name: Pack Bodu.CodeStyle.XmlDocumentation analyzer (local feed)
         working-directory: Bodu.CodeStyle
@@ -158,6 +159,11 @@ jobs:
           # reported test failure - an aborted or crashed test host, or a run that discovers no
           # tests at all, exits non-zero with nothing named. Without this summary the only
           # evidence is "exit code 1" with the responsible project scrolled out of reach.
+          #
+          # The TRX logger takes LogFilePrefix, not LogFileName: every project runs once per
+          # target framework, and with a fixed file name the second run overwrites the first's
+          # TRX, so the uploaded record held only one framework's results. The prefix form writes
+          # <name>_<framework>_<timestamp>.trx, one file per run.
           status=0
           failed=""
 
@@ -170,7 +176,7 @@ jobs:
               --no-build \
               --settings test.runsettings \
               --results-directory "${{ github.workspace }}/TestResults/$name" \
-              --logger "trx;LogFileName=$name.trx" \
+              --logger "trx;LogFilePrefix=$name" \
               --logger "console;verbosity=normal" || rc=$?
             echo "::endgroup::"
 
@@ -198,7 +204,7 @@ jobs:
       # GitHub serves only the tail of the console log.
       - name: Upload test results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: release-test-results-trx
           path: TestResults/**/*.trx
@@ -220,16 +226,17 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v6
         with:
-          dotnet-version: |
-            8.0.x
-            10.0.x
+          # The .NET 10 SDK is the exact version global.json pins, so an SDK upgrade is a deliberate
+          # change. The .NET 8 SDK beside it builds the Bodu.CodeStyle solution.
+          global-json-file: global.json
+          dotnet-version: 8.0.x
 
       - name: Pack Bodu.CodeStyle.XmlDocumentation analyzer (local feed)
         working-directory: Bodu.CodeStyle
@@ -460,7 +467,7 @@ jobs:
           echo "PUBLISH_DIR=$PUBLISH_DIR" >> "$GITHUB_ENV"
 
       - name: Upload package artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: nuget-packages
           path: |
@@ -470,7 +477,7 @@ jobs:
           if-no-files-found: error
 
       - name: Upload publish-set artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: nuget-packages-publish
           path: |

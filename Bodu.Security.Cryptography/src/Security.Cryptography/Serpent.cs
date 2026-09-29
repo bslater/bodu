@@ -58,10 +58,12 @@ public abstract class Serpent
 {
     /// <summary>The block size in bytes.</summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Exposed as a protected field so derived wide-block Serpent types can read the block byte count directly on cipher-construction paths without virtual dispatch.")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1051:Do not declare visible instance fields", Justification = "A protected field that derived types in other assemblies compile against; converting it to a property would be a binary-breaking change to the published derivation surface.")]
     protected readonly int BlockSizeBytes;
 
     /// <summary>The key size in bytes.</summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Exposed as a protected field so derived wide-block Serpent types can read the key byte count directly on cipher-construction paths without virtual dispatch.")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1051:Do not declare visible instance fields", Justification = "A protected field that derived types in other assemblies compile against; converting it to a property would be a binary-breaking change to the published derivation surface.")]
     protected readonly int KeySizeBytes;
 
     /// <summary>The default tweak size in bytes, used when no tweak length is otherwise specified.</summary>

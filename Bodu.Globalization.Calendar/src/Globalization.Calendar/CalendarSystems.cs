@@ -160,7 +160,7 @@ internal static class CalendarSystems
     /// <returns>
     /// An empty list when <paramref name="date" /> is <see langword="null" />; otherwise a single-element list.
     /// </returns>
-    private static IReadOnlyList<DateOnly> Single(DateOnly? date) =>
+    private static DateOnly[] Single(DateOnly? date) =>
         date is DateOnly value ? new[] { value } : [];
 
     /// <summary>
@@ -214,7 +214,7 @@ internal static class CalendarSystems
     /// in the Gregorian year (about 355 days after an early-January occurrence) is captured as a second result.
     /// </para>
     /// </remarks>
-    private static IReadOnlyList<DateOnly> ResolveCalendarYearSweep(
+    private static List<DateOnly> ResolveCalendarYearSweep(
         System.Globalization.Calendar calendar,
         int month,
         string? monthAlias,

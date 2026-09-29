@@ -19,7 +19,7 @@ namespace Bodu.Globalization.Calendar;
 internal static class NotableDateBinaryFormat
 {
     /// <summary>
-    /// The four magic bytes opening every pack: <c>BCAL</c> in ASCII.
+    /// Gets the four magic bytes opening every pack: <c>BCAL</c> in ASCII.
     /// </summary>
     public static ReadOnlySpan<byte> Magic =>
         "BCAL"u8;

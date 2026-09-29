@@ -28,8 +28,11 @@ public partial class ComplexTests
     {
         var value = new Complex<double>(double.NaN, 1.0);
 
-        Assert.IsFalse(value == value);
-        Assert.IsTrue(value.Equals(value));
+        // Compare against a copy: comparing a variable with itself draws CS1718, even when that is the point.
+        Complex<double> same = value;
+
+        Assert.IsFalse(value == same);
+        Assert.IsTrue(value.Equals(same));
     }
 
     /// <summary>

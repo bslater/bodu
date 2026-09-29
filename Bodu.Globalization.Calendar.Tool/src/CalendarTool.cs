@@ -166,7 +166,9 @@ public static class CalendarTool
     /// <param name="resource">The loaded resource, or <see langword="null" />.</param>
     /// <param name="diagnostics">The collected diagnostics.</param>
     /// <param name="exitCode">The exit code when loading could not start.</param>
-    /// <returns><see langword="true" /> when a load ran (successfully or not); otherwise <paramref name="exitCode" /> applies.</returns>
+    /// <returns>
+    /// <see langword="true" /> when a load ran (successfully or not); otherwise <paramref name="exitCode" /> applies.
+    /// </returns>
     private static bool TryLoadDocument(
         string input,
         Func<string, string?> resolver,

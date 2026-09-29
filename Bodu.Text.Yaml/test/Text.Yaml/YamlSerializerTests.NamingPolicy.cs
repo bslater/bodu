@@ -61,7 +61,7 @@ public partial class YamlSerializerTests
         var options = new YamlSerializerOptions { PropertyNamingPolicy = kat.Input };
         string yaml = YamlSerializer.Serialize(new TwoWordModel { FirstName = "value" }, options);
 
-        TwoWordModel roundTripped = YamlSerializer.Deserialize<TwoWordModel>(yaml, options);
+        TwoWordModel roundTripped = YamlSerializer.Deserialize<TwoWordModel>(yaml, options)!;
         Assert.AreEqual("value", roundTripped.FirstName);
     }
 

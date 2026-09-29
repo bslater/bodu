@@ -254,7 +254,7 @@ public sealed class StrategyResolutionContext
     /// <returns>The set of non-working dates claimed by non-working rules in the year.</returns>
     private HashSet<DateOnly> GetNonWorkingDates(string territory, int year)
     {
-        (string territory, int year) key = (territory, year);
+        (string Territory, int Year) key = (territory, year);
         if (_nonWorkingCache.TryGetValue(key, out HashSet<DateOnly>? cached))
             return cached;
 

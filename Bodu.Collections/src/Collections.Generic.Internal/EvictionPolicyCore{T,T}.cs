@@ -294,7 +294,7 @@ internal sealed class EvictionPolicyCore<TKey, TValue>
 
             EvictingDictionaryPolicy.SecondChance when _order is not null => PeekSecondChanceCandidate(),
 
-            _ => default
+            _ => default,
         };
     }
 

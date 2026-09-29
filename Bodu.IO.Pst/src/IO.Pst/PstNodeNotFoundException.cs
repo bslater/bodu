@@ -15,6 +15,7 @@ namespace Bodu.IO.Pst;
 /// set to <see cref="PstFileError.NodeNotFound" />) rather than the base <see cref="PstFileException" />. Callers that
 /// prefer flow control over exceptions use <see cref="PstFile.TryGetNode" />.
 /// </remarks>
+[System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1194:Implement exception constructors", Justification = "The type fixes the error code, so the base constructors that take a PstFileError are deliberately not mirrored; the three standard constructors are provided.")]
 public sealed class PstNodeNotFoundException
     : PstFileException
 {

@@ -52,8 +52,9 @@ internal sealed class IntegerConverter<T>
         }
         catch (OverflowException ex)
         {
-            throw new YamlSerializationException(string.Format(
-                CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_YamlNumberOutOfRange, text, typeof(T)), ex);
+            throw new YamlSerializationException(
+                string.Format(CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_YamlNumberOutOfRange, text, typeof(T)),
+                ex);
         }
     }
 

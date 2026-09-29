@@ -263,7 +263,7 @@ public sealed class Skipjack
     /// </summary>
     /// <param name="key">The 10-byte key material used to derive the round subkeys.</param>
     /// <returns>An <see cref="IBlockCipher" /> configured for single-block encryption and decryption.</returns>
-    private static IBlockCipher CreateCipher(byte[] key) => new SkipjackBlockCipher(key);
+    private static SkipjackBlockCipher CreateCipher(byte[] key) => new(key);
 
     /// <summary>
     /// Throws an <see cref="ObjectDisposedException" /> if the algorithm instance has been disposed.

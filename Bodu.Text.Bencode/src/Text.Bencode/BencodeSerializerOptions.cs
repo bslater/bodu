@@ -4,13 +4,13 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Text.Serialization;
 using System.Collections.Concurrent;
 using System.Globalization;
 using System.Reflection;
 using Bodu.Text.Bencode.Serialization;
 using Bodu.Text.Bencode.Serialization.Converters;
 using Bodu.Text.Bencode.Serialization.Metadata;
+using Bodu.Text.Serialization;
 
 namespace Bodu.Text.Bencode;
 
@@ -337,5 +337,4 @@ public sealed partial class BencodeSerializerOptions
             _maxDepth = value == 0 ? DefaultMaxDepth : value;
         }
     }
-
 }

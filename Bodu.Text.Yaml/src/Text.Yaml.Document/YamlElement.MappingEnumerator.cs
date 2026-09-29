@@ -17,8 +17,8 @@ public readonly partial struct YamlElement
     /// Provides forward-only enumeration over the key/value pairs of a mapping node.
     /// </summary>
     public struct MappingEnumerator
-        : IEnumerable<YamlProperty>
-        , IEnumerator<YamlProperty>
+        : IEnumerable<YamlProperty>,
+        IEnumerator<YamlProperty>
     {
         /// <summary>The owning document.</summary>
         private readonly YamlDocument _document;

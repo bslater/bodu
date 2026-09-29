@@ -84,6 +84,7 @@ public readonly partial struct CalculatedMoney
     /// <param name="amount">The unrounded amount.</param>
     /// <param name="code">The currency, or <see cref="CurrencyCode.None" /> for a currency-less value.</param>
     /// <param name="_">Discriminator that selects the pre-validated construction path.</param>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.NamingRules", "SA1313:Parameter names should begin with lower-case letter", Justification = "The parameter is an intentionally unnamed discriminator that only selects this private construction path; its value is never read.")]
     private CalculatedMoney(decimal amount, CurrencyCode code, bool _)
     {
         _amount = amount;

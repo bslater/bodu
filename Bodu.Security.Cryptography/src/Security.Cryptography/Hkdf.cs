@@ -18,9 +18,12 @@ namespace Bodu.Security.Cryptography;
 /// <remarks>
 /// <para>
 /// HKDF turns input keying material that is merely high-entropy — such as a Diffie-Hellman shared secret — into one or
-/// more cryptographically strong, fixed-length keys. <see cref="Extract" /> concentrates the entropy of the input into
-/// a pseudorandom key (PRK) of one hash length; <see cref="Expand" /> stretches that PRK into output keying material of
-/// any requested length, optionally bound to an application-specific <c>info</c> context. <see cref="DeriveKey" />
+/// more cryptographically strong, fixed-length keys.
+/// <see cref="Extract(HashAlgorithmName, ReadOnlySpan{byte}, ReadOnlySpan{byte})" /> concentrates the entropy of the
+/// input into a pseudorandom key (PRK) of one hash length;
+/// <see cref="Expand(HashAlgorithmName, ReadOnlySpan{byte}, int, ReadOnlySpan{byte})" /> stretches that PRK into output
+/// keying material of any requested length, optionally bound to an application-specific <c>info</c> context.
+/// <see cref="DeriveKey(HashAlgorithmName, ReadOnlySpan{byte}, int, ReadOnlySpan{byte}, ReadOnlySpan{byte})" />
 /// performs both stages in one call.
 /// </para>
 /// <para>
@@ -298,6 +301,7 @@ public static class Hkdf
     /// <exception cref="ArgumentException">
     /// <paramref name="hashAlgorithm" /> is not a supported HKDF hash algorithm.
     /// </exception>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Security", "CA5350:Do Not Use Weak Cryptographic Algorithms", Justification = "HKDF-SHA1 is an RFC 5869 instantiation (test cases A.4 to A.7) offered for interoperability only when the caller selects SHA-1; the SHA-1 collision attacks do not break HMAC-SHA1 as a PRF.")]
     private static int Hmac(HashAlgorithmName hashAlgorithm, ReadOnlySpan<byte> key, ReadOnlySpan<byte> source, Span<byte> destination)
     {
         if (hashAlgorithm == HashAlgorithmName.SHA256)

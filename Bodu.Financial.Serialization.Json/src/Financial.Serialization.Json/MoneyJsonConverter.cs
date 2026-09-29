@@ -184,13 +184,19 @@ public sealed class MoneyJsonConverter
             else if (string.Equals(propertyName, "scale", StringComparison.OrdinalIgnoreCase))
             {
                 if (scaleSeen)
+                {
                     throw new JsonException(
                         string.Format(CultureInfo.CurrentCulture, FinancialJsonResourceStrings.Json_Invalid_DuplicateProperty, "scale"));
+                }
+
                 scaleSeen = true;
 
                 if (reader.TokenType != JsonTokenType.Number || !reader.TryGetInt32(out int parsedScale))
+                {
                     throw new JsonException(
                         string.Format(CultureInfo.CurrentCulture, FinancialJsonResourceStrings.Json_Invalid_PropertyMustBeNumber, "scale"));
+                }
+
                 scale = parsedScale;
             }
             else
@@ -220,8 +226,10 @@ public sealed class MoneyJsonConverter
 
         // Resolve the wire ISO string to its stored CurrencyCode; an unknown code is a deserialization error.
         if (!CurrencyInfo.TryGetCurrencyCode(currency, out CurrencyCode code))
+        {
             throw new JsonException(
                 string.Format(CultureInfo.CurrentCulture, FinancialJsonResourceStrings.Arg_Invalid_UnknownCurrencyRejected, currency));
+        }
 
         // When the wire carries an explicit scale (a unit price at a precision other than the currency's registered
         // minor units), rebuild the value at that scale so the reported precision round-trips. Otherwise construct

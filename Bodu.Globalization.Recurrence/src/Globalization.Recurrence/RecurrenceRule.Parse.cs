@@ -269,7 +269,7 @@ public sealed partial class RecurrenceRule :
             }
 
             ReadOnlySpan<char> name = part[..eq].Trim();
-            ReadOnlySpan<char> value = part[(eq + 1) ..].Trim();
+            ReadOnlySpan<char> value = part[(eq + 1)..].Trim();
             if (value.IsEmpty)
             {
                 failureMessage = FormatDefect(RecurrenceResourceStrings.Format_Invalid_RecurrenceRulePart, part);

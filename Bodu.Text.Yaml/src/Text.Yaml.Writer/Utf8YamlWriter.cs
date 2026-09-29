@@ -526,15 +526,19 @@ public ref struct Utf8YamlWriter
     private sealed class State
     {
         /// <summary>The container tracking stack; one frame per open mapping or sequence.</summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Member of a private state holder shared by every copy of the writer: Stack is grown in place through Array.Resize(ref ...), which requires a field, and the other members stay fields to match.")]
         public Frame[] Stack = new Frame[8];
 
         /// <summary>The number of frames currently on <see cref="Stack" />.</summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Member of a private state holder shared by every copy of the writer: Stack is grown in place through Array.Resize(ref ...), which requires a field, and the other members stay fields to match.")]
         public int Depth;
 
         /// <summary>Indicates whether the document's root value has been written.</summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Member of a private state holder shared by every copy of the writer: Stack is grown in place through Array.Resize(ref ...), which requires a field, and the other members stay fields to match.")]
         public bool RootWritten;
 
         /// <summary>The serializer write state attached for the duration of a serializer write, or <see langword="null" />.</summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Member of a private state holder shared by every copy of the writer: Stack is grown in place through Array.Resize(ref ...), which requires a field, and the other members stay fields to match.")]
         public YamlWriteStack? WriteStack;
     }
 

@@ -67,16 +67,24 @@ public sealed class FileSystemImfReportCache
     }
 
     /// <inheritdoc />
-    protected override string GetFileName(ImfReportMonth key) =>
-        key.FileName;
+    /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
+    protected override string GetFileName(ImfReportMonth key)
+    {
+        ThrowHelper.ThrowIfNull(key);
+
+        return key.FileName;
+    }
 
     /// <inheritdoc />
     /// <remarks>
     /// A report for a month strictly before the current UTC month is closed and immutable, so it is always fresh
     /// regardless of its file age; only the current (still-accumulating) month is subject to the refresh interval.
     /// </remarks>
+    /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
     protected override bool IsFresh(ImfReportMonth key, TimeSpan age, TimeSpan refreshInterval)
     {
+        ThrowHelper.ThrowIfNull(key);
+
         DateOnly today = DateOnly.FromDateTime(DateTime.UtcNow);
         bool isClosedMonth = key.Year < today.Year || (key.Year == today.Year && key.Month < today.Month);
 

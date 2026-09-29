@@ -17,7 +17,7 @@ namespace Bodu.Formats.Excel;
 public readonly record struct ExcelCell
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="ExcelCell" /> class.
+    /// Initializes a new instance of the <see cref="ExcelCell" /> struct.
     /// </summary>
     /// <param name="rowIndex">The zero-based row index of the cell.</param>
     /// <param name="columnIndex">The zero-based column index of the cell.</param>

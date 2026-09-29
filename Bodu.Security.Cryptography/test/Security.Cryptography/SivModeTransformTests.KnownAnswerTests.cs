@@ -70,7 +70,7 @@ public sealed partial class SivModeTransformTests
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void Encrypt_WhenGivenRfc5297A1Vector_ShouldMatchExpected(AeadKnownAnswer vector)
     {
-        using var s2vCipher = new AesBlockCipherFixture(vector.Key[..16]);
+        using var s2vCipher = new AesBlockCipherFixture(vector.Key![..16]);
         using var ctrCipher = new AesBlockCipherFixture(vector.Key[16..]);
         byte[] expected = vector.CiphertextWithTag;
 
@@ -94,7 +94,7 @@ public sealed partial class SivModeTransformTests
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void Decrypt_WhenGivenRfc5297A1Vector_ShouldRecoverPlaintext(AeadKnownAnswer vector)
     {
-        using var s2vCipher = new AesBlockCipherFixture(vector.Key[..16]);
+        using var s2vCipher = new AesBlockCipherFixture(vector.Key![..16]);
         using var ctrCipher = new AesBlockCipherFixture(vector.Key[16..]);
         byte[] ciphertextWithTag = vector.CiphertextWithTag;
 

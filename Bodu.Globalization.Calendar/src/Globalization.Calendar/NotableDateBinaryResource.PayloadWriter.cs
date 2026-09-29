@@ -15,6 +15,7 @@ public static partial class NotableDateBinaryResource
     /// emitted ahead of the body it indexes.
     /// </summary>
     private sealed class PayloadWriter
+        : IDisposable
     {
         /// <summary>The body bytes, written before the string table is final.</summary>
         private readonly MemoryStream _body = new();
@@ -184,6 +185,10 @@ public static partial class NotableDateBinaryResource
 
             return payload.ToArray();
         }
+
+        /// <inheritdoc />
+        public void Dispose() =>
+            _body.Dispose();
 
         /// <summary>
         /// Writes a 7-bit variable-length integer to an arbitrary stream.

@@ -34,6 +34,8 @@ public static partial class DateOnlyExtensions
     {
         ThrowHelper.ThrowIfEnumValueIsUndefined(dayOfWeek);
 
-        return date.AddDays(-(((7 + date.DayOfWeek - dayOfWeek) % 7) switch { 0 => 7, int d => d }));
+        int daysBack = (7 + date.DayOfWeek - dayOfWeek) % 7;
+
+        return date.AddDays(daysBack == 0 ? -7 : -daysBack);
     }
 }

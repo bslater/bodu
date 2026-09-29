@@ -45,7 +45,7 @@ public static partial class NotableDateBinaryResource
         ThrowHelper.ThrowIfNull(resource);
         ThrowHelper.ThrowIfNull(stream);
 
-        PayloadWriter writer = new();
+        using PayloadWriter writer = new();
         WriteResource(writer, resource);
         byte[] payload = writer.ToPayload();
 

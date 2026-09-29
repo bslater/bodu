@@ -68,6 +68,6 @@ public sealed partial class AsyncCountdownEventTests
         using var cts = new CancellationTokenSource();
         cts.Cancel();
 
-        Assert.IsTrue(sut.WaitAsync(cts.Token).IsCompletedSuccessfully);
+        Assert.IsTrue(sut.WaitAsync(cts.Token).AsTask().IsCompletedSuccessfully);
     }
 }

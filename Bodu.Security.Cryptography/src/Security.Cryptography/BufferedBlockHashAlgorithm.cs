@@ -121,6 +121,7 @@ public abstract class BufferedBlockHashAlgorithm
 
     /// <summary>The fixed size, in bits, of each block consumed by the algorithm. Multiply or divide by 8 at the use site to convert to bytes for buffer allocation, span sizing, or block-aligned iteration.</summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Exposed as a protected field so derived hash algorithm classes can access the block size directly on the hot compression path without virtual dispatch.")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1051:Do not declare visible instance fields", Justification = "A protected field that derived types in other assemblies compile against; converting it to a property would be a binary-breaking change to the published derivation surface.")]
     protected readonly int BlockSize;
 
     /// <summary>Backing buffer that accumulates input bytes which do not yet form a complete block. Sized at <see cref="BlockSize" /> / 8 bytes at construction. Cleared by <see cref="Initialize" /> and overwritten with zeros during disposal.</summary>

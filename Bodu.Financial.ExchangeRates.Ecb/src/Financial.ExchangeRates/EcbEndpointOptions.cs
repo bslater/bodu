@@ -62,9 +62,11 @@ public sealed class EcbEndpointOptions
         if (BaseUrl is null)
             throw new InvalidOperationException(EcbResourceStrings.Op_Invalid_EcbEndpointBaseUrl);
         if (!IsSafeRelativeFeedFileName(feed.FileName))
+        {
             throw new ArgumentException(
                 string.Format(System.Globalization.CultureInfo.CurrentCulture, EcbResourceStrings.Arg_Invalid_EcbFeedFileName, feed.FileName),
                 nameof(feed));
+        }
 
         return new Uri(BaseUrl, feed.FileName);
     }

@@ -602,9 +602,9 @@ public static class NotableDateResourceLoader
         if (overrideTerritory || overrideAdjustments)
         {
             rules = [.. concept.Rules
-                .Select(r => CloneRule(
-                    r,
-                    overrideTerritory
+                .Select(r =>
+                {
+                    RuleApplicability applicability = overrideTerritory
                         ? new RuleApplicability(
                             r.Applicability.Calendar,
                             r.Applicability.FromYear,
@@ -614,8 +614,10 @@ public static class NotableDateResourceLoader
                             r.Applicability.ExceptYears,
                             r.Applicability.EveryYears,
                             r.Applicability.AnchorYear)
-                        : r.Applicability,
-                    overrideAdjustments ? use.AdjustmentPolicyRefs! : r.AdjustmentPolicyRefs))];
+                        : r.Applicability;
+
+                    return CloneRule(r, applicability, overrideAdjustments ? use.AdjustmentPolicyRefs! : r.AdjustmentPolicyRefs);
+                })];
         }
 
         return new NotableDateDefinition(id, concept.DisplayName, category, nonWorking, concept.DefaultDurationDays, concept.Tags, rules);

@@ -25,14 +25,14 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// </para>
 /// <para>
 /// <strong>When to use.</strong> Load a plugin with one of the <c>LoadFrom</c> overloads, register its contributed
-/// algorithms into a <see cref="NotableDateAlgorithmRegistry" /> with <see cref="RegisterAlgorithms" />, then pass that
-/// registry to both <see cref="NotableDateResourceLoader" /> (so documents may reference the plugin's algorithm keys
-/// during validation) and the <see cref="NotableDateService" /> (so they resolve at query time). Always supply a
-/// production-grade <see cref="IPluginTrustPolicy" /> — <see cref="AllowAllPluginTrustPolicy" /> is for development
-/// only.
+/// algorithms into a <see cref="NotableDateAlgorithmRegistry" /> with one of the <c>RegisterAlgorithms</c> overloads,
+/// then pass that registry to both <see cref="NotableDateResourceLoader" /> (so documents may reference the plugin's
+/// algorithm keys during validation) and the <see cref="NotableDateService" /> (so they resolve at query time). Always
+/// supply a production-grade <see cref="IPluginTrustPolicy" /> — <see cref="AllowAllPluginTrustPolicy" /> is for
+/// development only.
 /// </para>
 /// <para>
-/// <strong>Logging.</strong> Each <c>LoadFrom</c> / <see cref="RegisterAlgorithms" /> overload accepts an optional
+/// <strong>Logging.</strong> Each <c>LoadFrom</c> / <c>RegisterAlgorithms</c> overload accepts an optional
 /// <see cref="ILogger" /> (defaulting to <see cref="NullLogger.Instance" />, so logging is opt-in). When supplied it
 /// records a trust-policy rejection (<see cref="LogLevel.Warning" />), a passed trust check (<see cref="LogLevel.Debug" />),
 /// an activated plugin (<see cref="LogLevel.Information" />), and the number of algorithms a plugin contributed (<see cref="LogLevel.Information" />).

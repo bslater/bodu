@@ -20,14 +20,14 @@ namespace Bodu.Text.Yaml.Document;
 public sealed partial class YamlDocument
     : IDisposable
 {
+    /// <summary>The row index this document's root element views; zero for a parsed document, a subtree row for a document produced by <see cref="ParseValue" />.</summary>
+    private readonly int _root;
+
     /// <summary>The flat node store, with the root at index zero; <see langword="null" /> once the document is disposed.</summary>
     private List<YamlReaderRow>? _rows;
 
     /// <summary>The decoded-string side table referenced by string scalar rows.</summary>
     private string[] _strings;
-
-    /// <summary>The row index this document's root element views; zero for a parsed document, a subtree row for a document produced by <see cref="ParseValue" />.</summary>
-    private readonly int _root;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="YamlDocument" /> class over a parsed row store.

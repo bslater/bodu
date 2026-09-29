@@ -154,7 +154,7 @@ public partial class YamlSerializerTests
 
         Assert.AreEqual("Wide: 9223372036854775814\n", text);
 
-        WideModel roundTripped = YamlSerializer.Deserialize<WideModel>(text);
+        WideModel roundTripped = YamlSerializer.Deserialize<WideModel>(text)!;
         Assert.AreEqual(model.Wide, roundTripped.Wide);
     }
 

@@ -60,7 +60,7 @@ public sealed class FormatFactoryGenerator : IIncrementalGenerator
                 attributeMetadataName,
                 predicate: static (node, _) => node is TypeDeclarationSyntax,
                 transform: (ctx, _) => CreateModel(ctx, kind))
-            .Where(static model => model is not null) !;
+            .Where(static model => model is not null)!;
 
         context.RegisterSourceOutput(models, static (productionContext, model) => Emit(productionContext, model));
     }

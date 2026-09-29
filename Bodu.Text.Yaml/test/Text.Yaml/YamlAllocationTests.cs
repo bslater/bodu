@@ -91,7 +91,7 @@ public sealed class YamlAllocationTests
     public void YamlSerializer_WhenSerializing_ShouldStayWithinAllocationBaseline()
     {
         byte[] bytes = Encoding.UTF8.GetBytes(BuildFlatDocument(SampleLineCount));
-        Dictionary<string, long> model = YamlSerializer.Deserialize<Dictionary<string, long>>(Encoding.UTF8.GetString(bytes));
+        Dictionary<string, long> model = YamlSerializer.Deserialize<Dictionary<string, long>>(Encoding.UTF8.GetString(bytes))!;
 
         long allocated = Measure(() => { _ = YamlSerializer.Serialize(model); });
 

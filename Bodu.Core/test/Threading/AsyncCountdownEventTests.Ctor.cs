@@ -17,7 +17,7 @@ public sealed partial class AsyncCountdownEventTests
         var sut = new AsyncCountdownEvent(0);
 
         Assert.IsTrue(sut.IsSet);
-        Assert.IsTrue(sut.WaitAsync().IsCompleted);
+        Assert.IsTrue(sut.WaitAsync().AsTask().IsCompleted);
     }
 
     /// <summary>

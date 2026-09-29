@@ -11,6 +11,9 @@ namespace Bodu.Text.Yaml.Writer;
 /// </summary>
 public struct YamlWriterOptions
 {
+    /// <summary>The largest indentation width the writer accepts.</summary>
+    private const int MaxIndentSize = 16;
+
     /// <summary>The configured indentation width; zero or less selects the default.</summary>
     private int _indentSize;
 
@@ -68,9 +71,6 @@ public struct YamlWriterOptions
     /// </summary>
     /// <value>The newline string used by the writer.</value>
     internal readonly string EffectiveNewLine => _newLine ?? "\n";
-
-    /// <summary>The largest indentation width the writer accepts.</summary>
-    private const int MaxIndentSize = 16;
 
     /// <summary>
     /// Validates the configured options, rejecting an unsupported newline string or an out-of-range indentation width.

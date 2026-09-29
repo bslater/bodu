@@ -4,9 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Text.Serialization;
 using System.Linq.Expressions;
 using System.Reflection;
+using Bodu.Text.Serialization;
 
 #if BENCODE
 namespace Bodu.Text.Bencode.Serialization.Metadata;
@@ -107,8 +107,9 @@ internal sealed class PropertyMetadata
     internal string WireName { get; }
 
     /// <summary>
-    /// Gets the member's position within its type's ordered member list, assigned by <see cref="TypeMetadata" />, so
-    /// per-object read buffers can be flat arrays indexed by slot instead of dictionaries keyed by metadata.
+    /// Gets or sets the member's position within its type's ordered member list, assigned by
+    /// <see cref="TypeMetadata" />, so per-object read buffers can be flat arrays indexed by slot instead of
+    /// dictionaries keyed by metadata.
     /// </summary>
     /// <value>The zero-based slot index.</value>
     internal int SlotIndex { get; set; } = -1;
@@ -248,7 +249,7 @@ internal sealed class PropertyMetadata
     /// A value-type target uses <see cref="Expression.Unbox" /> so member assignment mutates the caller's box in place
     /// — the invariant the object converter's boxed assignment phase relies on — rather than a copied value.
     /// </remarks>
-    private Expression TypedTarget(ParameterExpression target)
+    private UnaryExpression TypedTarget(ParameterExpression target)
     {
         Type declaringType = (_property?.DeclaringType ?? _field!.DeclaringType)!;
         return declaringType.IsValueType

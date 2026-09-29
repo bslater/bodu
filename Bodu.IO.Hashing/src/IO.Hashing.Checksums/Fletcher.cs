@@ -55,11 +55,11 @@ namespace Bodu.IO.Hashing.Checksums;
 public abstract class Fletcher
     : BlockNonCryptographicHashAlgorithm, IResumableHashAlgorithm
 {
-    /// <summary>The set of output widths, in bits, that the Fletcher family supports (16, 32, and 64).</summary>
-    private static readonly int[] s_validHashSizes = [16, 32, 64];
-
     /// <summary>The number of input bytes accumulated in <see cref="Append" /> before the two accumulators are reduced modulo <see cref="_modulus" />. Chosen well below the point at which the running <c>B</c> accumulator could overflow a 64-bit value for the widest variant (Fletcher-64, modulus 2^32−1: <c>B</c> grows by at most <c>N·2^32</c>, so any <c>N</c> below ~2^27 is safe), while amortizing the two modulo operations over a whole cache-friendly run instead of paying them per byte.</summary>
     private const int ReductionBatch = 4096;
+
+    /// <summary>The set of output widths, in bits, that the Fletcher family supports (16, 32, and 64).</summary>
+    private static readonly int[] s_validHashSizes = [16, 32, 64];
 
     /// <summary>The configured output width, in bits, of this instance.</summary>
     private readonly int _hashSizeBits;

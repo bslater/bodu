@@ -14,8 +14,8 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// <para>
 /// Implement this interface on the plugin's entry-point type, declare that type with an assembly-level
 /// <see cref="NotableDatePluginAttribute" />, and return each algorithm under the key its referencing rules use. A host
-/// activates the plugin through <see cref="NotableDatePluginLoader" /> and registers the algorithms with
-/// <see cref="NotableDatePluginLoader.RegisterAlgorithms" />.
+/// activates the plugin through <see cref="NotableDatePluginLoader" /> and registers the algorithms with one of its
+/// <c>RegisterAlgorithms</c> overloads.
 /// </para>
 /// </remarks>
 /// <example>

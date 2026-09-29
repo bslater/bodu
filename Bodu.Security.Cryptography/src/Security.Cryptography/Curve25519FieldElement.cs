@@ -38,6 +38,9 @@ namespace Bodu.Security.Cryptography;
 /// </remarks>
 internal readonly struct Curve25519FieldElement
 {
+    /// <summary>The number of bytes in the canonical little-endian encoding of a field element.</summary>
+    internal const int EncodedSizeInBytes = 32;
+
     /// <summary>Limb 0 of the radix-2^51 representation (bits 0–50 of the element value).</summary>
     internal readonly ulong _l0;
 
@@ -52,9 +55,6 @@ internal readonly struct Curve25519FieldElement
 
     /// <summary>Limb 4 of the radix-2^51 representation (bits 204–254 of the element value).</summary>
     internal readonly ulong _l4;
-
-    /// <summary>The number of bytes in the canonical little-endian encoding of a field element.</summary>
-    internal const int EncodedSizeInBytes = 32;
 
     /// <summary>Mask isolating the low 51 bits of a limb.</summary>
     private const ulong LimbMask = (1UL << 51) - 1;

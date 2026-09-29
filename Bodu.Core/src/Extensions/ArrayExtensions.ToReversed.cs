@@ -289,7 +289,9 @@ public static partial class ArrayExtensions
     /// validate arguments before calling this method; no bounds checking or null checking is performed here.
     /// </para>
     /// </remarks>
-    [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Aot", "IL3050",
+    [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage(
+        "Aot",
+        "IL3050",
         Justification = "The element type is obtained from an existing array instance, so its array type is already present at runtime.")]
     internal static Array ReverseArrayCore(Array source, int index, int count)
     {

@@ -282,10 +282,11 @@ public sealed partial class AsyncSemaphore
     {
         using (cancellationToken.Register(
             static state =>
-        {
-            (AsyncSemaphore? owner, LinkedListNode<TaskCompletionSource<bool>>? waiter, CancellationToken token) = ((AsyncSemaphore Owner, LinkedListNode<TaskCompletionSource<bool>> Node, CancellationToken Token))state!;
-            owner.CancelWaiter(waiter, token);
-        }, (this, node, cancellationToken)))
+            {
+                (AsyncSemaphore? owner, LinkedListNode<TaskCompletionSource<bool>>? waiter, CancellationToken token) = ((AsyncSemaphore Owner, LinkedListNode<TaskCompletionSource<bool>> Node, CancellationToken Token))state!;
+                owner.CancelWaiter(waiter, token);
+            },
+            (this, node, cancellationToken)))
         {
             // The waiter's task is completed by Release on this same semaphore, not work scheduled elsewhere, and the
             // type uses no JoinableTaskFactory, so the foreign-task deadlock VSTHRD003 guards against cannot arise.

@@ -55,7 +55,7 @@ public static partial class IEnumerableExtensions
         ICollection<T> => source,
         IReadOnlyCollection<T> => source,
         CacheEnumerable<T> => source,
-        _ => new CacheEnumerable<T>(source)
+        _ => new CacheEnumerable<T>(source),
     };
 
     /// <summary>

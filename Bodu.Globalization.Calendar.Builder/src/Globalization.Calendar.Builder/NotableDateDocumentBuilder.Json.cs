@@ -464,7 +464,7 @@ public sealed partial class NotableDateDocumentBuilder
         if (kind.Name.LocalName == "Weekly")
         {
             JsonArray days = new();
-            foreach (XElement day in kind.Elements(BuilderXml.s_namespace + "Day"))
+            foreach (XElement day in kind.Elements(BuilderXml.Namespace + "Day"))
                 days.Add(JsonValue.Create((string?)day.Attribute("dayOfWeek") ?? string.Empty));
             inner["days"] = days;
         }

@@ -18,7 +18,7 @@ public class ExcelWorkbookPropertiesTests
     [TestMethod]
     public void Empty_WhenSummaryFieldsRead_ShouldAllBeNull()
     {
-        ExcelWorkbookProperties properties = ExcelWorkbookProperties.s_empty;
+        ExcelWorkbookProperties properties = ExcelWorkbookProperties.Empty;
 
         Assert.IsNull(properties.Title);
         Assert.IsNull(properties.Subject);
@@ -38,7 +38,7 @@ public class ExcelWorkbookPropertiesTests
     [TestMethod]
     public void Empty_WhenDocumentFieldsRead_ShouldAllBeNull()
     {
-        ExcelWorkbookProperties properties = ExcelWorkbookProperties.s_empty;
+        ExcelWorkbookProperties properties = ExcelWorkbookProperties.Empty;
 
         Assert.IsNull(properties.Company);
         Assert.IsNull(properties.Manager);

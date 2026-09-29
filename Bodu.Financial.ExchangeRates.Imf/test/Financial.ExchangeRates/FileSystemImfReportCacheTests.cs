@@ -96,6 +96,40 @@ public sealed class FileSystemImfReportCacheTests
     }
 
     /// <summary>
+    /// Verifies that reading a <see langword="null" /> month through the unguarded base-type member throws
+    /// <see cref="ArgumentNullException" /> instead of failing inside the cache.
+    /// </summary>
+    [TestMethod]
+    public void TryGet_WhenKeyIsNullThroughBaseType_ShouldThrowArgumentNullException()
+    {
+        FileSystemByteCache<ImfReportMonth> cache = new FileSystemImfReportCache(CreateTempDirectory());
+
+        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = cache.TryGet(null!, TimeSpan.FromHours(1), out _);
+        });
+
+        Assert.AreEqual("key", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that storing a <see langword="null" /> month through the unguarded base-type member throws
+    /// <see cref="ArgumentNullException" /> instead of failing inside the cache.
+    /// </summary>
+    [TestMethod]
+    public void Store_WhenKeyIsNullThroughBaseType_ShouldThrowArgumentNullException()
+    {
+        FileSystemByteCache<ImfReportMonth> cache = new FileSystemImfReportCache(CreateTempDirectory());
+
+        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            cache.Store(null!, [1, 2, 3]);
+        });
+
+        Assert.AreEqual("key", ex.ParamName);
+    }
+
+    /// <summary>
     /// Verifies that a <see langword="null" /> directory falls back to a folder under the system temporary path.
     /// </summary>
     [TestMethod]

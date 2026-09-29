@@ -16,5 +16,5 @@ global using FormatOptions = Bodu.Text.Bencode.BencodeSerializerOptions;
 global using FormatReader = Bodu.Text.Bencode.Reader.Utf8BencodeReader;
 global using FormatResourceStrings = Bodu.BencodeResourceStrings;
 global using FormatSerializationException = Bodu.Text.Bencode.BencodeSerializationException;
-global using FormatWriteStack = Bodu.Text.Bencode.Serialization.BencodeWriteStack;
 global using FormatWriter = Bodu.Text.Bencode.Writer.Utf8BencodeWriter;
+global using FormatWriteStack = Bodu.Text.Bencode.Serialization.BencodeWriteStack;

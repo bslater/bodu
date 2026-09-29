@@ -67,7 +67,7 @@ public partial class YamlSerializerOptionsTests
 
         Assert.AreEqual("x: 7\n", text);
 
-        Point roundTripped = YamlSerializer.Deserialize<Point>("X: 7\n", options);
+        Point roundTripped = YamlSerializer.Deserialize<Point>("X: 7\n", options)!;
         Assert.AreEqual(7, roundTripped.X);
     }
 
