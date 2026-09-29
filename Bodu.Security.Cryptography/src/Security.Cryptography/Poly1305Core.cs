@@ -105,7 +105,7 @@ internal struct Poly1305Core
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="key" /> is not 32 bytes long.</exception>
     internal void Initialize(ReadOnlySpan<byte> key)
     {
-        ArgumentOutOfRangeException.ThrowIfNotEqual(key.Length, KeyBytes, nameof(key));
+        ThrowHelper.ThrowIfNotEqual(key.Length, KeyBytes, nameof(key));
 
         // r &= 0x0ffffffc0ffffffc0ffffffc0fffffff (RFC 8439, Section 2.5), split into limbs of 44, 44 and 42 bits.
         ulong t0 = BinaryPrimitives.ReadUInt64LittleEndian(key);
@@ -196,7 +196,7 @@ internal struct Poly1305Core
     /// </remarks>
     internal void Finish(Span<byte> tag)
     {
-        ArgumentOutOfRangeException.ThrowIfLessThan(tag.Length, TagBytes, nameof(tag));
+        ThrowHelper.ThrowIfLessThan(tag.Length, TagBytes, nameof(tag));
 
         if (_pendingLength > 0)
         {

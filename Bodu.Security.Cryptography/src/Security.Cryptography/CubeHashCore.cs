@@ -53,7 +53,7 @@ internal static partial class CubeHashCore
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="state" /> holds fewer than 32 words.</exception>
     internal static void PerformRounds(KernelKind kernel, Span<uint> state, int roundCount)
     {
-        ArgumentOutOfRangeException.ThrowIfLessThan(state.Length, StateWords, nameof(state));
+        ThrowHelper.ThrowIfLessThan(state.Length, StateWords, nameof(state));
 
         if (kernel == KernelKind.Auto)
             kernel = SelectKernel();

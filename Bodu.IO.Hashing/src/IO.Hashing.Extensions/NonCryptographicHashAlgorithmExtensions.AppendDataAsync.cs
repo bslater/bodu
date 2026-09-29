@@ -68,8 +68,8 @@ public static partial class NonCryptographicHashAlgorithmExtensions
         int bufferSize = 4096,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(algorithm);
-        ArgumentNullException.ThrowIfNull(source);
+        ThrowHelper.ThrowIfNull(algorithm);
+        ThrowHelper.ThrowIfNull(source);
 
         if (bufferSize <= 0)
         {

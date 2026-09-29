@@ -50,7 +50,7 @@ public sealed partial class RecurrenceSet : IEquatable<RecurrenceSet>
         IEnumerable<DateTime>? dates = null,
         IEnumerable<DateTime>? exceptionDates = null)
     {
-        ArgumentNullException.ThrowIfNull(rules);
+        ThrowHelper.ThrowIfNull(rules);
 
         Start = start;
         _rules = rules.ToArray();

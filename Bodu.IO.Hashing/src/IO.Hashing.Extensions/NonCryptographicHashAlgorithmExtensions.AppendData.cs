@@ -37,7 +37,7 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     /// </remarks>
     public static void AppendData(this NonCryptographicHashAlgorithm algorithm, ReadOnlySpan<byte> data)
     {
-        ArgumentNullException.ThrowIfNull(algorithm);
+        ThrowHelper.ThrowIfNull(algorithm);
 
         if (data.IsEmpty)
             return;
@@ -81,8 +81,8 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     /// </remarks>
     public static void AppendData(this NonCryptographicHashAlgorithm algorithm, Stream source, int bufferSize = 4096)
     {
-        ArgumentNullException.ThrowIfNull(algorithm);
-        ArgumentNullException.ThrowIfNull(source);
+        ThrowHelper.ThrowIfNull(algorithm);
+        ThrowHelper.ThrowIfNull(source);
 
         if (bufferSize <= 0)
         {
