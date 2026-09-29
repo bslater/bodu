@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Buffers;
+
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
@@ -282,12 +284,7 @@ internal static partial class MLKemEngine
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(rho, 32);
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(matrix, parameters.K * parameters.K * N);
 
-        int k = parameters.K;
-        for (int i = 0; i < k; i++)
-        {
-            for (int j = 0; j < k; j++)
-                SampleNtt(rho, (byte)j, (byte)i, matrix.Slice(((i * k) + j) * N, N));
-        }
+        SampleMatrix(parameters, rho, matrix);
     }
 
     /// <summary>
@@ -394,34 +391,41 @@ internal static partial class MLKemEngine
 
         // The per-rank secret (ŝ) and public (t̂) vectors are held as flat stack workspaces (k ≤ 4, so k·N ≤ 1024
         // ints) rather than jagged heap arrays, keeping the secret vector off the managed heap for its whole lifetime.
-        Span<int> sHat = stackalloc int[k * N];
-        Span<int> tHat = stackalloc int[k * N];
+        // They are adjacent, so their noise is sampled as one vector: s[i] ← CBD_η₁(PRF(σ, i)) and
+        // e[i] ← CBD_η₁(PRF(σ, k + i)).
+        Span<int> noise = stackalloc int[2 * k * N];
+        Span<int> sHat = noise[..(k * N)];
+        Span<int> tHat = noise[(k * N)..];
+        SampleNoiseVector(parameters.Eta1, sigma, 0, noise);
 
-        // ŝ = NTT(s) with s[i] ← CBD_η₁(PRF(σ, i)).
-        for (int i = 0; i < k; i++)
+        // ŝ = NTT(s), and NTT(e) in t̂.
+        for (int offset = 0; offset < noise.Length; offset += N)
+            Ntt(noise.Slice(offset, N));
+
+        // Â, into the caller's span, or into a pooled one when the caller does not keep it; it is public either way.
+        int[]? rentedMatrix = null;
+        if (matrix.IsEmpty)
         {
-            Span<int> sHatI = sHat.Slice(i * N, N);
-            SamplePolyCbd(parameters.Eta1, sigma, (byte)i, sHatI);
-            Ntt(sHatI);
+            rentedMatrix = ArrayPool<int>.Shared.Rent(k * k * N);
+            matrix = rentedMatrix.AsSpan(0, k * k * N);
         }
 
-        // t̂[i] = Σⱼ Â[i][j] ∘ ŝ[j] + NTT(e[i]) with e[i] ← CBD_η₁(PRF(σ, k + i)).
-        Span<int> aRow = stackalloc int[N];
+        SampleMatrix(parameters, rho, matrix);
+
+        // t̂[i] = Σⱼ Â[i][j] ∘ ŝ[j] + NTT(e[i]).
         Span<int> product = stackalloc int[N];
         for (int i = 0; i < k; i++)
         {
             Span<int> tHatI = tHat.Slice(i * N, N);
-            SamplePolyCbd(parameters.Eta1, sigma, (byte)(k + i), tHatI);
-            Ntt(tHatI);
-
             for (int j = 0; j < k; j++)
             {
-                Span<int> entry = matrix.IsEmpty ? aRow : matrix.Slice(((i * k) + j) * N, N);
-                SampleNtt(rho, (byte)j, (byte)i, entry);
-                MultiplyNtt(entry, sHat.Slice(j * N, N), product);
+                MultiplyNtt(matrix.Slice(((i * k) + j) * N, N), sHat.Slice(j * N, N), product);
                 AddInto(tHatI, product);
             }
         }
+
+        if (rentedMatrix is not null)
+            ArrayPool<int>.Shared.Return(rentedMatrix);
 
         for (int i = 0; i < k; i++)
         {
@@ -437,12 +441,10 @@ internal static partial class MLKemEngine
             sHat.CopyTo(secretVector);
 
         // Zero every scratch buffer before returning: sHat is the secret vector, and product/tHat are derived from it.
-        // aRow and tHat are ultimately public, but clearing them too keeps a single uniform rule for the method.
+        // tHat is ultimately public, but clearing it too keeps a single uniform rule for the method.
         CryptographyHelper.Clear(rhoSigma);
-        CryptographyHelper.Clear(aRow);
         CryptographyHelper.Clear(product);
-        CryptographyHelper.Clear(sHat);
-        CryptographyHelper.Clear(tHat);
+        CryptographyHelper.Clear(noise);
     }
 
     /// <summary>
@@ -467,16 +469,16 @@ internal static partial class MLKemEngine
 
         // ŷ[i] = NTT(y[i]) with y[i] ← CBD_η₁(PRF(r, i)). Held flat on the stack (k·N ≤ 1024 ints).
         Span<int> yHat = stackalloc int[k * N];
-        for (int i = 0; i < k; i++)
-        {
-            Span<int> yHatI = yHat.Slice(i * N, N);
-            SamplePolyCbd(parameters.Eta1, r, (byte)i, yHatI);
-            Ntt(yHatI);
-        }
+        SampleNoiseVector(parameters.Eta1, r, 0, yHat);
+        for (int offset = 0; offset < yHat.Length; offset += N)
+            Ntt(yHat.Slice(offset, N));
+
+        // e₁[i] ← CBD_η₂(PRF(r, k + i)) and e₂ ← CBD_η₂(PRF(r, 2k)), sampled together.
+        Span<int> noise = stackalloc int[(k + 1) * N];
+        SampleNoiseVector(parameters.Eta2, r, k, noise);
 
         Span<int> product = stackalloc int[N];
         Span<int> u = stackalloc int[N];
-        Span<int> noise = stackalloc int[N];
 
         // u[i] = InvNTT(Σⱼ Âᵀ[i][j] ∘ ŷ[j]) + e₁[i], where Âᵀ[i][j] = Â[j][i].
         for (int i = 0; i < k; i++)
@@ -489,8 +491,7 @@ internal static partial class MLKemEngine
             }
 
             InvNtt(u);
-            SamplePolyCbd(parameters.Eta2, r, (byte)(k + i), noise);
-            AddInto(u, noise);
+            AddInto(u, noise.Slice(i * N, N));
 
             CompressEncode(parameters.Du, u, ciphertext.Slice(i * 32 * parameters.Du, 32 * parameters.Du));
         }
@@ -504,8 +505,7 @@ internal static partial class MLKemEngine
         }
 
         InvNtt(v);
-        SamplePolyCbd(parameters.Eta2, r, (byte)(2 * k), noise);
-        AddInto(v, noise);
+        AddInto(v, noise.Slice(k * N, N));
 
         Span<int> message = stackalloc int[N];
         ByteDecode(1, m, message);

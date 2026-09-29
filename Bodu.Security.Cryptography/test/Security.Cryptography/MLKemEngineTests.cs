@@ -38,7 +38,9 @@ public partial class MLKemEngineTests
         };
 
     /// <summary>
-    /// Returns polynomials whose coefficients sit at the ends of [0, q) and at a few patterns, then seeded ones.
+    /// Returns polynomials whose coefficients sit at the ends of [0, q) and at a few patterns — among them q − 1 and 0
+    /// alternating in runs of every power of two from 2 to 128, which pairs them differently in each butterfly layer —
+    /// then seeded ones.
     /// </summary>
     /// <returns>The polynomials.</returns>
     private static IEnumerable<int[]> Polynomials()
@@ -49,8 +51,25 @@ public partial class MLKemEngineTests
         yield return Enumerable.Range(0, MLKemEngine.N).Select(i => i == 0 ? 1 : 0).ToArray();
         yield return Enumerable.Range(0, MLKemEngine.N).Select(i => i == MLKemEngine.N - 1 ? Q - 1 : 0).ToArray();
 
+        for (int shift = 1; shift < 8; shift++)
+            yield return Enumerable.Range(0, MLKemEngine.N).Select(i => ((i >> shift) & 1) == 0 ? Q - 1 : 0).ToArray();
+
         var random = new Random(0x0203_0001);
         for (int iteration = 0; iteration < 200; iteration++)
             yield return Enumerable.Range(0, MLKemEngine.N).Select(_ => random.Next(Q)).ToArray();
+    }
+
+    /// <summary>
+    /// Parses a kernel's name, reporting the test inconclusive when the processor cannot run the kernel.
+    /// </summary>
+    /// <param name="name">The kernel's name.</param>
+    /// <returns>The kernel.</returns>
+    private static MLKemEngine.KernelKind ParseSupportedKernel(string name)
+    {
+        MLKemEngine.KernelKind kernel = Enum.Parse<MLKemEngine.KernelKind>(name);
+        if (!MLKemEngine.IsSupported(kernel))
+            Assert.Inconclusive($"The {name} kernel cannot run on this processor.");
+
+        return kernel;
     }
 }

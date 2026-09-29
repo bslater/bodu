@@ -14,13 +14,20 @@ namespace Bodu.Security.Cryptography;
 /// Provides the <c>Keccak-f[1600]</c> permutation (NIST FIPS 202) over a 25-lane 64-bit state, shared by the SHA-3,
 /// SHAKE, and the ML-KEM / ML-DSA sampling pipelines.
 /// </summary>
-internal static class KeccakPermutation
+internal static partial class KeccakPermutation
 {
     /// <summary>The number of 64-bit lanes in the Keccak-f[1600] state.</summary>
     internal const int StateWords = 25;
 
-    /// <summary>Round constants for the ι (iota) step — 24 values, one per round.</summary>
-    private static readonly ulong[] s_roundConstants =
+    /// <summary>
+    /// Gets the round constants for the ι (iota) step — 24 values, one per round.
+    /// </summary>
+    /// <remarks>
+    /// The span reads the constants from the assembly's data, so reading them initializes no class and calls no helper:
+    /// the four-way kernel, whose state vectors are all live when it first reads them, would otherwise keep the state
+    /// on the stack for all 24 rounds.
+    /// </remarks>
+    private static ReadOnlySpan<ulong> RoundConstants =>
     [
         0x0000000000000001UL, 0x0000000000008082UL, 0x800000000000808AUL, 0x8000000080008000UL,
         0x000000000000808BUL, 0x0000000080000001UL, 0x8000000080008081UL, 0x8000000000008009UL,
@@ -123,7 +130,7 @@ internal static class KeccakPermutation
             var b24 = (a21 ^ d1).RotateBitsLeftUnchecked(2);
 
             // χ and ι: each output lane mixes the next two in its row; the round constant enters lane (0, 0).
-            a00 = b00 ^ (~b01 & b02) ^ s_roundConstants[round];
+            a00 = b00 ^ (~b01 & b02) ^ RoundConstants[round];
             a01 = b01 ^ (~b02 & b03);
             a02 = b02 ^ (~b03 & b04);
             a03 = b03 ^ (~b04 & b00);
