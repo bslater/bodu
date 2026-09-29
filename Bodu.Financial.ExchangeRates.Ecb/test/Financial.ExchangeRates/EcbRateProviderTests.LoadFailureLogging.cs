@@ -36,6 +36,7 @@ public partial class EcbRateProviderTests
     /// rethrown, without being relabelled as an ordinary feed-load failure.
     /// </summary>
     [TestMethod]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2201:Do not raise reserved exception types", Justification = "The NullReferenceException stands in for a provider bug, the one failure the provider must log as unexpected rather than relabel as a load failure.")]
     public async Task LoadRangeAsync_WhenSourceThrowsUnexpectedException_ShouldLogUnexpectedErrorAndRethrow()
     {
         (EcbRateProvider provider, CapturingLogger logger) = CreateThrowing(new NullReferenceException());

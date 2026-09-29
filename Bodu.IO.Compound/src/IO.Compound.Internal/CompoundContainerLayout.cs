@@ -634,7 +634,7 @@ internal static partial class CompoundContainerLayout
     private sealed class Entry
     {
         /// <summary>The earliest instant representable as a Windows FILETIME.</summary>
-        private static readonly DateTime FileTimeEpoch = new(1601, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        private static readonly DateTime s_fileTimeEpoch = new(1601, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
         /// <summary>
         /// Gets or sets the entry name.
@@ -766,7 +766,7 @@ internal static partial class CompoundContainerLayout
         /// <returns>The Windows FILETIME, or <c>0</c>.</returns>
         private static long ToFileTime(DateTimeOffset? value)
         {
-            if (value is not { } time || time.UtcDateTime < FileTimeEpoch)
+            if (value is not { } time || time.UtcDateTime < s_fileTimeEpoch)
                 return 0;
 
             return time.ToFileTime();

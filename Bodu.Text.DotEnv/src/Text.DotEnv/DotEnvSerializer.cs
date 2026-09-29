@@ -149,7 +149,7 @@ public static partial class DotEnvSerializer
 
         List<KeyValuePair<string, string>> entries = ReadEntries(utf8DotEnv);
 
-        return (T)ReadValue(entries, typeof(T), effective) !;
+        return (T)ReadValue(entries, typeof(T), effective)!;
     }
 
     /// <summary>

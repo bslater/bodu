@@ -4,8 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Text.Serialization;
 using System.Reflection;
+using Bodu.Text.Serialization;
 
 #if BENCODE
 namespace Bodu.Text.Bencode.Serialization.Converters;

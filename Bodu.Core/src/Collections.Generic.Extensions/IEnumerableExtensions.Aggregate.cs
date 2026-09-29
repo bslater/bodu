@@ -128,6 +128,7 @@ public static partial class IEnumerableExtensions
     ///]]>
     /// </code>
     /// </example>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1414:Tuple types in signatures should have element names", Justification = "The elements are positional: element N is the final value of accumulator N (seedN and funcN), and callers deconstruct the result; names would only restate the position.")]
     public static (T1, T2) Aggregate<TSource, T1, T2>(
         this IEnumerable<TSource> source,
         T1 seed1,
@@ -180,6 +181,7 @@ public static partial class IEnumerableExtensions
     /// checked operation so overflow throws rather than wraps.
     /// </para>
     /// </remarks>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1414:Tuple types in signatures should have element names", Justification = "The elements are positional: element N is the final value of accumulator N (seedN and funcN), and callers deconstruct the result; names would only restate the position.")]
     public static (T1, T2) Aggregate<TSource, T1, T2>(
         this IEnumerable<TSource> source,
         T1 seed1,
@@ -324,6 +326,7 @@ public static partial class IEnumerableExtensions
     ///]]>
     /// </code>
     /// </example>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1414:Tuple types in signatures should have element names", Justification = "The elements are positional: element N is the final value of accumulator N (seedN and funcN), and callers deconstruct the result; names would only restate the position.")]
     public static (T1, T2, T3) Aggregate<TSource, T1, T2, T3>(
         this IEnumerable<TSource> source,
         T1 seed1,
@@ -387,6 +390,7 @@ public static partial class IEnumerableExtensions
     /// throws rather than wraps.
     /// </para>
     /// </remarks>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1414:Tuple types in signatures should have element names", Justification = "The elements are positional: element N is the final value of accumulator N (seedN and funcN), and callers deconstruct the result; names would only restate the position.")]
     public static (T1, T2, T3) Aggregate<TSource, T1, T2, T3>(
         this IEnumerable<TSource> source,
         T1 seed1,

@@ -202,7 +202,7 @@ public class StreamAeadKnownAnswerTests
         AeadKnownAnswer vector = SecretboxVector();
 
         byte[] boduCombined = new byte[vector.Plaintext.Length + 16];
-        using (var enc = new XSalsa20Poly1305(vector.Key, vector.Nonce))
+        using (var enc = new XSalsa20Poly1305(vector.Key!, vector.Nonce))
             enc.Encrypt(vector.Plaintext, boduCombined);
 
         byte[] libsodiumCombined = new byte[boduCombined.Length];
@@ -281,8 +281,8 @@ public class StreamAeadKnownAnswerTests
     private static IStreamAeadTransform CreateTransform(AeadKnownAnswer vector) =>
         vector.Algorithm switch
         {
-            AlgorithmXChaCha20Poly1305 => new XChaCha20Poly1305(vector.Key, vector.Nonce),
-            AlgorithmXSalsa20Poly1305Secretbox => new XSalsa20Poly1305(vector.Key, vector.Nonce),
+            AlgorithmXChaCha20Poly1305 => new XChaCha20Poly1305(vector.Key!, vector.Nonce),
+            AlgorithmXSalsa20Poly1305Secretbox => new XSalsa20Poly1305(vector.Key!, vector.Nonce),
             _ => throw new NotSupportedException(vector.Algorithm),
         };
 

@@ -154,7 +154,7 @@ public static partial class IniSerializer
 
         IniNormalizedDocument document = IniNormalizedDocument.Parse(utf8Ini, IniReaderOptions.Default, effective.ToDocumentOptions());
 
-        return (T)ReadValue(document, typeof(T), effective) !;
+        return (T)ReadValue(document, typeof(T), effective)!;
     }
 
     /// <summary>

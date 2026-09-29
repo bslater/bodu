@@ -19,7 +19,7 @@ public sealed partial class AsyncReaderWriterLockTests
         using var cts = new CancellationTokenSource();
         cts.Cancel();
 
-        ValueTask<AsyncReaderWriterLock.Releaser> reader = sut.ReaderAsync(cts.Token);
+        Task<AsyncReaderWriterLock.Releaser> reader = sut.ReaderAsync(cts.Token).AsTask();
 
         Assert.IsTrue(reader.IsCompletedSuccessfully);
         reader.Result.Dispose();
@@ -59,7 +59,7 @@ public sealed partial class AsyncReaderWriterLockTests
         using var cts = new CancellationTokenSource();
         cts.Cancel();
 
-        ValueTask<AsyncReaderWriterLock.Releaser> writer = sut.WriterAsync(cts.Token);
+        Task<AsyncReaderWriterLock.Releaser> writer = sut.WriterAsync(cts.Token).AsTask();
 
         Assert.IsTrue(writer.IsCompletedSuccessfully);
         writer.Result.Dispose();

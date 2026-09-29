@@ -22,7 +22,7 @@ namespace Bodu.Financial.ExchangeRates;
 public readonly record struct CurrencyPair
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="CurrencyPair" /> class.
+    /// Initializes a new instance of the <see cref="CurrencyPair" /> struct.
     /// </summary>
     /// <param name="from">The source currency.</param>
     /// <param name="to">The destination currency.</param>

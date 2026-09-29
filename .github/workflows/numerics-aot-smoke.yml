@@ -27,14 +27,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v7
 
     - name: Dotnet Setup
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@v6
       with:
-        dotnet-version: |
-          8.x
-          10.x
+        # The .NET 10 SDK is the exact version global.json pins; .NET 8 serves the net8.0 leg.
+        global-json-file: global.json
+        dotnet-version: 8.x
 
     - name: Install NativeAOT prerequisites
       run: sudo apt-get update && sudo apt-get install -y clang zlib1g-dev

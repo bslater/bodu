@@ -32,7 +32,7 @@ public sealed class RateCacheBaseLockingTests
     [TestMethod]
     public async Task StoreFetchedRangeAsync_WhenSyncStoreHoldsSamePairLock_ShouldWaitForRelease()
     {
-        var cache = new GatedWriteRateCache("test");
+        using var cache = new GatedWriteRateCache("test");
         var date = new DateOnly(2026, 6, 1);
 
         // The sync store enters WriteState and blocks on the gate while holding the pair lock.
@@ -62,7 +62,7 @@ public sealed class RateCacheBaseLockingTests
     [TestMethod]
     public async Task StoreFetchedRangeAsync_WhenDifferentPairHoldsLock_ShouldProceedConcurrently()
     {
-        var cache = new GatedWriteRateCache("test");
+        using var cache = new GatedWriteRateCache("test");
         var other = new CurrencyPair(CurrencyCode.EUR, CurrencyCode.USD);
         var date = new DateOnly(2026, 6, 1);
 
@@ -117,7 +117,7 @@ public sealed class RateCacheBaseLockingTests
     /// lock.
     /// </summary>
     private sealed class GatedWriteRateCache
-        : RateCacheBase<RateCacheOptions>
+        : RateCacheBase<RateCacheOptions>, IDisposable
     {
         /// <summary>The stored state per pair.</summary>
         private readonly Dictionary<CurrencyPair, CachePairState> _store = new();
@@ -147,6 +147,13 @@ public sealed class RateCacheBaseLockingTests
 
         /// <summary>Releases every blocked write.</summary>
         public void ReleaseWrites() => _gate.Set();
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            _gate.Dispose();
+            WriteEntered.Dispose();
+        }
 
         /// <inheritdoc />
         internal override CachePairState ReadState(CurrencyPair pair)

@@ -224,6 +224,7 @@ internal static class CompressedRtf
     /// Creates the truncated-or-unknown-header exception for the consuming format.
     /// </summary>
     /// <returns>The exception to throw.</returns>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1859:Use concrete types when possible for improved performance", Justification = "This source compiles into both the .msg and .pst readers, which throw different concrete types; the helper only feeds a throw, so a narrower return type would buy nothing.")]
     private static Exception MalformedHeader() =>
 #if MSG
         new OutlookMsgFormatException(OutlookMsgResourceStrings.Format_Invalid_RtfCompressedHeader);
@@ -235,6 +236,7 @@ internal static class CompressedRtf
     /// Creates the declared-sizes-escape-the-payload exception for the consuming format.
     /// </summary>
     /// <returns>The exception to throw.</returns>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1859:Use concrete types when possible for improved performance", Justification = "This source compiles into both the .msg and .pst readers, which throw different concrete types; the helper only feeds a throw, so a narrower return type would buy nothing.")]
     private static Exception MalformedData() =>
 #if MSG
         new OutlookMsgFormatException(OutlookMsgResourceStrings.Format_Invalid_RtfCompressedData);
@@ -246,6 +248,7 @@ internal static class CompressedRtf
     /// Creates the format's over-limit exception for a declared or produced size above the caller's ceiling.
     /// </summary>
     /// <returns>The exception to throw.</returns>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1859:Use concrete types when possible for improved performance", Justification = "This source compiles into both the .msg and .pst readers, which throw different concrete types; the helper only feeds a throw, so a narrower return type would buy nothing.")]
     private static Exception TooLarge() =>
 #if MSG
         new OutlookMsgFormatException(OutlookMsgResourceStrings.Format_Invalid_RtfCompressedTooLarge);
@@ -257,6 +260,7 @@ internal static class CompressedRtf
     /// Creates the checksum-mismatch exception for the consuming format.
     /// </summary>
     /// <returns>The exception to throw.</returns>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1859:Use concrete types when possible for improved performance", Justification = "This source compiles into both the .msg and .pst readers, which throw different concrete types; the helper only feeds a throw, so a narrower return type would buy nothing.")]
     private static Exception ChecksumMismatch() =>
 #if MSG
         new OutlookMsgFormatException(OutlookMsgResourceStrings.Format_Invalid_RtfCompressedCrc);

@@ -41,7 +41,7 @@ public static partial class DateTimeExtensions
             DateTimeKind.Local => dateTime.ToUniversalTime(),
             _ => throw new ArgumentException(
                 string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_ValueForOperation, nameof(DateTime.Kind), $"{nameof(DateTimeKind.Utc)} or {nameof(DateTimeKind.Local)}", dateTime.Kind),
-                nameof(dateTime))
+                nameof(dateTime)),
         };
 
         return DateTime.UtcNow - utcInput;

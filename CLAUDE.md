@@ -101,7 +101,7 @@ on .NET 10. They therefore rotate through the extension under `NET10_0_OR_GREATE
 generated code on both legs (`DOTNET_JitDisasm` with `DOTNET_TieredCompilation=0`), and switch on the
 framework only where the two legs actually differ.
 
-Compiling and testing the solution requires the **.NET 10 SDK**, pinned via the repository-root `global.json` (`10.0.100`, `rollForward: latestMinor`): the sources use C# 14 language features and the `.slnx` solution format, neither of which the 8.0 SDK supports. The separate `Bodu.CodeStyle` solution pins its own SDK via `Bodu.CodeStyle/global.json` and is unaffected.
+Compiling and testing the solution requires the **.NET 10 SDK**: the sources use C# 14 language features and the `.slnx` solution format, neither of which the 8.0 SDK supports. The repository-root `global.json` pins the exact SDK version, and CI installs that version too (see **Reproducing what CI runs** below). Its `rollForward: patch` accepts a later patch in the same feature band only when the pinned version itself is not installed. The separate `Bodu.CodeStyle` solution pins its own SDK via `Bodu.CodeStyle/global.json` and is unaffected.
 
 Nullable reference types are enabled everywhere. `ImplicitUsings` is enabled across all projects, including `Bodu.Core`. Test projects have `ImplicitUsings` enabled and pre-import MSTest via `<Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />`. `Bodu.Core/test/Bodu.Core.Test.csproj` additionally pre-imports `Bodu.Test.Assertions.ExceptionAssert` statically so the shared `AssertGuard(...)` call resolves unqualified across all `ThrowHelperTests.*.cs` partial files.
 
@@ -154,7 +154,7 @@ See **Test Tiers** below for the category convention each runsettings file appli
 
 `test.runsettings` enables parallel execution (`MaxCpuCount=0`) and disables AppDomains.
 
-**Reproducing what CI runs.** Three differences make a green local run a weaker signal than it looks,
+**Reproducing what CI runs.** Five differences make a green local run a weaker signal than it looks,
 and the first two have bitten:
 
 - **CI uses `test.runsettings`, not `bvt.runsettings`.** `test.runsettings` excludes only `Stress`
@@ -169,6 +169,26 @@ and the first two have bitten:
 - **Some code runs only on ARM64.** `build-test.yml`'s `build-test-arm64` job runs the two
   cryptography test projects on GitHub's hosted ARM64 runner, the only place the Argon2 AdvSimd shim
   executes; on x64 its tests report inconclusive. A green x64 run says nothing about that path.
+- **CI treats warnings as errors.** `build-test.yml` builds every test project with
+  `-p:TreatWarningsAsErrors=true`, so any compiler or analyzer warning — StyleCop, Roslynator, the .NET
+  analyzers, the BODU XML-doc rules — fails the pull request, and `release.yml`'s test gate builds the
+  same way, so the same warning stops a release. The release's pack step goes further and also fails on
+  NuGet restore and pack warnings, so a newly published advisory for a dependency stops a release until
+  the dependency is updated or that advisory is suppressed with a `NuGetAuditSuppress` item giving the
+  reason. A local build still reports all of these as warnings. To match CI:
+  `dotnet build <project> -c Release -p:TreatWarningsAsErrors=true`, and for the release's pack,
+  `dotnet pack bodu.slnx -c Release -p:BoduShipping=true -p:TreatWarningsAsErrors=true`. A deliberate
+  finding is suppressed at its site with a `Justification`, as the existing suppressions are.
+- **CI builds with the SDK that `global.json` pins.** Every workflow except `Bodu.CodeStyle`'s,
+  which builds against that solution's own `global.json`, installs exactly the pinned version, so
+  CI's analyzers change only when the pin does. Dependabot (`.github/dependabot.yml`) proposes each
+  new .NET 10 SDK as a pull request that bumps the pin, so any warning the new analyzers add fails
+  that pull request and is fixed there. A local build uses the pinned SDK once it is installed; a
+  different one can disagree with CI in either direction (`CA1873`, for one, reports different
+  sites under 10.0.100 and 10.0.401).
+  `dotnet --version` at the repository root names the SDK in use, and
+  `dotnet-install.sh --jsonfile global.json --install-dir <dir>` installs the pinned one beside the
+  others.
 
 **Restore and build must agree on the configuration.** Fourteen projects — the benchmarks, the AOT
 smoke app, the `Calendar.Tool` / `.Build` toolchain, and two samples — are excluded from the *Debug*
@@ -215,7 +235,7 @@ A plain `dotnet restore` rewrites the assets files in place and clears it; delet
 
 ### SDK Bootstrap (Claude Code on the web)
 
-`.claude/hooks/session-start.sh` installs `dotnet-sdk-10.0` from `apt` on session start when running in the remote Claude Code on the web environment (`CLAUDE_CODE_REMOTE=true`). It is idempotent — when a .NET 10 SDK is already installed it exits immediately, so resume / clear / compact sessions pay no extra cost. The repository-root `global.json` pins SDK resolution to the 10.0.1xx band, so once the hook has run, `dotnet build` / `dotnet test` pick up the installed SDK 10 automatically.
+`.claude/hooks/session-start.sh` installs the SDK that `global.json` pins, and the .NET 8 runtime the `net8.0` test legs run on, on session start when running in the remote Claude Code on the web environment (`CLAUDE_CODE_REMOTE=true`). It uses Microsoft's `dotnet-install.sh` rather than `apt`, because Ubuntu's archive carries only the 10.0.1xx feature band, and installs into the installation the `dotnet` on `PATH` already uses. It is idempotent — when `dotnet --version` at the repository root resolves the pinned SDK and a .NET 8 runtime is present it installs nothing, so resume / clear / compact sessions pay no extra cost, and a new pin is installed by the next session start.
 
 The hook also repairs the `dotnet-dnceng` plugin that `.claude/settings.json` enables from the `dotnet/arcade-skills` marketplace (`extraKnownMarketplaces` / `enabledPlugins`): the upstream plugin manifest currently fails Claude Code's path validation (its `agents` entry lacks the required `./` prefix), so the hook patches the cached marketplace clone and installs the plugin. Its skills then load from the next session in the container. The repair is a no-op once the manifest is fixed upstream and can be removed at that point.
 
@@ -514,6 +534,7 @@ This convention is the dotted-flat reading of `dotnet_style_namespace_match_fold
 
 - Private instance fields: `_camelCase`.
 - Private static fields: `s_camelCase`.
+- Internal (and any other non-private) fields: `PascalCase`, with no prefix. StyleCop's SA1304/SA1307 require it, so `.editorconfig` applies the `_` and `s_` rules to private fields only.
 - Prefer `var` where the type is obvious; see **Implicit Typing (`var`)** under C# Code Style Guidelines for the decision cascade.
 - No primary constructors on documented public types (they conflict with `<param>` XML documentation).
 - Expression-bodied members for methods, properties, and accessors with a small implementation footprint — see **Expression-Bodied Members** below for the required layout.

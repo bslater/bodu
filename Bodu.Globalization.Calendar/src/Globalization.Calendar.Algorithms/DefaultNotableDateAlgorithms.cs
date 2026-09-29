@@ -37,7 +37,7 @@ internal static class DefaultNotableDateAlgorithms
     /// Builds the registry, registering every built-in algorithm under its key.
     /// </summary>
     /// <returns>The populated registry.</returns>
-    private static INotableDateAlgorithmRegistry Build()
+    private static NotableDateAlgorithmRegistry Build()
     {
         NotableDateAlgorithmRegistry registry = new();
 

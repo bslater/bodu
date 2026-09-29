@@ -30,12 +30,15 @@ public sealed partial class ConcurrentHashSet<T>
     private sealed class Core
     {
         /// <summary>The permanent sentinel for bucket 0 (split-order key 0) — the entry point of the list. Never marked or removed.</summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Member of a private nested type, so only the enclosing set can reach it; its lock-free algorithm reads the node state directly and updates the mutable fields through Volatile and Interlocked by-reference operations, which require fields.")]
         internal readonly Node _head;
 
         /// <summary>The power-of-two bucket shortcut array. Slots are published via CAS; the array reference itself is replaced by <see cref="ConcurrentHashSet{T}.TryGrow" /> via CAS when the set doubles.</summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Member of a private nested type, so only the enclosing set can reach it; its lock-free algorithm reads the node state directly and updates the mutable fields through Volatile and Interlocked by-reference operations, which require fields.")]
         internal Node?[] _buckets;
 
         /// <summary>The number of elements in this generation, maintained with <see cref="Interlocked" /> increments and decrements after successful insert and mark operations.</summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Member of a private nested type, so only the enclosing set can reach it; its lock-free algorithm reads the node state directly and updates the mutable fields through Volatile and Interlocked by-reference operations, which require fields.")]
         internal int _count;
 
         /// <summary>

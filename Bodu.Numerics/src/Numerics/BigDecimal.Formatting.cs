@@ -126,14 +126,18 @@ public readonly partial struct BigDecimal
         if (!precisionText.IsEmpty)
         {
             if (!int.TryParse(precisionText, NumberStyles.None, CultureInfo.InvariantCulture, out places))
+            {
                 throw new FormatException(
                     string.Format(CultureInfo.CurrentCulture, NumericsResourceStrings.Format_Invalid_FractionFormat, "F" + precisionText.ToString()));
+            }
 
             // An attacker-sized precision would drive the trailing-zero re-expansion below into an unbounded
             // BigInteger.Pow; cap it at the same magnitude the parse path allows for exponents.
             if (places > MaxNegativeScaleMagnitude)
+            {
                 throw new FormatException(
                     string.Format(CultureInfo.CurrentCulture, NumericsResourceStrings.Format_Invalid_BigDecimalPrecision, places, MaxNegativeScaleMagnitude));
+            }
         }
 
         BigDecimal rounded = Round(this, places, MidpointRounding.ToEven);

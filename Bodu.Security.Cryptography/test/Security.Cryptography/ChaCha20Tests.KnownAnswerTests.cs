@@ -85,7 +85,7 @@ public sealed partial class ChaCha20Tests
     public void CreateEncryptor_WhenGivenRfc8439Vector_ShouldMatchExpectedCiphertext(StreamCipherKnownAnswer vector)
     {
         using var cipher = new ChaCha20 { InitialCounter = vector.Counter };
-        using ICryptoTransform encryptor = cipher.CreateEncryptor(vector.Key, vector.Nonce);
+        using ICryptoTransform encryptor = cipher.CreateEncryptor(vector.Key!, vector.Nonce);
         byte[] actual = encryptor.TransformFinalBlock(vector.Plaintext, 0, vector.Plaintext.Length);
 
         CollectionAssert.AreEqual(vector.Ciphertext, actual, $"ChaCha20 ciphertext mismatch for {vector.Name}.");
@@ -104,7 +104,7 @@ public sealed partial class ChaCha20Tests
     public void CreateDecryptor_WhenGivenRfc8439Vector_ShouldRecoverPlaintext(StreamCipherKnownAnswer vector)
     {
         using var cipher = new ChaCha20 { InitialCounter = vector.Counter };
-        using ICryptoTransform decryptor = cipher.CreateDecryptor(vector.Key, vector.Nonce);
+        using ICryptoTransform decryptor = cipher.CreateDecryptor(vector.Key!, vector.Nonce);
         byte[] actual = decryptor.TransformFinalBlock(vector.Ciphertext, 0, vector.Ciphertext.Length);
 
         CollectionAssert.AreEqual(vector.Plaintext, actual, $"ChaCha20 plaintext recovery mismatch for {vector.Name}.");

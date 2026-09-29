@@ -42,9 +42,10 @@ on:
       packages:
         description: >-
           Optional space- or comma-separated package ids to publish instead of the whole manifest
-          (e.g. "Bodu.Core Bodu.IO.Biff"). Every id must appear in bld/release-manifest.txt.
-          Leave empty to stage the full manifest. Ignored for tag runs, which always release the
-          whole manifest, each package at the version bld/Versioning.props computes for it.
+          (e.g. "Bodu.Core Bodu.IO.Biff"). Every id must appear in bld/release-manifest.txt, and
+          wildcards such as Bodu.* are rejected. Leave empty to stage the full manifest. Ignored
+          for tag runs, which always release the whole manifest, each package at the version
+          bld/Versioning.props computes for it.
         type: string
         default: ''
 
@@ -77,17 +78,18 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
           submodules: recursive
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v6
         with:
-          dotnet-version: |
-            8.0.x
-            10.0.x
+          # The .NET 10 SDK is the exact version global.json pins, so an SDK upgrade is a deliberate
+          # change. The .NET 8 SDK beside it builds the Bodu.CodeStyle solution and runs the net8.0 legs.
+          global-json-file: global.json
+          dotnet-version: 8.0.x
 
       - name: Pack Bodu.CodeStyle.XmlDocumentation analyzer (local feed)
         working-directory: Bodu.CodeStyle
@@ -141,9 +143,12 @@ jobs:
 
       - name: Build
         run: |
+          # Warnings are errors, as in build-test.yml: a compiler or analyzer warning in the code being
+          # released stops the release here, before anything is signed, packed or published. The pack
+          # step treats warnings as errors as well, which also covers NuGet restore and pack warnings.
           for proj in $TEST_PROJECTS; do
             echo "::group::Build $proj"
-            dotnet build "$proj" --configuration Release --no-restore
+            dotnet build "$proj" --configuration Release --no-restore -p:TreatWarningsAsErrors=true
             echo "::endgroup::"
           done
 
@@ -158,6 +163,11 @@ jobs:
           # reported test failure - an aborted or crashed test host, or a run that discovers no
           # tests at all, exits non-zero with nothing named. Without this summary the only
           # evidence is "exit code 1" with the responsible project scrolled out of reach.
+          #
+          # The TRX logger takes LogFilePrefix, not LogFileName: every project runs once per
+          # target framework, and with a fixed file name the second run overwrites the first's
+          # TRX, so the uploaded record held only one framework's results. The prefix form writes
+          # <name>_<framework>_<timestamp>.trx, one file per run.
           status=0
           failed=""
 
@@ -170,7 +180,7 @@ jobs:
               --no-build \
               --settings test.runsettings \
               --results-directory "${{ github.workspace }}/TestResults/$name" \
-              --logger "trx;LogFileName=$name.trx" \
+              --logger "trx;LogFilePrefix=$name" \
               --logger "console;verbosity=normal" || rc=$?
             echo "::endgroup::"
 
@@ -198,7 +208,7 @@ jobs:
       # GitHub serves only the tail of the console log.
       - name: Upload test results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: release-test-results-trx
           path: TestResults/**/*.trx
@@ -220,16 +230,17 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v6
         with:
-          dotnet-version: |
-            8.0.x
-            10.0.x
+          # The .NET 10 SDK is the exact version global.json pins, so an SDK upgrade is a deliberate
+          # change. The .NET 8 SDK beside it builds the Bodu.CodeStyle solution.
+          global-json-file: global.json
+          dotnet-version: 8.0.x
 
       - name: Pack Bodu.CodeStyle.XmlDocumentation analyzer (local feed)
         working-directory: Bodu.CodeStyle
@@ -313,13 +324,18 @@ jobs:
       - name: Pack (real-signed, shipping)
         shell: bash
         run: |
+          # Warnings are errors here too. The test job has already stopped the release on any compiler
+          # or analyzer warning; this step also stops it on NuGet restore and pack warnings, a newly
+          # published advisory for a dependency (NU1901-NU1904) among them. To release, update the
+          # dependency, or suppress that one advisory with a NuGetAuditSuppress item giving the reason.
           dotnet pack bodu.slnx \
             --configuration "$CONFIGURATION" \
             --output "$ARTIFACTS_DIR" \
             -p:BoduSignAssembly=true \
             -p:BoduRealSign=true \
             -p:BoduStrongNameKeyFile="$RUNNER_TEMP/Bodu.snk" \
-            -p:BoduShipping=true
+            -p:BoduShipping=true \
+            -p:TreatWarningsAsErrors=true
 
       - name: Shred strong-name private key
         if: always()
@@ -382,11 +398,17 @@ jobs:
             esac
           done < bld/release-manifest.txt
 
-          requested="${REQUESTED_PACKAGES//,/ }"
+          # Split on commas and whitespace with pathname expansion off. With it on, the unquoted split
+          # would also match each word against the checkout's file names: 'Bodu.*' would become every
+          # Bodu.* name in the repository root, and 'Bodu.Numerics*' would silently select two packages.
+          set -f
+          # shellcheck disable=SC2206 # splitting is the intent, and globbing is off
+          requested_ids=(${REQUESTED_PACKAGES//,/ })
+          set +f
           selected_ids=()
-          if [ -n "${requested// /}" ]; then
+          if [ "${#requested_ids[@]}" -gt 0 ]; then
             bad=0
-            for rid in $requested; do
+            for rid in "${requested_ids[@]}"; do
               found=0
               for mid in "${manifest_ids[@]}"; do
                 [ "$rid" = "$mid" ] && { found=1; break; }
@@ -397,6 +419,14 @@ jobs:
               fi
 
               bad=1
+
+              # A wildcard is never a package id, so name that mistake rather than suggest a typo.
+              case "$rid" in
+                *[*?[]*)
+                  echo "::error::'$rid' is a wildcard pattern, not a package id - the packages input matches no wildcards. List exact ids from the left-hand column of bld/release-manifest.txt."
+                  continue
+                  ;;
+              esac
 
               # Withheld on purpose: quote the manifest's own reason.
               reason=""
@@ -460,7 +490,7 @@ jobs:
           echo "PUBLISH_DIR=$PUBLISH_DIR" >> "$GITHUB_ENV"
 
       - name: Upload package artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: nuget-packages
           path: |
@@ -470,7 +500,7 @@ jobs:
           if-no-files-found: error
 
       - name: Upload publish-set artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: nuget-packages-publish
           path: |

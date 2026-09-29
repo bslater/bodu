@@ -29,7 +29,7 @@ public partial struct WeekPattern
     /// <paramref name="input" /> is not exactly seven characters, or contains characters that do not match the detected
     /// or supplied format.
     /// </exception>
-    private static WeekPattern ParseCore(string input, (char? startDay, char? unselectedChar, bool isBinary)? formatInfo)
+    private static WeekPattern ParseCore(string input, (char? StartDay, char? UnselectedChar, bool IsBinary)? formatInfo)
     {
         ThrowHelper.ThrowIfNull(input);
         if (input.Length != 7)
@@ -57,7 +57,7 @@ public partial struct WeekPattern
             {
                 'M' => true,
                 'S' => false,
-                _ => null
+                _ => null,
             };
         }
 
@@ -72,7 +72,7 @@ public partial struct WeekPattern
                     '0' => false,
                     '1' => true,
                     _ => throw new FormatException(
-                               string.Format(CultureInfo.CurrentCulture, ResourceStrings.Format_Invalid_Character, c, i + 1))
+                               string.Format(CultureInfo.CurrentCulture, ResourceStrings.Format_Invalid_Character, c, i + 1)),
                 };
 
                 if (bitSet)
@@ -127,10 +127,10 @@ public partial struct WeekPattern
     /// A tuple describing the parsed format: the start-of-week day, the unselected-day placeholder character, and
     /// whether binary output is requested.
     /// </returns>
-    private static (char? startDay, char? unselectedChar, bool isBinary) ParseFormatForParse(string format)
+    private static (char? StartDay, char? UnselectedChar, bool IsBinary) ParseFormatForParse(string format)
     {
         ThrowHelper.ThrowIfNull(format);
-        return string.IsNullOrEmpty(format) || !TryParseFormatInfo(format, out (char? startDay, char? unselectedChar, bool isBinary) info)
+        return string.IsNullOrEmpty(format) || !TryParseFormatInfo(format, out (char? StartDay, char? UnselectedChar, bool IsBinary) info)
             ? throw new FormatException(ResourceStrings.Arg_Invalid_FormatString)
             : info;
     }
@@ -144,10 +144,10 @@ public partial struct WeekPattern
     /// A tuple describing the parsed format: the start-of-week day, the unselected-day placeholder character, and
     /// whether binary output is requested.
     /// </returns>
-    private static (char? startDay, char? unselectedChar, bool isBinary) ParseFormatForToString(string? format)
+    private static (char? StartDay, char? UnselectedChar, bool IsBinary) ParseFormatForToString(string? format)
     {
         format ??= "S";
-        return !TryParseFormatInfo(format, out (char? startDay, char? unselectedChar, bool isBinary) info)
+        return !TryParseFormatInfo(format, out (char? StartDay, char? UnselectedChar, bool IsBinary) info)
             ? throw new ArgumentException(ResourceStrings.Arg_Invalid_FormatString, nameof(format))
             : info;
     }
@@ -158,12 +158,12 @@ public partial struct WeekPattern
     /// </summary>
     /// <param name="format">The format string (one or two characters).</param>
     /// <param name="info">
-    /// When this method returns <see langword="true" />, contains the parsed format tuple: <c>startDay</c> is
-    /// <c>'S'</c> or <c>'M'</c>; <c>unselectedChar</c> is the placeholder symbol; <c>isBinary</c> indicates binary
+    /// When this method returns <see langword="true" />, contains the parsed format tuple: <c>StartDay</c> is
+    /// <c>'S'</c> or <c>'M'</c>; <c>UnselectedChar</c> is the placeholder symbol; <c>IsBinary</c> indicates binary
     /// output mode.
     /// </param>
     /// <returns><see langword="true" /> if the format is recognized; otherwise, <see langword="false" />.</returns>
-    private static bool TryParseFormatInfo(string format, out (char? startDay, char? unselectedChar, bool isBinary) info)
+    private static bool TryParseFormatInfo(string format, out (char? StartDay, char? UnselectedChar, bool IsBinary) info)
     {
         info = default;
 
@@ -190,7 +190,7 @@ public partial struct WeekPattern
                 'U' => ('S', '_', false),
                 'D' => ('S', '-', false),
                 'A' => ('S', '*', false),
-                _ => default
+                _ => default,
             };
 
             return info != default;

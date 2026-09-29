@@ -38,7 +38,7 @@ public sealed partial class AsyncAutoResetEventTests
         sut.Set();
 
         await sut.WaitAsync();
-        Assert.IsFalse(sut.WaitAsync().IsCompleted, "The latched signal is consumed by a single waiter.");
+        Assert.IsFalse(sut.WaitAsync().AsTask().IsCompleted, "The latched signal is consumed by a single waiter.");
     }
 
     /// <summary>
@@ -53,7 +53,7 @@ public sealed partial class AsyncAutoResetEventTests
         sut.Set();
 
         await sut.WaitAsync();
-        Assert.IsFalse(sut.WaitAsync().IsCompleted, "Only a single signal may be latched.");
+        Assert.IsFalse(sut.WaitAsync().AsTask().IsCompleted, "Only a single signal may be latched.");
     }
 
     /// <summary>

@@ -448,7 +448,6 @@ internal sealed partial class YamlParser
         pendingBreaks = 0;
     }
 
-
     /// <summary>
     /// Validates the indentation of a quoted-scalar continuation line: it must use spaces only and be indented more
     /// than the scalar's parent node.

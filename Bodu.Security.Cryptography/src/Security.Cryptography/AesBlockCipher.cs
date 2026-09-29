@@ -62,6 +62,12 @@ public sealed class AesBlockCipher
     /// <summary>The underlying BCL <see cref="Aes" /> instance that owns the expanded key schedule.</summary>
     private readonly Aes _aes;
 
+    /// <summary>Reusable single-block scratch buffer for the byte-array-based <see cref="ICryptoTransform" /> surface.</summary>
+    private readonly byte[] _scratchIn = new byte[BlockSizeBits / 8];
+
+    /// <summary>Reusable single-block scratch buffer for the byte-array-based <see cref="ICryptoTransform" /> surface.</summary>
+    private readonly byte[] _scratchOut = new byte[BlockSizeBits / 8];
+
     /// <summary>The cached ECB encryptor, created once so its key schedule is reused across every single-block call. Nulled on disposal.</summary>
     private ICryptoTransform? _encryptor;
 
@@ -70,12 +76,6 @@ public sealed class AesBlockCipher
 
     /// <summary>The cached ECB decryptor, created on the first decryption so an instance that only encrypts — as the cipher of every counter-based mode does — never pays for one. Nulled on disposal.</summary>
     private ICryptoTransform? _decryptor;
-
-    /// <summary>Reusable single-block scratch buffer for the byte-array-based <see cref="ICryptoTransform" /> surface.</summary>
-    private readonly byte[] _scratchIn = new byte[BlockSizeBits / 8];
-
-    /// <summary>Reusable single-block scratch buffer for the byte-array-based <see cref="ICryptoTransform" /> surface.</summary>
-    private readonly byte[] _scratchOut = new byte[BlockSizeBits / 8];
 
     /// <summary>Indicates whether the instance has been disposed.</summary>
     private bool _disposed;

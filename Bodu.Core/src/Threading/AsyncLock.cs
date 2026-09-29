@@ -202,10 +202,11 @@ public sealed partial class AsyncLock
     {
         using (cancellationToken.Register(
             static state =>
-        {
-            (AsyncLock? owner, LinkedListNode<TaskCompletionSource<Releaser>>? waiter, CancellationToken token) = ((AsyncLock Owner, LinkedListNode<TaskCompletionSource<Releaser>> Node, CancellationToken Token))state!;
-            owner.CancelWaiter(waiter, token);
-        }, (this, node, cancellationToken)))
+            {
+                (AsyncLock? owner, LinkedListNode<TaskCompletionSource<Releaser>>? waiter, CancellationToken token) = ((AsyncLock Owner, LinkedListNode<TaskCompletionSource<Releaser>> Node, CancellationToken Token))state!;
+                owner.CancelWaiter(waiter, token);
+            },
+            (this, node, cancellationToken)))
         {
             // The waiter's task is completed by Release/Dispose on this same lock, not work scheduled elsewhere, and the
             // type uses no JoinableTaskFactory, so the foreign-task deadlock VSTHRD003 guards against cannot arise.

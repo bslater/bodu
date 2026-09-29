@@ -16,9 +16,6 @@ namespace Bodu.Security.Cryptography;
 internal sealed class DhKemX25519
     : IHpkeKem
 {
-    /// <summary>The shared instance; the KEM holds no mutable state.</summary>
-    public static readonly DhKemX25519 Instance = new();
-
     /// <summary>The length, in bytes, of the KEM shared secret (<c>Nsecret</c>).</summary>
     public const int SharedSecretSize = 32;
 
@@ -27,6 +24,9 @@ internal sealed class DhKemX25519
 
     /// <summary>The length, in bytes, of a serialized public key (<c>Npk</c>).</summary>
     public const int PublicKeySize = 32;
+
+    /// <summary>The shared instance; the KEM holds no mutable state.</summary>
+    public static readonly DhKemX25519 Instance = new();
 
     /// <summary>The IANA KEM identifier for DHKEM(X25519, HKDF-SHA256).</summary>
     private const ushort DhKemX25519HkdfSha256Id = 0x0020;

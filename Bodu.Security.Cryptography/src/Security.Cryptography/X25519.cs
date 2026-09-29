@@ -358,5 +358,4 @@ public sealed partial class X25519
 
         ReplaceKeyMaterial(AsymmetricKeyMaterial.ForKeyPair(publicKey, privateKey));
     }
-
 }

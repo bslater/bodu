@@ -145,7 +145,7 @@ internal sealed class PstHeader
             throw new PstFileFormatException(PstResourceStrings.Format_Invalid_PstHeader, PstFileError.InvalidHeader);
 
         byte cryptMethod = data[layout.CryptMethodOffset];
-        if (cryptMethod is not(0x00 or 0x01 or 0x02))
+        if (cryptMethod is not (0x00 or 0x01 or 0x02))
         {
             throw new PstUnsupportedFormatException(string.Format(
                 CultureInfo.CurrentCulture, PstResourceStrings.Op_NotSupported_PstCryptMethod, cryptMethod));
@@ -157,5 +157,4 @@ internal sealed class PstHeader
 
         return new PstHeader(layout, (PstCryptMethod)cryptMethod, fileLength, nbtRoot, bbtRoot);
     }
-
 }

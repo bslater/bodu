@@ -136,6 +136,7 @@ public readonly partial struct Money<TCurrency>
     /// <param name="_">
     /// A typed tag that selects the no-normalization initialization path. The value itself is not inspected.
     /// </param>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.NamingRules", "SA1313:Parameter names should begin with lower-case letter", Justification = "The parameter is an intentionally unnamed discriminator that only selects this private construction path; its value is never read.")]
     private Money(decimal amount, NormalizedTag _)
     {
         _amount = amount;

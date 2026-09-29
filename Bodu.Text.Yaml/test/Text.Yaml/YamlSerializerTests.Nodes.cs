@@ -40,7 +40,7 @@ public partial class YamlSerializerTests
     [TestMethod]
     public void Deserialize_WhenTargetIsYamlNode_ShouldProduceYamlObject()
     {
-        YamlNode node = YamlSerializer.Deserialize<YamlNode>("name: svc\nport: 8080\nactive: true\n");
+        YamlNode node = YamlSerializer.Deserialize<YamlNode>("name: svc\nport: 8080\nactive: true\n")!;
 
         var obj = (YamlObject)node;
         Assert.AreEqual(3, obj.Count);
@@ -57,7 +57,7 @@ public partial class YamlSerializerTests
     [TestMethod]
     public void Deserialize_WhenTargetIsYamlObject_ShouldUseNodeBridgeNotStructuralConverters()
     {
-        YamlObject obj = YamlSerializer.Deserialize<YamlObject>("a: 1\nb: 2\n");
+        YamlObject obj = YamlSerializer.Deserialize<YamlObject>("a: 1\nb: 2\n")!;
 
         Assert.AreEqual(2, obj.Count);
         Assert.AreEqual(1L, obj["a"]!.AsValue().GetValue<long>());
@@ -71,7 +71,7 @@ public partial class YamlSerializerTests
     [TestMethod]
     public void Deserialize_WhenTargetIsYamlArray_ShouldProduceArrayNode()
     {
-        YamlArray array = YamlSerializer.Deserialize<YamlArray>("- 1\n- two\n- true\n");
+        YamlArray array = YamlSerializer.Deserialize<YamlArray>("- 1\n- two\n- true\n")!;
 
         Assert.AreEqual(3, array.Count);
         Assert.AreEqual(1L, array[0]!.AsValue().GetValue<long>());
@@ -86,7 +86,7 @@ public partial class YamlSerializerTests
     [TestMethod]
     public void Deserialize_WhenTargetIsYamlValue_ShouldPreserveResolvedKind()
     {
-        YamlValue value = YamlSerializer.Deserialize<YamlValue>("true\n");
+        YamlValue value = YamlSerializer.Deserialize<YamlValue>("true\n")!;
 
         Assert.AreEqual(YamlValueKind.Boolean, value.ValueKind);
         Assert.IsTrue(value.GetValue<bool>());
@@ -100,7 +100,7 @@ public partial class YamlSerializerTests
     {
         const string canonical = "name: svc\nport: 8080\ntags:\n  - a\n  - b\n";
 
-        YamlNode node = YamlSerializer.Deserialize<YamlNode>(canonical);
+        YamlNode node = YamlSerializer.Deserialize<YamlNode>(canonical)!;
 
         Assert.AreEqual(canonical, YamlSerializer.Serialize(node));
     }
@@ -112,7 +112,7 @@ public partial class YamlSerializerTests
     [TestMethod]
     public void Deserialize_WhenAliasedScalar_ShouldMaterializeResolvedValue()
     {
-        YamlObject obj = YamlSerializer.Deserialize<YamlObject>("a: &x 17\nb: *x\n");
+        YamlObject obj = YamlSerializer.Deserialize<YamlObject>("a: &x 17\nb: *x\n")!;
 
         Assert.AreEqual(17L, obj["b"]!.AsValue().GetValue<long>());
     }
@@ -133,7 +133,7 @@ public partial class YamlSerializerTests
 
         Assert.AreEqual("Name: cfg\nPayload:\n  k: 1\n", text);
 
-        NodeHost roundTripped = YamlSerializer.Deserialize<NodeHost>(text);
+        NodeHost roundTripped = YamlSerializer.Deserialize<NodeHost>(text)!;
         var payload = (YamlObject)roundTripped.Payload!;
         Assert.AreEqual(1L, payload["k"]!.AsValue().GetValue<long>());
     }

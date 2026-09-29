@@ -76,7 +76,7 @@ public static partial class DelimitedSerializer
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
     private static object BindRecord(string[] fields, IReadOnlyList<string> headers, Member[] members, Type recordType, DelimitedSerializerOptions options)
     {
-        object instance = Activator.CreateInstance(recordType) !;
+        object instance = Activator.CreateInstance(recordType)!;
         (instance as IOnDeserializing)?.OnDeserializing();
 
         StringComparison comparison = options.PropertyNameCaseInsensitive ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;

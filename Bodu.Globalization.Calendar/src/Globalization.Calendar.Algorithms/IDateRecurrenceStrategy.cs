@@ -20,10 +20,10 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// <para>
 /// Implementations must be deterministic and independent of
 /// <see cref="System.Globalization.CultureInfo.CurrentCulture" />. The returned dates must be in ascending
-/// chronological order, contain no duplicates, and fall entirely within the supplied <paramref name="range" />.
-/// Generation is always bounded by the range; an implementation must never expose or produce an unbounded sequence, and
-/// whether a given date is an occurrence must not depend on the size or start of the query range (anchor-based patterns
-/// are query-window invariant).
+/// chronological order, contain no duplicates, and fall entirely within the range passed to
+/// <see cref="GetOccurrences(DateRange, StrategyResolutionContext)" />. Generation is always bounded by the range; an
+/// implementation must never expose or produce an unbounded sequence, and whether a given date is an occurrence must
+/// not depend on the size or start of the query range (anchor-based patterns are query-window invariant).
 /// </para>
 /// </remarks>
 /// <seealso cref="IDateCalculationStrategy" />

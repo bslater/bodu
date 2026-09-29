@@ -98,7 +98,7 @@ internal static class TomlCanonicalWriter
     /// <param name="arrayOfTables">
     /// <see langword="true" /> to write an <c>[[array-of-tables]]</c> header; otherwise a <c>[table]</c> header.
     /// </param>
-    private static void WriteHeaderLine(ref TomlUtf8Emitter emitter, IReadOnlyList<string> path, bool arrayOfTables)
+    private static void WriteHeaderLine(ref TomlUtf8Emitter emitter, List<string> path, bool arrayOfTables)
     {
         if (emitter.HasContent)
             emitter.Append((byte)'\n');

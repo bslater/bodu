@@ -28,9 +28,6 @@ internal sealed partial class YamlParser
     /// <summary>The specification version requested through the options.</summary>
     private readonly YamlSpecVersion _optionVersion;
 
-    /// <summary>The specification version in effect, after any <c>%YAML</c> directive.</summary>
-    private YamlSpecVersion _version;
-
     /// <summary>The maximum container nesting depth permitted.</summary>
     private readonly int _maxDepth;
 
@@ -39,6 +36,9 @@ internal sealed partial class YamlParser
 
     /// <summary>The policy applied to the merge key (<c>&lt;&lt;</c>).</summary>
     private readonly YamlMergeKeyBehavior _mergeKeyBehavior;
+
+    /// <summary>The specification version in effect, after any <c>%YAML</c> directive.</summary>
+    private YamlSpecVersion _version;
 
     /// <summary>The row store being populated, with the document root at index zero.</summary>
     private List<YamlReaderRow> _rows = [];
@@ -573,6 +573,7 @@ internal sealed partial class YamlParser
             return MaterializeString(r);
 
         if (r.Kind == YamlReaderNodeKind.Scalar)
+        {
             return r.ValueKind switch
             {
                 YamlValueKind.Null => string.Empty,
@@ -581,6 +582,7 @@ internal sealed partial class YamlParser
                 YamlValueKind.Float => r.AsDouble().ToString(CultureInfo.InvariantCulture),
                 _ => string.Empty,
             };
+        }
 
         // A sequence, mapping, or alias used as a key cannot be represented in the JSON-compatible tree profile.
         throw Error(YamlResourceStrings.Format_Invalid_YamlComplexKeyUnsupported);

@@ -79,7 +79,7 @@ public sealed partial class Hc128Tests
         byte[] expected = vector.Ciphertext;
 
         using var cipher = new Hc128();
-        using ICryptoTransform encryptor = cipher.CreateEncryptor(vector.Key, vector.Nonce);
+        using ICryptoTransform encryptor = cipher.CreateEncryptor(vector.Key!, vector.Nonce);
         byte[] keystream = encryptor.TransformFinalBlock(new byte[expected.Length], 0, expected.Length);
 
         CollectionAssert.AreEqual(expected, keystream, $"HC-128 keystream mismatch for {vector.Name}.");

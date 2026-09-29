@@ -64,6 +64,7 @@ public static partial class DateTimeExtensions
     /// Thrown if <paramref name="workingWeek" /> is not a defined value of the <see cref="WorkingDaysOfWeek" />
     /// enumeration.
     /// </exception>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:Validate arguments of public methods", Justification = "The provider is optional and is dereferenced only on the Custom path, after ResolveWorkingWeekPattern has rejected a null provider there; the flow analysis cannot see that relationship.")]
     public static DateTime PreviousWeekday(this DateTime dateTime, WorkingDaysOfWeek workingWeek, IWeekendDefinitionProvider? provider)
     {
         ThrowHelper.ThrowIfEnumValueIsUndefined(workingWeek);

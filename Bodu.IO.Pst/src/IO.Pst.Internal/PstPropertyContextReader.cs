@@ -54,12 +54,14 @@ internal static class PstPropertyContextReader
 
             if (source.ValidationLevel == PstValidationLevel.Strict && !PstWireType.IsKnown(wireType))
             {
-                throw new PstFileFormatException(string.Format(
-                    CultureInfo.CurrentCulture,
-                    PstResourceStrings.Format_Invalid_PstPropertyWireType,
-                    propertyId,
-                    new PstNodeId(entry.NodeId),
-                    wireType), PstFileError.InvalidPropertyValue);
+                throw new PstFileFormatException(
+                    string.Format(
+                        CultureInfo.CurrentCulture,
+                        PstResourceStrings.Format_Invalid_PstPropertyWireType,
+                        propertyId,
+                        new PstNodeId(entry.NodeId),
+                        wireType),
+                    PstFileError.InvalidPropertyValue);
             }
 
             entries.Add(new PstPcEntry(propertyId, wireType, rawValue));

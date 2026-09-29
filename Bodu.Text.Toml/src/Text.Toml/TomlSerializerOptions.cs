@@ -4,11 +4,11 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Text.Serialization;
 using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Reflection;
+using Bodu.Text.Serialization;
 using Bodu.Text.Toml.Serialization;
 using Bodu.Text.Toml.Serialization.Converters;
 using Bodu.Text.Toml.Serialization.Metadata;
@@ -390,5 +390,4 @@ public sealed partial class TomlSerializerOptions
         Type definition = converterType.GetGenericTypeDefinition();
         return definition == typeof(ObjectConverter<>) || definition == typeof(DictionaryConverter<,,>);
     }
-
 }

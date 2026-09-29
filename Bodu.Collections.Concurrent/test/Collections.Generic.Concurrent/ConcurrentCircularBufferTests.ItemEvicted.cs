@@ -90,6 +90,7 @@ public partial class ConcurrentCircularBufferTests
     /// must not be masked as a successful eviction.
     /// </summary>
     [TestMethod]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2201:Do not raise reserved exception types", Justification = "The test checks that a process-fatal exception type is never swallowed, so the handler must raise that type.")]
     public void ItemEvicted_WhenHandlerThrowsOutOfMemoryException_ShouldPropagate()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(2, allowOverwrite: true);

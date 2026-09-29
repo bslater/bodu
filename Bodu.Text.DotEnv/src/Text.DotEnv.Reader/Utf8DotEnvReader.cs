@@ -177,7 +177,7 @@ public ref struct Utf8DotEnvReader
     /// </exception>
     public readonly string GetString()
     {
-        if (_tokenType is not(DotEnvTokenType.PropertyName or DotEnvTokenType.String or DotEnvTokenType.Comment))
+        if (_tokenType is not (DotEnvTokenType.PropertyName or DotEnvTokenType.String or DotEnvTokenType.Comment))
             throw new InvalidOperationException(DotEnvResourceStrings.Op_Invalid_DotEnvTokenNotString);
 
         return _decoded ?? Encoding.UTF8.GetString(_data.Slice(_valueStart, _valueLength));
@@ -216,7 +216,7 @@ public ref struct Utf8DotEnvReader
     /// </exception>
     public readonly bool ValueTextEquals(ReadOnlySpan<char> text)
     {
-        if (_tokenType is not(DotEnvTokenType.PropertyName or DotEnvTokenType.String or DotEnvTokenType.Comment))
+        if (_tokenType is not (DotEnvTokenType.PropertyName or DotEnvTokenType.String or DotEnvTokenType.Comment))
             throw new InvalidOperationException(DotEnvResourceStrings.Op_Invalid_DotEnvTokenNotString);
 
         int byteCount = Encoding.UTF8.GetByteCount(text);
@@ -339,7 +339,7 @@ public ref struct Utf8DotEnvReader
             {
                 int textStart = _position + 1;
                 int end = textStart;
-                while (end < _data.Length && _data[end] is not((byte)'\n' or (byte)'\r'))
+                while (end < _data.Length && _data[end] is not ((byte)'\n' or (byte)'\r'))
                     end++;
 
                 _position = end;
@@ -562,7 +562,7 @@ public ref struct Utf8DotEnvReader
     private void ReadUnquoted(out int rawStart, out int rawLength)
     {
         int lineEnd = _position;
-        while (lineEnd < _data.Length && _data[lineEnd] is not((byte)'\n' or (byte)'\r'))
+        while (lineEnd < _data.Length && _data[lineEnd] is not ((byte)'\n' or (byte)'\r'))
             lineEnd++;
 
         int start = _position;
@@ -651,7 +651,7 @@ public ref struct Utf8DotEnvReader
     /// </summary>
     private void SkipToEndOfLine()
     {
-        while (_position < _data.Length && _data[_position] is not((byte)'\n' or (byte)'\r'))
+        while (_position < _data.Length && _data[_position] is not ((byte)'\n' or (byte)'\r'))
             _position++;
     }
 

@@ -164,7 +164,6 @@ public sealed class MapiPropertyCollection
             ? i32
             : GetValue(id, MapiPropertyType.Int16) as short?;
 
-
     /// <summary>
     /// Gets a 64-bit integer property value.
     /// </summary>
@@ -180,7 +179,6 @@ public sealed class MapiPropertyCollection
             : GetValue(id, MapiPropertyType.Int32) is int i32
                 ? i32
                 : GetValue(id, MapiPropertyType.Int16) as short?;
-
 
     /// <summary>
     /// Returns the Boolean value of a property.

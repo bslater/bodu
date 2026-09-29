@@ -219,6 +219,7 @@ internal sealed class ObjectConverter<T>
     /// <param name="metadata">The type metadata.</param>
     /// <param name="instance">The constructed instance.</param>
     /// <param name="entries">The captured unmatched entries, or <see langword="null" /> when none were read.</param>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1859:Use concrete types when possible for improved performance", Justification = "The extension-data member may hold any IDictionary<string, object?>, as MetadataResolver accepts; only the fallback is a Dictionary, so narrowing the pattern would stop other dictionaries matching.")]
     private static void PopulateExtensionData(TypeMetadata metadata, object instance, Dictionary<string, object?>? entries)
     {
         if (metadata.ExtensionData is not { } member)

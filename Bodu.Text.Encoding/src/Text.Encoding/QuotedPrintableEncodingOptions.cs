@@ -21,7 +21,7 @@ namespace Bodu.Text.Encoding;
 public readonly record struct QuotedPrintableEncodingOptions
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="QuotedPrintableEncodingOptions" /> class.
+    /// Initializes a new instance of the <see cref="QuotedPrintableEncodingOptions" /> struct.
     /// </summary>
     /// <param name="mode">The line-break treatment.</param>
     /// <param name="maxLineLength">The maximum encoded line length, excluding the newline delimiter.</param>

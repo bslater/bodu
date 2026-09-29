@@ -83,7 +83,7 @@ public sealed class CityHash64
             <= 16 => Hash64Len0to16(source),
             <= 32 => Hash64Len17to32(source),
             <= 64 => Hash64Len33to64(source),
-            _ => Hash64Long(source)
+            _ => Hash64Long(source),
         };
 
         byte[] buffer = new byte[8];

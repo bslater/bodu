@@ -21,7 +21,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           # The Bodu.Text.Yaml Regression tier reads the yaml/yaml-test-suite conformance corpus, linked as the
           # 'yaml-test-suite' git submodule; check it out so those tests have their vectors.
@@ -39,11 +39,12 @@ jobs:
         run: bash bld/check-release-manifest.sh
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v6
         with:
-          dotnet-version: |
-            8.0.x
-            10.0.x
+          # The .NET 10 SDK is the exact version global.json pins, so an SDK upgrade is a deliberate
+          # change. The .NET 8 SDK beside it builds the Bodu.CodeStyle solution and runs the net8.0 legs.
+          global-json-file: global.json
+          dotnet-version: 8.0.x
 
       - name: Pack Bodu.CodeStyle.XmlDocumentation analyzer (local feed)
         working-directory: Bodu.CodeStyle
@@ -101,14 +102,23 @@ jobs:
 
       - name: Build
         run: |
+          # Warnings are errors in CI, here and in release.yml's test gate: any compiler or analyzer
+          # warning fails the pull request, while a local build still reports it as a warning. A
+          # deliberate finding is suppressed at its site with a justification, as the existing
+          # suppressions are. MSBuild, SDK and NuGet warnings are not promoted (that would take
+          # -warnaserror), so a newly published package advisory cannot fail unrelated pull requests.
           for proj in $TEST_PROJECTS; do
             echo "::group::Build $proj"
-            dotnet build "$proj" --configuration Release --no-restore
+            dotnet build "$proj" --configuration Release --no-restore -p:TreatWarningsAsErrors=true
             echo "::endgroup::"
           done
 
       - name: Test
         run: |
+          # The TRX logger takes LogFilePrefix, not LogFileName: every project runs once per target
+          # framework, and with a fixed file name the second run overwrites the first's TRX, so the
+          # reports and artifacts below would see only one framework's results. The prefix form writes
+          # <name>_<framework>_<timestamp>.trx, one file per run.
           status=0
 
           for proj in $TEST_PROJECTS; do
@@ -121,7 +131,7 @@ jobs:
               --no-build \
               --settings test.runsettings \
               --results-directory "${{ github.workspace }}/TestResults/$name" \
-              --logger "trx;LogFileName=$name.trx" \
+              --logger "trx;LogFilePrefix=$name" \
               --logger "console;verbosity=normal" || status=$?
 
             echo "::endgroup::"
@@ -167,7 +177,7 @@ jobs:
 
       - name: Upload TRX artifact
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: test-results-trx
           path: TestResults/**/*.trx
@@ -326,7 +336,7 @@ jobs:
 
       - name: Upload failed-tests TRX artifact
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: test-results-failed-trx
           path: FailedTestResults/**/*.failed.trx
@@ -335,7 +345,7 @@ jobs:
 
       - name: Upload failed test summary artifact
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: failed-tests-summary
           path: failed-tests-summary.md
@@ -344,7 +354,7 @@ jobs:
 
       - name: Comment failed test summary on PR
         if: always() && github.event_name == 'pull_request'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const fs = require('fs');
@@ -412,12 +422,16 @@ jobs:
 
       - name: Publish test report
         if: always()
-        uses: dorny/test-reporter@v1
+        uses: dorny/test-reporter@v3
         with:
           name: MSTest Results
           path: TestResults/**/*.trx
           reporter: dotnet-trx
           fail-on-error: false
+          # Only failing tests are listed. The suite has more than 90,000 tests per framework, and with
+          # every one listed the report runs to megabytes, far past the summary's size limit, and the
+          # reporter overflows its stack assembling it. Each test class is still listed with its counts.
+          list-tests: failed
 
   # The job above runs every suite on x64, where the Argon2 AdvSimd kernel and the GHASH PMULL kernel cannot
   # execute. This one runs the two cryptography suites on GitHub's hosted ARM64 runner (free for public
@@ -437,14 +451,15 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v6
         with:
-          dotnet-version: |
-            8.0.x
-            10.0.x
+          # The .NET 10 SDK is the exact version global.json pins, so an SDK upgrade is a deliberate
+          # change. The .NET 8 SDK beside it builds the Bodu.CodeStyle solution and runs the net8.0 legs.
+          global-json-file: global.json
+          dotnet-version: 8.0.x
 
       - name: Pack Bodu.CodeStyle.XmlDocumentation analyzer (local feed)
         working-directory: Bodu.CodeStyle
@@ -468,14 +483,23 @@ jobs:
 
       - name: Build
         run: |
+          # Warnings are errors in CI, here and in release.yml's test gate: any compiler or analyzer
+          # warning fails the pull request, while a local build still reports it as a warning. A
+          # deliberate finding is suppressed at its site with a justification, as the existing
+          # suppressions are. MSBuild, SDK and NuGet warnings are not promoted (that would take
+          # -warnaserror), so a newly published package advisory cannot fail unrelated pull requests.
           for proj in $TEST_PROJECTS; do
             echo "::group::Build $proj"
-            dotnet build "$proj" --configuration Release --no-restore
+            dotnet build "$proj" --configuration Release --no-restore -p:TreatWarningsAsErrors=true
             echo "::endgroup::"
           done
 
       - name: Test
         run: |
+          # The TRX logger takes LogFilePrefix, not LogFileName: every project runs once per target
+          # framework, and with a fixed file name the second run overwrites the first's TRX, so the
+          # reports and artifacts below would see only one framework's results. The prefix form writes
+          # <name>_<framework>_<timestamp>.trx, one file per run.
           status=0
 
           for proj in $TEST_PROJECTS; do
@@ -488,7 +512,7 @@ jobs:
               --no-build \
               --settings test.runsettings \
               --results-directory "${{ github.workspace }}/TestResults/$name" \
-              --logger "trx;LogFileName=$name.trx" \
+              --logger "trx;LogFilePrefix=$name" \
               --logger "console;verbosity=normal" || status=$?
 
             echo "::endgroup::"
@@ -498,7 +522,7 @@ jobs:
 
       - name: Upload TRX artifact
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: test-results-trx-arm64
           path: TestResults/**/*.trx
@@ -507,9 +531,12 @@ jobs:
 
       - name: Publish test report
         if: always()
-        uses: dorny/test-reporter@v1
+        uses: dorny/test-reporter@v3
         with:
           name: MSTest Results (ARM64)
           path: TestResults/**/*.trx
           reporter: dotnet-trx
           fail-on-error: false
+          # Only failing tests are listed, as in the job above: a full list runs past the summary's size
+          # limit, and a long enough one overflows the reporter's stack. Each test class is still listed.
+          list-tests: failed

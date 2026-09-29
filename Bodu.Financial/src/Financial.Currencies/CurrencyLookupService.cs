@@ -125,7 +125,7 @@ public sealed class CurrencyLookupService
     /// Builds the numeric-code index, preferring non-historic entries on a collision.
     /// </summary>
     /// <returns>The numeric-code index.</returns>
-    private static IReadOnlyDictionary<int, CurrencyInfo> BuildNumericIndex()
+    private static Dictionary<int, CurrencyInfo> BuildNumericIndex()
     {
         Dictionary<int, CurrencyInfo> index = new();
         foreach (CurrencyInfo info in CurrencyRegistry.All)
@@ -144,7 +144,7 @@ public sealed class CurrencyLookupService
     /// Builds the symbol index from primary and alternative symbols.
     /// </summary>
     /// <returns>The symbol index.</returns>
-    private static IReadOnlyDictionary<string, IReadOnlyList<CurrencyInfo>> BuildSymbolIndex()
+    private static Dictionary<string, IReadOnlyList<CurrencyInfo>> BuildSymbolIndex()
     {
         Dictionary<string, List<CurrencyInfo>> index = new(StringComparer.Ordinal);
         foreach (CurrencyInfo info in CurrencyRegistry.All)
@@ -167,7 +167,7 @@ public sealed class CurrencyLookupService
     /// Builds the region index from each currency's region codes.
     /// </summary>
     /// <returns>The region index.</returns>
-    private static IReadOnlyDictionary<string, IReadOnlyList<CurrencyInfo>> BuildRegionIndex()
+    private static Dictionary<string, IReadOnlyList<CurrencyInfo>> BuildRegionIndex()
     {
         Dictionary<string, List<CurrencyInfo>> index = new(StringComparer.Ordinal);
         foreach (CurrencyInfo info in CurrencyRegistry.All)
@@ -205,7 +205,7 @@ public sealed class CurrencyLookupService
     /// </summary>
     /// <param name="index">The build index.</param>
     /// <returns>The read-only index.</returns>
-    private static IReadOnlyDictionary<string, IReadOnlyList<CurrencyInfo>> Freeze(Dictionary<string, List<CurrencyInfo>> index)
+    private static Dictionary<string, IReadOnlyList<CurrencyInfo>> Freeze(Dictionary<string, List<CurrencyInfo>> index)
     {
         Dictionary<string, IReadOnlyList<CurrencyInfo>> frozen = new(index.Count, StringComparer.Ordinal);
         foreach (KeyValuePair<string, List<CurrencyInfo>> entry in index)

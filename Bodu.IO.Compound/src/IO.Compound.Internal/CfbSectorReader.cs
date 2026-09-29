@@ -19,6 +19,9 @@ namespace Bodu.IO.Compound.Internal;
 /// </remarks>
 internal sealed class CfbSectorReader
 {
+    /// <summary>The minimum size a short sector chain may be zero-padded to under a tolerant validation level.</summary>
+    private const long MinRecoveredStreamBytes = 1L << 20;
+
     /// <summary>The random-access source of compound-file bytes.</summary>
     private readonly CfbDataSource _source;
 
@@ -77,9 +80,6 @@ internal sealed class CfbSectorReader
         CompoundThrowHelper.ThrowFormat(CompoundResourceStrings.Format_Invalid_CompoundSectorChain, category);
         return true;
     }
-
-    /// <summary>The minimum size a short sector chain may be zero-padded to under a tolerant validation level.</summary>
-    private const long MinRecoveredStreamBytes = 1L << 20;
 
     /// <summary>
     /// Bounds a declared payload size before it is used to size a zero-padded allocation, so a corrupt oversized size

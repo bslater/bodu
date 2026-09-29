@@ -137,7 +137,7 @@ public static partial class DotEnvSerializer
         Type concrete = targetType.IsInterface
             ? typeof(Dictionary<,>).MakeGenericType(typeof(string), valueType)
             : targetType;
-        var dictionary = (IDictionary)Activator.CreateInstance(concrete) !;
+        var dictionary = (IDictionary)Activator.CreateInstance(concrete)!;
 
         foreach ((string key, string raw) in entries)
             dictionary[key] = ConvertFromString(raw, valueType, key);
@@ -157,7 +157,7 @@ public static partial class DotEnvSerializer
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
     private static object ReadPoco(List<KeyValuePair<string, string>> entries, Type targetType, DotEnvSerializerOptions options)
     {
-        object instance = Activator.CreateInstance(targetType) !;
+        object instance = Activator.CreateInstance(targetType)!;
         (instance as IOnDeserializing)?.OnDeserializing();
 
         StringComparison comparison = options.PropertyNameCaseInsensitive ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;

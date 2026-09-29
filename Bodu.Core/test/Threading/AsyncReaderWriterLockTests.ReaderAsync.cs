@@ -89,7 +89,7 @@ public sealed partial class AsyncReaderWriterLockTests
 
         Assert.ThrowsExactly<ObjectDisposedException>(() =>
         {
-            _ = sut.ReaderAsync();
+            _ = sut.ReaderAsync().AsTask();
         });
     }
 }

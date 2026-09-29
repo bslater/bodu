@@ -16,5 +16,5 @@ global using FormatOptions = Bodu.Text.Toml.TomlSerializerOptions;
 global using FormatReader = Bodu.Text.Toml.Reader.TomlDocumentReader;
 global using FormatResourceStrings = Bodu.TomlResourceStrings;
 global using FormatSerializationException = Bodu.Text.Toml.TomlSerializationException;
-global using FormatWriteStack = Bodu.Text.Toml.Serialization.TomlWriteStack;
 global using FormatWriter = Bodu.Text.Toml.Writer.Utf8TomlWriter;
+global using FormatWriteStack = Bodu.Text.Toml.Serialization.TomlWriteStack;

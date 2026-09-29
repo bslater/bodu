@@ -118,7 +118,7 @@ public sealed class ComplexJsonConverter<T>
         if (reader.TokenType != JsonTokenType.String)
             throw new JsonException(NumericsJsonResourceStrings.Json_Invalid_ExpectedCompactString_Complex);
 
-        string text = reader.GetString() !;
+        string text = reader.GetString()!;
         return Complex<T>.TryParse(text.AsSpan(), CultureInfo.InvariantCulture, out Complex<T> result)
             ? result
             : throw new JsonException(
@@ -152,7 +152,7 @@ public sealed class ComplexJsonConverter<T>
             if (reader.TokenType != JsonTokenType.PropertyName)
                 throw new JsonException(NumericsJsonResourceStrings.Json_Invalid_ExpectedPropertyName);
 
-            string propertyName = reader.GetString() !;
+            string propertyName = reader.GetString()!;
             if (!reader.Read())
                 throw new JsonException(NumericsJsonResourceStrings.Json_Invalid_UnexpectedEnd);
 

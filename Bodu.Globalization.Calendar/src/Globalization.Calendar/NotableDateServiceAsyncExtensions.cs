@@ -86,7 +86,7 @@ public static class NotableDateServiceAsyncExtensions
         ThrowHelper.ThrowIfNull(territory);
         ThrowHelper.ThrowIfGreaterThan(range.StartDate, range.EndDate);
 
-        return ResolveAsyncCore(service, range, territory, filter, cancellationToken);
+        return ResolveCoreAsync(service, range, territory, filter, cancellationToken);
     }
 
     /// <summary>
@@ -98,7 +98,8 @@ public static class NotableDateServiceAsyncExtensions
     /// <param name="filter">The optional occurrence filter.</param>
     /// <param name="cancellationToken">The token observed between resolved years.</param>
     /// <returns>The asynchronous occurrence sequence.</returns>
-    private static async IAsyncEnumerable<NotableDate> ResolveAsyncCore(
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "VSTHRD103:Call async methods when in an async method", Justification = "Resolution is synchronous, CPU-bound work with no asynchronous counterpart; the ResolveAsync the analyzer proposes is this streaming projection itself.")]
+    private static async IAsyncEnumerable<NotableDate> ResolveCoreAsync(
         INotableDateService service,
         DateRange range,
         string territory,

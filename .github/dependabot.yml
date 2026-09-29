@@ -1,0 +1,16 @@
+# Dependabot proposes each new .NET SDK as a pull request that bumps the version global.json pins.
+# CI builds that pull request with the new SDK, so any warning its analyzers add fails there and is
+# fixed in the same pull request, rather than surfacing in unrelated work.
+version: 2
+updates:
+  - package-ecosystem: "dotnet-sdk"
+    directory: "/"
+    schedule:
+      # .NET servicing releases ship on the second Tuesday of the month.
+      interval: "weekly"
+      day: "wednesday"
+    ignore:
+      # A new major version changes the language version and the supported target frameworks, so it
+      # is a deliberate upgrade rather than a routine update.
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]

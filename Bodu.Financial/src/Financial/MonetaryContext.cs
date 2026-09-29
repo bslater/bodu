@@ -97,6 +97,7 @@ public sealed record MonetaryContext
     /// <see cref="ScalePolicy" /> is <see cref="ScalePolicy.Custom" /> but <see cref="CustomScale" /> is
     /// <see langword="null" />.
     /// </exception>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2208:Instantiate argument exceptions correctly", Justification = "The invalid value is this context's CustomScale property, not the method argument; the parameter name identifies that property, as Validate reports it.")]
     public int ResolveScale(int currencyMinorUnits)
     {
         ThrowHelper.ThrowIfEnumValueIsUndefined(ScalePolicy);

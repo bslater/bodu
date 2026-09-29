@@ -37,13 +37,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v7
     - name: Dotnet Setup
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@v6
       with:
-        dotnet-version: |
-          8.x
-          10.x
+        # The .NET 10 SDK is the exact version global.json pins; .NET 8 serves docfx's net8.0 metadata build.
+        global-json-file: global.json
+        dotnet-version: 8.x
 
     # Pinned. An unpinned `tool update` means a docfx release can change the generated output or
     # trip --warningsAsErrors below, turning master red with no commit of ours; everything else

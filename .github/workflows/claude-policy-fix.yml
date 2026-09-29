@@ -56,14 +56,17 @@ jobs:
     steps:
       - name: Mint GitHub App token
         id: app-token
-        uses: actions/create-github-app-token@v1
+        uses: actions/create-github-app-token@v3
         with:
-          app-id: ${{ secrets.CLAUDE_APP_ID }}
+          # v3 deprecates 'app-id' and replaces it with 'client-id'. Both feed the JWT issuer,
+          # which GitHub accepts as either the App ID or the Client ID, so the existing
+          # CLAUDE_APP_ID secret works here unchanged; storing the Client ID in it is optional.
+          client-id: ${{ secrets.CLAUDE_APP_ID }}
           private-key: ${{ secrets.CLAUDE_APP_PRIVATE_KEY }}
 
       - name: Resolve PR and enforce attempt cap
         id: gate
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           github-token: ${{ steps.app-token.outputs.token }}
           script: |
@@ -131,7 +134,7 @@ jobs:
 
       - name: Checkout PR head
         if: steps.gate.outputs.should_fix == 'true'
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           ref: ${{ steps.gate.outputs.head_branch }}
           token: ${{ steps.app-token.outputs.token }}
@@ -139,11 +142,12 @@ jobs:
 
       - name: Setup .NET
         if: steps.gate.outputs.should_fix == 'true'
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v6
         with:
-          dotnet-version: |
-            8.0.x
-            10.0.x
+          # The .NET 10 SDK is the exact version global.json pins. The .NET 8 SDK beside it builds the
+          # Bodu.CodeStyle solution and runs the net8.0 legs.
+          global-json-file: global.json
+          dotnet-version: 8.0.x
 
       - name: Configure git identity
         if: steps.gate.outputs.should_fix == 'true'

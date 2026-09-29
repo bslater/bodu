@@ -144,7 +144,7 @@ public sealed partial class ConfigurationPattern
                 ConfigurationSourceLocation.None));
         }
 
-        (string pattern, StringComparison comparison) key = (pattern, comparison);
+        (string Pattern, StringComparison Comparison) key = (pattern, comparison);
         if (s_compileCache.TryGetValue(key, out ConfigurationPattern? cached))
             return cached;
 

@@ -55,8 +55,8 @@ public sealed class PluginNotTrustedException
     /// <summary>
     /// Gets the name of the rejected assembly.
     /// </summary>
-    /// <value>The assembly name.</value>
-    public string AssemblyName { get; }
+    /// <value>The assembly name, or <see langword="null" /> when the exception was created without one.</value>
+    public string? AssemblyName { get; }
 
     /// <summary>
     /// Gets the reason the assembly was rejected.

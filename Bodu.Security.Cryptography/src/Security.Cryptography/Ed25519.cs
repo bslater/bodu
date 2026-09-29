@@ -424,5 +424,4 @@ public sealed partial class Ed25519
 
         ReplaceKeyMaterial(Ed25519KeyMaterial.ForKeyPair(publicKey, privateKey));
     }
-
 }

@@ -71,7 +71,31 @@ public sealed partial class Threefish512Cipher
     /// immediate count, and so all 32 values live in one place rather than being duplicated between Encrypt, Decrypt,
     /// the AVX-512 rotation vectors, and the public rotation schedule.
     /// </remarks>
-    private const int R0 = 46, R1 = 36, R2 = 19, R3 = 37;
+    private const int R0 = 46;
+
+    /// <summary>The spec-defined rotation constants for the Threefish-512 Mix/Unmix operations (rotation amounts 0 through 3).</summary>
+    /// <remarks>
+    /// Declared as named <see langword="int" /> constants so the JIT can fold each Mix/Unmix call to a ROL/ROR with an
+    /// immediate count, and so all 32 values live in one place rather than being duplicated between Encrypt, Decrypt,
+    /// the AVX-512 rotation vectors, and the public rotation schedule.
+    /// </remarks>
+    private const int R1 = 36;
+
+    /// <summary>The spec-defined rotation constants for the Threefish-512 Mix/Unmix operations (rotation amounts 0 through 3).</summary>
+    /// <remarks>
+    /// Declared as named <see langword="int" /> constants so the JIT can fold each Mix/Unmix call to a ROL/ROR with an
+    /// immediate count, and so all 32 values live in one place rather than being duplicated between Encrypt, Decrypt,
+    /// the AVX-512 rotation vectors, and the public rotation schedule.
+    /// </remarks>
+    private const int R2 = 19;
+
+    /// <summary>The spec-defined rotation constants for the Threefish-512 Mix/Unmix operations (rotation amounts 0 through 3).</summary>
+    /// <remarks>
+    /// Declared as named <see langword="int" /> constants so the JIT can fold each Mix/Unmix call to a ROL/ROR with an
+    /// immediate count, and so all 32 values live in one place rather than being duplicated between Encrypt, Decrypt,
+    /// the AVX-512 rotation vectors, and the public rotation schedule.
+    /// </remarks>
+    private const int R3 = 37;
 
     /// <summary>The spec-defined Threefish-512 rotation constants (rotation amounts 4 through 7).</summary>
     private const int R4 = 33;
@@ -110,13 +134,40 @@ public sealed partial class Threefish512Cipher
     private const int R15 = 56;
 
     /// <summary>The spec-defined Threefish-512 rotation constants (rotation amounts 16 through 19).</summary>
-    private const int R16 = 39, R17 = 30, R18 = 34, R19 = 24;
+    private const int R16 = 39;
+
+    /// <summary>The spec-defined Threefish-512 rotation constants (rotation amounts 16 through 19).</summary>
+    private const int R17 = 30;
+
+    /// <summary>The spec-defined Threefish-512 rotation constants (rotation amounts 16 through 19).</summary>
+    private const int R18 = 34;
+
+    /// <summary>The spec-defined Threefish-512 rotation constants (rotation amounts 16 through 19).</summary>
+    private const int R19 = 24;
 
     /// <summary>The spec-defined Threefish-512 rotation constants (rotation amounts 20 through 23).</summary>
-    private const int R20 = 13, R21 = 50, R22 = 10, R23 = 17;
+    private const int R20 = 13;
+
+    /// <summary>The spec-defined Threefish-512 rotation constants (rotation amounts 20 through 23).</summary>
+    private const int R21 = 50;
+
+    /// <summary>The spec-defined Threefish-512 rotation constants (rotation amounts 20 through 23).</summary>
+    private const int R22 = 10;
+
+    /// <summary>The spec-defined Threefish-512 rotation constants (rotation amounts 20 through 23).</summary>
+    private const int R23 = 17;
 
     /// <summary>The spec-defined Threefish-512 rotation constants (rotation amounts 24 through 27).</summary>
-    private const int R24 = 25, R25 = 29, R26 = 39, R27 = 43;
+    private const int R24 = 25;
+
+    /// <summary>The spec-defined Threefish-512 rotation constants (rotation amounts 24 through 27).</summary>
+    private const int R25 = 29;
+
+    /// <summary>The spec-defined Threefish-512 rotation constants (rotation amounts 24 through 27).</summary>
+    private const int R26 = 39;
+
+    /// <summary>The spec-defined Threefish-512 rotation constants (rotation amounts 24 through 27).</summary>
+    private const int R27 = 43;
 
     /// <summary>The spec-defined Threefish-512 rotation constants (rotation amounts 28 through 31).</summary>
     private const int R28 = 8;

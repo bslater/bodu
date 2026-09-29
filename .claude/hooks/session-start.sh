@@ -1,17 +1,19 @@
 #!/bin/bash
-# Installs the .NET SDK 10.0 on session start so the agent can run `dotnet
-# build` and `dotnet test` against bodu.slnx, and repairs the dotnet-dnceng
-# Claude Code plugin whose upstream manifest currently fails validation (see
-# repair_dnceng_plugin below). Only runs in the remote Claude Code on the web
-# environment; on a developer's local machine the SDK is expected to be
-# installed already.
+# Installs the .NET SDK that global.json pins, and the .NET 8 runtime, on
+# session start so the agent can run `dotnet build` and `dotnet test` against
+# bodu.slnx, and repairs the dotnet-dnceng Claude Code plugin whose upstream
+# manifest currently fails validation (see repair_dnceng_plugin below). Only
+# runs in the remote Claude Code on the web environment; on a developer's local
+# machine the SDK is expected to be installed already.
 #
 # SDK 10.0 is required because the solution uses C# 14 language features (for
 # example the `field` keyword on semi-auto properties). An older SDK such as
-# 8.0 cannot compile the sources.
+# 8.0 cannot compile the sources. global.json pins the exact 10.0 SDK that CI
+# builds with, so the agent sees the same analyzer warnings CI does.
 #
-# The script is idempotent: when a .NET 10 SDK is already installed it exits
-# immediately, so re-invocation (resume, clear, compact) is essentially free.
+# The script is idempotent: when the pinned SDK and a .NET 8 runtime are
+# already installed it installs nothing, so re-invocation (resume, clear,
+# compact) is essentially free.
 set -euo pipefail
 
 # Only act in the remote environment; local sessions are left untouched.
@@ -97,28 +99,62 @@ ensure_yaml_test_suite() {
 }
 ensure_yaml_test_suite || true
 
-# Fast path: a .NET 10 SDK is already installed. Checking for the 10.x band
-# specifically (rather than merely `dotnet` on PATH) ensures we still upgrade
-# a container image that ships only an older SDK such as 8.0.
-if command -v dotnet >/dev/null 2>&1 && dotnet --list-sdks 2>/dev/null | grep -q '^10\.'; then
+# ---------------------------------------------------------------------------
+# .NET SDK and runtime
+#
+# global.json pins the exact SDK that CI builds with, and package feeds cannot
+# supply it: Ubuntu's archive carries only the 10.0.1xx feature band. Install
+# it with Microsoft's dotnet-install script, which reads the version from
+# global.json, into the installation that the dotnet on PATH already uses. The
+# .NET 8 runtime is installed too, so the net8.0 test legs run on .NET 8 as
+# they do in CI.
+# ---------------------------------------------------------------------------
+repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+
+# dotnet resolves its SDK through global.json, so `dotnet --version` succeeds
+# at the repository root only when the pinned SDK is installed.
+pinned_sdk_installed() {
+    command -v dotnet >/dev/null 2>&1 && (cd "$repo_root" && dotnet --version >/dev/null 2>&1)
+}
+
+net8_runtime_installed() {
+    command -v dotnet >/dev/null 2>&1 && dotnet --list-runtimes 2>/dev/null | grep -q '^Microsoft\.NETCore\.App 8\.'
+}
+
+# Fast path: nothing to install.
+if pinned_sdk_installed && net8_runtime_installed; then
     exit 0
 fi
 
-echo "[session-start] .NET 10 SDK not found; installing dotnet-sdk-10.0 via apt..."
-
-export DEBIAN_FRONTEND=noninteractive
-
-# Refresh apt only if no recent lists are present, to keep re-runs cheap.
-# Tolerate third-party PPA failures (deadsnakes, ondrej, etc.) — the main
-# Ubuntu archive is sufficient for dotnet-sdk-10.0.
-if [ -z "$(find /var/lib/apt/lists -maxdepth 1 -type f -mmin -1440 2>/dev/null)" ]; then
-    apt-get update -qq || echo "[session-start] apt-get update reported errors; continuing with existing cache."
+if command -v dotnet >/dev/null 2>&1; then
+    dotnet_root="$(dirname "$(readlink -f "$(command -v dotnet)")")"
+else
+    dotnet_root=/usr/share/dotnet
 fi
 
-if ! apt-get install -y --no-install-recommends dotnet-sdk-10.0; then
-    echo "[session-start] dotnet-sdk-10.0 install failed. If this is a transient cache issue, retry the session." >&2
+install_script="$(mktemp)"
+trap 'rm -f "$install_script"' EXIT
+if ! curl -fsSL --retry 3 --max-time 120 https://dot.net/v1/dotnet-install.sh -o "$install_script"; then
+    echo "[session-start] Could not download dotnet-install.sh. If this is a transient network issue, retry the session." >&2
     exit 1
 fi
+
+if ! pinned_sdk_installed; then
+    echo "[session-start] Installing the .NET SDK pinned in global.json into $dotnet_root..."
+    if ! bash "$install_script" --jsonfile "$repo_root/global.json" --install-dir "$dotnet_root" --no-path; then
+        echo "[session-start] The pinned .NET SDK install failed. If this is a transient network issue, retry the session." >&2
+        exit 1
+    fi
+fi
+
+if ! net8_runtime_installed; then
+    echo "[session-start] Installing the .NET 8 runtime into $dotnet_root..."
+    bash "$install_script" --channel 8.0 --runtime dotnet --install-dir "$dotnet_root" --no-path \
+        || echo "[session-start] The .NET 8 runtime install failed; the net8.0 test legs cannot run." >&2
+fi
+
+# A fresh installation is not on PATH yet.
+command -v dotnet >/dev/null 2>&1 || ln -sfn "$dotnet_root/dotnet" /usr/local/bin/dotnet
 
 # Suppress first-run telemetry/welcome work so subsequent `dotnet` commands
 # don't pay that cost or write to stdout in unexpected places.
@@ -134,4 +170,4 @@ if [ -n "${CLAUDE_ENV_FILE:-}" ]; then
     } >> "$CLAUDE_ENV_FILE"
 fi
 
-echo "[session-start] dotnet $(dotnet --version) installed."
+echo "[session-start] dotnet $(cd "$repo_root" && dotnet --version) installed."

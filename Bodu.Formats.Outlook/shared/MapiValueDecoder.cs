@@ -38,7 +38,7 @@ internal static class MapiValueDecoder
     private const int Utf8CodePage = 65001;
 
     /// <summary>
-    /// The UTF-8 byte order mark.
+    /// Gets the UTF-8 byte order mark.
     /// </summary>
     private static ReadOnlySpan<byte> Utf8ByteOrderMark => [0xEF, 0xBB, 0xBF];
 

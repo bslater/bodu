@@ -136,6 +136,7 @@ public sealed partial class AsyncDebouncer
     /// either because none has started yet or because every started run has already completed and been removed from the
     /// active set.
     /// </value>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "VSTHRD114:Avoid returning a null Task", Justification = "A documented part of the public contract: null means no run is in flight, which a completed task could not distinguish from a run that has just finished.")]
     public Task? CurrentExecution
     {
         get

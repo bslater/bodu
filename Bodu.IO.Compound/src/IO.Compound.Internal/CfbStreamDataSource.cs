@@ -78,6 +78,9 @@ internal sealed class CfbStreamDataSource
     }
 
     /// <inheritdoc />
-    public override void Dispose() =>
+    public override void Dispose()
+    {
         _gate.Dispose();
+        base.Dispose();
+    }
 }

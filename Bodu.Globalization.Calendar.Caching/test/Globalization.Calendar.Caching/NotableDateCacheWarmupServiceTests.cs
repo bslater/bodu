@@ -69,7 +69,7 @@ public sealed class NotableDateCacheWarmupServiceTests
     [TestMethod]
     public async Task StartAsync_WhenOneTerritoryFails_ShouldWarmRemainingTerritories()
     {
-        var gated = new GatedNotableDateService(throwOnFirstCall: true);
+        using var gated = new GatedNotableDateService(throwOnFirstCall: true);
         gated.Open();
         ServiceProvider provider = BuildProvider(gated, warmup =>
         {
