@@ -94,11 +94,17 @@ package ids to publish **instead of** the whole manifest, e.g.
 
 Every requested id must appear in `release-manifest.txt`; an unknown id (a typo,
 or a package that packs but has not been approved to ship) **fails the run**
-rather than being skipped. Ids are matched exactly, so a wildcard such as
-`Bodu.*` fails the run as well; to stage every manifest package, leave the input
-empty. Publishing a different set than the operator asked for is the failure
-worth spending a build on, because a nuget.org version cannot be withdrawn
-afterwards — only delisted.
+rather than being skipped. Publishing a different set than the operator asked
+for is the failure worth spending a build on, because a nuget.org version cannot
+be withdrawn afterwards — only delisted.
+
+An entry may also be a wildcard pattern (`*`, `?`, `[...]`). A pattern is
+matched against the ids in `release-manifest.txt` only, so it never selects a
+package the manifest does not list: `Bodu.Numerics*` selects `Bodu.Numerics` and
+`Bodu.Numerics.Serialization.Json`, and `Bodu.*` selects the whole manifest. A
+pattern that matches nothing fails the run, a package selected more than once is
+staged once, and the run log lists what each pattern matched. To see what a
+pattern selects before publishing, run with `publish` unchecked.
 
 Tag runs ignore the input: a tag releases the whole manifest at the tagged
 version, which is what keeps the lock-step set coherent.

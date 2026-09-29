@@ -41,10 +41,11 @@ on:
         default: false
       packages:
         description: >-
-          Optional space- or comma-separated package ids to publish instead of the whole manifest
-          (e.g. "Bodu.Core Bodu.IO.Biff"). Every id must appear in bld/release-manifest.txt, and
-          wildcards such as Bodu.* are rejected. Leave empty to stage the full manifest. Ignored
-          for tag runs, which always release the whole manifest, each package at the version
+          Optional space- or comma-separated package ids or wildcard patterns to publish instead of
+          the whole manifest (e.g. "Bodu.Core Bodu.Numerics*"). An id must appear in
+          bld/release-manifest.txt; a pattern (*, ?, [...]) is matched against the ids listed there
+          and must match at least one. Leave empty to stage the full manifest. Ignored for tag
+          runs, which always release the whole manifest, each package at the version
           bld/Versioning.props computes for it.
         type: string
         default: ''
@@ -355,10 +356,11 @@ jobs:
           # released. Only packages listed in the shipping manifest are staged for publish;
           # everything else remains a build artifact only.
           #
-          # A manual run may narrow that set further with the 'packages' input. The subset is
-          # validated against the manifest first and an unknown id fails the run: silently
-          # publishing a different set than the operator asked for is the failure mode worth
-          # spending a build on, because a nuget.org version cannot be withdrawn afterwards.
+          # A manual run may narrow that set further with the 'packages' input: exact ids, or wildcard
+          # patterns matched against the manifest's ids. The subset is validated against the manifest
+          # first, and an unknown id or a pattern matching no id fails the run: silently publishing a
+          # different set than the operator asked for is the failure mode worth spending a build on,
+          # because a nuget.org version cannot be withdrawn afterwards.
           PUBLISH_DIR="${{ github.workspace }}/publish"
           mkdir -p "$PUBLISH_DIR"
           shopt -s nullglob
@@ -398,35 +400,60 @@ jobs:
             esac
           done < bld/release-manifest.txt
 
-          # Split on commas and whitespace with pathname expansion off. With it on, the unquoted split
-          # would also match each word against the checkout's file names: 'Bodu.*' would become every
-          # Bodu.* name in the repository root, and 'Bodu.Numerics*' would silently select two packages.
+          # Split on commas and whitespace with pathname expansion off, so a wildcard reaches the
+          # manifest match below intact. With it on, the unquoted split would match each word against
+          # the checkout's file names instead: 'Bodu.*' would become every Bodu.* name in the
+          # repository root.
           set -f
           # shellcheck disable=SC2206 # splitting is the intent, and globbing is off
           requested_ids=(${REQUESTED_PACKAGES//,/ })
           set +f
+
+          # Adds a package to the selection once: a package named twice, or matched by both an id and
+          # a pattern, is still staged once.
+          select_id() {
+            local sid
+            for sid in "${selected_ids[@]}"; do
+              [ "$sid" = "$1" ] && return 0
+            done
+            selected_ids+=("$1")
+          }
+
           selected_ids=()
           if [ "${#requested_ids[@]}" -gt 0 ]; then
             bad=0
             for rid in "${requested_ids[@]}"; do
+              # A wildcard pattern selects every manifest id it matches. It is matched against the
+              # manifest only, never against files, so it cannot select a package the manifest does
+              # not approve to ship, and one that matches nothing fails the run like an unknown id.
+              case "$rid" in
+                *[*?[]*)
+                  matched=()
+                  for mid in "${manifest_ids[@]}"; do
+                    # shellcheck disable=SC2254 # rid is deliberately a pattern here
+                    case "$mid" in $rid) matched+=("$mid") ;; esac
+                  done
+                  if [ "${#matched[@]}" -eq 0 ]; then
+                    echo "::error::'$rid' matches no package id in bld/release-manifest.txt. A pattern is matched against the left-hand column of that file only, so it never selects a package the manifest does not list."
+                    bad=1
+                  else
+                    echo "'$rid' matches ${#matched[@]} manifest package(s): ${matched[*]}"
+                    for mid in "${matched[@]}"; do select_id "$mid"; done
+                  fi
+                  continue
+                  ;;
+              esac
+
               found=0
               for mid in "${manifest_ids[@]}"; do
                 [ "$rid" = "$mid" ] && { found=1; break; }
               done
               if [ "$found" -eq 1 ]; then
-                selected_ids+=("$rid")
+                select_id "$rid"
                 continue
               fi
 
               bad=1
-
-              # A wildcard is never a package id, so name that mistake rather than suggest a typo.
-              case "$rid" in
-                *[*?[]*)
-                  echo "::error::'$rid' is a wildcard pattern, not a package id - the packages input matches no wildcards. List exact ids from the left-hand column of bld/release-manifest.txt."
-                  continue
-                  ;;
-              esac
 
               # Withheld on purpose: quote the manifest's own reason.
               reason=""
