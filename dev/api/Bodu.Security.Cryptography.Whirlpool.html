@@ -1,108 +1,138 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
       <title>Class Whirlpool | BODU </title>
-      <meta name="viewport" content="width=device-width">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class Whirlpool | BODU ">
-    
-    <meta name="description" content="Computes a 512-bit cryptographic hash using the Whirlpool algorithm designed by Paulo S. L. M. Barreto and Vincent Rijmen. Supports all three published revisions: Whirlpool-0 (2000), Whirlpool-T (2001) and the final Whirlpool function standardized by ISO/IEC 10118-3 in 2003. This class cannot be inherited.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      
+      <meta name="description" content="Computes a 512-bit cryptographic hash using the Whirlpool algorithm designed by Paulo S. L. M. Barreto and Vincent Rijmen. Supports all three published revisions: Whirlpool-0 (2000), Whirlpool-T (2001) and the final Whirlpool function standardized by ISO/IEC 10118-3 in 2003. This class cannot be inherited.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/new/master/apiSpec/new?filename=Bodu_Security_Cryptography_Whirlpool.md&amp;value=---%0Auid%3A%20Bodu.Security.Cryptography.Whirlpool%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Security.Cryptography.Whirlpool">
+
+        <article data-uid="Bodu.Security.Cryptography.Whirlpool">
 
 
 
-  <h1 id="Bodu_Security_Cryptography_Whirlpool" data-uid="Bodu.Security.Cryptography.Whirlpool" class="text-break">Class Whirlpool</h1>
-  <div class="markdown level0 summary"><p>Computes a 512-bit cryptographic hash using the <code>Whirlpool</code> algorithm designed by Paulo S. L. M. Barreto and
+  <h1 id="Bodu_Security_Cryptography_Whirlpool" data-uid="Bodu.Security.Cryptography.Whirlpool" class="text-break">
+Class Whirlpool  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/Whirlpool.Tables.cs/#L9"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Security</span>.<a class="xref" href="Bodu.Security.Cryptography.html">Cryptography</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Security.Cryptography.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Computes a 512-bit cryptographic hash using the <code>Whirlpool</code> algorithm designed by Paulo S. L. M. Barreto and
 Vincent Rijmen. Supports all three published revisions: <code>Whirlpool-0</code> (2000), <code>Whirlpool-T</code> (2001) and the
 final <code>Whirlpool</code> function standardized by <code>ISO/IEC 10118-3</code> in 2003. This class cannot be inherited.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a></div>
-    <div class="level2"><a class="xref" href="Bodu.Security.Cryptography.BufferedBlockHashAlgorithm.html">BufferedBlockHashAlgorithm</a></div>
-    <div class="level3"><a class="xref" href="Bodu.Security.Cryptography.BlockHashAlgorithm.html">BlockHashAlgorithm</a></div>
-    <div class="level4"><span class="xref">Whirlpool</span></div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class Whirlpool : BlockHashAlgorithm, ICryptoTransform, IDisposable</code></pre>
   </div>
-  <div class="implements">
-    <h5>Implements</h5>
-    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.icryptotransform">ICryptoTransform</a></div>
-    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
-  </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a></div>
+      <div><a class="xref" href="Bodu.Security.Cryptography.BufferedBlockHashAlgorithm.html">BufferedBlockHashAlgorithm</a></div>
+      <div><a class="xref" href="Bodu.Security.Cryptography.BlockHashAlgorithm.html">BlockHashAlgorithm</a></div>
+      <div><span class="xref">Whirlpool</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.icryptotransform">ICryptoTransform</a></div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm.clear">HashAlgorithm.Clear()</a>
     </div>
@@ -166,14 +196,155 @@ final <code>Whirlpool</code> function standardized by <code>ISO/IEC 10118-3</cod
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
+  </dd></dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Security</span>.<a class="xref" href="Bodu.Security.Cryptography.html">Cryptography</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Security.Cryptography.dll</h6>
-  <h5 id="Bodu_Security_Cryptography_Whirlpool_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class Whirlpool : BlockHashAlgorithm, ICryptoTransform, IDisposable</code></pre>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h5 id="Bodu_Security_Cryptography_Whirlpool_remarks"><strong>Remarks</strong></h5>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_AppendData_System_Security_Cryptography_HashAlgorithm_System_ReadOnlySpan_System_Byte__">HashAlgorithmExtensions.AppendData(HashAlgorithm, ReadOnlySpan&lt;byte&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_AppendDataAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_Int32_System_Threading_CancellationToken_">HashAlgorithmExtensions.AppendDataAsync(HashAlgorithm, Stream, int, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_Byte___System_Byte___">HashAlgorithmExtensions.TryVerifyHash(HashAlgorithm, byte[], byte[])</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_Byte___System_String_">HashAlgorithmExtensions.TryVerifyHash(HashAlgorithm, byte[], string)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_Byte___">HashAlgorithmExtensions.TryVerifyHash(HashAlgorithm, Stream, byte[])</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_String_">HashAlgorithmExtensions.TryVerifyHash(HashAlgorithm, Stream, string)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_ReadOnlyMemory_System_Byte__System_Byte___">HashAlgorithmExtensions.TryVerifyHash(HashAlgorithm, ReadOnlyMemory&lt;byte&gt;, byte[])</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__">HashAlgorithmExtensions.TryVerifyHash(HashAlgorithm, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_String_System_Text_Encoding_System_Byte___">HashAlgorithmExtensions.TryVerifyHash(HashAlgorithm, string, Encoding, byte[])</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_Byte___System_Byte___System_Threading_CancellationToken_">HashAlgorithmExtensions.TryVerifyHashAsync(HashAlgorithm, byte[], byte[], CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_Byte___System_String_System_Threading_CancellationToken_">HashAlgorithmExtensions.TryVerifyHashAsync(HashAlgorithm, byte[], string, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_Byte___System_Threading_CancellationToken_">HashAlgorithmExtensions.TryVerifyHashAsync(HashAlgorithm, Stream, byte[], CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_ReadOnlyMemory_System_Byte__System_Threading_CancellationToken_">HashAlgorithmExtensions.TryVerifyHashAsync(HashAlgorithm, Stream, ReadOnlyMemory&lt;byte&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_String_System_Threading_CancellationToken_">HashAlgorithmExtensions.TryVerifyHashAsync(HashAlgorithm, Stream, string, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_String_System_Text_Encoding_System_Byte___System_Threading_CancellationToken_">HashAlgorithmExtensions.TryVerifyHashAsync(HashAlgorithm, string, Encoding, byte[], CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_Byte___System_Byte___">HashAlgorithmExtensions.VerifyHash(HashAlgorithm, byte[], byte[])</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_Byte___System_String_">HashAlgorithmExtensions.VerifyHash(HashAlgorithm, byte[], string)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_Byte___">HashAlgorithmExtensions.VerifyHash(HashAlgorithm, Stream, byte[])</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_String_">HashAlgorithmExtensions.VerifyHash(HashAlgorithm, Stream, string)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_ReadOnlyMemory_System_Byte__System_Byte___">HashAlgorithmExtensions.VerifyHash(HashAlgorithm, ReadOnlyMemory&lt;byte&gt;, byte[])</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__">HashAlgorithmExtensions.VerifyHash(HashAlgorithm, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_String_System_Text_Encoding_System_Byte___">HashAlgorithmExtensions.VerifyHash(HashAlgorithm, string, Encoding, byte[])</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_Byte___System_Threading_CancellationToken_">HashAlgorithmExtensions.VerifyHashAsync(HashAlgorithm, Stream, byte[], CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_ReadOnlyMemory_System_Byte__System_Threading_CancellationToken_">HashAlgorithmExtensions.VerifyHashAsync(HashAlgorithm, Stream, ReadOnlyMemory&lt;byte&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_String_System_Threading_CancellationToken_">HashAlgorithmExtensions.VerifyHashAsync(HashAlgorithm, Stream, string, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_Byte___">ICryptoTransformExtensions.Transform(ICryptoTransform, byte[])</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_Byte___System_Int32_System_Int32_">ICryptoTransformExtensions.Transform(ICryptoTransform, byte[], int, int)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_IO_Stream_System_IO_Stream_System_Int32_">ICryptoTransformExtensions.Transform(ICryptoTransform, Stream, Stream, int)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_ReadOnlyMemory_System_Byte__">ICryptoTransformExtensions.Transform(ICryptoTransform, ReadOnlyMemory&lt;byte&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_ReadOnlyMemory_System_Byte__System_Memory_System_Byte__">ICryptoTransformExtensions.Transform(ICryptoTransform, ReadOnlyMemory&lt;byte&gt;, Memory&lt;byte&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_ReadOnlySpan_System_Byte__">ICryptoTransformExtensions.Transform(ICryptoTransform, ReadOnlySpan&lt;byte&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">ICryptoTransformExtensions.Transform(ICryptoTransform, ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformAsync_System_Security_Cryptography_ICryptoTransform_System_IO_Stream_System_IO_Stream_System_Int32_System_Threading_CancellationToken_">ICryptoTransformExtensions.TransformAsync(ICryptoTransform, Stream, Stream, int, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformAsync_System_Security_Cryptography_ICryptoTransform_System_ReadOnlyMemory_System_Byte__System_Memory_System_Byte__System_Threading_CancellationToken_">ICryptoTransformExtensions.TransformAsync(ICryptoTransform, ReadOnlyMemory&lt;byte&gt;, Memory&lt;byte&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformBlock_System_Security_Cryptography_ICryptoTransform_System_Byte___">ICryptoTransformExtensions.TransformBlock(ICryptoTransform, byte[])</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_System_Security_Cryptography_ICryptoTransform_">ICryptoTransformExtensions.TransformFinalBlock(ICryptoTransform)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_System_Security_Cryptography_ICryptoTransform_System_Byte___">ICryptoTransformExtensions.TransformFinalBlock(ICryptoTransform, byte[])</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_System_Security_Cryptography_ICryptoTransform_System_Byte___System_Int32_">ICryptoTransformExtensions.TransformFinalBlock(ICryptoTransform, byte[], int)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_System_Security_Cryptography_ICryptoTransform_System_ReadOnlyMemory_System_Byte__">ICryptoTransformExtensions.TransformFinalBlock(ICryptoTransform, ReadOnlyMemory&lt;byte&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_System_Security_Cryptography_ICryptoTransform_System_ReadOnlySpan_System_Byte__">ICryptoTransformExtensions.TransformFinalBlock(ICryptoTransform, ReadOnlySpan&lt;byte&gt;)</a>
+  </div>
+  </dd></dl>
+
+
+  <h2 id="Bodu_Security_Cryptography_Whirlpool_examples">Examples</h2>
+  <pre><code class="lang-csharp">using var whirlpool = new Whirlpool { Version = WhirlpoolVersion.WhirlpoolInfo3 };
+byte[] digest = whirlpool.ComputeHash(message);</code></pre>
+
+
+  <h2 id="Bodu_Security_Cryptography_Whirlpool_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
 Whirlpool is a Merkle–Damgård construction wrapped around an internal 512-bit block cipher (<code>W</code>) that borrows
 the wide-trail design principles of the Rijndael family. Input is consumed in 64-byte blocks; the final message
@@ -181,10 +352,10 @@ length (in bits) is appended in a 256-bit big-endian trailer after a single <cod
 standard manner.
 </p>
 <p>
-The selected revision is controlled by <a class="xref" href="Bodu.Security.Cryptography.Whirlpool.Version.html#Bodu_Security_Cryptography_Whirlpool_Version">Version</a>. The default is
+The selected revision is controlled by <a class="xref" href="Bodu.Security.Cryptography.Whirlpool.html#Bodu_Security_Cryptography_Whirlpool_Version">Version</a>. The default is
 <a class="xref" href="Bodu.Security.Cryptography.WhirlpoolVersion.html#Bodu_Security_Cryptography_WhirlpoolVersion_WhirlpoolInfo3">WhirlpoolInfo3</a>, which matches the <code>ISO/IEC 10118-3</code> standard.
-<a class="xref" href="Bodu.Security.Cryptography.Whirlpool.Version.html#Bodu_Security_Cryptography_Whirlpool_Version">Version</a> may be changed before any input has been consumed; attempting to change it once hashing has
-started throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicunexpectedoperationexception">CryptographicUnexpectedOperationException</a>. Calling <a class="xref" href="Bodu.Security.Cryptography.Whirlpool.Initialize.html#Bodu_Security_Cryptography_Whirlpool_Initialize">Initialize()</a> returns
+<a class="xref" href="Bodu.Security.Cryptography.Whirlpool.html#Bodu_Security_Cryptography_Whirlpool_Version">Version</a> may be changed before any input has been consumed; attempting to change it once hashing has
+started throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicunexpectedoperationexception">CryptographicUnexpectedOperationException</a>. Calling <a class="xref" href="Bodu.Security.Cryptography.Whirlpool.html#Bodu_Security_Cryptography_Whirlpool_Initialize">Initialize()</a> returns
 the instance to the reconfigurable state.
 </p>
 <p>
@@ -207,319 +378,562 @@ indices, so hashing secret data (for example inside a keyed construction) is <b>
 cache-based side-channel attacks.
 </p>
 </div>
-  <h5 id="Bodu_Security_Cryptography_Whirlpool_examples"><strong>Examples</strong></h5>
-  <pre><code class="lang-csharp">using var whirlpool = new Whirlpool { Version = WhirlpoolVersion.WhirlpoolInfo3 };
-byte[] digest = whirlpool.ComputeHash(message);</code></pre>
 
-  <h3 id="constructors">Constructors
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Whirlpool__ctor" data-uid="Bodu.Security.Cryptography.Whirlpool.#ctor">
-          <a class="xref" href="Bodu.Security.Cryptography.Whirlpool.-ctor.html#Bodu_Security_Cryptography_Whirlpool__ctor">Whirlpool()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Security.Cryptography.Whirlpool.html">Whirlpool</a> class configured for
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Bodu_Security_Cryptography_Whirlpool__ctor_" data-uid="Bodu.Security.Cryptography.Whirlpool.#ctor*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_Whirlpool__ctor" data-uid="Bodu.Security.Cryptography.Whirlpool.#ctor">
+  Whirlpool()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/Whirlpool.cs/#L99"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Security.Cryptography.Whirlpool.html">Whirlpool</a> class configured for
 <a class="xref" href="Bodu.Security.Cryptography.WhirlpoolVersion.html#Bodu_Security_Cryptography_WhirlpoolVersion_WhirlpoolInfo3">WhirlpoolInfo3</a>, the standardized <code>ISO/IEC 10118-3</code> revision.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="properties">Properties
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Whirlpool_AlgorithmName" data-uid="Bodu.Security.Cryptography.Whirlpool.AlgorithmName">
-          <a class="xref" href="Bodu.Security.Cryptography.Whirlpool.AlgorithmName.html#Bodu_Security_Cryptography_Whirlpool_AlgorithmName">AlgorithmName</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the canonical, fully-qualified algorithm name for this instance, including any size or variant qualifiers
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Whirlpool()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Bodu_Security_Cryptography_Whirlpool_AlgorithmName_" data-uid="Bodu.Security.Cryptography.Whirlpool.AlgorithmName*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_Whirlpool_AlgorithmName" data-uid="Bodu.Security.Cryptography.Whirlpool.AlgorithmName">
+  AlgorithmName
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/Whirlpool.cs/#L116"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the canonical, fully-qualified algorithm name for this instance, including any size or variant qualifiers
 (for example, <code>&quot;Tiger/192&quot;</code>, <code>&quot;Skein-512-256&quot;</code>, <code>&quot;BLAKE2b-512&quot;</code>, <code>&quot;ASCON-HASH256&quot;</code>,
 <code>&quot;SipHash-2-4-64&quot;</code>).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Whirlpool_CanReuseTransform" data-uid="Bodu.Security.Cryptography.Whirlpool.CanReuseTransform">
-          <a class="xref" href="Bodu.Security.Cryptography.Whirlpool.CanReuseTransform.html#Bodu_Security_Cryptography_Whirlpool_CanReuseTransform">CanReuseTransform</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets a value indicating whether the current transform can be reused.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Whirlpool_CanTransformMultipleBlocks" data-uid="Bodu.Security.Cryptography.Whirlpool.CanTransformMultipleBlocks">
-          <a class="xref" href="Bodu.Security.Cryptography.Whirlpool.CanTransformMultipleBlocks.html#Bodu_Security_Cryptography_Whirlpool_CanTransformMultipleBlocks">CanTransformMultipleBlocks</a>
-        </td>
-        <td class="markdown level1 summary"><p>When overridden in a derived class, gets a value indicating whether multiple blocks can be transformed.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Whirlpool_Version" data-uid="Bodu.Security.Cryptography.Whirlpool.Version">
-          <a class="xref" href="Bodu.Security.Cryptography.Whirlpool.Version.html#Bodu_Security_Cryptography_Whirlpool_Version">Version</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets or sets the published <a class="xref" href="Bodu.Security.Cryptography.WhirlpoolVersion.html">WhirlpoolVersion</a> used to compute the hash value.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Whirlpool_Dispose_System_Boolean_" data-uid="Bodu.Security.Cryptography.Whirlpool.Dispose(System.Boolean)">
-          <a class="xref" href="Bodu.Security.Cryptography.Whirlpool.Dispose.html#Bodu_Security_Cryptography_Whirlpool_Dispose_System_Boolean_">Dispose(bool)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Releases resources used by the algorithm and clears the internal state.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Whirlpool_HashCore_System_Byte___System_Int32_System_Int32_" data-uid="Bodu.Security.Cryptography.Whirlpool.HashCore(System.Byte[],System.Int32,System.Int32)">
-          <a class="xref" href="Bodu.Security.Cryptography.Whirlpool.HashCore.html#Bodu_Security_Cryptography_Whirlpool_HashCore_System_Byte___System_Int32_System_Int32_">HashCore(byte[], int, int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Validates the supplied byte-array slice and forwards it to the <a class="xref" href="Bodu.Security.Cryptography.BufferedBlockHashAlgorithm.HashCore.html#Bodu_Security_Cryptography_BufferedBlockHashAlgorithm_HashCore_System_ReadOnlySpan_System_Byte__">HashCore(ReadOnlySpan&lt;byte&gt;)</a>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override string AlgorithmName { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>A string identifying the algorithm and its current configuration.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_Whirlpool_AlgorithmName_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Derived classes implement this property to expose a stable, consumer-facing identifier suitable for logging,
+telemetry, registry keys, or interop with hash-name catalogues. Implementations should be pure and
+side-effect-free — the value may be queried before any input has been consumed and after disposal as part of
+error reporting.</p>
+</div>
+
+
+
+
+  <a id="Bodu_Security_Cryptography_Whirlpool_CanReuseTransform_" data-uid="Bodu.Security.Cryptography.Whirlpool.CanReuseTransform*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_Whirlpool_CanReuseTransform" data-uid="Bodu.Security.Cryptography.Whirlpool.CanReuseTransform">
+  CanReuseTransform
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/Whirlpool.cs/#L106"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether the current transform can be reused.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override bool CanReuseTransform { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>Always <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Security_Cryptography_Whirlpool_CanTransformMultipleBlocks_" data-uid="Bodu.Security.Cryptography.Whirlpool.CanTransformMultipleBlocks*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_Whirlpool_CanTransformMultipleBlocks" data-uid="Bodu.Security.Cryptography.Whirlpool.CanTransformMultipleBlocks">
+  CanTransformMultipleBlocks
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/Whirlpool.cs/#L109"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>When overridden in a derived class, gets a value indicating whether multiple blocks can be transformed.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override bool CanTransformMultipleBlocks { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if multiple blocks can be transformed; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Security_Cryptography_Whirlpool_Version_" data-uid="Bodu.Security.Cryptography.Whirlpool.Version*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_Whirlpool_Version" data-uid="Bodu.Security.Cryptography.Whirlpool.Version">
+  Version
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/Whirlpool.cs/#L148"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the published <a class="xref" href="Bodu.Security.Cryptography.WhirlpoolVersion.html">WhirlpoolVersion</a> used to compute the hash value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public WhirlpoolVersion Version { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Security.Cryptography.WhirlpoolVersion.html">WhirlpoolVersion</a></dt>
+    <dd><p>The Whirlpool revision selected for subsequent hashing operations.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_Whirlpool_Version_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+The revision must be assigned before any input has been consumed. Once
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm.transformblock">TransformBlock(byte[], int, int, byte[], int)</a> or any <code>ComputeHash</code> overload has started a computation, the
+value becomes immutable until <a class="xref" href="Bodu.Security.Cryptography.Whirlpool.html#Bodu_Security_Cryptography_Whirlpool_Initialize">Initialize()</a> is called.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>The assigned value is not a defined <a class="xref" href="Bodu.Security.Cryptography.WhirlpoolVersion.html">WhirlpoolVersion</a> member.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>The hash algorithm instance has been disposed.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicunexpectedoperationexception">CryptographicUnexpectedOperationException</a></dt>
+    <dd><p>The hash computation has already started and the algorithm is no longer reconfigurable.</p>
+</dd>
+  </dl>
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Security_Cryptography_Whirlpool_Dispose_" data-uid="Bodu.Security.Cryptography.Whirlpool.Dispose*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_Whirlpool_Dispose_System_Boolean_" data-uid="Bodu.Security.Cryptography.Whirlpool.Dispose(System.Boolean)">
+  Dispose(bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/Whirlpool.cs/#L199"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Releases resources used by the algorithm and clears the internal state.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override void Dispose(bool disposing)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>disposing</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> to release both managed and unmanaged resources; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> to release
+only unmanaged resources.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_Security_Cryptography_Whirlpool_HashCore_" data-uid="Bodu.Security.Cryptography.Whirlpool.HashCore*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_Whirlpool_HashCore_System_Byte___System_Int32_System_Int32_" data-uid="Bodu.Security.Cryptography.Whirlpool.HashCore(System.Byte[],System.Int32,System.Int32)">
+  HashCore(byte[], int, int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/Whirlpool.cs/#L179"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Validates the supplied byte-array slice and forwards it to the <a class="xref" href="Bodu.Security.Cryptography.BufferedBlockHashAlgorithm.html#Bodu_Security_Cryptography_BufferedBlockHashAlgorithm_HashCore_System_ReadOnlySpan_System_Byte__">HashCore(ReadOnlySpan&lt;byte&gt;)</a>
 overload that derived classes implement.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Whirlpool_HashCore_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.Whirlpool.HashCore(System.ReadOnlySpan{System.Byte})">
-          <a class="xref" href="Bodu.Security.Cryptography.Whirlpool.HashCore.html#Bodu_Security_Cryptography_Whirlpool_HashCore_System_ReadOnlySpan_System_Byte__">HashCore(ReadOnlySpan&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Processes the entirety of the input <code class="paramref">source</code> and feeds it into the computation pipeline. This
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override void HashCore(byte[] array, int ibStart, int cbSize)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>array</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The input byte array containing the data to hash.</p>
+</dd>
+    <dt><code>ibStart</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The zero-based index in <code class="paramref">array</code> at which to begin reading data.</p>
+</dd>
+    <dt><code>cbSize</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of bytes to process from <code class="paramref">array</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">array</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>
+<code class="paramref">ibStart</code> is less than zero.
+</p>
+<p>
+-or-
+</p>
+<p>
+<code class="paramref">cbSize</code> is less than zero.
+</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">ibStart</code> and <code class="paramref">cbSize</code> specify a range that exceeds the length of
+<code class="paramref">array</code>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>The algorithm instance has been disposed.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicunexpectedoperationexception">CryptographicUnexpectedOperationException</a></dt>
+    <dd><p>On target frameworks prior to .NET 6, the hash algorithm has already been finalized and cannot accept more input
+data.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Security_Cryptography_Whirlpool_HashCore_" data-uid="Bodu.Security.Cryptography.Whirlpool.HashCore*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_Whirlpool_HashCore_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.Whirlpool.HashCore(System.ReadOnlySpan{System.Byte})">
+  HashCore(ReadOnlySpan&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/Whirlpool.cs/#L186"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Processes the entirety of the input <code class="paramref">source</code> and feeds it into the computation pipeline. This
 method updates the internal hash state accordingly by consuming the entire input span.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Whirlpool_Initialize" data-uid="Bodu.Security.Cryptography.Whirlpool.Initialize">
-          <a class="xref" href="Bodu.Security.Cryptography.Whirlpool.Initialize.html#Bodu_Security_Cryptography_Whirlpool_Initialize">Initialize()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Resets the algorithm to its initial state by clearing the residual buffer and the running byte total. Derived
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override void HashCore(ReadOnlySpan&lt;byte&gt; source)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The input byte span containing the data to hash.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_Whirlpool_HashCore_System_ReadOnlySpan_System_Byte___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+This method is part of the core hashing process and is automatically invoked by methods such as
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm.transformblock">TransformBlock(byte[], int, int, byte[], int)</a> and
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm.computehash#system-security-cryptography-hashalgorithm-computehash(system-byte())">ComputeHash(byte[])</a>. It handles processing of raw byte array input and ensures the
+hash algorithm receives data in properly sized blocks.
+</p>
+<p>
+This method internally buffers incomplete blocks between calls to ensure proper alignment. Full blocks are
+immediately processed; any remaining bytes are stored until more data arrives or finalization occurs.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicunexpectedoperationexception">CryptographicUnexpectedOperationException</a></dt>
+    <dd><p>The hash algorithm has already been finalized and cannot accept more input data.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Security_Cryptography_Whirlpool_Initialize_" data-uid="Bodu.Security.Cryptography.Whirlpool.Initialize*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_Whirlpool_Initialize" data-uid="Bodu.Security.Cryptography.Whirlpool.Initialize">
+  Initialize()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/Whirlpool.cs/#L171"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Resets the algorithm to its initial state by clearing the residual buffer and the running byte total. Derived
 classes override this method, call <code>base.Initialize()</code> first, and then reset their own algorithm-specific
 state (chaining variables, IV, key-derived schedule).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Whirlpool_PadBlock_System_ReadOnlySpan_System_Byte__System_UInt64_System_Span_System_Byte__" data-uid="Bodu.Security.Cryptography.Whirlpool.PadBlock(System.ReadOnlySpan{System.Byte},System.UInt64,System.Span{System.Byte})">
-          <a class="xref" href="Bodu.Security.Cryptography.Whirlpool.PadBlock.html#Bodu_Security_Cryptography_Whirlpool_PadBlock_System_ReadOnlySpan_System_Byte__System_UInt64_System_Span_System_Byte__">PadBlock(ReadOnlySpan&lt;byte&gt;, ulong, Span&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Pads the final partial block of input data into <code class="paramref">destination</code> and appends the encoded total
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override void Initialize()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_Whirlpool_Initialize_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+This method does not reset the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm.state">State</a> property explicitly on .NET 6+ targets —
+the framework manages that transition. On earlier targets, derived classes that need the already-finalized guard
+should reset their <code>_finalized</code> backing field from their own <code>Initialize</code> override.
+</p>
+<p>
+Derived classes that need to validate state before the reset (for example, a keyed MAC that refuses to be
+re-initialized when no key has been set) should perform that validation before calling <code>base.Initialize()</code>.
+Once the base call returns, the residual buffer is empty, <span class="xref">Bodu.Security.Cryptography.BufferedBlockHashAlgorithm._residualBytes</span> is <code>0</code>, and
+<span class="xref">Bodu.Security.Cryptography.BufferedBlockHashAlgorithm._totalBytes</span> is <code>0</code>.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>The instance has been disposed.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Security_Cryptography_Whirlpool_PadBlock_" data-uid="Bodu.Security.Cryptography.Whirlpool.PadBlock*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_Whirlpool_PadBlock_System_ReadOnlySpan_System_Byte__System_UInt64_System_Span_System_Byte__" data-uid="Bodu.Security.Cryptography.Whirlpool.PadBlock(System.ReadOnlySpan{System.Byte},System.UInt64,System.Span{System.Byte})">
+  PadBlock(ReadOnlySpan&lt;byte&gt;, ulong, Span&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/Whirlpool.cs/#L212"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Pads the final partial block of input data into <code class="paramref">destination</code> and appends the encoded total
 message length, without allocating a padded copy on the heap.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Whirlpool_ProcessBlock_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.Whirlpool.ProcessBlock(System.ReadOnlySpan{System.Byte})">
-          <a class="xref" href="Bodu.Security.Cryptography.Whirlpool.ProcessBlock.html#Bodu_Security_Cryptography_Whirlpool_ProcessBlock_System_ReadOnlySpan_System_Byte__">ProcessBlock(ReadOnlySpan&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Transforms a complete block of input data and updates the internal hash state.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Whirlpool_ProcessFinalBlock" data-uid="Bodu.Security.Cryptography.Whirlpool.ProcessFinalBlock">
-          <a class="xref" href="Bodu.Security.Cryptography.Whirlpool.ProcessFinalBlock.html#Bodu_Security_Cryptography_Whirlpool_ProcessFinalBlock">ProcessFinalBlock()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Finalizes the hash computation and produces the final hash output.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override int PadBlock(ReadOnlySpan&lt;byte&gt; block, ulong messageLength, Span&lt;byte&gt; destination)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>block</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The final block of unprocessed input, typically containing 0 to BlockSize–1 bytes.</p>
+</dd>
+    <dt><code>messageLength</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint64">ulong</a></dt>
+    <dd><p>The total number of message bytes consumed by the algorithm, <strong>including</strong> the bytes in
+<code class="paramref">block</code>. This is the value most Merkle–Damgård length encodings append.</p>
+</dd>
+    <dt><code>destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The span receiving the padded block or blocks; at least two blocks (<code>2 × BlockSize / 8</code> bytes) long. The
+caller clears the span after processing.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of bytes written — one or two whole blocks, ready for <a class="xref" href="Bodu.Security.Cryptography.BlockHashAlgorithm.html#Bodu_Security_Cryptography_BlockHashAlgorithm_ProcessBlock_System_ReadOnlySpan_System_Byte__">ProcessBlock(ReadOnlySpan&lt;byte&gt;)</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_Whirlpool_PadBlock_System_ReadOnlySpan_System_Byte__System_UInt64_System_Span_System_Byte___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The default implementation delegates to the array-returning <a class="xref" href="Bodu.Security.Cryptography.BlockHashAlgorithm.html#Bodu_Security_Cryptography_BlockHashAlgorithm_PadBlock_System_ReadOnlySpan_System_Byte__System_UInt64_">PadBlock(ReadOnlySpan&lt;byte&gt;, ulong)</a>
+overload and clears the intermediate array; see that overload's remarks for the override contract.</p>
+</div>
+
+
+
+
+  <a id="Bodu_Security_Cryptography_Whirlpool_ProcessBlock_" data-uid="Bodu.Security.Cryptography.Whirlpool.ProcessBlock*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_Whirlpool_ProcessBlock_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.Whirlpool.ProcessBlock(System.ReadOnlySpan{System.Byte})">
+  ProcessBlock(ReadOnlySpan&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/Whirlpool.cs/#L243"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Transforms a complete block of input data and updates the internal hash state.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override void ProcessBlock(ReadOnlySpan&lt;byte&gt; block)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>block</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The input block to process. Its length must match the algorithm's configured block size.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_Whirlpool_ProcessBlock_System_ReadOnlySpan_System_Byte___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This method performs the core transformation logic of the hash algorithm. It is called repeatedly with aligned
+input blocks and is not responsible for padding or finalization steps.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown if the <code class="paramref">block</code> is not the expected size.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Security_Cryptography_Whirlpool_ProcessFinalBlock_" data-uid="Bodu.Security.Cryptography.Whirlpool.ProcessFinalBlock*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_Whirlpool_ProcessFinalBlock" data-uid="Bodu.Security.Cryptography.Whirlpool.ProcessFinalBlock">
+  ProcessFinalBlock()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/Whirlpool.cs/#L289"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Finalizes the hash computation and produces the final hash output.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override byte[] ProcessFinalBlock()</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.AppendData.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_AppendData_System_Security_Cryptography_HashAlgorithm_System_ReadOnlySpan_System_Byte__">HashAlgorithmExtensions.AppendData(HashAlgorithm, ReadOnlySpan&lt;byte&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.AppendDataAsync.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_AppendDataAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_Int32_System_Threading_CancellationToken_">HashAlgorithmExtensions.AppendDataAsync(HashAlgorithm, Stream, int, CancellationToken)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHash.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_Byte___System_Byte___">HashAlgorithmExtensions.TryVerifyHash(HashAlgorithm, byte[], byte[])</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHash.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_Byte___System_String_">HashAlgorithmExtensions.TryVerifyHash(HashAlgorithm, byte[], string)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHash.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_Byte___">HashAlgorithmExtensions.TryVerifyHash(HashAlgorithm, Stream, byte[])</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHash.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_String_">HashAlgorithmExtensions.TryVerifyHash(HashAlgorithm, Stream, string)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHash.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_ReadOnlyMemory_System_Byte__System_Byte___">HashAlgorithmExtensions.TryVerifyHash(HashAlgorithm, ReadOnlyMemory&lt;byte&gt;, byte[])</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHash.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__">HashAlgorithmExtensions.TryVerifyHash(HashAlgorithm, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHash.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHash_System_Security_Cryptography_HashAlgorithm_System_String_System_Text_Encoding_System_Byte___">HashAlgorithmExtensions.TryVerifyHash(HashAlgorithm, string, Encoding, byte[])</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHashAsync.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_Byte___System_Byte___System_Threading_CancellationToken_">HashAlgorithmExtensions.TryVerifyHashAsync(HashAlgorithm, byte[], byte[], CancellationToken)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHashAsync.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_Byte___System_String_System_Threading_CancellationToken_">HashAlgorithmExtensions.TryVerifyHashAsync(HashAlgorithm, byte[], string, CancellationToken)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHashAsync.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_Byte___System_Threading_CancellationToken_">HashAlgorithmExtensions.TryVerifyHashAsync(HashAlgorithm, Stream, byte[], CancellationToken)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHashAsync.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_ReadOnlyMemory_System_Byte__System_Threading_CancellationToken_">HashAlgorithmExtensions.TryVerifyHashAsync(HashAlgorithm, Stream, ReadOnlyMemory&lt;byte&gt;, CancellationToken)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHashAsync.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_String_System_Threading_CancellationToken_">HashAlgorithmExtensions.TryVerifyHashAsync(HashAlgorithm, Stream, string, CancellationToken)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.TryVerifyHashAsync.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_TryVerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_String_System_Text_Encoding_System_Byte___System_Threading_CancellationToken_">HashAlgorithmExtensions.TryVerifyHashAsync(HashAlgorithm, string, Encoding, byte[], CancellationToken)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHash.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_Byte___System_Byte___">HashAlgorithmExtensions.VerifyHash(HashAlgorithm, byte[], byte[])</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHash.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_Byte___System_String_">HashAlgorithmExtensions.VerifyHash(HashAlgorithm, byte[], string)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHash.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_Byte___">HashAlgorithmExtensions.VerifyHash(HashAlgorithm, Stream, byte[])</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHash.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_String_">HashAlgorithmExtensions.VerifyHash(HashAlgorithm, Stream, string)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHash.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_ReadOnlyMemory_System_Byte__System_Byte___">HashAlgorithmExtensions.VerifyHash(HashAlgorithm, ReadOnlyMemory&lt;byte&gt;, byte[])</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHash.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__">HashAlgorithmExtensions.VerifyHash(HashAlgorithm, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHash.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHash_System_Security_Cryptography_HashAlgorithm_System_String_System_Text_Encoding_System_Byte___">HashAlgorithmExtensions.VerifyHash(HashAlgorithm, string, Encoding, byte[])</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHashAsync.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_Byte___System_Threading_CancellationToken_">HashAlgorithmExtensions.VerifyHashAsync(HashAlgorithm, Stream, byte[], CancellationToken)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHashAsync.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_ReadOnlyMemory_System_Byte__System_Threading_CancellationToken_">HashAlgorithmExtensions.VerifyHashAsync(HashAlgorithm, Stream, ReadOnlyMemory&lt;byte&gt;, CancellationToken)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.VerifyHashAsync.html#Bodu_Security_Cryptography_Extensions_HashAlgorithmExtensions_VerifyHashAsync_System_Security_Cryptography_HashAlgorithm_System_IO_Stream_System_String_System_Threading_CancellationToken_">HashAlgorithmExtensions.VerifyHashAsync(HashAlgorithm, Stream, string, CancellationToken)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.Transform.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_Byte___">ICryptoTransformExtensions.Transform(ICryptoTransform, byte[])</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.Transform.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_Byte___System_Int32_System_Int32_">ICryptoTransformExtensions.Transform(ICryptoTransform, byte[], int, int)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.Transform.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_IO_Stream_System_IO_Stream_System_Int32_">ICryptoTransformExtensions.Transform(ICryptoTransform, Stream, Stream, int)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.Transform.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_ReadOnlyMemory_System_Byte__">ICryptoTransformExtensions.Transform(ICryptoTransform, ReadOnlyMemory&lt;byte&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.Transform.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_ReadOnlyMemory_System_Byte__System_Memory_System_Byte__">ICryptoTransformExtensions.Transform(ICryptoTransform, ReadOnlyMemory&lt;byte&gt;, Memory&lt;byte&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.Transform.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_ReadOnlySpan_System_Byte__">ICryptoTransformExtensions.Transform(ICryptoTransform, ReadOnlySpan&lt;byte&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.Transform.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">ICryptoTransformExtensions.Transform(ICryptoTransform, ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.TransformAsync.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformAsync_System_Security_Cryptography_ICryptoTransform_System_IO_Stream_System_IO_Stream_System_Int32_System_Threading_CancellationToken_">ICryptoTransformExtensions.TransformAsync(ICryptoTransform, Stream, Stream, int, CancellationToken)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.TransformAsync.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformAsync_System_Security_Cryptography_ICryptoTransform_System_ReadOnlyMemory_System_Byte__System_Memory_System_Byte__System_Threading_CancellationToken_">ICryptoTransformExtensions.TransformAsync(ICryptoTransform, ReadOnlyMemory&lt;byte&gt;, Memory&lt;byte&gt;, CancellationToken)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.TransformBlock.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformBlock_System_Security_Cryptography_ICryptoTransform_System_Byte___">ICryptoTransformExtensions.TransformBlock(ICryptoTransform, byte[])</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.TransformFinalBlock.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_System_Security_Cryptography_ICryptoTransform_">ICryptoTransformExtensions.TransformFinalBlock(ICryptoTransform)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.TransformFinalBlock.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_System_Security_Cryptography_ICryptoTransform_System_Byte___">ICryptoTransformExtensions.TransformFinalBlock(ICryptoTransform, byte[])</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.TransformFinalBlock.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_System_Security_Cryptography_ICryptoTransform_System_Byte___System_Int32_">ICryptoTransformExtensions.TransformFinalBlock(ICryptoTransform, byte[], int)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.TransformFinalBlock.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_System_Security_Cryptography_ICryptoTransform_System_ReadOnlyMemory_System_Byte__">ICryptoTransformExtensions.TransformFinalBlock(ICryptoTransform, ReadOnlyMemory&lt;byte&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.TransformFinalBlock.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_System_Security_Cryptography_ICryptoTransform_System_ReadOnlySpan_System_Byte__">ICryptoTransformExtensions.TransformFinalBlock(ICryptoTransform, ReadOnlySpan&lt;byte&gt;)</a>
-  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>A byte array containing the final computed hash value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_Whirlpool_ProcessFinalBlock_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This method is invoked after all input has been processed and padded. It reads from the internal hash state and
+serializes the result to a byte array in the format expected by consumers of the algorithm (e.g., big-endian or
+little-endian).</p>
+</div>
+
+
+
+
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 302e395 · Built: 2026-09-29 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 1e0dd9a · Built: 2026-09-29 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

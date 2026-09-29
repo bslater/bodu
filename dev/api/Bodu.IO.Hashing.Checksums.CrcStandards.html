@@ -1,784 +1,1114 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
       <title>Enum CrcStandards | BODU </title>
-      <meta name="viewport" content="width=device-width">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Enum CrcStandards | BODU ">
-    
-    <meta name="description" content="Identifies a CRC parameter set defined in the CRC RevEng catalogue. Pass to  to materialise the corresponding  on demand.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      
+      <meta name="description" content="Identifies a CRC parameter set defined in the CRC RevEng catalogue. Pass to  to materialise the corresponding  on demand.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/new/master/apiSpec/new?filename=Bodu_IO_Hashing_Checksums_CrcStandards.md&amp;value=---%0Auid%3A%20Bodu.IO.Hashing.Checksums.CrcStandards%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.IO.Hashing.Checksums.CrcStandards">
+
+        <article data-uid="Bodu.IO.Hashing.Checksums.CrcStandards">
 
 
 
 
-  <h1 id="Bodu_IO_Hashing_Checksums_CrcStandards" data-uid="Bodu.IO.Hashing.Checksums.CrcStandards" class="text-break">Enum CrcStandards</h1>
-  <div class="markdown level0 summary"><p>Identifies a CRC parameter set defined in the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm">CRC RevEng catalogue</a>.
-Pass to <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.Get.html#Bodu_IO_Hashing_Checksums_CrcStandard_Get_Bodu_IO_Hashing_Checksums_CrcStandards_">Get(CrcStandards)</a> to materialise the corresponding <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a> on demand.</p>
+  <h1 id="Bodu_IO_Hashing_Checksums_CrcStandards" data-uid="Bodu.IO.Hashing.Checksums.CrcStandards" class="text-break">
+Enum CrcStandards  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Hashing/src/IO.Hashing.Checksums/CrcStandards.cs/#L22"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.IO.html">IO</a>.<a class="xref" href="Bodu.IO.Hashing.html">Hashing</a>.<a class="xref" href="Bodu.IO.Hashing.Checksums.html">Checksums</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.IO.Hashing.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Identifies a CRC parameter set defined in the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm">CRC RevEng catalogue</a>.
+Pass to <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html#Bodu_IO_Hashing_Checksums_CrcStandard_Get_Bodu_IO_Hashing_Checksums_CrcStandards_">Get(CrcStandards)</a> to materialise the corresponding <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a> on demand.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">IO</span>.<a class="xref" href="Bodu.IO.Hashing.html">Hashing</a>.<a class="xref" href="Bodu.IO.Hashing.Checksums.html">Checksums</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.IO.Hashing.dll</h6>
-  <h5 id="Bodu_IO_Hashing_Checksums_CrcStandards_syntax">Syntax</h5>
+  <div class="markdown conceptual"></div>
+
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public enum CrcStandards</code></pre>
   </div>
-  <h5 id="Bodu_IO_Hashing_Checksums_CrcStandards_remarks"><strong>Remarks</strong></h5>
+
+
+
+
+
+
+
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.BufferConverter.html#Bodu_Extensions_BufferConverter_CopyTo__1___0_System_Byte___System_Int32_">BufferConverter.CopyTo&lt;T&gt;(T, byte[], int)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.Clamp&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsBetween__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsBetween&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsGreaterThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsLessThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsOutside__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsOutside&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.EnumExtensions.html#Bodu_Extensions_EnumExtensions_ClearFlag__1___0___0_">EnumExtensions.ClearFlag&lt;TEnum&gt;(TEnum, TEnum)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.EnumExtensions.html#Bodu_Extensions_EnumExtensions_GetDescription__1___0_">EnumExtensions.GetDescription&lt;TEnum&gt;(TEnum)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.EnumExtensions.html#Bodu_Extensions_EnumExtensions_GetDisplayName__1___0_">EnumExtensions.GetDisplayName&lt;TEnum&gt;(TEnum)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.EnumExtensions.html#Bodu_Extensions_EnumExtensions_HasAllFlags__1___0___0_">EnumExtensions.HasAllFlags&lt;TEnum&gt;(TEnum, TEnum)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.EnumExtensions.html#Bodu_Extensions_EnumExtensions_HasAnyFlag__1___0___0_">EnumExtensions.HasAnyFlag&lt;TEnum&gt;(TEnum, TEnum)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.EnumExtensions.html#Bodu_Extensions_EnumExtensions_SetFlag__1___0___0_">EnumExtensions.SetFlag&lt;TEnum&gt;(TEnum, TEnum)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.EnumExtensions.html#Bodu_Extensions_EnumExtensions_ToggleFlag__1___0___0_">EnumExtensions.ToggleFlag&lt;TEnum&gt;(TEnum, TEnum)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.EnumExtensions.html#Bodu_Extensions_EnumExtensions_TryGetDescription__1___0_System_String__">EnumExtensions.TryGetDescription&lt;TEnum&gt;(TEnum, out string)</a>
+  </div>
+  </dd></dl>
+
+  <h2 id="fields">Fields
+</h2>
+  <dl class="parameters">
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC3_GSM"><code>CRC3_GSM = 0</code></dt>
+  <dd><p>Represents the <code>CRC-3/GSM</code> CRC standard.</p>
+<p>The <code>CRC-3/GSM</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-3-gsm">CRC RevEng catalogue</a> (Created: 17 February 2017; Updated: 4 August 2023), with the following definition.</p>
+<p>
+<ul><li>Width: <code>3</code></li><li>Polynomial: <code>0x3UL</code></li><li>Initial Value: <code>0x0UL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0x7UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC3_ROHC"><code>CRC3_ROHC = 1</code></dt>
+  <dd><p>Represents the <code>CRC-3/ROHC</code> CRC standard.</p>
+<p>The <code>CRC-3/ROHC</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-3-rohc">CRC RevEng catalogue</a> (Created: 14 December 2009; Updated: 4 August 2023), with the following definition.</p>
+<p>
+<ul><li>Width: <code>3</code></li><li>Polynomial: <code>0x3UL</code></li><li>Initial Value: <code>0x7UL</code></li><li>Reflect In: <code>true</code></li><li>Reflect Out: <code>true</code></li><li>XOR Out: <code>0x0UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC4_G704"><code>CRC4_G704 = 2</code></dt>
+  <dd><p>Represents the <code>CRC-4/G-704</code> CRC standard.</p>
+<p>The <code>CRC-4/G-704</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-4-g-704">CRC RevEng catalogue</a> (Created: 7 October 2008; Updated: 21 November 2018), with the following definition.</p>
+<p>
+<ul><li>Width: <code>4</code></li><li>Polynomial: <code>0x3UL</code></li><li>Initial Value: <code>0x0UL</code></li><li>Reflect In: <code>true</code></li><li>Reflect Out: <code>true</code></li><li>XOR Out: <code>0x0UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC4_INTERLAKEN"><code>CRC4_INTERLAKEN = 3</code></dt>
+  <dd><p>Represents the <code>CRC-4/INTERLAKEN</code> CRC standard.</p>
+<p>The <code>CRC-4/INTERLAKEN</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-4-interlaken">CRC RevEng catalogue</a> (Created: 10 February 2016; Updated: 4 August 2023), with the following definition.</p>
+<p>
+<ul><li>Width: <code>4</code></li><li>Polynomial: <code>0x3UL</code></li><li>Initial Value: <code>0xFUL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0xFUL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC5_EPCC1G2"><code>CRC5_EPCC1G2 = 4</code></dt>
+  <dd><p>Represents the <code>CRC-5/EPC-C1G2</code> CRC standard.</p>
+<p>The <code>CRC-5/EPC-C1G2</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-5-epc-c1g2">CRC RevEng catalogue</a> (Created: 20 May 2009; Updated: 28 December 2019), with the following definition.</p>
+<p>
+<ul><li>Width: <code>5</code></li><li>Polynomial: <code>0x09UL</code></li><li>Initial Value: <code>0x09UL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0x00UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC5_G704"><code>CRC5_G704 = 5</code></dt>
+  <dd><p>Represents the <code>CRC-5/G-704</code> CRC standard.</p>
+<p>The <code>CRC-5/G-704</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-5-g-704">CRC RevEng catalogue</a> (Created: 7 October 2008; Updated: 21 November 2018), with the following definition.</p>
+<p>
+<ul><li>Width: <code>5</code></li><li>Polynomial: <code>0x15UL</code></li><li>Initial Value: <code>0x00UL</code></li><li>Reflect In: <code>true</code></li><li>Reflect Out: <code>true</code></li><li>XOR Out: <code>0x00UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC5_USB"><code>CRC5_USB = 6</code></dt>
+  <dd><p>Represents the <code>CRC-5/USB</code> CRC standard.</p>
+<p>The <code>CRC-5/USB</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-5-usb">CRC RevEng catalogue</a> (Created: 1 December 2007; Updated: 12 July 2024), with the following definition.</p>
+<p>
+<ul><li>Width: <code>5</code></li><li>Polynomial: <code>0x05UL</code></li><li>Initial Value: <code>0x1FUL</code></li><li>Reflect In: <code>true</code></li><li>Reflect Out: <code>true</code></li><li>XOR Out: <code>0x1FUL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC6_CDMA2000A"><code>CRC6_CDMA2000A = 7</code></dt>
+  <dd><p>Represents the <code>CRC-6/CDMA2000-A</code> CRC standard.</p>
+<p>The <code>CRC-6/CDMA2000-A</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-6-cdma2000-a">CRC RevEng catalogue</a> (Created: 14 October 2013; Updated: 28 July 2023), with the following definition.</p>
+<p>
+<ul><li>Width: <code>6</code></li><li>Polynomial: <code>0x27UL</code></li><li>Initial Value: <code>0x3FUL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0x00UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC6_CDMA2000B"><code>CRC6_CDMA2000B = 8</code></dt>
+  <dd><p>Represents the <code>CRC-6/CDMA2000-B</code> CRC standard.</p>
+<p>The <code>CRC-6/CDMA2000-B</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-6-cdma2000-b">CRC RevEng catalogue</a> (Created: 14 October 2013; Updated: 28 July 2023), with the following definition.</p>
+<p>
+<ul><li>Width: <code>6</code></li><li>Polynomial: <code>0x07UL</code></li><li>Initial Value: <code>0x3FUL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0x00UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC6_DARC"><code>CRC6_DARC = 9</code></dt>
+  <dd><p>Represents the <code>CRC-6/DARC</code> CRC standard.</p>
+<p>The <code>CRC-6/DARC</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-6-darc">CRC RevEng catalogue</a> (Created: 14 December 2009; Updated: 20 November 2018), with the following definition.</p>
+<p>
+<ul><li>Width: <code>6</code></li><li>Polynomial: <code>0x19UL</code></li><li>Initial Value: <code>0x00UL</code></li><li>Reflect In: <code>true</code></li><li>Reflect Out: <code>true</code></li><li>XOR Out: <code>0x00UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC6_G704"><code>CRC6_G704 = 10</code></dt>
+  <dd><p>Represents the <code>CRC-6/G-704</code> CRC standard.</p>
+<p>The <code>CRC-6/G-704</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-6-g-704">CRC RevEng catalogue</a> (Created: 7 October 2008; Updated: 21 November 2018), with the following definition.</p>
+<p>
+<ul><li>Width: <code>6</code></li><li>Polynomial: <code>0x03UL</code></li><li>Initial Value: <code>0x00UL</code></li><li>Reflect In: <code>true</code></li><li>Reflect Out: <code>true</code></li><li>XOR Out: <code>0x00UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC6_GSM"><code>CRC6_GSM = 11</code></dt>
+  <dd><p>Represents the <code>CRC-6/GSM</code> CRC standard.</p>
+<p>The <code>CRC-6/GSM</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-6-gsm">CRC RevEng catalogue</a> (Created: 17 February 2017; Updated: 11 January 2022), with the following definition.</p>
+<p>
+<ul><li>Width: <code>6</code></li><li>Polynomial: <code>0x2FUL</code></li><li>Initial Value: <code>0x00UL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0x3FUL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC7_MMC"><code>CRC7_MMC = 12</code></dt>
+  <dd><p>Represents the <code>CRC-7/MMC</code> CRC standard.</p>
+<p>The <code>CRC-7/MMC</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-7-mmc">CRC RevEng catalogue</a> (Created: 7 October 2008; Updated: 11 January 2022), with the following definition.</p>
+<p>
+<ul><li>Width: <code>7</code></li><li>Polynomial: <code>0x09UL</code></li><li>Initial Value: <code>0x00UL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0x00UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC7_ROHC"><code>CRC7_ROHC = 13</code></dt>
+  <dd><p>Represents the <code>CRC-7/ROHC</code> CRC standard.</p>
+<p>The <code>CRC-7/ROHC</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-7-rohc">CRC RevEng catalogue</a> (Created: 14 December 2009; Updated: 4 August 2023), with the following definition.</p>
+<p>
+<ul><li>Width: <code>7</code></li><li>Polynomial: <code>0x4FUL</code></li><li>Initial Value: <code>0x7FUL</code></li><li>Reflect In: <code>true</code></li><li>Reflect Out: <code>true</code></li><li>XOR Out: <code>0x00UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC7_UMTS"><code>CRC7_UMTS = 14</code></dt>
+  <dd><p>Represents the <code>CRC-7/UMTS</code> CRC standard.</p>
+<p>The <code>CRC-7/UMTS</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-7-umts">CRC RevEng catalogue</a> (Created: 8 February 2016; Updated: 7 May 2022), with the following definition.</p>
+<p>
+<ul><li>Width: <code>7</code></li><li>Polynomial: <code>0x45UL</code></li><li>Initial Value: <code>0x00UL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0x00UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_AUTOSAR"><code>CRC8_AUTOSAR = 15</code></dt>
+  <dd><p>Represents the <code>CRC-8/AUTOSAR</code> CRC standard.</p>
+<p>The <code>CRC-8/AUTOSAR</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-autosar">CRC RevEng catalogue</a> (Created: 24 July 2016; Updated: 28 July 2023), with the following definition.</p>
+<p>
+<ul><li>Width: <code>8</code></li><li>Polynomial: <code>0x2FUL</code></li><li>Initial Value: <code>0xFFUL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0xFFUL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_BLUETOOTH"><code>CRC8_BLUETOOTH = 16</code></dt>
+  <dd><p>Represents the <code>CRC-8/BLUETOOTH</code> CRC standard.</p>
+<p>The <code>CRC-8/BLUETOOTH</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-bluetooth">CRC RevEng catalogue</a> (Created: 20 June 2017; Updated: 29 July 2023), with the following definition.</p>
+<p>
+<ul><li>Width: <code>8</code></li><li>Polynomial: <code>0xA7UL</code></li><li>Initial Value: <code>0x00UL</code></li><li>Reflect In: <code>true</code></li><li>Reflect Out: <code>true</code></li><li>XOR Out: <code>0x00UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_CDMA2000"><code>CRC8_CDMA2000 = 17</code></dt>
+  <dd><p>Represents the <code>CRC-8/CDMA2000</code> CRC standard.</p>
+<p>The <code>CRC-8/CDMA2000</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-cdma2000">CRC RevEng catalogue</a> (Created: 14 October 2013; Updated: 28 July 2023), with the following definition.</p>
+<p>
+<ul><li>Width: <code>8</code></li><li>Polynomial: <code>0x9BUL</code></li><li>Initial Value: <code>0xFFUL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0x00UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_DARC"><code>CRC8_DARC = 18</code></dt>
+  <dd><p>Represents the <code>CRC-8/DARC</code> CRC standard.</p>
+<p>The <code>CRC-8/DARC</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-darc">CRC RevEng catalogue</a> (Created: 14 December 2009; Updated: 29 November 2018), with the following definition.</p>
+<p>
+<ul><li>Width: <code>8</code></li><li>Polynomial: <code>0x39UL</code></li><li>Initial Value: <code>0x00UL</code></li><li>Reflect In: <code>true</code></li><li>Reflect Out: <code>true</code></li><li>XOR Out: <code>0x00UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_DVBS2"><code>CRC8_DVBS2 = 19</code></dt>
+  <dd><p>Represents the <code>CRC-8/DVB-S2</code> CRC standard.</p>
+<p>The <code>CRC-8/DVB-S2</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-dvb-s2">CRC RevEng catalogue</a> (Created: 10 January 2014; Updated: 29 July 2023), with the following definition.</p>
+<p>
+<ul><li>Width: <code>8</code></li><li>Polynomial: <code>0xD5UL</code></li><li>Initial Value: <code>0x00UL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0x00UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_GSMA"><code>CRC8_GSMA = 20</code></dt>
+  <dd><p>Represents the <code>CRC-8/GSM-A</code> CRC standard.</p>
+<p>The <code>CRC-8/GSM-A</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-gsm-a">CRC RevEng catalogue</a> (Created: 17 February 2017; Updated: 8 August 2024), with the following definition.</p>
+<p>
+<ul><li>Width: <code>8</code></li><li>Polynomial: <code>0x1DUL</code></li><li>Initial Value: <code>0x00UL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0x00UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_GSMB"><code>CRC8_GSMB = 21</code></dt>
+  <dd><p>Represents the <code>CRC-8/GSM-B</code> CRC standard.</p>
+<p>The <code>CRC-8/GSM-B</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-gsm-b">CRC RevEng catalogue</a> (Created: 17 February 2017; Updated: 4 August 2023), with the following definition.</p>
+<p>
+<ul><li>Width: <code>8</code></li><li>Polynomial: <code>0x49UL</code></li><li>Initial Value: <code>0x00UL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0xFFUL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_HITAG"><code>CRC8_HITAG = 22</code></dt>
+  <dd><p>Represents the <code>CRC-8/HITAG</code> CRC standard.</p>
+<p>The <code>CRC-8/HITAG</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-hitag">CRC RevEng catalogue</a> (Created: 23 December 2021; Updated: 4 August 2023), with the following definition.</p>
+<p>
+<ul><li>Width: <code>8</code></li><li>Polynomial: <code>0x1DUL</code></li><li>Initial Value: <code>0xFFUL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0x00UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_I4321"><code>CRC8_I4321 = 23</code></dt>
+  <dd><p>Represents the <code>CRC-8/I-432-1</code> CRC standard.</p>
+<p>The <code>CRC-8/I-432-1</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-i-432-1">CRC RevEng catalogue</a> (Created: 19 April 2009; Updated: 2 August 2023), with the following definition.</p>
+<p>
+<ul><li>Width: <code>8</code></li><li>Polynomial: <code>0x07UL</code></li><li>Initial Value: <code>0x00UL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0x55UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_ICODE"><code>CRC8_ICODE = 24</code></dt>
+  <dd><p>Represents the <code>CRC-8/I-CODE</code> CRC standard.</p>
+<p>The <code>CRC-8/I-CODE</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-i-code">CRC RevEng catalogue</a> (Created: 3 November 2007; Updated: 6 February 2017), with the following definition.</p>
+<p>
+<ul><li>Width: <code>8</code></li><li>Polynomial: <code>0x1DUL</code></li><li>Initial Value: <code>0xFDUL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0x00UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_LTE"><code>CRC8_LTE = 25</code></dt>
+  <dd><p>Represents the <code>CRC-8/LTE</code> CRC standard.</p>
+<p>The <code>CRC-8/LTE</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-lte">CRC RevEng catalogue</a> (Created: 13 February 2016; Updated: 5 August 2023), with the following definition.</p>
+<p>
+<ul><li>Width: <code>8</code></li><li>Polynomial: <code>0x9BUL</code></li><li>Initial Value: <code>0x00UL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0x00UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_MAXIMDOW"><code>CRC8_MAXIMDOW = 26</code></dt>
+  <dd><p>Represents the <code>CRC-8/MAXIM-DOW</code> CRC standard.</p>
+<p>The <code>CRC-8/MAXIM-DOW</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-maxim-dow">CRC RevEng catalogue</a> (Created: 26 April 2009; Updated: 2 January 2021), with the following definition.</p>
+<p>
+<ul><li>Width: <code>8</code></li><li>Polynomial: <code>0x31UL</code></li><li>Initial Value: <code>0x00UL</code></li><li>Reflect In: <code>true</code></li><li>Reflect Out: <code>true</code></li><li>XOR Out: <code>0x00UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_MIFAREMAD"><code>CRC8_MIFAREMAD = 27</code></dt>
+  <dd><p>Represents the <code>CRC-8/MIFARE-MAD</code> CRC standard.</p>
+<p>The <code>CRC-8/MIFARE-MAD</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-mifare-mad">CRC RevEng catalogue</a> (Created: 21 February 2019; Updated: 20 March 2019), with the following definition.</p>
+<p>
+<ul><li>Width: <code>8</code></li><li>Polynomial: <code>0x1DUL</code></li><li>Initial Value: <code>0xC7UL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0x00UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_NRSC5"><code>CRC8_NRSC5 = 28</code></dt>
+  <dd><p>Represents the <code>CRC-8/NRSC-5</code> CRC standard.</p>
+<p>The <code>CRC-8/NRSC-5</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-nrsc-5">CRC RevEng catalogue</a> (Created: 16 November 2018; Updated: 20 March 2019), with the following definition.</p>
+<p>
+<ul><li>Width: <code>8</code></li><li>Polynomial: <code>0x31UL</code></li><li>Initial Value: <code>0xFFUL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0x00UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_OPENSAFETY"><code>CRC8_OPENSAFETY = 29</code></dt>
+  <dd><p>Represents the <code>CRC-8/OPENSAFETY</code> CRC standard.</p>
+<p>The <code>CRC-8/OPENSAFETY</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-opensafety">CRC RevEng catalogue</a> (Created: 22 July 2016; Updated: 7 May 2022), with the following definition.</p>
+<p>
+<ul><li>Width: <code>8</code></li><li>Polynomial: <code>0x2FUL</code></li><li>Initial Value: <code>0x00UL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0x00UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_ROHC"><code>CRC8_ROHC = 30</code></dt>
+  <dd><p>Represents the <code>CRC-8/ROHC</code> CRC standard.</p>
+<p>The <code>CRC-8/ROHC</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-rohc">CRC RevEng catalogue</a> (Created: 14 December 2009; Updated: 4 August 2023), with the following definition.</p>
+<p>
+<ul><li>Width: <code>8</code></li><li>Polynomial: <code>0x07UL</code></li><li>Initial Value: <code>0xFFUL</code></li><li>Reflect In: <code>true</code></li><li>Reflect Out: <code>true</code></li><li>XOR Out: <code>0x00UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_SAEJ1850"><code>CRC8_SAEJ1850 = 31</code></dt>
+  <dd><p>Represents the <code>CRC-8/SAE-J1850</code> CRC standard.</p>
+<p>The <code>CRC-8/SAE-J1850</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-sae-j1850">CRC RevEng catalogue</a> (Created: 17 February 2016; Updated: 3 August 2023), with the following definition.</p>
+<p>
+<ul><li>Width: <code>8</code></li><li>Polynomial: <code>0x1DUL</code></li><li>Initial Value: <code>0xFFUL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0xFFUL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_SMBUS"><code>CRC8_SMBUS = 32</code></dt>
+  <dd><p>Represents the <code>CRC-8/SMBUS</code> CRC standard.</p>
+<p>The <code>CRC-8/SMBUS</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-smbus">CRC RevEng catalogue</a> (Created: 30 March 2005; Updated: 8 August 2024), with the following definition.</p>
+<p>
+<ul><li>Width: <code>8</code></li><li>Polynomial: <code>0x07UL</code></li><li>Initial Value: <code>0x00UL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0x00UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_TECH3250"><code>CRC8_TECH3250 = 33</code></dt>
+  <dd><p>Represents the <code>CRC-8/TECH-3250</code> CRC standard.</p>
+<p>The <code>CRC-8/TECH-3250</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-tech-3250">CRC RevEng catalogue</a> (Created: 19 July 2012; Updated: 21 November 2018), with the following definition.</p>
+<p>
+<ul><li>Width: <code>8</code></li><li>Polynomial: <code>0x1DUL</code></li><li>Initial Value: <code>0xFFUL</code></li><li>Reflect In: <code>true</code></li><li>Reflect Out: <code>true</code></li><li>XOR Out: <code>0x00UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_WCDMA"><code>CRC8_WCDMA = 34</code></dt>
+  <dd><p>Represents the <code>CRC-8/WCDMA</code> CRC standard.</p>
+<p>The <code>CRC-8/WCDMA</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-wcdma">CRC RevEng catalogue</a> (Created: 8 November 2009; Updated: 28 December 2019), with the following definition.</p>
+<p>
+<ul><li>Width: <code>8</code></li><li>Polynomial: <code>0x9BUL</code></li><li>Initial Value: <code>0x00UL</code></li><li>Reflect In: <code>true</code></li><li>Reflect Out: <code>true</code></li><li>XOR Out: <code>0x00UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC10_ATM"><code>CRC10_ATM = 35</code></dt>
+  <dd><p>Represents the <code>CRC-10/ATM</code> CRC standard.</p>
+<p>The <code>CRC-10/ATM</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-10-atm">CRC RevEng catalogue</a> (Created: 19 April 2009; Updated: 7 May 2022), with the following definition.</p>
+<p>
+<ul><li>Width: <code>10</code></li><li>Polynomial: <code>0x233UL</code></li><li>Initial Value: <code>0x000UL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0x000UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC10_CDMA2000"><code>CRC10_CDMA2000 = 36</code></dt>
+  <dd><p>Represents the <code>CRC-10/CDMA2000</code> CRC standard.</p>
+<p>The <code>CRC-10/CDMA2000</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-10-cdma2000">CRC RevEng catalogue</a> (Created: 14 October 2013; Updated: 28 July 2023), with the following definition.</p>
+<p>
+<ul><li>Width: <code>10</code></li><li>Polynomial: <code>0x3D9UL</code></li><li>Initial Value: <code>0x3FFUL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0x000UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC10_GSM"><code>CRC10_GSM = 37</code></dt>
+  <dd><p>Represents the <code>CRC-10/GSM</code> CRC standard.</p>
+<p>The <code>CRC-10/GSM</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-10-gsm">CRC RevEng catalogue</a> (Created: 17 February 2017; Updated: 7 May 2022), with the following definition.</p>
+<p>
+<ul><li>Width: <code>10</code></li><li>Polynomial: <code>0x175UL</code></li><li>Initial Value: <code>0x000UL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0x3FFUL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC11_FLEXRAY"><code>CRC11_FLEXRAY = 38</code></dt>
+  <dd><p>Represents the <code>CRC-11/FLEXRAY</code> CRC standard.</p>
+<p>The <code>CRC-11/FLEXRAY</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-11-flexray">CRC RevEng catalogue</a> (Created: 3 November 2007; Updated: 7 May 2022), with the following definition.</p>
+<p>
+<ul><li>Width: <code>11</code></li><li>Polynomial: <code>0x385UL</code></li><li>Initial Value: <code>0x01AUL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0x000UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC11_UMTS"><code>CRC11_UMTS = 39</code></dt>
+  <dd><p>Represents the <code>CRC-11/UMTS</code> CRC standard.</p>
+<p>The <code>CRC-11/UMTS</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-11-umts">CRC RevEng catalogue</a> (Created: 8 February 2016; Updated: 7 May 2022), with the following definition.</p>
+<p>
+<ul><li>Width: <code>11</code></li><li>Polynomial: <code>0x307UL</code></li><li>Initial Value: <code>0x000UL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0x000UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC12_CDMA2000"><code>CRC12_CDMA2000 = 40</code></dt>
+  <dd><p>Represents the <code>CRC-12/CDMA2000</code> CRC standard.</p>
+<p>The <code>CRC-12/CDMA2000</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-12-cdma2000">CRC RevEng catalogue</a> (Created: 14 October 2013; Updated: 28 July 2023), with the following definition.</p>
+<p>
+<ul><li>Width: <code>12</code></li><li>Polynomial: <code>0xF13UL</code></li><li>Initial Value: <code>0xFFFUL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0x000UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC12_DECT"><code>CRC12_DECT = 41</code></dt>
+  <dd><p>Represents the <code>CRC-12/DECT</code> CRC standard.</p>
+<p>The <code>CRC-12/DECT</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-12-dect">CRC RevEng catalogue</a> (Created: 29 July 2010; Updated: 15 February 2017), with the following definition.</p>
+<p>
+<ul><li>Width: <code>12</code></li><li>Polynomial: <code>0x80FUL</code></li><li>Initial Value: <code>0x000UL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0x000UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC12_GSM"><code>CRC12_GSM = 42</code></dt>
+  <dd><p>Represents the <code>CRC-12/GSM</code> CRC standard.</p>
+<p>The <code>CRC-12/GSM</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-12-gsm">CRC RevEng catalogue</a> (Created: 17 February 2017; Updated: 5 August 2023), with the following definition.</p>
+<p>
+<ul><li>Width: <code>12</code></li><li>Polynomial: <code>0xD31UL</code></li><li>Initial Value: <code>0x000UL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0xFFFUL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC12_UMTS"><code>CRC12_UMTS = 43</code></dt>
+  <dd><p>Represents the <code>CRC-12/UMTS</code> CRC standard.</p>
+<p>The <code>CRC-12/UMTS</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-12-umts">CRC RevEng catalogue</a> (Created: 10 December 2009; Updated: 5 August 2023), with the following definition.</p>
+<p>
+<ul><li>Width: <code>12</code></li><li>Polynomial: <code>0x80FUL</code></li><li>Initial Value: <code>0x000UL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>true</code></li><li>XOR Out: <code>0x000UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC13_BBC"><code>CRC13_BBC = 44</code></dt>
+  <dd><p>Represents the <code>CRC-13/BBC</code> CRC standard.</p>
+<p>The <code>CRC-13/BBC</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-13-bbc">CRC RevEng catalogue</a> (Created: 14 October 2013; Updated: 6 February 2017), with the following definition.</p>
+<p>
+<ul><li>Width: <code>13</code></li><li>Polynomial: <code>0x1CF5UL</code></li><li>Initial Value: <code>0x0000UL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0x0000UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC14_DARC"><code>CRC14_DARC = 45</code></dt>
+  <dd><p>Represents the <code>CRC-14/DARC</code> CRC standard.</p>
+<p>The <code>CRC-14/DARC</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-14-darc">CRC RevEng catalogue</a> (Created: 14 December 2009; Updated: 20 November 2018), with the following definition.</p>
+<p>
+<ul><li>Width: <code>14</code></li><li>Polynomial: <code>0x0805UL</code></li><li>Initial Value: <code>0x0000UL</code></li><li>Reflect In: <code>true</code></li><li>Reflect Out: <code>true</code></li><li>XOR Out: <code>0x0000UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC14_GSM"><code>CRC14_GSM = 46</code></dt>
+  <dd><p>Represents the <code>CRC-14/GSM</code> CRC standard.</p>
+<p>The <code>CRC-14/GSM</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-14-gsm">CRC RevEng catalogue</a> (Created: 17 February 2017; Updated: 7 May 2022), with the following definition.</p>
+<p>
+<ul><li>Width: <code>14</code></li><li>Polynomial: <code>0x202DUL</code></li><li>Initial Value: <code>0x0000UL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0x3FFFUL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC15_CAN"><code>CRC15_CAN = 47</code></dt>
+  <dd><p>Represents the <code>CRC-15/CAN</code> CRC standard.</p>
+<p>The <code>CRC-15/CAN</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-15-can">CRC RevEng catalogue</a> (Created: 2 November 2007; Updated: 7 May 2022), with the following definition.</p>
+<p>
+<ul><li>Width: <code>15</code></li><li>Polynomial: <code>0x4599UL</code></li><li>Initial Value: <code>0x0000UL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0x0000UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC15_MPT1327"><code>CRC15_MPT1327 = 48</code></dt>
+  <dd><p>Represents the <code>CRC-15/MPT1327</code> CRC standard.</p>
+<p>The <code>CRC-15/MPT1327</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-15-mpt1327">CRC RevEng catalogue</a> (Created: 16 July 2012; Updated: 2 August 2023), with the following definition.</p>
+<p>
+<ul><li>Width: <code>15</code></li><li>Polynomial: <code>0x6815UL</code></li><li>Initial Value: <code>0x0000UL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0x0001UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_ARC"><code>CRC16_ARC = 49</code></dt>
+  <dd><p>Represents the <code>CRC-16/ARC</code> CRC standard.</p>
+<p>The <code>CRC-16/ARC</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-arc">CRC RevEng catalogue</a> (Created: 30 March 2005; Updated: 2 August 2023), with the following definition.</p>
+<p>
+<ul><li>Width: <code>16</code></li><li>Polynomial: <code>0x8005UL</code></li><li>Initial Value: <code>0x0000UL</code></li><li>Reflect In: <code>true</code></li><li>Reflect Out: <code>true</code></li><li>XOR Out: <code>0x0000UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_CDMA2000"><code>CRC16_CDMA2000 = 50</code></dt>
+  <dd><p>Represents the <code>CRC-16/CDMA2000</code> CRC standard.</p>
+<p>The <code>CRC-16/CDMA2000</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-cdma2000">CRC RevEng catalogue</a> (Created: 14 October 2013; Updated: 28 July 2023), with the following definition.</p>
+<p>
+<ul><li>Width: <code>16</code></li><li>Polynomial: <code>0xC867UL</code></li><li>Initial Value: <code>0xFFFFUL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0x0000UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_CMS"><code>CRC16_CMS = 51</code></dt>
+  <dd><p>Represents the <code>CRC-16/CMS</code> CRC standard.</p>
+<p>The <code>CRC-16/CMS</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-cms">CRC RevEng catalogue</a> (Created: 13 July 2016; Updated: 2 August 2023), with the following definition.</p>
+<p>
+<ul><li>Width: <code>16</code></li><li>Polynomial: <code>0x8005UL</code></li><li>Initial Value: <code>0xFFFFUL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0x0000UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_DDS110"><code>CRC16_DDS110 = 52</code></dt>
+  <dd><p>Represents the <code>CRC-16/DDS-110</code> CRC standard.</p>
+<p>The <code>CRC-16/DDS-110</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-dds-110">CRC RevEng catalogue</a> (Created: 30 November 2009; Updated: 28 December 2019), with the following definition.</p>
+<p>
+<ul><li>Width: <code>16</code></li><li>Polynomial: <code>0x8005UL</code></li><li>Initial Value: <code>0x800DUL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0x0000UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_DECTR"><code>CRC16_DECTR = 53</code></dt>
+  <dd><p>Represents the <code>CRC-16/DECT-R</code> CRC standard.</p>
+<p>The <code>CRC-16/DECT-R</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-dect-r">CRC RevEng catalogue</a> (Created: 7 December 2009; Updated: 3 August 2023), with the following definition.</p>
+<p>
+<ul><li>Width: <code>16</code></li><li>Polynomial: <code>0x0589UL</code></li><li>Initial Value: <code>0x0000UL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0x0001UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_DECTX"><code>CRC16_DECTX = 54</code></dt>
+  <dd><p>Represents the <code>CRC-16/DECT-X</code> CRC standard.</p>
+<p>The <code>CRC-16/DECT-X</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-dect-x">CRC RevEng catalogue</a> (Created: 30 July 2010; Updated: 2 January 2021), with the following definition.</p>
+<p>
+<ul><li>Width: <code>16</code></li><li>Polynomial: <code>0x0589UL</code></li><li>Initial Value: <code>0x0000UL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0x0000UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_DNP"><code>CRC16_DNP = 55</code></dt>
+  <dd><p>Represents the <code>CRC-16/DNP</code> CRC standard.</p>
+<p>The <code>CRC-16/DNP</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-dnp">CRC RevEng catalogue</a> (Created: 2 November 2007; Updated: 28 December 2019), with the following definition.</p>
+<p>
+<ul><li>Width: <code>16</code></li><li>Polynomial: <code>0x3D65UL</code></li><li>Initial Value: <code>0x0000UL</code></li><li>Reflect In: <code>true</code></li><li>Reflect Out: <code>true</code></li><li>XOR Out: <code>0xFFFFUL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_EN13757"><code>CRC16_EN13757 = 56</code></dt>
+  <dd><p>Represents the <code>CRC-16/EN-13757</code> CRC standard.</p>
+<p>The <code>CRC-16/EN-13757</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-en-13757">CRC RevEng catalogue</a> (Created: 1 October 2008; Updated: 28 December 2019), with the following definition.</p>
+<p>
+<ul><li>Width: <code>16</code></li><li>Polynomial: <code>0x3D65UL</code></li><li>Initial Value: <code>0x0000UL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0xFFFFUL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_GENIBUS"><code>CRC16_GENIBUS = 57</code></dt>
+  <dd><p>Represents the <code>CRC-16/GENIBUS</code> CRC standard.</p>
+<p>The <code>CRC-16/GENIBUS</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-genibus">CRC RevEng catalogue</a> (Created: 2 November 2007; Updated: 3 January 2021), with the following definition.</p>
+<p>
+<ul><li>Width: <code>16</code></li><li>Polynomial: <code>0x1021UL</code></li><li>Initial Value: <code>0xFFFFUL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0xFFFFUL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_GSM"><code>CRC16_GSM = 58</code></dt>
+  <dd><p>Represents the <code>CRC-16/GSM</code> CRC standard.</p>
+<p>The <code>CRC-16/GSM</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-gsm">CRC RevEng catalogue</a> (Created: 17 February 2017; Updated: 4 August 2023), with the following definition.</p>
+<p>
+<ul><li>Width: <code>16</code></li><li>Polynomial: <code>0x1021UL</code></li><li>Initial Value: <code>0x0000UL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0xFFFFUL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_IBM3740"><code>CRC16_IBM3740 = 59</code></dt>
+  <dd><p>Represents the <code>CRC-16/IBM-3740</code> CRC standard.</p>
+<p>The <code>CRC-16/IBM-3740</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-ibm-3740">CRC RevEng catalogue</a> (Created: 30 March 2005; Updated: 3 August 2023), with the following definition.</p>
+<p>
+<ul><li>Width: <code>16</code></li><li>Polynomial: <code>0x1021UL</code></li><li>Initial Value: <code>0xFFFFUL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0x0000UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_IBMSDLC"><code>CRC16_IBMSDLC = 60</code></dt>
+  <dd><p>Represents the <code>CRC-16/IBM-SDLC</code> CRC standard.</p>
+<p>The <code>CRC-16/IBM-SDLC</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-ibm-sdlc">CRC RevEng catalogue</a> (Created: 10 September 2005; Updated: 4 August 2023), with the following definition.</p>
+<p>
+<ul><li>Width: <code>16</code></li><li>Polynomial: <code>0x1021UL</code></li><li>Initial Value: <code>0xFFFFUL</code></li><li>Reflect In: <code>true</code></li><li>Reflect Out: <code>true</code></li><li>XOR Out: <code>0xFFFFUL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_ISOIEC144433A"><code>CRC16_ISOIEC144433A = 61</code></dt>
+  <dd><p>Represents the <code>CRC-16/ISO-IEC-14443-3-A</code> CRC standard.</p>
+<p>The <code>CRC-16/ISO-IEC-14443-3-A</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-iso-iec-14443-3-a">CRC RevEng catalogue</a> (Created: 30 April 2011; Updated: 3 August 2023), with the following definition.</p>
+<p>
+<ul><li>Width: <code>16</code></li><li>Polynomial: <code>0x1021UL</code></li><li>Initial Value: <code>0xC6C6UL</code></li><li>Reflect In: <code>true</code></li><li>Reflect Out: <code>true</code></li><li>XOR Out: <code>0x0000UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_KERMIT"><code>CRC16_KERMIT = 62</code></dt>
+  <dd><p>Represents the <code>CRC-16/KERMIT</code> CRC standard.</p>
+<p>The <code>CRC-16/KERMIT</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-kermit">CRC RevEng catalogue</a> (Created: 10 September 2005; Updated: 4 August 2023), with the following definition.</p>
+<p>
+<ul><li>Width: <code>16</code></li><li>Polynomial: <code>0x1021UL</code></li><li>Initial Value: <code>0x0000UL</code></li><li>Reflect In: <code>true</code></li><li>Reflect Out: <code>true</code></li><li>XOR Out: <code>0x0000UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_LJ1200"><code>CRC16_LJ1200 = 63</code></dt>
+  <dd><p>Represents the <code>CRC-16/LJ1200</code> CRC standard.</p>
+<p>The <code>CRC-16/LJ1200</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-lj1200">CRC RevEng catalogue</a> (Created: 20 February 2016; Updated: 6 June 2018), with the following definition.</p>
+<p>
+<ul><li>Width: <code>16</code></li><li>Polynomial: <code>0x6F63UL</code></li><li>Initial Value: <code>0x0000UL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0x0000UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_M17"><code>CRC16_M17 = 64</code></dt>
+  <dd><p>Represents the <code>CRC-16/M17</code> CRC standard.</p>
+<p>The <code>CRC-16/M17</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-m17">CRC RevEng catalogue</a> (Created: 7 May 2022; Updated: 8 August 2024), with the following definition.</p>
+<p>
+<ul><li>Width: <code>16</code></li><li>Polynomial: <code>0x5935UL</code></li><li>Initial Value: <code>0xFFFFUL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0x0000UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_MAXIMDOW"><code>CRC16_MAXIMDOW = 65</code></dt>
+  <dd><p>Represents the <code>CRC-16/MAXIM-DOW</code> CRC standard.</p>
+<p>The <code>CRC-16/MAXIM-DOW</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-maxim-dow">CRC RevEng catalogue</a> (Created: 26 April 2009; Updated: 28 December 2019), with the following definition.</p>
+<p>
+<ul><li>Width: <code>16</code></li><li>Polynomial: <code>0x8005UL</code></li><li>Initial Value: <code>0x0000UL</code></li><li>Reflect In: <code>true</code></li><li>Reflect Out: <code>true</code></li><li>XOR Out: <code>0xFFFFUL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_MCRF4XX"><code>CRC16_MCRF4XX = 66</code></dt>
+  <dd><p>Represents the <code>CRC-16/MCRF4XX</code> CRC standard.</p>
+<p>The <code>CRC-16/MCRF4XX</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-mcrf4xx">CRC RevEng catalogue</a> (Created: 18 January 2008; Updated: 4 August 2023), with the following definition.</p>
+<p>
+<ul><li>Width: <code>16</code></li><li>Polynomial: <code>0x1021UL</code></li><li>Initial Value: <code>0xFFFFUL</code></li><li>Reflect In: <code>true</code></li><li>Reflect Out: <code>true</code></li><li>XOR Out: <code>0x0000UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_MODBUS"><code>CRC16_MODBUS = 67</code></dt>
+  <dd><p>Represents the <code>CRC-16/MODBUS</code> CRC standard.</p>
+<p>The <code>CRC-16/MODBUS</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-modbus">CRC RevEng catalogue</a> (Created: 27 February 2007; Updated: 2 January 2021), with the following definition.</p>
+<p>
+<ul><li>Width: <code>16</code></li><li>Polynomial: <code>0x8005UL</code></li><li>Initial Value: <code>0xFFFFUL</code></li><li>Reflect In: <code>true</code></li><li>Reflect Out: <code>true</code></li><li>XOR Out: <code>0x0000UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_NRSC5"><code>CRC16_NRSC5 = 68</code></dt>
+  <dd><p>Represents the <code>CRC-16/NRSC-5</code> CRC standard.</p>
+<p>The <code>CRC-16/NRSC-5</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-nrsc-5">CRC RevEng catalogue</a> (Created: 16 November 2018; Updated: 20 March 2019), with the following definition.</p>
+<p>
+<ul><li>Width: <code>16</code></li><li>Polynomial: <code>0x080BUL</code></li><li>Initial Value: <code>0xFFFFUL</code></li><li>Reflect In: <code>true</code></li><li>Reflect Out: <code>true</code></li><li>XOR Out: <code>0x0000UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_OPENSAFETYA"><code>CRC16_OPENSAFETYA = 69</code></dt>
+  <dd><p>Represents the <code>CRC-16/OPENSAFETY-A</code> CRC standard.</p>
+<p>The <code>CRC-16/OPENSAFETY-A</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-opensafety-a">CRC RevEng catalogue</a> (Created: 22 July 2016; Updated: 7 May 2022), with the following definition.</p>
+<p>
+<ul><li>Width: <code>16</code></li><li>Polynomial: <code>0x5935UL</code></li><li>Initial Value: <code>0x0000UL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0x0000UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_OPENSAFETYB"><code>CRC16_OPENSAFETYB = 70</code></dt>
+  <dd><p>Represents the <code>CRC-16/OPENSAFETY-B</code> CRC standard.</p>
+<p>The <code>CRC-16/OPENSAFETY-B</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-opensafety-b">CRC RevEng catalogue</a> (Created: 22 July 2016; Updated: 7 May 2022), with the following definition.</p>
+<p>
+<ul><li>Width: <code>16</code></li><li>Polynomial: <code>0x755BUL</code></li><li>Initial Value: <code>0x0000UL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0x0000UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_PROFIBUS"><code>CRC16_PROFIBUS = 71</code></dt>
+  <dd><p>Represents the <code>CRC-16/PROFIBUS</code> CRC standard.</p>
+<p>The <code>CRC-16/PROFIBUS</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-profibus">CRC RevEng catalogue</a> (Created: 5 July 2016; Updated: 7 May 2022), with the following definition.</p>
+<p>
+<ul><li>Width: <code>16</code></li><li>Polynomial: <code>0x1DCFUL</code></li><li>Initial Value: <code>0xFFFFUL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0xFFFFUL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_RIELLO"><code>CRC16_RIELLO = 72</code></dt>
+  <dd><p>Represents the <code>CRC-16/RIELLO</code> CRC standard.</p>
+<p>The <code>CRC-16/RIELLO</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-riello">CRC RevEng catalogue</a> (Created: 18 April 2009; Updated: 28 December 2019), with the following definition.</p>
+<p>
+<ul><li>Width: <code>16</code></li><li>Polynomial: <code>0x1021UL</code></li><li>Initial Value: <code>0xB2AAUL</code></li><li>Reflect In: <code>true</code></li><li>Reflect Out: <code>true</code></li><li>XOR Out: <code>0x0000UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_SPIFUJITSU"><code>CRC16_SPIFUJITSU = 73</code></dt>
+  <dd><p>Represents the <code>CRC-16/SPI-FUJITSU</code> CRC standard.</p>
+<p>The <code>CRC-16/SPI-FUJITSU</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-spi-fujitsu">CRC RevEng catalogue</a> (Created: 30 October 2007; Updated: 4 August 2023), with the following definition.</p>
+<p>
+<ul><li>Width: <code>16</code></li><li>Polynomial: <code>0x1021UL</code></li><li>Initial Value: <code>0x1D0FUL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0x0000UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_T10DIF"><code>CRC16_T10DIF = 74</code></dt>
+  <dd><p>Represents the <code>CRC-16/T10-DIF</code> CRC standard.</p>
+<p>The <code>CRC-16/T10-DIF</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-t10-dif">CRC RevEng catalogue</a> (Created: 29 September 2009; Updated: 2 January 2021), with the following definition.</p>
+<p>
+<ul><li>Width: <code>16</code></li><li>Polynomial: <code>0x8BB7UL</code></li><li>Initial Value: <code>0x0000UL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0x0000UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_TELEDISK"><code>CRC16_TELEDISK = 75</code></dt>
+  <dd><p>Represents the <code>CRC-16/TELEDISK</code> CRC standard.</p>
+<p>The <code>CRC-16/TELEDISK</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-teledisk">CRC RevEng catalogue</a> (Created: 10 December 2009; Updated: 4 August 2023), with the following definition.</p>
+<p>
+<ul><li>Width: <code>16</code></li><li>Polynomial: <code>0xA097UL</code></li><li>Initial Value: <code>0x0000UL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0x0000UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_TMS37157"><code>CRC16_TMS37157 = 76</code></dt>
+  <dd><p>Represents the <code>CRC-16/TMS37157</code> CRC standard.</p>
+<p>The <code>CRC-16/TMS37157</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-tms37157">CRC RevEng catalogue</a> (Created: 17 April 2011; Updated: 28 December 2019), with the following definition.</p>
+<p>
+<ul><li>Width: <code>16</code></li><li>Polynomial: <code>0x1021UL</code></li><li>Initial Value: <code>0x89ECUL</code></li><li>Reflect In: <code>true</code></li><li>Reflect Out: <code>true</code></li><li>XOR Out: <code>0x0000UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_UMTS"><code>CRC16_UMTS = 77</code></dt>
+  <dd><p>Represents the <code>CRC-16/UMTS</code> CRC standard.</p>
+<p>The <code>CRC-16/UMTS</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-umts">CRC RevEng catalogue</a> (Created: 4 June 2008; Updated: 8 August 2024), with the following definition.</p>
+<p>
+<ul><li>Width: <code>16</code></li><li>Polynomial: <code>0x8005UL</code></li><li>Initial Value: <code>0x0000UL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0x0000UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_USB"><code>CRC16_USB = 78</code></dt>
+  <dd><p>Represents the <code>CRC-16/USB</code> CRC standard.</p>
+<p>The <code>CRC-16/USB</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-usb">CRC RevEng catalogue</a> (Created: 1 December 2007; Updated: 12 July 2024), with the following definition.</p>
+<p>
+<ul><li>Width: <code>16</code></li><li>Polynomial: <code>0x8005UL</code></li><li>Initial Value: <code>0xFFFFUL</code></li><li>Reflect In: <code>true</code></li><li>Reflect Out: <code>true</code></li><li>XOR Out: <code>0xFFFFUL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_XMODEM"><code>CRC16_XMODEM = 79</code></dt>
+  <dd><p>Represents the <code>CRC-16/XMODEM</code> CRC standard.</p>
+<p>The <code>CRC-16/XMODEM</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-xmodem">CRC RevEng catalogue</a> (Created: 30 March 2005; Updated: 5 August 2023), with the following definition.</p>
+<p>
+<ul><li>Width: <code>16</code></li><li>Polynomial: <code>0x1021UL</code></li><li>Initial Value: <code>0x0000UL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0x0000UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC17_CANFD"><code>CRC17_CANFD = 80</code></dt>
+  <dd><p>Represents the <code>CRC-17/CAN-FD</code> CRC standard.</p>
+<p>The <code>CRC-17/CAN-FD</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-17-can-fd">CRC RevEng catalogue</a> (Created: 20 June 2017; Updated: 3 January 2021), with the following definition.</p>
+<p>
+<ul><li>Width: <code>17</code></li><li>Polynomial: <code>0x1685BUL</code></li><li>Initial Value: <code>0x00000UL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0x00000UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC21_CANFD"><code>CRC21_CANFD = 81</code></dt>
+  <dd><p>Represents the <code>CRC-21/CAN-FD</code> CRC standard.</p>
+<p>The <code>CRC-21/CAN-FD</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-21-can-fd">CRC RevEng catalogue</a> (Created: 20 June 2017; Updated: 3 January 2021), with the following definition.</p>
+<p>
+<ul><li>Width: <code>21</code></li><li>Polynomial: <code>0x102899UL</code></li><li>Initial Value: <code>0x000000UL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0x000000UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC24_BLE"><code>CRC24_BLE = 82</code></dt>
+  <dd><p>Represents the <code>CRC-24/BLE</code> CRC standard.</p>
+<p>The <code>CRC-24/BLE</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-24-ble">CRC RevEng catalogue</a> (Created: 7 February 2016; Updated: 4 August 2023), with the following definition.</p>
+<p>
+<ul><li>Width: <code>24</code></li><li>Polynomial: <code>0x00065BUL</code></li><li>Initial Value: <code>0x555555UL</code></li><li>Reflect In: <code>true</code></li><li>Reflect Out: <code>true</code></li><li>XOR Out: <code>0x000000UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC24_FLEXRAYA"><code>CRC24_FLEXRAYA = 83</code></dt>
+  <dd><p>Represents the <code>CRC-24/FLEXRAY-A</code> CRC standard.</p>
+<p>The <code>CRC-24/FLEXRAY-A</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-24-flexray-a">CRC RevEng catalogue</a> (Created: 3 November 2007; Updated: 6 February 2017), with the following definition.</p>
+<p>
+<ul><li>Width: <code>24</code></li><li>Polynomial: <code>0x5D6DCBUL</code></li><li>Initial Value: <code>0xFEDCBAUL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0x000000UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC24_FLEXRAYB"><code>CRC24_FLEXRAYB = 84</code></dt>
+  <dd><p>Represents the <code>CRC-24/FLEXRAY-B</code> CRC standard.</p>
+<p>The <code>CRC-24/FLEXRAY-B</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-24-flexray-b">CRC RevEng catalogue</a> (Created: 3 November 2007; Updated: 6 February 2017), with the following definition.</p>
+<p>
+<ul><li>Width: <code>24</code></li><li>Polynomial: <code>0x5D6DCBUL</code></li><li>Initial Value: <code>0xABCDEFUL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0x000000UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC24_INTERLAKEN"><code>CRC24_INTERLAKEN = 85</code></dt>
+  <dd><p>Represents the <code>CRC-24/INTERLAKEN</code> CRC standard.</p>
+<p>The <code>CRC-24/INTERLAKEN</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-24-interlaken">CRC RevEng catalogue</a> (Created: 10 February 2016; Updated: 4 August 2023), with the following definition.</p>
+<p>
+<ul><li>Width: <code>24</code></li><li>Polynomial: <code>0x328B63UL</code></li><li>Initial Value: <code>0xFFFFFFUL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0xFFFFFFUL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC24_LTEA"><code>CRC24_LTEA = 86</code></dt>
+  <dd><p>Represents the <code>CRC-24/LTE-A</code> CRC standard.</p>
+<p>The <code>CRC-24/LTE-A</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-24-lte-a">CRC RevEng catalogue</a> (Created: 13 February 2016; Updated: 5 August 2023), with the following definition.</p>
+<p>
+<ul><li>Width: <code>24</code></li><li>Polynomial: <code>0x864CFBUL</code></li><li>Initial Value: <code>0x000000UL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0x000000UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC24_LTEB"><code>CRC24_LTEB = 87</code></dt>
+  <dd><p>Represents the <code>CRC-24/LTE-B</code> CRC standard.</p>
+<p>The <code>CRC-24/LTE-B</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-24-lte-b">CRC RevEng catalogue</a> (Created: 13 February 2016; Updated: 5 August 2023), with the following definition.</p>
+<p>
+<ul><li>Width: <code>24</code></li><li>Polynomial: <code>0x800063UL</code></li><li>Initial Value: <code>0x000000UL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0x000000UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC24_OPENPGP"><code>CRC24_OPENPGP = 88</code></dt>
+  <dd><p>Represents the <code>CRC-24/OPENPGP</code> CRC standard.</p>
+<p>The <code>CRC-24/OPENPGP</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-24-openpgp">CRC RevEng catalogue</a> (Created: 2 November 2007; Updated: 4 August 2023), with the following definition.</p>
+<p>
+<ul><li>Width: <code>24</code></li><li>Polynomial: <code>0x864CFBUL</code></li><li>Initial Value: <code>0xB704CEUL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0x000000UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC24_OS9"><code>CRC24_OS9 = 89</code></dt>
+  <dd><p>Represents the <code>CRC-24/OS-9</code> CRC standard.</p>
+<p>The <code>CRC-24/OS-9</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-24-os-9">CRC RevEng catalogue</a> (Created: 25 July 2018; Updated: 4 August 2023), with the following definition.</p>
+<p>
+<ul><li>Width: <code>24</code></li><li>Polynomial: <code>0x800063UL</code></li><li>Initial Value: <code>0xFFFFFFUL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0xFFFFFFUL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC30_CDMA"><code>CRC30_CDMA = 90</code></dt>
+  <dd><p>Represents the <code>CRC-30/CDMA</code> CRC standard.</p>
+<p>The <code>CRC-30/CDMA</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-30-cdma">CRC RevEng catalogue</a> (Created: 20 February 2016; Updated: 4 August 2023), with the following definition.</p>
+<p>
+<ul><li>Width: <code>30</code></li><li>Polynomial: <code>0x2030B9C7UL</code></li><li>Initial Value: <code>0x3FFFFFFFUL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0x3FFFFFFFUL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC31_PHILIPS"><code>CRC31_PHILIPS = 91</code></dt>
+  <dd><p>Represents the <code>CRC-31/PHILIPS</code> CRC standard.</p>
+<p>The <code>CRC-31/PHILIPS</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-31-philips">CRC RevEng catalogue</a> (Created: 12 April 2012; Updated: 28 December 2019), with the following definition.</p>
+<p>
+<ul><li>Width: <code>31</code></li><li>Polynomial: <code>0x04C11DB7UL</code></li><li>Initial Value: <code>0x7FFFFFFFUL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0x7FFFFFFFUL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC32_AIXM"><code>CRC32_AIXM = 92</code></dt>
+  <dd><p>Represents the <code>CRC-32/AIXM</code> CRC standard.</p>
+<p>The <code>CRC-32/AIXM</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-aixm">CRC RevEng catalogue</a> (Created: 29 April 2009; Updated: 2 January 2021), with the following definition.</p>
+<p>
+<ul><li>Width: <code>32</code></li><li>Polynomial: <code>0x814141ABUL</code></li><li>Initial Value: <code>0x00000000UL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0x00000000UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC32_AUTOSAR"><code>CRC32_AUTOSAR = 93</code></dt>
+  <dd><p>Represents the <code>CRC-32/AUTOSAR</code> CRC standard.</p>
+<p>The <code>CRC-32/AUTOSAR</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-autosar">CRC RevEng catalogue</a> (Created: 24 July 2016; Updated: 28 July 2023), with the following definition.</p>
+<p>
+<ul><li>Width: <code>32</code></li><li>Polynomial: <code>0xF4ACFB13UL</code></li><li>Initial Value: <code>0xFFFFFFFFUL</code></li><li>Reflect In: <code>true</code></li><li>Reflect Out: <code>true</code></li><li>XOR Out: <code>0xFFFFFFFFUL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC32_BASE91D"><code>CRC32_BASE91D = 94</code></dt>
+  <dd><p>Represents the <code>CRC-32/BASE91-D</code> CRC standard.</p>
+<p>The <code>CRC-32/BASE91-D</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-base91-d">CRC RevEng catalogue</a> (Created: 28 November 2008; Updated: 8 August 2024), with the following definition.</p>
+<p>
+<ul><li>Width: <code>32</code></li><li>Polynomial: <code>0xA833982BUL</code></li><li>Initial Value: <code>0xFFFFFFFFUL</code></li><li>Reflect In: <code>true</code></li><li>Reflect Out: <code>true</code></li><li>XOR Out: <code>0xFFFFFFFFUL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC32_BZIP2"><code>CRC32_BZIP2 = 95</code></dt>
+  <dd><p>Represents the <code>CRC-32/BZIP2</code> CRC standard.</p>
+<p>The <code>CRC-32/BZIP2</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-bzip2">CRC RevEng catalogue</a> (Created: 8 October 2008; Updated: 22 August 2022), with the following definition.</p>
+<p>
+<ul><li>Width: <code>32</code></li><li>Polynomial: <code>0x04C11DB7UL</code></li><li>Initial Value: <code>0xFFFFFFFFUL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0xFFFFFFFFUL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC32_CDROMEDC"><code>CRC32_CDROMEDC = 96</code></dt>
+  <dd><p>Represents the <code>CRC-32/CD-ROM-EDC</code> CRC standard.</p>
+<p>The <code>CRC-32/CD-ROM-EDC</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-cd-rom-edc">CRC RevEng catalogue</a> (Created: 19 April 2019; Updated: 4 August 2023), with the following definition.</p>
+<p>
+<ul><li>Width: <code>32</code></li><li>Polynomial: <code>0x8001801BUL</code></li><li>Initial Value: <code>0x00000000UL</code></li><li>Reflect In: <code>true</code></li><li>Reflect Out: <code>true</code></li><li>XOR Out: <code>0x00000000UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC32_CKSUM"><code>CRC32_CKSUM = 97</code></dt>
+  <dd><p>Represents the <code>CRC-32/CKSUM</code> CRC standard.</p>
+<p>The <code>CRC-32/CKSUM</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-cksum">CRC RevEng catalogue</a> (Created: 30 March 2005; Updated: 8 August 2024), with the following definition.</p>
+<p>
+<ul><li>Width: <code>32</code></li><li>Polynomial: <code>0x04C11DB7UL</code></li><li>Initial Value: <code>0x00000000UL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0xFFFFFFFFUL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC32_ISCSI"><code>CRC32_ISCSI = 98</code></dt>
+  <dd><p>Represents the <code>CRC-32/ISCSI</code> CRC standard.</p>
+<p>The <code>CRC-32/ISCSI</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-iscsi">CRC RevEng catalogue</a> (Created: 10 September 2005; Updated: 8 August 2024), with the following definition.</p>
+<p>
+<ul><li>Width: <code>32</code></li><li>Polynomial: <code>0x1EDC6F41UL</code></li><li>Initial Value: <code>0xFFFFFFFFUL</code></li><li>Reflect In: <code>true</code></li><li>Reflect Out: <code>true</code></li><li>XOR Out: <code>0xFFFFFFFFUL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC32_ISOHDLC"><code>CRC32_ISOHDLC = 99</code></dt>
+  <dd><p>Represents the <code>CRC-32/ISO-HDLC</code> CRC standard.</p>
+<p>The <code>CRC-32/ISO-HDLC</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-iso-hdlc">CRC RevEng catalogue</a> (Created: 30 March 2005; Updated: 11 December 2024), with the following definition.</p>
+<p>
+<ul><li>Width: <code>32</code></li><li>Polynomial: <code>0x04C11DB7UL</code></li><li>Initial Value: <code>0xFFFFFFFFUL</code></li><li>Reflect In: <code>true</code></li><li>Reflect Out: <code>true</code></li><li>XOR Out: <code>0xFFFFFFFFUL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC32_JAMCRC"><code>CRC32_JAMCRC = 100</code></dt>
+  <dd><p>Represents the <code>CRC-32/JAMCRC</code> CRC standard.</p>
+<p>The <code>CRC-32/JAMCRC</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-jamcrc">CRC RevEng catalogue</a> (Created: 30 March 2005; Updated: 21 November 2018), with the following definition.</p>
+<p>
+<ul><li>Width: <code>32</code></li><li>Polynomial: <code>0x04C11DB7UL</code></li><li>Initial Value: <code>0xFFFFFFFFUL</code></li><li>Reflect In: <code>true</code></li><li>Reflect Out: <code>true</code></li><li>XOR Out: <code>0x00000000UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC32_MEF"><code>CRC32_MEF = 101</code></dt>
+  <dd><p>Represents the <code>CRC-32/MEF</code> CRC standard.</p>
+<p>The <code>CRC-32/MEF</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-mef">CRC RevEng catalogue</a> (Created: 10 January 2022; Updated: 4 August 2023), with the following definition.</p>
+<p>
+<ul><li>Width: <code>32</code></li><li>Polynomial: <code>0x741B8CD7UL</code></li><li>Initial Value: <code>0xFFFFFFFFUL</code></li><li>Reflect In: <code>true</code></li><li>Reflect Out: <code>true</code></li><li>XOR Out: <code>0x00000000UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC32_MPEG2"><code>CRC32_MPEG2 = 102</code></dt>
+  <dd><p>Represents the <code>CRC-32/MPEG-2</code> CRC standard.</p>
+<p>The <code>CRC-32/MPEG-2</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-mpeg-2">CRC RevEng catalogue</a> (Created: 8 October 2008; Updated: 4 August 2023), with the following definition.</p>
+<p>
+<ul><li>Width: <code>32</code></li><li>Polynomial: <code>0x04C11DB7UL</code></li><li>Initial Value: <code>0xFFFFFFFFUL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0x00000000UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC32_XFER"><code>CRC32_XFER = 103</code></dt>
+  <dd><p>Represents the <code>CRC-32/XFER</code> CRC standard.</p>
+<p>The <code>CRC-32/XFER</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-xfer">CRC RevEng catalogue</a> (Created: 30 March 2005; Updated: 2 January 2021), with the following definition.</p>
+<p>
+<ul><li>Width: <code>32</code></li><li>Polynomial: <code>0x000000AFUL</code></li><li>Initial Value: <code>0x00000000UL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0x00000000UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC40_GSM"><code>CRC40_GSM = 104</code></dt>
+  <dd><p>Represents the <code>CRC-40/GSM</code> CRC standard.</p>
+<p>The <code>CRC-40/GSM</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-40-gsm">CRC RevEng catalogue</a> (Created: 10 December 2009; Updated: 25 March 2019), with the following definition.</p>
+<p>
+<ul><li>Width: <code>40</code></li><li>Polynomial: <code>0x0004820009UL</code></li><li>Initial Value: <code>0x0000000000UL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0xFFFFFFFFFFUL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC64_ECMA182"><code>CRC64_ECMA182 = 105</code></dt>
+  <dd><p>Represents the <code>CRC-64/ECMA-182</code> CRC standard.</p>
+<p>The <code>CRC-64/ECMA-182</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-64-ecma-182">CRC RevEng catalogue</a> (Created: 6 April 2009; Updated: 7 May 2022), with the following definition.</p>
+<p>
+<ul><li>Width: <code>64</code></li><li>Polynomial: <code>0x42F0E1EBA9EA3693UL</code></li><li>Initial Value: <code>0x0000000000000000UL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0x0000000000000000UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC64_GOISO"><code>CRC64_GOISO = 106</code></dt>
+  <dd><p>Represents the <code>CRC-64/GO-ISO</code> CRC standard.</p>
+<p>The <code>CRC-64/GO-ISO</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-64-go-iso">CRC RevEng catalogue</a> (Created: 28 January 2017; Updated: 29 August 2024), with the following definition.</p>
+<p>
+<ul><li>Width: <code>64</code></li><li>Polynomial: <code>0x000000000000001BUL</code></li><li>Initial Value: <code>0xFFFFFFFFFFFFFFFFUL</code></li><li>Reflect In: <code>true</code></li><li>Reflect Out: <code>true</code></li><li>XOR Out: <code>0xFFFFFFFFFFFFFFFFUL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC64_MS"><code>CRC64_MS = 107</code></dt>
+  <dd><p>Represents the <code>CRC-64/MS</code> CRC standard.</p>
+<p>The <code>CRC-64/MS</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-64-ms">CRC RevEng catalogue</a> (Created: 7 January 2022; Updated: 28 December 2019), with the following definition.</p>
+<p>
+<ul><li>Width: <code>64</code></li><li>Polynomial: <code>0x259C84CBA6426349UL</code></li><li>Initial Value: <code>0xFFFFFFFFFFFFFFFFUL</code></li><li>Reflect In: <code>true</code></li><li>Reflect Out: <code>true</code></li><li>XOR Out: <code>0x0000000000000000UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC64_NVME"><code>CRC64_NVME = 108</code></dt>
+  <dd><p>Represents the <code>CRC-64/NVME</code> CRC standard.</p>
+<p>The <code>CRC-64/NVME</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-64-nvme">CRC RevEng catalogue</a> (Created: 8 August 2024; Updated: 28 December 2019), with the following definition.</p>
+<p>
+<ul><li>Width: <code>64</code></li><li>Polynomial: <code>0xAD93D23594C93659UL</code></li><li>Initial Value: <code>0xFFFFFFFFFFFFFFFFUL</code></li><li>Reflect In: <code>true</code></li><li>Reflect Out: <code>true</code></li><li>XOR Out: <code>0xFFFFFFFFFFFFFFFFUL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC64_REDIS"><code>CRC64_REDIS = 109</code></dt>
+  <dd><p>Represents the <code>CRC-64/REDIS</code> CRC standard.</p>
+<p>The <code>CRC-64/REDIS</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-64-redis">CRC RevEng catalogue</a> (Created: 24 August 2022; Updated: 28 December 2019), with the following definition.</p>
+<p>
+<ul><li>Width: <code>64</code></li><li>Polynomial: <code>0xAD93D23594C935A9UL</code></li><li>Initial Value: <code>0x0000000000000000UL</code></li><li>Reflect In: <code>true</code></li><li>Reflect Out: <code>true</code></li><li>XOR Out: <code>0x0000000000000000UL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC64_WE"><code>CRC64_WE = 110</code></dt>
+  <dd><p>Represents the <code>CRC-64/WE</code> CRC standard.</p>
+<p>The <code>CRC-64/WE</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-64-we">CRC RevEng catalogue</a> (Created: 8 November 2009; Updated: 28 December 2019), with the following definition.</p>
+<p>
+<ul><li>Width: <code>64</code></li><li>Polynomial: <code>0x42F0E1EBA9EA3693UL</code></li><li>Initial Value: <code>0xFFFFFFFFFFFFFFFFUL</code></li><li>Reflect In: <code>false</code></li><li>Reflect Out: <code>false</code></li><li>XOR Out: <code>0xFFFFFFFFFFFFFFFFUL</code></li></ul>
+
+</dd>
+  
+    <dt id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC64_XZ"><code>CRC64_XZ = 111</code></dt>
+  <dd><p>Represents the <code>CRC-64/XZ</code> CRC standard.</p>
+<p>The <code>CRC-64/XZ</code> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-64-xz">CRC RevEng catalogue</a> (Created: 4 July 2011; Updated: 29 August 2024), with the following definition.</p>
+<p>
+<ul><li>Width: <code>64</code></li><li>Polynomial: <code>0x42F0E1EBA9EA3693UL</code></li><li>Initial Value: <code>0xFFFFFFFFFFFFFFFFUL</code></li><li>Reflect In: <code>true</code></li><li>Reflect Out: <code>true</code></li><li>XOR Out: <code>0xFFFFFFFFFFFFFFFFUL</code></li></ul>
+
+</dd>
+  
+  </dl>
+
+
+  <h2 id="Bodu_IO_Hashing_Checksums_CrcStandards_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>The enum covers only canonical names. Published aliases (for example <code>CRC-32</code> or <code>PKZIP</code>) are not separate
-values — they resolve to their canonical instance through <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.FromName.html#Bodu_IO_Hashing_Checksums_CrcStandard_FromName_System_String_">FromName(string)</a>. Standards whose width
+values — they resolve to their canonical instance through <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html#Bodu_IO_Hashing_Checksums_CrcStandard_FromName_System_String_">FromName(string)</a>. Standards whose width
 exceeds 64 bits (currently only <code>CRC-82/DARC</code>) are omitted because they cannot be represented in a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint64">ulong</a>.</p>
 </div>
-  <h3 id="fields">Fields
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    <thead>
-    </thead></thead><tbody>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC3_GSM">CRC3_GSM</td>
-        <td><p>Represents the <code>CRC-3/GSM</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC3_ROHC">CRC3_ROHC</td>
-        <td><p>Represents the <code>CRC-3/ROHC</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC4_G704">CRC4_G704</td>
-        <td><p>Represents the <code>CRC-4/G-704</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC4_INTERLAKEN">CRC4_INTERLAKEN</td>
-        <td><p>Represents the <code>CRC-4/INTERLAKEN</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC5_EPCC1G2">CRC5_EPCC1G2</td>
-        <td><p>Represents the <code>CRC-5/EPC-C1G2</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC5_G704">CRC5_G704</td>
-        <td><p>Represents the <code>CRC-5/G-704</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC5_USB">CRC5_USB</td>
-        <td><p>Represents the <code>CRC-5/USB</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC6_CDMA2000A">CRC6_CDMA2000A</td>
-        <td><p>Represents the <code>CRC-6/CDMA2000-A</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC6_CDMA2000B">CRC6_CDMA2000B</td>
-        <td><p>Represents the <code>CRC-6/CDMA2000-B</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC6_DARC">CRC6_DARC</td>
-        <td><p>Represents the <code>CRC-6/DARC</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC6_G704">CRC6_G704</td>
-        <td><p>Represents the <code>CRC-6/G-704</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC6_GSM">CRC6_GSM</td>
-        <td><p>Represents the <code>CRC-6/GSM</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC7_MMC">CRC7_MMC</td>
-        <td><p>Represents the <code>CRC-7/MMC</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC7_ROHC">CRC7_ROHC</td>
-        <td><p>Represents the <code>CRC-7/ROHC</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC7_UMTS">CRC7_UMTS</td>
-        <td><p>Represents the <code>CRC-7/UMTS</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_AUTOSAR">CRC8_AUTOSAR</td>
-        <td><p>Represents the <code>CRC-8/AUTOSAR</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_BLUETOOTH">CRC8_BLUETOOTH</td>
-        <td><p>Represents the <code>CRC-8/BLUETOOTH</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_CDMA2000">CRC8_CDMA2000</td>
-        <td><p>Represents the <code>CRC-8/CDMA2000</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_DARC">CRC8_DARC</td>
-        <td><p>Represents the <code>CRC-8/DARC</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_DVBS2">CRC8_DVBS2</td>
-        <td><p>Represents the <code>CRC-8/DVB-S2</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_GSMA">CRC8_GSMA</td>
-        <td><p>Represents the <code>CRC-8/GSM-A</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_GSMB">CRC8_GSMB</td>
-        <td><p>Represents the <code>CRC-8/GSM-B</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_HITAG">CRC8_HITAG</td>
-        <td><p>Represents the <code>CRC-8/HITAG</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_I4321">CRC8_I4321</td>
-        <td><p>Represents the <code>CRC-8/I-432-1</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_ICODE">CRC8_ICODE</td>
-        <td><p>Represents the <code>CRC-8/I-CODE</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_LTE">CRC8_LTE</td>
-        <td><p>Represents the <code>CRC-8/LTE</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_MAXIMDOW">CRC8_MAXIMDOW</td>
-        <td><p>Represents the <code>CRC-8/MAXIM-DOW</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_MIFAREMAD">CRC8_MIFAREMAD</td>
-        <td><p>Represents the <code>CRC-8/MIFARE-MAD</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_NRSC5">CRC8_NRSC5</td>
-        <td><p>Represents the <code>CRC-8/NRSC-5</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_OPENSAFETY">CRC8_OPENSAFETY</td>
-        <td><p>Represents the <code>CRC-8/OPENSAFETY</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_ROHC">CRC8_ROHC</td>
-        <td><p>Represents the <code>CRC-8/ROHC</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_SAEJ1850">CRC8_SAEJ1850</td>
-        <td><p>Represents the <code>CRC-8/SAE-J1850</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_SMBUS">CRC8_SMBUS</td>
-        <td><p>Represents the <code>CRC-8/SMBUS</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_TECH3250">CRC8_TECH3250</td>
-        <td><p>Represents the <code>CRC-8/TECH-3250</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_WCDMA">CRC8_WCDMA</td>
-        <td><p>Represents the <code>CRC-8/WCDMA</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC10_ATM">CRC10_ATM</td>
-        <td><p>Represents the <code>CRC-10/ATM</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC10_CDMA2000">CRC10_CDMA2000</td>
-        <td><p>Represents the <code>CRC-10/CDMA2000</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC10_GSM">CRC10_GSM</td>
-        <td><p>Represents the <code>CRC-10/GSM</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC11_FLEXRAY">CRC11_FLEXRAY</td>
-        <td><p>Represents the <code>CRC-11/FLEXRAY</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC11_UMTS">CRC11_UMTS</td>
-        <td><p>Represents the <code>CRC-11/UMTS</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC12_CDMA2000">CRC12_CDMA2000</td>
-        <td><p>Represents the <code>CRC-12/CDMA2000</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC12_DECT">CRC12_DECT</td>
-        <td><p>Represents the <code>CRC-12/DECT</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC12_GSM">CRC12_GSM</td>
-        <td><p>Represents the <code>CRC-12/GSM</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC12_UMTS">CRC12_UMTS</td>
-        <td><p>Represents the <code>CRC-12/UMTS</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC13_BBC">CRC13_BBC</td>
-        <td><p>Represents the <code>CRC-13/BBC</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC14_DARC">CRC14_DARC</td>
-        <td><p>Represents the <code>CRC-14/DARC</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC14_GSM">CRC14_GSM</td>
-        <td><p>Represents the <code>CRC-14/GSM</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC15_CAN">CRC15_CAN</td>
-        <td><p>Represents the <code>CRC-15/CAN</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC15_MPT1327">CRC15_MPT1327</td>
-        <td><p>Represents the <code>CRC-15/MPT1327</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_ARC">CRC16_ARC</td>
-        <td><p>Represents the <code>CRC-16/ARC</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_CDMA2000">CRC16_CDMA2000</td>
-        <td><p>Represents the <code>CRC-16/CDMA2000</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_CMS">CRC16_CMS</td>
-        <td><p>Represents the <code>CRC-16/CMS</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_DDS110">CRC16_DDS110</td>
-        <td><p>Represents the <code>CRC-16/DDS-110</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_DECTR">CRC16_DECTR</td>
-        <td><p>Represents the <code>CRC-16/DECT-R</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_DECTX">CRC16_DECTX</td>
-        <td><p>Represents the <code>CRC-16/DECT-X</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_DNP">CRC16_DNP</td>
-        <td><p>Represents the <code>CRC-16/DNP</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_EN13757">CRC16_EN13757</td>
-        <td><p>Represents the <code>CRC-16/EN-13757</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_GENIBUS">CRC16_GENIBUS</td>
-        <td><p>Represents the <code>CRC-16/GENIBUS</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_GSM">CRC16_GSM</td>
-        <td><p>Represents the <code>CRC-16/GSM</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_IBM3740">CRC16_IBM3740</td>
-        <td><p>Represents the <code>CRC-16/IBM-3740</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_IBMSDLC">CRC16_IBMSDLC</td>
-        <td><p>Represents the <code>CRC-16/IBM-SDLC</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_ISOIEC144433A">CRC16_ISOIEC144433A</td>
-        <td><p>Represents the <code>CRC-16/ISO-IEC-14443-3-A</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_KERMIT">CRC16_KERMIT</td>
-        <td><p>Represents the <code>CRC-16/KERMIT</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_LJ1200">CRC16_LJ1200</td>
-        <td><p>Represents the <code>CRC-16/LJ1200</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_M17">CRC16_M17</td>
-        <td><p>Represents the <code>CRC-16/M17</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_MAXIMDOW">CRC16_MAXIMDOW</td>
-        <td><p>Represents the <code>CRC-16/MAXIM-DOW</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_MCRF4XX">CRC16_MCRF4XX</td>
-        <td><p>Represents the <code>CRC-16/MCRF4XX</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_MODBUS">CRC16_MODBUS</td>
-        <td><p>Represents the <code>CRC-16/MODBUS</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_NRSC5">CRC16_NRSC5</td>
-        <td><p>Represents the <code>CRC-16/NRSC-5</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_OPENSAFETYA">CRC16_OPENSAFETYA</td>
-        <td><p>Represents the <code>CRC-16/OPENSAFETY-A</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_OPENSAFETYB">CRC16_OPENSAFETYB</td>
-        <td><p>Represents the <code>CRC-16/OPENSAFETY-B</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_PROFIBUS">CRC16_PROFIBUS</td>
-        <td><p>Represents the <code>CRC-16/PROFIBUS</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_RIELLO">CRC16_RIELLO</td>
-        <td><p>Represents the <code>CRC-16/RIELLO</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_SPIFUJITSU">CRC16_SPIFUJITSU</td>
-        <td><p>Represents the <code>CRC-16/SPI-FUJITSU</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_T10DIF">CRC16_T10DIF</td>
-        <td><p>Represents the <code>CRC-16/T10-DIF</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_TELEDISK">CRC16_TELEDISK</td>
-        <td><p>Represents the <code>CRC-16/TELEDISK</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_TMS37157">CRC16_TMS37157</td>
-        <td><p>Represents the <code>CRC-16/TMS37157</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_UMTS">CRC16_UMTS</td>
-        <td><p>Represents the <code>CRC-16/UMTS</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_USB">CRC16_USB</td>
-        <td><p>Represents the <code>CRC-16/USB</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_XMODEM">CRC16_XMODEM</td>
-        <td><p>Represents the <code>CRC-16/XMODEM</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC17_CANFD">CRC17_CANFD</td>
-        <td><p>Represents the <code>CRC-17/CAN-FD</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC21_CANFD">CRC21_CANFD</td>
-        <td><p>Represents the <code>CRC-21/CAN-FD</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC24_BLE">CRC24_BLE</td>
-        <td><p>Represents the <code>CRC-24/BLE</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC24_FLEXRAYA">CRC24_FLEXRAYA</td>
-        <td><p>Represents the <code>CRC-24/FLEXRAY-A</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC24_FLEXRAYB">CRC24_FLEXRAYB</td>
-        <td><p>Represents the <code>CRC-24/FLEXRAY-B</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC24_INTERLAKEN">CRC24_INTERLAKEN</td>
-        <td><p>Represents the <code>CRC-24/INTERLAKEN</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC24_LTEA">CRC24_LTEA</td>
-        <td><p>Represents the <code>CRC-24/LTE-A</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC24_LTEB">CRC24_LTEB</td>
-        <td><p>Represents the <code>CRC-24/LTE-B</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC24_OPENPGP">CRC24_OPENPGP</td>
-        <td><p>Represents the <code>CRC-24/OPENPGP</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC24_OS9">CRC24_OS9</td>
-        <td><p>Represents the <code>CRC-24/OS-9</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC30_CDMA">CRC30_CDMA</td>
-        <td><p>Represents the <code>CRC-30/CDMA</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC31_PHILIPS">CRC31_PHILIPS</td>
-        <td><p>Represents the <code>CRC-31/PHILIPS</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC32_AIXM">CRC32_AIXM</td>
-        <td><p>Represents the <code>CRC-32/AIXM</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC32_AUTOSAR">CRC32_AUTOSAR</td>
-        <td><p>Represents the <code>CRC-32/AUTOSAR</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC32_BASE91D">CRC32_BASE91D</td>
-        <td><p>Represents the <code>CRC-32/BASE91-D</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC32_BZIP2">CRC32_BZIP2</td>
-        <td><p>Represents the <code>CRC-32/BZIP2</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC32_CDROMEDC">CRC32_CDROMEDC</td>
-        <td><p>Represents the <code>CRC-32/CD-ROM-EDC</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC32_CKSUM">CRC32_CKSUM</td>
-        <td><p>Represents the <code>CRC-32/CKSUM</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC32_ISCSI">CRC32_ISCSI</td>
-        <td><p>Represents the <code>CRC-32/ISCSI</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC32_ISOHDLC">CRC32_ISOHDLC</td>
-        <td><p>Represents the <code>CRC-32/ISO-HDLC</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC32_JAMCRC">CRC32_JAMCRC</td>
-        <td><p>Represents the <code>CRC-32/JAMCRC</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC32_MEF">CRC32_MEF</td>
-        <td><p>Represents the <code>CRC-32/MEF</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC32_MPEG2">CRC32_MPEG2</td>
-        <td><p>Represents the <code>CRC-32/MPEG-2</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC32_XFER">CRC32_XFER</td>
-        <td><p>Represents the <code>CRC-32/XFER</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC40_GSM">CRC40_GSM</td>
-        <td><p>Represents the <code>CRC-40/GSM</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC64_ECMA182">CRC64_ECMA182</td>
-        <td><p>Represents the <code>CRC-64/ECMA-182</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC64_GOISO">CRC64_GOISO</td>
-        <td><p>Represents the <code>CRC-64/GO-ISO</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC64_MS">CRC64_MS</td>
-        <td><p>Represents the <code>CRC-64/MS</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC64_NVME">CRC64_NVME</td>
-        <td><p>Represents the <code>CRC-64/NVME</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC64_REDIS">CRC64_REDIS</td>
-        <td><p>Represents the <code>CRC-64/REDIS</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC64_WE">CRC64_WE</td>
-        <td><p>Represents the <code>CRC-64/WE</code> CRC standard.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC64_XZ">CRC64_XZ</td>
-        <td><p>Represents the <code>CRC-64/XZ</code> CRC standard.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="Bodu.Extensions.BufferConverter.CopyTo.html#Bodu_Extensions_BufferConverter_CopyTo__1___0_System_Byte___System_Int32_">BufferConverter.CopyTo&lt;CrcStandards&gt;(CrcStandards, byte[], int)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;CrcStandards&gt;(CrcStandards, CrcStandards, IComparer&lt;CrcStandards&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;CrcStandards&gt;(CrcStandards, CrcStandards, IComparer&lt;CrcStandards&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Clamp.html#Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.Clamp&lt;CrcStandards&gt;(CrcStandards, CrcStandards?, CrcStandards?, IComparer&lt;CrcStandards&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsBetween.html#Bodu_Extensions_ComparableExtensions_IsBetween__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsBetween&lt;CrcStandards&gt;(CrcStandards, CrcStandards?, CrcStandards?, IComparer&lt;CrcStandards&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;CrcStandards&gt;(CrcStandards, CrcStandards, IComparer&lt;CrcStandards&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThanOrEqual&lt;CrcStandards&gt;(CrcStandards, CrcStandards?, IComparer&lt;CrcStandards&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThan.html#Bodu_Extensions_ComparableExtensions_IsGreaterThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThan&lt;CrcStandards&gt;(CrcStandards, CrcStandards?, IComparer&lt;CrcStandards&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThanOrEqual&lt;CrcStandards&gt;(CrcStandards, CrcStandards?, IComparer&lt;CrcStandards&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThan.html#Bodu_Extensions_ComparableExtensions_IsLessThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThan&lt;CrcStandards&gt;(CrcStandards, CrcStandards?, IComparer&lt;CrcStandards&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsOutside.html#Bodu_Extensions_ComparableExtensions_IsOutside__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsOutside&lt;CrcStandards&gt;(CrcStandards, CrcStandards?, CrcStandards?, IComparer&lt;CrcStandards&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;CrcStandards&gt;(CrcStandards, CrcStandards, IComparer&lt;CrcStandards&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;CrcStandards&gt;(CrcStandards, CrcStandards, IComparer&lt;CrcStandards&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.EnumExtensions.ClearFlag.html#Bodu_Extensions_EnumExtensions_ClearFlag__1___0___0_">EnumExtensions.ClearFlag&lt;CrcStandards&gt;(CrcStandards, CrcStandards)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.EnumExtensions.GetDescription.html#Bodu_Extensions_EnumExtensions_GetDescription__1___0_">EnumExtensions.GetDescription&lt;CrcStandards&gt;(CrcStandards)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.EnumExtensions.GetDisplayName.html#Bodu_Extensions_EnumExtensions_GetDisplayName__1___0_">EnumExtensions.GetDisplayName&lt;CrcStandards&gt;(CrcStandards)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.EnumExtensions.HasAllFlags.html#Bodu_Extensions_EnumExtensions_HasAllFlags__1___0___0_">EnumExtensions.HasAllFlags&lt;CrcStandards&gt;(CrcStandards, CrcStandards)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.EnumExtensions.HasAnyFlag.html#Bodu_Extensions_EnumExtensions_HasAnyFlag__1___0___0_">EnumExtensions.HasAnyFlag&lt;CrcStandards&gt;(CrcStandards, CrcStandards)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.EnumExtensions.SetFlag.html#Bodu_Extensions_EnumExtensions_SetFlag__1___0___0_">EnumExtensions.SetFlag&lt;CrcStandards&gt;(CrcStandards, CrcStandards)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.EnumExtensions.ToggleFlag.html#Bodu_Extensions_EnumExtensions_ToggleFlag__1___0___0_">EnumExtensions.ToggleFlag&lt;CrcStandards&gt;(CrcStandards, CrcStandards)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.EnumExtensions.TryGetDescription.html#Bodu_Extensions_EnumExtensions_TryGetDescription__1___0_System_String__">EnumExtensions.TryGetDescription&lt;CrcStandards&gt;(CrcStandards, out string)</a>
-  </div>
+
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 302e395 · Built: 2026-09-29 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 1e0dd9a · Built: 2026-09-29 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

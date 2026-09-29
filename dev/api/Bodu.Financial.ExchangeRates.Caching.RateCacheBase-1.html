@@ -1,107 +1,148 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
       <title>Class RateCacheBase&lt;TOptions&gt; | BODU </title>
-      <meta name="viewport" content="width=device-width">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class RateCacheBase&lt;TOptions&gt; | BODU ">
-    
-    <meta name="description" content="Provides the storage-agnostic mechanism for an : read-time freshness filtering, write-time merge-and-prune, and the recording and pruning of coverage windows for a single provider. Derived types implement only the persistence of a ; this base prescribes no physical storage structure.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      
+      <meta name="description" content="Provides the storage-agnostic mechanism for an : read-time freshness filtering, write-time merge-and-prune, and the recording and pruning of coverage windows for a single provider. Derived types implement only the persistence of a ; this base prescribes no physical storage structure.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/new/master/apiSpec/new?filename=Bodu_Financial_ExchangeRates_Caching_RateCacheBase_1.md&amp;value=---%0Auid%3A%20Bodu.Financial.ExchangeRates.Caching.RateCacheBase%601%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Financial.ExchangeRates.Caching.RateCacheBase`1">
+
+        <article data-uid="Bodu.Financial.ExchangeRates.Caching.RateCacheBase`1">
 
 
 
-  <h1 id="Bodu_Financial_ExchangeRates_Caching_RateCacheBase_1" data-uid="Bodu.Financial.ExchangeRates.Caching.RateCacheBase`1" class="text-break">Class RateCacheBase&lt;TOptions&gt;</h1>
-  <div class="markdown level0 summary"><p>Provides the storage-agnostic mechanism for an <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.IRateCache.html">IRateCache</a>: read-time freshness filtering, write-time
+  <h1 id="Bodu_Financial_ExchangeRates_Caching_RateCacheBase_1" data-uid="Bodu.Financial.ExchangeRates.Caching.RateCacheBase`1" class="text-break">
+Class RateCacheBase&lt;TOptions&gt;  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial.ExchangeRates.Caching/src/Financial.ExchangeRates.Caching/RateCacheBase{T}.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Financial.html">Financial</a>.<a class="xref" href="Bodu.Financial.ExchangeRates.html">ExchangeRates</a>.<a class="xref" href="Bodu.Financial.ExchangeRates.Caching.html">Caching</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Financial.ExchangeRates.Caching.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides the storage-agnostic mechanism for an <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.IRateCache.html">IRateCache</a>: read-time freshness filtering, write-time
 merge-and-prune, and the recording and pruning of coverage windows for a single provider. Derived types implement
 only the persistence of a <span class="xref">Bodu.Financial.ExchangeRates.Caching.CachePairState</span>; this base prescribes no physical storage structure.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><span class="xref">RateCacheBase&lt;TOptions&gt;</span></div>
-      <div class="level2"><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.DistributedRateCache.html">DistributedRateCache</a></div>
-      <div class="level2"><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.FileRateCacheBase-1.html">FileRateCacheBase&lt;TOptions&gt;</a></div>
-      <div class="level2"><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.InMemoryRateCache.html">InMemoryRateCache</a></div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public abstract class RateCacheBase&lt;TOptions&gt; : IRateCache where TOptions : RateCacheOptions</code></pre>
   </div>
-  <div class="implements">
-    <h5>Implements</h5>
-    <div><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.IRateCache.html">IRateCache</a></div>
-  </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TOptions</code></dt>
+    <dd><p>The options type carrying the bound provider and any storage settings.</p>
+</dd>
+  </dl>
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">RateCacheBase&lt;TOptions&gt;</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.IRateCache.html">IRateCache</a></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist derived">
+    <dt>Derived</dt>
+    <dd>
+      <div><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.DistributedRateCache.html">DistributedRateCache</a></div>
+      <div><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.FileRateCacheBase-1.html">FileRateCacheBase&lt;TOptions&gt;</a></div>
+      <div><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.InMemoryRateCache.html">InMemoryRateCache</a></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
@@ -123,40 +164,41 @@ only the persistence of a <span class="xref">Bodu.Financial.ExchangeRates.Cachin
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
+  </dd></dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Financial.html">Financial</a>.<a class="xref" href="Bodu.Financial.ExchangeRates.html">ExchangeRates</a>.<a class="xref" href="Bodu.Financial.ExchangeRates.Caching.html">Caching</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Financial.ExchangeRates.Caching.dll</h6>
-  <h5 id="Bodu_Financial_ExchangeRates_Caching_RateCacheBase_1_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public abstract class RateCacheBase&lt;TOptions&gt; : IRateCache where TOptions : RateCacheOptions</code></pre>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h5 class="typeParameters">Type Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="parametername">TOptions</span></td>
-        <td><p>The options type carrying the bound provider and any storage settings.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 id="Bodu_Financial_ExchangeRates_Caching_RateCacheBase_1_remarks"><strong>Remarks</strong></h5>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  </dd></dl>
+
+
+
+  <h2 id="Bodu_Financial_ExchangeRates_Caching_RateCacheBase_1_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
 <a class="xref" href="Bodu.Financial.ExchangeRates.CurrencyPair.html">ReadState(CurrencyPair)</a> returns the raw stored rows and coverage windows without filtering; this base applies the
-freshness policy in <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheBase-1.GetRates.html#Bodu_Financial_ExchangeRates_Caching_RateCacheBase_1_GetRates_Bodu_Financial_ExchangeRates_CurrencyPair_System_TimeSpan_System_DateTimeOffset_">GetRates(CurrencyPair, TimeSpan, DateTimeOffset)</a> and <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheBase-1.GetCoverage.html#Bodu_Financial_ExchangeRates_Caching_RateCacheBase_1_GetCoverage_Bodu_Financial_ExchangeRates_CurrencyPair_System_TimeSpan_System_DateTimeOffset_">GetCoverage(CurrencyPair, TimeSpan, DateTimeOffset)</a>, prunes stale rows in
-<a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheBase-1.Store.html#Bodu_Financial_ExchangeRates_Caching_RateCacheBase_1_Store_Bodu_Financial_ExchangeRates_CurrencyPair_System_Collections_Generic_IReadOnlyList_Bodu_Financial_ExchangeRates_Caching_CachedRate__System_TimeSpan_System_DateTimeOffset_">Store(CurrencyPair, IReadOnlyList&lt;CachedRate&gt;, TimeSpan, DateTimeOffset)</a>, and prunes stale coverage windows in <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheBase-1.RecordCoverage.html#Bodu_Financial_ExchangeRates_Caching_RateCacheBase_1_RecordCoverage_Bodu_Financial_ExchangeRates_CurrencyPair_System_DateOnly_System_DateOnly_System_TimeSpan_System_DateTimeOffset_">RecordCoverage(CurrencyPair, DateOnly, DateOnly, TimeSpan, DateTimeOffset)</a>, so the backing store
+freshness policy in <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheBase-1.html#Bodu_Financial_ExchangeRates_Caching_RateCacheBase_1_GetRates_Bodu_Financial_ExchangeRates_CurrencyPair_System_TimeSpan_System_DateTimeOffset_">GetRates(CurrencyPair, TimeSpan, DateTimeOffset)</a> and <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheBase-1.html#Bodu_Financial_ExchangeRates_Caching_RateCacheBase_1_GetCoverage_Bodu_Financial_ExchangeRates_CurrencyPair_System_TimeSpan_System_DateTimeOffset_">GetCoverage(CurrencyPair, TimeSpan, DateTimeOffset)</a>, prunes stale rows in
+<a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheBase-1.html#Bodu_Financial_ExchangeRates_Caching_RateCacheBase_1_Store_Bodu_Financial_ExchangeRates_CurrencyPair_System_Collections_Generic_IReadOnlyList_Bodu_Financial_ExchangeRates_Caching_CachedRate__System_TimeSpan_System_DateTimeOffset_">Store(CurrencyPair, IReadOnlyList&lt;CachedRate&gt;, TimeSpan, DateTimeOffset)</a>, and prunes stale coverage windows in <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheBase-1.html#Bodu_Financial_ExchangeRates_Caching_RateCacheBase_1_RecordCoverage_Bodu_Financial_ExchangeRates_CurrencyPair_System_DateOnly_System_DateOnly_System_TimeSpan_System_DateTimeOffset_">RecordCoverage(CurrencyPair, DateOnly, DateOnly, TimeSpan, DateTimeOffset)</a>, so the backing store
 self-cleans on every write.
 </p>
 <p>
 Rate rows and coverage windows are independent halves of the per-pair state: a write through one path preserves the
 other half so that recording coverage never drops rows and storing rows never drops coverage. The read-modify-write
-sequences in <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheBase-1.Store.html#Bodu_Financial_ExchangeRates_Caching_RateCacheBase_1_Store_Bodu_Financial_ExchangeRates_CurrencyPair_System_Collections_Generic_IReadOnlyList_Bodu_Financial_ExchangeRates_Caching_CachedRate__System_TimeSpan_System_DateTimeOffset_">Store(CurrencyPair, IReadOnlyList&lt;CachedRate&gt;, TimeSpan, DateTimeOffset)</a>, <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheBase-1.RecordCoverage.html#Bodu_Financial_ExchangeRates_Caching_RateCacheBase_1_RecordCoverage_Bodu_Financial_ExchangeRates_CurrencyPair_System_DateOnly_System_DateOnly_System_TimeSpan_System_DateTimeOffset_">RecordCoverage(CurrencyPair, DateOnly, DateOnly, TimeSpan, DateTimeOffset)</a>, and <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheBase-1.StoreFetchedRange.html#Bodu_Financial_ExchangeRates_Caching_RateCacheBase_1_StoreFetchedRange_Bodu_Financial_ExchangeRates_CurrencyPair_System_Collections_Generic_IReadOnlyList_Bodu_Financial_ExchangeRates_Caching_CachedRate__System_DateOnly_System_DateOnly_System_TimeSpan_System_DateTimeOffset_">StoreFetchedRange(CurrencyPair, IReadOnlyList&lt;CachedRate&gt;, DateOnly, DateOnly, TimeSpan, DateTimeOffset)</a> run under a
+sequences in <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheBase-1.html#Bodu_Financial_ExchangeRates_Caching_RateCacheBase_1_Store_Bodu_Financial_ExchangeRates_CurrencyPair_System_Collections_Generic_IReadOnlyList_Bodu_Financial_ExchangeRates_Caching_CachedRate__System_TimeSpan_System_DateTimeOffset_">Store(CurrencyPair, IReadOnlyList&lt;CachedRate&gt;, TimeSpan, DateTimeOffset)</a>, <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheBase-1.html#Bodu_Financial_ExchangeRates_Caching_RateCacheBase_1_RecordCoverage_Bodu_Financial_ExchangeRates_CurrencyPair_System_DateOnly_System_DateOnly_System_TimeSpan_System_DateTimeOffset_">RecordCoverage(CurrencyPair, DateOnly, DateOnly, TimeSpan, DateTimeOffset)</a>, and <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheBase-1.html#Bodu_Financial_ExchangeRates_Caching_RateCacheBase_1_StoreFetchedRange_Bodu_Financial_ExchangeRates_CurrencyPair_System_Collections_Generic_IReadOnlyList_Bodu_Financial_ExchangeRates_Caching_CachedRate__System_DateOnly_System_DateOnly_System_TimeSpan_System_DateTimeOffset_">StoreFetchedRange(CurrencyPair, IReadOnlyList&lt;CachedRate&gt;, DateOnly, DateOnly, TimeSpan, DateTimeOffset)</a> run under a
 per-pair lock so concurrent writes to the same pair cannot interleave and lose either half. The lock is
 process-local; file caches remain best-effort across processes, where the atomic temp-and-move write keeps each file
 internally consistent.
@@ -168,164 +210,435 @@ This base contributes only the per-pair locking and the read-modify-write sequen
 <span class="xref">Bodu.Financial.ExchangeRates.Caching.CachePairState</span>.
 </p>
 </div>
-  <h3 id="constructors">Constructors
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_Caching_RateCacheBase_1__ctor__0_" data-uid="Bodu.Financial.ExchangeRates.Caching.RateCacheBase`1.#ctor(`0)">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheBase-1.-ctor.html#Bodu_Financial_ExchangeRates_Caching_RateCacheBase_1__ctor__0_">RateCacheBase(TOptions)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheBase-1.html">RateCacheBase&lt;TOptions&gt;</a> class.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="properties">Properties
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_Caching_RateCacheBase_1_Options" data-uid="Bodu.Financial.ExchangeRates.Caching.RateCacheBase`1.Options">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheBase-1.Options.html#Bodu_Financial_ExchangeRates_Caching_RateCacheBase_1_Options">Options</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the validated options the cache was constructed with.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_Caching_RateCacheBase_1_Provider" data-uid="Bodu.Financial.ExchangeRates.Caching.RateCacheBase`1.Provider">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheBase-1.Provider.html#Bodu_Financial_ExchangeRates_Caching_RateCacheBase_1_Provider">Provider</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the name of the provider this cache stores rates for.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_Caching_RateCacheBase_1_GetCoverage_Bodu_Financial_ExchangeRates_CurrencyPair_System_TimeSpan_System_DateTimeOffset_" data-uid="Bodu.Financial.ExchangeRates.Caching.RateCacheBase`1.GetCoverage(Bodu.Financial.ExchangeRates.CurrencyPair,System.TimeSpan,System.DateTimeOffset)">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheBase-1.GetCoverage.html#Bodu_Financial_ExchangeRates_Caching_RateCacheBase_1_GetCoverage_Bodu_Financial_ExchangeRates_CurrencyPair_System_TimeSpan_System_DateTimeOffset_">GetCoverage(CurrencyPair, TimeSpan, DateTimeOffset)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the union of the still-fresh coverage windows recorded for the supplied pair, evaluated against
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Bodu_Financial_ExchangeRates_Caching_RateCacheBase_1__ctor_" data-uid="Bodu.Financial.ExchangeRates.Caching.RateCacheBase`1.#ctor*"></a>
+
+  <h3 id="Bodu_Financial_ExchangeRates_Caching_RateCacheBase_1__ctor__0_" data-uid="Bodu.Financial.ExchangeRates.Caching.RateCacheBase`1.#ctor(`0)">
+  RateCacheBase(TOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial.ExchangeRates.Caching/src/Financial.ExchangeRates.Caching/RateCacheBase{T}.cs/#L57"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheBase-1.html">RateCacheBase&lt;TOptions&gt;</a> class.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected RateCacheBase(TOptions options)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>options</code> <span class="xref">TOptions</span></dt>
+    <dd><p>The options carrying the bound provider and any storage settings.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">options</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">options</code> fails validation.</p>
+</dd>
+  </dl>
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Bodu_Financial_ExchangeRates_Caching_RateCacheBase_1_Options_" data-uid="Bodu.Financial.ExchangeRates.Caching.RateCacheBase`1.Options*"></a>
+
+  <h3 id="Bodu_Financial_ExchangeRates_Caching_RateCacheBase_1_Options" data-uid="Bodu.Financial.ExchangeRates.Caching.RateCacheBase`1.Options">
+  Options
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial.ExchangeRates.Caching/src/Financial.ExchangeRates.Caching/RateCacheBase{T}.cs/#L72"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the validated options the cache was constructed with.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected TOptions Options { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">TOptions</span></dt>
+    <dd><p>The cache options.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Financial_ExchangeRates_Caching_RateCacheBase_1_Provider_" data-uid="Bodu.Financial.ExchangeRates.Caching.RateCacheBase`1.Provider*"></a>
+
+  <h3 id="Bodu_Financial_ExchangeRates_Caching_RateCacheBase_1_Provider" data-uid="Bodu.Financial.ExchangeRates.Caching.RateCacheBase`1.Provider">
+  Provider
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial.ExchangeRates.Caching/src/Financial.ExchangeRates.Caching/RateCacheBase{T}.cs/#L66"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the name of the provider this cache stores rates for.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string Provider { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The provider identifier the cache is bound to.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Financial_ExchangeRates_Caching_RateCacheBase_1_GetCoverage_" data-uid="Bodu.Financial.ExchangeRates.Caching.RateCacheBase`1.GetCoverage*"></a>
+
+  <h3 id="Bodu_Financial_ExchangeRates_Caching_RateCacheBase_1_GetCoverage_Bodu_Financial_ExchangeRates_CurrencyPair_System_TimeSpan_System_DateTimeOffset_" data-uid="Bodu.Financial.ExchangeRates.Caching.RateCacheBase`1.GetCoverage(Bodu.Financial.ExchangeRates.CurrencyPair,System.TimeSpan,System.DateTimeOffset)">
+  GetCoverage(CurrencyPair, TimeSpan, DateTimeOffset)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial.ExchangeRates.Caching/src/Financial.ExchangeRates.Caching/RateCacheBase{T}.cs/#L109"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the union of the still-fresh coverage windows recorded for the supplied pair, evaluated against
 <code class="paramref">asOf</code>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_Caching_RateCacheBase_1_GetRates_Bodu_Financial_ExchangeRates_CurrencyPair_System_TimeSpan_System_DateTimeOffset_" data-uid="Bodu.Financial.ExchangeRates.Caching.RateCacheBase`1.GetRates(Bodu.Financial.ExchangeRates.CurrencyPair,System.TimeSpan,System.DateTimeOffset)">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheBase-1.GetRates.html#Bodu_Financial_ExchangeRates_Caching_RateCacheBase_1_GetRates_Bodu_Financial_ExchangeRates_CurrencyPair_System_TimeSpan_System_DateTimeOffset_">GetRates(CurrencyPair, TimeSpan, DateTimeOffset)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the fresh cached rates for the supplied pair, evaluated against <code class="paramref">asOf</code>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_Caching_RateCacheBase_1_RecordCoverage_Bodu_Financial_ExchangeRates_CurrencyPair_System_DateOnly_System_DateOnly_System_TimeSpan_System_DateTimeOffset_" data-uid="Bodu.Financial.ExchangeRates.Caching.RateCacheBase`1.RecordCoverage(Bodu.Financial.ExchangeRates.CurrencyPair,System.DateOnly,System.DateOnly,System.TimeSpan,System.DateTimeOffset)">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheBase-1.RecordCoverage.html#Bodu_Financial_ExchangeRates_Caching_RateCacheBase_1_RecordCoverage_Bodu_Financial_ExchangeRates_CurrencyPair_System_DateOnly_System_DateOnly_System_TimeSpan_System_DateTimeOffset_">RecordCoverage(CurrencyPair, DateOnly, DateOnly, TimeSpan, DateTimeOffset)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Records that the inclusive range <code class="paramref">start</code>..<code class="paramref">end</code> was fetched for the supplied
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DateRangeCoverage GetCoverage(CurrencyPair pair, TimeSpan duration, DateTimeOffset asOf)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>pair</code> <a class="xref" href="Bodu.Financial.ExchangeRates.CurrencyPair.html">CurrencyPair</a></dt>
+    <dd><p>The currency pair.</p>
+</dd>
+    <dt><code>duration</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.timespan">TimeSpan</a></dt>
+    <dd><p>The duration a recorded coverage window remains fresh after it was fetched.</p>
+</dd>
+    <dt><code>asOf</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetimeoffset">DateTimeOffset</a></dt>
+    <dd><p>The instant against which coverage freshness is evaluated.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Financial.ExchangeRates.DateRangeCoverage.html">DateRangeCoverage</a></dt>
+    <dd><p>A <a class="xref" href="Bodu.Financial.ExchangeRates.DateRangeCoverage.html">DateRangeCoverage</a> describing the days known to have been fetched and still fresh; empty when no
+fresh coverage exists.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Financial_ExchangeRates_Caching_RateCacheBase_1_GetCoverage_Bodu_Financial_ExchangeRates_CurrencyPair_System_TimeSpan_System_DateTimeOffset__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Coverage answers which days were actually fetched, not merely which days have a cached rate. A range lookup
+should be served from the cache only when this coverage
+<a class="xref" href="Bodu.Financial.ExchangeRates.DateRangeCoverage.html#Bodu_Financial_ExchangeRates_DateRangeCoverage_Contains_System_DateOnly_System_DateOnly_">Contains(DateOnly, DateOnly)</a> the whole requested window, so an interior day
+that was never fetched forces a refetch rather than being served from a sparse set of rows.</p>
+</div>
+
+
+
+
+  <a id="Bodu_Financial_ExchangeRates_Caching_RateCacheBase_1_GetRates_" data-uid="Bodu.Financial.ExchangeRates.Caching.RateCacheBase`1.GetRates*"></a>
+
+  <h3 id="Bodu_Financial_ExchangeRates_Caching_RateCacheBase_1_GetRates_Bodu_Financial_ExchangeRates_CurrencyPair_System_TimeSpan_System_DateTimeOffset_" data-uid="Bodu.Financial.ExchangeRates.Caching.RateCacheBase`1.GetRates(Bodu.Financial.ExchangeRates.CurrencyPair,System.TimeSpan,System.DateTimeOffset)">
+  GetRates(CurrencyPair, TimeSpan, DateTimeOffset)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial.ExchangeRates.Caching/src/Financial.ExchangeRates.Caching/RateCacheBase{T}.cs/#L75"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the fresh cached rates for the supplied pair, evaluated against <code class="paramref">asOf</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;CachedRate&gt; GetRates(CurrencyPair pair, TimeSpan duration, DateTimeOffset asOf)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>pair</code> <a class="xref" href="Bodu.Financial.ExchangeRates.CurrencyPair.html">CurrencyPair</a></dt>
+    <dd><p>The currency pair.</p>
+</dd>
+    <dt><code>duration</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.timespan">TimeSpan</a></dt>
+    <dd><p>The duration a cached rate remains fresh after it was cached.</p>
+</dd>
+    <dt><code>asOf</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetimeoffset">DateTimeOffset</a></dt>
+    <dd><p>The instant against which freshness is evaluated.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachedRate.html">CachedRate</a>&gt;</dt>
+    <dd><p>The fresh cached rates ordered by date, or an empty list when none are fresh or available.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_Financial_ExchangeRates_Caching_RateCacheBase_1_RecordCoverage_" data-uid="Bodu.Financial.ExchangeRates.Caching.RateCacheBase`1.RecordCoverage*"></a>
+
+  <h3 id="Bodu_Financial_ExchangeRates_Caching_RateCacheBase_1_RecordCoverage_Bodu_Financial_ExchangeRates_CurrencyPair_System_DateOnly_System_DateOnly_System_TimeSpan_System_DateTimeOffset_" data-uid="Bodu.Financial.ExchangeRates.Caching.RateCacheBase`1.RecordCoverage(Bodu.Financial.ExchangeRates.CurrencyPair,System.DateOnly,System.DateOnly,System.TimeSpan,System.DateTimeOffset)">
+  RecordCoverage(CurrencyPair, DateOnly, DateOnly, TimeSpan, DateTimeOffset)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial.ExchangeRates.Caching/src/Financial.ExchangeRates.Caching/RateCacheBase{T}.cs/#L124"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Records that the inclusive range <code class="paramref">start</code>..<code class="paramref">end</code> was fetched for the supplied
 pair, stamping the window at <code class="paramref">asOf</code> and pruning windows that are no longer fresh under
 <code class="paramref">duration</code>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_Caching_RateCacheBase_1_Store_Bodu_Financial_ExchangeRates_CurrencyPair_System_Collections_Generic_IReadOnlyList_Bodu_Financial_ExchangeRates_Caching_CachedRate__System_TimeSpan_System_DateTimeOffset_" data-uid="Bodu.Financial.ExchangeRates.Caching.RateCacheBase`1.Store(Bodu.Financial.ExchangeRates.CurrencyPair,System.Collections.Generic.IReadOnlyList{Bodu.Financial.ExchangeRates.Caching.CachedRate},System.TimeSpan,System.DateTimeOffset)">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheBase-1.Store.html#Bodu_Financial_ExchangeRates_Caching_RateCacheBase_1_Store_Bodu_Financial_ExchangeRates_CurrencyPair_System_Collections_Generic_IReadOnlyList_Bodu_Financial_ExchangeRates_Caching_CachedRate__System_TimeSpan_System_DateTimeOffset_">Store(CurrencyPair, IReadOnlyList&lt;CachedRate&gt;, TimeSpan, DateTimeOffset)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Stores rates for the supplied pair, merging with any existing entry so the most recently cached rate wins per
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void RecordCoverage(CurrencyPair pair, DateOnly start, DateOnly end, TimeSpan duration, DateTimeOffset asOf)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>pair</code> <a class="xref" href="Bodu.Financial.ExchangeRates.CurrencyPair.html">CurrencyPair</a></dt>
+    <dd><p>The currency pair.</p>
+</dd>
+    <dt><code>start</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>The inclusive first date of the fetched range.</p>
+</dd>
+    <dt><code>end</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>The inclusive last date of the fetched range.</p>
+</dd>
+    <dt><code>duration</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.timespan">TimeSpan</a></dt>
+    <dd><p>The duration a recorded coverage window remains fresh after it was fetched.</p>
+</dd>
+    <dt><code>asOf</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetimeoffset">DateTimeOffset</a></dt>
+    <dd><p>The instant the fetched window is stamped with and against which stale windows are pruned.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Financial_ExchangeRates_Caching_RateCacheBase_1_RecordCoverage_Bodu_Financial_ExchangeRates_CurrencyPair_System_DateOnly_System_DateOnly_System_TimeSpan_System_DateTimeOffset__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This is a low-level building block that records the coverage half only, with no rows. It exists for the cache's
+own composition and is <strong>not</strong> the path a provider fetch should use: recording coverage here and
+writing rows through a separate <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.IRateCache.html#Bodu_Financial_ExchangeRates_Caching_IRateCache_Store_Bodu_Financial_ExchangeRates_CurrencyPair_System_Collections_Generic_IReadOnlyList_Bodu_Financial_ExchangeRates_Caching_CachedRate__System_TimeSpan_System_DateTimeOffset_">Store(CurrencyPair, IReadOnlyList&lt;CachedRate&gt;, TimeSpan, DateTimeOffset)</a> risks persisting coverage a backend later serves as a false
+hit. A range fetch must instead use <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.IRateCache.html#Bodu_Financial_ExchangeRates_Caching_IRateCache_StoreFetchedRange_Bodu_Financial_ExchangeRates_CurrencyPair_System_Collections_Generic_IReadOnlyList_Bodu_Financial_ExchangeRates_Caching_CachedRate__System_DateOnly_System_DateOnly_System_TimeSpan_System_DateTimeOffset_">StoreFetchedRange(CurrencyPair, IReadOnlyList&lt;CachedRate&gt;, DateOnly, DateOnly, TimeSpan, DateTimeOffset)</a>, which writes both halves atomically.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <code class="paramref">start</code> is later than <code class="paramref">end</code>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Financial_ExchangeRates_Caching_RateCacheBase_1_Store_" data-uid="Bodu.Financial.ExchangeRates.Caching.RateCacheBase`1.Store*"></a>
+
+  <h3 id="Bodu_Financial_ExchangeRates_Caching_RateCacheBase_1_Store_Bodu_Financial_ExchangeRates_CurrencyPair_System_Collections_Generic_IReadOnlyList_Bodu_Financial_ExchangeRates_Caching_CachedRate__System_TimeSpan_System_DateTimeOffset_" data-uid="Bodu.Financial.ExchangeRates.Caching.RateCacheBase`1.Store(Bodu.Financial.ExchangeRates.CurrencyPair,System.Collections.Generic.IReadOnlyList{Bodu.Financial.ExchangeRates.Caching.CachedRate},System.TimeSpan,System.DateTimeOffset)">
+  Store(CurrencyPair, IReadOnlyList&lt;CachedRate&gt;, TimeSpan, DateTimeOffset)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial.ExchangeRates.Caching/src/Financial.ExchangeRates.Caching/RateCacheBase{T}.cs/#L90"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Stores rates for the supplied pair, merging with any existing entry so the most recently cached rate wins per
 date, and pruning rows that are no longer fresh under <code class="paramref">duration</code>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_Caching_RateCacheBase_1_StoreFetchedRange_Bodu_Financial_ExchangeRates_CurrencyPair_System_Collections_Generic_IReadOnlyList_Bodu_Financial_ExchangeRates_Caching_CachedRate__System_DateOnly_System_DateOnly_System_TimeSpan_System_DateTimeOffset_" data-uid="Bodu.Financial.ExchangeRates.Caching.RateCacheBase`1.StoreFetchedRange(Bodu.Financial.ExchangeRates.CurrencyPair,System.Collections.Generic.IReadOnlyList{Bodu.Financial.ExchangeRates.Caching.CachedRate},System.DateOnly,System.DateOnly,System.TimeSpan,System.DateTimeOffset)">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheBase-1.StoreFetchedRange.html#Bodu_Financial_ExchangeRates_Caching_RateCacheBase_1_StoreFetchedRange_Bodu_Financial_ExchangeRates_CurrencyPair_System_Collections_Generic_IReadOnlyList_Bodu_Financial_ExchangeRates_Caching_CachedRate__System_DateOnly_System_DateOnly_System_TimeSpan_System_DateTimeOffset_">StoreFetchedRange(CurrencyPair, IReadOnlyList&lt;CachedRate&gt;, DateOnly, DateOnly, TimeSpan, DateTimeOffset)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Atomically merges <code class="paramref">rows</code> into the pair's cached rows and records the inclusive range
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Store(CurrencyPair pair, IReadOnlyList&lt;CachedRate&gt; rates, TimeSpan duration, DateTimeOffset asOf)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>pair</code> <a class="xref" href="Bodu.Financial.ExchangeRates.CurrencyPair.html">CurrencyPair</a></dt>
+    <dd><p>The currency pair.</p>
+</dd>
+    <dt><code>rates</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachedRate.html">CachedRate</a>&gt;</dt>
+    <dd><p>The rates to store.</p>
+</dd>
+    <dt><code>duration</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.timespan">TimeSpan</a></dt>
+    <dd><p>The duration a cached rate remains fresh after it was cached.</p>
+</dd>
+    <dt><code>asOf</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetimeoffset">DateTimeOffset</a></dt>
+    <dd><p>The instant against which stale rows are pruned.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Financial_ExchangeRates_Caching_RateCacheBase_1_Store_Bodu_Financial_ExchangeRates_CurrencyPair_System_Collections_Generic_IReadOnlyList_Bodu_Financial_ExchangeRates_Caching_CachedRate__System_TimeSpan_System_DateTimeOffset__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This stores rate rows only and records no coverage window, so it is the path a single-date miss caches its
+resolved row through. Because no coverage is recorded, a later range lookup that spans those dates still
+refetches rather than serving from these rows — by design, since only a range fetch (through
+<a class="xref" href="Bodu.Financial.ExchangeRates.Caching.IRateCache.html#Bodu_Financial_ExchangeRates_Caching_IRateCache_StoreFetchedRange_Bodu_Financial_ExchangeRates_CurrencyPair_System_Collections_Generic_IReadOnlyList_Bodu_Financial_ExchangeRates_Caching_CachedRate__System_DateOnly_System_DateOnly_System_TimeSpan_System_DateTimeOffset_">StoreFetchedRange(CurrencyPair, IReadOnlyList&lt;CachedRate&gt;, DateOnly, DateOnly, TimeSpan, DateTimeOffset)</a>) establishes the contiguous coverage a range serve requires.</p>
+</div>
+
+
+
+
+  <a id="Bodu_Financial_ExchangeRates_Caching_RateCacheBase_1_StoreFetchedRange_" data-uid="Bodu.Financial.ExchangeRates.Caching.RateCacheBase`1.StoreFetchedRange*"></a>
+
+  <h3 id="Bodu_Financial_ExchangeRates_Caching_RateCacheBase_1_StoreFetchedRange_Bodu_Financial_ExchangeRates_CurrencyPair_System_Collections_Generic_IReadOnlyList_Bodu_Financial_ExchangeRates_Caching_CachedRate__System_DateOnly_System_DateOnly_System_TimeSpan_System_DateTimeOffset_" data-uid="Bodu.Financial.ExchangeRates.Caching.RateCacheBase`1.StoreFetchedRange(Bodu.Financial.ExchangeRates.CurrencyPair,System.Collections.Generic.IReadOnlyList{Bodu.Financial.ExchangeRates.Caching.CachedRate},System.DateOnly,System.DateOnly,System.TimeSpan,System.DateTimeOffset)">
+  StoreFetchedRange(CurrencyPair, IReadOnlyList&lt;CachedRate&gt;, DateOnly, DateOnly, TimeSpan, DateTimeOffset)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial.ExchangeRates.Caching/src/Financial.ExchangeRates.Caching/RateCacheBase{T}.cs/#L140"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Atomically merges <code class="paramref">rows</code> into the pair's cached rows and records the inclusive range
 <code class="paramref">start</code>..<code class="paramref">end</code> as covered, persisting both halves together or neither.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public RateCacheWriteStatus StoreFetchedRange(CurrencyPair pair, IReadOnlyList&lt;CachedRate&gt; rows, DateOnly start, DateOnly end, TimeSpan duration, DateTimeOffset asOf)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>pair</code> <a class="xref" href="Bodu.Financial.ExchangeRates.CurrencyPair.html">CurrencyPair</a></dt>
+    <dd><p>The currency pair.</p>
+</dd>
+    <dt><code>rows</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachedRate.html">CachedRate</a>&gt;</dt>
+    <dd><p>The rows fetched for the range, which may be empty when the fetch returned no observation.</p>
+</dd>
+    <dt><code>start</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>The inclusive first date of the fetched range.</p>
+</dd>
+    <dt><code>end</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>The inclusive last date of the fetched range.</p>
+</dd>
+    <dt><code>duration</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.timespan">TimeSpan</a></dt>
+    <dd><p>The duration a cached row and a recorded coverage window remain fresh after they were cached or fetched.</p>
+</dd>
+    <dt><code>asOf</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetimeoffset">DateTimeOffset</a></dt>
+    <dd><p>The instant newly cached rows and the fetched window are stamped with and against which stale rows and windows
+are pruned.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheWriteStatus.html">RateCacheWriteStatus</a></dt>
+    <dd><p><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheWriteStatus.html#Bodu_Financial_ExchangeRates_Caching_RateCacheWriteStatus_Stored">Stored</a> when both halves were persisted;
+<a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheWriteStatus.html#Bodu_Financial_ExchangeRates_Caching_RateCacheWriteStatus_Failed">Failed</a> when a storage error was swallowed and nothing was persisted;
+<a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheWriteStatus.html#Bodu_Financial_ExchangeRates_Caching_RateCacheWriteStatus_Skipped">Skipped</a> for a cache that intentionally stores nothing.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Financial_ExchangeRates_Caching_RateCacheBase_1_StoreFetchedRange_Bodu_Financial_ExchangeRates_CurrencyPair_System_Collections_Generic_IReadOnlyList_Bodu_Financial_ExchangeRates_Caching_CachedRate__System_DateOnly_System_DateOnly_System_TimeSpan_System_DateTimeOffset__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+The coverage window is recorded even when <code class="paramref">rows</code> is empty: a successful fetch that returned no
+observation (a weekend, a holiday, a true gap) must still mark the window covered so a later lookup of the same
+window is served rather than refetched.
+</p>
+<p>
+The merge follows the same most-recent-per-date rule as <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.IRateCache.html#Bodu_Financial_ExchangeRates_Caching_IRateCache_Store_Bodu_Financial_ExchangeRates_CurrencyPair_System_Collections_Generic_IReadOnlyList_Bodu_Financial_ExchangeRates_Caching_CachedRate__System_TimeSpan_System_DateTimeOffset_">Store(CurrencyPair, IReadOnlyList&lt;CachedRate&gt;, TimeSpan, DateTimeOffset)</a> and the same window pruning as
+<a class="xref" href="Bodu.Financial.ExchangeRates.Caching.IRateCache.html#Bodu_Financial_ExchangeRates_Caching_IRateCache_RecordCoverage_Bodu_Financial_ExchangeRates_CurrencyPair_System_DateOnly_System_DateOnly_System_TimeSpan_System_DateTimeOffset_">RecordCoverage(CurrencyPair, DateOnly, DateOnly, TimeSpan, DateTimeOffset)</a>. The write is atomic per pair — under the per-pair lock for the in-memory and file
+caches, in one transaction for SQLite, and as one read-modify-write of the per-pair blob for a distributed cache
+— so a reader never observes coverage without its rows. As with the other write paths, a swallowed storage error
+degrades to <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheWriteStatus.html#Bodu_Financial_ExchangeRates_Caching_RateCacheWriteStatus_Failed">Failed</a> rather than throwing; argument validation still throws.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">rows</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <code class="paramref">start</code> is later than <code class="paramref">end</code>.</p>
+</dd>
+  </dl>
+
+
+
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 302e395 · Built: 2026-09-29 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 1e0dd9a · Built: 2026-09-29 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

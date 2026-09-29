@@ -1,99 +1,127 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
       <title>Class StringEncodingExtensions | BODU </title>
-      <meta name="viewport" content="width=device-width">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class StringEncodingExtensions | BODU ">
-    
-    <meta name="description" content="Provides encoding extension methods on  that mirror the span-receiver surface in .">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      
+      <meta name="description" content="Provides encoding extension methods on  that mirror the span-receiver surface in .">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/new/master/apiSpec/new?filename=Bodu_Text_StringEncodingExtensions.md&amp;value=---%0Auid%3A%20Bodu.Text.StringEncodingExtensions%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Text.StringEncodingExtensions">
+
+        <article data-uid="Bodu.Text.StringEncodingExtensions">
 
 
 
-  <h1 id="Bodu_Text_StringEncodingExtensions" data-uid="Bodu.Text.StringEncodingExtensions" class="text-break">Class StringEncodingExtensions</h1>
-  <div class="markdown level0 summary"><p>Provides encoding extension methods on <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a> that mirror the span-receiver surface in
+  <h1 id="Bodu_Text_StringEncodingExtensions" data-uid="Bodu.Text.StringEncodingExtensions" class="text-break">
+Class StringEncodingExtensions  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Text/StringEncodingExtensions.WriteUtf8To.cs/#L11"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Core.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides encoding extension methods on <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a> that mirror the span-receiver surface in
 <a class="xref" href="Bodu.Text.EncodingExtensions.html">EncodingExtensions</a>.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><span class="xref">StringEncodingExtensions</span></div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class StringEncodingExtensions</code></pre>
   </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">StringEncodingExtensions</span></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
@@ -115,25 +143,11 @@
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
-  </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Core.dll</h6>
-  <h5 id="Bodu_Text_StringEncodingExtensions_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static class StringEncodingExtensions</code></pre>
-  </div>
-  <h5 id="Bodu_Text_StringEncodingExtensions_remarks"><strong>Remarks</strong></h5>
-  <div class="markdown level0 remarks"><p>
-Members are split across partial files following the repository convention (see <code>CLAUDE.md</code>): one partial file
-per method, named <code>StringEncodingExtensions.&lt;MethodName&gt;.cs</code>. Tests follow the same pattern in
-<code>test/Text.Encoding/StringEncodingExtensionsTests.&lt;MethodName&gt;.cs</code>.
-</p>
-<p>
-All overloads delegate to the canonical span- or encoding-receiver implementations in
-<a class="xref" href="Bodu.Text.EncodingExtensions.html">EncodingExtensions</a> so behaviour and performance match the rest of the encoding surface.
-</p>
-</div>
-  <h5 id="Bodu_Text_StringEncodingExtensions_examples"><strong>Examples</strong></h5>
+  </dd></dl>
+
+
+
+  <h2 id="Bodu_Text_StringEncodingExtensions_examples">Examples</h2>
   <pre><code class="lang-csharp">// Fluent encoding of a string variable.
 byte[] utf8       = "héllo".ToUtf8Bytes();
 byte[] withBom    = "héllo".ToBytesWithPreamble(new System.Text.UTF8Encoding(true));
@@ -145,163 +159,723 @@ await socket.SendAsync(pooled.WrittenMemory, SocketFlags.None);
 // Pipeline integration.
 "key=value\n".WriteUtf8To(pipeWriter);</code></pre>
 
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Text_StringEncodingExtensions_EncodeTo_System_String_System_Text_Encoding_System_Span_System_Byte__" data-uid="Bodu.Text.StringEncodingExtensions.EncodeTo(System.String,System.Text.Encoding,System.Span{System.Byte})">
-          <a class="xref" href="Bodu.Text.StringEncodingExtensions.EncodeTo.html#Bodu_Text_StringEncodingExtensions_EncodeTo_System_String_System_Text_Encoding_System_Span_System_Byte__">EncodeTo(string, Encoding, Span&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encodes <code class="paramref">text</code> into <code class="paramref">destination</code> using <code class="paramref">encoding</code> and
+
+  <h2 id="Bodu_Text_StringEncodingExtensions_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>
+Members are split across partial files following the repository convention (see <code>CLAUDE.md</code>): one partial file
+per method, named <code>StringEncodingExtensions.&lt;MethodName&gt;.cs</code>. Tests follow the same pattern in
+<code>test/Text.Encoding/StringEncodingExtensionsTests.&lt;MethodName&gt;.cs</code>.
+</p>
+<p>
+All overloads delegate to the canonical span- or encoding-receiver implementations in
+<a class="xref" href="Bodu.Text.EncodingExtensions.html">EncodingExtensions</a> so behaviour and performance match the rest of the encoding surface.
+</p>
+</div>
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Text_StringEncodingExtensions_EncodeTo_" data-uid="Bodu.Text.StringEncodingExtensions.EncodeTo*"></a>
+
+  <h3 id="Bodu_Text_StringEncodingExtensions_EncodeTo_System_String_System_Text_Encoding_System_Span_System_Byte__" data-uid="Bodu.Text.StringEncodingExtensions.EncodeTo(System.String,System.Text.Encoding,System.Span{System.Byte})">
+  EncodeTo(string, Encoding, Span&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Text/StringEncodingExtensions.EncodeTo.cs/#L29"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Encodes <code class="paramref">text</code> into <code class="paramref">destination</code> using <code class="paramref">encoding</code> and
 returns the number of bytes written.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_StringEncodingExtensions_EncodeUtf8To_System_String_System_Span_System_Byte__" data-uid="Bodu.Text.StringEncodingExtensions.EncodeUtf8To(System.String,System.Span{System.Byte})">
-          <a class="xref" href="Bodu.Text.StringEncodingExtensions.EncodeUtf8To.html#Bodu_Text_StringEncodingExtensions_EncodeUtf8To_System_String_System_Span_System_Byte__">EncodeUtf8To(string, Span&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encodes <code class="paramref">text</code> as UTF-8 into <code class="paramref">destination</code> and returns the number of bytes
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static int EncodeTo(this string text, Encoding encoding, Span&lt;byte&gt; destination)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>text</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The string to encode.</p>
+</dd>
+    <dt><code>encoding</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoding">Encoding</a></dt>
+    <dd><p>The encoding used to produce the bytes.</p>
+</dd>
+    <dt><code>destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The destination buffer. Must be large enough to hold the encoded output.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of bytes written to <code class="paramref">destination</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">text</code> or <code class="paramref">encoding</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">destination</code> is too small to hold the encoded output.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoderfallbackexception">EncoderFallbackException</a></dt>
+    <dd><p>Thrown when <code class="paramref">encoding</code> uses <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoderexceptionfallback">EncoderExceptionFallback</a> and
+<code class="paramref">text</code> contains a code point that cannot be represented.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_StringEncodingExtensions_EncodeUtf8To_" data-uid="Bodu.Text.StringEncodingExtensions.EncodeUtf8To*"></a>
+
+  <h3 id="Bodu_Text_StringEncodingExtensions_EncodeUtf8To_System_String_System_Span_System_Byte__" data-uid="Bodu.Text.StringEncodingExtensions.EncodeUtf8To(System.String,System.Span{System.Byte})">
+  EncodeUtf8To(string, Span&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Text/StringEncodingExtensions.EncodeUtf8To.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Encodes <code class="paramref">text</code> as UTF-8 into <code class="paramref">destination</code> and returns the number of bytes
 written.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_StringEncodingExtensions_GetBytesPooled_System_String_System_Text_Encoding_" data-uid="Bodu.Text.StringEncodingExtensions.GetBytesPooled(System.String,System.Text.Encoding)">
-          <a class="xref" href="Bodu.Text.StringEncodingExtensions.GetBytesPooled.html#Bodu_Text_StringEncodingExtensions_GetBytesPooled_System_String_System_Text_Encoding_">GetBytesPooled(string, Encoding)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encodes <code class="paramref">text</code> into a pool-backed <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.html">PooledBufferBuilder&lt;T&gt;</a> using
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static int EncodeUtf8To(this string text, Span&lt;byte&gt; destination)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>text</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The string to encode.</p>
+</dd>
+    <dt><code>destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The destination buffer. Must be large enough to hold the UTF-8 encoded output.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of bytes written to <code class="paramref">destination</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">text</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">destination</code> is too small to hold the UTF-8 encoded output.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_StringEncodingExtensions_GetBytesPooled_" data-uid="Bodu.Text.StringEncodingExtensions.GetBytesPooled*"></a>
+
+  <h3 id="Bodu_Text_StringEncodingExtensions_GetBytesPooled_System_String_System_Text_Encoding_" data-uid="Bodu.Text.StringEncodingExtensions.GetBytesPooled(System.String,System.Text.Encoding)">
+  GetBytesPooled(string, Encoding)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Text/StringEncodingExtensions.GetBytesPooled.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Encodes <code class="paramref">text</code> into a pool-backed <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.html">PooledBufferBuilder&lt;T&gt;</a> using
 <code class="paramref">encoding</code>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_StringEncodingExtensions_GetEncodedByteCount_System_String_System_Text_Encoding_" data-uid="Bodu.Text.StringEncodingExtensions.GetEncodedByteCount(System.String,System.Text.Encoding)">
-          <a class="xref" href="Bodu.Text.StringEncodingExtensions.GetEncodedByteCount.html#Bodu_Text_StringEncodingExtensions_GetEncodedByteCount_System_String_System_Text_Encoding_">GetEncodedByteCount(string, Encoding)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the exact number of bytes produced by encoding <code class="paramref">text</code> with
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static PooledBufferBuilder&lt;byte&gt; GetBytesPooled(this string text, Encoding encoding)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>text</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The string to encode.</p>
+</dd>
+    <dt><code>encoding</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoding">Encoding</a></dt>
+    <dd><p>The encoding used to produce the bytes.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.html">PooledBufferBuilder</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>A <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.html">PooledBufferBuilder&lt;T&gt;</a> with <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.html#Bodu_Buffers_PooledBufferBuilder_1_WrittenCount">WrittenCount</a> equal to the
+exact number of encoded bytes. The builder is both an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.ibufferwriter-1">IBufferWriter&lt;T&gt;</a> and an
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.imemoryowner-1">IMemoryOwner&lt;T&gt;</a>; dispose to return the rented buffer to <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.arraypool-1.shared">Shared</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">text</code> or <code class="paramref">encoding</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoderfallbackexception">EncoderFallbackException</a></dt>
+    <dd><p>Thrown when <code class="paramref">encoding</code> uses <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoderexceptionfallback">EncoderExceptionFallback</a> and
+<code class="paramref">text</code> contains a code point that cannot be represented.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_StringEncodingExtensions_GetEncodedByteCount_" data-uid="Bodu.Text.StringEncodingExtensions.GetEncodedByteCount*"></a>
+
+  <h3 id="Bodu_Text_StringEncodingExtensions_GetEncodedByteCount_System_String_System_Text_Encoding_" data-uid="Bodu.Text.StringEncodingExtensions.GetEncodedByteCount(System.String,System.Text.Encoding)">
+  GetEncodedByteCount(string, Encoding)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Text/StringEncodingExtensions.GetEncodedByteCount.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the exact number of bytes produced by encoding <code class="paramref">text</code> with
 <code class="paramref">encoding</code>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_StringEncodingExtensions_GetUtf8ByteCount_System_String_" data-uid="Bodu.Text.StringEncodingExtensions.GetUtf8ByteCount(System.String)">
-          <a class="xref" href="Bodu.Text.StringEncodingExtensions.GetUtf8ByteCount.html#Bodu_Text_StringEncodingExtensions_GetUtf8ByteCount_System_String_">GetUtf8ByteCount(string)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the exact number of UTF-8 bytes required to encode <code class="paramref">text</code>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_StringEncodingExtensions_GetUtf8BytesPooled_System_String_" data-uid="Bodu.Text.StringEncodingExtensions.GetUtf8BytesPooled(System.String)">
-          <a class="xref" href="Bodu.Text.StringEncodingExtensions.GetUtf8BytesPooled.html#Bodu_Text_StringEncodingExtensions_GetUtf8BytesPooled_System_String_">GetUtf8BytesPooled(string)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encodes <code class="paramref">text</code> as UTF-8 into a pool-backed <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.html">PooledBufferBuilder&lt;T&gt;</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_StringEncodingExtensions_ToBytes_System_String_System_Text_Encoding_" data-uid="Bodu.Text.StringEncodingExtensions.ToBytes(System.String,System.Text.Encoding)">
-          <a class="xref" href="Bodu.Text.StringEncodingExtensions.ToBytes.html#Bodu_Text_StringEncodingExtensions_ToBytes_System_String_System_Text_Encoding_">ToBytes(string, Encoding)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encodes <code class="paramref">text</code> into a freshly allocated <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a> array using
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static int GetEncodedByteCount(this string text, Encoding encoding)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>text</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The string to measure.</p>
+</dd>
+    <dt><code>encoding</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoding">Encoding</a></dt>
+    <dd><p>The encoding used to compute the byte count.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The exact number of bytes required to encode <code class="paramref">text</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Text_StringEncodingExtensions_GetEncodedByteCount_System_String_System_Text_Encoding__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Equivalent to <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoding.getbytecount#system-text-encoding-getbytecount(system-string)">GetByteCount(string)</a> but expressed as an extension so fluent
+code can chain from a string variable.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">text</code> or <code class="paramref">encoding</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_StringEncodingExtensions_GetUtf8ByteCount_" data-uid="Bodu.Text.StringEncodingExtensions.GetUtf8ByteCount*"></a>
+
+  <h3 id="Bodu_Text_StringEncodingExtensions_GetUtf8ByteCount_System_String_" data-uid="Bodu.Text.StringEncodingExtensions.GetUtf8ByteCount(System.String)">
+  GetUtf8ByteCount(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Text/StringEncodingExtensions.GetUtf8ByteCount.cs/#L19"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the exact number of UTF-8 bytes required to encode <code class="paramref">text</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static int GetUtf8ByteCount(this string text)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>text</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The string to measure.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The exact UTF-8 byte count.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">text</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_StringEncodingExtensions_GetUtf8BytesPooled_" data-uid="Bodu.Text.StringEncodingExtensions.GetUtf8BytesPooled*"></a>
+
+  <h3 id="Bodu_Text_StringEncodingExtensions_GetUtf8BytesPooled_System_String_" data-uid="Bodu.Text.StringEncodingExtensions.GetUtf8BytesPooled(System.String)">
+  GetUtf8BytesPooled(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Text/StringEncodingExtensions.GetUtf8BytesPooled.cs/#L36"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Encodes <code class="paramref">text</code> as UTF-8 into a pool-backed <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.html">PooledBufferBuilder&lt;T&gt;</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static PooledBufferBuilder&lt;byte&gt; GetUtf8BytesPooled(this string text)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>text</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The string to encode.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.html">PooledBufferBuilder</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>A <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.html">PooledBufferBuilder&lt;T&gt;</a> with <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.html#Bodu_Buffers_PooledBufferBuilder_1_WrittenCount">WrittenCount</a> equal to the
+exact number of UTF-8 bytes. The builder is both an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.ibufferwriter-1">IBufferWriter&lt;T&gt;</a> and an
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.imemoryowner-1">IMemoryOwner&lt;T&gt;</a>; dispose to return the rented buffer to <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.arraypool-1.shared">Shared</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Text_StringEncodingExtensions_GetUtf8BytesPooled_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">// Encode a large JSON document to UTF-8 without a permanent allocation, then hand the
+// pooled buffer to a network writer before disposal returns the array to the pool.
+using PooledBufferBuilder&lt;byte&gt; pooled = jsonText.GetUtf8BytesPooled();
+await socket.SendAsync(pooled.WrittenMemory, SocketFlags.None);</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">text</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_StringEncodingExtensions_ToBytes_" data-uid="Bodu.Text.StringEncodingExtensions.ToBytes*"></a>
+
+  <h3 id="Bodu_Text_StringEncodingExtensions_ToBytes_System_String_System_Text_Encoding_" data-uid="Bodu.Text.StringEncodingExtensions.ToBytes(System.String,System.Text.Encoding)">
+  ToBytes(string, Encoding)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Text/StringEncodingExtensions.ToBytes.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Encodes <code class="paramref">text</code> into a freshly allocated <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a> array using
 <code class="paramref">encoding</code>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_StringEncodingExtensions_ToBytesWithPreamble_System_String_System_Text_Encoding_" data-uid="Bodu.Text.StringEncodingExtensions.ToBytesWithPreamble(System.String,System.Text.Encoding)">
-          <a class="xref" href="Bodu.Text.StringEncodingExtensions.ToBytesWithPreamble.html#Bodu_Text_StringEncodingExtensions_ToBytesWithPreamble_System_String_System_Text_Encoding_">ToBytesWithPreamble(string, Encoding)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encodes <code class="paramref">text</code> into a freshly allocated byte array preceded by <code class="paramref">encoding</code>'s
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static byte[] ToBytes(this string text, Encoding encoding)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>text</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The string to encode.</p>
+</dd>
+    <dt><code>encoding</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoding">Encoding</a></dt>
+    <dd><p>The encoding used to produce the bytes.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>A new byte array containing the encoded representation of <code class="paramref">text</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">text</code> or <code class="paramref">encoding</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoderfallbackexception">EncoderFallbackException</a></dt>
+    <dd><p>Thrown when <code class="paramref">encoding</code> uses <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoderexceptionfallback">EncoderExceptionFallback</a> and
+<code class="paramref">text</code> contains a code point that cannot be represented.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_StringEncodingExtensions_ToBytesWithPreamble_" data-uid="Bodu.Text.StringEncodingExtensions.ToBytesWithPreamble*"></a>
+
+  <h3 id="Bodu_Text_StringEncodingExtensions_ToBytesWithPreamble_System_String_System_Text_Encoding_" data-uid="Bodu.Text.StringEncodingExtensions.ToBytesWithPreamble(System.String,System.Text.Encoding)">
+  ToBytesWithPreamble(string, Encoding)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Text/StringEncodingExtensions.ToBytesWithPreamble.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Encodes <code class="paramref">text</code> into a freshly allocated byte array preceded by <code class="paramref">encoding</code>'s
 preamble.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_StringEncodingExtensions_ToUtf8Bytes_System_String_" data-uid="Bodu.Text.StringEncodingExtensions.ToUtf8Bytes(System.String)">
-          <a class="xref" href="Bodu.Text.StringEncodingExtensions.ToUtf8Bytes.html#Bodu_Text_StringEncodingExtensions_ToUtf8Bytes_System_String_">ToUtf8Bytes(string)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encodes <code class="paramref">text</code> into a freshly allocated UTF-8 byte array.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_StringEncodingExtensions_TryEncodeTo_System_String_System_Text_Encoding_System_Span_System_Byte__System_Int32__" data-uid="Bodu.Text.StringEncodingExtensions.TryEncodeTo(System.String,System.Text.Encoding,System.Span{System.Byte},System.Int32@)">
-          <a class="xref" href="Bodu.Text.StringEncodingExtensions.TryEncodeTo.html#Bodu_Text_StringEncodingExtensions_TryEncodeTo_System_String_System_Text_Encoding_System_Span_System_Byte__System_Int32__">TryEncodeTo(string, Encoding, Span&lt;byte&gt;, out int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to encode <code class="paramref">text</code> into <code class="paramref">destination</code> using
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static byte[] ToBytesWithPreamble(this string text, Encoding encoding)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>text</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The string to encode.</p>
+</dd>
+    <dt><code>encoding</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoding">Encoding</a></dt>
+    <dd><p>The encoding used to produce the bytes.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>A new byte array containing the preamble followed by the encoded bytes.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">text</code> or <code class="paramref">encoding</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoderfallbackexception">EncoderFallbackException</a></dt>
+    <dd><p>Thrown when <code class="paramref">encoding</code> uses <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoderexceptionfallback">EncoderExceptionFallback</a> and
+<code class="paramref">text</code> contains a code point that cannot be represented.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_StringEncodingExtensions_ToUtf8Bytes_" data-uid="Bodu.Text.StringEncodingExtensions.ToUtf8Bytes*"></a>
+
+  <h3 id="Bodu_Text_StringEncodingExtensions_ToUtf8Bytes_System_String_" data-uid="Bodu.Text.StringEncodingExtensions.ToUtf8Bytes(System.String)">
+  ToUtf8Bytes(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Text/StringEncodingExtensions.ToUtf8Bytes.cs/#L28"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Encodes <code class="paramref">text</code> into a freshly allocated UTF-8 byte array.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static byte[] ToUtf8Bytes(this string text)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>text</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The string to encode.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>A new byte array containing the UTF-8 representation of <code class="paramref">text</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Text_StringEncodingExtensions_ToUtf8Bytes_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">// Convert a configuration value to UTF-8 bytes for hashing.
+byte[] payload = "client-secret".ToUtf8Bytes();
+byte[] hash    = SHA256.HashData(payload);</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">text</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_StringEncodingExtensions_TryEncodeTo_" data-uid="Bodu.Text.StringEncodingExtensions.TryEncodeTo*"></a>
+
+  <h3 id="Bodu_Text_StringEncodingExtensions_TryEncodeTo_System_String_System_Text_Encoding_System_Span_System_Byte__System_Int32__" data-uid="Bodu.Text.StringEncodingExtensions.TryEncodeTo(System.String,System.Text.Encoding,System.Span{System.Byte},System.Int32@)">
+  TryEncodeTo(string, Encoding, Span&lt;byte&gt;, out int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Text/StringEncodingExtensions.TryEncodeTo.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Attempts to encode <code class="paramref">text</code> into <code class="paramref">destination</code> using
 <code class="paramref">encoding</code> without throwing when the destination is too small.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_StringEncodingExtensions_TryEncodeUtf8To_System_String_System_Span_System_Byte__System_Int32__" data-uid="Bodu.Text.StringEncodingExtensions.TryEncodeUtf8To(System.String,System.Span{System.Byte},System.Int32@)">
-          <a class="xref" href="Bodu.Text.StringEncodingExtensions.TryEncodeUtf8To.html#Bodu_Text_StringEncodingExtensions_TryEncodeUtf8To_System_String_System_Span_System_Byte__System_Int32__">TryEncodeUtf8To(string, Span&lt;byte&gt;, out int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to encode <code class="paramref">text</code> as UTF-8 into <code class="paramref">destination</code> without throwing when
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool TryEncodeTo(this string text, Encoding encoding, Span&lt;byte&gt; destination, out int bytesWritten)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>text</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The string to encode.</p>
+</dd>
+    <dt><code>encoding</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoding">Encoding</a></dt>
+    <dd><p>The encoding used to produce the bytes.</p>
+</dd>
+    <dt><code>destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The destination buffer.</p>
+</dd>
+    <dt><code>bytesWritten</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>When this method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, contains the number of bytes written; otherwise zero.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the encoding completed successfully; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> when
+<code class="paramref">destination</code> is too small.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">text</code> or <code class="paramref">encoding</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoderfallbackexception">EncoderFallbackException</a></dt>
+    <dd><p>Thrown when <code class="paramref">encoding</code> uses <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoderexceptionfallback">EncoderExceptionFallback</a> and
+<code class="paramref">text</code> contains a code point that cannot be represented.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_StringEncodingExtensions_TryEncodeUtf8To_" data-uid="Bodu.Text.StringEncodingExtensions.TryEncodeUtf8To*"></a>
+
+  <h3 id="Bodu_Text_StringEncodingExtensions_TryEncodeUtf8To_System_String_System_Span_System_Byte__System_Int32__" data-uid="Bodu.Text.StringEncodingExtensions.TryEncodeUtf8To(System.String,System.Span{System.Byte},System.Int32@)">
+  TryEncodeUtf8To(string, Span&lt;byte&gt;, out int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Text/StringEncodingExtensions.TryEncodeUtf8To.cs/#L27"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Attempts to encode <code class="paramref">text</code> as UTF-8 into <code class="paramref">destination</code> without throwing when
 the destination is too small.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_StringEncodingExtensions_WriteTo_System_String_System_Text_Encoding_System_Buffers_IBufferWriter_System_Byte__" data-uid="Bodu.Text.StringEncodingExtensions.WriteTo(System.String,System.Text.Encoding,System.Buffers.IBufferWriter{System.Byte})">
-          <a class="xref" href="Bodu.Text.StringEncodingExtensions.WriteTo.html#Bodu_Text_StringEncodingExtensions_WriteTo_System_String_System_Text_Encoding_System_Buffers_IBufferWriter_System_Byte__">WriteTo(string, Encoding, IBufferWriter&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encodes <code class="paramref">text</code> with <code class="paramref">encoding</code> and writes the bytes into
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool TryEncodeUtf8To(this string text, Span&lt;byte&gt; destination, out int bytesWritten)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>text</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The string to encode.</p>
+</dd>
+    <dt><code>destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The destination buffer.</p>
+</dd>
+    <dt><code>bytesWritten</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>When this method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, contains the number of bytes written; otherwise zero.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the encoding completed successfully; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> when
+<code class="paramref">destination</code> is too small.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">text</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_StringEncodingExtensions_WriteTo_" data-uid="Bodu.Text.StringEncodingExtensions.WriteTo*"></a>
+
+  <h3 id="Bodu_Text_StringEncodingExtensions_WriteTo_System_String_System_Text_Encoding_System_Buffers_IBufferWriter_System_Byte__" data-uid="Bodu.Text.StringEncodingExtensions.WriteTo(System.String,System.Text.Encoding,System.Buffers.IBufferWriter{System.Byte})">
+  WriteTo(string, Encoding, IBufferWriter&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Text/StringEncodingExtensions.WriteTo.cs/#L28"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Encodes <code class="paramref">text</code> with <code class="paramref">encoding</code> and writes the bytes into
 <code class="paramref">writer</code>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_StringEncodingExtensions_WriteUtf8To_System_String_System_Buffers_IBufferWriter_System_Byte__" data-uid="Bodu.Text.StringEncodingExtensions.WriteUtf8To(System.String,System.Buffers.IBufferWriter{System.Byte})">
-          <a class="xref" href="Bodu.Text.StringEncodingExtensions.WriteUtf8To.html#Bodu_Text_StringEncodingExtensions_WriteUtf8To_System_String_System_Buffers_IBufferWriter_System_Byte__">WriteUtf8To(string, IBufferWriter&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encodes <code class="paramref">text</code> as UTF-8 and writes the bytes into <code class="paramref">writer</code>.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void WriteTo(this string text, Encoding encoding, IBufferWriter&lt;byte&gt; writer)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>text</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The string to encode.</p>
+</dd>
+    <dt><code>encoding</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoding">Encoding</a></dt>
+    <dd><p>The encoding used to produce the bytes.</p>
+</dd>
+    <dt><code>writer</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.ibufferwriter-1">IBufferWriter</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The buffer writer to receive the encoded bytes.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">text</code>, <code class="paramref">encoding</code>, or <code class="paramref">writer</code> is
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoderfallbackexception">EncoderFallbackException</a></dt>
+    <dd><p>Thrown when <code class="paramref">encoding</code> uses <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoderexceptionfallback">EncoderExceptionFallback</a> and
+<code class="paramref">text</code> contains a code point that cannot be represented.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_StringEncodingExtensions_WriteUtf8To_" data-uid="Bodu.Text.StringEncodingExtensions.WriteUtf8To*"></a>
+
+  <h3 id="Bodu_Text_StringEncodingExtensions_WriteUtf8To_System_String_System_Buffers_IBufferWriter_System_Byte__" data-uid="Bodu.Text.StringEncodingExtensions.WriteUtf8To(System.String,System.Buffers.IBufferWriter{System.Byte})">
+  WriteUtf8To(string, IBufferWriter&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Text/StringEncodingExtensions.WriteUtf8To.cs/#L21"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Encodes <code class="paramref">text</code> as UTF-8 and writes the bytes into <code class="paramref">writer</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void WriteUtf8To(this string text, IBufferWriter&lt;byte&gt; writer)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>text</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The string to encode.</p>
+</dd>
+    <dt><code>writer</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.ibufferwriter-1">IBufferWriter</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The buffer writer to receive the UTF-8 bytes.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">text</code> or <code class="paramref">writer</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 302e395 · Built: 2026-09-29 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 1e0dd9a · Built: 2026-09-29 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

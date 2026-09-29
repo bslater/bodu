@@ -1,105 +1,141 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
       <title>Class PooledBufferBuilder&lt;T&gt; | BODU </title>
-      <meta name="viewport" content="width=device-width">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class PooledBufferBuilder&lt;T&gt; | BODU ">
-    
-    <meta name="description" content="Provides an efficient way to accumulate elements into a pooled buffer, with automatic resizing and fast-path optimizations for collection-based and span-based sources.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      
+      <meta name="description" content="Provides an efficient way to accumulate elements into a pooled buffer, with automatic resizing and fast-path optimizations for collection-based and span-based sources.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/new/master/apiSpec/new?filename=Bodu_Buffers_PooledBufferBuilder_1.md&amp;value=---%0Auid%3A%20Bodu.Buffers.PooledBufferBuilder%601%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Buffers.PooledBufferBuilder`1">
+
+        <article data-uid="Bodu.Buffers.PooledBufferBuilder`1">
 
 
 
-  <h1 id="Bodu_Buffers_PooledBufferBuilder_1" data-uid="Bodu.Buffers.PooledBufferBuilder`1" class="text-break">Class PooledBufferBuilder&lt;T&gt;</h1>
-  <div class="markdown level0 summary"><p>Provides an efficient way to accumulate elements into a pooled buffer, with automatic resizing and fast-path
+  <h1 id="Bodu_Buffers_PooledBufferBuilder_1" data-uid="Bodu.Buffers.PooledBufferBuilder`1" class="text-break">
+Class PooledBufferBuilder&lt;T&gt;  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Buffers/PooledBufferBuilder{T}.cs/#L43"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Buffers.html">Buffers</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Core.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides an efficient way to accumulate elements into a pooled buffer, with automatic resizing and fast-path
 optimizations for collection-based and span-based sources.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><span class="xref">PooledBufferBuilder&lt;T&gt;</span></div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class PooledBufferBuilder&lt;T&gt; : IBufferWriter&lt;T&gt;, IMemoryOwner&lt;T&gt;, IDisposable</code></pre>
   </div>
-  <div class="implements">
-    <h5>Implements</h5>
-    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.ibufferwriter-1">IBufferWriter</a>&lt;T&gt;</div>
-    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.imemoryowner-1">IMemoryOwner</a>&lt;T&gt;</div>
-    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
-  </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of elements to buffer.</p>
+</dd>
+  </dl>
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">PooledBufferBuilder&lt;T&gt;</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.ibufferwriter-1">IBufferWriter</a>&lt;T&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.imemoryowner-1">IMemoryOwner</a>&lt;T&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
@@ -118,41 +154,30 @@ optimizations for collection-based and span-based sources.</p>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
+  </dd></dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Buffers.html">Buffers</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Core.dll</h6>
-  <h5 id="Bodu_Buffers_PooledBufferBuilder_1_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class PooledBufferBuilder&lt;T&gt; : IBufferWriter&lt;T&gt;, IMemoryOwner&lt;T&gt;, IDisposable</code></pre>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h5 class="typeParameters">Type Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="parametername">T</span></td>
-        <td><p>The type of elements to buffer.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 id="Bodu_Buffers_PooledBufferBuilder_1_remarks"><strong>Remarks</strong></h5>
-  <div class="markdown level0 remarks"><p>
-Buffers are rented from <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.arraypool-1.shared">Shared</a> and returned on <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.Dispose.html#Bodu_Buffers_PooledBufferBuilder_1_Dispose">Dispose()</a>. When
-<code class="typeparamref">T</code> is a reference type or contains references, the live portion of the buffer is cleared
-before the underlying array is returned to the pool, preventing unintended object retention.
-</p>
-<p>
-Call <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.Reset.html#Bodu_Buffers_PooledBufferBuilder_1_Reset">Reset()</a> to clear accumulated data and reuse the current rented buffer without a pool round-trip.
-Call <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.Dispose.html#Bodu_Buffers_PooledBufferBuilder_1_Dispose">Dispose()</a> when the builder is no longer needed.
-</p>
-</div>
-  <h5 id="Bodu_Buffers_PooledBufferBuilder_1_examples"><strong>Examples</strong></h5>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  </dd></dl>
+
+
+  <h2 id="Bodu_Buffers_PooledBufferBuilder_1_examples">Examples</h2>
   <pre><code class="lang-csharp">// Accumulate a result of unknown length without per-item array doubling.
 using var builder = new PooledBufferBuilder&lt;int&gt;(initialCapacity: 256);
 
@@ -163,291 +188,1130 @@ ReadOnlySpan&lt;int&gt; span = builder.WrittenSpan;
 Console.WriteLine($"Buffered {builder.WrittenCount} values from a pooled buffer of {builder.Capacity}.");
 // The rented array is returned to ArrayPool&lt;int&gt;.Shared when 'builder' is disposed.</code></pre>
 
-  <h3 id="constructors">Constructors
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Buffers_PooledBufferBuilder_1__ctor_System_Int32_" data-uid="Bodu.Buffers.PooledBufferBuilder`1.#ctor(System.Int32)">
-          <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.-ctor.html#Bodu_Buffers_PooledBufferBuilder_1__ctor_System_Int32_">PooledBufferBuilder(int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.html">PooledBufferBuilder&lt;T&gt;</a> class with the specified initial
+
+  <h2 id="Bodu_Buffers_PooledBufferBuilder_1_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>
+Buffers are rented from <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.arraypool-1.shared">Shared</a> and returned on <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.html#Bodu_Buffers_PooledBufferBuilder_1_Dispose">Dispose()</a>. When
+<code class="typeparamref">T</code> is a reference type or contains references, the live portion of the buffer is cleared
+before the underlying array is returned to the pool, preventing unintended object retention.
+</p>
+<p>
+Call <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.html#Bodu_Buffers_PooledBufferBuilder_1_Reset">Reset()</a> to clear accumulated data and reuse the current rented buffer without a pool round-trip.
+Call <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.html#Bodu_Buffers_PooledBufferBuilder_1_Dispose">Dispose()</a> when the builder is no longer needed.
+</p>
+</div>
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Bodu_Buffers_PooledBufferBuilder_1__ctor_" data-uid="Bodu.Buffers.PooledBufferBuilder`1.#ctor*"></a>
+
+  <h3 id="Bodu_Buffers_PooledBufferBuilder_1__ctor_System_Int32_" data-uid="Bodu.Buffers.PooledBufferBuilder`1.#ctor(System.Int32)">
+  PooledBufferBuilder(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Buffers/PooledBufferBuilder{T}.cs/#L67"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.html">PooledBufferBuilder&lt;T&gt;</a> class with the specified initial
 capacity.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="properties">Properties
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Buffers_PooledBufferBuilder_1_Capacity" data-uid="Bodu.Buffers.PooledBufferBuilder`1.Capacity">
-          <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.Capacity.html#Bodu_Buffers_PooledBufferBuilder_1_Capacity">Capacity</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the current capacity of the internal buffer.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Buffers_PooledBufferBuilder_1_FreeCapacity" data-uid="Bodu.Buffers.PooledBufferBuilder`1.FreeCapacity">
-          <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.FreeCapacity.html#Bodu_Buffers_PooledBufferBuilder_1_FreeCapacity">FreeCapacity</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the number of elements that can be written to the buffer before the next growth.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Buffers_PooledBufferBuilder_1_IsEmpty" data-uid="Bodu.Buffers.PooledBufferBuilder`1.IsEmpty">
-          <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.IsEmpty.html#Bodu_Buffers_PooledBufferBuilder_1_IsEmpty">IsEmpty</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets a value indicating whether no elements have been written to the buffer.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Buffers_PooledBufferBuilder_1_WrittenCount" data-uid="Bodu.Buffers.PooledBufferBuilder`1.WrittenCount">
-          <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.WrittenCount.html#Bodu_Buffers_PooledBufferBuilder_1_WrittenCount">WrittenCount</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the number of elements that have been written to the buffer.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Buffers_PooledBufferBuilder_1_WrittenMemory" data-uid="Bodu.Buffers.PooledBufferBuilder`1.WrittenMemory">
-          <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.WrittenMemory.html#Bodu_Buffers_PooledBufferBuilder_1_WrittenMemory">WrittenMemory</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlymemory-1">ReadOnlyMemory&lt;T&gt;</a> representing the elements written to the buffer.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Buffers_PooledBufferBuilder_1_WrittenSpan" data-uid="Bodu.Buffers.PooledBufferBuilder`1.WrittenSpan">
-          <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.WrittenSpan.html#Bodu_Buffers_PooledBufferBuilder_1_WrittenSpan">WrittenSpan</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan&lt;T&gt;</a> representing the elements written to the buffer.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Buffers_PooledBufferBuilder_1_AddMany__0_System_Int32_" data-uid="Bodu.Buffers.PooledBufferBuilder`1.AddMany(`0,System.Int32)">
-          <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.AddMany.html#Bodu_Buffers_PooledBufferBuilder_1_AddMany__0_System_Int32_">AddMany(T, int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Appends <code class="paramref">count</code> copies of <code class="paramref">value</code> to the buffer, growing the internal array
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PooledBufferBuilder(int initialCapacity = 256)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>initialCapacity</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The minimum initial capacity of the pooled buffer. Must be greater than zero. Defaults to 256.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <code class="paramref">initialCapacity</code> is less than 1.</p>
+</dd>
+  </dl>
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Bodu_Buffers_PooledBufferBuilder_1_Capacity_" data-uid="Bodu.Buffers.PooledBufferBuilder`1.Capacity*"></a>
+
+  <h3 id="Bodu_Buffers_PooledBufferBuilder_1_Capacity" data-uid="Bodu.Buffers.PooledBufferBuilder`1.Capacity">
+  Capacity
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Buffers/PooledBufferBuilder{T}.cs/#L113"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the current capacity of the internal buffer.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int Capacity { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The length of the underlying rented array. This value is always greater than or equal to
+<a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.html#Bodu_Buffers_PooledBufferBuilder_1_WrittenCount">WrittenCount</a> and may be larger than the capacity requested at construction due to
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.arraypool-1">ArrayPool&lt;T&gt;</a> rounding behavior.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown if the instance has been disposed.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Buffers_PooledBufferBuilder_1_FreeCapacity_" data-uid="Bodu.Buffers.PooledBufferBuilder`1.FreeCapacity*"></a>
+
+  <h3 id="Bodu_Buffers_PooledBufferBuilder_1_FreeCapacity" data-uid="Bodu.Buffers.PooledBufferBuilder`1.FreeCapacity">
+  FreeCapacity
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Buffers/PooledBufferBuilder{T}.cs/#L130"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the number of elements that can be written to the buffer before the next growth.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int FreeCapacity { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of remaining slots in the current rented array — equivalent to <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.html#Bodu_Buffers_PooledBufferBuilder_1_Capacity">Capacity</a> minus
+<a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.html#Bodu_Buffers_PooledBufferBuilder_1_WrittenCount">WrittenCount</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown if the instance has been disposed.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Buffers_PooledBufferBuilder_1_IsEmpty_" data-uid="Bodu.Buffers.PooledBufferBuilder`1.IsEmpty*"></a>
+
+  <h3 id="Bodu_Buffers_PooledBufferBuilder_1_IsEmpty" data-uid="Bodu.Buffers.PooledBufferBuilder`1.IsEmpty">
+  IsEmpty
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Buffers/PooledBufferBuilder{T}.cs/#L81"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether no elements have been written to the buffer.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsEmpty { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.html#Bodu_Buffers_PooledBufferBuilder_1_WrittenCount">WrittenCount</a> is zero; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown if the instance has been disposed.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Buffers_PooledBufferBuilder_1_WrittenCount_" data-uid="Bodu.Buffers.PooledBufferBuilder`1.WrittenCount*"></a>
+
+  <h3 id="Bodu_Buffers_PooledBufferBuilder_1_WrittenCount" data-uid="Bodu.Buffers.PooledBufferBuilder`1.WrittenCount">
+  WrittenCount
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Buffers/PooledBufferBuilder{T}.cs/#L95"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the number of elements that have been written to the buffer.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int WrittenCount { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The count of elements appended and not yet discarded by <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.html#Bodu_Buffers_PooledBufferBuilder_1_Reset">Reset()</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown if the instance has been disposed.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Buffers_PooledBufferBuilder_1_WrittenMemory_" data-uid="Bodu.Buffers.PooledBufferBuilder`1.WrittenMemory*"></a>
+
+  <h3 id="Bodu_Buffers_PooledBufferBuilder_1_WrittenMemory" data-uid="Bodu.Buffers.PooledBufferBuilder`1.WrittenMemory">
+  WrittenMemory
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Buffers/PooledBufferBuilder{T}.cs/#L146"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlymemory-1">ReadOnlyMemory&lt;T&gt;</a> representing the elements written to the buffer.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ReadOnlyMemory&lt;T&gt; WrittenMemory { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlymemory-1">ReadOnlyMemory</a>&lt;T&gt;</dt>
+    <dd><p>A <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlymemory-1">ReadOnlyMemory&lt;T&gt;</a> containing exactly the first <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.html#Bodu_Buffers_PooledBufferBuilder_1_WrittenCount">WrittenCount</a> buffered elements.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown if the instance has been disposed.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Buffers_PooledBufferBuilder_1_WrittenSpan_" data-uid="Bodu.Buffers.PooledBufferBuilder`1.WrittenSpan*"></a>
+
+  <h3 id="Bodu_Buffers_PooledBufferBuilder_1_WrittenSpan" data-uid="Bodu.Buffers.PooledBufferBuilder`1.WrittenSpan">
+  WrittenSpan
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Buffers/PooledBufferBuilder{T}.cs/#L162"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan&lt;T&gt;</a> representing the elements written to the buffer.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ReadOnlySpan&lt;T&gt; WrittenSpan { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;T&gt;</dt>
+    <dd><p>A <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan&lt;T&gt;</a> containing exactly the first <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.html#Bodu_Buffers_PooledBufferBuilder_1_WrittenCount">WrittenCount</a> buffered elements.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown if the instance has been disposed.</p>
+</dd>
+  </dl>
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Buffers_PooledBufferBuilder_1_AddMany_" data-uid="Bodu.Buffers.PooledBufferBuilder`1.AddMany*"></a>
+
+  <h3 id="Bodu_Buffers_PooledBufferBuilder_1_AddMany__0_System_Int32_" data-uid="Bodu.Buffers.PooledBufferBuilder`1.AddMany(`0,System.Int32)">
+  AddMany(T, int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Buffers/PooledBufferBuilder{T}.cs/#L341"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Appends <code class="paramref">count</code> copies of <code class="paramref">value</code> to the buffer, growing the internal array
 if necessary.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Buffers_PooledBufferBuilder_1_Advance_System_Int32_" data-uid="Bodu.Buffers.PooledBufferBuilder`1.Advance(System.Int32)">
-          <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.Advance.html#Bodu_Buffers_PooledBufferBuilder_1_Advance_System_Int32_">Advance(int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Notifies the builder that <code class="paramref">count</code> elements were written into the span or memory most recently
-returned by <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.GetSpan.html#Bodu_Buffers_PooledBufferBuilder_1_GetSpan_System_Int32_">GetSpan(int)</a> or <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.GetMemory.html#Bodu_Buffers_PooledBufferBuilder_1_GetMemory_System_Int32_">GetMemory(int)</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Buffers_PooledBufferBuilder_1_Append__0_" data-uid="Bodu.Buffers.PooledBufferBuilder`1.Append(`0)">
-          <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.Append.html#Bodu_Buffers_PooledBufferBuilder_1_Append__0_">Append(T)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Appends a single element to the buffer, growing the internal array if necessary.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Buffers_PooledBufferBuilder_1_AppendRange_System_Collections_Generic_IEnumerable__0__" data-uid="Bodu.Buffers.PooledBufferBuilder`1.AppendRange(System.Collections.Generic.IEnumerable{`0})">
-          <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.AppendRange.html#Bodu_Buffers_PooledBufferBuilder_1_AppendRange_System_Collections_Generic_IEnumerable__0__">AppendRange(IEnumerable&lt;T&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Appends a sequence of elements from the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable&lt;T&gt;</a> source, growing the buffer as
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void AddMany(T value, int count)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd><p>The value to repeat.</p>
+</dd>
+    <dt><code>count</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of times to append <code class="paramref">value</code>. Must be non-negative.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <code class="paramref">count</code> is negative.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown if the instance has been disposed.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Buffers_PooledBufferBuilder_1_Advance_" data-uid="Bodu.Buffers.PooledBufferBuilder`1.Advance*"></a>
+
+  <h3 id="Bodu_Buffers_PooledBufferBuilder_1_Advance_System_Int32_" data-uid="Bodu.Buffers.PooledBufferBuilder`1.Advance(System.Int32)">
+  Advance(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Buffers/PooledBufferBuilder{T}.cs/#L270"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Notifies the builder that <code class="paramref">count</code> elements were written into the span or memory most recently
+returned by <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.html#Bodu_Buffers_PooledBufferBuilder_1_GetSpan_System_Int32_">GetSpan(int)</a> or <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.html#Bodu_Buffers_PooledBufferBuilder_1_GetMemory_System_Int32_">GetMemory(int)</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Advance(int count)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>count</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of elements written. Must be non-negative and must not exceed the length of the buffer most recently
+returned by <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.html#Bodu_Buffers_PooledBufferBuilder_1_GetSpan_System_Int32_">GetSpan(int)</a> or <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.html#Bodu_Buffers_PooledBufferBuilder_1_GetMemory_System_Int32_">GetMemory(int)</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <code class="paramref">count</code> is negative or would advance <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.html#Bodu_Buffers_PooledBufferBuilder_1_WrittenCount">WrittenCount</a> past the end of
+the current internal buffer.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown if the instance has been disposed.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Buffers_PooledBufferBuilder_1_Append_" data-uid="Bodu.Buffers.PooledBufferBuilder`1.Append*"></a>
+
+  <h3 id="Bodu_Buffers_PooledBufferBuilder_1_Append__0_" data-uid="Bodu.Buffers.PooledBufferBuilder`1.Append(`0)">
+  Append(T)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Buffers/PooledBufferBuilder{T}.cs/#L191"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Appends a single element to the buffer, growing the internal array if necessary.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Append(T item)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>item</code> <span class="xref">T</span></dt>
+    <dd><p>The element to append.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown if the instance has been disposed.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Buffers_PooledBufferBuilder_1_AppendRange_" data-uid="Bodu.Buffers.PooledBufferBuilder`1.AppendRange*"></a>
+
+  <h3 id="Bodu_Buffers_PooledBufferBuilder_1_AppendRange_System_Collections_Generic_IEnumerable__0__" data-uid="Bodu.Buffers.PooledBufferBuilder`1.AppendRange(System.Collections.Generic.IEnumerable{`0})">
+  AppendRange(IEnumerable&lt;T&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Buffers/PooledBufferBuilder{T}.cs/#L211"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Appends a sequence of elements from the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable&lt;T&gt;</a> source, growing the buffer as
 needed.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Buffers_PooledBufferBuilder_1_AppendRange_System_ReadOnlyMemory__0__" data-uid="Bodu.Buffers.PooledBufferBuilder`1.AppendRange(System.ReadOnlyMemory{`0})">
-          <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.AppendRange.html#Bodu_Buffers_PooledBufferBuilder_1_AppendRange_System_ReadOnlyMemory__0__">AppendRange(ReadOnlyMemory&lt;T&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Appends all elements from the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlymemory-1">ReadOnlyMemory&lt;T&gt;</a> to the buffer, growing the internal
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void AppendRange(IEnumerable&lt;T&gt; source)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;T&gt;</dt>
+    <dd><p>The sequence of elements to append. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Buffers_PooledBufferBuilder_1_AppendRange_System_Collections_Generic_IEnumerable__0___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>When <code class="paramref">source</code> implements <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icollection-1">ICollection&lt;T&gt;</a>, a single bulk copy is performed
+instead of element-by-element iteration.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown if <code class="paramref">source</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown if the instance has been disposed.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Buffers_PooledBufferBuilder_1_AppendRange_" data-uid="Bodu.Buffers.PooledBufferBuilder`1.AppendRange*"></a>
+
+  <h3 id="Bodu_Buffers_PooledBufferBuilder_1_AppendRange_System_ReadOnlyMemory__0__" data-uid="Bodu.Buffers.PooledBufferBuilder`1.AppendRange(System.ReadOnlyMemory{`0})">
+  AppendRange(ReadOnlyMemory&lt;T&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Buffers/PooledBufferBuilder{T}.cs/#L330"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Appends all elements from the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlymemory-1">ReadOnlyMemory&lt;T&gt;</a> to the buffer, growing the internal
 array if necessary.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Buffers_PooledBufferBuilder_1_AppendRange_System_ReadOnlySpan__0__" data-uid="Bodu.Buffers.PooledBufferBuilder`1.AppendRange(System.ReadOnlySpan{`0})">
-          <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.AppendRange.html#Bodu_Buffers_PooledBufferBuilder_1_AppendRange_System_ReadOnlySpan__0__">AppendRange(ReadOnlySpan&lt;T&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Appends all elements from the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan&lt;T&gt;</a> to the buffer, growing the internal array
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void AppendRange(ReadOnlyMemory&lt;T&gt; source)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlymemory-1">ReadOnlyMemory</a>&lt;T&gt;</dt>
+    <dd><p>The memory region of elements to append.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown if the instance has been disposed.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Buffers_PooledBufferBuilder_1_AppendRange_" data-uid="Bodu.Buffers.PooledBufferBuilder`1.AppendRange*"></a>
+
+  <h3 id="Bodu_Buffers_PooledBufferBuilder_1_AppendRange_System_ReadOnlySpan__0__" data-uid="Bodu.Buffers.PooledBufferBuilder`1.AppendRange(System.ReadOnlySpan{`0})">
+  AppendRange(ReadOnlySpan&lt;T&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Buffers/PooledBufferBuilder{T}.cs/#L243"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Appends all elements from the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan&lt;T&gt;</a> to the buffer, growing the internal array
 if necessary.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Buffers_PooledBufferBuilder_1_CopyTo_System_Span__0__" data-uid="Bodu.Buffers.PooledBufferBuilder`1.CopyTo(System.Span{`0})">
-          <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.CopyTo.html#Bodu_Buffers_PooledBufferBuilder_1_CopyTo_System_Span__0__">CopyTo(Span&lt;T&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Copies the written elements into <code class="paramref">destination</code>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Buffers_PooledBufferBuilder_1_DangerousGetArray" data-uid="Bodu.Buffers.PooledBufferBuilder`1.DangerousGetArray">
-          <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.DangerousGetArray.html#Bodu_Buffers_PooledBufferBuilder_1_DangerousGetArray">DangerousGetArray()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.arraysegment-1">ArraySegment&lt;T&gt;</a> that aliases the underlying rented array, bounded to the written
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void AppendRange(ReadOnlySpan&lt;T&gt; source)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;T&gt;</dt>
+    <dd><p>The span of elements to append.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Buffers_PooledBufferBuilder_1_AppendRange_System_ReadOnlySpan__0___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p><code class="paramref">source</code> may alias the builder's own storage (for example a span obtained from
+<a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.html#Bodu_Buffers_PooledBufferBuilder_1_WrittenSpan">WrittenSpan</a> or <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.html#Bodu_Buffers_PooledBufferBuilder_1_DangerousGetArray">DangerousGetArray()</a>): when a growth is required, the previous rented
+array is returned to the pool only after the source elements have been copied, so a self-aliasing source remains
+valid throughout the append.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown if the instance has been disposed.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Buffers_PooledBufferBuilder_1_CopyTo_" data-uid="Bodu.Buffers.PooledBufferBuilder`1.CopyTo*"></a>
+
+  <h3 id="Bodu_Buffers_PooledBufferBuilder_1_CopyTo_System_Span__0__" data-uid="Bodu.Buffers.PooledBufferBuilder`1.CopyTo(System.Span{`0})">
+  CopyTo(Span&lt;T&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Buffers/PooledBufferBuilder{T}.cs/#L357"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Copies the written elements into <code class="paramref">destination</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void CopyTo(Span&lt;T&gt; destination)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;T&gt;</dt>
+    <dd><p>The target span. Must be at least <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.html#Bodu_Buffers_PooledBufferBuilder_1_WrittenCount">WrittenCount</a> elements long.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">destination</code> is too small.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown if the instance has been disposed.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Buffers_PooledBufferBuilder_1_DangerousGetArray_" data-uid="Bodu.Buffers.PooledBufferBuilder`1.DangerousGetArray*"></a>
+
+  <h3 id="Bodu_Buffers_PooledBufferBuilder_1_DangerousGetArray" data-uid="Bodu.Buffers.PooledBufferBuilder`1.DangerousGetArray">
+  DangerousGetArray()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Buffers/PooledBufferBuilder{T}.cs/#L426"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.arraysegment-1">ArraySegment&lt;T&gt;</a> that aliases the underlying rented array, bounded to the written
 region.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Buffers_PooledBufferBuilder_1_Dispose" data-uid="Bodu.Buffers.PooledBufferBuilder`1.Dispose">
-          <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.Dispose.html#Bodu_Buffers_PooledBufferBuilder_1_Dispose">Dispose()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Releases the pooled buffer and resets the internal state of the builder.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Buffers_PooledBufferBuilder_1_EnsureCapacity_System_Int32_" data-uid="Bodu.Buffers.PooledBufferBuilder`1.EnsureCapacity(System.Int32)">
-          <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.EnsureCapacity.html#Bodu_Buffers_PooledBufferBuilder_1_EnsureCapacity_System_Int32_">EnsureCapacity(int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Ensures the internal buffer can hold at least <code class="paramref">minimum</code> elements, growing via a new pooled
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ArraySegment&lt;T&gt; DangerousGetArray()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.arraysegment-1">ArraySegment</a>&lt;T&gt;</dt>
+    <dd><p>An <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.arraysegment-1">ArraySegment&lt;T&gt;</a> starting at offset 0 with a count equal to <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.html#Bodu_Buffers_PooledBufferBuilder_1_WrittenCount">WrittenCount</a>. The
+segment points directly into pooled memory and must not be used after <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.html#Bodu_Buffers_PooledBufferBuilder_1_Dispose">Dispose()</a> is called.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Buffers_PooledBufferBuilder_1_DangerousGetArray_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This method is an escape hatch for APIs that require a <code>byte[]</code> or <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.arraysegment-1">ArraySegment&lt;T&gt;</a> rather
+than a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span&lt;T&gt;</a> or <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.memory-1">Memory&lt;T&gt;</a>. Treat the returned segment as borrowed — do not
+retain it beyond the lifetime of this builder.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown if the instance has been disposed.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Buffers_PooledBufferBuilder_1_Dispose_" data-uid="Bodu.Buffers.PooledBufferBuilder`1.Dispose*"></a>
+
+  <h3 id="Bodu_Buffers_PooledBufferBuilder_1_Dispose" data-uid="Bodu.Buffers.PooledBufferBuilder`1.Dispose">
+  Dispose()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Buffers/PooledBufferBuilder{T}.cs/#L468"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Releases the pooled buffer and resets the internal state of the builder.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Dispose()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Buffers_PooledBufferBuilder_1_Dispose_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>After calling this method, further operations on the instance will throw <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a>.</p>
+</div>
+
+
+
+
+  <a id="Bodu_Buffers_PooledBufferBuilder_1_EnsureCapacity_" data-uid="Bodu.Buffers.PooledBufferBuilder`1.EnsureCapacity*"></a>
+
+  <h3 id="Bodu_Buffers_PooledBufferBuilder_1_EnsureCapacity_System_Int32_" data-uid="Bodu.Buffers.PooledBufferBuilder`1.EnsureCapacity(System.Int32)">
+  EnsureCapacity(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Buffers/PooledBufferBuilder{T}.cs/#L544"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Ensures the internal buffer can hold at least <code class="paramref">minimum</code> elements, growing via a new pooled
 allocation when needed.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Buffers_PooledBufferBuilder_1_GetMemory_System_Int32_" data-uid="Bodu.Buffers.PooledBufferBuilder`1.GetMemory(System.Int32)">
-          <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.GetMemory.html#Bodu_Buffers_PooledBufferBuilder_1_GetMemory_System_Int32_">GetMemory(int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.memory-1">Memory&lt;T&gt;</a> of at least <code class="paramref">sizeHint</code> elements into which the caller can
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void EnsureCapacity(int minimum)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>minimum</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The minimum total capacity required. Must be non-negative. No-ops when the current <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.html#Bodu_Buffers_PooledBufferBuilder_1_Capacity">Capacity</a>
+already satisfies the request.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <code class="paramref">minimum</code> is negative.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown if the instance has been disposed.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Buffers_PooledBufferBuilder_1_GetMemory_" data-uid="Bodu.Buffers.PooledBufferBuilder`1.GetMemory*"></a>
+
+  <h3 id="Bodu_Buffers_PooledBufferBuilder_1_GetMemory_System_Int32_" data-uid="Bodu.Buffers.PooledBufferBuilder`1.GetMemory(System.Int32)">
+  GetMemory(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Buffers/PooledBufferBuilder{T}.cs/#L294"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.memory-1">Memory&lt;T&gt;</a> of at least <code class="paramref">sizeHint</code> elements into which the caller can
 write, automatically growing the buffer if necessary.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Buffers_PooledBufferBuilder_1_GetSpan_System_Int32_" data-uid="Bodu.Buffers.PooledBufferBuilder`1.GetSpan(System.Int32)">
-          <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.GetSpan.html#Bodu_Buffers_PooledBufferBuilder_1_GetSpan_System_Int32_">GetSpan(int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span&lt;T&gt;</a> of at least <code class="paramref">sizeHint</code> elements into which the caller can
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Memory&lt;T&gt; GetMemory(int sizeHint = 0)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>sizeHint</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The minimum number of elements required. When zero or negative, at least one element of free space is ensured.
+The returned memory may be larger than the hint.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.memory-1">Memory</a>&lt;T&gt;</dt>
+    <dd><p>A writable <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.memory-1">Memory&lt;T&gt;</a> beginning at the current write position and spanning all free capacity. Call
+<a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.html#Bodu_Buffers_PooledBufferBuilder_1_Advance_System_Int32_">Advance(int)</a> after writing to commit the data.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <code class="paramref">sizeHint</code> is negative.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown if the instance has been disposed.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Buffers_PooledBufferBuilder_1_GetSpan_" data-uid="Bodu.Buffers.PooledBufferBuilder`1.GetSpan*"></a>
+
+  <h3 id="Bodu_Buffers_PooledBufferBuilder_1_GetSpan_System_Int32_" data-uid="Bodu.Buffers.PooledBufferBuilder`1.GetSpan(System.Int32)">
+  GetSpan(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Buffers/PooledBufferBuilder{T}.cs/#L316"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span&lt;T&gt;</a> of at least <code class="paramref">sizeHint</code> elements into which the caller can
 write, automatically growing the buffer if necessary.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Buffers_PooledBufferBuilder_1_Reset" data-uid="Bodu.Buffers.PooledBufferBuilder`1.Reset">
-          <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.Reset.html#Bodu_Buffers_PooledBufferBuilder_1_Reset">Reset()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Resets the builder to an empty state, retaining the current rented buffer to avoid a pool round-trip.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Buffers_PooledBufferBuilder_1_Sort_System_Collections_Generic_IComparer__0__" data-uid="Bodu.Buffers.PooledBufferBuilder`1.Sort(System.Collections.Generic.IComparer{`0})">
-          <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.Sort.html#Bodu_Buffers_PooledBufferBuilder_1_Sort_System_Collections_Generic_IComparer__0__">Sort(IComparer&lt;T&gt;?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Sorts the written elements in place using the specified comparer, or the default comparer when
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Span&lt;T&gt; GetSpan(int sizeHint = 0)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>sizeHint</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The minimum number of elements required. When zero or negative, at least one element of free space is ensured.
+The returned span may be larger than the hint.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;T&gt;</dt>
+    <dd><p>A writable <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span&lt;T&gt;</a> beginning at the current write position and spanning all free capacity. Call
+<a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.html#Bodu_Buffers_PooledBufferBuilder_1_Advance_System_Int32_">Advance(int)</a> after writing to commit the data.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <code class="paramref">sizeHint</code> is negative.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown if the instance has been disposed.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Buffers_PooledBufferBuilder_1_Reset_" data-uid="Bodu.Buffers.PooledBufferBuilder`1.Reset*"></a>
+
+  <h3 id="Bodu_Buffers_PooledBufferBuilder_1_Reset" data-uid="Bodu.Buffers.PooledBufferBuilder`1.Reset">
+  Reset()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Buffers/PooledBufferBuilder{T}.cs/#L488"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Resets the builder to an empty state, retaining the current rented buffer to avoid a pool round-trip.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Reset()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Buffers_PooledBufferBuilder_1_Reset_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Any reference slots in the valid portion of the buffer are cleared to prevent unintended object retention. The
+underlying array is not returned to <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.arraypool-1.shared">Shared</a>; call <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.html#Bodu_Buffers_PooledBufferBuilder_1_Dispose">Dispose()</a> to release
+it.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown if the instance has been disposed.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Buffers_PooledBufferBuilder_1_Sort_" data-uid="Bodu.Buffers.PooledBufferBuilder`1.Sort*"></a>
+
+  <h3 id="Bodu_Buffers_PooledBufferBuilder_1_Sort_System_Collections_Generic_IComparer__0__" data-uid="Bodu.Buffers.PooledBufferBuilder`1.Sort(System.Collections.Generic.IComparer{`0})">
+  Sort(IComparer&lt;T&gt;?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Buffers/PooledBufferBuilder{T}.cs/#L441"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sorts the written elements in place using the specified comparer, or the default comparer when
 <code class="paramref">comparer</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Buffers_PooledBufferBuilder_1_Sort_System_Comparison__0__" data-uid="Bodu.Buffers.PooledBufferBuilder`1.Sort(System.Comparison{`0})">
-          <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.Sort.html#Bodu_Buffers_PooledBufferBuilder_1_Sort_System_Comparison__0__">Sort(Comparison&lt;T&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Sorts the written elements in place using the specified comparison delegate.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Buffers_PooledBufferBuilder_1_ToArrayAndDispose" data-uid="Bodu.Buffers.PooledBufferBuilder`1.ToArrayAndDispose">
-          <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.ToArrayAndDispose.html#Bodu_Buffers_PooledBufferBuilder_1_ToArrayAndDispose">ToArrayAndDispose()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Copies the written elements into a freshly allocated array and disposes the builder in a single call.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Buffers_PooledBufferBuilder_1_TryCopyFrom_System_Collections_Generic_IReadOnlyCollection__0__" data-uid="Bodu.Buffers.PooledBufferBuilder`1.TryCopyFrom(System.Collections.Generic.IReadOnlyCollection{`0})">
-          <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.TryCopyFrom.html#Bodu_Buffers_PooledBufferBuilder_1_TryCopyFrom_System_Collections_Generic_IReadOnlyCollection__0__">TryCopyFrom(IReadOnlyCollection&lt;T&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to populate the buffer from the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlycollection-1">IReadOnlyCollection&lt;T&gt;</a> using a fast-path
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Sort(IComparer&lt;T&gt;? comparer = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>comparer</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icomparer-1">IComparer</a>&lt;T&gt;</dt>
+    <dd><p>The comparer to use, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to use
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.comparer-1.default">Default</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown if the instance has been disposed.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Buffers_PooledBufferBuilder_1_Sort_" data-uid="Bodu.Buffers.PooledBufferBuilder`1.Sort*"></a>
+
+  <h3 id="Bodu_Buffers_PooledBufferBuilder_1_Sort_System_Comparison__0__" data-uid="Bodu.Buffers.PooledBufferBuilder`1.Sort(System.Comparison{`0})">
+  Sort(Comparison&lt;T&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Buffers/PooledBufferBuilder{T}.cs/#L455"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sorts the written elements in place using the specified comparison delegate.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Sort(Comparison&lt;T&gt; comparison)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>comparison</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.comparison-1">Comparison</a>&lt;T&gt;</dt>
+    <dd><p>The comparison to use. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">comparison</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown if the instance has been disposed.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Buffers_PooledBufferBuilder_1_ToArrayAndDispose_" data-uid="Bodu.Buffers.PooledBufferBuilder`1.ToArrayAndDispose*"></a>
+
+  <h3 id="Bodu_Buffers_PooledBufferBuilder_1_ToArrayAndDispose" data-uid="Bodu.Buffers.PooledBufferBuilder`1.ToArrayAndDispose">
+  ToArrayAndDispose()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Buffers/PooledBufferBuilder{T}.cs/#L403"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Copies the written elements into a freshly allocated array and disposes the builder in a single call.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public T[] ToArrayAndDispose()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt>T[]</dt>
+    <dd><p>A new array of length <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.html#Bodu_Buffers_PooledBufferBuilder_1_WrittenCount">WrittenCount</a> containing the written elements in order. The returned array
+is owned by the caller and is independent of any pooled storage.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Buffers_PooledBufferBuilder_1_ToArrayAndDispose_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This is the canonical &quot;build, materialize, release&quot; shortcut for callers that want a managed array and do not
+need to continue mutating the builder. After this call returns, the builder is disposed and any further
+operation on it throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a>.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown if the instance has already been disposed.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Buffers_PooledBufferBuilder_1_TryCopyFrom_" data-uid="Bodu.Buffers.PooledBufferBuilder`1.TryCopyFrom*"></a>
+
+  <h3 id="Bodu_Buffers_PooledBufferBuilder_1_TryCopyFrom_System_Collections_Generic_IReadOnlyCollection__0__" data-uid="Bodu.Buffers.PooledBufferBuilder`1.TryCopyFrom(System.Collections.Generic.IReadOnlyCollection{`0})">
+  TryCopyFrom(IReadOnlyCollection&lt;T&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Buffers/PooledBufferBuilder{T}.cs/#L517"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Attempts to populate the buffer from the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlycollection-1">IReadOnlyCollection&lt;T&gt;</a> using a fast-path
 <code>CopyTo</code> when the source also implements <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icollection-1">ICollection&lt;T&gt;</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Buffers_PooledBufferBuilder_1_TryCopyTo_System_Span__0__" data-uid="Bodu.Buffers.PooledBufferBuilder`1.TryCopyTo(System.Span{`0})">
-          <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.TryCopyTo.html#Bodu_Buffers_PooledBufferBuilder_1_TryCopyTo_System_Span__0__">TryCopyTo(Span&lt;T&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to copy the written elements into <code class="paramref">destination</code> without throwing when the destination
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TryCopyFrom(IReadOnlyCollection&lt;T&gt; source)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlycollection-1">IReadOnlyCollection</a>&lt;T&gt;</dt>
+    <dd><p>The source collection to copy from. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the copy was performed via <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icollection-1.copyto">CopyTo(T[], int)</a>;
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> if the source does not implement <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icollection-1">ICollection&lt;T&gt;</a> and no copy was
+performed.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Buffers_PooledBufferBuilder_1_TryCopyFrom_System_Collections_Generic_IReadOnlyCollection__0___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>When successful, any previously buffered data is discarded and replaced with the contents of
+<code class="paramref">source</code>. The current rented array is reused when its capacity is sufficient, and
+<a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.html#Bodu_Buffers_PooledBufferBuilder_1_WrittenCount">WrittenCount</a> is set to the source element count.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown if <code class="paramref">source</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown if the instance has been disposed.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Buffers_PooledBufferBuilder_1_TryCopyTo_" data-uid="Bodu.Buffers.PooledBufferBuilder`1.TryCopyTo*"></a>
+
+  <h3 id="Bodu_Buffers_PooledBufferBuilder_1_TryCopyTo_System_Span__0__" data-uid="Bodu.Buffers.PooledBufferBuilder`1.TryCopyTo(System.Span{`0})">
+  TryCopyTo(Span&lt;T&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Buffers/PooledBufferBuilder{T}.cs/#L379"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Attempts to copy the written elements into <code class="paramref">destination</code> without throwing when the destination
 is too small.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TryCopyTo(Span&lt;T&gt; destination)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;T&gt;</dt>
+    <dd><p>The target span to copy into.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when <code class="paramref">destination</code> has space for at least <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.html#Bodu_Buffers_PooledBufferBuilder_1_WrittenCount">WrittenCount</a>
+elements and the copy was performed; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> when the destination is too small, in which case
+nothing is written.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Buffers_PooledBufferBuilder_1_TryCopyTo_System_Span__0___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Use this overload in code paths that probe the destination size and act on the boolean rather than catching
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> from <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.html#Bodu_Buffers_PooledBufferBuilder_1_CopyTo_System_Span__0__">CopyTo(Span&lt;T&gt;)</a>.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown if the instance has been disposed.</p>
+</dd>
+  </dl>
+
+
+
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 302e395 · Built: 2026-09-29 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 1e0dd9a · Built: 2026-09-29 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

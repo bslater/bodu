@@ -1,99 +1,133 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
       <title>Class MovingSum&lt;T&gt; | BODU </title>
-      <meta name="viewport" content="width=device-width">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class MovingSum&lt;T&gt; | BODU ">
-    
-    <meta name="description" content="Maintains the sum and mean of the most recent N samples of a stream, updating in amortized O(1) as each new sample displaces the oldest.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      
+      <meta name="description" content="Maintains the sum and mean of the most recent N samples of a stream, updating in amortized O(1) as each new sample displaces the oldest.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/new/master/apiSpec/new?filename=Bodu_Numerics_MovingSum_1.md&amp;value=---%0Auid%3A%20Bodu.Numerics.MovingSum%601%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Numerics.MovingSum`1">
+
+        <article data-uid="Bodu.Numerics.MovingSum`1">
 
 
 
-  <h1 id="Bodu_Numerics_MovingSum_1" data-uid="Bodu.Numerics.MovingSum`1" class="text-break">Class MovingSum&lt;T&gt;</h1>
-  <div class="markdown level0 summary"><p>Maintains the sum and mean of the most recent N samples of a stream, updating in amortized O(1) as each new sample
+  <h1 id="Bodu_Numerics_MovingSum_1" data-uid="Bodu.Numerics.MovingSum`1" class="text-break">
+Class MovingSum&lt;T&gt;  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Numerics/src/Numerics/MovingSum{T}.cs/#L50"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Numerics.html">Numerics</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Numerics.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Maintains the sum and mean of the most recent N samples of a stream, updating in amortized O(1) as each new sample
 displaces the oldest.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><span class="xref">MovingSum&lt;T&gt;</span></div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class MovingSum&lt;T&gt; where T : INumber&lt;T&gt;</code></pre>
   </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The numeric type of the samples.</p>
+</dd>
+  </dl>
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">MovingSum&lt;T&gt;</span></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
@@ -109,224 +143,443 @@ displaces the oldest.</p>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
     </div>
+  </dd></dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Numerics.html">Numerics</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Numerics.dll</h6>
-  <h5 id="Bodu_Numerics_MovingSum_1_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class MovingSum&lt;T&gt; where T : INumber&lt;T&gt;</code></pre>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h5 class="typeParameters">Type Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="parametername">T</span></td>
-        <td><p>The numeric type of the samples.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 id="Bodu_Numerics_MovingSum_1_remarks"><strong>Remarks</strong></h5>
-  <div class="markdown level0 remarks"><p>
-This is the finance / telemetry "rolling window" idiom: the window holds the last <a class="xref" href="Bodu.Numerics.MovingSum-1.Capacity.html#Bodu_Numerics_MovingSum_1_Capacity">Capacity</a> samples,
-<a class="xref" href="Bodu.Numerics.MovingSum-1.Sum.html#Bodu_Numerics_MovingSum_1_Sum">Sum</a> and <a class="xref" href="Bodu.Numerics.MovingSum-1.Mean.html#Bodu_Numerics_MovingSum_1_Mean">Mean</a> always describe exactly those samples, and until the window fills (<a class="xref" href="Bodu.Numerics.MovingSum-1.IsFull.html#Bodu_Numerics_MovingSum_1_IsFull">IsFull</a>)
-they describe the samples received so far. Samples are accepted as <code class="typeparamref">T</code> and the sum is
-maintained in <code class="typeparamref">T</code> — exact for integer, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a>, and <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.biginteger">BigInteger</a>
-samples — while <a class="xref" href="Bodu.Numerics.MovingSum-1.Mean.html#Bodu_Numerics_MovingSum_1_Mean">Mean</a> is a derived result computed and returned as a finite <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a>. The
-rolling-sum arithmetic is <b>checked</b>: a fixed-width integer sum that would overflow throws
-<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.overflowexception">OverflowException</a> from <a class="xref" href="Bodu.Numerics.MovingSum-1.Add.html#Bodu_Numerics_MovingSum_1_Add__0_">Add(T)</a> rather than silently wrapping, and the window state is left
-unchanged when that happens. Floating-point sums cannot overflow (they saturate per IEEE 754); a sum that has
-saturated to infinity surfaces as <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.overflowexception">OverflowException</a> when <a class="xref" href="Bodu.Numerics.MovingSum-1.Mean.html#Bodu_Numerics_MovingSum_1_Mean">Mean</a> is read.
-</p>
-<p>
-For floating-point samples the subtract-on-evict update accumulates rounding drift, so the sum is transparently
-recomputed from the buffered window after every full window turnover, bounding the drift to one window's worth of
-rounding. Samples must be finite: NaN and infinite values are rejected by <a class="xref" href="Bodu.Numerics.MovingSum-1.Add.html#Bodu_Numerics_MovingSum_1_Add__0_">Add(T)</a>. For min/max over the
-same window, pair this type with <a class="xref" href="Bodu.Numerics.MovingMinMax-1.html">MovingMinMax&lt;T&gt;</a>; for whole-stream moments use
-<a class="xref" href="Bodu.Numerics.RunningStatistics-1.html">RunningStatistics&lt;T&gt;</a>.
-</p>
-</div>
-  <h5 id="Bodu_Numerics_MovingSum_1_examples"><strong>Examples</strong></h5>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  </dd></dl>
+
+
+  <h2 id="Bodu_Numerics_MovingSum_1_examples">Examples</h2>
   <pre><code class="lang-csharp">var window = new MovingSum&lt;double&gt;(3);
 window.Add(1.0);   // window: {1}          Sum = 1
 window.Add(2.0);   // window: {1, 2}       Sum = 3
 window.Add(3.0);   // window: {1, 2, 3}    Sum = 6
 window.Add(4.0);   // window: {2, 3, 4}    Sum = 9, Mean = 3</code></pre>
 
-  <h3 id="constructors">Constructors
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Numerics_MovingSum_1__ctor_System_Int32_" data-uid="Bodu.Numerics.MovingSum`1.#ctor(System.Int32)">
-          <a class="xref" href="Bodu.Numerics.MovingSum-1.-ctor.html#Bodu_Numerics_MovingSum_1__ctor_System_Int32_">MovingSum(int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Numerics.MovingSum-1.html">MovingSum&lt;T&gt;</a> class with the given window size.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="properties">Properties
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Numerics_MovingSum_1_Capacity" data-uid="Bodu.Numerics.MovingSum`1.Capacity">
-          <a class="xref" href="Bodu.Numerics.MovingSum-1.Capacity.html#Bodu_Numerics_MovingSum_1_Capacity">Capacity</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the number of most-recent samples the window covers once full.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_MovingSum_1_Count" data-uid="Bodu.Numerics.MovingSum`1.Count">
-          <a class="xref" href="Bodu.Numerics.MovingSum-1.Count.html#Bodu_Numerics_MovingSum_1_Count">Count</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the number of samples currently in the window.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_MovingSum_1_IsEmpty" data-uid="Bodu.Numerics.MovingSum`1.IsEmpty">
-          <a class="xref" href="Bodu.Numerics.MovingSum-1.IsEmpty.html#Bodu_Numerics_MovingSum_1_IsEmpty">IsEmpty</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets a value indicating whether the window contains no samples.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_MovingSum_1_IsFull" data-uid="Bodu.Numerics.MovingSum`1.IsFull">
-          <a class="xref" href="Bodu.Numerics.MovingSum-1.IsFull.html#Bodu_Numerics_MovingSum_1_IsFull">IsFull</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets a value indicating whether the window has filled to <a class="xref" href="Bodu.Numerics.MovingSum-1.Capacity.html#Bodu_Numerics_MovingSum_1_Capacity">Capacity</a> and every new sample now evicts
+
+  <h2 id="Bodu_Numerics_MovingSum_1_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>
+This is the finance / telemetry "rolling window" idiom: the window holds the last <a class="xref" href="Bodu.Numerics.MovingSum-1.html#Bodu_Numerics_MovingSum_1_Capacity">Capacity</a> samples,
+<a class="xref" href="Bodu.Numerics.MovingSum-1.html#Bodu_Numerics_MovingSum_1_Sum">Sum</a> and <a class="xref" href="Bodu.Numerics.MovingSum-1.html#Bodu_Numerics_MovingSum_1_Mean">Mean</a> always describe exactly those samples, and until the window fills (<a class="xref" href="Bodu.Numerics.MovingSum-1.html#Bodu_Numerics_MovingSum_1_IsFull">IsFull</a>)
+they describe the samples received so far. Samples are accepted as <code class="typeparamref">T</code> and the sum is
+maintained in <code class="typeparamref">T</code> — exact for integer, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a>, and <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.biginteger">BigInteger</a>
+samples — while <a class="xref" href="Bodu.Numerics.MovingSum-1.html#Bodu_Numerics_MovingSum_1_Mean">Mean</a> is a derived result computed and returned as a finite <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a>. The
+rolling-sum arithmetic is <b>checked</b>: a fixed-width integer sum that would overflow throws
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.overflowexception">OverflowException</a> from <a class="xref" href="Bodu.Numerics.MovingSum-1.html#Bodu_Numerics_MovingSum_1_Add__0_">Add(T)</a> rather than silently wrapping, and the window state is left
+unchanged when that happens. Floating-point sums cannot overflow (they saturate per IEEE 754); a sum that has
+saturated to infinity surfaces as <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.overflowexception">OverflowException</a> when <a class="xref" href="Bodu.Numerics.MovingSum-1.html#Bodu_Numerics_MovingSum_1_Mean">Mean</a> is read.
+</p>
+<p>
+For floating-point samples the subtract-on-evict update accumulates rounding drift, so the sum is transparently
+recomputed from the buffered window after every full window turnover, bounding the drift to one window's worth of
+rounding. Samples must be finite: NaN and infinite values are rejected by <a class="xref" href="Bodu.Numerics.MovingSum-1.html#Bodu_Numerics_MovingSum_1_Add__0_">Add(T)</a>. For min/max over the
+same window, pair this type with <a class="xref" href="Bodu.Numerics.MovingMinMax-1.html">MovingMinMax&lt;T&gt;</a>; for whole-stream moments use
+<a class="xref" href="Bodu.Numerics.RunningStatistics-1.html">RunningStatistics&lt;T&gt;</a>.
+</p>
+</div>
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Bodu_Numerics_MovingSum_1__ctor_" data-uid="Bodu.Numerics.MovingSum`1.#ctor*"></a>
+
+  <h3 id="Bodu_Numerics_MovingSum_1__ctor_System_Int32_" data-uid="Bodu.Numerics.MovingSum`1.#ctor(System.Int32)">
+  MovingSum(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Numerics/src/Numerics/MovingSum{T}.cs/#L78"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Numerics.MovingSum-1.html">MovingSum&lt;T&gt;</a> class with the given window size.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public MovingSum(int capacity)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>capacity</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of most-recent samples the window covers.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">capacity</code> ≤ 0.</p>
+</dd>
+  </dl>
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Bodu_Numerics_MovingSum_1_Capacity_" data-uid="Bodu.Numerics.MovingSum`1.Capacity*"></a>
+
+  <h3 id="Bodu_Numerics_MovingSum_1_Capacity" data-uid="Bodu.Numerics.MovingSum`1.Capacity">
+  Capacity
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Numerics/src/Numerics/MovingSum{T}.cs/#L90"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the number of most-recent samples the window covers once full.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int Capacity { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The fixed window size supplied at construction.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Numerics_MovingSum_1_Count_" data-uid="Bodu.Numerics.MovingSum`1.Count*"></a>
+
+  <h3 id="Bodu_Numerics_MovingSum_1_Count" data-uid="Bodu.Numerics.MovingSum`1.Count">
+  Count
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Numerics/src/Numerics/MovingSum{T}.cs/#L97"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the number of samples currently in the window.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int Count { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The sample count, at most <a class="xref" href="Bodu.Numerics.MovingSum-1.html#Bodu_Numerics_MovingSum_1_Capacity">Capacity</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Numerics_MovingSum_1_IsEmpty_" data-uid="Bodu.Numerics.MovingSum`1.IsEmpty*"></a>
+
+  <h3 id="Bodu_Numerics_MovingSum_1_IsEmpty" data-uid="Bodu.Numerics.MovingSum`1.IsEmpty">
+  IsEmpty
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Numerics/src/Numerics/MovingSum{T}.cs/#L104"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether the window contains no samples.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsEmpty { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when <a class="xref" href="Bodu.Numerics.MovingSum-1.html#Bodu_Numerics_MovingSum_1_Count">Count</a> is zero; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Numerics_MovingSum_1_IsFull_" data-uid="Bodu.Numerics.MovingSum`1.IsFull*"></a>
+
+  <h3 id="Bodu_Numerics_MovingSum_1_IsFull" data-uid="Bodu.Numerics.MovingSum`1.IsFull">
+  IsFull
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Numerics/src/Numerics/MovingSum{T}.cs/#L112"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether the window has filled to <a class="xref" href="Bodu.Numerics.MovingSum-1.html#Bodu_Numerics_MovingSum_1_Capacity">Capacity</a> and every new sample now evicts
 the oldest.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_MovingSum_1_Mean" data-uid="Bodu.Numerics.MovingSum`1.Mean">
-          <a class="xref" href="Bodu.Numerics.MovingSum-1.Mean.html#Bodu_Numerics_MovingSum_1_Mean">Mean</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the arithmetic mean of the samples currently in the window.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_MovingSum_1_Sum" data-uid="Bodu.Numerics.MovingSum`1.Sum">
-          <a class="xref" href="Bodu.Numerics.MovingSum-1.Sum.html#Bodu_Numerics_MovingSum_1_Sum">Sum</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the sum of the samples currently in the window.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Numerics_MovingSum_1_Add__0_" data-uid="Bodu.Numerics.MovingSum`1.Add(`0)">
-          <a class="xref" href="Bodu.Numerics.MovingSum-1.Add.html#Bodu_Numerics_MovingSum_1_Add__0_">Add(T)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Adds a sample to the window, evicting the oldest sample once the window is full.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_MovingSum_1_Reset" data-uid="Bodu.Numerics.MovingSum`1.Reset">
-          <a class="xref" href="Bodu.Numerics.MovingSum-1.Reset.html#Bodu_Numerics_MovingSum_1_Reset">Reset()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Resets the window to the empty state, discarding every buffered sample.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_MovingSum_1_ToString" data-uid="Bodu.Numerics.MovingSum`1.ToString">
-          <a class="xref" href="Bodu.Numerics.MovingSum-1.ToString.html#Bodu_Numerics_MovingSum_1_ToString">ToString()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns a culture-invariant summary of the window state for diagnostics.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsFull { get; }</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when <a class="xref" href="Bodu.Numerics.MovingSum-1.html#Bodu_Numerics_MovingSum_1_Count">Count</a> equals <a class="xref" href="Bodu.Numerics.MovingSum-1.html#Bodu_Numerics_MovingSum_1_Capacity">Capacity</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Numerics_MovingSum_1_Mean_" data-uid="Bodu.Numerics.MovingSum`1.Mean*"></a>
+
+  <h3 id="Bodu_Numerics_MovingSum_1_Mean" data-uid="Bodu.Numerics.MovingSum`1.Mean">
+  Mean
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Numerics/src/Numerics/MovingSum{T}.cs/#L131"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the arithmetic mean of the samples currently in the window.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public double Mean { get; }</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd><p>The window mean, computed in <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The window is empty.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.overflowexception">OverflowException</a></dt>
+    <dd><p>The window sum is outside the range representable by <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a> (possible for unbounded integer
+sample types such as <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.biginteger">BigInteger</a>, or a floating-point sum that has saturated to infinity).</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Numerics_MovingSum_1_Sum_" data-uid="Bodu.Numerics.MovingSum`1.Sum*"></a>
+
+  <h3 id="Bodu_Numerics_MovingSum_1_Sum" data-uid="Bodu.Numerics.MovingSum`1.Sum">
+  Sum
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Numerics/src/Numerics/MovingSum{T}.cs/#L119"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the sum of the samples currently in the window.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public T Sum { get; }</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">T</span></dt>
+    <dd><p>The window sum in <code class="typeparamref">T</code>; <code>T.Zero</code> when the window is empty.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Numerics_MovingSum_1_Add_" data-uid="Bodu.Numerics.MovingSum`1.Add*"></a>
+
+  <h3 id="Bodu_Numerics_MovingSum_1_Add__0_" data-uid="Bodu.Numerics.MovingSum`1.Add(`0)">
+  Add(T)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Numerics/src/Numerics/MovingSum{T}.cs/#L154"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a sample to the window, evicting the oldest sample once the window is full.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Add(T value)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd><p>The sample to add. Must be finite.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">value</code> is NaN or infinite.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.overflowexception">OverflowException</a></dt>
+    <dd><p>The updated rolling sum overflows <code class="typeparamref">T</code> (fixed-width integer sample types; the arithmetic is
+checked). The window state is unchanged when this is thrown. The subtract-then-add update can, in rare magnitude
+combinations, overflow transiently even when the final sum would fit.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Numerics_MovingSum_1_Reset_" data-uid="Bodu.Numerics.MovingSum`1.Reset*"></a>
+
+  <h3 id="Bodu_Numerics_MovingSum_1_Reset" data-uid="Bodu.Numerics.MovingSum`1.Reset">
+  Reset()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Numerics/src/Numerics/MovingSum{T}.cs/#L198"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Resets the window to the empty state, discarding every buffered sample.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Reset()</code></pre>
   </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_Numerics_MovingSum_1_ToString_" data-uid="Bodu.Numerics.MovingSum`1.ToString*"></a>
+
+  <h3 id="Bodu_Numerics_MovingSum_1_ToString" data-uid="Bodu.Numerics.MovingSum`1.ToString">
+  ToString()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Numerics/src/Numerics/MovingSum{T}.cs/#L216"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns a culture-invariant summary of the window state for diagnostics.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override string ToString()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>A string such as <code>&quot;Capacity = 3, Count = 2, Sum = 7&quot;</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 302e395 · Built: 2026-09-29 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 1e0dd9a · Built: 2026-09-29 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

@@ -1,99 +1,127 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
       <title>Class YamlSerializerOptions | BODU </title>
-      <meta name="viewport" content="width=device-width">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class YamlSerializerOptions | BODU ">
-    
-    <meta name="description" content="Provides options that configure , in the manner of .">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      
+      <meta name="description" content="Provides options that configure , in the manner of .">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/new/master/apiSpec/new?filename=Bodu_Text_Yaml_YamlSerializerOptions.md&amp;value=---%0Auid%3A%20Bodu.Text.Yaml.YamlSerializerOptions%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Text.Yaml.YamlSerializerOptions">
+
+        <article data-uid="Bodu.Text.Yaml.YamlSerializerOptions">
 
 
 
-  <h1 id="Bodu_Text_Yaml_YamlSerializerOptions" data-uid="Bodu.Text.Yaml.YamlSerializerOptions" class="text-break">Class YamlSerializerOptions</h1>
-  <div class="markdown level0 summary"><p>Provides options that configure <a class="xref" href="Bodu.Text.Yaml.YamlSerializer.html">YamlSerializer</a>, in the manner of
+  <h1 id="Bodu_Text_Yaml_YamlSerializerOptions" data-uid="Bodu.Text.Yaml.YamlSerializerOptions" class="text-break">
+Class YamlSerializerOptions  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Serialization/shared/SerializerOptions.Resolution.cs/#L26"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Yaml.html">Yaml</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Text.Yaml.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides options that configure <a class="xref" href="Bodu.Text.Yaml.YamlSerializer.html">YamlSerializer</a>, in the manner of
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.json.jsonserializeroptions">JsonSerializerOptions</a>.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><span class="xref">YamlSerializerOptions</span></div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class YamlSerializerOptions</code></pre>
   </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">YamlSerializerOptions</span></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
@@ -112,247 +140,760 @@
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
+  </dd></dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Yaml.html">Yaml</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Text.Yaml.dll</h6>
-  <h5 id="Bodu_Text_Yaml_YamlSerializerOptions_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class YamlSerializerOptions</code></pre>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h5 id="Bodu_Text_Yaml_YamlSerializerOptions_remarks"><strong>Remarks</strong></h5>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  </dd></dl>
+
+
+
+  <h2 id="Bodu_Text_Yaml_YamlSerializerOptions_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>An options instance becomes read-only the first time it is used to serialize or deserialize, or when
-<a class="xref" href="Bodu.Text.Yaml.YamlSerializerOptions.MakeReadOnly.html#Bodu_Text_Yaml_YamlSerializerOptions_MakeReadOnly">MakeReadOnly()</a> is called. After that point its settable properties throw
+<a class="xref" href="Bodu.Text.Yaml.YamlSerializerOptions.html#Bodu_Text_Yaml_YamlSerializerOptions_MakeReadOnly">MakeReadOnly()</a> is called. After that point its settable properties throw
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a>, which guarantees deterministic behavior when the same instance is shared
 across threads.</p>
 </div>
-  <h3 id="constructors">Constructors
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Text_Yaml_YamlSerializerOptions__ctor" data-uid="Bodu.Text.Yaml.YamlSerializerOptions.#ctor">
-          <a class="xref" href="Bodu.Text.Yaml.YamlSerializerOptions.-ctor.html#Bodu_Text_Yaml_YamlSerializerOptions__ctor">YamlSerializerOptions()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Text.Yaml.YamlSerializerOptions.html">YamlSerializerOptions</a> class.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Yaml_YamlSerializerOptions__ctor_Bodu_Text_Yaml_YamlSerializerDefaults_" data-uid="Bodu.Text.Yaml.YamlSerializerOptions.#ctor(Bodu.Text.Yaml.YamlSerializerDefaults)">
-          <a class="xref" href="Bodu.Text.Yaml.YamlSerializerOptions.-ctor.html#Bodu_Text_Yaml_YamlSerializerOptions__ctor_Bodu_Text_Yaml_YamlSerializerDefaults_">YamlSerializerOptions(YamlSerializerDefaults)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Text.Yaml.YamlSerializerOptions.html">YamlSerializerOptions</a> class with a base set of defaults
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Bodu_Text_Yaml_YamlSerializerOptions__ctor_" data-uid="Bodu.Text.Yaml.YamlSerializerOptions.#ctor*"></a>
+
+  <h3 id="Bodu_Text_Yaml_YamlSerializerOptions__ctor" data-uid="Bodu.Text.Yaml.YamlSerializerOptions.#ctor">
+  YamlSerializerOptions()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Yaml/src/Text.Yaml/YamlSerializerOptions.cs/#L69"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Text.Yaml.YamlSerializerOptions.html">YamlSerializerOptions</a> class.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public YamlSerializerOptions()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_Text_Yaml_YamlSerializerOptions__ctor_" data-uid="Bodu.Text.Yaml.YamlSerializerOptions.#ctor*"></a>
+
+  <h3 id="Bodu_Text_Yaml_YamlSerializerOptions__ctor_Bodu_Text_Yaml_YamlSerializerDefaults_" data-uid="Bodu.Text.Yaml.YamlSerializerOptions.#ctor(Bodu.Text.Yaml.YamlSerializerDefaults)">
+  YamlSerializerOptions(YamlSerializerDefaults)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Yaml/src/Text.Yaml/YamlSerializerOptions.cs/#L86"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Text.Yaml.YamlSerializerOptions.html">YamlSerializerOptions</a> class with a base set of defaults
 appropriate for the specified usage scenario.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="properties">Properties
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Text_Yaml_YamlSerializerOptions_Converters" data-uid="Bodu.Text.Yaml.YamlSerializerOptions.Converters">
-          <a class="xref" href="Bodu.Text.Yaml.YamlSerializerOptions.Converters.html#Bodu_Text_Yaml_YamlSerializerOptions_Converters">Converters</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the list of custom converters consulted before the built-in handling.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Yaml_YamlSerializerOptions_DefaultIgnoreCondition" data-uid="Bodu.Text.Yaml.YamlSerializerOptions.DefaultIgnoreCondition">
-          <a class="xref" href="Bodu.Text.Yaml.YamlSerializerOptions.DefaultIgnoreCondition.html#Bodu_Text_Yaml_YamlSerializerOptions_DefaultIgnoreCondition">DefaultIgnoreCondition</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets or sets the serializer-wide default condition under which a member is omitted when writing, applied to
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public YamlSerializerOptions(YamlSerializerDefaults defaults)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>defaults</code> <a class="xref" href="Bodu.Text.Yaml.YamlSerializerDefaults.html">YamlSerializerDefaults</a></dt>
+    <dd><p>The base defaults to apply.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Text_Yaml_YamlSerializerOptions__ctor_Bodu_Text_Yaml_YamlSerializerDefaults__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p><a class="xref" href="Bodu.Text.Yaml.YamlSerializerDefaults.html#Bodu_Text_Yaml_YamlSerializerDefaults_Web">Web</a> selects camel-case property naming and case-insensitive property-name
+matching; <a class="xref" href="Bodu.Text.Yaml.YamlSerializerDefaults.html#Bodu_Text_Yaml_YamlSerializerDefaults_General">General</a> leaves the defaults unchanged.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <code class="paramref">defaults</code> is not a defined <a class="xref" href="Bodu.Text.Yaml.YamlSerializerDefaults.html">YamlSerializerDefaults</a> value.</p>
+</dd>
+  </dl>
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Bodu_Text_Yaml_YamlSerializerOptions_Converters_" data-uid="Bodu.Text.Yaml.YamlSerializerOptions.Converters*"></a>
+
+  <h3 id="Bodu_Text_Yaml_YamlSerializerOptions_Converters" data-uid="Bodu.Text.Yaml.YamlSerializerOptions.Converters">
+  Converters
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Yaml/src/Text.Yaml/YamlSerializerOptions.cs/#L103"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the list of custom converters consulted before the built-in handling.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IList&lt;YamlConverter&gt; Converters { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ilist-1">IList</a>&lt;<a class="xref" href="Bodu.Text.Yaml.Serialization.YamlConverter.html">YamlConverter</a>&gt;</dt>
+    <dd><p>The converter collection.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Text_Yaml_YamlSerializerOptions_DefaultIgnoreCondition_" data-uid="Bodu.Text.Yaml.YamlSerializerOptions.DefaultIgnoreCondition*"></a>
+
+  <h3 id="Bodu_Text_Yaml_YamlSerializerOptions_DefaultIgnoreCondition" data-uid="Bodu.Text.Yaml.YamlSerializerOptions.DefaultIgnoreCondition">
+  DefaultIgnoreCondition
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Yaml/src/Text.Yaml/YamlSerializerOptions.cs/#L145"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the serializer-wide default condition under which a member is omitted when writing, applied to
 every member that does not carry its own <a class="xref" href="Bodu.Text.Serialization.IgnoreCondition.html">IgnoreCondition</a> through an attribute.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Yaml_YamlSerializerOptions_DuplicateKeyBehavior" data-uid="Bodu.Text.Yaml.YamlSerializerOptions.DuplicateKeyBehavior">
-          <a class="xref" href="Bodu.Text.Yaml.YamlSerializerOptions.DuplicateKeyBehavior.html#Bodu_Text_Yaml_YamlSerializerOptions_DuplicateKeyBehavior">DuplicateKeyBehavior</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets or sets the policy applied when a mapping declares the same key more than once during deserialization.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Yaml_YamlSerializerOptions_IncludeFields" data-uid="Bodu.Text.Yaml.YamlSerializerOptions.IncludeFields">
-          <a class="xref" href="Bodu.Text.Yaml.YamlSerializerOptions.IncludeFields.html#Bodu_Text_Yaml_YamlSerializerOptions_IncludeFields">IncludeFields</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets or sets a value indicating whether public fields are serialized in addition to properties.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Yaml_YamlSerializerOptions_IsReadOnly" data-uid="Bodu.Text.Yaml.YamlSerializerOptions.IsReadOnly">
-          <a class="xref" href="Bodu.Text.Yaml.YamlSerializerOptions.IsReadOnly.html#Bodu_Text_Yaml_YamlSerializerOptions_IsReadOnly">IsReadOnly</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets a value indicating whether the options have become read-only.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Yaml_YamlSerializerOptions_MaxDepth" data-uid="Bodu.Text.Yaml.YamlSerializerOptions.MaxDepth">
-          <a class="xref" href="Bodu.Text.Yaml.YamlSerializerOptions.MaxDepth.html#Bodu_Text_Yaml_YamlSerializerOptions_MaxDepth">MaxDepth</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets or sets the maximum depth allowed when serializing an object graph and when parsing during deserialization.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Yaml_YamlSerializerOptions_MergeKeyBehavior" data-uid="Bodu.Text.Yaml.YamlSerializerOptions.MergeKeyBehavior">
-          <a class="xref" href="Bodu.Text.Yaml.YamlSerializerOptions.MergeKeyBehavior.html#Bodu_Text_Yaml_YamlSerializerOptions_MergeKeyBehavior">MergeKeyBehavior</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets or sets the policy applied to the YAML merge key (<code>&lt;&lt;</code>) during deserialization.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Yaml_YamlSerializerOptions_NumberHandling" data-uid="Bodu.Text.Yaml.YamlSerializerOptions.NumberHandling">
-          <a class="xref" href="Bodu.Text.Yaml.YamlSerializerOptions.NumberHandling.html#Bodu_Text_Yaml_YamlSerializerOptions_NumberHandling">NumberHandling</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets or sets the policy applied when coercing numeric scalars to integral targets.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Yaml_YamlSerializerOptions_PreferredObjectCreationHandling" data-uid="Bodu.Text.Yaml.YamlSerializerOptions.PreferredObjectCreationHandling">
-          <a class="xref" href="Bodu.Text.Yaml.YamlSerializerOptions.PreferredObjectCreationHandling.html#Bodu_Text_Yaml_YamlSerializerOptions_PreferredObjectCreationHandling">PreferredObjectCreationHandling</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets or sets the serializer-wide default for whether a member's value is replaced with a freshly created
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IgnoreCondition DefaultIgnoreCondition { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Serialization.IgnoreCondition.html">IgnoreCondition</a></dt>
+    <dd><p>The default ignore condition; <a class="xref" href="Bodu.Text.Serialization.IgnoreCondition.html#Bodu_Text_Serialization_IgnoreCondition_Never">Never</a> by default.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The options instance is read-only.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when the value is undefined, or when it is <a class="xref" href="Bodu.Text.Serialization.IgnoreCondition.html#Bodu_Text_Serialization_IgnoreCondition_Always">Always</a>, which is not a valid
+serializer-wide default.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Yaml_YamlSerializerOptions_DuplicateKeyBehavior_" data-uid="Bodu.Text.Yaml.YamlSerializerOptions.DuplicateKeyBehavior*"></a>
+
+  <h3 id="Bodu_Text_Yaml_YamlSerializerOptions_DuplicateKeyBehavior" data-uid="Bodu.Text.Yaml.YamlSerializerOptions.DuplicateKeyBehavior">
+  DuplicateKeyBehavior
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Yaml/src/Text.Yaml/YamlSerializerOptions.cs/#L212"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the policy applied when a mapping declares the same key more than once during deserialization.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public YamlDuplicateKeyBehavior DuplicateKeyBehavior { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Yaml.YamlDuplicateKeyBehavior.html">YamlDuplicateKeyBehavior</a></dt>
+    <dd><p>The duplicate-key policy; the default is <a class="xref" href="Bodu.Text.Yaml.YamlDuplicateKeyBehavior.html#Bodu_Text_Yaml_YamlDuplicateKeyBehavior_Throw">Throw</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The options instance is read-only.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Yaml_YamlSerializerOptions_IncludeFields_" data-uid="Bodu.Text.Yaml.YamlSerializerOptions.IncludeFields*"></a>
+
+  <h3 id="Bodu_Text_Yaml_YamlSerializerOptions_IncludeFields" data-uid="Bodu.Text.Yaml.YamlSerializerOptions.IncludeFields">
+  IncludeFields
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Yaml/src/Text.Yaml/YamlSerializerOptions.cs/#L125"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets a value indicating whether public fields are serialized in addition to properties.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IncludeFields { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> to include public fields; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The options instance is read-only.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Yaml_YamlSerializerOptions_IsReadOnly_" data-uid="Bodu.Text.Yaml.YamlSerializerOptions.IsReadOnly*"></a>
+
+  <h3 id="Bodu_Text_Yaml_YamlSerializerOptions_IsReadOnly" data-uid="Bodu.Text.Yaml.YamlSerializerOptions.IsReadOnly">
+  IsReadOnly
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Serialization/shared/SerializerOptions.Resolution.cs/#L44"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether the options have become read-only.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsReadOnly { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> once the options have been used or frozen; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Text_Yaml_YamlSerializerOptions_MaxDepth_" data-uid="Bodu.Text.Yaml.YamlSerializerOptions.MaxDepth*"></a>
+
+  <h3 id="Bodu_Text_Yaml_YamlSerializerOptions_MaxDepth" data-uid="Bodu.Text.Yaml.YamlSerializerOptions.MaxDepth">
+  MaxDepth
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Yaml/src/Text.Yaml/YamlSerializerOptions.cs/#L290"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the maximum depth allowed when serializing an object graph and when parsing during deserialization.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int MaxDepth { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The maximum depth. A value of zero or less selects the default of 64.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The options instance is read-only.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Yaml_YamlSerializerOptions_MergeKeyBehavior_" data-uid="Bodu.Text.Yaml.YamlSerializerOptions.MergeKeyBehavior*"></a>
+
+  <h3 id="Bodu_Text_Yaml_YamlSerializerOptions_MergeKeyBehavior" data-uid="Bodu.Text.Yaml.YamlSerializerOptions.MergeKeyBehavior">
+  MergeKeyBehavior
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Yaml/src/Text.Yaml/YamlSerializerOptions.cs/#L227"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the policy applied to the YAML merge key (<code>&lt;&lt;</code>) during deserialization.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public YamlMergeKeyBehavior MergeKeyBehavior { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Yaml.YamlMergeKeyBehavior.html">YamlMergeKeyBehavior</a></dt>
+    <dd><p>The merge-key policy; the default is <a class="xref" href="Bodu.Text.Yaml.YamlMergeKeyBehavior.html#Bodu_Text_Yaml_YamlMergeKeyBehavior_Expand">Expand</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The options instance is read-only.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Yaml_YamlSerializerOptions_NumberHandling_" data-uid="Bodu.Text.Yaml.YamlSerializerOptions.NumberHandling*"></a>
+
+  <h3 id="Bodu_Text_Yaml_YamlSerializerOptions_NumberHandling" data-uid="Bodu.Text.Yaml.YamlSerializerOptions.NumberHandling">
+  NumberHandling
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Yaml/src/Text.Yaml/YamlSerializerOptions.cs/#L242"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the policy applied when coercing numeric scalars to integral targets.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public YamlNumberHandling NumberHandling { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Yaml.YamlNumberHandling.html">YamlNumberHandling</a></dt>
+    <dd><p>The number-handling policy; the default is <a class="xref" href="Bodu.Text.Yaml.YamlNumberHandling.html#Bodu_Text_Yaml_YamlNumberHandling_Strict">Strict</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The options instance is read-only.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Yaml_YamlSerializerOptions_PreferredObjectCreationHandling_" data-uid="Bodu.Text.Yaml.YamlSerializerOptions.PreferredObjectCreationHandling*"></a>
+
+  <h3 id="Bodu_Text_Yaml_YamlSerializerOptions_PreferredObjectCreationHandling" data-uid="Bodu.Text.Yaml.YamlSerializerOptions.PreferredObjectCreationHandling">
+  PreferredObjectCreationHandling
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Yaml/src/Text.Yaml/YamlSerializerOptions.cs/#L275"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the serializer-wide default for whether a member's value is replaced with a freshly created
 instance or populated into the value the member already holds during deserialization.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Yaml_YamlSerializerOptions_PropertyNameCaseInsensitive" data-uid="Bodu.Text.Yaml.YamlSerializerOptions.PropertyNameCaseInsensitive">
-          <a class="xref" href="Bodu.Text.Yaml.YamlSerializerOptions.PropertyNameCaseInsensitive.html#Bodu_Text_Yaml_YamlSerializerOptions_PropertyNameCaseInsensitive">PropertyNameCaseInsensitive</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets or sets a value indicating whether YAML keys are matched to members case-insensitively.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Yaml_YamlSerializerOptions_PropertyNamingPolicy" data-uid="Bodu.Text.Yaml.YamlSerializerOptions.PropertyNamingPolicy">
-          <a class="xref" href="Bodu.Text.Yaml.YamlSerializerOptions.PropertyNamingPolicy.html#Bodu_Text_Yaml_YamlSerializerOptions_PropertyNamingPolicy">PropertyNamingPolicy</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets or sets the policy used to convert member names to YAML keys.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Yaml_YamlSerializerOptions_SpecVersion" data-uid="Bodu.Text.Yaml.YamlSerializerOptions.SpecVersion">
-          <a class="xref" href="Bodu.Text.Yaml.YamlSerializerOptions.SpecVersion.html#Bodu_Text_Yaml_YamlSerializerOptions_SpecVersion">SpecVersion</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets or sets the YAML specification version applied when parsing during deserialization.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Yaml_YamlSerializerOptions_UnmappedMemberHandling" data-uid="Bodu.Text.Yaml.YamlSerializerOptions.UnmappedMemberHandling">
-          <a class="xref" href="Bodu.Text.Yaml.YamlSerializerOptions.UnmappedMemberHandling.html#Bodu_Text_Yaml_YamlSerializerOptions_UnmappedMemberHandling">UnmappedMemberHandling</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets or sets the policy applied to a YAML key that does not map to any member of the target type.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Yaml_YamlSerializerOptions_WriteEnumsAsStrings" data-uid="Bodu.Text.Yaml.YamlSerializerOptions.WriteEnumsAsStrings">
-          <a class="xref" href="Bodu.Text.Yaml.YamlSerializerOptions.WriteEnumsAsStrings.html#Bodu_Text_Yaml_YamlSerializerOptions_WriteEnumsAsStrings">WriteEnumsAsStrings</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets or sets a value indicating whether enumerations are written as their string names.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Text_Yaml_YamlSerializerOptions_GetConverter_System_Type_" data-uid="Bodu.Text.Yaml.YamlSerializerOptions.GetConverter(System.Type)">
-          <a class="xref" href="Bodu.Text.Yaml.YamlSerializerOptions.GetConverter.html#Bodu_Text_Yaml_YamlSerializerOptions_GetConverter_System_Type_">GetConverter(Type)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Resolves the converter that handles the specified type, applying the type-level converter attribute, the
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ObjectCreationHandling PreferredObjectCreationHandling { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Serialization.ObjectCreationHandling.html">ObjectCreationHandling</a></dt>
+    <dd><p>The preferred object-creation handling; the default is <a class="xref" href="Bodu.Text.Serialization.ObjectCreationHandling.html#Bodu_Text_Serialization_ObjectCreationHandling_Replace">Replace</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The options instance is read-only.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Yaml_YamlSerializerOptions_PropertyNameCaseInsensitive_" data-uid="Bodu.Text.Yaml.YamlSerializerOptions.PropertyNameCaseInsensitive*"></a>
+
+  <h3 id="Bodu_Text_Yaml_YamlSerializerOptions_PropertyNameCaseInsensitive" data-uid="Bodu.Text.Yaml.YamlSerializerOptions.PropertyNameCaseInsensitive">
+  PropertyNameCaseInsensitive
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Yaml/src/Text.Yaml/YamlSerializerOptions.cs/#L182"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets a value indicating whether YAML keys are matched to members case-insensitively.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool PropertyNameCaseInsensitive { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> to match keys case-insensitively; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The options instance is read-only.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Yaml_YamlSerializerOptions_PropertyNamingPolicy_" data-uid="Bodu.Text.Yaml.YamlSerializerOptions.PropertyNamingPolicy*"></a>
+
+  <h3 id="Bodu_Text_Yaml_YamlSerializerOptions_PropertyNamingPolicy" data-uid="Bodu.Text.Yaml.YamlSerializerOptions.PropertyNamingPolicy">
+  PropertyNamingPolicy
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Yaml/src/Text.Yaml/YamlSerializerOptions.cs/#L110"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the policy used to convert member names to YAML keys.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NamingPolicy? PropertyNamingPolicy { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Serialization.NamingPolicy.html">NamingPolicy</a></dt>
+    <dd><p>The naming policy, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to use member names verbatim.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The options instance is read-only.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Yaml_YamlSerializerOptions_SpecVersion_" data-uid="Bodu.Text.Yaml.YamlSerializerOptions.SpecVersion*"></a>
+
+  <h3 id="Bodu_Text_Yaml_YamlSerializerOptions_SpecVersion" data-uid="Bodu.Text.Yaml.YamlSerializerOptions.SpecVersion">
+  SpecVersion
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Yaml/src/Text.Yaml/YamlSerializerOptions.cs/#L197"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the YAML specification version applied when parsing during deserialization.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public YamlSpecVersion SpecVersion { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Yaml.YamlSpecVersion.html">YamlSpecVersion</a></dt>
+    <dd><p>The specification version; the default is <a class="xref" href="Bodu.Text.Yaml.YamlSpecVersion.html#Bodu_Text_Yaml_YamlSpecVersion_V1_2">V1_2</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The options instance is read-only.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Yaml_YamlSerializerOptions_UnmappedMemberHandling_" data-uid="Bodu.Text.Yaml.YamlSerializerOptions.UnmappedMemberHandling*"></a>
+
+  <h3 id="Bodu_Text_Yaml_YamlSerializerOptions_UnmappedMemberHandling" data-uid="Bodu.Text.Yaml.YamlSerializerOptions.UnmappedMemberHandling">
+  UnmappedMemberHandling
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Yaml/src/Text.Yaml/YamlSerializerOptions.cs/#L257"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the policy applied to a YAML key that does not map to any member of the target type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public UnmappedMemberHandling UnmappedMemberHandling { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Serialization.UnmappedMemberHandling.html">UnmappedMemberHandling</a></dt>
+    <dd><p>The unmapped-member policy; the default is <a class="xref" href="Bodu.Text.Serialization.UnmappedMemberHandling.html#Bodu_Text_Serialization_UnmappedMemberHandling_Skip">Skip</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The options instance is read-only.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Yaml_YamlSerializerOptions_WriteEnumsAsStrings_" data-uid="Bodu.Text.Yaml.YamlSerializerOptions.WriteEnumsAsStrings*"></a>
+
+  <h3 id="Bodu_Text_Yaml_YamlSerializerOptions_WriteEnumsAsStrings" data-uid="Bodu.Text.Yaml.YamlSerializerOptions.WriteEnumsAsStrings">
+  WriteEnumsAsStrings
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Yaml/src/Text.Yaml/YamlSerializerOptions.cs/#L167"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets a value indicating whether enumerations are written as their string names.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool WriteEnumsAsStrings { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> to write enum names; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> to write their numeric values. The default
+is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The options instance is read-only.</p>
+</dd>
+  </dl>
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Text_Yaml_YamlSerializerOptions_GetConverter_" data-uid="Bodu.Text.Yaml.YamlSerializerOptions.GetConverter*"></a>
+
+  <h3 id="Bodu_Text_Yaml_YamlSerializerOptions_GetConverter_System_Type_" data-uid="Bodu.Text.Yaml.YamlSerializerOptions.GetConverter(System.Type)">
+  GetConverter(Type)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Serialization/shared/SerializerOptions.Resolution.cs/#L60"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Resolves the converter that handles the specified type, applying the type-level converter attribute, the
 registered converters, and finally the built-in converters, in that order.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Yaml_YamlSerializerOptions_MakeReadOnly" data-uid="Bodu.Text.Yaml.YamlSerializerOptions.MakeReadOnly">
-          <a class="xref" href="Bodu.Text.Yaml.YamlSerializerOptions.MakeReadOnly.html#Bodu_Text_Yaml_YamlSerializerOptions_MakeReadOnly">MakeReadOnly()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Freezes the options so their settings can no longer change, capturing the converter list. Called automatically
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[RequiresUnreferencedCode(&quot;Reflection-based YAML serialization may require types that trimming cannot statically determine.&quot;)]
+public YamlConverter GetConverter(Type typeToConvert)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>typeToConvert</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.type">Type</a></dt>
+    <dd><p>The type to resolve a converter for.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Yaml.Serialization.YamlConverter.html">YamlConverter</a></dt>
+    <dd><p>The concrete converter for the type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">typeToConvert</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>Thrown when no converter handles the type.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Yaml_YamlSerializerOptions_MakeReadOnly_" data-uid="Bodu.Text.Yaml.YamlSerializerOptions.MakeReadOnly*"></a>
+
+  <h3 id="Bodu_Text_Yaml_YamlSerializerOptions_MakeReadOnly" data-uid="Bodu.Text.Yaml.YamlSerializerOptions.MakeReadOnly">
+  MakeReadOnly()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Serialization/shared/SerializerOptions.Resolution.cs/#L76"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Freezes the options so their settings can no longer change, capturing the converter list. Called automatically
 before the first serialization or deserialization.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void MakeReadOnly()</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 302e395 · Built: 2026-09-29 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 1e0dd9a · Built: 2026-09-29 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

@@ -1,105 +1,135 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
       <title>Class BlockCipherTransform | BODU </title>
-      <meta name="viewport" content="width=device-width">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class BlockCipherTransform | BODU ">
-    
-    <meta name="description" content="Provides a base implementation of  for block cipher algorithms that combine an  engine with an  and an .">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      
+      <meta name="description" content="Provides a base implementation of  for block cipher algorithms that combine an  engine with an  and an .">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/new/master/apiSpec/new?filename=Bodu_Security_Cryptography_BlockCipherTransform.md&amp;value=---%0Auid%3A%20Bodu.Security.Cryptography.BlockCipherTransform%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Security.Cryptography.BlockCipherTransform">
+
+        <article data-uid="Bodu.Security.Cryptography.BlockCipherTransform">
 
 
 
-  <h1 id="Bodu_Security_Cryptography_BlockCipherTransform" data-uid="Bodu.Security.Cryptography.BlockCipherTransform" class="text-break">Class BlockCipherTransform</h1>
-  <div class="markdown level0 summary"><p>Provides a base implementation of <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.icryptotransform">ICryptoTransform</a> for block cipher algorithms that combine an
+  <h1 id="Bodu_Security_Cryptography_BlockCipherTransform" data-uid="Bodu.Security.Cryptography.BlockCipherTransform" class="text-break">
+Class BlockCipherTransform  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/BlockCipherTransform.cs/#L84"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Security</span>.<a class="xref" href="Bodu.Security.Cryptography.html">Cryptography</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Security.Cryptography.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides a base implementation of <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.icryptotransform">ICryptoTransform</a> for block cipher algorithms that combine an
 <a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a> engine with an <a class="xref" href="Bodu.Security.Cryptography.IBlockCipherModeTransform.html">IBlockCipherModeTransform</a> and an
 <a class="xref" href="Bodu.Security.Cryptography.IPaddingStrategy.html">IPaddingStrategy</a>.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><span class="xref">BlockCipherTransform</span></div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class BlockCipherTransform : ICryptoTransform, IDisposable</code></pre>
   </div>
-  <div class="implements">
-    <h5>Implements</h5>
-    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.icryptotransform">ICryptoTransform</a></div>
-    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
-  </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">BlockCipherTransform</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.icryptotransform">ICryptoTransform</a></div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
@@ -121,32 +151,113 @@
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
+  </dd></dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Security</span>.<a class="xref" href="Bodu.Security.Cryptography.html">Cryptography</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Security.Cryptography.dll</h6>
-  <h5 id="Bodu_Security_Cryptography_BlockCipherTransform_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class BlockCipherTransform : ICryptoTransform, IDisposable</code></pre>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h5 id="Bodu_Security_Cryptography_BlockCipherTransform_remarks"><strong>Remarks</strong></h5>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_Byte___">ICryptoTransformExtensions.Transform(ICryptoTransform, byte[])</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_Byte___System_Int32_System_Int32_">ICryptoTransformExtensions.Transform(ICryptoTransform, byte[], int, int)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_IO_Stream_System_IO_Stream_System_Int32_">ICryptoTransformExtensions.Transform(ICryptoTransform, Stream, Stream, int)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_ReadOnlyMemory_System_Byte__">ICryptoTransformExtensions.Transform(ICryptoTransform, ReadOnlyMemory&lt;byte&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_ReadOnlyMemory_System_Byte__System_Memory_System_Byte__">ICryptoTransformExtensions.Transform(ICryptoTransform, ReadOnlyMemory&lt;byte&gt;, Memory&lt;byte&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_ReadOnlySpan_System_Byte__">ICryptoTransformExtensions.Transform(ICryptoTransform, ReadOnlySpan&lt;byte&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">ICryptoTransformExtensions.Transform(ICryptoTransform, ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformAsync_System_Security_Cryptography_ICryptoTransform_System_IO_Stream_System_IO_Stream_System_Int32_System_Threading_CancellationToken_">ICryptoTransformExtensions.TransformAsync(ICryptoTransform, Stream, Stream, int, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformAsync_System_Security_Cryptography_ICryptoTransform_System_ReadOnlyMemory_System_Byte__System_Memory_System_Byte__System_Threading_CancellationToken_">ICryptoTransformExtensions.TransformAsync(ICryptoTransform, ReadOnlyMemory&lt;byte&gt;, Memory&lt;byte&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformBlock_System_Security_Cryptography_ICryptoTransform_System_Byte___">ICryptoTransformExtensions.TransformBlock(ICryptoTransform, byte[])</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_System_Security_Cryptography_ICryptoTransform_">ICryptoTransformExtensions.TransformFinalBlock(ICryptoTransform)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_System_Security_Cryptography_ICryptoTransform_System_Byte___">ICryptoTransformExtensions.TransformFinalBlock(ICryptoTransform, byte[])</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_System_Security_Cryptography_ICryptoTransform_System_Byte___System_Int32_">ICryptoTransformExtensions.TransformFinalBlock(ICryptoTransform, byte[], int)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_System_Security_Cryptography_ICryptoTransform_System_ReadOnlyMemory_System_Byte__">ICryptoTransformExtensions.TransformFinalBlock(ICryptoTransform, ReadOnlyMemory&lt;byte&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_System_Security_Cryptography_ICryptoTransform_System_ReadOnlySpan_System_Byte__">ICryptoTransformExtensions.TransformFinalBlock(ICryptoTransform, ReadOnlySpan&lt;byte&gt;)</a>
+  </div>
+  </dd></dl>
+
+
+  <h2 id="Bodu_Security_Cryptography_BlockCipherTransform_examples">Examples</h2>
+  <pre><code class="lang-csharp">// Most consumers never touch BlockCipherTransform directly — it is surfaced as the
+// ICryptoTransform returned by every Bodu SymmetricAlgorithm. Typical usage:
+using SymmetricAlgorithm alg = new Twofish();
+alg.GenerateKey();
+alg.GenerateIV();
+alg.Mode    = CipherMode.CBC;
+alg.Padding = PaddingMode.PKCS7;
+
+// CreateEncryptor returns a BlockCipherTransform under the hood — a one-shot
+// ICryptoTransform that pairs the block cipher with the configured mode and padding.
+using ICryptoTransform encryptor = alg.CreateEncryptor();
+using var output = new MemoryStream();
+using (var cs = new CryptoStream(output, encryptor, CryptoStreamMode.Write))
+    cs.Write(plaintext, 0, plaintext.Length);
+byte[] ciphertext = output.ToArray();
+
+// Reuse requires a fresh transform — BlockCipherTransform.CanReuseTransform is false.</code></pre>
+
+
+  <h2 id="Bodu_Security_Cryptography_BlockCipherTransform_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
-Block-aligned streaming data is processed via <a class="xref" href="Bodu.Security.Cryptography.BlockCipherTransform.TransformBlock.html#Bodu_Security_Cryptography_BlockCipherTransform_TransformBlock_System_Byte___System_Int32_System_Int32_System_Byte___System_Int32_">TransformBlock(byte[], int, int, byte[], int)</a>, and the final potentially partial block
-— including padding application or removal — is handled by <a class="xref" href="Bodu.Security.Cryptography.BlockCipherTransform.TransformFinalBlock.html#Bodu_Security_Cryptography_BlockCipherTransform_TransformFinalBlock_System_Byte___System_Int32_System_Int32_">TransformFinalBlock(byte[], int, int)</a>.
+Block-aligned streaming data is processed via <a class="xref" href="Bodu.Security.Cryptography.BlockCipherTransform.html#Bodu_Security_Cryptography_BlockCipherTransform_TransformBlock_System_Byte___System_Int32_System_Int32_System_Byte___System_Int32_">TransformBlock(byte[], int, int, byte[], int)</a>, and the final potentially partial block
+— including padding application or removal — is handled by <a class="xref" href="Bodu.Security.Cryptography.BlockCipherTransform.html#Bodu_Security_Cryptography_BlockCipherTransform_TransformFinalBlock_System_Byte___System_Int32_System_Int32_">TransformFinalBlock(byte[], int, int)</a>.
 </p>
 <p>
 When decrypting with a strippable padding mode, such as <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.paddingmode#system-security-cryptography-paddingmode-pkcs7">PKCS7</a>, the last complete block of
-ciphertext is deferred until <a class="xref" href="Bodu.Security.Cryptography.BlockCipherTransform.TransformFinalBlock.html#Bodu_Security_Cryptography_BlockCipherTransform_TransformFinalBlock_System_Byte___System_Int32_System_Int32_">TransformFinalBlock(byte[], int, int)</a> is called. This allows padding to be validated and
+ciphertext is deferred until <a class="xref" href="Bodu.Security.Cryptography.BlockCipherTransform.html#Bodu_Security_Cryptography_BlockCipherTransform_TransformFinalBlock_System_Byte___System_Int32_System_Int32_">TransformFinalBlock(byte[], int, int)</a> is called. This allows padding to be validated and
 removed only at the end of the stream.
 </p>
 <p>
 A <a class="xref" href="Bodu.Security.Cryptography.BlockCipherTransform.html">BlockCipherTransform</a> instance represents a single cryptographic transform operation. Once
-<a class="xref" href="Bodu.Security.Cryptography.BlockCipherTransform.TransformFinalBlock.html#Bodu_Security_Cryptography_BlockCipherTransform_TransformFinalBlock_System_Byte___System_Int32_System_Int32_">TransformFinalBlock(byte[], int, int)</a> has completed, the instance is finalized and cannot be used for another
-operation. Consequently, <a class="xref" href="Bodu.Security.Cryptography.BlockCipherTransform.CanReuseTransform.html#Bodu_Security_Cryptography_BlockCipherTransform_CanReuseTransform">CanReuseTransform</a> returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>. Callers that need to
+<a class="xref" href="Bodu.Security.Cryptography.BlockCipherTransform.html#Bodu_Security_Cryptography_BlockCipherTransform_TransformFinalBlock_System_Byte___System_Int32_System_Int32_">TransformFinalBlock(byte[], int, int)</a> has completed, the instance is finalized and cannot be used for another
+operation. Consequently, <a class="xref" href="Bodu.Security.Cryptography.BlockCipherTransform.html#Bodu_Security_Cryptography_BlockCipherTransform_CanReuseTransform">CanReuseTransform</a> returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>. Callers that need to
 encrypt or decrypt additional data must create a new transform instance.
 </p>
 <p>
-Finalization is distinct from disposal. After <a class="xref" href="Bodu.Security.Cryptography.BlockCipherTransform.TransformFinalBlock.html#Bodu_Security_Cryptography_BlockCipherTransform_TransformFinalBlock_System_Byte___System_Int32_System_Int32_">TransformFinalBlock(byte[], int, int)</a> completes, subsequent transform
-calls throw <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a>. After <a class="xref" href="Bodu.Security.Cryptography.BlockCipherTransform.Dispose.html#Bodu_Security_Cryptography_BlockCipherTransform_Dispose">Dispose()</a> is called, subsequent transform
+Finalization is distinct from disposal. After <a class="xref" href="Bodu.Security.Cryptography.BlockCipherTransform.html#Bodu_Security_Cryptography_BlockCipherTransform_TransformFinalBlock_System_Byte___System_Int32_System_Int32_">TransformFinalBlock(byte[], int, int)</a> completes, subsequent transform
+calls throw <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a>. After <a class="xref" href="Bodu.Security.Cryptography.BlockCipherTransform.html#Bodu_Security_Cryptography_BlockCipherTransform_Dispose">Dispose()</a> is called, subsequent transform
 calls throw <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a>.
 </p>
 <p>
@@ -171,195 +282,455 @@ Most callers never touch this type directly — they use
 transform infrastructure handle the wiring.
 </p>
 </div>
-  <h5 id="Bodu_Security_Cryptography_BlockCipherTransform_examples"><strong>Examples</strong></h5>
-  <pre><code class="lang-csharp">// Most consumers never touch BlockCipherTransform directly — it is surfaced as the
-// ICryptoTransform returned by every Bodu SymmetricAlgorithm. Typical usage:
-using SymmetricAlgorithm alg = new Twofish();
-alg.GenerateKey();
-alg.GenerateIV();
-alg.Mode    = CipherMode.CBC;
-alg.Padding = PaddingMode.PKCS7;
 
-// CreateEncryptor returns a BlockCipherTransform under the hood — a one-shot
-// ICryptoTransform that pairs the block cipher with the configured mode and padding.
-using ICryptoTransform encryptor = alg.CreateEncryptor();
-using var output = new MemoryStream();
-using (var cs = new CryptoStream(output, encryptor, CryptoStreamMode.Write))
-    cs.Write(plaintext, 0, plaintext.Length);
-byte[] ciphertext = output.ToArray();
 
-// Reuse requires a fresh transform — BlockCipherTransform.CanReuseTransform is false.</code></pre>
+  <h2 class="section" id="constructors">Constructors
+</h2>
 
-  <h3 id="constructors">Constructors
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Security_Cryptography_BlockCipherTransform__ctor_Bodu_Security_Cryptography_IBlockCipher_Bodu_Security_Cryptography_CipherModeKind_Bodu_Security_Cryptography_PaddingModeKind_System_Byte___System_Boolean_" data-uid="Bodu.Security.Cryptography.BlockCipherTransform.#ctor(Bodu.Security.Cryptography.IBlockCipher,Bodu.Security.Cryptography.CipherModeKind,Bodu.Security.Cryptography.PaddingModeKind,System.Byte[],System.Boolean)">
-          <a class="xref" href="Bodu.Security.Cryptography.BlockCipherTransform.-ctor.html#Bodu_Security_Cryptography_BlockCipherTransform__ctor_Bodu_Security_Cryptography_IBlockCipher_Bodu_Security_Cryptography_CipherModeKind_Bodu_Security_Cryptography_PaddingModeKind_System_Byte___System_Boolean_">BlockCipherTransform(IBlockCipher, CipherModeKind, PaddingModeKind, byte[]?, bool)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Security.Cryptography.BlockCipherTransform.html">BlockCipherTransform</a> class using the specified cipher engine,
+
+  <a id="Bodu_Security_Cryptography_BlockCipherTransform__ctor_" data-uid="Bodu.Security.Cryptography.BlockCipherTransform.#ctor*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_BlockCipherTransform__ctor_Bodu_Security_Cryptography_IBlockCipher_Bodu_Security_Cryptography_CipherModeKind_Bodu_Security_Cryptography_PaddingModeKind_System_Byte___System_Boolean_" data-uid="Bodu.Security.Cryptography.BlockCipherTransform.#ctor(Bodu.Security.Cryptography.IBlockCipher,Bodu.Security.Cryptography.CipherModeKind,Bodu.Security.Cryptography.PaddingModeKind,System.Byte[],System.Boolean)">
+  BlockCipherTransform(IBlockCipher, CipherModeKind, PaddingModeKind, byte[]?, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/BlockCipherTransform.cs/#L153"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Security.Cryptography.BlockCipherTransform.html">BlockCipherTransform</a> class using the specified cipher engine,
 mode, extended padding scheme, initialization vector, and transform direction.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_BlockCipherTransform__ctor_Bodu_Security_Cryptography_IBlockCipher_Bodu_Security_Cryptography_CipherModeKind_System_Security_Cryptography_PaddingMode_System_Byte___System_Boolean_" data-uid="Bodu.Security.Cryptography.BlockCipherTransform.#ctor(Bodu.Security.Cryptography.IBlockCipher,Bodu.Security.Cryptography.CipherModeKind,System.Security.Cryptography.PaddingMode,System.Byte[],System.Boolean)">
-          <a class="xref" href="Bodu.Security.Cryptography.BlockCipherTransform.-ctor.html#Bodu_Security_Cryptography_BlockCipherTransform__ctor_Bodu_Security_Cryptography_IBlockCipher_Bodu_Security_Cryptography_CipherModeKind_System_Security_Cryptography_PaddingMode_System_Byte___System_Boolean_">BlockCipherTransform(IBlockCipher, CipherModeKind, PaddingMode, byte[]?, bool)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Security.Cryptography.BlockCipherTransform.html">BlockCipherTransform</a> class using the specified cipher engine,
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected BlockCipherTransform(IBlockCipher cipher, CipherModeKind cipherMode, PaddingModeKind paddingMode, byte[]? iv, bool encrypt)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cipher</code> <a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a></dt>
+    <dd><p>The configured <a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a> engine to use. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>cipherMode</code> <a class="xref" href="Bodu.Security.Cryptography.CipherModeKind.html">CipherModeKind</a></dt>
+    <dd><p>The block cipher mode of operation.</p>
+</dd>
+    <dt><code>paddingMode</code> <a class="xref" href="Bodu.Security.Cryptography.PaddingModeKind.html">PaddingModeKind</a></dt>
+    <dd><p>The extended padding scheme to apply to the final block. Accepts values beyond the framework
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.paddingmode">PaddingMode</a> enum, including <a class="xref" href="Bodu.Security.Cryptography.PaddingModeKind.html#Bodu_Security_Cryptography_PaddingModeKind_ISO7816_4">ISO7816_4</a>.</p>
+</dd>
+    <dt><code>iv</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The initialization vector for the cipher mode. Must match the cipher block size.</p>
+</dd>
+    <dt><code>encrypt</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> to configure for encryption; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> for decryption.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">cipher</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Security_Cryptography_BlockCipherTransform__ctor_" data-uid="Bodu.Security.Cryptography.BlockCipherTransform.#ctor*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_BlockCipherTransform__ctor_Bodu_Security_Cryptography_IBlockCipher_Bodu_Security_Cryptography_CipherModeKind_System_Security_Cryptography_PaddingMode_System_Byte___System_Boolean_" data-uid="Bodu.Security.Cryptography.BlockCipherTransform.#ctor(Bodu.Security.Cryptography.IBlockCipher,Bodu.Security.Cryptography.CipherModeKind,System.Security.Cryptography.PaddingMode,System.Byte[],System.Boolean)">
+  BlockCipherTransform(IBlockCipher, CipherModeKind, PaddingMode, byte[]?, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/BlockCipherTransform.cs/#L128"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Security.Cryptography.BlockCipherTransform.html">BlockCipherTransform</a> class using the specified cipher engine,
 mode, padding scheme, initialization vector, and transform direction.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="properties">Properties
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Security_Cryptography_BlockCipherTransform_CanReuseTransform" data-uid="Bodu.Security.Cryptography.BlockCipherTransform.CanReuseTransform">
-          <a class="xref" href="Bodu.Security.Cryptography.BlockCipherTransform.CanReuseTransform.html#Bodu_Security_Cryptography_BlockCipherTransform_CanReuseTransform">CanReuseTransform</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets a value indicating whether the current transform can be reused.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_BlockCipherTransform_CanTransformMultipleBlocks" data-uid="Bodu.Security.Cryptography.BlockCipherTransform.CanTransformMultipleBlocks">
-          <a class="xref" href="Bodu.Security.Cryptography.BlockCipherTransform.CanTransformMultipleBlocks.html#Bodu_Security_Cryptography_BlockCipherTransform_CanTransformMultipleBlocks">CanTransformMultipleBlocks</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets a value indicating whether multiple blocks can be transformed.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_BlockCipherTransform_InputBlockSize" data-uid="Bodu.Security.Cryptography.BlockCipherTransform.InputBlockSize">
-          <a class="xref" href="Bodu.Security.Cryptography.BlockCipherTransform.InputBlockSize.html#Bodu_Security_Cryptography_BlockCipherTransform_InputBlockSize">InputBlockSize</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the input block size.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_BlockCipherTransform_OutputBlockSize" data-uid="Bodu.Security.Cryptography.BlockCipherTransform.OutputBlockSize">
-          <a class="xref" href="Bodu.Security.Cryptography.BlockCipherTransform.OutputBlockSize.html#Bodu_Security_Cryptography_BlockCipherTransform_OutputBlockSize">OutputBlockSize</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the output block size.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Security_Cryptography_BlockCipherTransform_Dispose" data-uid="Bodu.Security.Cryptography.BlockCipherTransform.Dispose">
-          <a class="xref" href="Bodu.Security.Cryptography.BlockCipherTransform.Dispose.html#Bodu_Security_Cryptography_BlockCipherTransform_Dispose">Dispose()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_BlockCipherTransform_ThrowIfFinalized" data-uid="Bodu.Security.Cryptography.BlockCipherTransform.ThrowIfFinalized">
-          <a class="xref" href="Bodu.Security.Cryptography.BlockCipherTransform.ThrowIfFinalized.html#Bodu_Security_Cryptography_BlockCipherTransform_ThrowIfFinalized">ThrowIfFinalized()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Throws if this transform has already completed its final block operation.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_BlockCipherTransform_TransformBlock_System_Byte___System_Int32_System_Int32_System_Byte___System_Int32_" data-uid="Bodu.Security.Cryptography.BlockCipherTransform.TransformBlock(System.Byte[],System.Int32,System.Int32,System.Byte[],System.Int32)">
-          <a class="xref" href="Bodu.Security.Cryptography.BlockCipherTransform.TransformBlock.html#Bodu_Security_Cryptography_BlockCipherTransform_TransformBlock_System_Byte___System_Int32_System_Int32_System_Byte___System_Int32_">TransformBlock(byte[], int, int, byte[], int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Transforms a block-aligned region of the input byte array and writes the result to the output buffer.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_BlockCipherTransform_TransformFinalBlock_System_Byte___System_Int32_System_Int32_" data-uid="Bodu.Security.Cryptography.BlockCipherTransform.TransformFinalBlock(System.Byte[],System.Int32,System.Int32)">
-          <a class="xref" href="Bodu.Security.Cryptography.BlockCipherTransform.TransformFinalBlock.html#Bodu_Security_Cryptography_BlockCipherTransform_TransformFinalBlock_System_Byte___System_Int32_System_Int32_">TransformFinalBlock(byte[], int, int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Transforms the final block of data, applying or removing padding as appropriate, and returns the result.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected BlockCipherTransform(IBlockCipher cipher, CipherModeKind cipherMode, PaddingMode paddingMode, byte[]? iv, bool encrypt)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cipher</code> <a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a></dt>
+    <dd><p>The configured <a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a> engine to use. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>cipherMode</code> <a class="xref" href="Bodu.Security.Cryptography.CipherModeKind.html">CipherModeKind</a></dt>
+    <dd><p>The block cipher mode of operation.</p>
+</dd>
+    <dt><code>paddingMode</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.paddingmode">PaddingMode</a></dt>
+    <dd><p>The padding scheme to apply to the final block.</p>
+</dd>
+    <dt><code>iv</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The initialization vector for the cipher mode. Must match the cipher block size.</p>
+</dd>
+    <dt><code>encrypt</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> to configure for encryption; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> for decryption.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">cipher</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Bodu_Security_Cryptography_BlockCipherTransform_CanReuseTransform_" data-uid="Bodu.Security.Cryptography.BlockCipherTransform.CanReuseTransform*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_BlockCipherTransform_CanReuseTransform" data-uid="Bodu.Security.Cryptography.BlockCipherTransform.CanReuseTransform">
+  CanReuseTransform
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/BlockCipherTransform.cs/#L162"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether the current transform can be reused.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool CanReuseTransform { get; }</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the current transform can be reused; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Security_Cryptography_BlockCipherTransform_CanTransformMultipleBlocks_" data-uid="Bodu.Security.Cryptography.BlockCipherTransform.CanTransformMultipleBlocks*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_BlockCipherTransform_CanTransformMultipleBlocks" data-uid="Bodu.Security.Cryptography.BlockCipherTransform.CanTransformMultipleBlocks">
+  CanTransformMultipleBlocks
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/BlockCipherTransform.cs/#L165"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether multiple blocks can be transformed.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool CanTransformMultipleBlocks { get; }</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if multiple blocks can be transformed; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Security_Cryptography_BlockCipherTransform_InputBlockSize_" data-uid="Bodu.Security.Cryptography.BlockCipherTransform.InputBlockSize*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_BlockCipherTransform_InputBlockSize" data-uid="Bodu.Security.Cryptography.BlockCipherTransform.InputBlockSize">
+  InputBlockSize
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/BlockCipherTransform.cs/#L172"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the input block size.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int InputBlockSize { get; }</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The size of the input data blocks in bytes.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_BlockCipherTransform_InputBlockSize_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The BCL <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.icryptotransform">ICryptoTransform</a> contract requires this value in <em>bytes</em>; the underlying
+<a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html#Bodu_Security_Cryptography_IBlockCipher_BlockSize">BlockSize</a> is in <em>bits</em>, so we divide by 8.</p>
+</div>
+
+
+
+
+  <a id="Bodu_Security_Cryptography_BlockCipherTransform_OutputBlockSize_" data-uid="Bodu.Security.Cryptography.BlockCipherTransform.OutputBlockSize*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_BlockCipherTransform_OutputBlockSize" data-uid="Bodu.Security.Cryptography.BlockCipherTransform.OutputBlockSize">
+  OutputBlockSize
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/BlockCipherTransform.cs/#L179"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the output block size.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int OutputBlockSize { get; }</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.Transform.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_Byte___">ICryptoTransformExtensions.Transform(ICryptoTransform, byte[])</a>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The size of the output data blocks in bytes.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_BlockCipherTransform_OutputBlockSize_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The BCL <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.icryptotransform">ICryptoTransform</a> contract requires this value in <em>bytes</em>; the underlying
+<a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html#Bodu_Security_Cryptography_IBlockCipher_BlockSize">BlockSize</a> is in <em>bits</em>, so we divide by 8.</p>
+</div>
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Security_Cryptography_BlockCipherTransform_Dispose_" data-uid="Bodu.Security.Cryptography.BlockCipherTransform.Dispose*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_BlockCipherTransform_Dispose" data-uid="Bodu.Security.Cryptography.BlockCipherTransform.Dispose">
+  Dispose()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/BlockCipherTransform.cs/#L182"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Dispose()</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.Transform.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_Byte___System_Int32_System_Int32_">ICryptoTransformExtensions.Transform(ICryptoTransform, byte[], int, int)</a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_Security_Cryptography_BlockCipherTransform_ThrowIfFinalized_" data-uid="Bodu.Security.Cryptography.BlockCipherTransform.ThrowIfFinalized*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_BlockCipherTransform_ThrowIfFinalized" data-uid="Bodu.Security.Cryptography.BlockCipherTransform.ThrowIfFinalized">
+  ThrowIfFinalized()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/BlockCipherTransform.cs/#L382"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Throws if this transform has already completed its final block operation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected void ThrowIfFinalized()</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.Transform.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_IO_Stream_System_IO_Stream_System_Int32_">ICryptoTransformExtensions.Transform(ICryptoTransform, Stream, Stream, int)</a>
+
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>This transform has already been finalized and cannot be reused.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Security_Cryptography_BlockCipherTransform_TransformBlock_" data-uid="Bodu.Security.Cryptography.BlockCipherTransform.TransformBlock*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_BlockCipherTransform_TransformBlock_System_Byte___System_Int32_System_Int32_System_Byte___System_Int32_" data-uid="Bodu.Security.Cryptography.BlockCipherTransform.TransformBlock(System.Byte[],System.Int32,System.Int32,System.Byte[],System.Int32)">
+  TransformBlock(byte[], int, int, byte[], int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/BlockCipherTransform.cs/#L225"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Transforms a block-aligned region of the input byte array and writes the result to the output buffer.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int TransformBlock(byte[] inputBuffer, int inputOffset, int inputCount, byte[] outputBuffer, int outputOffset)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.Transform.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_ReadOnlyMemory_System_Byte__">ICryptoTransformExtensions.Transform(ICryptoTransform, ReadOnlyMemory&lt;byte&gt;)</a>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>inputBuffer</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The input data buffer. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>inputOffset</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The byte offset within <code class="paramref">inputBuffer</code> at which to begin reading.</p>
+</dd>
+    <dt><code>inputCount</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of bytes to process. Must be a multiple of <a class="xref" href="Bodu.Security.Cryptography.BlockCipherTransform.html#Bodu_Security_Cryptography_BlockCipherTransform_InputBlockSize">InputBlockSize</a>.</p>
+</dd>
+    <dt><code>outputBuffer</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The buffer to write the transformed data into. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>outputOffset</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The byte offset within <code class="paramref">outputBuffer</code> at which to begin writing.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of bytes written to <code class="paramref">outputBuffer</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>This instance has been disposed.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>This transform has already been finalized and cannot be reused.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">inputBuffer</code> or <code class="paramref">outputBuffer</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>The input or output buffer span is invalid or insufficient in length for the requested operation.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Security_Cryptography_BlockCipherTransform_TransformFinalBlock_" data-uid="Bodu.Security.Cryptography.BlockCipherTransform.TransformFinalBlock*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_BlockCipherTransform_TransformFinalBlock_System_Byte___System_Int32_System_Int32_" data-uid="Bodu.Security.Cryptography.BlockCipherTransform.TransformFinalBlock(System.Byte[],System.Int32,System.Int32)">
+  TransformFinalBlock(byte[], int, int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/BlockCipherTransform.cs/#L299"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Transforms the final block of data, applying or removing padding as appropriate, and returns the result.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public byte[] TransformFinalBlock(byte[] inputBuffer, int inputOffset, int inputCount)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.Transform.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_ReadOnlyMemory_System_Byte__System_Memory_System_Byte__">ICryptoTransformExtensions.Transform(ICryptoTransform, ReadOnlyMemory&lt;byte&gt;, Memory&lt;byte&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.Transform.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_ReadOnlySpan_System_Byte__">ICryptoTransformExtensions.Transform(ICryptoTransform, ReadOnlySpan&lt;byte&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.Transform.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_Transform_System_Security_Cryptography_ICryptoTransform_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">ICryptoTransformExtensions.Transform(ICryptoTransform, ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.TransformAsync.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformAsync_System_Security_Cryptography_ICryptoTransform_System_IO_Stream_System_IO_Stream_System_Int32_System_Threading_CancellationToken_">ICryptoTransformExtensions.TransformAsync(ICryptoTransform, Stream, Stream, int, CancellationToken)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.TransformAsync.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformAsync_System_Security_Cryptography_ICryptoTransform_System_ReadOnlyMemory_System_Byte__System_Memory_System_Byte__System_Threading_CancellationToken_">ICryptoTransformExtensions.TransformAsync(ICryptoTransform, ReadOnlyMemory&lt;byte&gt;, Memory&lt;byte&gt;, CancellationToken)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.TransformBlock.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformBlock_System_Security_Cryptography_ICryptoTransform_System_Byte___">ICryptoTransformExtensions.TransformBlock(ICryptoTransform, byte[])</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.TransformFinalBlock.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_System_Security_Cryptography_ICryptoTransform_">ICryptoTransformExtensions.TransformFinalBlock(ICryptoTransform)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.TransformFinalBlock.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_System_Security_Cryptography_ICryptoTransform_System_Byte___">ICryptoTransformExtensions.TransformFinalBlock(ICryptoTransform, byte[])</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.TransformFinalBlock.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_System_Security_Cryptography_ICryptoTransform_System_Byte___System_Int32_">ICryptoTransformExtensions.TransformFinalBlock(ICryptoTransform, byte[], int)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.TransformFinalBlock.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_System_Security_Cryptography_ICryptoTransform_System_ReadOnlyMemory_System_Byte__">ICryptoTransformExtensions.TransformFinalBlock(ICryptoTransform, ReadOnlyMemory&lt;byte&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.TransformFinalBlock.html#Bodu_Security_Cryptography_Extensions_ICryptoTransformExtensions_TransformFinalBlock_System_Security_Cryptography_ICryptoTransform_System_ReadOnlySpan_System_Byte__">ICryptoTransformExtensions.TransformFinalBlock(ICryptoTransform, ReadOnlySpan&lt;byte&gt;)</a>
-  </div>
-  <h3 id="seealso">See Also</h3>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>inputBuffer</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The final input data buffer. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>inputOffset</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The byte offset within <code class="paramref">inputBuffer</code> at which to begin reading.</p>
+</dd>
+    <dt><code>inputCount</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of bytes to process from <code class="paramref">inputBuffer</code>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>A new byte array containing the transformed and padded, or depadded, final block.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>This instance has been disposed.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>This transform has already been finalized and cannot be reused.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">inputBuffer</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>The input buffer span is invalid for the requested operation.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicexception">CryptographicException</a></dt>
+    <dd><p>The padding is invalid or cannot be removed during decryption.</p>
+</dd>
+  </dl>
+
+
+
+  <h2 id="seealso">See Also</h2>
   <div class="seealso">
       <div><a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a></div>
       <div><a class="xref" href="Bodu.Security.Cryptography.IBlockCipherModeTransform.html">IBlockCipherModeTransform</a></div>
@@ -367,49 +738,24 @@ mode, padding scheme, initialization vector, and transform direction.</p>
   </div>
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 302e395 · Built: 2026-09-29 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 1e0dd9a · Built: 2026-09-29 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

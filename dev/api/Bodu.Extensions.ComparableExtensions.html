@@ -1,99 +1,127 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
       <title>Class ComparableExtensions | BODU </title>
-      <meta name="viewport" content="width=device-width">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class ComparableExtensions | BODU ">
-    
-    <meta name="description" content="Provides predicate, clamping, and selection operations over any  value, turning common &amp;quot;is this within the expected window?&amp;quot; and &amp;quot;pick the better candidate&amp;quot; decisions into one-liners that read naturally.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      
+      <meta name="description" content="Provides predicate, clamping, and selection operations over any  value, turning common &amp;quot;is this within the expected window?&amp;quot; and &amp;quot;pick the better candidate&amp;quot; decisions into one-liners that read naturally.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/new/master/apiSpec/new?filename=Bodu_Extensions_ComparableExtensions.md&amp;value=---%0Auid%3A%20Bodu.Extensions.ComparableExtensions%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Extensions.ComparableExtensions">
+
+        <article data-uid="Bodu.Extensions.ComparableExtensions">
 
 
 
-  <h1 id="Bodu_Extensions_ComparableExtensions" data-uid="Bodu.Extensions.ComparableExtensions" class="text-break">Class ComparableExtensions</h1>
-  <div class="markdown level0 summary"><p>Provides predicate, clamping, and selection operations over any <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.icomparable-1">IComparable&lt;T&gt;</a> value, turning common
+  <h1 id="Bodu_Extensions_ComparableExtensions" data-uid="Bodu.Extensions.ComparableExtensions" class="text-break">
+Class ComparableExtensions  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Extensions/ComparableExtensions.Min.cs/#L9"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Extensions.html">Extensions</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Core.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides predicate, clamping, and selection operations over any <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.icomparable-1">IComparable&lt;T&gt;</a> value, turning common
 &quot;is this within the expected window?&quot; and &quot;pick the better candidate&quot; decisions into one-liners that read naturally.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><span class="xref">ComparableExtensions</span></div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class ComparableExtensions</code></pre>
   </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">ComparableExtensions</span></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
@@ -115,14 +143,12 @@
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
-  </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Extensions.html">Extensions</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Core.dll</h6>
-  <h5 id="Bodu_Extensions_ComparableExtensions_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static class ComparableExtensions</code></pre>
-  </div>
-  <h5 id="Bodu_Extensions_ComparableExtensions_remarks"><strong>Remarks</strong></h5>
+  </dd></dl>
+
+
+
+
+  <h2 id="Bodu_Extensions_ComparableExtensions_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
 Range checks and bounded arithmetic are some of the most repeated patterns in business code, yet expressing them
 with raw <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.icomparable-1.compareto">CompareTo(T)</a> is verbose and easy to get wrong (off-by-one boundaries, swapped
@@ -165,230 +191,1406 @@ var descending = Comparer&lt;int&gt;.Create((x, y) =&gt; y.CompareTo(x));
 bool inCountdown = 5.IsBetween(10, 1, descending); // =&gt; true</code></pre>
 </example>
 </div>
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_" data-uid="Bodu.Extensions.ComparableExtensions.AtLeast``1(``0,``0)">
-          <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_">AtLeast&lt;T&gt;(T, T)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Raises a value to a specified inclusive lower bound, returning the bound when the value falls below it.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__" data-uid="Bodu.Extensions.ComparableExtensions.AtLeast``1(``0,``0,System.Collections.Generic.IComparer{``0})">
-          <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Raises a value to a specified inclusive lower bound using a custom <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icomparer-1">IComparer&lt;T&gt;</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_" data-uid="Bodu.Extensions.ComparableExtensions.AtMost``1(``0,``0)">
-          <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_">AtMost&lt;T&gt;(T, T)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Lowers a value to a specified inclusive upper bound, returning the bound when the value exceeds it.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__" data-uid="Bodu.Extensions.ComparableExtensions.AtMost``1(``0,``0,System.Collections.Generic.IComparer{``0})">
-          <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Lowers a value to a specified inclusive upper bound using a custom <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icomparer-1">IComparer&lt;T&gt;</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__" data-uid="Bodu.Extensions.ComparableExtensions.Clamp``1(``0,System.Nullable{``0},System.Nullable{``0})">
-          <a class="xref" href="Bodu.Extensions.ComparableExtensions.Clamp.html#Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__">Clamp&lt;T&gt;(T, T?, T?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Restricts a value to lie within a specified inclusive range.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__" data-uid="Bodu.Extensions.ComparableExtensions.Clamp``1(``0,System.Nullable{``0},System.Nullable{``0},System.Collections.Generic.IComparer{``0})">
-          <a class="xref" href="Bodu.Extensions.ComparableExtensions.Clamp.html#Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">Clamp&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Restricts a value to lie within a specified inclusive range using a custom <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icomparer-1">IComparer&lt;T&gt;</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_ComparableExtensions_IsBetween__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__" data-uid="Bodu.Extensions.ComparableExtensions.IsBetween``1(``0,System.Nullable{``0},System.Nullable{``0},System.Collections.Generic.IComparer{``0})">
-          <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsBetween.html#Bodu_Extensions_ComparableExtensions_IsBetween__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">IsBetween&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether a value falls inclusively between two specified boundaries using a custom
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Extensions_ComparableExtensions_AtLeast_" data-uid="Bodu.Extensions.ComparableExtensions.AtLeast*"></a>
+
+  <h3 id="Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_" data-uid="Bodu.Extensions.ComparableExtensions.AtLeast``1(``0,``0)">
+  AtLeast&lt;T&gt;(T, T)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Extensions/ComparableExtensions.AtLeast.cs/#L27"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Raises a value to a specified inclusive lower bound, returning the bound when the value falls below it.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static T AtLeast&lt;T&gt;(this T value, T min) where T : IComparable&lt;T&gt;</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd><p>The value to coerce.</p>
+</dd>
+    <dt><code>min</code> <span class="xref">T</span></dt>
+    <dd><p>The inclusive lower bound.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">T</span></dt>
+    <dd><p><code class="paramref">value</code> if it compares greater than or equal to <code class="paramref">min</code>; otherwise,
+<code class="paramref">min</code>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the value to coerce, which must implement <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.icomparable-1">IComparable&lt;T&gt;</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This is a one-sided form of <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__">Clamp&lt;T&gt;(T, T?, T?)</a> for cases where only a floor is required.
+Equivalent to <code>Math.Max(value, min)</code> for numeric types.</p>
+</div>
+
+
+
+
+  <a id="Bodu_Extensions_ComparableExtensions_AtLeast_" data-uid="Bodu.Extensions.ComparableExtensions.AtLeast*"></a>
+
+  <h3 id="Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__" data-uid="Bodu.Extensions.ComparableExtensions.AtLeast``1(``0,``0,System.Collections.Generic.IComparer{``0})">
+  AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Extensions/ComparableExtensions.AtLeast.cs/#L49"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Raises a value to a specified inclusive lower bound using a custom <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icomparer-1">IComparer&lt;T&gt;</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static T AtLeast&lt;T&gt;(this T value, T min, IComparer&lt;T&gt; comparer)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd><p>The value to coerce.</p>
+</dd>
+    <dt><code>min</code> <span class="xref">T</span></dt>
+    <dd><p>The inclusive lower bound.</p>
+</dd>
+    <dt><code>comparer</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icomparer-1">IComparer</a>&lt;T&gt;</dt>
+    <dd><p>The comparer to use for comparing values.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">T</span></dt>
+    <dd><p><code class="paramref">value</code> if it compares greater than or equal to <code class="paramref">min</code> under the specified
+comparer; otherwise, <code class="paramref">min</code>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the value to coerce.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This is a one-sided form of <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">Clamp&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a> for cases where only a floor is
+required.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">comparer</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Extensions_ComparableExtensions_AtMost_" data-uid="Bodu.Extensions.ComparableExtensions.AtMost*"></a>
+
+  <h3 id="Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_" data-uid="Bodu.Extensions.ComparableExtensions.AtMost``1(``0,``0)">
+  AtMost&lt;T&gt;(T, T)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Extensions/ComparableExtensions.AtMost.cs/#L27"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Lowers a value to a specified inclusive upper bound, returning the bound when the value exceeds it.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static T AtMost&lt;T&gt;(this T value, T max) where T : IComparable&lt;T&gt;</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd><p>The value to coerce.</p>
+</dd>
+    <dt><code>max</code> <span class="xref">T</span></dt>
+    <dd><p>The inclusive upper bound.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">T</span></dt>
+    <dd><p><code class="paramref">value</code> if it compares less than or equal to <code class="paramref">max</code>; otherwise,
+<code class="paramref">max</code>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the value to coerce, which must implement <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.icomparable-1">IComparable&lt;T&gt;</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Extensions_ComparableExtensions_AtMost__1___0___0__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This is a one-sided form of <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__">Clamp&lt;T&gt;(T, T?, T?)</a> for cases where only a ceiling is required.
+Equivalent to <code>Math.Min(value, max)</code> for numeric types.</p>
+</div>
+
+
+
+
+  <a id="Bodu_Extensions_ComparableExtensions_AtMost_" data-uid="Bodu.Extensions.ComparableExtensions.AtMost*"></a>
+
+  <h3 id="Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__" data-uid="Bodu.Extensions.ComparableExtensions.AtMost``1(``0,``0,System.Collections.Generic.IComparer{``0})">
+  AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Extensions/ComparableExtensions.AtMost.cs/#L49"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Lowers a value to a specified inclusive upper bound using a custom <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icomparer-1">IComparer&lt;T&gt;</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static T AtMost&lt;T&gt;(this T value, T max, IComparer&lt;T&gt; comparer)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd><p>The value to coerce.</p>
+</dd>
+    <dt><code>max</code> <span class="xref">T</span></dt>
+    <dd><p>The inclusive upper bound.</p>
+</dd>
+    <dt><code>comparer</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icomparer-1">IComparer</a>&lt;T&gt;</dt>
+    <dd><p>The comparer to use for comparing values.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">T</span></dt>
+    <dd><p><code class="paramref">value</code> if it compares less than or equal to <code class="paramref">max</code> under the specified
+comparer; otherwise, <code class="paramref">max</code>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the value to coerce.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This is a one-sided form of <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">Clamp&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a> for cases where only a ceiling is
+required.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">comparer</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Extensions_ComparableExtensions_Clamp_" data-uid="Bodu.Extensions.ComparableExtensions.Clamp*"></a>
+
+  <h3 id="Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__" data-uid="Bodu.Extensions.ComparableExtensions.Clamp``1(``0,System.Nullable{``0},System.Nullable{``0})">
+  Clamp&lt;T&gt;(T, T?, T?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Extensions/ComparableExtensions.Clamp.cs/#L35"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Restricts a value to lie within a specified inclusive range.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static T Clamp&lt;T&gt;(this T value, T? min, T? max) where T : struct, IComparable&lt;T&gt;</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd><p>The value to clamp.</p>
+</dd>
+    <dt><code>min</code> T?</dt>
+    <dd><p>The inclusive minimum bound, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for no lower bound.</p>
+</dd>
+    <dt><code>max</code> T?</dt>
+    <dd><p>The inclusive maximum bound, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for no upper bound.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">T</span></dt>
+    <dd><p>The clamped value. If <code class="paramref">value</code> is less than <code class="paramref">min</code>, <code class="paramref">min</code> is
+returned. If <code class="paramref">value</code> is greater than <code class="paramref">max</code>, <code class="paramref">max</code> is
+returned. Otherwise, <code class="paramref">value</code> is returned.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the value to clamp, which must implement <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.icomparable-1">IComparable&lt;T&gt;</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>If <code class="paramref">min</code> or <code class="paramref">max</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, the corresponding bound is
+treated as unbounded and no bound-ordering validation is performed for that side.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when both bounds are supplied and <code class="paramref">min</code> is greater than <code class="paramref">max</code>,
+matching the behavior of <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.math.clamp#system-math-clamp(system-int32-system-int32-system-int32)">Clamp(int, int, int)</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Extensions_ComparableExtensions_Clamp_" data-uid="Bodu.Extensions.ComparableExtensions.Clamp*"></a>
+
+  <h3 id="Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__" data-uid="Bodu.Extensions.ComparableExtensions.Clamp``1(``0,System.Nullable{``0},System.Nullable{``0},System.Collections.Generic.IComparer{``0})">
+  Clamp&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Extensions/ComparableExtensions.Clamp.cs/#L71"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Restricts a value to lie within a specified inclusive range using a custom <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icomparer-1">IComparer&lt;T&gt;</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static T Clamp&lt;T&gt;(this T value, T? min, T? max, IComparer&lt;T&gt; comparer) where T : struct</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd><p>The value to clamp.</p>
+</dd>
+    <dt><code>min</code> T?</dt>
+    <dd><p>The inclusive minimum bound, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for no lower bound.</p>
+</dd>
+    <dt><code>max</code> T?</dt>
+    <dd><p>The inclusive maximum bound, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for no upper bound.</p>
+</dd>
+    <dt><code>comparer</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icomparer-1">IComparer</a>&lt;T&gt;</dt>
+    <dd><p>The comparer to use for comparing the values.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">T</span></dt>
+    <dd><p>The clamped value. If <code class="paramref">value</code> is less than <code class="paramref">min</code>, <code class="paramref">min</code> is
+returned. If <code class="paramref">value</code> is greater than <code class="paramref">max</code>, <code class="paramref">max</code> is
+returned. Otherwise, <code class="paramref">value</code> is returned.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the value to clamp.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>If <code class="paramref">min</code> or <code class="paramref">max</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, the corresponding bound is
+treated as unbounded and no bound-ordering validation is performed for that side. Use this overload to apply
+custom comparison logic when clamping values; the bound-ordering check uses <code class="paramref">comparer</code>, so a
+reversed comparer legitimately accepts bounds whose natural ordering is inverted.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">comparer</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when both bounds are supplied and <code class="paramref">min</code> orders after <code class="paramref">max</code> according
+to <code class="paramref">comparer</code>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Extensions_ComparableExtensions_IsBetween_" data-uid="Bodu.Extensions.ComparableExtensions.IsBetween*"></a>
+
+  <h3 id="Bodu_Extensions_ComparableExtensions_IsBetween__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__" data-uid="Bodu.Extensions.ComparableExtensions.IsBetween``1(``0,System.Nullable{``0},System.Nullable{``0},System.Collections.Generic.IComparer{``0})">
+  IsBetween&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Extensions/ComparableExtensions.IsBetween.cs/#L63"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines whether a value falls inclusively between two specified boundaries using a custom
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icomparer-1">IComparer&lt;T&gt;</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_ComparableExtensions_IsBetween__1___0___0___0_" data-uid="Bodu.Extensions.ComparableExtensions.IsBetween``1(``0,``0,``0)">
-          <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsBetween.html#Bodu_Extensions_ComparableExtensions_IsBetween__1___0___0___0_">IsBetween&lt;T&gt;(T, T?, T?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether a value falls inclusively between two specified boundaries.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__" data-uid="Bodu.Extensions.ComparableExtensions.IsEqualTo``1(``0,``0,System.Collections.Generic.IComparer{``0})">
-          <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether two values are equal under the ordering defined by a custom <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icomparer-1">IComparer&lt;T&gt;</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__" data-uid="Bodu.Extensions.ComparableExtensions.IsGreaterThanOrEqual``1(``0,System.Nullable{``0},System.Collections.Generic.IComparer{``0})">
-          <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">IsGreaterThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether a value is greater than or equal to a specified reference value using a custom
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsBetween&lt;T&gt;(this T value, T? value1, T? value2, IComparer&lt;T&gt; comparer) where T : struct</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd><p>The value to test.</p>
+</dd>
+    <dt><code>value1</code> T?</dt>
+    <dd><p>The first boundary.</p>
+</dd>
+    <dt><code>value2</code> T?</dt>
+    <dd><p>The second boundary.</p>
+</dd>
+    <dt><code>comparer</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icomparer-1">IComparer</a>&lt;T&gt;</dt>
+    <dd><p>The comparer to use for comparing values.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if <code class="paramref">value</code> falls between <code class="paramref">value1</code> and
+<code class="paramref">value2</code> inclusively based on the specified comparer; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the value to compare.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Extensions_ComparableExtensions_IsBetween__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+If <code class="paramref">value1</code> or <code class="paramref">value2</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, the method returns
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.
+</p>
+<p>
+The order of <code class="paramref">value1</code> and <code class="paramref">value2</code> does not matter.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">comparer</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Extensions_ComparableExtensions_IsBetween_" data-uid="Bodu.Extensions.ComparableExtensions.IsBetween*"></a>
+
+  <h3 id="Bodu_Extensions_ComparableExtensions_IsBetween__1___0___0___0_" data-uid="Bodu.Extensions.ComparableExtensions.IsBetween``1(``0,``0,``0)">
+  IsBetween&lt;T&gt;(T, T?, T?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Extensions/ComparableExtensions.IsBetween.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines whether a value falls inclusively between two specified boundaries.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsBetween&lt;T&gt;(this T value, T? value1, T? value2) where T : IComparable&lt;T&gt;</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd><p>The value to test.</p>
+</dd>
+    <dt><code>value1</code> <span class="xref">T</span></dt>
+    <dd><p>The first boundary.</p>
+</dd>
+    <dt><code>value2</code> <span class="xref">T</span></dt>
+    <dd><p>The second boundary.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if <code class="paramref">value</code> falls between <code class="paramref">value1</code> and
+<code class="paramref">value2</code> inclusively; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the value to compare, which must implement <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.icomparable-1">IComparable&lt;T&gt;</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Extensions_ComparableExtensions_IsBetween__1___0___0___0__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+If any parameter is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, the method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.
+</p>
+<p>
+The order of <code class="paramref">value1</code> and <code class="paramref">value2</code> does not matter.
+</p>
+</div>
+
+
+
+
+  <a id="Bodu_Extensions_ComparableExtensions_IsEqualTo_" data-uid="Bodu.Extensions.ComparableExtensions.IsEqualTo*"></a>
+
+  <h3 id="Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__" data-uid="Bodu.Extensions.ComparableExtensions.IsEqualTo``1(``0,``0,System.Collections.Generic.IComparer{``0})">
+  IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Extensions/ComparableExtensions.IsEqualTo.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines whether two values are equal under the ordering defined by a custom <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icomparer-1">IComparer&lt;T&gt;</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsEqualTo&lt;T&gt;(this T value, T other, IComparer&lt;T&gt; comparer)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd><p>The first value.</p>
+</dd>
+    <dt><code>other</code> <span class="xref">T</span></dt>
+    <dd><p>The second value.</p>
+</dd>
+    <dt><code>comparer</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icomparer-1">IComparer</a>&lt;T&gt;</dt>
+    <dd><p>The comparer whose ordering is used to determine equality.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if <code class="paramref">comparer</code> compares <code class="paramref">value</code> and
+<code class="paramref">other</code> as equal (that is, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icomparer-1.compare">Compare(T, T)</a> returns zero); otherwise,
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the values to compare.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Comparer-defined equality is distinct from <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">Equals(object)</a>. A case-insensitive
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.stringcomparer">StringComparer</a>, for example, considers <code>&quot;Hello&quot;</code> and <code>&quot;hello&quot;</code> equal even though
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string.equals#system-string-equals(system-string)">Equals(string)</a> does not. For the default equality semantics of <code class="typeparamref">T</code>
+use <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">Equals(object)</a> or <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1.equals">Equals(T)</a> directly.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">comparer</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual_" data-uid="Bodu.Extensions.ComparableExtensions.IsGreaterThanOrEqual*"></a>
+
+  <h3 id="Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__" data-uid="Bodu.Extensions.ComparableExtensions.IsGreaterThanOrEqual``1(``0,System.Nullable{``0},System.Collections.Generic.IComparer{``0})">
+  IsGreaterThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Extensions/ComparableExtensions.IsGreaterThanOrEqual.cs/#L48"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines whether a value is greater than or equal to a specified reference value using a custom
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icomparer-1">IComparer&lt;T&gt;</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual__1___0___0_" data-uid="Bodu.Extensions.ComparableExtensions.IsGreaterThanOrEqual``1(``0,``0)">
-          <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual__1___0___0_">IsGreaterThanOrEqual&lt;T&gt;(T, T?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether a value is greater than or equal to a specified reference value.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_ComparableExtensions_IsGreaterThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__" data-uid="Bodu.Extensions.ComparableExtensions.IsGreaterThan``1(``0,System.Nullable{``0},System.Collections.Generic.IComparer{``0})">
-          <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThan.html#Bodu_Extensions_ComparableExtensions_IsGreaterThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">IsGreaterThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether a value is strictly greater than a specified reference value using a custom
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsGreaterThanOrEqual&lt;T&gt;(this T value, T? other, IComparer&lt;T&gt; comparer) where T : struct</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd><p>The value to test.</p>
+</dd>
+    <dt><code>other</code> T?</dt>
+    <dd><p>The reference value to compare against.</p>
+</dd>
+    <dt><code>comparer</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icomparer-1">IComparer</a>&lt;T&gt;</dt>
+    <dd><p>The comparer to use for comparing values.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if <code class="paramref">value</code> is greater than or equal to <code class="paramref">other</code> based
+on the specified comparer; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the value to compare.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>If <code class="paramref">other</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, the method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">comparer</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual_" data-uid="Bodu.Extensions.ComparableExtensions.IsGreaterThanOrEqual*"></a>
+
+  <h3 id="Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual__1___0___0_" data-uid="Bodu.Extensions.ComparableExtensions.IsGreaterThanOrEqual``1(``0,``0)">
+  IsGreaterThanOrEqual&lt;T&gt;(T, T?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Extensions/ComparableExtensions.IsGreaterThanOrEqual.cs/#L26"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines whether a value is greater than or equal to a specified reference value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsGreaterThanOrEqual&lt;T&gt;(this T value, T? other) where T : IComparable&lt;T&gt;</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd><p>The value to test.</p>
+</dd>
+    <dt><code>other</code> <span class="xref">T</span></dt>
+    <dd><p>The reference value to compare against.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if <code class="paramref">value</code> is greater than or equal to <code class="paramref">other</code>;
+otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the value to compare, which must implement <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.icomparable-1">IComparable&lt;T&gt;</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual__1___0___0__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>If <code class="paramref">other</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, the method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</div>
+
+
+
+
+  <a id="Bodu_Extensions_ComparableExtensions_IsGreaterThan_" data-uid="Bodu.Extensions.ComparableExtensions.IsGreaterThan*"></a>
+
+  <h3 id="Bodu_Extensions_ComparableExtensions_IsGreaterThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__" data-uid="Bodu.Extensions.ComparableExtensions.IsGreaterThan``1(``0,System.Nullable{``0},System.Collections.Generic.IComparer{``0})">
+  IsGreaterThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Extensions/ComparableExtensions.IsGreaterThan.cs/#L48"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines whether a value is strictly greater than a specified reference value using a custom
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icomparer-1">IComparer&lt;T&gt;</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_ComparableExtensions_IsGreaterThan__1___0___0_" data-uid="Bodu.Extensions.ComparableExtensions.IsGreaterThan``1(``0,``0)">
-          <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThan.html#Bodu_Extensions_ComparableExtensions_IsGreaterThan__1___0___0_">IsGreaterThan&lt;T&gt;(T, T?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether a value is strictly greater than a specified reference value.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__" data-uid="Bodu.Extensions.ComparableExtensions.IsLessThanOrEqual``1(``0,System.Nullable{``0},System.Collections.Generic.IComparer{``0})">
-          <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">IsLessThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether a value is less than or equal to a specified reference value using a custom
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsGreaterThan&lt;T&gt;(this T value, T? other, IComparer&lt;T&gt; comparer) where T : struct</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd><p>The value to test.</p>
+</dd>
+    <dt><code>other</code> T?</dt>
+    <dd><p>The reference value to compare against.</p>
+</dd>
+    <dt><code>comparer</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icomparer-1">IComparer</a>&lt;T&gt;</dt>
+    <dd><p>The comparer to use for comparing values.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if <code class="paramref">value</code> is strictly greater than <code class="paramref">other</code> based on
+the specified comparer; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the value to compare.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Extensions_ComparableExtensions_IsGreaterThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>If <code class="paramref">other</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, the method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">comparer</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Extensions_ComparableExtensions_IsGreaterThan_" data-uid="Bodu.Extensions.ComparableExtensions.IsGreaterThan*"></a>
+
+  <h3 id="Bodu_Extensions_ComparableExtensions_IsGreaterThan__1___0___0_" data-uid="Bodu.Extensions.ComparableExtensions.IsGreaterThan``1(``0,``0)">
+  IsGreaterThan&lt;T&gt;(T, T?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Extensions/ComparableExtensions.IsGreaterThan.cs/#L26"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines whether a value is strictly greater than a specified reference value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsGreaterThan&lt;T&gt;(this T value, T? other) where T : IComparable&lt;T&gt;</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd><p>The value to test.</p>
+</dd>
+    <dt><code>other</code> <span class="xref">T</span></dt>
+    <dd><p>The reference value to compare against.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if <code class="paramref">value</code> is strictly greater than <code class="paramref">other</code>;
+otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the value to compare, which must implement <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.icomparable-1">IComparable&lt;T&gt;</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Extensions_ComparableExtensions_IsGreaterThan__1___0___0__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>If <code class="paramref">other</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, the method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</div>
+
+
+
+
+  <a id="Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual_" data-uid="Bodu.Extensions.ComparableExtensions.IsLessThanOrEqual*"></a>
+
+  <h3 id="Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__" data-uid="Bodu.Extensions.ComparableExtensions.IsLessThanOrEqual``1(``0,System.Nullable{``0},System.Collections.Generic.IComparer{``0})">
+  IsLessThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Extensions/ComparableExtensions.IsLessThanOrEqual.cs/#L48"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines whether a value is less than or equal to a specified reference value using a custom
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icomparer-1">IComparer&lt;T&gt;</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual__1___0___0_" data-uid="Bodu.Extensions.ComparableExtensions.IsLessThanOrEqual``1(``0,``0)">
-          <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual__1___0___0_">IsLessThanOrEqual&lt;T&gt;(T, T?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether a value is less than or equal to a specified reference value.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_ComparableExtensions_IsLessThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__" data-uid="Bodu.Extensions.ComparableExtensions.IsLessThan``1(``0,System.Nullable{``0},System.Collections.Generic.IComparer{``0})">
-          <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThan.html#Bodu_Extensions_ComparableExtensions_IsLessThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">IsLessThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether a value is strictly less than a specified reference value using a custom
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsLessThanOrEqual&lt;T&gt;(this T value, T? other, IComparer&lt;T&gt; comparer) where T : struct</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd><p>The value to test.</p>
+</dd>
+    <dt><code>other</code> T?</dt>
+    <dd><p>The reference value to compare against.</p>
+</dd>
+    <dt><code>comparer</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icomparer-1">IComparer</a>&lt;T&gt;</dt>
+    <dd><p>The comparer to use for comparing values.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if <code class="paramref">value</code> is less than or equal to <code class="paramref">other</code> based on
+the specified comparer; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the value to compare.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>If <code class="paramref">other</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, the method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">comparer</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual_" data-uid="Bodu.Extensions.ComparableExtensions.IsLessThanOrEqual*"></a>
+
+  <h3 id="Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual__1___0___0_" data-uid="Bodu.Extensions.ComparableExtensions.IsLessThanOrEqual``1(``0,``0)">
+  IsLessThanOrEqual&lt;T&gt;(T, T?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Extensions/ComparableExtensions.IsLessThanOrEqual.cs/#L26"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines whether a value is less than or equal to a specified reference value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsLessThanOrEqual&lt;T&gt;(this T value, T? other) where T : IComparable&lt;T&gt;</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd><p>The value to test.</p>
+</dd>
+    <dt><code>other</code> <span class="xref">T</span></dt>
+    <dd><p>The reference value to compare against.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if <code class="paramref">value</code> is less than or equal to <code class="paramref">other</code>;
+otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the value to compare, which must implement <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.icomparable-1">IComparable&lt;T&gt;</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual__1___0___0__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>If <code class="paramref">other</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, the method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</div>
+
+
+
+
+  <a id="Bodu_Extensions_ComparableExtensions_IsLessThan_" data-uid="Bodu.Extensions.ComparableExtensions.IsLessThan*"></a>
+
+  <h3 id="Bodu_Extensions_ComparableExtensions_IsLessThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__" data-uid="Bodu.Extensions.ComparableExtensions.IsLessThan``1(``0,System.Nullable{``0},System.Collections.Generic.IComparer{``0})">
+  IsLessThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Extensions/ComparableExtensions.IsLessThan.cs/#L48"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines whether a value is strictly less than a specified reference value using a custom
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icomparer-1">IComparer&lt;T&gt;</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_ComparableExtensions_IsLessThan__1___0___0_" data-uid="Bodu.Extensions.ComparableExtensions.IsLessThan``1(``0,``0)">
-          <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThan.html#Bodu_Extensions_ComparableExtensions_IsLessThan__1___0___0_">IsLessThan&lt;T&gt;(T, T?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether a value is strictly less than a specified reference value.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_ComparableExtensions_IsOutside__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__" data-uid="Bodu.Extensions.ComparableExtensions.IsOutside``1(``0,System.Nullable{``0},System.Nullable{``0},System.Collections.Generic.IComparer{``0})">
-          <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsOutside.html#Bodu_Extensions_ComparableExtensions_IsOutside__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">IsOutside&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether a value falls outside the inclusive range defined by two specified boundaries using a custom
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsLessThan&lt;T&gt;(this T value, T? other, IComparer&lt;T&gt; comparer) where T : struct</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd><p>The value to test.</p>
+</dd>
+    <dt><code>other</code> T?</dt>
+    <dd><p>The reference value to compare against.</p>
+</dd>
+    <dt><code>comparer</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icomparer-1">IComparer</a>&lt;T&gt;</dt>
+    <dd><p>The comparer to use for comparing values.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if <code class="paramref">value</code> is strictly less than <code class="paramref">other</code> based on
+the specified comparer; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the value to compare.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Extensions_ComparableExtensions_IsLessThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>If <code class="paramref">other</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, the method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">comparer</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Extensions_ComparableExtensions_IsLessThan_" data-uid="Bodu.Extensions.ComparableExtensions.IsLessThan*"></a>
+
+  <h3 id="Bodu_Extensions_ComparableExtensions_IsLessThan__1___0___0_" data-uid="Bodu.Extensions.ComparableExtensions.IsLessThan``1(``0,``0)">
+  IsLessThan&lt;T&gt;(T, T?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Extensions/ComparableExtensions.IsLessThan.cs/#L26"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines whether a value is strictly less than a specified reference value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsLessThan&lt;T&gt;(this T value, T? other) where T : IComparable&lt;T&gt;</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd><p>The value to test.</p>
+</dd>
+    <dt><code>other</code> <span class="xref">T</span></dt>
+    <dd><p>The reference value to compare against.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if <code class="paramref">value</code> is strictly less than <code class="paramref">other</code>; otherwise,
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the value to compare, which must implement <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.icomparable-1">IComparable&lt;T&gt;</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Extensions_ComparableExtensions_IsLessThan__1___0___0__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>If <code class="paramref">other</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, the method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</div>
+
+
+
+
+  <a id="Bodu_Extensions_ComparableExtensions_IsOutside_" data-uid="Bodu.Extensions.ComparableExtensions.IsOutside*"></a>
+
+  <h3 id="Bodu_Extensions_ComparableExtensions_IsOutside__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__" data-uid="Bodu.Extensions.ComparableExtensions.IsOutside``1(``0,System.Nullable{``0},System.Nullable{``0},System.Collections.Generic.IComparer{``0})">
+  IsOutside&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Extensions/ComparableExtensions.IsOutside.cs/#L62"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines whether a value falls outside the inclusive range defined by two specified boundaries using a custom
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icomparer-1">IComparer&lt;T&gt;</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_ComparableExtensions_IsOutside__1___0___0___0_" data-uid="Bodu.Extensions.ComparableExtensions.IsOutside``1(``0,``0,``0)">
-          <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsOutside.html#Bodu_Extensions_ComparableExtensions_IsOutside__1___0___0___0_">IsOutside&lt;T&gt;(T, T?, T?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether a value falls outside the inclusive range defined by two specified boundaries.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_ComparableExtensions_Max__1___0___0_" data-uid="Bodu.Extensions.ComparableExtensions.Max``1(``0,``0)">
-          <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_">Max&lt;T&gt;(T, T)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the larger of two values using their natural ordering.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__" data-uid="Bodu.Extensions.ComparableExtensions.Max``1(``0,``0,System.Collections.Generic.IComparer{``0})">
-          <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the larger of two values using a custom <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icomparer-1">IComparer&lt;T&gt;</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_ComparableExtensions_Min__1___0___0_" data-uid="Bodu.Extensions.ComparableExtensions.Min``1(``0,``0)">
-          <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_">Min&lt;T&gt;(T, T)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the smaller of two values using their natural ordering.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__" data-uid="Bodu.Extensions.ComparableExtensions.Min``1(``0,``0,System.Collections.Generic.IComparer{``0})">
-          <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the smaller of two values using a custom <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icomparer-1">IComparer&lt;T&gt;</a>.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsOutside&lt;T&gt;(this T value, T? value1, T? value2, IComparer&lt;T&gt; comparer) where T : struct</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd><p>The value to test.</p>
+</dd>
+    <dt><code>value1</code> T?</dt>
+    <dd><p>The first boundary.</p>
+</dd>
+    <dt><code>value2</code> T?</dt>
+    <dd><p>The second boundary.</p>
+</dd>
+    <dt><code>comparer</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icomparer-1">IComparer</a>&lt;T&gt;</dt>
+    <dd><p>The comparer to use for comparing values.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><code>true</code> if <code class="paramref">value</code> is less than the smaller boundary or greater than the larger boundary
+based on the specified comparer; otherwise, <code>false</code>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the value to compare.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Extensions_ComparableExtensions_IsOutside__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+If any of the parameters are <code>null</code>, the method returns <code>false</code>.
+</p>
+<p>
+The order of <code class="paramref">value1</code> and <code class="paramref">value2</code> does not matter.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">comparer</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Extensions_ComparableExtensions_IsOutside_" data-uid="Bodu.Extensions.ComparableExtensions.IsOutside*"></a>
+
+  <h3 id="Bodu_Extensions_ComparableExtensions_IsOutside__1___0___0___0_" data-uid="Bodu.Extensions.ComparableExtensions.IsOutside``1(``0,``0,``0)">
+  IsOutside&lt;T&gt;(T, T?, T?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Extensions/ComparableExtensions.IsOutside.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines whether a value falls outside the inclusive range defined by two specified boundaries.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsOutside&lt;T&gt;(this T value, T? value1, T? value2) where T : IComparable&lt;T&gt;</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd><p>The value to test.</p>
+</dd>
+    <dt><code>value1</code> <span class="xref">T</span></dt>
+    <dd><p>The first boundary.</p>
+</dd>
+    <dt><code>value2</code> <span class="xref">T</span></dt>
+    <dd><p>The second boundary.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><code>true</code> if <code class="paramref">value</code> is less than the smaller boundary or greater than the larger boundary;
+otherwise, <code>false</code>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the value to compare, which must implement <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.icomparable-1">IComparable&lt;T&gt;</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Extensions_ComparableExtensions_IsOutside__1___0___0___0__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+If any of the parameters are <code>null</code>, the method returns <code>false</code>.
+</p>
+<p>
+The order of <code class="paramref">value1</code> and <code class="paramref">value2</code> does not matter.
+</p>
+</div>
+
+
+
+
+  <a id="Bodu_Extensions_ComparableExtensions_Max_" data-uid="Bodu.Extensions.ComparableExtensions.Max*"></a>
+
+  <h3 id="Bodu_Extensions_ComparableExtensions_Max__1___0___0_" data-uid="Bodu.Extensions.ComparableExtensions.Max``1(``0,``0)">
+  Max&lt;T&gt;(T, T)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Extensions/ComparableExtensions.Max.cs/#L26"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the larger of two values using their natural ordering.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static T Max&lt;T&gt;(this T value, T other) where T : IComparable&lt;T&gt;</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd><p>The first value.</p>
+</dd>
+    <dt><code>other</code> <span class="xref">T</span></dt>
+    <dd><p>The second value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">T</span></dt>
+    <dd><p><code class="paramref">value</code> if it compares greater than or equal to <code class="paramref">other</code>; otherwise,
+<code class="paramref">other</code>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the values to compare, which must implement <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.icomparable-1">IComparable&lt;T&gt;</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Extensions_ComparableExtensions_Max__1___0___0__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>When the two values compare equal, <code class="paramref">value</code> is returned.</p>
+</div>
+
+
+
+
+  <a id="Bodu_Extensions_ComparableExtensions_Max_" data-uid="Bodu.Extensions.ComparableExtensions.Max*"></a>
+
+  <h3 id="Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__" data-uid="Bodu.Extensions.ComparableExtensions.Max``1(``0,``0,System.Collections.Generic.IComparer{``0})">
+  Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Extensions/ComparableExtensions.Max.cs/#L47"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the larger of two values using a custom <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icomparer-1">IComparer&lt;T&gt;</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static T Max&lt;T&gt;(this T value, T other, IComparer&lt;T&gt; comparer)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd><p>The first value.</p>
+</dd>
+    <dt><code>other</code> <span class="xref">T</span></dt>
+    <dd><p>The second value.</p>
+</dd>
+    <dt><code>comparer</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icomparer-1">IComparer</a>&lt;T&gt;</dt>
+    <dd><p>The comparer to use for comparing values.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">T</span></dt>
+    <dd><p><code class="paramref">value</code> if it compares greater than or equal to <code class="paramref">other</code> under the specified
+comparer; otherwise, <code class="paramref">other</code>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the values to compare.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>When the two values compare equal under <code class="paramref">comparer</code>, <code class="paramref">value</code> is returned.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">comparer</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Extensions_ComparableExtensions_Min_" data-uid="Bodu.Extensions.ComparableExtensions.Min*"></a>
+
+  <h3 id="Bodu_Extensions_ComparableExtensions_Min__1___0___0_" data-uid="Bodu.Extensions.ComparableExtensions.Min``1(``0,``0)">
+  Min&lt;T&gt;(T, T)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Extensions/ComparableExtensions.Min.cs/#L26"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the smaller of two values using their natural ordering.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static T Min&lt;T&gt;(this T value, T other) where T : IComparable&lt;T&gt;</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd><p>The first value.</p>
+</dd>
+    <dt><code>other</code> <span class="xref">T</span></dt>
+    <dd><p>The second value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">T</span></dt>
+    <dd><p><code class="paramref">value</code> if it compares less than or equal to <code class="paramref">other</code>; otherwise,
+<code class="paramref">other</code>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the values to compare, which must implement <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.icomparable-1">IComparable&lt;T&gt;</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Extensions_ComparableExtensions_Min__1___0___0__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>When the two values compare equal, <code class="paramref">value</code> is returned.</p>
+</div>
+
+
+
+
+  <a id="Bodu_Extensions_ComparableExtensions_Min_" data-uid="Bodu.Extensions.ComparableExtensions.Min*"></a>
+
+  <h3 id="Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__" data-uid="Bodu.Extensions.ComparableExtensions.Min``1(``0,``0,System.Collections.Generic.IComparer{``0})">
+  Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Extensions/ComparableExtensions.Min.cs/#L47"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the smaller of two values using a custom <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icomparer-1">IComparer&lt;T&gt;</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static T Min&lt;T&gt;(this T value, T other, IComparer&lt;T&gt; comparer)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd><p>The first value.</p>
+</dd>
+    <dt><code>other</code> <span class="xref">T</span></dt>
+    <dd><p>The second value.</p>
+</dd>
+    <dt><code>comparer</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icomparer-1">IComparer</a>&lt;T&gt;</dt>
+    <dd><p>The comparer to use for comparing values.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">T</span></dt>
+    <dd><p><code class="paramref">value</code> if it compares less than or equal to <code class="paramref">other</code> under the specified
+comparer; otherwise, <code class="paramref">other</code>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the values to compare.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>When the two values compare equal under <code class="paramref">comparer</code>, <code class="paramref">value</code> is returned.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">comparer</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 302e395 · Built: 2026-09-29 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 1e0dd9a · Built: 2026-09-29 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

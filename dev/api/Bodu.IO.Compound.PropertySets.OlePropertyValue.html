@@ -1,102 +1,132 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
       <title>Class OlePropertyValue | BODU </title>
-      <meta name="viewport" content="width=device-width">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class OlePropertyValue | BODU ">
-    
-    <meta name="description" content="Represents a single typed value read from an OLE property set, the managed counterpart of a COM PROPVARIANT.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      
+      <meta name="description" content="Represents a single typed value read from an OLE property set, the managed counterpart of a COM PROPVARIANT.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/new/master/apiSpec/new?filename=Bodu_IO_Compound_PropertySets_OlePropertyValue.md&amp;value=---%0Auid%3A%20Bodu.IO.Compound.PropertySets.OlePropertyValue%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue">
+
+        <article data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue">
 
 
 
-  <h1 id="Bodu_IO_Compound_PropertySets_OlePropertyValue" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue" class="text-break">Class OlePropertyValue</h1>
-  <div class="markdown level0 summary"><p>Represents a single typed value read from an OLE property set, the managed counterpart of a COM <code>PROPVARIANT</code>.</p>
+  <h1 id="Bodu_IO_Compound_PropertySets_OlePropertyValue" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue" class="text-break">
+Class OlePropertyValue  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound.PropertySets/OlePropertyValue.cs/#L20"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.IO.html">IO</a>.<a class="xref" href="Bodu.IO.Compound.html">Compound</a>.<a class="xref" href="Bodu.IO.Compound.PropertySets.html">PropertySets</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.IO.Compound.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Represents a single typed value read from an OLE property set, the managed counterpart of a COM <code>PROPVARIANT</code>.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><span class="xref">OlePropertyValue</span></div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed record OlePropertyValue : IEquatable&lt;OlePropertyValue&gt;</code></pre>
   </div>
-  <div class="implements">
-    <h5>Implements</h5>
-    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertyValue.html">OlePropertyValue</a>&gt;</div>
-  </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">OlePropertyValue</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertyValue.html">OlePropertyValue</a>&gt;</div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
@@ -115,239 +145,767 @@
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
+  </dd></dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">IO</span>.<a class="xref" href="Bodu.IO.Compound.html">Compound</a>.<a class="xref" href="Bodu.IO.Compound.PropertySets.html">PropertySets</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.IO.Compound.dll</h6>
-  <h5 id="Bodu_IO_Compound_PropertySets_OlePropertyValue_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed record OlePropertyValue : IEquatable&lt;OlePropertyValue&gt;</code></pre>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h5 id="Bodu_IO_Compound_PropertySets_OlePropertyValue_remarks"><strong>Remarks</strong></h5>
-  <div class="markdown level0 remarks"><p>The decoded CLR value is exposed through <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertyValue.Value.html#Bodu_IO_Compound_PropertySets_OlePropertyValue_Value">Value</a> and the strongly-typed accessor methods. Scalar values
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  </dd></dl>
+
+
+
+  <h2 id="Bodu_IO_Compound_PropertySets_OlePropertyValue_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>The decoded CLR value is exposed through <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertyValue.html#Bodu_IO_Compound_PropertySets_OlePropertyValue_Value">Value</a> and the strongly-typed accessor methods. Scalar values
 are boxed to their natural CLR type (for example <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, or
-<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetimeoffset">DateTimeOffset</a>); vector values (<a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertyValue.IsVector.html#Bodu_IO_Compound_PropertySets_OlePropertyValue_IsVector">IsVector</a>) are exposed as an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a>
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetimeoffset">DateTimeOffset</a>); vector values (<a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertyValue.html#Bodu_IO_Compound_PropertySets_OlePropertyValue_IsVector">IsVector</a>) are exposed as an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a>
 array of element values. A Windows FILETIME is stored as its raw 100-nanosecond tick count, so it can be read either
 as a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetimeoffset">DateTimeOffset</a> (a point in time) or a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.timespan">TimeSpan</a> (an elapsed duration, as used by
 the total-edit-time property).</p>
 </div>
-  <h3 id="properties">Properties
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_IO_Compound_PropertySets_OlePropertyValue_IsVector" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue.IsVector">
-          <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertyValue.IsVector.html#Bodu_IO_Compound_PropertySets_OlePropertyValue_IsVector">IsVector</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets a value indicating whether this property carries a vector (array) of values rather than a single scalar.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_PropertySets_OlePropertyValue_Type" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue.Type">
-          <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertyValue.Type.html#Bodu_IO_Compound_PropertySets_OlePropertyValue_Type">Type</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the scalar value type of this property.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_PropertySets_OlePropertyValue_Value" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue.Value">
-          <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertyValue.Value.html#Bodu_IO_Compound_PropertySets_OlePropertyValue_Value">Value</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the decoded value.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_IO_Compound_PropertySets_OlePropertyValue_AsBoolean" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue.AsBoolean">
-          <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertyValue.AsBoolean.html#Bodu_IO_Compound_PropertySets_OlePropertyValue_AsBoolean">AsBoolean()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the value as a boolean when it is a boolean scalar.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_PropertySets_OlePropertyValue_AsBytes" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue.AsBytes">
-          <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertyValue.AsBytes.html#Bodu_IO_Compound_PropertySets_OlePropertyValue_AsBytes">AsBytes()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the value as a byte array when it is a blob or clipboard scalar.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_PropertySets_OlePropertyValue_AsDateTimeOffset" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue.AsDateTimeOffset">
-          <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertyValue.AsDateTimeOffset.html#Bodu_IO_Compound_PropertySets_OlePropertyValue_AsDateTimeOffset">AsDateTimeOffset()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the value as a point in time when it is a date or FILETIME scalar.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_PropertySets_OlePropertyValue_AsInt32" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue.AsInt32">
-          <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertyValue.AsInt32.html#Bodu_IO_Compound_PropertySets_OlePropertyValue_AsInt32">AsInt32()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the value as a 32-bit integer when it is an integral scalar.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_PropertySets_OlePropertyValue_AsInt64" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue.AsInt64">
-          <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertyValue.AsInt64.html#Bodu_IO_Compound_PropertySets_OlePropertyValue_AsInt64">AsInt64()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the value as a 64-bit integer when it is an integral scalar.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_PropertySets_OlePropertyValue_AsString" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue.AsString">
-          <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertyValue.AsString.html#Bodu_IO_Compound_PropertySets_OlePropertyValue_AsString">AsString()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the value as a string when it is a string scalar.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_PropertySets_OlePropertyValue_AsTimeSpan" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue.AsTimeSpan">
-          <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertyValue.AsTimeSpan.html#Bodu_IO_Compound_PropertySets_OlePropertyValue_AsTimeSpan">AsTimeSpan()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the value as an elapsed duration when it is a FILETIME scalar.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_PropertySets_OlePropertyValue_Create_System_Boolean_" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue.Create(System.Boolean)">
-          <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertyValue.Create.html#Bodu_IO_Compound_PropertySets_OlePropertyValue_Create_System_Boolean_">Create(bool)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Creates a boolean property value.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_PropertySets_OlePropertyValue_Create_System_DateTimeOffset_" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue.Create(System.DateTimeOffset)">
-          <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertyValue.Create.html#Bodu_IO_Compound_PropertySets_OlePropertyValue_Create_System_DateTimeOffset_">Create(DateTimeOffset)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Creates a FILETIME property value from a point in time.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_PropertySets_OlePropertyValue_Create_System_Double_" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue.Create(System.Double)">
-          <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertyValue.Create.html#Bodu_IO_Compound_PropertySets_OlePropertyValue_Create_System_Double_">Create(double)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Creates a 64-bit floating-point property value.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_PropertySets_OlePropertyValue_Create_System_Int16_" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue.Create(System.Int16)">
-          <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertyValue.Create.html#Bodu_IO_Compound_PropertySets_OlePropertyValue_Create_System_Int16_">Create(short)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Creates a 16-bit integer property value.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_PropertySets_OlePropertyValue_Create_System_Int32_" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue.Create(System.Int32)">
-          <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertyValue.Create.html#Bodu_IO_Compound_PropertySets_OlePropertyValue_Create_System_Int32_">Create(int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Creates a 32-bit integer property value.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_PropertySets_OlePropertyValue_Create_System_Int64_" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue.Create(System.Int64)">
-          <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertyValue.Create.html#Bodu_IO_Compound_PropertySets_OlePropertyValue_Create_System_Int64_">Create(long)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Creates a 64-bit integer property value.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_PropertySets_OlePropertyValue_Create_System_String_Bodu_IO_Compound_PropertySets_OlePropertyType_" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue.Create(System.String,Bodu.IO.Compound.PropertySets.OlePropertyType)">
-          <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertyValue.Create.html#Bodu_IO_Compound_PropertySets_OlePropertyValue_Create_System_String_Bodu_IO_Compound_PropertySets_OlePropertyType_">Create(string, OlePropertyType)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Creates a string property value.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_PropertySets_OlePropertyValue_CreateBlob_System_Byte___" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue.CreateBlob(System.Byte[])">
-          <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertyValue.CreateBlob.html#Bodu_IO_Compound_PropertySets_OlePropertyValue_CreateBlob_System_Byte___">CreateBlob(byte[])</a>
-        </td>
-        <td class="markdown level1 summary"><p>Creates a blob property value.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_PropertySets_OlePropertyValue_GetValueOrDefault__1" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue.GetValueOrDefault``1">
-          <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertyValue.GetValueOrDefault.html#Bodu_IO_Compound_PropertySets_OlePropertyValue_GetValueOrDefault__1">GetValueOrDefault&lt;T&gt;()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the value as <code class="typeparamref">T</code> when the boxed value is of that type.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Bodu_IO_Compound_PropertySets_OlePropertyValue_IsVector_" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue.IsVector*"></a>
+
+  <h3 id="Bodu_IO_Compound_PropertySets_OlePropertyValue_IsVector" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue.IsVector">
+  IsVector
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound.PropertySets/OlePropertyValue.cs/#L35"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether this property carries a vector (array) of values rather than a single scalar.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsVector { get; init; }</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertyValue.html#Bodu_IO_Compound_PropertySets_OlePropertyValue_Value">Value</a> is an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a> array; otherwise
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_IO_Compound_PropertySets_OlePropertyValue_Type_" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue.Type*"></a>
+
+  <h3 id="Bodu_IO_Compound_PropertySets_OlePropertyValue_Type" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue.Type">
+  Type
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound.PropertySets/OlePropertyValue.cs/#L26"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the scalar value type of this property.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public OlePropertyType Type { get; init; }</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertyType.html">OlePropertyType</a></dt>
+    <dd><p>The <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertyType.html">OlePropertyType</a> describing the decoded value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_IO_Compound_PropertySets_OlePropertyValue_Value_" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue.Value*"></a>
+
+  <h3 id="Bodu_IO_Compound_PropertySets_OlePropertyValue_Value" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue.Value">
+  Value
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound.PropertySets/OlePropertyValue.cs/#L44"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the decoded value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public object? Value { get; init; }</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></dt>
+    <dd><p>The boxed CLR value for a scalar property, an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a> array for a vector property, or
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for an empty or null value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_IO_Compound_PropertySets_OlePropertyValue_AsBoolean_" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue.AsBoolean*"></a>
+
+  <h3 id="Bodu_IO_Compound_PropertySets_OlePropertyValue_AsBoolean" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue.AsBoolean">
+  AsBoolean()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound.PropertySets/OlePropertyValue.cs/#L172"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the value as a boolean when it is a boolean scalar.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool? AsBoolean()</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>?</dt>
+    <dd><p>The boolean value, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when the value is not a boolean.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_IO_Compound_PropertySets_OlePropertyValue_AsBytes_" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue.AsBytes*"></a>
+
+  <h3 id="Bodu_IO_Compound_PropertySets_OlePropertyValue_AsBytes" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue.AsBytes">
+  AsBytes()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound.PropertySets/OlePropertyValue.cs/#L201"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the value as a byte array when it is a blob or clipboard scalar.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public byte[]? AsBytes()</code></pre>
   </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The byte array, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when the value is not binary.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_IO_Compound_PropertySets_OlePropertyValue_AsDateTimeOffset_" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue.AsDateTimeOffset*"></a>
+
+  <h3 id="Bodu_IO_Compound_PropertySets_OlePropertyValue_AsDateTimeOffset" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue.AsDateTimeOffset">
+  AsDateTimeOffset()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound.PropertySets/OlePropertyValue.cs/#L179"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the value as a point in time when it is a date or FILETIME scalar.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DateTimeOffset? AsDateTimeOffset()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetimeoffset">DateTimeOffset</a>?</dt>
+    <dd><p>The time value, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when the value is not a date or FILETIME.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_IO_Compound_PropertySets_OlePropertyValue_AsInt32_" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue.AsInt32*"></a>
+
+  <h3 id="Bodu_IO_Compound_PropertySets_OlePropertyValue_AsInt32" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue.AsInt32">
+  AsInt32()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound.PropertySets/OlePropertyValue.cs/#L136"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the value as a 32-bit integer when it is an integral scalar.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int? AsInt32()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd><p>The integer value, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when the value is not integral.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_IO_Compound_PropertySets_OlePropertyValue_AsInt64_" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue.AsInt64*"></a>
+
+  <h3 id="Bodu_IO_Compound_PropertySets_OlePropertyValue_AsInt64" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue.AsInt64">
+  AsInt64()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound.PropertySets/OlePropertyValue.cs/#L154"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the value as a 64-bit integer when it is an integral scalar.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public long? AsInt64()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a>?</dt>
+    <dd><p>The integer value, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when the value is not integral.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_IO_Compound_PropertySets_OlePropertyValue_AsString_" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue.AsString*"></a>
+
+  <h3 id="Bodu_IO_Compound_PropertySets_OlePropertyValue_AsString" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue.AsString">
+  AsString()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound.PropertySets/OlePropertyValue.cs/#L129"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the value as a string when it is a string scalar.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string? AsString()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The string value, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when the value is not a string.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_IO_Compound_PropertySets_OlePropertyValue_AsTimeSpan_" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue.AsTimeSpan*"></a>
+
+  <h3 id="Bodu_IO_Compound_PropertySets_OlePropertyValue_AsTimeSpan" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue.AsTimeSpan">
+  AsTimeSpan()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound.PropertySets/OlePropertyValue.cs/#L194"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the value as an elapsed duration when it is a FILETIME scalar.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TimeSpan? AsTimeSpan()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.timespan">TimeSpan</a>?</dt>
+    <dd><p>The duration, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when the value is not a FILETIME.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_IO_Compound_PropertySets_OlePropertyValue_Create_" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue.Create*"></a>
+
+  <h3 id="Bodu_IO_Compound_PropertySets_OlePropertyValue_Create_System_Boolean_" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue.Create(System.Boolean)">
+  Create(bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound.PropertySets/OlePropertyValue.cs/#L83"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a boolean property value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static OlePropertyValue Create(bool value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>The boolean value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertyValue.html">OlePropertyValue</a></dt>
+    <dd><p>A new <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertyValue.html">OlePropertyValue</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_IO_Compound_PropertySets_OlePropertyValue_Create_" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue.Create*"></a>
+
+  <h3 id="Bodu_IO_Compound_PropertySets_OlePropertyValue_Create_System_DateTimeOffset_" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue.Create(System.DateTimeOffset)">
+  Create(DateTimeOffset)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound.PropertySets/OlePropertyValue.cs/#L107"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a FILETIME property value from a point in time.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static OlePropertyValue Create(DateTimeOffset value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetimeoffset">DateTimeOffset</a></dt>
+    <dd><p>The time to store.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertyValue.html">OlePropertyValue</a></dt>
+    <dd><p>A new <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertyValue.html">OlePropertyValue</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_IO_Compound_PropertySets_OlePropertyValue_Create_" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue.Create*"></a>
+
+  <h3 id="Bodu_IO_Compound_PropertySets_OlePropertyValue_Create_System_Double_" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue.Create(System.Double)">
+  Create(double)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound.PropertySets/OlePropertyValue.cs/#L75"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a 64-bit floating-point property value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static OlePropertyValue Create(double value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd><p>The floating-point value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertyValue.html">OlePropertyValue</a></dt>
+    <dd><p>A new <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertyValue.html">OlePropertyValue</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_IO_Compound_PropertySets_OlePropertyValue_Create_" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue.Create*"></a>
+
+  <h3 id="Bodu_IO_Compound_PropertySets_OlePropertyValue_Create_System_Int16_" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue.Create(System.Int16)">
+  Create(short)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound.PropertySets/OlePropertyValue.cs/#L59"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a 16-bit integer property value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static OlePropertyValue Create(short value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int16">short</a></dt>
+    <dd><p>The integer value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertyValue.html">OlePropertyValue</a></dt>
+    <dd><p>A new <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertyValue.html">OlePropertyValue</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_IO_Compound_PropertySets_OlePropertyValue_Create_" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue.Create*"></a>
+
+  <h3 id="Bodu_IO_Compound_PropertySets_OlePropertyValue_Create_System_Int32_" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue.Create(System.Int32)">
+  Create(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound.PropertySets/OlePropertyValue.cs/#L51"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a 32-bit integer property value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static OlePropertyValue Create(int value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The integer value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertyValue.html">OlePropertyValue</a></dt>
+    <dd><p>A new <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertyValue.html">OlePropertyValue</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_IO_Compound_PropertySets_OlePropertyValue_Create_" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue.Create*"></a>
+
+  <h3 id="Bodu_IO_Compound_PropertySets_OlePropertyValue_Create_System_Int64_" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue.Create(System.Int64)">
+  Create(long)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound.PropertySets/OlePropertyValue.cs/#L67"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a 64-bit integer property value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static OlePropertyValue Create(long value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a></dt>
+    <dd><p>The integer value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertyValue.html">OlePropertyValue</a></dt>
+    <dd><p>A new <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertyValue.html">OlePropertyValue</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_IO_Compound_PropertySets_OlePropertyValue_Create_" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue.Create*"></a>
+
+  <h3 id="Bodu_IO_Compound_PropertySets_OlePropertyValue_Create_System_String_Bodu_IO_Compound_PropertySets_OlePropertyType_" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue.Create(System.String,Bodu.IO.Compound.PropertySets.OlePropertyType)">
+  Create(string, OlePropertyType)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound.PropertySets/OlePropertyValue.cs/#L95"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a string property value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static OlePropertyValue Create(string value, OlePropertyType type = OlePropertyType.AnsiString)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The string value.</p>
+</dd>
+    <dt><code>type</code> <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertyType.html">OlePropertyType</a></dt>
+    <dd><p>The string property type; defaults to <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertyType.html#Bodu_IO_Compound_PropertySets_OlePropertyType_AnsiString">AnsiString</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertyValue.html">OlePropertyValue</a></dt>
+    <dd><p>A new <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertyValue.html">OlePropertyValue</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">value</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_IO_Compound_PropertySets_OlePropertyValue_CreateBlob_" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue.CreateBlob*"></a>
+
+  <h3 id="Bodu_IO_Compound_PropertySets_OlePropertyValue_CreateBlob_System_Byte___" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue.CreateBlob(System.Byte[])">
+  CreateBlob(byte[])
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound.PropertySets/OlePropertyValue.cs/#L118"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a blob property value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static OlePropertyValue CreateBlob(byte[] value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The blob bytes.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertyValue.html">OlePropertyValue</a></dt>
+    <dd><p>A new <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertyValue.html">OlePropertyValue</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">value</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_IO_Compound_PropertySets_OlePropertyValue_GetValueOrDefault_" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue.GetValueOrDefault*"></a>
+
+  <h3 id="Bodu_IO_Compound_PropertySets_OlePropertyValue_GetValueOrDefault__1" data-uid="Bodu.IO.Compound.PropertySets.OlePropertyValue.GetValueOrDefault``1">
+  GetValueOrDefault&lt;T&gt;()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound.PropertySets/OlePropertyValue.cs/#L212"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the value as <code class="typeparamref">T</code> when the boxed value is of that type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public T? GetValueOrDefault&lt;T&gt;()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">T</span></dt>
+    <dd><p>The value cast to <code class="typeparamref">T</code>, or the default of <code class="typeparamref">T</code> when the cast does not
+apply.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The expected value type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 302e395 · Built: 2026-09-29 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 1e0dd9a · Built: 2026-09-29 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

@@ -1,98 +1,126 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
       <title>Class ExcelSerialDate | BODU </title>
-      <meta name="viewport" content="width=device-width">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class ExcelSerialDate | BODU ">
-    
-    <meta name="description" content="Converts Excel serial date numbers into calendar dates.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      
+      <meta name="description" content="Converts Excel serial date numbers into calendar dates.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/new/master/apiSpec/new?filename=Bodu_Formats_Excel_ExcelSerialDate.md&amp;value=---%0Auid%3A%20Bodu.Formats.Excel.ExcelSerialDate%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Formats.Excel.ExcelSerialDate">
+
+        <article data-uid="Bodu.Formats.Excel.ExcelSerialDate">
 
 
 
-  <h1 id="Bodu_Formats_Excel_ExcelSerialDate" data-uid="Bodu.Formats.Excel.ExcelSerialDate" class="text-break">Class ExcelSerialDate</h1>
-  <div class="markdown level0 summary"><p>Converts Excel serial date numbers into calendar dates.</p>
-</div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><span class="xref">ExcelSerialDate</span></div>
+  <h1 id="Bodu_Formats_Excel_ExcelSerialDate" data-uid="Bodu.Formats.Excel.ExcelSerialDate" class="text-break">
+Class ExcelSerialDate  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Formats.Excel.Binary/src/Formats.Excel/ExcelSerialDate.cs/#L19"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Formats.html">Formats</a>.<a class="xref" href="Bodu.Formats.Excel.html">Excel</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Formats.Excel.Binary.dll</dd></dl>
   </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+  <div class="markdown summary"><p>Converts Excel serial date numbers into calendar dates.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class ExcelSerialDate</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">ExcelSerialDate</span></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
@@ -114,109 +142,252 @@
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
-  </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Formats</span>.<a class="xref" href="Bodu.Formats.Excel.html">Excel</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Formats.Excel.Binary.dll</h6>
-  <h5 id="Bodu_Formats_Excel_ExcelSerialDate_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static class ExcelSerialDate</code></pre>
-  </div>
-  <h5 id="Bodu_Formats_Excel_ExcelSerialDate_remarks"><strong>Remarks</strong></h5>
+  </dd></dl>
+
+
+
+
+  <h2 id="Bodu_Formats_Excel_ExcelSerialDate_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
 Excel stores dates as floating-point serial numbers measured from the epoch <code>1899-12-30</code>, deliberately
 preserving the historical 1900 leap-year bug so that values round-trip with Excel. The reader never infers that a
 numeric cell is a date; this helper is provided so a caller that knows a column holds dates can convert its values.
 </p>
 </div>
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Formats_Excel_ExcelSerialDate_FromSerialDate_System_Double_" data-uid="Bodu.Formats.Excel.ExcelSerialDate.FromSerialDate(System.Double)">
-          <a class="xref" href="Bodu.Formats.Excel.ExcelSerialDate.FromSerialDate.html#Bodu_Formats_Excel_ExcelSerialDate_FromSerialDate_System_Double_">FromSerialDate(double)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Converts an Excel serial date number in the 1900 date system to a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a>, discarding any
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Formats_Excel_ExcelSerialDate_FromSerialDate_" data-uid="Bodu.Formats.Excel.ExcelSerialDate.FromSerialDate*"></a>
+
+  <h3 id="Bodu_Formats_Excel_ExcelSerialDate_FromSerialDate_System_Double_" data-uid="Bodu.Formats.Excel.ExcelSerialDate.FromSerialDate(System.Double)">
+  FromSerialDate(double)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Formats.Excel.Binary/src/Formats.Excel/ExcelSerialDate.cs/#L33"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Converts an Excel serial date number in the 1900 date system to a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a>, discarding any
 fractional time-of-day component.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Formats_Excel_ExcelSerialDate_FromSerialDate_System_Double_Bodu_Formats_Excel_ExcelDateSystem_" data-uid="Bodu.Formats.Excel.ExcelSerialDate.FromSerialDate(System.Double,Bodu.Formats.Excel.ExcelDateSystem)">
-          <a class="xref" href="Bodu.Formats.Excel.ExcelSerialDate.FromSerialDate.html#Bodu_Formats_Excel_ExcelSerialDate_FromSerialDate_System_Double_Bodu_Formats_Excel_ExcelDateSystem_">FromSerialDate(double, ExcelDateSystem)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Converts an Excel serial date number to a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a> using the specified date system, discarding
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DateOnly FromSerialDate(double serial)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>serial</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd><p>The Excel serial date number.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>The calendar date represented by <code class="paramref">serial</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">serial</code> is outside the range of representable OLE Automation dates.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Formats_Excel_ExcelSerialDate_FromSerialDate_" data-uid="Bodu.Formats.Excel.ExcelSerialDate.FromSerialDate*"></a>
+
+  <h3 id="Bodu_Formats_Excel_ExcelSerialDate_FromSerialDate_System_Double_Bodu_Formats_Excel_ExcelDateSystem_" data-uid="Bodu.Formats.Excel.ExcelSerialDate.FromSerialDate(System.Double,Bodu.Formats.Excel.ExcelDateSystem)">
+  FromSerialDate(double, ExcelDateSystem)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Formats.Excel.Binary/src/Formats.Excel/ExcelSerialDate.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Converts an Excel serial date number to a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a> using the specified date system, discarding
 any fractional time-of-day component.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Formats_Excel_ExcelSerialDate_ToDateTime_System_Double_" data-uid="Bodu.Formats.Excel.ExcelSerialDate.ToDateTime(System.Double)">
-          <a class="xref" href="Bodu.Formats.Excel.ExcelSerialDate.ToDateTime.html#Bodu_Formats_Excel_ExcelSerialDate_ToDateTime_System_Double_">ToDateTime(double)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Converts an Excel serial date number in the 1900 date system to a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>, preserving any
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DateOnly FromSerialDate(double serial, ExcelDateSystem dateSystem)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>serial</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd><p>The Excel serial date number.</p>
+</dd>
+    <dt><code>dateSystem</code> <a class="xref" href="Bodu.Formats.Excel.ExcelDateSystem.html">ExcelDateSystem</a></dt>
+    <dd><p>The date system that establishes the serial number's epoch.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>The calendar date represented by <code class="paramref">serial</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">serial</code> is outside the range of representable OLE Automation dates.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Formats_Excel_ExcelSerialDate_ToDateTime_" data-uid="Bodu.Formats.Excel.ExcelSerialDate.ToDateTime*"></a>
+
+  <h3 id="Bodu_Formats_Excel_ExcelSerialDate_ToDateTime_System_Double_" data-uid="Bodu.Formats.Excel.ExcelSerialDate.ToDateTime(System.Double)">
+  ToDateTime(double)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Formats.Excel.Binary/src/Formats.Excel/ExcelSerialDate.cs/#L68"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Converts an Excel serial date number in the 1900 date system to a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>, preserving any
 fractional time-of-day component.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Formats_Excel_ExcelSerialDate_ToDateTime_System_Double_Bodu_Formats_Excel_ExcelDateSystem_" data-uid="Bodu.Formats.Excel.ExcelSerialDate.ToDateTime(System.Double,Bodu.Formats.Excel.ExcelDateSystem)">
-          <a class="xref" href="Bodu.Formats.Excel.ExcelSerialDate.ToDateTime.html#Bodu_Formats_Excel_ExcelSerialDate_ToDateTime_System_Double_Bodu_Formats_Excel_ExcelDateSystem_">ToDateTime(double, ExcelDateSystem)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Converts an Excel serial date number to a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> using the specified date system, preserving
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DateTime ToDateTime(double serial)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>serial</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd><p>The Excel serial date number.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a></dt>
+    <dd><p>The date and time represented by <code class="paramref">serial</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Formats_Excel_ExcelSerialDate_ToDateTime_System_Double__examples">Examples</h4>
+  <pre><code class="lang-csharp">using Bodu.Formats.Excel;
+
+// Serial 25569 is 1970-01-01 in the default 1900 date system.
+DateTime epoch = ExcelSerialDate.ToDateTime(25569);</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">serial</code> is outside the range of representable OLE Automation dates.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Formats_Excel_ExcelSerialDate_ToDateTime_" data-uid="Bodu.Formats.Excel.ExcelSerialDate.ToDateTime*"></a>
+
+  <h3 id="Bodu_Formats_Excel_ExcelSerialDate_ToDateTime_System_Double_Bodu_Formats_Excel_ExcelDateSystem_" data-uid="Bodu.Formats.Excel.ExcelSerialDate.ToDateTime(System.Double,Bodu.Formats.Excel.ExcelDateSystem)">
+  ToDateTime(double, ExcelDateSystem)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Formats.Excel.Binary/src/Formats.Excel/ExcelSerialDate.cs/#L97"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Converts an Excel serial date number to a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> using the specified date system, preserving
 any fractional time-of-day component.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DateTime ToDateTime(double serial, ExcelDateSystem dateSystem)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>serial</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd><p>The Excel serial date number.</p>
+</dd>
+    <dt><code>dateSystem</code> <a class="xref" href="Bodu.Formats.Excel.ExcelDateSystem.html">ExcelDateSystem</a></dt>
+    <dd><p>The date system that establishes the serial number's epoch.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a></dt>
+    <dd><p>The date and time represented by <code class="paramref">serial</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Formats_Excel_ExcelSerialDate_ToDateTime_System_Double_Bodu_Formats_Excel_ExcelDateSystem__examples">Examples</h4>
+  <pre><code class="lang-csharp">using Bodu.Formats.Excel;
+
+// Convert a date-formatted numeric cell using the workbook's own date system.
+using var workbook = ExcelBinaryWorkbook.OpenRead("report.xls");
+using ExcelWorksheetReader reader = workbook.OpenWorksheet(0);
+while (reader.TryReadCell(out ExcelCell cell))
+{
+    if (cell.IsDateFormatted &amp;&amp; cell.NumberValue is double serial)
+        Console.WriteLine(ExcelSerialDate.ToDateTime(serial, workbook.DateSystem));
+}</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">serial</code> is outside the range of representable OLE Automation dates.</p>
+</dd>
+  </dl>
+
+
+
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 302e395 · Built: 2026-09-29 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 1e0dd9a · Built: 2026-09-29 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

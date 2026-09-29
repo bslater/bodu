@@ -1,98 +1,126 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
       <title>Class OptionAsyncExtensions | BODU </title>
-      <meta name="viewport" content="width=device-width">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class OptionAsyncExtensions | BODU ">
-    
-    <meta name="description" content="Provides Task-based asynchronous companions to the  railway combinators.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      
+      <meta name="description" content="Provides Task-based asynchronous companions to the  railway combinators.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/new/master/apiSpec/new?filename=Bodu_Functional_OptionAsyncExtensions.md&amp;value=---%0Auid%3A%20Bodu.Functional.OptionAsyncExtensions%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Functional.OptionAsyncExtensions">
+
+        <article data-uid="Bodu.Functional.OptionAsyncExtensions">
 
 
 
-  <h1 id="Bodu_Functional_OptionAsyncExtensions" data-uid="Bodu.Functional.OptionAsyncExtensions" class="text-break">Class OptionAsyncExtensions</h1>
-  <div class="markdown level0 summary"><p>Provides Task-based asynchronous companions to the <a class="xref" href="Bodu.Functional.Option-1.html">Option&lt;T&gt;</a> railway combinators.</p>
-</div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><span class="xref">OptionAsyncExtensions</span></div>
+  <h1 id="Bodu_Functional_OptionAsyncExtensions" data-uid="Bodu.Functional.OptionAsyncExtensions" class="text-break">
+Class OptionAsyncExtensions  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Functional/OptionAsyncExtensions.MatchAsync.cs/#L14"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Functional.html">Functional</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Core.dll</dd></dl>
   </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+  <div class="markdown summary"><p>Provides Task-based asynchronous companions to the <a class="xref" href="Bodu.Functional.Option-1.html">Option&lt;T&gt;</a> railway combinators.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class OptionAsyncExtensions</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">OptionAsyncExtensions</span></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
@@ -114,19 +142,17 @@
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
-  </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Functional.html">Functional</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Core.dll</h6>
-  <h5 id="Bodu_Functional_OptionAsyncExtensions_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static class OptionAsyncExtensions</code></pre>
-  </div>
-  <h5 id="Bodu_Functional_OptionAsyncExtensions_remarks"><strong>Remarks</strong></h5>
+  </dd></dl>
+
+
+
+
+  <h2 id="Bodu_Functional_OptionAsyncExtensions_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
 Each operation mirrors its synchronous counterpart — <code>MapAsync</code> pairs with
-<a class="xref" href="Bodu.Functional.Option-1.Map.html#Bodu_Functional_Option_1_Map__1_System_Func__0___0__">Map&lt;TResult&gt;(Func&lt;T, TResult&gt;)</a>, <code>BindAsync</code> with
-<a class="xref" href="Bodu.Functional.Option-1.Bind.html#Bodu_Functional_Option_1_Bind__1_System_Func__0_Bodu_Functional_Option___0___">Bind&lt;TResult&gt;(Func&lt;T, Option&lt;TResult&gt;&gt;)</a>, and <code>MatchAsync</code> with
-<a class="xref" href="Bodu.Functional.Option-1.Match.html#Bodu_Functional_Option_1_Match__1_System_Func__0___0__System_Func___0__">Match&lt;TResult&gt;(Func&lt;T, TResult&gt;, Func&lt;TResult&gt;)</a> — so an asynchronous pipeline over
+<a class="xref" href="Bodu.Functional.Option-1.html#Bodu_Functional_Option_1_Map__1_System_Func__0___0__">Map&lt;TResult&gt;(Func&lt;T, TResult&gt;)</a>, <code>BindAsync</code> with
+<a class="xref" href="Bodu.Functional.Option-1.html#Bodu_Functional_Option_1_Bind__1_System_Func__0_Bodu_Functional_Option___0___">Bind&lt;TResult&gt;(Func&lt;T, Option&lt;TResult&gt;&gt;)</a>, and <code>MatchAsync</code> with
+<a class="xref" href="Bodu.Functional.Option-1.html#Bodu_Functional_Option_1_Match__1_System_Func__0___0__System_Func___0__">Match&lt;TResult&gt;(Func&lt;T, TResult&gt;, Func&lt;TResult&gt;)</a> — so an asynchronous pipeline over
 <code>Task&lt;Option&lt;T&gt;&gt;</code> composes exactly like its synchronous equivalent.
 </p>
 <p>
@@ -138,130 +164,624 @@ The combinators accept no <a class="xref" href="https://learn.microsoft.com/dotn
 belongs to the caller's delegates, which can close over their own tokens.
 </p>
 </div>
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Functional_OptionAsyncExtensions_BindAsync__2_Bodu_Functional_Option___0__System_Func___0_System_Threading_Tasks_Task_Bodu_Functional_Option___1____" data-uid="Bodu.Functional.OptionAsyncExtensions.BindAsync``2(Bodu.Functional.Option{``0},System.Func{``0,System.Threading.Tasks.Task{Bodu.Functional.Option{``1}}})">
-          <a class="xref" href="Bodu.Functional.OptionAsyncExtensions.BindAsync.html#Bodu_Functional_OptionAsyncExtensions_BindAsync__2_Bodu_Functional_Option___0__System_Func___0_System_Threading_Tasks_Task_Bodu_Functional_Option___1____">BindAsync&lt;T, TResult&gt;(Option&lt;T&gt;, Func&lt;T, Task&lt;Option&lt;TResult&gt;&gt;&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Asynchronously projects the contained value into another option using the specified asynchronous
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Functional_OptionAsyncExtensions_BindAsync_" data-uid="Bodu.Functional.OptionAsyncExtensions.BindAsync*"></a>
+
+  <h3 id="Bodu_Functional_OptionAsyncExtensions_BindAsync__2_Bodu_Functional_Option___0__System_Func___0_System_Threading_Tasks_Task_Bodu_Functional_Option___1____" data-uid="Bodu.Functional.OptionAsyncExtensions.BindAsync``2(Bodu.Functional.Option{``0},System.Func{``0,System.Threading.Tasks.Task{Bodu.Functional.Option{``1}}})">
+  BindAsync&lt;T, TResult&gt;(Option&lt;T&gt;, Func&lt;T, Task&lt;Option&lt;TResult&gt;&gt;&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Functional/OptionAsyncExtensions.BindAsync.cs/#L108"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously projects the contained value into another option using the specified asynchronous
 option-returning selector.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Functional_OptionAsyncExtensions_BindAsync__2_System_Threading_Tasks_Task_Bodu_Functional_Option___0___System_Func___0_Bodu_Functional_Option___1___" data-uid="Bodu.Functional.OptionAsyncExtensions.BindAsync``2(System.Threading.Tasks.Task{Bodu.Functional.Option{``0}},System.Func{``0,Bodu.Functional.Option{``1}})">
-          <a class="xref" href="Bodu.Functional.OptionAsyncExtensions.BindAsync.html#Bodu_Functional_OptionAsyncExtensions_BindAsync__2_System_Threading_Tasks_Task_Bodu_Functional_Option___0___System_Func___0_Bodu_Functional_Option___1___">BindAsync&lt;T, TResult&gt;(Task&lt;Option&lt;T&gt;&gt;, Func&lt;T, Option&lt;TResult&gt;&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Asynchronously projects the value contained by the awaited option into another option using the specified
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Option&lt;TResult&gt;&gt; BindAsync&lt;T, TResult&gt;(this Option&lt;T&gt; source, Func&lt;T, Task&lt;Option&lt;TResult&gt;&gt;&gt; selector)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="Bodu.Functional.Option-1.html">Option</a>&lt;T&gt;</dt>
+    <dd><p>The option to project.</p>
+</dd>
+    <dt><code>selector</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;T, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Bodu.Functional.Option-1.html">Option</a>&lt;TResult&gt;&gt;&gt;</dt>
+    <dd><p>The asynchronous option-returning projection applied to the contained value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Bodu.Functional.Option-1.html">Option</a>&lt;TResult&gt;&gt;</dt>
+    <dd><p>A task that completes with the option produced by the awaited selector when the option carries a value;
+otherwise <code>None</code>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The value type of the source option.</p>
+</dd>
+    <dt><code>TResult</code></dt>
+    <dd><p>The value type of the resulting option.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Functional_OptionAsyncExtensions_BindAsync__2_Bodu_Functional_Option___0__System_Func___0_System_Threading_Tasks_Task_Bodu_Functional_Option___1_____remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+The selector is not invoked when the option is <code>None</code>. Argument validation runs synchronously, so a
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> selector faults at the call site rather than on the returned task.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">selector</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Functional_OptionAsyncExtensions_BindAsync_" data-uid="Bodu.Functional.OptionAsyncExtensions.BindAsync*"></a>
+
+  <h3 id="Bodu_Functional_OptionAsyncExtensions_BindAsync__2_System_Threading_Tasks_Task_Bodu_Functional_Option___0___System_Func___0_Bodu_Functional_Option___1___" data-uid="Bodu.Functional.OptionAsyncExtensions.BindAsync``2(System.Threading.Tasks.Task{Bodu.Functional.Option{``0}},System.Func{``0,Bodu.Functional.Option{``1}})">
+  BindAsync&lt;T, TResult&gt;(Task&lt;Option&lt;T&gt;&gt;, Func&lt;T, Option&lt;TResult&gt;&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Functional/OptionAsyncExtensions.BindAsync.cs/#L37"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously projects the value contained by the awaited option into another option using the specified
 option-returning selector.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Functional_OptionAsyncExtensions_BindAsync__2_System_Threading_Tasks_Task_Bodu_Functional_Option___0___System_Func___0_System_Threading_Tasks_Task_Bodu_Functional_Option___1____" data-uid="Bodu.Functional.OptionAsyncExtensions.BindAsync``2(System.Threading.Tasks.Task{Bodu.Functional.Option{``0}},System.Func{``0,System.Threading.Tasks.Task{Bodu.Functional.Option{``1}}})">
-          <a class="xref" href="Bodu.Functional.OptionAsyncExtensions.BindAsync.html#Bodu_Functional_OptionAsyncExtensions_BindAsync__2_System_Threading_Tasks_Task_Bodu_Functional_Option___0___System_Func___0_System_Threading_Tasks_Task_Bodu_Functional_Option___1____">BindAsync&lt;T, TResult&gt;(Task&lt;Option&lt;T&gt;&gt;, Func&lt;T, Task&lt;Option&lt;TResult&gt;&gt;&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Asynchronously projects the value contained by the awaited option into another option using the specified
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Option&lt;TResult&gt;&gt; BindAsync&lt;T, TResult&gt;(this Task&lt;Option&lt;T&gt;&gt; source, Func&lt;T, Option&lt;TResult&gt;&gt; selector)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Bodu.Functional.Option-1.html">Option</a>&lt;T&gt;&gt;</dt>
+    <dd><p>The task producing the option to project. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>selector</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;T, <a class="xref" href="Bodu.Functional.Option-1.html">Option</a>&lt;TResult&gt;&gt;</dt>
+    <dd><p>The option-returning projection applied to the contained value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Bodu.Functional.Option-1.html">Option</a>&lt;TResult&gt;&gt;</dt>
+    <dd><p>A task that completes with the option produced by the selector when the awaited option carries a value;
+otherwise <code>None</code>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The value type of the source option.</p>
+</dd>
+    <dt><code>TResult</code></dt>
+    <dd><p>The value type of the resulting option.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Functional_OptionAsyncExtensions_BindAsync__2_System_Threading_Tasks_Task_Bodu_Functional_Option___0___System_Func___0_Bodu_Functional_Option___1____remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+The selector is not invoked when the awaited option is <code>None</code>. Argument validation runs synchronously, so a
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> argument faults at the call site rather than on the returned task.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">source</code> or <code class="paramref">selector</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Functional_OptionAsyncExtensions_BindAsync_" data-uid="Bodu.Functional.OptionAsyncExtensions.BindAsync*"></a>
+
+  <h3 id="Bodu_Functional_OptionAsyncExtensions_BindAsync__2_System_Threading_Tasks_Task_Bodu_Functional_Option___0___System_Func___0_System_Threading_Tasks_Task_Bodu_Functional_Option___1____" data-uid="Bodu.Functional.OptionAsyncExtensions.BindAsync``2(System.Threading.Tasks.Task{Bodu.Functional.Option{``0}},System.Func{``0,System.Threading.Tasks.Task{Bodu.Functional.Option{``1}}})">
+  BindAsync&lt;T, TResult&gt;(Task&lt;Option&lt;T&gt;&gt;, Func&lt;T, Task&lt;Option&lt;TResult&gt;&gt;&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Functional/OptionAsyncExtensions.BindAsync.cs/#L72"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously projects the value contained by the awaited option into another option using the specified
 asynchronous option-returning selector.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Functional_OptionAsyncExtensions_MapAsync__2_Bodu_Functional_Option___0__System_Func___0_System_Threading_Tasks_Task___1___" data-uid="Bodu.Functional.OptionAsyncExtensions.MapAsync``2(Bodu.Functional.Option{``0},System.Func{``0,System.Threading.Tasks.Task{``1}})">
-          <a class="xref" href="Bodu.Functional.OptionAsyncExtensions.MapAsync.html#Bodu_Functional_OptionAsyncExtensions_MapAsync__2_Bodu_Functional_Option___0__System_Func___0_System_Threading_Tasks_Task___1___">MapAsync&lt;T, TResult&gt;(Option&lt;T&gt;, Func&lt;T, Task&lt;TResult&gt;&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Asynchronously projects the contained value using the specified asynchronous selector.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Functional_OptionAsyncExtensions_MapAsync__2_System_Threading_Tasks_Task_Bodu_Functional_Option___0___System_Func___0_System_Threading_Tasks_Task___1___" data-uid="Bodu.Functional.OptionAsyncExtensions.MapAsync``2(System.Threading.Tasks.Task{Bodu.Functional.Option{``0}},System.Func{``0,System.Threading.Tasks.Task{``1}})">
-          <a class="xref" href="Bodu.Functional.OptionAsyncExtensions.MapAsync.html#Bodu_Functional_OptionAsyncExtensions_MapAsync__2_System_Threading_Tasks_Task_Bodu_Functional_Option___0___System_Func___0_System_Threading_Tasks_Task___1___">MapAsync&lt;T, TResult&gt;(Task&lt;Option&lt;T&gt;&gt;, Func&lt;T, Task&lt;TResult&gt;&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Asynchronously projects the value contained by the awaited option using the specified asynchronous selector.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Functional_OptionAsyncExtensions_MapAsync__2_System_Threading_Tasks_Task_Bodu_Functional_Option___0___System_Func___0___1__" data-uid="Bodu.Functional.OptionAsyncExtensions.MapAsync``2(System.Threading.Tasks.Task{Bodu.Functional.Option{``0}},System.Func{``0,``1})">
-          <a class="xref" href="Bodu.Functional.OptionAsyncExtensions.MapAsync.html#Bodu_Functional_OptionAsyncExtensions_MapAsync__2_System_Threading_Tasks_Task_Bodu_Functional_Option___0___System_Func___0___1__">MapAsync&lt;T, TResult&gt;(Task&lt;Option&lt;T&gt;&gt;, Func&lt;T, TResult&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Asynchronously projects the value contained by the awaited option using the specified selector.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Functional_OptionAsyncExtensions_MatchAsync__2_Bodu_Functional_Option___0__System_Func___0_System_Threading_Tasks_Task___1___System_Func_System_Threading_Tasks_Task___1___" data-uid="Bodu.Functional.OptionAsyncExtensions.MatchAsync``2(Bodu.Functional.Option{``0},System.Func{``0,System.Threading.Tasks.Task{``1}},System.Func{System.Threading.Tasks.Task{``1}})">
-          <a class="xref" href="Bodu.Functional.OptionAsyncExtensions.MatchAsync.html#Bodu_Functional_OptionAsyncExtensions_MatchAsync__2_Bodu_Functional_Option___0__System_Func___0_System_Threading_Tasks_Task___1___System_Func_System_Threading_Tasks_Task___1___">MatchAsync&lt;T, TResult&gt;(Option&lt;T&gt;, Func&lt;T, Task&lt;TResult&gt;&gt;, Func&lt;Task&lt;TResult&gt;&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Asynchronously collapses the option to a single value by invoking and awaiting the matching asynchronous branch.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Functional_OptionAsyncExtensions_MatchAsync__2_System_Threading_Tasks_Task_Bodu_Functional_Option___0___System_Func___0_System_Threading_Tasks_Task___1___System_Func_System_Threading_Tasks_Task___1___" data-uid="Bodu.Functional.OptionAsyncExtensions.MatchAsync``2(System.Threading.Tasks.Task{Bodu.Functional.Option{``0}},System.Func{``0,System.Threading.Tasks.Task{``1}},System.Func{System.Threading.Tasks.Task{``1}})">
-          <a class="xref" href="Bodu.Functional.OptionAsyncExtensions.MatchAsync.html#Bodu_Functional_OptionAsyncExtensions_MatchAsync__2_System_Threading_Tasks_Task_Bodu_Functional_Option___0___System_Func___0_System_Threading_Tasks_Task___1___System_Func_System_Threading_Tasks_Task___1___">MatchAsync&lt;T, TResult&gt;(Task&lt;Option&lt;T&gt;&gt;, Func&lt;T, Task&lt;TResult&gt;&gt;, Func&lt;Task&lt;TResult&gt;&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Asynchronously collapses the awaited option to a single value by invoking and awaiting the matching asynchronous
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Option&lt;TResult&gt;&gt; BindAsync&lt;T, TResult&gt;(this Task&lt;Option&lt;T&gt;&gt; source, Func&lt;T, Task&lt;Option&lt;TResult&gt;&gt;&gt; selector)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Bodu.Functional.Option-1.html">Option</a>&lt;T&gt;&gt;</dt>
+    <dd><p>The task producing the option to project. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>selector</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;T, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Bodu.Functional.Option-1.html">Option</a>&lt;TResult&gt;&gt;&gt;</dt>
+    <dd><p>The asynchronous option-returning projection applied to the contained value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Bodu.Functional.Option-1.html">Option</a>&lt;TResult&gt;&gt;</dt>
+    <dd><p>A task that completes with the option produced by the awaited selector when the awaited option carries a value;
+otherwise <code>None</code>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The value type of the source option.</p>
+</dd>
+    <dt><code>TResult</code></dt>
+    <dd><p>The value type of the resulting option.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Functional_OptionAsyncExtensions_BindAsync__2_System_Threading_Tasks_Task_Bodu_Functional_Option___0___System_Func___0_System_Threading_Tasks_Task_Bodu_Functional_Option___1_____remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+The selector is not invoked when the awaited option is <code>None</code>. Argument validation runs synchronously, so a
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> argument faults at the call site rather than on the returned task.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">source</code> or <code class="paramref">selector</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Functional_OptionAsyncExtensions_MapAsync_" data-uid="Bodu.Functional.OptionAsyncExtensions.MapAsync*"></a>
+
+  <h3 id="Bodu_Functional_OptionAsyncExtensions_MapAsync__2_Bodu_Functional_Option___0__System_Func___0_System_Threading_Tasks_Task___1___" data-uid="Bodu.Functional.OptionAsyncExtensions.MapAsync``2(Bodu.Functional.Option{``0},System.Func{``0,System.Threading.Tasks.Task{``1}})">
+  MapAsync&lt;T, TResult&gt;(Option&lt;T&gt;, Func&lt;T, Task&lt;TResult&gt;&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Functional/OptionAsyncExtensions.MapAsync.cs/#L111"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously projects the contained value using the specified asynchronous selector.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Option&lt;TResult&gt;&gt; MapAsync&lt;T, TResult&gt;(this Option&lt;T&gt; source, Func&lt;T, Task&lt;TResult&gt;&gt; selector)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="Bodu.Functional.Option-1.html">Option</a>&lt;T&gt;</dt>
+    <dd><p>The option to project.</p>
+</dd>
+    <dt><code>selector</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;T, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;TResult&gt;&gt;</dt>
+    <dd><p>The asynchronous projection applied to the contained value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Bodu.Functional.Option-1.html">Option</a>&lt;TResult&gt;&gt;</dt>
+    <dd><p>A task that completes with <code>Some(await selector(value))</code> when the option carries a value and the awaited
+projection is non-<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>; otherwise <code>None</code>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The value type of the source option.</p>
+</dd>
+    <dt><code>TResult</code></dt>
+    <dd><p>The type produced by the selector.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Functional_OptionAsyncExtensions_MapAsync__2_Bodu_Functional_Option___0__System_Func___0_System_Threading_Tasks_Task___1____remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+The selector is not invoked when the option is <code>None</code>. A <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> awaited projection result
+maps to <code>None</code> (the lenient lift), matching <a class="xref" href="Bodu.Functional.Option-1.html#Bodu_Functional_Option_1_Map__1_System_Func__0___0__">Map&lt;TResult&gt;(Func&lt;T, TResult&gt;)</a>.
+Argument validation runs synchronously, so a <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> selector faults at the call site rather
+than on the returned task.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">selector</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Functional_OptionAsyncExtensions_MapAsync_" data-uid="Bodu.Functional.OptionAsyncExtensions.MapAsync*"></a>
+
+  <h3 id="Bodu_Functional_OptionAsyncExtensions_MapAsync__2_System_Threading_Tasks_Task_Bodu_Functional_Option___0___System_Func___0_System_Threading_Tasks_Task___1___" data-uid="Bodu.Functional.OptionAsyncExtensions.MapAsync``2(System.Threading.Tasks.Task{Bodu.Functional.Option{``0}},System.Func{``0,System.Threading.Tasks.Task{``1}})">
+  MapAsync&lt;T, TResult&gt;(Task&lt;Option&lt;T&gt;&gt;, Func&lt;T, Task&lt;TResult&gt;&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Functional/OptionAsyncExtensions.MapAsync.cs/#L74"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously projects the value contained by the awaited option using the specified asynchronous selector.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Option&lt;TResult&gt;&gt; MapAsync&lt;T, TResult&gt;(this Task&lt;Option&lt;T&gt;&gt; source, Func&lt;T, Task&lt;TResult&gt;&gt; selector)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Bodu.Functional.Option-1.html">Option</a>&lt;T&gt;&gt;</dt>
+    <dd><p>The task producing the option to project. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>selector</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;T, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;TResult&gt;&gt;</dt>
+    <dd><p>The asynchronous projection applied to the contained value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Bodu.Functional.Option-1.html">Option</a>&lt;TResult&gt;&gt;</dt>
+    <dd><p>A task that completes with <code>Some(await selector(value))</code> when the awaited option carries a value and the
+awaited projection is non-<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>; otherwise <code>None</code>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The value type of the source option.</p>
+</dd>
+    <dt><code>TResult</code></dt>
+    <dd><p>The type produced by the selector.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Functional_OptionAsyncExtensions_MapAsync__2_System_Threading_Tasks_Task_Bodu_Functional_Option___0___System_Func___0_System_Threading_Tasks_Task___1____remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+The selector is not invoked when the awaited option is <code>None</code>. A <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> awaited projection
+result maps to <code>None</code> (the lenient lift), matching <a class="xref" href="Bodu.Functional.Option-1.html#Bodu_Functional_Option_1_Map__1_System_Func__0___0__">Map&lt;TResult&gt;(Func&lt;T, TResult&gt;)</a>.
+Argument validation runs synchronously, so a <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> argument faults at the call site rather
+than on the returned task.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">source</code> or <code class="paramref">selector</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Functional_OptionAsyncExtensions_MapAsync_" data-uid="Bodu.Functional.OptionAsyncExtensions.MapAsync*"></a>
+
+  <h3 id="Bodu_Functional_OptionAsyncExtensions_MapAsync__2_System_Threading_Tasks_Task_Bodu_Functional_Option___0___System_Func___0___1__" data-uid="Bodu.Functional.OptionAsyncExtensions.MapAsync``2(System.Threading.Tasks.Task{Bodu.Functional.Option{``0}},System.Func{``0,``1})">
+  MapAsync&lt;T, TResult&gt;(Task&lt;Option&lt;T&gt;&gt;, Func&lt;T, TResult&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Functional/OptionAsyncExtensions.MapAsync.cs/#L38"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously projects the value contained by the awaited option using the specified selector.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Option&lt;TResult&gt;&gt; MapAsync&lt;T, TResult&gt;(this Task&lt;Option&lt;T&gt;&gt; source, Func&lt;T, TResult&gt; selector)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Bodu.Functional.Option-1.html">Option</a>&lt;T&gt;&gt;</dt>
+    <dd><p>The task producing the option to project. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>selector</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;T, TResult&gt;</dt>
+    <dd><p>The projection applied to the contained value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Bodu.Functional.Option-1.html">Option</a>&lt;TResult&gt;&gt;</dt>
+    <dd><p>A task that completes with <code>Some(selector(value))</code> when the awaited option carries a value and the
+projection is non-<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>; otherwise <code>None</code>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The value type of the source option.</p>
+</dd>
+    <dt><code>TResult</code></dt>
+    <dd><p>The type produced by the selector.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Functional_OptionAsyncExtensions_MapAsync__2_System_Threading_Tasks_Task_Bodu_Functional_Option___0___System_Func___0___1___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+The selector is not invoked when the awaited option is <code>None</code>. A <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> projection result
+maps to <code>None</code> (the lenient lift), matching <a class="xref" href="Bodu.Functional.Option-1.html#Bodu_Functional_Option_1_Map__1_System_Func__0___0__">Map&lt;TResult&gt;(Func&lt;T, TResult&gt;)</a>.
+Argument validation runs synchronously, so a <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> argument faults at the call site rather
+than on the returned task.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">source</code> or <code class="paramref">selector</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Functional_OptionAsyncExtensions_MatchAsync_" data-uid="Bodu.Functional.OptionAsyncExtensions.MatchAsync*"></a>
+
+  <h3 id="Bodu_Functional_OptionAsyncExtensions_MatchAsync__2_Bodu_Functional_Option___0__System_Func___0_System_Threading_Tasks_Task___1___System_Func_System_Threading_Tasks_Task___1___" data-uid="Bodu.Functional.OptionAsyncExtensions.MatchAsync``2(Bodu.Functional.Option{``0},System.Func{``0,System.Threading.Tasks.Task{``1}},System.Func{System.Threading.Tasks.Task{``1}})">
+  MatchAsync&lt;T, TResult&gt;(Option&lt;T&gt;, Func&lt;T, Task&lt;TResult&gt;&gt;, Func&lt;Task&lt;TResult&gt;&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Functional/OptionAsyncExtensions.MatchAsync.cs/#L103"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously collapses the option to a single value by invoking and awaiting the matching asynchronous branch.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;TResult&gt; MatchAsync&lt;T, TResult&gt;(this Option&lt;T&gt; source, Func&lt;T, Task&lt;TResult&gt;&gt; onSome, Func&lt;Task&lt;TResult&gt;&gt; onNone)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="Bodu.Functional.Option-1.html">Option</a>&lt;T&gt;</dt>
+    <dd><p>The option to collapse.</p>
+</dd>
+    <dt><code>onSome</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;T, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;TResult&gt;&gt;</dt>
+    <dd><p>The asynchronous projection invoked with the contained value when one is present.</p>
+</dd>
+    <dt><code>onNone</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-1">Func</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;TResult&gt;&gt;</dt>
+    <dd><p>The asynchronous factory invoked when no value is present.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;TResult&gt;</dt>
+    <dd><p>A task that completes with the value produced by the awaited branch.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The value type of the source option.</p>
+</dd>
+    <dt><code>TResult</code></dt>
+    <dd><p>The type produced by both branches.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Functional_OptionAsyncExtensions_MatchAsync__2_Bodu_Functional_Option___0__System_Func___0_System_Threading_Tasks_Task___1___System_Func_System_Threading_Tasks_Task___1____remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+Exactly one branch is invoked. Argument validation runs synchronously, so a <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> argument
+faults at the call site rather than on the returned task.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">onSome</code> or <code class="paramref">onNone</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Functional_OptionAsyncExtensions_MatchAsync_" data-uid="Bodu.Functional.OptionAsyncExtensions.MatchAsync*"></a>
+
+  <h3 id="Bodu_Functional_OptionAsyncExtensions_MatchAsync__2_System_Threading_Tasks_Task_Bodu_Functional_Option___0___System_Func___0_System_Threading_Tasks_Task___1___System_Func_System_Threading_Tasks_Task___1___" data-uid="Bodu.Functional.OptionAsyncExtensions.MatchAsync``2(System.Threading.Tasks.Task{Bodu.Functional.Option{``0}},System.Func{``0,System.Threading.Tasks.Task{``1}},System.Func{System.Threading.Tasks.Task{``1}})">
+  MatchAsync&lt;T, TResult&gt;(Task&lt;Option&lt;T&gt;&gt;, Func&lt;T, Task&lt;TResult&gt;&gt;, Func&lt;Task&lt;TResult&gt;&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Functional/OptionAsyncExtensions.MatchAsync.cs/#L68"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously collapses the awaited option to a single value by invoking and awaiting the matching asynchronous
 branch.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Functional_OptionAsyncExtensions_MatchAsync__2_System_Threading_Tasks_Task_Bodu_Functional_Option___0___System_Func___0___1__System_Func___1__" data-uid="Bodu.Functional.OptionAsyncExtensions.MatchAsync``2(System.Threading.Tasks.Task{Bodu.Functional.Option{``0}},System.Func{``0,``1},System.Func{``1})">
-          <a class="xref" href="Bodu.Functional.OptionAsyncExtensions.MatchAsync.html#Bodu_Functional_OptionAsyncExtensions_MatchAsync__2_System_Threading_Tasks_Task_Bodu_Functional_Option___0___System_Func___0___1__System_Func___1__">MatchAsync&lt;T, TResult&gt;(Task&lt;Option&lt;T&gt;&gt;, Func&lt;T, TResult&gt;, Func&lt;TResult&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Asynchronously collapses the awaited option to a single value by invoking the matching branch.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;TResult&gt; MatchAsync&lt;T, TResult&gt;(this Task&lt;Option&lt;T&gt;&gt; source, Func&lt;T, Task&lt;TResult&gt;&gt; onSome, Func&lt;Task&lt;TResult&gt;&gt; onNone)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Bodu.Functional.Option-1.html">Option</a>&lt;T&gt;&gt;</dt>
+    <dd><p>The task producing the option to collapse. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>onSome</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;T, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;TResult&gt;&gt;</dt>
+    <dd><p>The asynchronous projection invoked with the contained value when one is present.</p>
+</dd>
+    <dt><code>onNone</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-1">Func</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;TResult&gt;&gt;</dt>
+    <dd><p>The asynchronous factory invoked when no value is present.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;TResult&gt;</dt>
+    <dd><p>A task that completes with the value produced by the awaited branch.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The value type of the source option.</p>
+</dd>
+    <dt><code>TResult</code></dt>
+    <dd><p>The type produced by both branches.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Functional_OptionAsyncExtensions_MatchAsync__2_System_Threading_Tasks_Task_Bodu_Functional_Option___0___System_Func___0_System_Threading_Tasks_Task___1___System_Func_System_Threading_Tasks_Task___1____remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+Exactly one branch is invoked. Argument validation runs synchronously, so a <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> argument
+faults at the call site rather than on the returned task.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">source</code>, <code class="paramref">onSome</code>, or <code class="paramref">onNone</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Functional_OptionAsyncExtensions_MatchAsync_" data-uid="Bodu.Functional.OptionAsyncExtensions.MatchAsync*"></a>
+
+  <h3 id="Bodu_Functional_OptionAsyncExtensions_MatchAsync__2_System_Threading_Tasks_Task_Bodu_Functional_Option___0___System_Func___0___1__System_Func___1__" data-uid="Bodu.Functional.OptionAsyncExtensions.MatchAsync``2(System.Threading.Tasks.Task{Bodu.Functional.Option{``0}},System.Func{``0,``1},System.Func{``1})">
+  MatchAsync&lt;T, TResult&gt;(Task&lt;Option&lt;T&gt;&gt;, Func&lt;T, TResult&gt;, Func&lt;TResult&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Functional/OptionAsyncExtensions.MatchAsync.cs/#L34"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously collapses the awaited option to a single value by invoking the matching branch.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;TResult&gt; MatchAsync&lt;T, TResult&gt;(this Task&lt;Option&lt;T&gt;&gt; source, Func&lt;T, TResult&gt; onSome, Func&lt;TResult&gt; onNone)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Bodu.Functional.Option-1.html">Option</a>&lt;T&gt;&gt;</dt>
+    <dd><p>The task producing the option to collapse. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>onSome</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;T, TResult&gt;</dt>
+    <dd><p>The projection invoked with the contained value when one is present.</p>
+</dd>
+    <dt><code>onNone</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-1">Func</a>&lt;TResult&gt;</dt>
+    <dd><p>The factory invoked when no value is present.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;TResult&gt;</dt>
+    <dd><p>A task that completes with the value produced by the invoked branch.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The value type of the source option.</p>
+</dd>
+    <dt><code>TResult</code></dt>
+    <dd><p>The type produced by both branches.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Functional_OptionAsyncExtensions_MatchAsync__2_System_Threading_Tasks_Task_Bodu_Functional_Option___0___System_Func___0___1__System_Func___1___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+Exactly one branch is invoked. Argument validation runs synchronously, so a <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> argument
+faults at the call site rather than on the returned task.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">source</code>, <code class="paramref">onSome</code>, or <code class="paramref">onNone</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 302e395 · Built: 2026-09-29 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 1e0dd9a · Built: 2026-09-29 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

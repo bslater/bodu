@@ -1,103 +1,133 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
       <title>Class OutlookMessage | BODU </title>
-      <meta name="viewport" content="width=device-width">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class OutlookMessage | BODU ">
-    
-    <meta name="description" content="Provides a disposable, read-only session over an Outlook message (.msg / MS-OXMSG), exposing every decoded MAPI property together with curated conveniences for the common message fields.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      
+      <meta name="description" content="Provides a disposable, read-only session over an Outlook message (.msg / MS-OXMSG), exposing every decoded MAPI property together with curated conveniences for the common message fields.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/new/master/apiSpec/new?filename=Bodu_Formats_Outlook_OutlookMessage.md&amp;value=---%0Auid%3A%20Bodu.Formats.Outlook.OutlookMessage%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Formats.Outlook.OutlookMessage">
+
+        <article data-uid="Bodu.Formats.Outlook.OutlookMessage">
 
 
 
-  <h1 id="Bodu_Formats_Outlook_OutlookMessage" data-uid="Bodu.Formats.Outlook.OutlookMessage" class="text-break">Class OutlookMessage</h1>
-  <div class="markdown level0 summary"><p>Provides a disposable, read-only session over an Outlook message (<code>.msg</code> / MS-OXMSG), exposing every decoded
+  <h1 id="Bodu_Formats_Outlook_OutlookMessage" data-uid="Bodu.Formats.Outlook.OutlookMessage" class="text-break">
+Class OutlookMessage  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Formats.Outlook.Msg/src/Formats.Outlook/OutlookMessage.Recipients.cs/#L12"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Formats.html">Formats</a>.<a class="xref" href="Bodu.Formats.Outlook.html">Outlook</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Formats.Outlook.Msg.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides a disposable, read-only session over an Outlook message (<code>.msg</code> / MS-OXMSG), exposing every decoded
 MAPI property together with curated conveniences for the common message fields.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><span class="xref">OutlookMessage</span></div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class OutlookMessage : IDisposable</code></pre>
   </div>
-  <div class="implements">
-    <h5>Implements</h5>
-    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
-  </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">OutlookMessage</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
@@ -116,14 +146,31 @@ MAPI property together with curated conveniences for the common message fields.<
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
+  </dd></dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Formats</span>.<a class="xref" href="Bodu.Formats.Outlook.html">Outlook</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Formats.Outlook.Msg.dll</h6>
-  <h5 id="Bodu_Formats_Outlook_OutlookMessage_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class OutlookMessage : IDisposable</code></pre>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h5 id="Bodu_Formats_Outlook_OutlookMessage_remarks"><strong>Remarks</strong></h5>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  </dd></dl>
+
+
+
+  <h2 id="Bodu_Formats_Outlook_OutlookMessage_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
 A <code>.msg</code> file is an OLE2 compound file; opening a message opens the container through
 <a class="xref" href="Bodu.IO.Compound.CompoundFile.html">CompoundFile</a> and decodes the root property stream eagerly, so the property surface is available
@@ -131,8 +178,8 @@ without further I/O. The session owns the container and, unless the caller opts 
 dispose the message when reading is complete.
 </p>
 <p>
-Every property is reachable through <a class="xref" href="Bodu.Formats.Outlook.OutlookMessage.Properties.html#Bodu_Formats_Outlook_OutlookMessage_Properties">Properties</a>; the scalar conveniences (<a class="xref" href="Bodu.Formats.Outlook.OutlookMessage.Subject.html#Bodu_Formats_Outlook_OutlookMessage_Subject">Subject</a>,
-<a class="xref" href="Bodu.Formats.Outlook.OutlookMessage.SenderName.html#Bodu_Formats_Outlook_OutlookMessage_SenderName">SenderName</a>, the time stamps, and the rest) are lazy views over that collection and return
+Every property is reachable through <a class="xref" href="Bodu.Formats.Outlook.OutlookMessage.html#Bodu_Formats_Outlook_OutlookMessage_Properties">Properties</a>; the scalar conveniences (<a class="xref" href="Bodu.Formats.Outlook.OutlookMessage.html#Bodu_Formats_Outlook_OutlookMessage_Subject">Subject</a>,
+<a class="xref" href="Bodu.Formats.Outlook.OutlookMessage.html#Bodu_Formats_Outlook_OutlookMessage_SenderName">SenderName</a>, the time stamps, and the rest) are lazy views over that collection and return
 <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when the underlying property is absent.
 </p>
 <example>
@@ -144,250 +191,907 @@ Console.WriteLine(message.Subject);
 Console.WriteLine(message.SenderEmailAddress);</code></pre>
 </example>
 </div>
-  <h3 id="properties">Properties
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Formats_Outlook_OutlookMessage_Attachments" data-uid="Bodu.Formats.Outlook.OutlookMessage.Attachments">
-          <a class="xref" href="Bodu.Formats.Outlook.OutlookMessage.Attachments.html#Bodu_Formats_Outlook_OutlookMessage_Attachments">Attachments</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the attachments of the message, in storage-index order.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Formats_Outlook_OutlookMessage_BodyHtml" data-uid="Bodu.Formats.Outlook.OutlookMessage.BodyHtml">
-          <a class="xref" href="Bodu.Formats.Outlook.OutlookMessage.BodyHtml.html#Bodu_Formats_Outlook_OutlookMessage_BodyHtml">BodyHtml</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the HTML body.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Formats_Outlook_OutlookMessage_BodyRtf" data-uid="Bodu.Formats.Outlook.OutlookMessage.BodyRtf">
-          <a class="xref" href="Bodu.Formats.Outlook.OutlookMessage.BodyRtf.html#Bodu_Formats_Outlook_OutlookMessage_BodyRtf">BodyRtf</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the RTF body, decompressed from <code>PidTagRtfCompressed</code> per MS-OXRTFCP.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Formats_Outlook_OutlookMessage_BodyText" data-uid="Bodu.Formats.Outlook.OutlookMessage.BodyText">
-          <a class="xref" href="Bodu.Formats.Outlook.OutlookMessage.BodyText.html#Bodu_Formats_Outlook_OutlookMessage_BodyText">BodyText</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the plain-text body.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Formats_Outlook_OutlookMessage_EmbeddedDepth" data-uid="Bodu.Formats.Outlook.OutlookMessage.EmbeddedDepth">
-          <a class="xref" href="Bodu.Formats.Outlook.OutlookMessage.EmbeddedDepth.html#Bodu_Formats_Outlook_OutlookMessage_EmbeddedDepth">EmbeddedDepth</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the embedded-message nesting depth of this session: zero for a message opened from a file or stream, one
-more for each level opened through <a class="xref" href="Bodu.Formats.Outlook.OutlookAttachment.OpenMessage.html#Bodu_Formats_Outlook_OutlookAttachment_OpenMessage">OpenMessage()</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Formats_Outlook_OutlookMessage_InternetMessageId" data-uid="Bodu.Formats.Outlook.OutlookMessage.InternetMessageId">
-          <a class="xref" href="Bodu.Formats.Outlook.OutlookMessage.InternetMessageId.html#Bodu_Formats_Outlook_OutlookMessage_InternetMessageId">InternetMessageId</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the internet message identifier.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Formats_Outlook_OutlookMessage_MessageClass" data-uid="Bodu.Formats.Outlook.OutlookMessage.MessageClass">
-          <a class="xref" href="Bodu.Formats.Outlook.OutlookMessage.MessageClass.html#Bodu_Formats_Outlook_OutlookMessage_MessageClass">MessageClass</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the message class (for example, <code>IPM.Note</code>).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Formats_Outlook_OutlookMessage_Properties" data-uid="Bodu.Formats.Outlook.OutlookMessage.Properties">
-          <a class="xref" href="Bodu.Formats.Outlook.OutlookMessage.Properties.html#Bodu_Formats_Outlook_OutlookMessage_Properties">Properties</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets every decoded MAPI property of the message.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Formats_Outlook_OutlookMessage_ReceivedTime" data-uid="Bodu.Formats.Outlook.OutlookMessage.ReceivedTime">
-          <a class="xref" href="Bodu.Formats.Outlook.OutlookMessage.ReceivedTime.html#Bodu_Formats_Outlook_OutlookMessage_ReceivedTime">ReceivedTime</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the time the message was delivered.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Formats_Outlook_OutlookMessage_Recipients" data-uid="Bodu.Formats.Outlook.OutlookMessage.Recipients">
-          <a class="xref" href="Bodu.Formats.Outlook.OutlookMessage.Recipients.html#Bodu_Formats_Outlook_OutlookMessage_Recipients">Recipients</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the recipients of the message, in storage-index order.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Formats_Outlook_OutlookMessage_SenderEmailAddress" data-uid="Bodu.Formats.Outlook.OutlookMessage.SenderEmailAddress">
-          <a class="xref" href="Bodu.Formats.Outlook.OutlookMessage.SenderEmailAddress.html#Bodu_Formats_Outlook_OutlookMessage_SenderEmailAddress">SenderEmailAddress</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the sender email address.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Formats_Outlook_OutlookMessage_SenderName" data-uid="Bodu.Formats.Outlook.OutlookMessage.SenderName">
-          <a class="xref" href="Bodu.Formats.Outlook.OutlookMessage.SenderName.html#Bodu_Formats_Outlook_OutlookMessage_SenderName">SenderName</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the sender display name.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Formats_Outlook_OutlookMessage_SentTime" data-uid="Bodu.Formats.Outlook.OutlookMessage.SentTime">
-          <a class="xref" href="Bodu.Formats.Outlook.OutlookMessage.SentTime.html#Bodu_Formats_Outlook_OutlookMessage_SentTime">SentTime</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the time the message was submitted by the sending client.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Formats_Outlook_OutlookMessage_Subject" data-uid="Bodu.Formats.Outlook.OutlookMessage.Subject">
-          <a class="xref" href="Bodu.Formats.Outlook.OutlookMessage.Subject.html#Bodu_Formats_Outlook_OutlookMessage_Subject">Subject</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the message subject, with the MAPI subject-prefix marker removed when a writer stored one.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Formats_Outlook_OutlookMessage_TransportMessageHeaders" data-uid="Bodu.Formats.Outlook.OutlookMessage.TransportMessageHeaders">
-          <a class="xref" href="Bodu.Formats.Outlook.OutlookMessage.TransportMessageHeaders.html#Bodu_Formats_Outlook_OutlookMessage_TransportMessageHeaders">TransportMessageHeaders</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the transport message headers.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Formats_Outlook_OutlookMessage_Dispose" data-uid="Bodu.Formats.Outlook.OutlookMessage.Dispose">
-          <a class="xref" href="Bodu.Formats.Outlook.OutlookMessage.Dispose.html#Bodu_Formats_Outlook_OutlookMessage_Dispose">Dispose()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Releases the container and, unless it was left open, the source stream. Disposing a nested message obtained from
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Bodu_Formats_Outlook_OutlookMessage_Attachments_" data-uid="Bodu.Formats.Outlook.OutlookMessage.Attachments*"></a>
+
+  <h3 id="Bodu_Formats_Outlook_OutlookMessage_Attachments" data-uid="Bodu.Formats.Outlook.OutlookMessage.Attachments">
+  Attachments
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Formats.Outlook.Msg/src/Formats.Outlook/OutlookMessage.Attachments.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the attachments of the message, in storage-index order.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;OutlookAttachment&gt; Attachments { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Bodu.Formats.Outlook.OutlookAttachment.html">OutlookAttachment</a>&gt;</dt>
+    <dd><p>The attachment list; empty when the message declares no attachments.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>The message has been disposed.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Formats.Outlook.OutlookMsgFormatException.html">OutlookMsgFormatException</a></dt>
+    <dd><p>Thrown under strict validation when the attachment storages are inconsistent with the declared count.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Formats_Outlook_OutlookMessage_BodyHtml_" data-uid="Bodu.Formats.Outlook.OutlookMessage.BodyHtml*"></a>
+
+  <h3 id="Bodu_Formats_Outlook_OutlookMessage_BodyHtml" data-uid="Bodu.Formats.Outlook.OutlookMessage.BodyHtml">
+  BodyHtml
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Formats.Outlook.Msg/src/Formats.Outlook/OutlookMessage.Bodies.cs/#L41"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the HTML body.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string? BodyHtml { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The <code>PidTagHtml</code> payload decoded through the message's internet code page (falling back to the message code
+page), or the value verbatim when the writer stored it as a string; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when absent. The
+body is decoded once and the same instance returned thereafter.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>The message has been disposed.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Formats_Outlook_OutlookMessage_BodyRtf_" data-uid="Bodu.Formats.Outlook.OutlookMessage.BodyRtf*"></a>
+
+  <h3 id="Bodu_Formats_Outlook_OutlookMessage_BodyRtf" data-uid="Bodu.Formats.Outlook.OutlookMessage.BodyRtf">
+  BodyRtf
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Formats.Outlook.Msg/src/Formats.Outlook/OutlookMessage.Bodies.cs/#L69"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the RTF body, decompressed from <code>PidTagRtfCompressed</code> per MS-OXRTFCP.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string? BodyRtf { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The RTF text, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when the property is absent or
+<a class="xref" href="Bodu.Formats.Outlook.OutlookMessageReaderOptions.html#Bodu_Formats_Outlook_OutlookMessageReaderOptions_DecompressRtf">DecompressRtf</a> is disabled (the raw payload stays available through
+<a class="xref" href="Bodu.Formats.Outlook.OutlookMessage.html#Bodu_Formats_Outlook_OutlookMessage_Properties">Properties</a>). The body is decompressed once and the same instance returned thereafter.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>The message has been disposed.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Formats.Outlook.OutlookMsgFormatException.html">OutlookMsgFormatException</a></dt>
+    <dd><p>The compressed payload is malformed, fails its checksum, or decompresses beyond
+<a class="xref" href="Bodu.Formats.Outlook.OutlookMessageReaderOptions.html#Bodu_Formats_Outlook_OutlookMessageReaderOptions_MaxDecompressedRtfBytes">MaxDecompressedRtfBytes</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Formats_Outlook_OutlookMessage_BodyText_" data-uid="Bodu.Formats.Outlook.OutlookMessage.BodyText*"></a>
+
+  <h3 id="Bodu_Formats_Outlook_OutlookMessage_BodyText" data-uid="Bodu.Formats.Outlook.OutlookMessage.BodyText">
+  BodyText
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Formats.Outlook.Msg/src/Formats.Outlook/OutlookMessage.Bodies.cs/#L29"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the plain-text body.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string? BodyText { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The <code>PidTagBody</code> value, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when absent.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Formats_Outlook_OutlookMessage_EmbeddedDepth_" data-uid="Bodu.Formats.Outlook.OutlookMessage.EmbeddedDepth*"></a>
+
+  <h3 id="Bodu_Formats_Outlook_OutlookMessage_EmbeddedDepth" data-uid="Bodu.Formats.Outlook.OutlookMessage.EmbeddedDepth">
+  EmbeddedDepth
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Formats.Outlook.Msg/src/Formats.Outlook/OutlookMessage.cs/#L115"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the embedded-message nesting depth of this session: zero for a message opened from a file or stream, one
+more for each level opened through <a class="xref" href="Bodu.Formats.Outlook.OutlookAttachment.html#Bodu_Formats_Outlook_OutlookAttachment_OpenMessage">OpenMessage()</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int EmbeddedDepth { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The nesting depth.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Formats_Outlook_OutlookMessage_InternetMessageId_" data-uid="Bodu.Formats.Outlook.OutlookMessage.InternetMessageId*"></a>
+
+  <h3 id="Bodu_Formats_Outlook_OutlookMessage_InternetMessageId" data-uid="Bodu.Formats.Outlook.OutlookMessage.InternetMessageId">
+  InternetMessageId
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Formats.Outlook.Msg/src/Formats.Outlook/OutlookMessage.cs/#L168"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the internet message identifier.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string? InternetMessageId { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The <code>PidTagInternetMessageId</code> value, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when absent.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Formats_Outlook_OutlookMessage_MessageClass_" data-uid="Bodu.Formats.Outlook.OutlookMessage.MessageClass*"></a>
+
+  <h3 id="Bodu_Formats_Outlook_OutlookMessage_MessageClass" data-uid="Bodu.Formats.Outlook.OutlookMessage.MessageClass">
+  MessageClass
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Formats.Outlook.Msg/src/Formats.Outlook/OutlookMessage.cs/#L161"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the message class (for example, <code>IPM.Note</code>).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string? MessageClass { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The <code>PidTagMessageClass</code> value, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when absent.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Formats_Outlook_OutlookMessage_Properties_" data-uid="Bodu.Formats.Outlook.OutlookMessage.Properties*"></a>
+
+  <h3 id="Bodu_Formats_Outlook_OutlookMessage_Properties" data-uid="Bodu.Formats.Outlook.OutlookMessage.Properties">
+  Properties
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Formats.Outlook.Msg/src/Formats.Outlook/OutlookMessage.cs/#L123"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets every decoded MAPI property of the message.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public MapiPropertyCollection Properties { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Formats.Outlook.MapiPropertyCollection.html">MapiPropertyCollection</a></dt>
+    <dd><p>The tag-addressed property collection.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>The message has been disposed.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Formats_Outlook_OutlookMessage_ReceivedTime_" data-uid="Bodu.Formats.Outlook.OutlookMessage.ReceivedTime*"></a>
+
+  <h3 id="Bodu_Formats_Outlook_OutlookMessage_ReceivedTime" data-uid="Bodu.Formats.Outlook.OutlookMessage.ReceivedTime">
+  ReceivedTime
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Formats.Outlook.Msg/src/Formats.Outlook/OutlookMessage.cs/#L189"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the time the message was delivered.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DateTimeOffset? ReceivedTime { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetimeoffset">DateTimeOffset</a>?</dt>
+    <dd><p>The <code>PidTagMessageDeliveryTime</code> value, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when absent.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Formats_Outlook_OutlookMessage_Recipients_" data-uid="Bodu.Formats.Outlook.OutlookMessage.Recipients*"></a>
+
+  <h3 id="Bodu_Formats_Outlook_OutlookMessage_Recipients" data-uid="Bodu.Formats.Outlook.OutlookMessage.Recipients">
+  Recipients
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Formats.Outlook.Msg/src/Formats.Outlook/OutlookMessage.Recipients.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the recipients of the message, in storage-index order.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;OutlookRecipient&gt; Recipients { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Bodu.Formats.Outlook.OutlookRecipient.html">OutlookRecipient</a>&gt;</dt>
+    <dd><p>The recipient list; empty when the message declares no recipients.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>The message has been disposed.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Formats.Outlook.OutlookMsgFormatException.html">OutlookMsgFormatException</a></dt>
+    <dd><p>Thrown under strict validation when the recipient storages are inconsistent with the declared count.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Formats_Outlook_OutlookMessage_SenderEmailAddress_" data-uid="Bodu.Formats.Outlook.OutlookMessage.SenderEmailAddress*"></a>
+
+  <h3 id="Bodu_Formats_Outlook_OutlookMessage_SenderEmailAddress" data-uid="Bodu.Formats.Outlook.OutlookMessage.SenderEmailAddress">
+  SenderEmailAddress
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Formats.Outlook.Msg/src/Formats.Outlook/OutlookMessage.cs/#L154"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the sender email address.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string? SenderEmailAddress { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The <code>PidTagSenderEmailAddress</code> value, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when absent.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Formats_Outlook_OutlookMessage_SenderName_" data-uid="Bodu.Formats.Outlook.OutlookMessage.SenderName*"></a>
+
+  <h3 id="Bodu_Formats_Outlook_OutlookMessage_SenderName" data-uid="Bodu.Formats.Outlook.OutlookMessage.SenderName">
+  SenderName
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Formats.Outlook.Msg/src/Formats.Outlook/OutlookMessage.cs/#L147"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the sender display name.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string? SenderName { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The <code>PidTagSenderName</code> value, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when absent.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Formats_Outlook_OutlookMessage_SentTime_" data-uid="Bodu.Formats.Outlook.OutlookMessage.SentTime*"></a>
+
+  <h3 id="Bodu_Formats_Outlook_OutlookMessage_SentTime" data-uid="Bodu.Formats.Outlook.OutlookMessage.SentTime">
+  SentTime
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Formats.Outlook.Msg/src/Formats.Outlook/OutlookMessage.cs/#L182"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the time the message was submitted by the sending client.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DateTimeOffset? SentTime { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetimeoffset">DateTimeOffset</a>?</dt>
+    <dd><p>The <code>PidTagClientSubmitTime</code> value, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when absent.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Formats_Outlook_OutlookMessage_Subject_" data-uid="Bodu.Formats.Outlook.OutlookMessage.Subject*"></a>
+
+  <h3 id="Bodu_Formats_Outlook_OutlookMessage_Subject" data-uid="Bodu.Formats.Outlook.OutlookMessage.Subject">
+  Subject
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Formats.Outlook.Msg/src/Formats.Outlook/OutlookMessage.cs/#L140"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the message subject, with the MAPI subject-prefix marker removed when a writer stored one.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string? Subject { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The normalized <code>PidTagSubject</code> value, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when absent; the stored value remains
+available through <a class="xref" href="Bodu.Formats.Outlook.OutlookMessage.html#Bodu_Formats_Outlook_OutlookMessage_Properties">Properties</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Formats_Outlook_OutlookMessage_TransportMessageHeaders_" data-uid="Bodu.Formats.Outlook.OutlookMessage.TransportMessageHeaders*"></a>
+
+  <h3 id="Bodu_Formats_Outlook_OutlookMessage_TransportMessageHeaders" data-uid="Bodu.Formats.Outlook.OutlookMessage.TransportMessageHeaders">
+  TransportMessageHeaders
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Formats.Outlook.Msg/src/Formats.Outlook/OutlookMessage.cs/#L175"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the transport message headers.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string? TransportMessageHeaders { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The <code>PidTagTransportMessageHeaders</code> value, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when absent.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Formats_Outlook_OutlookMessage_Dispose_" data-uid="Bodu.Formats.Outlook.OutlookMessage.Dispose*"></a>
+
+  <h3 id="Bodu_Formats_Outlook_OutlookMessage_Dispose" data-uid="Bodu.Formats.Outlook.OutlookMessage.Dispose">
+  Dispose()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Formats.Outlook.Msg/src/Formats.Outlook/OutlookMessage.cs/#L328"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Releases the container and, unless it was left open, the source stream. Disposing a nested message obtained from
 an attachment is a no-op — the root session owns the container, and the nested session's decoded properties stay
 readable until the root is disposed, after which every nested session throws
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a> as well.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Formats_Outlook_OutlookMessage_IsMsgFile_System_IO_Stream_" data-uid="Bodu.Formats.Outlook.OutlookMessage.IsMsgFile(System.IO.Stream)">
-          <a class="xref" href="Bodu.Formats.Outlook.OutlookMessage.IsMsgFile.html#Bodu_Formats_Outlook_OutlookMessage_IsMsgFile_System_IO_Stream_">IsMsgFile(Stream)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether a stream carries an Outlook message: an OLE2 compound file whose root storage holds the
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Dispose()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_Formats_Outlook_OutlookMessage_IsMsgFile_" data-uid="Bodu.Formats.Outlook.OutlookMessage.IsMsgFile*"></a>
+
+  <h3 id="Bodu_Formats_Outlook_OutlookMessage_IsMsgFile_System_IO_Stream_" data-uid="Bodu.Formats.Outlook.OutlookMessage.IsMsgFile(System.IO.Stream)">
+  IsMsgFile(Stream)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Formats.Outlook.Msg/src/Formats.Outlook/OutlookMessage.cs/#L288"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines whether a stream carries an Outlook message: an OLE2 compound file whose root storage holds the
 message property stream.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Formats_Outlook_OutlookMessage_Open_System_IO_Stream_Bodu_Formats_Outlook_OutlookMessageReaderOptions_System_Boolean_" data-uid="Bodu.Formats.Outlook.OutlookMessage.Open(System.IO.Stream,Bodu.Formats.Outlook.OutlookMessageReaderOptions,System.Boolean)">
-          <a class="xref" href="Bodu.Formats.Outlook.OutlookMessage.Open.html#Bodu_Formats_Outlook_OutlookMessage_Open_System_IO_Stream_Bodu_Formats_Outlook_OutlookMessageReaderOptions_System_Boolean_">Open(Stream, OutlookMessageReaderOptions, bool)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Opens a message from a stream with explicit options.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Formats_Outlook_OutlookMessage_OpenRead_System_IO_Stream_System_Boolean_" data-uid="Bodu.Formats.Outlook.OutlookMessage.OpenRead(System.IO.Stream,System.Boolean)">
-          <a class="xref" href="Bodu.Formats.Outlook.OutlookMessage.OpenRead.html#Bodu_Formats_Outlook_OutlookMessage_OpenRead_System_IO_Stream_System_Boolean_">OpenRead(Stream, bool)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Opens a message from a stream with default options.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Formats_Outlook_OutlookMessage_OpenRead_System_String_" data-uid="Bodu.Formats.Outlook.OutlookMessage.OpenRead(System.String)">
-          <a class="xref" href="Bodu.Formats.Outlook.OutlookMessage.OpenRead.html#Bodu_Formats_Outlook_OutlookMessage_OpenRead_System_String_">OpenRead(string)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Opens a message from a file path.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Formats_Outlook_OutlookMessage_TryGetNamedPropertyId_Bodu_Formats_Outlook_MapiNamedProperty_System_UInt16__" data-uid="Bodu.Formats.Outlook.OutlookMessage.TryGetNamedPropertyId(Bodu.Formats.Outlook.MapiNamedProperty,System.UInt16@)">
-          <a class="xref" href="Bodu.Formats.Outlook.OutlookMessage.TryGetNamedPropertyId.html#Bodu_Formats_Outlook_OutlookMessage_TryGetNamedPropertyId_Bodu_Formats_Outlook_MapiNamedProperty_System_UInt16__">TryGetNamedPropertyId(MapiNamedProperty, out ushort)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to resolve the property identifier a named property maps to in this message.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Formats_Outlook_OutlookMessage_TryGetPropertyName_Bodu_Formats_Outlook_MapiPropertyTag_Bodu_Formats_Outlook_MapiNamedProperty__" data-uid="Bodu.Formats.Outlook.OutlookMessage.TryGetPropertyName(Bodu.Formats.Outlook.MapiPropertyTag,Bodu.Formats.Outlook.MapiNamedProperty@)">
-          <a class="xref" href="Bodu.Formats.Outlook.OutlookMessage.TryGetPropertyName.html#Bodu_Formats_Outlook_OutlookMessage_TryGetPropertyName_Bodu_Formats_Outlook_MapiPropertyTag_Bodu_Formats_Outlook_MapiNamedProperty__">TryGetPropertyName(MapiPropertyTag, out MapiNamedProperty)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to resolve the named-property identity behind a property tag.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsMsgFile(Stream stream)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>stream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The readable, seekable stream to sniff; its position is restored before returning.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the stream looks like a <code>.msg</code> file.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Formats_Outlook_OutlookMessage_IsMsgFile_System_IO_Stream__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The check does not require the conventional root class identifier — real-world writers frequently omit it — so
+the presence of the <code>__properties_version1.0</code> stream is the discriminator.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown if <code class="paramref">stream</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Formats_Outlook_OutlookMessage_Open_" data-uid="Bodu.Formats.Outlook.OutlookMessage.Open*"></a>
+
+  <h3 id="Bodu_Formats_Outlook_OutlookMessage_Open_System_IO_Stream_Bodu_Formats_Outlook_OutlookMessageReaderOptions_System_Boolean_" data-uid="Bodu.Formats.Outlook.OutlookMessage.Open(System.IO.Stream,Bodu.Formats.Outlook.OutlookMessageReaderOptions,System.Boolean)">
+  Open(Stream, OutlookMessageReaderOptions, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Formats.Outlook.Msg/src/Formats.Outlook/OutlookMessage.cs/#L245"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Opens a message from a stream with explicit options.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static OutlookMessage Open(Stream stream, OutlookMessageReaderOptions options, bool leaveOpen = false)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>stream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The readable, seekable source stream positioned at the container start.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Formats.Outlook.OutlookMessageReaderOptions.html">OutlookMessageReaderOptions</a></dt>
+    <dd><p>The reader options.</p>
+</dd>
+    <dt><code>leaveOpen</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> to leave the stream open when the message is disposed.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Formats.Outlook.OutlookMessage.html">OutlookMessage</a></dt>
+    <dd><p>The opened message session.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown if <code class="paramref">stream</code> or <code class="paramref">options</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Formats.Outlook.OutlookMsgFormatException.html">OutlookMsgFormatException</a></dt>
+    <dd><p>The stream is not a compound file, the container is malformed, or the message is not valid.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Formats_Outlook_OutlookMessage_OpenRead_" data-uid="Bodu.Formats.Outlook.OutlookMessage.OpenRead*"></a>
+
+  <h3 id="Bodu_Formats_Outlook_OutlookMessage_OpenRead_System_IO_Stream_System_Boolean_" data-uid="Bodu.Formats.Outlook.OutlookMessage.OpenRead(System.IO.Stream,System.Boolean)">
+  OpenRead(Stream, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Formats.Outlook.Msg/src/Formats.Outlook/OutlookMessage.cs/#L229"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Opens a message from a stream with default options.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static OutlookMessage OpenRead(Stream stream, bool leaveOpen = false)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>stream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The readable, seekable source stream positioned at the container start.</p>
+</dd>
+    <dt><code>leaveOpen</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> to leave the stream open when the message is disposed.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Formats.Outlook.OutlookMessage.html">OutlookMessage</a></dt>
+    <dd><p>The opened message session.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown if <code class="paramref">stream</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Formats.Outlook.OutlookMsgFormatException.html">OutlookMsgFormatException</a></dt>
+    <dd><p>The stream is not a compound file or not a valid message.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Formats_Outlook_OutlookMessage_OpenRead_" data-uid="Bodu.Formats.Outlook.OutlookMessage.OpenRead*"></a>
+
+  <h3 id="Bodu_Formats_Outlook_OutlookMessage_OpenRead_System_String_" data-uid="Bodu.Formats.Outlook.OutlookMessage.OpenRead(System.String)">
+  OpenRead(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Formats.Outlook.Msg/src/Formats.Outlook/OutlookMessage.cs/#L201"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Opens a message from a file path.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static OutlookMessage OpenRead(string path)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The path of the <code>.msg</code> file.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Formats.Outlook.OutlookMessage.html">OutlookMessage</a></dt>
+    <dd><p>The opened message session.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown if <code class="paramref">path</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Formats.Outlook.OutlookMsgFormatException.html">OutlookMsgFormatException</a></dt>
+    <dd><p>The file is not a compound file or not a valid message.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Formats_Outlook_OutlookMessage_TryGetNamedPropertyId_" data-uid="Bodu.Formats.Outlook.OutlookMessage.TryGetNamedPropertyId*"></a>
+
+  <h3 id="Bodu_Formats_Outlook_OutlookMessage_TryGetNamedPropertyId_Bodu_Formats_Outlook_MapiNamedProperty_System_UInt16__" data-uid="Bodu.Formats.Outlook.OutlookMessage.TryGetNamedPropertyId(Bodu.Formats.Outlook.MapiNamedProperty,System.UInt16@)">
+  TryGetNamedPropertyId(MapiNamedProperty, out ushort)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Formats.Outlook.Msg/src/Formats.Outlook/OutlookMessage.NamedProperties.cs/#L36"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Attempts to resolve the property identifier a named property maps to in this message.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TryGetNamedPropertyId(MapiNamedProperty name, out ushort id)</code></pre>
   </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <a class="xref" href="Bodu.Formats.Outlook.MapiNamedProperty.html">MapiNamedProperty</a></dt>
+    <dd><p>The named-property identity.</p>
+</dd>
+    <dt><code>id</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint16">ushort</a></dt>
+    <dd><p>When this method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, the file-specific identifier (at or above <code>0x8000</code>) the
+name maps to; combine it with the expected <a class="xref" href="Bodu.Formats.Outlook.MapiPropertyType.html">MapiPropertyType</a> to address <a class="xref" href="Bodu.Formats.Outlook.OutlookMessage.html#Bodu_Formats_Outlook_OutlookMessage_Properties">Properties</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the message maps the name.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>The message has been disposed.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Formats_Outlook_OutlookMessage_TryGetPropertyName_" data-uid="Bodu.Formats.Outlook.OutlookMessage.TryGetPropertyName*"></a>
+
+  <h3 id="Bodu_Formats_Outlook_OutlookMessage_TryGetPropertyName_Bodu_Formats_Outlook_MapiPropertyTag_Bodu_Formats_Outlook_MapiNamedProperty__" data-uid="Bodu.Formats.Outlook.OutlookMessage.TryGetPropertyName(Bodu.Formats.Outlook.MapiPropertyTag,Bodu.Formats.Outlook.MapiNamedProperty@)">
+  TryGetPropertyName(MapiPropertyTag, out MapiNamedProperty)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Formats.Outlook.Msg/src/Formats.Outlook/OutlookMessage.NamedProperties.cs/#L50"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Attempts to resolve the named-property identity behind a property tag.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TryGetPropertyName(MapiPropertyTag tag, out MapiNamedProperty name)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>tag</code> <a class="xref" href="Bodu.Formats.Outlook.MapiPropertyTag.html">MapiPropertyTag</a></dt>
+    <dd><p>A tag whose identifier is in the named range (at or above <code>0x8000</code>).</p>
+</dd>
+    <dt><code>name</code> <a class="xref" href="Bodu.Formats.Outlook.MapiNamedProperty.html">MapiNamedProperty</a></dt>
+    <dd><p>When this method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, the identity.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the message maps the tag's identifier.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>The message has been disposed.</p>
+</dd>
+  </dl>
+
+
+
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 302e395 · Built: 2026-09-29 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 1e0dd9a · Built: 2026-09-29 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

@@ -1,99 +1,127 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
       <title>Class BencodeSerializerOptions | BODU </title>
-      <meta name="viewport" content="width=device-width">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class BencodeSerializerOptions | BODU ">
-    
-    <meta name="description" content="Configures how values are serialized to and deserialized from Bencode: the converters to use, the property naming policy, the default ignore condition, and the maximum nesting depth.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      
+      <meta name="description" content="Configures how values are serialized to and deserialized from Bencode: the converters to use, the property naming policy, the default ignore condition, and the maximum nesting depth.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/new/master/apiSpec/new?filename=Bodu_Text_Bencode_BencodeSerializerOptions.md&amp;value=---%0Auid%3A%20Bodu.Text.Bencode.BencodeSerializerOptions%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Text.Bencode.BencodeSerializerOptions">
+
+        <article data-uid="Bodu.Text.Bencode.BencodeSerializerOptions">
 
 
 
-  <h1 id="Bodu_Text_Bencode_BencodeSerializerOptions" data-uid="Bodu.Text.Bencode.BencodeSerializerOptions" class="text-break">Class BencodeSerializerOptions</h1>
-  <div class="markdown level0 summary"><p>Configures how values are serialized to and deserialized from Bencode: the converters to use, the property naming
+  <h1 id="Bodu_Text_Bencode_BencodeSerializerOptions" data-uid="Bodu.Text.Bencode.BencodeSerializerOptions" class="text-break">
+Class BencodeSerializerOptions  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Serialization/shared/SerializerOptions.Resolution.cs/#L18"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Bencode.html">Bencode</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Text.Bencode.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Configures how values are serialized to and deserialized from Bencode: the converters to use, the property naming
 policy, the default ignore condition, and the maximum nesting depth.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><span class="xref">BencodeSerializerOptions</span></div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class BencodeSerializerOptions</code></pre>
   </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">BencodeSerializerOptions</span></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
@@ -112,25 +140,30 @@ policy, the default ignore condition, and the maximum nesting depth.</p>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
+  </dd></dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Bencode.html">Bencode</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Text.Bencode.dll</h6>
-  <h5 id="Bodu_Text_Bencode_BencodeSerializerOptions_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class BencodeSerializerOptions</code></pre>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h5 id="Bodu_Text_Bencode_BencodeSerializerOptions_remarks"><strong>Remarks</strong></h5>
-  <div class="markdown level0 remarks"><p>
-An options instance becomes read-only the first time it is used to serialize or deserialize a value; subsequent
-attempts to change a setting throw. Resolved converters and type metadata are cached on the instance, so reusing one
-configured options object across many operations is the efficient pattern.
-</p>
-<p>
-<a class="xref" href="Bodu.Text.Bencode.BencodeSerializerOptions.DefaultIgnoreCondition.html#Bodu_Text_Bencode_BencodeSerializerOptions_DefaultIgnoreCondition">DefaultIgnoreCondition</a> governs when a member is omitted on write. Because Bencode has no null token,
-a member whose value is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> is omitted regardless of that setting.
-</p>
-</div>
-  <h5 id="Bodu_Text_Bencode_BencodeSerializerOptions_examples"><strong>Examples</strong></h5>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  </dd></dl>
+
+
+  <h2 id="Bodu_Text_Bencode_BencodeSerializerOptions_examples">Examples</h2>
   <pre><code class="lang-csharp">// Configure once and reuse across calls; resolved converters are cached on the instance.
 var options = new BencodeSerializerOptions
 {
@@ -141,237 +174,726 @@ options.Converters.Add(new BencodeStringEnumConverter(NamingPolicy.SnakeCaseLowe
 
 byte[] bytes = BencodeSerializer.Serialize(value, options);</code></pre>
 
-  <h3 id="constructors">Constructors
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Text_Bencode_BencodeSerializerOptions__ctor" data-uid="Bodu.Text.Bencode.BencodeSerializerOptions.#ctor">
-          <a class="xref" href="Bodu.Text.Bencode.BencodeSerializerOptions.-ctor.html#Bodu_Text_Bencode_BencodeSerializerOptions__ctor">BencodeSerializerOptions()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Text.Bencode.BencodeSerializerOptions.html">BencodeSerializerOptions</a> class with default (general-purpose)
+
+  <h2 id="Bodu_Text_Bencode_BencodeSerializerOptions_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>
+An options instance becomes read-only the first time it is used to serialize or deserialize a value; subsequent
+attempts to change a setting throw. Resolved converters and type metadata are cached on the instance, so reusing one
+configured options object across many operations is the efficient pattern.
+</p>
+<p>
+<a class="xref" href="Bodu.Text.Bencode.BencodeSerializerOptions.html#Bodu_Text_Bencode_BencodeSerializerOptions_DefaultIgnoreCondition">DefaultIgnoreCondition</a> governs when a member is omitted on write. Because Bencode has no null token,
+a member whose value is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> is omitted regardless of that setting.
+</p>
+</div>
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Bodu_Text_Bencode_BencodeSerializerOptions__ctor_" data-uid="Bodu.Text.Bencode.BencodeSerializerOptions.#ctor*"></a>
+
+  <h3 id="Bodu_Text_Bencode_BencodeSerializerOptions__ctor" data-uid="Bodu.Text.Bencode.BencodeSerializerOptions.#ctor">
+  BencodeSerializerOptions()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode/BencodeSerializerOptions.cs/#L86"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Text.Bencode.BencodeSerializerOptions.html">BencodeSerializerOptions</a> class with default (general-purpose)
 settings.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Bencode_BencodeSerializerOptions__ctor_Bodu_Text_Bencode_BencodeSerializerDefaults_" data-uid="Bodu.Text.Bencode.BencodeSerializerOptions.#ctor(Bodu.Text.Bencode.BencodeSerializerDefaults)">
-          <a class="xref" href="Bodu.Text.Bencode.BencodeSerializerOptions.-ctor.html#Bodu_Text_Bencode_BencodeSerializerOptions__ctor_Bodu_Text_Bencode_BencodeSerializerDefaults_">BencodeSerializerOptions(BencodeSerializerDefaults)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Text.Bencode.BencodeSerializerOptions.html">BencodeSerializerOptions</a> class with a base set of defaults
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public BencodeSerializerOptions()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_Text_Bencode_BencodeSerializerOptions__ctor_" data-uid="Bodu.Text.Bencode.BencodeSerializerOptions.#ctor*"></a>
+
+  <h3 id="Bodu_Text_Bencode_BencodeSerializerOptions__ctor_Bodu_Text_Bencode_BencodeSerializerDefaults_" data-uid="Bodu.Text.Bencode.BencodeSerializerOptions.#ctor(Bodu.Text.Bencode.BencodeSerializerDefaults)">
+  BencodeSerializerOptions(BencodeSerializerDefaults)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode/BencodeSerializerOptions.cs/#L103"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Text.Bencode.BencodeSerializerOptions.html">BencodeSerializerOptions</a> class with a base set of defaults
 appropriate for the specified usage scenario.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="fields">Fields
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Text_Bencode_BencodeSerializerOptions_DefaultMaxDepth" data-uid="Bodu.Text.Bencode.BencodeSerializerOptions.DefaultMaxDepth">
-          <a class="xref" href="Bodu.Text.Bencode.BencodeSerializerOptions.DefaultMaxDepth.html">DefaultMaxDepth</a>
-        </td>
-        <td class="markdown level1 summary"><p>The default maximum nesting depth.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="properties">Properties
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Text_Bencode_BencodeSerializerOptions_AllowDuplicateKeys" data-uid="Bodu.Text.Bencode.BencodeSerializerOptions.AllowDuplicateKeys">
-          <a class="xref" href="Bodu.Text.Bencode.BencodeSerializerOptions.AllowDuplicateKeys.html#Bodu_Text_Bencode_BencodeSerializerOptions_AllowDuplicateKeys">AllowDuplicateKeys</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets or sets a value indicating whether deserialization accepts dictionaries carrying more than one entry for
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public BencodeSerializerOptions(BencodeSerializerDefaults defaults)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>defaults</code> <a class="xref" href="Bodu.Text.Bencode.BencodeSerializerDefaults.html">BencodeSerializerDefaults</a></dt>
+    <dd><p>The base defaults to apply.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Text_Bencode_BencodeSerializerOptions__ctor_Bodu_Text_Bencode_BencodeSerializerDefaults__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p><a class="xref" href="Bodu.Text.Bencode.BencodeSerializerDefaults.html#Bodu_Text_Bencode_BencodeSerializerDefaults_Web">Web</a> selects camel-case property naming and case-insensitive
+property-name matching; <a class="xref" href="Bodu.Text.Bencode.BencodeSerializerDefaults.html#Bodu_Text_Bencode_BencodeSerializerDefaults_General">General</a> leaves the defaults unchanged.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <code class="paramref">defaults</code> is not a defined <a class="xref" href="Bodu.Text.Bencode.BencodeSerializerDefaults.html">BencodeSerializerDefaults</a> value.</p>
+</dd>
+  </dl>
+
+
+
+  <h2 class="section" id="fields">Fields
+</h2>
+
+
+
+  <h3 id="Bodu_Text_Bencode_BencodeSerializerOptions_DefaultMaxDepth" data-uid="Bodu.Text.Bencode.BencodeSerializerOptions.DefaultMaxDepth">
+  DefaultMaxDepth
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode/BencodeSerializerOptions.cs/#L50"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The default maximum nesting depth.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const int DefaultMaxDepth = 64</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Bodu_Text_Bencode_BencodeSerializerOptions_AllowDuplicateKeys_" data-uid="Bodu.Text.Bencode.BencodeSerializerOptions.AllowDuplicateKeys*"></a>
+
+  <h3 id="Bodu_Text_Bencode_BencodeSerializerOptions_AllowDuplicateKeys" data-uid="Bodu.Text.Bencode.BencodeSerializerOptions.AllowDuplicateKeys">
+  AllowDuplicateKeys
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode/BencodeSerializerOptions.cs/#L197"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets a value indicating whether deserialization accepts dictionaries carrying more than one entry for
 the same key.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Bencode_BencodeSerializerOptions_AllowUnsortedKeys" data-uid="Bodu.Text.Bencode.BencodeSerializerOptions.AllowUnsortedKeys">
-          <a class="xref" href="Bodu.Text.Bencode.BencodeSerializerOptions.AllowUnsortedKeys.html#Bodu_Text_Bencode_BencodeSerializerOptions_AllowUnsortedKeys">AllowUnsortedKeys</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets or sets a value indicating whether deserialization accepts dictionaries whose keys are not in ascending
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool AllowDuplicateKeys { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> to accept duplicate keys; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>. The default is
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>, rejecting duplicate keys with <a class="xref" href="Bodu.Text.Bencode.BencodeFormatException.html">BencodeFormatException</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_Text_Bencode_BencodeSerializerOptions_AllowDuplicateKeys_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>When enabled, repeated keys bind last-wins: the final occurrence of a key determines the member or dictionary
+entry value. The option affects reading only; the writer always rejects duplicate keys because canonical Bencode
+forbids them.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when the options are read-only.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Bencode_BencodeSerializerOptions_AllowUnsortedKeys_" data-uid="Bodu.Text.Bencode.BencodeSerializerOptions.AllowUnsortedKeys*"></a>
+
+  <h3 id="Bodu_Text_Bencode_BencodeSerializerOptions_AllowUnsortedKeys" data-uid="Bodu.Text.Bencode.BencodeSerializerOptions.AllowUnsortedKeys">
+  AllowUnsortedKeys
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode/BencodeSerializerOptions.cs/#L173"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets a value indicating whether deserialization accepts dictionaries whose keys are not in ascending
 bytewise order.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Bencode_BencodeSerializerOptions_Converters" data-uid="Bodu.Text.Bencode.BencodeSerializerOptions.Converters">
-          <a class="xref" href="Bodu.Text.Bencode.BencodeSerializerOptions.Converters.html#Bodu_Text_Bencode_BencodeSerializerOptions_Converters">Converters</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the list of user-registered converters, consulted in order before the built-in converters.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Bencode_BencodeSerializerOptions_DefaultIgnoreCondition" data-uid="Bodu.Text.Bencode.BencodeSerializerOptions.DefaultIgnoreCondition">
-          <a class="xref" href="Bodu.Text.Bencode.BencodeSerializerOptions.DefaultIgnoreCondition.html#Bodu_Text_Bencode_BencodeSerializerOptions_DefaultIgnoreCondition">DefaultIgnoreCondition</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets or sets the default condition that determines when a member is omitted on write, applied to every member
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool AllowUnsortedKeys { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> to accept unsorted keys; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>. The default is
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>, rejecting unsorted keys with <a class="xref" href="Bodu.Text.Bencode.BencodeFormatException.html">BencodeFormatException</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_Text_Bencode_BencodeSerializerOptions_AllowUnsortedKeys_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>BEP 3 requires keys sorted by raw byte order, but documents produced by older encoders occasionally violate
+this. The option affects reading only; output is always written in canonical key order.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when the options are read-only.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Bencode_BencodeSerializerOptions_Converters_" data-uid="Bodu.Text.Bencode.BencodeSerializerOptions.Converters*"></a>
+
+  <h3 id="Bodu_Text_Bencode_BencodeSerializerOptions_Converters" data-uid="Bodu.Text.Bencode.BencodeSerializerOptions.Converters">
+  Converters
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode/BencodeSerializerOptions.cs/#L120"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the list of user-registered converters, consulted in order before the built-in converters.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IList&lt;BencodeConverter&gt; Converters { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ilist-1">IList</a>&lt;<a class="xref" href="Bodu.Text.Bencode.Serialization.BencodeConverter.html">BencodeConverter</a>&gt;</dt>
+    <dd><p>The mutable converter list while the options are mutable.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Text_Bencode_BencodeSerializerOptions_DefaultIgnoreCondition_" data-uid="Bodu.Text.Bencode.BencodeSerializerOptions.DefaultIgnoreCondition*"></a>
+
+  <h3 id="Bodu_Text_Bencode_BencodeSerializerOptions_DefaultIgnoreCondition" data-uid="Bodu.Text.Bencode.BencodeSerializerOptions.DefaultIgnoreCondition">
+  DefaultIgnoreCondition
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode/BencodeSerializerOptions.cs/#L245"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the default condition that determines when a member is omitted on write, applied to every member
 that does not carry its own <a class="xref" href="Bodu.Text.Serialization.IgnoreAttribute.html">IgnoreAttribute</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Bencode_BencodeSerializerOptions_IncludeFields" data-uid="Bodu.Text.Bencode.BencodeSerializerOptions.IncludeFields">
-          <a class="xref" href="Bodu.Text.Bencode.BencodeSerializerOptions.IncludeFields.html#Bodu_Text_Bencode_BencodeSerializerOptions_IncludeFields">IncludeFields</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets or sets a value indicating whether public fields are surfaced as serializable members alongside properties.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Bencode_BencodeSerializerOptions_IsReadOnly" data-uid="Bodu.Text.Bencode.BencodeSerializerOptions.IsReadOnly">
-          <a class="xref" href="Bodu.Text.Bencode.BencodeSerializerOptions.IsReadOnly.html#Bodu_Text_Bencode_BencodeSerializerOptions_IsReadOnly">IsReadOnly</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets a value indicating whether the options have become read-only.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Bencode_BencodeSerializerOptions_MaxDepth" data-uid="Bodu.Text.Bencode.BencodeSerializerOptions.MaxDepth">
-          <a class="xref" href="Bodu.Text.Bencode.BencodeSerializerOptions.MaxDepth.html#Bodu_Text_Bencode_BencodeSerializerOptions_MaxDepth">MaxDepth</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets or sets the maximum container nesting depth permitted while serializing or deserializing.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Bencode_BencodeSerializerOptions_PreferredObjectCreationHandling" data-uid="Bodu.Text.Bencode.BencodeSerializerOptions.PreferredObjectCreationHandling">
-          <a class="xref" href="Bodu.Text.Bencode.BencodeSerializerOptions.PreferredObjectCreationHandling.html#Bodu_Text_Bencode_BencodeSerializerOptions_PreferredObjectCreationHandling">PreferredObjectCreationHandling</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets or sets the serializer-wide preference for whether a member's value is replaced with a freshly created
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IgnoreCondition DefaultIgnoreCondition { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Serialization.IgnoreCondition.html">IgnoreCondition</a></dt>
+    <dd><p>The default ignore condition; <a class="xref" href="Bodu.Text.Serialization.IgnoreCondition.html#Bodu_Text_Serialization_IgnoreCondition_Never">Never</a> by default.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_Text_Bencode_BencodeSerializerOptions_DefaultIgnoreCondition_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Because Bencode has no null token, a member whose value is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> is omitted from the output
+regardless of this setting, so <a class="xref" href="Bodu.Text.Serialization.IgnoreCondition.html#Bodu_Text_Serialization_IgnoreCondition_Never">Never</a> behaves like
+<a class="xref" href="Bodu.Text.Serialization.IgnoreCondition.html#Bodu_Text_Serialization_IgnoreCondition_WhenWritingNull">WhenWritingNull</a> for null values specifically.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when the value is undefined, or when it is <a class="xref" href="Bodu.Text.Serialization.IgnoreCondition.html#Bodu_Text_Serialization_IgnoreCondition_Always">Always</a>, which is not a valid
+default.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when the options are read-only.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Bencode_BencodeSerializerOptions_IncludeFields_" data-uid="Bodu.Text.Bencode.BencodeSerializerOptions.IncludeFields*"></a>
+
+  <h3 id="Bodu_Text_Bencode_BencodeSerializerOptions_IncludeFields" data-uid="Bodu.Text.Bencode.BencodeSerializerOptions.IncludeFields">
+  IncludeFields
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode/BencodeSerializerOptions.cs/#L220"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets a value indicating whether public fields are surfaced as serializable members alongside properties.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IncludeFields { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> to serialize and deserialize public fields; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>. The
+default is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_Text_Bencode_BencodeSerializerOptions_IncludeFields_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>A public field annotated with <a class="xref" href="Bodu.Text.Serialization.IncludeAttribute.html">IncludeAttribute</a> participates regardless of this setting. Fields
+honor the property naming policy, name and order attributes, ignore conditions, and required-member enforcement
+exactly like properties; a <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/readonly">readonly</a> field is written but never assigned on read.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when the options are read-only.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Bencode_BencodeSerializerOptions_IsReadOnly_" data-uid="Bodu.Text.Bencode.BencodeSerializerOptions.IsReadOnly*"></a>
+
+  <h3 id="Bodu_Text_Bencode_BencodeSerializerOptions_IsReadOnly" data-uid="Bodu.Text.Bencode.BencodeSerializerOptions.IsReadOnly">
+  IsReadOnly
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Serialization/shared/SerializerOptions.Resolution.cs/#L44"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether the options have become read-only.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsReadOnly { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> once the options have been used or frozen; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Text_Bencode_BencodeSerializerOptions_MaxDepth_" data-uid="Bodu.Text.Bencode.BencodeSerializerOptions.MaxDepth*"></a>
+
+  <h3 id="Bodu_Text_Bencode_BencodeSerializerOptions_MaxDepth" data-uid="Bodu.Text.Bencode.BencodeSerializerOptions.MaxDepth">
+  MaxDepth
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode/BencodeSerializerOptions.cs/#L330"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the maximum container nesting depth permitted while serializing or deserializing.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int MaxDepth { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The maximum depth; <a class="xref" href="Bodu.Text.Bencode.BencodeSerializerOptions.html#Bodu_Text_Bencode_BencodeSerializerOptions_DefaultMaxDepth">DefaultMaxDepth</a> when set to zero.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_Text_Bencode_BencodeSerializerOptions_MaxDepth_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+The limit bounds how deeply lists and dictionaries may nest. It is reached when serializing an object graph — or
+deserializing a document — whose containers nest more levels deep than the effective limit, for example a chain
+of objects each holding the next, a dictionary of dictionaries, or lists within lists. Crossing it is reported
+as a catchable failure: <a class="xref" href="Bodu.Text.Bencode.BencodeSerializationException.html">BencodeSerializationException</a> while serializing, or
+<a class="xref" href="Bodu.Text.Bencode.BencodeFormatException.html">BencodeFormatException</a> while deserializing.
+</p>
+<p>
+Although any non-negative value is accepted here, the <em>effective</em> limit is clamped to the hard ceiling,
+<span class="xref">Bodu.Text.Bencode.BencodeLimits.AbsoluteMaxDepth</span> (64); setting a larger value — even <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32.maxvalue">MaxValue</a> —
+does not raise it. The ceiling exists because the serializer recurses one call-stack frame per nested container,
+so an unbounded depth on hostile or malformed input would exhaust the call stack and terminate the process with
+an uncatchable <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.stackoverflowexception">StackOverflowException</a>. Clamping converts that into the catchable exceptions
+above.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when the value is negative.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when the options are read-only.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Bencode_BencodeSerializerOptions_PreferredObjectCreationHandling_" data-uid="Bodu.Text.Bencode.BencodeSerializerOptions.PreferredObjectCreationHandling*"></a>
+
+  <h3 id="Bodu_Text_Bencode_BencodeSerializerOptions_PreferredObjectCreationHandling" data-uid="Bodu.Text.Bencode.BencodeSerializerOptions.PreferredObjectCreationHandling">
+  PreferredObjectCreationHandling
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode/BencodeSerializerOptions.cs/#L295"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the serializer-wide preference for whether a member's value is replaced with a freshly created
 instance or populated when reading, applied to every type and member that does not carry its own
 <a class="xref" href="Bodu.Text.Serialization.ObjectCreationHandlingAttribute.html">ObjectCreationHandlingAttribute</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Bencode_BencodeSerializerOptions_PropertyNameCaseInsensitive" data-uid="Bodu.Text.Bencode.BencodeSerializerOptions.PropertyNameCaseInsensitive">
-          <a class="xref" href="Bodu.Text.Bencode.BencodeSerializerOptions.PropertyNameCaseInsensitive.html#Bodu_Text_Bencode_BencodeSerializerOptions_PropertyNameCaseInsensitive">PropertyNameCaseInsensitive</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets or sets a value indicating whether property-name matching ignores case when reading.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Bencode_BencodeSerializerOptions_PropertyNamingPolicy" data-uid="Bodu.Text.Bencode.BencodeSerializerOptions.PropertyNamingPolicy">
-          <a class="xref" href="Bodu.Text.Bencode.BencodeSerializerOptions.PropertyNamingPolicy.html#Bodu_Text_Bencode_BencodeSerializerOptions_PropertyNamingPolicy">PropertyNamingPolicy</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets or sets the policy that translates member names to their serialized dictionary-key form.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Bencode_BencodeSerializerOptions_UnmappedMemberHandling" data-uid="Bodu.Text.Bencode.BencodeSerializerOptions.UnmappedMemberHandling">
-          <a class="xref" href="Bodu.Text.Bencode.BencodeSerializerOptions.UnmappedMemberHandling.html#Bodu_Text_Bencode_BencodeSerializerOptions_UnmappedMemberHandling">UnmappedMemberHandling</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets or sets the serializer-wide handling for a dictionary key that maps to no member of the target type when
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ObjectCreationHandling PreferredObjectCreationHandling { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Serialization.ObjectCreationHandling.html">ObjectCreationHandling</a></dt>
+    <dd><p>The preferred object-creation handling; <a class="xref" href="Bodu.Text.Serialization.ObjectCreationHandling.html#Bodu_Text_Serialization_ObjectCreationHandling_Replace">Replace</a> by default.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_Text_Bencode_BencodeSerializerOptions_PreferredObjectCreationHandling_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p><a class="xref" href="Bodu.Text.Serialization.ObjectCreationHandling.html#Bodu_Text_Serialization_ObjectCreationHandling_Populate">Populate</a> applies only to collection and dictionary members whose existing
+value is non-<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>; in every other case the serializer replaces the value.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when the value is undefined.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when the options are read-only.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Bencode_BencodeSerializerOptions_PropertyNameCaseInsensitive_" data-uid="Bodu.Text.Bencode.BencodeSerializerOptions.PropertyNameCaseInsensitive*"></a>
+
+  <h3 id="Bodu_Text_Bencode_BencodeSerializerOptions_PropertyNameCaseInsensitive" data-uid="Bodu.Text.Bencode.BencodeSerializerOptions.PropertyNameCaseInsensitive">
+  PropertyNameCaseInsensitive
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode/BencodeSerializerOptions.cs/#L150"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets a value indicating whether property-name matching ignores case when reading.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool PropertyNameCaseInsensitive { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> to match case-insensitively; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>. The default is
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_Text_Bencode_BencodeSerializerOptions_PropertyNameCaseInsensitive_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The default is deliberately lenient: Bencode wire keys are raw bytes with no prescribed casing convention, so
+reads tolerate casing variation by default. The option affects reading only; written keys always use the
+resolved wire name unchanged.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when the options are read-only.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Bencode_BencodeSerializerOptions_PropertyNamingPolicy_" data-uid="Bodu.Text.Bencode.BencodeSerializerOptions.PropertyNamingPolicy*"></a>
+
+  <h3 id="Bodu_Text_Bencode_BencodeSerializerOptions_PropertyNamingPolicy" data-uid="Bodu.Text.Bencode.BencodeSerializerOptions.PropertyNamingPolicy">
+  PropertyNamingPolicy
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode/BencodeSerializerOptions.cs/#L127"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the policy that translates member names to their serialized dictionary-key form.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NamingPolicy? PropertyNamingPolicy { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Serialization.NamingPolicy.html">NamingPolicy</a></dt>
+    <dd><p>The naming policy, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to use member names unchanged.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when the options are read-only.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Bencode_BencodeSerializerOptions_UnmappedMemberHandling_" data-uid="Bodu.Text.Bencode.BencodeSerializerOptions.UnmappedMemberHandling*"></a>
+
+  <h3 id="Bodu_Text_Bencode_BencodeSerializerOptions_UnmappedMemberHandling" data-uid="Bodu.Text.Bencode.BencodeSerializerOptions.UnmappedMemberHandling">
+  UnmappedMemberHandling
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode/BencodeSerializerOptions.cs/#L271"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the serializer-wide handling for a dictionary key that maps to no member of the target type when
 reading, applied to every type that does not carry its own <a class="xref" href="Bodu.Text.Serialization.UnmappedMemberHandlingAttribute.html">UnmappedMemberHandlingAttribute</a>.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Text_Bencode_BencodeSerializerOptions_GetConverter_System_Type_" data-uid="Bodu.Text.Bencode.BencodeSerializerOptions.GetConverter(System.Type)">
-          <a class="xref" href="Bodu.Text.Bencode.BencodeSerializerOptions.GetConverter.html#Bodu_Text_Bencode_BencodeSerializerOptions_GetConverter_System_Type_">GetConverter(Type)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Resolves the converter that handles the specified type, applying the type-level converter attribute, the
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public UnmappedMemberHandling UnmappedMemberHandling { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Serialization.UnmappedMemberHandling.html">UnmappedMemberHandling</a></dt>
+    <dd><p>The unmapped-member handling; <a class="xref" href="Bodu.Text.Serialization.UnmappedMemberHandling.html#Bodu_Text_Serialization_UnmappedMemberHandling_Skip">Skip</a> by default.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_Text_Bencode_BencodeSerializerOptions_UnmappedMemberHandling_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>A type that declares an extension-data member captures unmapped keys into that member, which takes precedence
+over this setting, so a key absorbed by extension data never triggers
+<a class="xref" href="Bodu.Text.Serialization.UnmappedMemberHandling.html#Bodu_Text_Serialization_UnmappedMemberHandling_Disallow">Disallow</a>.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when the value is undefined.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when the options are read-only.</p>
+</dd>
+  </dl>
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Text_Bencode_BencodeSerializerOptions_GetConverter_" data-uid="Bodu.Text.Bencode.BencodeSerializerOptions.GetConverter*"></a>
+
+  <h3 id="Bodu_Text_Bencode_BencodeSerializerOptions_GetConverter_System_Type_" data-uid="Bodu.Text.Bencode.BencodeSerializerOptions.GetConverter(System.Type)">
+  GetConverter(Type)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Serialization/shared/SerializerOptions.Resolution.cs/#L62"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Resolves the converter that handles the specified type, applying the type-level converter attribute, the
 registered converters, and finally the built-in converters, in that order.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Bencode_BencodeSerializerOptions_MakeReadOnly" data-uid="Bodu.Text.Bencode.BencodeSerializerOptions.MakeReadOnly">
-          <a class="xref" href="Bodu.Text.Bencode.BencodeSerializerOptions.MakeReadOnly.html#Bodu_Text_Bencode_BencodeSerializerOptions_MakeReadOnly">MakeReadOnly()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Freezes the options so their settings can no longer change, capturing the converter list. Called automatically
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public BencodeConverter GetConverter(Type typeToConvert)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>typeToConvert</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.type">Type</a></dt>
+    <dd><p>The type to resolve a converter for.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Bencode.Serialization.BencodeConverter.html">BencodeConverter</a></dt>
+    <dd><p>The concrete converter for the type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">typeToConvert</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>Thrown when no converter handles the type.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Bencode_BencodeSerializerOptions_MakeReadOnly_" data-uid="Bodu.Text.Bencode.BencodeSerializerOptions.MakeReadOnly*"></a>
+
+  <h3 id="Bodu_Text_Bencode_BencodeSerializerOptions_MakeReadOnly" data-uid="Bodu.Text.Bencode.BencodeSerializerOptions.MakeReadOnly">
+  MakeReadOnly()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Serialization/shared/SerializerOptions.Resolution.cs/#L76"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Freezes the options so their settings can no longer change, capturing the converter list. Called automatically
 before the first serialization or deserialization.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void MakeReadOnly()</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 302e395 · Built: 2026-09-29 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 1e0dd9a · Built: 2026-09-29 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

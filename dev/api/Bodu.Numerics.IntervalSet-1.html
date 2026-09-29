@@ -1,99 +1,133 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
       <title>Struct IntervalSet&lt;T&gt; | BODU </title>
-      <meta name="viewport" content="width=device-width">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Struct IntervalSet&lt;T&gt; | BODU ">
-    
-    <meta name="description" content="Represents an immutable set of values as a normalized collection of disjoint, non-adjacent  pieces in ascending order — the general result of interval algebra that can produce a disconnected range.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      
+      <meta name="description" content="Represents an immutable set of values as a normalized collection of disjoint, non-adjacent  pieces in ascending order — the general result of interval algebra that can produce a disconnected range.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/new/master/apiSpec/new?filename=Bodu_Numerics_IntervalSet_1.md&amp;value=---%0Auid%3A%20Bodu.Numerics.IntervalSet%601%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Numerics.IntervalSet`1">
+
+        <article data-uid="Bodu.Numerics.IntervalSet`1">
 
 
 
-  <h1 id="Bodu_Numerics_IntervalSet_1" data-uid="Bodu.Numerics.IntervalSet`1" class="text-break">Struct IntervalSet&lt;T&gt;</h1>
-  <div class="markdown level0 summary"><p>Represents an immutable set of values as a normalized collection of disjoint, non-adjacent
+  <h1 id="Bodu_Numerics_IntervalSet_1" data-uid="Bodu.Numerics.IntervalSet`1" class="text-break">
+Struct IntervalSet&lt;T&gt;  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Numerics/src/Numerics/IntervalSet{T}.SetOperations.cs/#L9"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Numerics.html">Numerics</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Numerics.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Represents an immutable set of values as a normalized collection of disjoint, non-adjacent
 <a class="xref" href="Bodu.Numerics.Interval-1.html">Interval&lt;T&gt;</a> pieces in ascending order — the general result of interval algebra that can produce a
 disconnected range.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="implements">
-    <h5>Implements</h5>
-    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="Bodu.Numerics.IntervalSet-1.html">IntervalSet</a>&lt;T&gt;&gt;</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly struct IntervalSet&lt;T&gt; : IEquatable&lt;IntervalSet&lt;T&gt;&gt; where T : INumber&lt;T&gt;</code></pre>
   </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The numeric type used for the intervals' endpoints.</p>
+</dd>
+  </dl>
+
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="Bodu.Numerics.IntervalSet-1.html">IntervalSet</a>&lt;T&gt;&gt;</div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
     </div>
@@ -103,30 +137,58 @@ disconnected range.</p>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
     </div>
+  </dd></dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Numerics.html">Numerics</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Numerics.dll</h6>
-  <h5 id="Bodu_Numerics_IntervalSet_1_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public readonly struct IntervalSet&lt;T&gt; : IEquatable&lt;IntervalSet&lt;T&gt;&gt; where T : INumber&lt;T&gt;</code></pre>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h5 class="typeParameters">Type Parameters</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="parametername">T</span></td>
-        <td><p>The numeric type used for the intervals' endpoints.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 id="Bodu_Numerics_IntervalSet_1_remarks"><strong>Remarks</strong></h5>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.Clamp&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsBetween__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsBetween&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsGreaterThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsLessThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsOutside__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsOutside&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  </dd></dl>
+
+
+  <h2 id="Bodu_Numerics_IntervalSet_1_examples">Examples</h2>
+  <pre><code class="lang-csharp">var set = IntervalSet&lt;int&gt;.Of(Interval&lt;int&gt;.Closed(1, 3), Interval&lt;int&gt;.Closed(2, 5), Interval&lt;int&gt;.Closed(8, 9));
+set.Count;                 // 2 — [1, 5] and [8, 9] (the first two coalesced)
+set.Contains(4);           // True
+set.Complement();          // (-∞, 1) ∪ (5, 8) ∪ (9, +∞)</code></pre>
+
+
+  <h2 id="Bodu_Numerics_IntervalSet_1_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
 Where <a class="xref" href="Bodu.Numerics.Interval-1.html">Interval&lt;T&gt;</a> models a single connected range and <a class="xref" href="Bodu.Numerics.IntervalPair-1.html">IntervalPair&lt;T&gt;</a> the at-most-two
 pieces of a binary difference, <a class="xref" href="Bodu.Numerics.IntervalSet-1.html">IntervalSet&lt;T&gt;</a> models an arbitrary union of ranges. Overlapping and
@@ -135,289 +197,905 @@ empty entries — a canonical form in which set equality is piecewise equality.
 </p>
 <p>
 The type is the home for the operations a single interval cannot express as one value: N-ary
-<a class="xref" href="Bodu.Numerics.IntervalSet-1.Union.html#Bodu_Numerics_IntervalSet_1_Union_Bodu_Numerics_Interval__0__">Union(Interval&lt;T&gt;)</a>, <a class="xref" href="Bodu.Numerics.IntervalSet-1.Except.html#Bodu_Numerics_IntervalSet_1_Except_Bodu_Numerics_Interval__0__">Except(Interval&lt;T&gt;)</a>, and <a class="xref" href="Bodu.Numerics.IntervalSet-1.Complement.html#Bodu_Numerics_IntervalSet_1_Complement">Complement()</a> (the values not
+<a class="xref" href="Bodu.Numerics.IntervalSet-1.html#Bodu_Numerics_IntervalSet_1_Union_Bodu_Numerics_Interval__0__">Union(Interval&lt;T&gt;)</a>, <a class="xref" href="Bodu.Numerics.IntervalSet-1.html#Bodu_Numerics_IntervalSet_1_Except_Bodu_Numerics_Interval__0__">Except(Interval&lt;T&gt;)</a>, and <a class="xref" href="Bodu.Numerics.IntervalSet-1.html#Bodu_Numerics_IntervalSet_1_Complement">Complement()</a> (the values not
 in the set, over the whole line). It composes with <a class="xref" href="Bodu.Numerics.Interval-1.html">Interval&lt;T&gt;</a> throughout.
 </p>
 </div>
-  <h5 id="Bodu_Numerics_IntervalSet_1_examples"><strong>Examples</strong></h5>
-  <pre><code class="lang-csharp">var set = IntervalSet&lt;int&gt;.Of(Interval&lt;int&gt;.Closed(1, 3), Interval&lt;int&gt;.Closed(2, 5), Interval&lt;int&gt;.Closed(8, 9));
-set.Count;                 // 2 — [1, 5] and [8, 9] (the first two coalesced)
-set.Contains(4);           // True
-set.Complement();          // (-∞, 1) ∪ (5, 8) ∪ (9, +∞)</code></pre>
 
-  <h3 id="properties">Properties
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Numerics_IntervalSet_1_Count" data-uid="Bodu.Numerics.IntervalSet`1.Count">
-          <a class="xref" href="Bodu.Numerics.IntervalSet-1.Count.html#Bodu_Numerics_IntervalSet_1_Count">Count</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the number of disjoint pieces in the set.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_IntervalSet_1_Empty" data-uid="Bodu.Numerics.IntervalSet`1.Empty">
-          <a class="xref" href="Bodu.Numerics.IntervalSet-1.Empty.html#Bodu_Numerics_IntervalSet_1_Empty">Empty</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the empty set — the set containing no values.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_IntervalSet_1_IsEmpty" data-uid="Bodu.Numerics.IntervalSet`1.IsEmpty">
-          <a class="xref" href="Bodu.Numerics.IntervalSet-1.IsEmpty.html#Bodu_Numerics_IntervalSet_1_IsEmpty">IsEmpty</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets a value indicating whether the set contains no values.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_IntervalSet_1_Item_System_Int32_" data-uid="Bodu.Numerics.IntervalSet`1.Item(System.Int32)">
-          <a class="xref" href="Bodu.Numerics.IntervalSet-1.Item.html#Bodu_Numerics_IntervalSet_1_Item_System_Int32_">this[int]</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the piece at <code class="paramref">index</code>, ordered lowest-first.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Numerics_IntervalSet_1_Complement" data-uid="Bodu.Numerics.IntervalSet`1.Complement">
-          <a class="xref" href="Bodu.Numerics.IntervalSet-1.Complement.html#Bodu_Numerics_IntervalSet_1_Complement">Complement()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the complement of this set — every value not in the set, over the whole line
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Bodu_Numerics_IntervalSet_1_Count_" data-uid="Bodu.Numerics.IntervalSet`1.Count*"></a>
+
+  <h3 id="Bodu_Numerics_IntervalSet_1_Count" data-uid="Bodu.Numerics.IntervalSet`1.Count">
+  Count
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Numerics/src/Numerics/IntervalSet{T}.cs/#L70"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the number of disjoint pieces in the set.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int Count { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The count of normalized intervals.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Numerics_IntervalSet_1_Empty_" data-uid="Bodu.Numerics.IntervalSet`1.Empty*"></a>
+
+  <h3 id="Bodu_Numerics_IntervalSet_1_Empty" data-uid="Bodu.Numerics.IntervalSet`1.Empty">
+  Empty
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Numerics/src/Numerics/IntervalSet{T}.cs/#L63"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the empty set — the set containing no values.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IntervalSet&lt;T&gt; Empty { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Numerics.IntervalSet-1.html">IntervalSet</a>&lt;T&gt;</dt>
+    <dd><p>An <a class="xref" href="Bodu.Numerics.IntervalSet-1.html">IntervalSet&lt;T&gt;</a> whose <a class="xref" href="Bodu.Numerics.IntervalSet-1.html#Bodu_Numerics_IntervalSet_1_Count">Count</a> is zero.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Numerics_IntervalSet_1_IsEmpty_" data-uid="Bodu.Numerics.IntervalSet`1.IsEmpty*"></a>
+
+  <h3 id="Bodu_Numerics_IntervalSet_1_IsEmpty" data-uid="Bodu.Numerics.IntervalSet`1.IsEmpty">
+  IsEmpty
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Numerics/src/Numerics/IntervalSet{T}.cs/#L77"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether the set contains no values.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsEmpty { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the set has no pieces; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Numerics_IntervalSet_1_Item_" data-uid="Bodu.Numerics.IntervalSet`1.Item*"></a>
+
+  <h3 id="Bodu_Numerics_IntervalSet_1_Item_System_Int32_" data-uid="Bodu.Numerics.IntervalSet`1.Item(System.Int32)">
+  this[int]
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Numerics/src/Numerics/IntervalSet{T}.cs/#L86"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the piece at <code class="paramref">index</code>, ordered lowest-first.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Interval&lt;T&gt; this[int index] { get; }</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>index</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The zero-based index, less than <a class="xref" href="Bodu.Numerics.IntervalSet-1.html#Bodu_Numerics_IntervalSet_1_Count">Count</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Numerics.Interval-1.html">Interval</a>&lt;T&gt;</dt>
+    <dd><p>The interval at the requested position.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">index</code> is out of range.</p>
+</dd>
+  </dl>
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Numerics_IntervalSet_1_Complement_" data-uid="Bodu.Numerics.IntervalSet`1.Complement*"></a>
+
+  <h3 id="Bodu_Numerics_IntervalSet_1_Complement" data-uid="Bodu.Numerics.IntervalSet`1.Complement">
+  Complement()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Numerics/src/Numerics/IntervalSet{T}.SetOperations.cs/#L165"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the complement of this set — every value not in the set, over the whole line
 <code>(-∞, +∞)</code>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_IntervalSet_1_Contains__0_" data-uid="Bodu.Numerics.IntervalSet`1.Contains(`0)">
-          <a class="xref" href="Bodu.Numerics.IntervalSet-1.Contains.html#Bodu_Numerics_IntervalSet_1_Contains__0_">Contains(T)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether <code class="paramref">value</code> is a member of any piece of the set.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_IntervalSet_1_Encloses_Bodu_Numerics_Interval__0__" data-uid="Bodu.Numerics.IntervalSet`1.Encloses(Bodu.Numerics.Interval{`0})">
-          <a class="xref" href="Bodu.Numerics.IntervalSet-1.Encloses.html#Bodu_Numerics_IntervalSet_1_Encloses_Bodu_Numerics_Interval__0__">Encloses(Interval&lt;T&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether every value of <code class="paramref">interval</code> is a member of the set.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_IntervalSet_1_Equals_Bodu_Numerics_IntervalSet__0__" data-uid="Bodu.Numerics.IntervalSet`1.Equals(Bodu.Numerics.IntervalSet{`0})">
-          <a class="xref" href="Bodu.Numerics.IntervalSet-1.Equals.html#Bodu_Numerics_IntervalSet_1_Equals_Bodu_Numerics_IntervalSet__0__">Equals(IntervalSet&lt;T&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether this set equals <code class="paramref">other</code> — the same normalized pieces in the same order.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_IntervalSet_1_Equals_System_Object_" data-uid="Bodu.Numerics.IntervalSet`1.Equals(System.Object)">
-          <a class="xref" href="Bodu.Numerics.IntervalSet-1.Equals.html#Bodu_Numerics_IntervalSet_1_Equals_System_Object_">Equals(object?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether this set equals the boxed <code class="paramref">obj</code>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_IntervalSet_1_Except_Bodu_Numerics_IntervalSet__0__" data-uid="Bodu.Numerics.IntervalSet`1.Except(Bodu.Numerics.IntervalSet{`0})">
-          <a class="xref" href="Bodu.Numerics.IntervalSet-1.Except.html#Bodu_Numerics_IntervalSet_1_Except_Bodu_Numerics_IntervalSet__0__">Except(IntervalSet&lt;T&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns this set with the members of <code class="paramref">other</code> removed — the set difference.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_IntervalSet_1_Except_Bodu_Numerics_Interval__0__" data-uid="Bodu.Numerics.IntervalSet`1.Except(Bodu.Numerics.Interval{`0})">
-          <a class="xref" href="Bodu.Numerics.IntervalSet-1.Except.html#Bodu_Numerics_IntervalSet_1_Except_Bodu_Numerics_Interval__0__">Except(Interval&lt;T&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns this set with the members of <code class="paramref">interval</code> removed — the set difference.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_IntervalSet_1_From_System_Collections_Generic_IEnumerable_Bodu_Numerics_Interval__0___" data-uid="Bodu.Numerics.IntervalSet`1.From(System.Collections.Generic.IEnumerable{Bodu.Numerics.Interval{`0}})">
-          <a class="xref" href="Bodu.Numerics.IntervalSet-1.From.html#Bodu_Numerics_IntervalSet_1_From_System_Collections_Generic_IEnumerable_Bodu_Numerics_Interval__0___">From(IEnumerable&lt;Interval&lt;T&gt;&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Creates a set from a sequence of intervals, coalescing overlapping and adjacent pieces into a normalized form.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_IntervalSet_1_GetEnumerator" data-uid="Bodu.Numerics.IntervalSet`1.GetEnumerator">
-          <a class="xref" href="Bodu.Numerics.IntervalSet-1.GetEnumerator.html#Bodu_Numerics_IntervalSet_1_GetEnumerator">GetEnumerator()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns an enumerator over the disjoint pieces in ascending order.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_IntervalSet_1_GetHashCode" data-uid="Bodu.Numerics.IntervalSet`1.GetHashCode">
-          <a class="xref" href="Bodu.Numerics.IntervalSet-1.GetHashCode.html#Bodu_Numerics_IntervalSet_1_GetHashCode">GetHashCode()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns a hash code consistent with <a class="xref" href="Bodu.Numerics.IntervalSet-1.Equals.html#Bodu_Numerics_IntervalSet_1_Equals_Bodu_Numerics_IntervalSet__0__">Equals(IntervalSet&lt;T&gt;)</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_IntervalSet_1_Intersect_Bodu_Numerics_IntervalSet__0__" data-uid="Bodu.Numerics.IntervalSet`1.Intersect(Bodu.Numerics.IntervalSet{`0})">
-          <a class="xref" href="Bodu.Numerics.IntervalSet-1.Intersect.html#Bodu_Numerics_IntervalSet_1_Intersect_Bodu_Numerics_IntervalSet__0__">Intersect(IntervalSet&lt;T&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the intersection of this set with <code class="paramref">other</code> — the members in both.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_IntervalSet_1_Intersect_Bodu_Numerics_Interval__0__" data-uid="Bodu.Numerics.IntervalSet`1.Intersect(Bodu.Numerics.Interval{`0})">
-          <a class="xref" href="Bodu.Numerics.IntervalSet-1.Intersect.html#Bodu_Numerics_IntervalSet_1_Intersect_Bodu_Numerics_Interval__0__">Intersect(Interval&lt;T&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the intersection of this set with <code class="paramref">interval</code> — the members shared with it.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_IntervalSet_1_Of_Bodu_Numerics_Interval__0____" data-uid="Bodu.Numerics.IntervalSet`1.Of(Bodu.Numerics.Interval{`0}[])">
-          <a class="xref" href="Bodu.Numerics.IntervalSet-1.Of.html#Bodu_Numerics_IntervalSet_1_Of_Bodu_Numerics_Interval__0____">Of(params Interval&lt;T&gt;[])</a>
-        </td>
-        <td class="markdown level1 summary"><p>Creates a set from the supplied intervals, coalescing overlapping and adjacent pieces into a normalized form.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_IntervalSet_1_ToString" data-uid="Bodu.Numerics.IntervalSet`1.ToString">
-          <a class="xref" href="Bodu.Numerics.IntervalSet-1.ToString.html#Bodu_Numerics_IntervalSet_1_ToString">ToString()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns a set-notation string representation — the pieces joined by the union symbol, or the empty-set glyph.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_IntervalSet_1_Union_Bodu_Numerics_IntervalSet__0__" data-uid="Bodu.Numerics.IntervalSet`1.Union(Bodu.Numerics.IntervalSet{`0})">
-          <a class="xref" href="Bodu.Numerics.IntervalSet-1.Union.html#Bodu_Numerics_IntervalSet_1_Union_Bodu_Numerics_IntervalSet__0__">Union(IntervalSet&lt;T&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the union of this set with <code class="paramref">other</code>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_IntervalSet_1_Union_Bodu_Numerics_Interval__0__" data-uid="Bodu.Numerics.IntervalSet`1.Union(Bodu.Numerics.Interval{`0})">
-          <a class="xref" href="Bodu.Numerics.IntervalSet-1.Union.html#Bodu_Numerics_IntervalSet_1_Union_Bodu_Numerics_Interval__0__">Union(Interval&lt;T&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the union of this set with <code class="paramref">interval</code>.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="operators">Operators
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Numerics_IntervalSet_1_op_Equality_Bodu_Numerics_IntervalSet__0__Bodu_Numerics_IntervalSet__0__" data-uid="Bodu.Numerics.IntervalSet`1.op_Equality(Bodu.Numerics.IntervalSet{`0},Bodu.Numerics.IntervalSet{`0})">
-          <a class="xref" href="Bodu.Numerics.IntervalSet-1.op_Equality.html#Bodu_Numerics_IntervalSet_1_op_Equality_Bodu_Numerics_IntervalSet__0__Bodu_Numerics_IntervalSet__0__">operator ==(IntervalSet&lt;T&gt;, IntervalSet&lt;T&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether two sets are equal.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Numerics_IntervalSet_1_op_Inequality_Bodu_Numerics_IntervalSet__0__Bodu_Numerics_IntervalSet__0__" data-uid="Bodu.Numerics.IntervalSet`1.op_Inequality(Bodu.Numerics.IntervalSet{`0},Bodu.Numerics.IntervalSet{`0})">
-          <a class="xref" href="Bodu.Numerics.IntervalSet-1.op_Inequality.html#Bodu_Numerics_IntervalSet_1_op_Inequality_Bodu_Numerics_IntervalSet__0__Bodu_Numerics_IntervalSet__0__">operator !=(IntervalSet&lt;T&gt;, IntervalSet&lt;T&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether two sets are not equal.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IntervalSet&lt;T&gt; Complement()</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Numerics.IntervalSet-1.html">IntervalSet</a>&lt;T&gt;</dt>
+    <dd><p>The complement set.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Numerics_IntervalSet_1_Complement_examples">Examples</h4>
+  <pre><code class="lang-csharp">IntervalSet&lt;int&gt;.Of(Interval&lt;int&gt;.Closed(1, 5)).Complement();   // (-∞, 1) ∪ (5, +∞)</code></pre>
+
+
+
+
+
+
+  <a id="Bodu_Numerics_IntervalSet_1_Contains_" data-uid="Bodu.Numerics.IntervalSet`1.Contains*"></a>
+
+  <h3 id="Bodu_Numerics_IntervalSet_1_Contains__0_" data-uid="Bodu.Numerics.IntervalSet`1.Contains(`0)">
+  Contains(T)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Numerics/src/Numerics/IntervalSet{T}.cs/#L124"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines whether <code class="paramref">value</code> is a member of any piece of the set.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Contains(T value)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Clamp.html#Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.Clamp&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd><p>The value to test.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the set contains <code class="paramref">value</code>; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_Numerics_IntervalSet_1_Encloses_" data-uid="Bodu.Numerics.IntervalSet`1.Encloses*"></a>
+
+  <h3 id="Bodu_Numerics_IntervalSet_1_Encloses_Bodu_Numerics_Interval__0__" data-uid="Bodu.Numerics.IntervalSet`1.Encloses(Bodu.Numerics.Interval{`0})">
+  Encloses(Interval&lt;T&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Numerics/src/Numerics/IntervalSet{T}.cs/#L149"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines whether every value of <code class="paramref">interval</code> is a member of the set.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Encloses(Interval&lt;T&gt; interval)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsBetween.html#Bodu_Extensions_ComparableExtensions_IsBetween__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsBetween&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>interval</code> <a class="xref" href="Bodu.Numerics.Interval-1.html">Interval</a>&lt;T&gt;</dt>
+    <dd><p>The interval to test for enclosure.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the set is a superset of <code class="paramref">interval</code>; otherwise
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Numerics_IntervalSet_1_Encloses_Bodu_Numerics_Interval__0___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Because the pieces are disjoint and non-adjacent, an enclosed interval must lie entirely within one piece.</p>
+</div>
+
+
+
+
+  <a id="Bodu_Numerics_IntervalSet_1_Equals_" data-uid="Bodu.Numerics.IntervalSet`1.Equals*"></a>
+
+  <h3 id="Bodu_Numerics_IntervalSet_1_Equals_Bodu_Numerics_IntervalSet__0__" data-uid="Bodu.Numerics.IntervalSet`1.Equals(Bodu.Numerics.IntervalSet{`0})">
+  Equals(IntervalSet&lt;T&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Numerics/src/Numerics/IntervalSet{T}.SetOperations.cs/#L184"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines whether this set equals <code class="paramref">other</code> — the same normalized pieces in the same order.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Equals(IntervalSet&lt;T&gt; other)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>other</code> <a class="xref" href="Bodu.Numerics.IntervalSet-1.html">IntervalSet</a>&lt;T&gt;</dt>
+    <dd><p>The set to compare against.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the two describe the same set of values; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_Numerics_IntervalSet_1_Equals_" data-uid="Bodu.Numerics.IntervalSet`1.Equals*"></a>
+
+  <h3 id="Bodu_Numerics_IntervalSet_1_Equals_System_Object_" data-uid="Bodu.Numerics.IntervalSet`1.Equals(System.Object)">
+  Equals(object?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Numerics/src/Numerics/IntervalSet{T}.SetOperations.cs/#L207"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines whether this set equals the boxed <code class="paramref">obj</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override bool Equals(object? obj)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>obj</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></dt>
+    <dd><p>The object to compare against.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when <code class="paramref">obj</code> is an equal <a class="xref" href="Bodu.Numerics.IntervalSet-1.html">IntervalSet&lt;T&gt;</a>; otherwise
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_Numerics_IntervalSet_1_Except_" data-uid="Bodu.Numerics.IntervalSet`1.Except*"></a>
+
+  <h3 id="Bodu_Numerics_IntervalSet_1_Except_Bodu_Numerics_IntervalSet__0__" data-uid="Bodu.Numerics.IntervalSet`1.Except(Bodu.Numerics.IntervalSet{`0})">
+  Except(IntervalSet&lt;T&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Numerics/src/Numerics/IntervalSet{T}.SetOperations.cs/#L141"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns this set with the members of <code class="paramref">other</code> removed — the set difference.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IntervalSet&lt;T&gt; Except(IntervalSet&lt;T&gt; other)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThan.html#Bodu_Extensions_ComparableExtensions_IsGreaterThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>other</code> <a class="xref" href="Bodu.Numerics.IntervalSet-1.html">IntervalSet</a>&lt;T&gt;</dt>
+    <dd><p>The set to subtract.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Numerics.IntervalSet-1.html">IntervalSet</a>&lt;T&gt;</dt>
+    <dd><p>The normalized difference.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_Numerics_IntervalSet_1_Except_" data-uid="Bodu.Numerics.IntervalSet`1.Except*"></a>
+
+  <h3 id="Bodu_Numerics_IntervalSet_1_Except_Bodu_Numerics_Interval__0__" data-uid="Bodu.Numerics.IntervalSet`1.Except(Bodu.Numerics.Interval{`0})">
+  Except(Interval&lt;T&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Numerics/src/Numerics/IntervalSet{T}.SetOperations.cs/#L120"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns this set with the members of <code class="paramref">interval</code> removed — the set difference.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IntervalSet&lt;T&gt; Except(Interval&lt;T&gt; interval)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>interval</code> <a class="xref" href="Bodu.Numerics.Interval-1.html">Interval</a>&lt;T&gt;</dt>
+    <dd><p>The interval to subtract.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Numerics.IntervalSet-1.html">IntervalSet</a>&lt;T&gt;</dt>
+    <dd><p>The normalized difference.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Numerics_IntervalSet_1_Except_Bodu_Numerics_Interval__0___examples">Examples</h4>
+  <pre><code class="lang-csharp">IntervalSet&lt;int&gt;.Of(Interval&lt;int&gt;.Closed(1, 10))
+    .Except(Interval&lt;int&gt;.Closed(3, 5));   // [1, 3) ∪ (5, 10]</code></pre>
+
+
+
+
+
+
+  <a id="Bodu_Numerics_IntervalSet_1_From_" data-uid="Bodu.Numerics.IntervalSet`1.From*"></a>
+
+  <h3 id="Bodu_Numerics_IntervalSet_1_From_System_Collections_Generic_IEnumerable_Bodu_Numerics_Interval__0___" data-uid="Bodu.Numerics.IntervalSet`1.From(System.Collections.Generic.IEnumerable{Bodu.Numerics.Interval{`0}})">
+  From(IEnumerable&lt;Interval&lt;T&gt;&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Numerics/src/Numerics/IntervalSet{T}.cs/#L110"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a set from a sequence of intervals, coalescing overlapping and adjacent pieces into a normalized form.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IntervalSet&lt;T&gt; From(IEnumerable&lt;Interval&lt;T&gt;&gt; intervals)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThan.html#Bodu_Extensions_ComparableExtensions_IsLessThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>intervals</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="Bodu.Numerics.Interval-1.html">Interval</a>&lt;T&gt;&gt;</dt>
+    <dd><p>The intervals to include; empty intervals are ignored.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Numerics.IntervalSet-1.html">IntervalSet</a>&lt;T&gt;</dt>
+    <dd><p>The normalized set.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">intervals</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Numerics_IntervalSet_1_GetEnumerator_" data-uid="Bodu.Numerics.IntervalSet`1.GetEnumerator*"></a>
+
+  <h3 id="Bodu_Numerics_IntervalSet_1_GetEnumerator" data-uid="Bodu.Numerics.IntervalSet`1.GetEnumerator">
+  GetEnumerator()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Numerics/src/Numerics/IntervalSet{T}.cs/#L170"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns an enumerator over the disjoint pieces in ascending order.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IntervalSet&lt;T&gt;.Enumerator GetEnumerator()</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsOutside.html#Bodu_Extensions_ComparableExtensions_IsOutside__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsOutside&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Numerics.IntervalSet-1.html">IntervalSet</a>&lt;T&gt;.<a class="xref" href="Bodu.Numerics.IntervalSet-1.Enumerator.html">Enumerator</a></dt>
+    <dd><p>A struct enumerator.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_Numerics_IntervalSet_1_GetHashCode_" data-uid="Bodu.Numerics.IntervalSet`1.GetHashCode*"></a>
+
+  <h3 id="Bodu_Numerics_IntervalSet_1_GetHashCode" data-uid="Bodu.Numerics.IntervalSet`1.GetHashCode">
+  GetHashCode()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Numerics/src/Numerics/IntervalSet{T}.SetOperations.cs/#L214"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns a hash code consistent with <a class="xref" href="Bodu.Numerics.IntervalSet-1.html#Bodu_Numerics_IntervalSet_1_Equals_Bodu_Numerics_IntervalSet__0__">Equals(IntervalSet&lt;T&gt;)</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override int GetHashCode()</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>A 32-bit hash code.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_Numerics_IntervalSet_1_Intersect_" data-uid="Bodu.Numerics.IntervalSet`1.Intersect*"></a>
+
+  <h3 id="Bodu_Numerics_IntervalSet_1_Intersect_Bodu_Numerics_IntervalSet__0__" data-uid="Bodu.Numerics.IntervalSet`1.Intersect(Bodu.Numerics.IntervalSet{`0})">
+  Intersect(IntervalSet&lt;T&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Numerics/src/Numerics/IntervalSet{T}.SetOperations.cs/#L88"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the intersection of this set with <code class="paramref">other</code> — the members in both.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IntervalSet&lt;T&gt; Intersect(IntervalSet&lt;T&gt; other)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>other</code> <a class="xref" href="Bodu.Numerics.IntervalSet-1.html">IntervalSet</a>&lt;T&gt;</dt>
+    <dd><p>The set to intersect with.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Numerics.IntervalSet-1.html">IntervalSet</a>&lt;T&gt;</dt>
+    <dd><p>The normalized intersection.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_Numerics_IntervalSet_1_Intersect_" data-uid="Bodu.Numerics.IntervalSet`1.Intersect*"></a>
+
+  <h3 id="Bodu_Numerics_IntervalSet_1_Intersect_Bodu_Numerics_Interval__0__" data-uid="Bodu.Numerics.IntervalSet`1.Intersect(Bodu.Numerics.Interval{`0})">
+  Intersect(Interval&lt;T&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Numerics/src/Numerics/IntervalSet{T}.SetOperations.cs/#L67"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the intersection of this set with <code class="paramref">interval</code> — the members shared with it.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IntervalSet&lt;T&gt; Intersect(Interval&lt;T&gt; interval)</code></pre>
   </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>interval</code> <a class="xref" href="Bodu.Numerics.Interval-1.html">Interval</a>&lt;T&gt;</dt>
+    <dd><p>The interval to intersect with.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Numerics.IntervalSet-1.html">IntervalSet</a>&lt;T&gt;</dt>
+    <dd><p>The normalized intersection.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Numerics_IntervalSet_1_Intersect_Bodu_Numerics_Interval__0___examples">Examples</h4>
+  <pre><code class="lang-csharp">IntervalSet&lt;int&gt;.Of(Interval&lt;int&gt;.Closed(1, 5), Interval&lt;int&gt;.Closed(8, 12))
+    .Intersect(Interval&lt;int&gt;.Closed(4, 10));   // [4, 5] ∪ [8, 10]</code></pre>
+
+
+
+
+
+
+  <a id="Bodu_Numerics_IntervalSet_1_Of_" data-uid="Bodu.Numerics.IntervalSet`1.Of*"></a>
+
+  <h3 id="Bodu_Numerics_IntervalSet_1_Of_Bodu_Numerics_Interval__0____" data-uid="Bodu.Numerics.IntervalSet`1.Of(Bodu.Numerics.Interval{`0}[])">
+  Of(params Interval&lt;T&gt;[])
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Numerics/src/Numerics/IntervalSet{T}.cs/#L97"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a set from the supplied intervals, coalescing overlapping and adjacent pieces into a normalized form.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IntervalSet&lt;T&gt; Of(params Interval&lt;T&gt;[] intervals)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>intervals</code> <a class="xref" href="Bodu.Numerics.Interval-1.html">Interval</a>&lt;T&gt;[]</dt>
+    <dd><p>The intervals to include; empty intervals are ignored.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Numerics.IntervalSet-1.html">IntervalSet</a>&lt;T&gt;</dt>
+    <dd><p>The normalized set.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">intervals</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Numerics_IntervalSet_1_ToString_" data-uid="Bodu.Numerics.IntervalSet`1.ToString*"></a>
+
+  <h3 id="Bodu_Numerics_IntervalSet_1_ToString" data-uid="Bodu.Numerics.IntervalSet`1.ToString">
+  ToString()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Numerics/src/Numerics/IntervalSet{T}.cs/#L177"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns a set-notation string representation — the pieces joined by the union symbol, or the empty-set glyph.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override string ToString()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The formatted set.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_Numerics_IntervalSet_1_Union_" data-uid="Bodu.Numerics.IntervalSet`1.Union*"></a>
+
+  <h3 id="Bodu_Numerics_IntervalSet_1_Union_Bodu_Numerics_IntervalSet__0__" data-uid="Bodu.Numerics.IntervalSet`1.Union(Bodu.Numerics.IntervalSet{`0})">
+  Union(IntervalSet&lt;T&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Numerics/src/Numerics/IntervalSet{T}.SetOperations.cs/#L41"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the union of this set with <code class="paramref">other</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IntervalSet&lt;T&gt; Union(IntervalSet&lt;T&gt; other)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>other</code> <a class="xref" href="Bodu.Numerics.IntervalSet-1.html">IntervalSet</a>&lt;T&gt;</dt>
+    <dd><p>The set to add.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Numerics.IntervalSet-1.html">IntervalSet</a>&lt;T&gt;</dt>
+    <dd><p>The normalized union.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_Numerics_IntervalSet_1_Union_" data-uid="Bodu.Numerics.IntervalSet`1.Union*"></a>
+
+  <h3 id="Bodu_Numerics_IntervalSet_1_Union_Bodu_Numerics_Interval__0__" data-uid="Bodu.Numerics.IntervalSet`1.Union(Bodu.Numerics.Interval{`0})">
+  Union(Interval&lt;T&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Numerics/src/Numerics/IntervalSet{T}.SetOperations.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the union of this set with <code class="paramref">interval</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IntervalSet&lt;T&gt; Union(Interval&lt;T&gt; interval)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>interval</code> <a class="xref" href="Bodu.Numerics.Interval-1.html">Interval</a>&lt;T&gt;</dt>
+    <dd><p>The interval to add.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Numerics.IntervalSet-1.html">IntervalSet</a>&lt;T&gt;</dt>
+    <dd><p>The normalized union.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Numerics_IntervalSet_1_Union_Bodu_Numerics_Interval__0___examples">Examples</h4>
+  <pre><code class="lang-csharp">IntervalSet&lt;int&gt;.Of(Interval&lt;int&gt;.Closed(1, 3), Interval&lt;int&gt;.Closed(8, 9))
+    .Union(Interval&lt;int&gt;.Closed(2, 5));   // [1, 5] ∪ [8, 9]</code></pre>
+
+
+
+
+
+
+  <h2 class="section" id="operators">Operators
+</h2>
+
+
+  <a id="Bodu_Numerics_IntervalSet_1_op_Equality_" data-uid="Bodu.Numerics.IntervalSet`1.op_Equality*"></a>
+
+  <h3 id="Bodu_Numerics_IntervalSet_1_op_Equality_Bodu_Numerics_IntervalSet__0__Bodu_Numerics_IntervalSet__0__" data-uid="Bodu.Numerics.IntervalSet`1.op_Equality(Bodu.Numerics.IntervalSet{`0},Bodu.Numerics.IntervalSet{`0})">
+  operator ==(IntervalSet&lt;T&gt;, IntervalSet&lt;T&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Numerics/src/Numerics/IntervalSet{T}.SetOperations.cs/#L232"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines whether two sets are equal.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool operator ==(IntervalSet&lt;T&gt; left, IntervalSet&lt;T&gt; right)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>left</code> <a class="xref" href="Bodu.Numerics.IntervalSet-1.html">IntervalSet</a>&lt;T&gt;</dt>
+    <dd><p>The first set.</p>
+</dd>
+    <dt><code>right</code> <a class="xref" href="Bodu.Numerics.IntervalSet-1.html">IntervalSet</a>&lt;T&gt;</dt>
+    <dd><p>The second set.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when equal; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_Numerics_IntervalSet_1_op_Inequality_" data-uid="Bodu.Numerics.IntervalSet`1.op_Inequality*"></a>
+
+  <h3 id="Bodu_Numerics_IntervalSet_1_op_Inequality_Bodu_Numerics_IntervalSet__0__Bodu_Numerics_IntervalSet__0__" data-uid="Bodu.Numerics.IntervalSet`1.op_Inequality(Bodu.Numerics.IntervalSet{`0},Bodu.Numerics.IntervalSet{`0})">
+  operator !=(IntervalSet&lt;T&gt;, IntervalSet&lt;T&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Numerics/src/Numerics/IntervalSet{T}.SetOperations.cs/#L241"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines whether two sets are not equal.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool operator !=(IntervalSet&lt;T&gt; left, IntervalSet&lt;T&gt; right)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>left</code> <a class="xref" href="Bodu.Numerics.IntervalSet-1.html">IntervalSet</a>&lt;T&gt;</dt>
+    <dd><p>The first set.</p>
+</dd>
+    <dt><code>right</code> <a class="xref" href="Bodu.Numerics.IntervalSet-1.html">IntervalSet</a>&lt;T&gt;</dt>
+    <dd><p>The second set.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when they differ; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 302e395 · Built: 2026-09-29 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 1e0dd9a · Built: 2026-09-29 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

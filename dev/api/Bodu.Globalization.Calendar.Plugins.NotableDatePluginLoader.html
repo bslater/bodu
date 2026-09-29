@@ -1,99 +1,127 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
       <title>Class NotableDatePluginLoader | BODU </title>
-      <meta name="viewport" content="width=device-width">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class NotableDatePluginLoader | BODU ">
-    
-    <meta name="description" content="Loads notable-date plugins from assemblies, gating activation behind an  and registering the contributed algorithms with a .">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      
+      <meta name="description" content="Loads notable-date plugins from assemblies, gating activation behind an  and registering the contributed algorithms with a .">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/new/master/apiSpec/new?filename=Bodu_Globalization_Calendar_Plugins_NotableDatePluginLoader.md&amp;value=---%0Auid%3A%20Bodu.Globalization.Calendar.Plugins.NotableDatePluginLoader%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Globalization.Calendar.Plugins.NotableDatePluginLoader">
+
+        <article data-uid="Bodu.Globalization.Calendar.Plugins.NotableDatePluginLoader">
 
 
 
-  <h1 id="Bodu_Globalization_Calendar_Plugins_NotableDatePluginLoader" data-uid="Bodu.Globalization.Calendar.Plugins.NotableDatePluginLoader" class="text-break">Class NotableDatePluginLoader</h1>
-  <div class="markdown level0 summary"><p>Loads notable-date plugins from assemblies, gating activation behind an <a class="xref" href="Bodu.Globalization.Calendar.Plugins.IPluginTrustPolicy.html">IPluginTrustPolicy</a> and
+  <h1 id="Bodu_Globalization_Calendar_Plugins_NotableDatePluginLoader" data-uid="Bodu.Globalization.Calendar.Plugins.NotableDatePluginLoader" class="text-break">
+Class NotableDatePluginLoader  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Globalization.Calendar.Plugins/src/NotableDatePluginLoader.cs/#L61"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Globalization.html">Globalization</a>.<a class="xref" href="Bodu.Globalization.Calendar.html">Calendar</a>.<a class="xref" href="Bodu.Globalization.Calendar.Plugins.html">Plugins</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Globalization.Calendar.Plugins.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Loads notable-date plugins from assemblies, gating activation behind an <a class="xref" href="Bodu.Globalization.Calendar.Plugins.IPluginTrustPolicy.html">IPluginTrustPolicy</a> and
 registering the contributed algorithms with a <a class="xref" href="Bodu.Globalization.Calendar.Algorithms.NotableDateAlgorithmRegistry.html">NotableDateAlgorithmRegistry</a>.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><span class="xref">NotableDatePluginLoader</span></div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class NotableDatePluginLoader</code></pre>
   </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">NotableDatePluginLoader</span></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
@@ -115,14 +143,24 @@ registering the contributed algorithms with a <a class="xref" href="Bodu.Globali
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
-  </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Globalization</span>.<a class="xref" href="Bodu.Globalization.Calendar.html">Calendar</a>.<a class="xref" href="Bodu.Globalization.Calendar.Plugins.html">Plugins</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Globalization.Calendar.Plugins.dll</h6>
-  <h5 id="Bodu_Globalization_Calendar_Plugins_NotableDatePluginLoader_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static class NotableDatePluginLoader</code></pre>
-  </div>
-  <h5 id="Bodu_Globalization_Calendar_Plugins_NotableDatePluginLoader_remarks"><strong>Remarks</strong></h5>
+  </dd></dl>
+
+
+
+  <h2 id="Bodu_Globalization_Calendar_Plugins_NotableDatePluginLoader_examples">Examples</h2>
+  <pre><code class="lang-csharp">// Gate activation behind a strong-name trust policy, then register the plugin's algorithms.
+IPluginTrustPolicy trust = new StrongNamePluginTrustPolicy(new[] { "c0ffee1234567890" });
+INotableDatePlugin plugin = NotableDatePluginLoader.LoadFrom("Contoso.Calendar.Plugin.dll", trust);
+
+NotableDateAlgorithmRegistry registry = new();
+int registered = NotableDatePluginLoader.RegisterAlgorithms(plugin, registry);
+
+// Wire the registry into the load and resolve pipeline so rules can reference the plugin keys.
+NotableDateResource resource = NotableDateResourceLoader.Load(documentXml, _ =&gt; null, registry);
+NotableDateService service = new(resource, new NotableDateServiceOptions { Algorithms = registry });</code></pre>
+
+
+  <h2 id="Bodu_Globalization_Calendar_Plugins_NotableDatePluginLoader_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
 Trust is evaluated before the plugin's entry-point type is activated, so an untrusted assembly's constructor never
 runs. The file-path overload loads the assembly into a dedicated <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.runtime.loader.assemblyloadcontext">AssemblyLoadContext</a>.
@@ -143,68 +181,382 @@ an activated plugin (<a class="xref" href="https://learn.microsoft.com/dotnet/ap
 These levels are fixed.
 </p>
 </div>
-  <h5 id="Bodu_Globalization_Calendar_Plugins_NotableDatePluginLoader_examples"><strong>Examples</strong></h5>
-  <pre><code class="lang-csharp">// Gate activation behind a strong-name trust policy, then register the plugin's algorithms.
-IPluginTrustPolicy trust = new StrongNamePluginTrustPolicy(new[] { "c0ffee1234567890" });
-INotableDatePlugin plugin = NotableDatePluginLoader.LoadFrom("Contoso.Calendar.Plugin.dll", trust);
 
-NotableDateAlgorithmRegistry registry = new();
-int registered = NotableDatePluginLoader.RegisterAlgorithms(plugin, registry);
 
-// Wire the registry into the load and resolve pipeline so rules can reference the plugin keys.
-NotableDateResource resource = NotableDateResourceLoader.Load(documentXml, _ =&gt; null, registry);
-NotableDateService service = new(resource, new NotableDateServiceOptions { Algorithms = registry });</code></pre>
+  <h2 class="section" id="methods">Methods
+</h2>
 
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Globalization_Calendar_Plugins_NotableDatePluginLoader_LoadFrom_System_Reflection_Assembly_Bodu_Globalization_Calendar_Plugins_IPluginTrustPolicy_Microsoft_Extensions_Logging_ILogger_" data-uid="Bodu.Globalization.Calendar.Plugins.NotableDatePluginLoader.LoadFrom(System.Reflection.Assembly,Bodu.Globalization.Calendar.Plugins.IPluginTrustPolicy,Microsoft.Extensions.Logging.ILogger)">
-          <a class="xref" href="Bodu.Globalization.Calendar.Plugins.NotableDatePluginLoader.LoadFrom.html#Bodu_Globalization_Calendar_Plugins_NotableDatePluginLoader_LoadFrom_System_Reflection_Assembly_Bodu_Globalization_Calendar_Plugins_IPluginTrustPolicy_Microsoft_Extensions_Logging_ILogger_">LoadFrom(Assembly, IPluginTrustPolicy, ILogger?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Loads the plugin declared by an already-loaded assembly after a trust check.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Globalization_Calendar_Plugins_NotableDatePluginLoader_LoadFrom_System_String_Bodu_Globalization_Calendar_Plugins_IPluginTrustPolicy_Microsoft_Extensions_Logging_ILogger_" data-uid="Bodu.Globalization.Calendar.Plugins.NotableDatePluginLoader.LoadFrom(System.String,Bodu.Globalization.Calendar.Plugins.IPluginTrustPolicy,Microsoft.Extensions.Logging.ILogger)">
-          <a class="xref" href="Bodu.Globalization.Calendar.Plugins.NotableDatePluginLoader.LoadFrom.html#Bodu_Globalization_Calendar_Plugins_NotableDatePluginLoader_LoadFrom_System_String_Bodu_Globalization_Calendar_Plugins_IPluginTrustPolicy_Microsoft_Extensions_Logging_ILogger_">LoadFrom(string, IPluginTrustPolicy, ILogger?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Loads the plugin declared by an assembly at a file path, into a dedicated load context, after a trust check.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Globalization_Calendar_Plugins_NotableDatePluginLoader_LoadFromFile_System_String_Bodu_Globalization_Calendar_Plugins_IPluginTrustPolicy_Microsoft_Extensions_Logging_ILogger_" data-uid="Bodu.Globalization.Calendar.Plugins.NotableDatePluginLoader.LoadFromFile(System.String,Bodu.Globalization.Calendar.Plugins.IPluginTrustPolicy,Microsoft.Extensions.Logging.ILogger)">
-          <a class="xref" href="Bodu.Globalization.Calendar.Plugins.NotableDatePluginLoader.LoadFromFile.html#Bodu_Globalization_Calendar_Plugins_NotableDatePluginLoader_LoadFromFile_System_String_Bodu_Globalization_Calendar_Plugins_IPluginTrustPolicy_Microsoft_Extensions_Logging_ILogger_">LoadFromFile(string, IPluginTrustPolicy, ILogger?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Loads the plugin declared by an assembly at a file path, into a dedicated load context, after a trust check,
+
+  <a id="Bodu_Globalization_Calendar_Plugins_NotableDatePluginLoader_LoadFrom_" data-uid="Bodu.Globalization.Calendar.Plugins.NotableDatePluginLoader.LoadFrom*"></a>
+
+  <h3 id="Bodu_Globalization_Calendar_Plugins_NotableDatePluginLoader_LoadFrom_System_Reflection_Assembly_Bodu_Globalization_Calendar_Plugins_IPluginTrustPolicy_Microsoft_Extensions_Logging_ILogger_" data-uid="Bodu.Globalization.Calendar.Plugins.NotableDatePluginLoader.LoadFrom(System.Reflection.Assembly,Bodu.Globalization.Calendar.Plugins.IPluginTrustPolicy,Microsoft.Extensions.Logging.ILogger)">
+  LoadFrom(Assembly, IPluginTrustPolicy, ILogger?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Globalization.Calendar.Plugins/src/NotableDatePluginLoader.cs/#L96"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Loads the plugin declared by an already-loaded assembly after a trust check.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[RequiresUnreferencedCode(&quot;Plugin loading inspects assemblies via reflection; plugin types and their algorithm implementations cannot be statically discovered by the trimmer.&quot;)]
+[RequiresDynamicCode(&quot;Plugin loading executes assemblies discovered at run time, which native AOT cannot compile ahead of time. The AOT-compatible alternative is shipping rules as data (see the calendar rule-pack roadmap).&quot;)]
+public static INotableDatePlugin LoadFrom(Assembly assembly, IPluginTrustPolicy trustPolicy, ILogger? logger = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>assembly</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.reflection.assembly">Assembly</a></dt>
+    <dd><p>The assembly declaring the plugin via <a class="xref" href="Bodu.Globalization.Calendar.Plugins.NotableDatePluginAttribute.html">NotableDatePluginAttribute</a>.</p>
+</dd>
+    <dt><code>trustPolicy</code> <a class="xref" href="Bodu.Globalization.Calendar.Plugins.IPluginTrustPolicy.html">IPluginTrustPolicy</a></dt>
+    <dd><p>The policy that must trust the assembly before its plugin is activated.</p>
+</dd>
+    <dt><code>logger</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.ilogger">ILogger</a></dt>
+    <dd><p>The logger that receives diagnostics for the load. <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> selects
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.abstractions.nulllogger.instance">Instance</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Plugins.INotableDatePlugin.html">INotableDatePlugin</a></dt>
+    <dd><p>The activated plugin.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Globalization_Calendar_Plugins_NotableDatePluginLoader_LoadFrom_System_Reflection_Assembly_Bodu_Globalization_Calendar_Plugins_IPluginTrustPolicy_Microsoft_Extensions_Logging_ILogger__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+This overload offers a weaker guarantee than the path-based
+<a class="xref" href="Bodu.Globalization.Calendar.Plugins.NotableDatePluginLoader.html#Bodu_Globalization_Calendar_Plugins_NotableDatePluginLoader_LoadFrom_System_String_Bodu_Globalization_Calendar_Plugins_IPluginTrustPolicy_Microsoft_Extensions_Logging_ILogger_">LoadFrom(string, IPluginTrustPolicy, ILogger?)</a> and must not be used for untrusted input. The
+assembly is <b>already loaded</b> when the trust policy runs, so any module initializer or type-load side effect
+it carries has had the opportunity to execute <i>before</i> the trust check — a rejection here cannot prevent
+code that ran at load time.
+</p>
+<p>
+The <a class="xref" href="Bodu.Globalization.Calendar.Plugins.PluginTrustContext.html#Bodu_Globalization_Calendar_Plugins_PluginTrustContext_FileHash">FileHash</a> supplied to the policy is computed by re-reading
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.reflection.assembly.location">Location</a> from disk, not from the bytes that were actually loaded, so it does not close
+the time-of-check/time-of-use gap that the path-based overload avoids by hashing the in-memory image it maps.
+For untrusted assemblies, load through the path-based overload instead.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">assembly</code> or <code class="paramref">trustPolicy</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Plugins.PluginNotTrustedException.html">PluginNotTrustedException</a></dt>
+    <dd><p>The trust policy rejected the assembly.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Plugins.PluginMissingAttributeException.html">PluginMissingAttributeException</a></dt>
+    <dd><p>The assembly does not declare a plugin attribute.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Plugins.PluginActivationException.html">PluginActivationException</a></dt>
+    <dd><p>The plugin type could not be activated or is not a plugin.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Globalization_Calendar_Plugins_NotableDatePluginLoader_LoadFrom_" data-uid="Bodu.Globalization.Calendar.Plugins.NotableDatePluginLoader.LoadFrom*"></a>
+
+  <h3 id="Bodu_Globalization_Calendar_Plugins_NotableDatePluginLoader_LoadFrom_System_String_Bodu_Globalization_Calendar_Plugins_IPluginTrustPolicy_Microsoft_Extensions_Logging_ILogger_" data-uid="Bodu.Globalization.Calendar.Plugins.NotableDatePluginLoader.LoadFrom(System.String,Bodu.Globalization.Calendar.Plugins.IPluginTrustPolicy,Microsoft.Extensions.Logging.ILogger)">
+  LoadFrom(string, IPluginTrustPolicy, ILogger?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Globalization.Calendar.Plugins/src/NotableDatePluginLoader.cs/#L139"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Loads the plugin declared by an assembly at a file path, into a dedicated load context, after a trust check.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[RequiresUnreferencedCode(&quot;Plugin loading inspects assemblies via reflection; plugin types and their algorithm implementations cannot be statically discovered by the trimmer.&quot;)]
+[RequiresDynamicCode(&quot;Plugin loading executes assemblies discovered at run time, which native AOT cannot compile ahead of time. The AOT-compatible alternative is shipping rules as data (see the calendar rule-pack roadmap).&quot;)]
+public static INotableDatePlugin LoadFrom(string assemblyPath, IPluginTrustPolicy trustPolicy, ILogger? logger = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>assemblyPath</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The file path of the plugin assembly.</p>
+</dd>
+    <dt><code>trustPolicy</code> <a class="xref" href="Bodu.Globalization.Calendar.Plugins.IPluginTrustPolicy.html">IPluginTrustPolicy</a></dt>
+    <dd><p>The policy that must trust the assembly before its plugin is activated.</p>
+</dd>
+    <dt><code>logger</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.ilogger">ILogger</a></dt>
+    <dd><p>The logger that receives diagnostics for the load. <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> selects
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.abstractions.nulllogger.instance">Instance</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Plugins.INotableDatePlugin.html">INotableDatePlugin</a></dt>
+    <dd><p>The activated plugin.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">assemblyPath</code> or <code class="paramref">trustPolicy</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">assemblyPath</code> is empty.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.filenotfoundexception">FileNotFoundException</a></dt>
+    <dd><p>No file exists at <code class="paramref">assemblyPath</code>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.directorynotfoundexception">DirectoryNotFoundException</a></dt>
+    <dd><p>A directory component of <code class="paramref">assemblyPath</code> does not exist.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.unauthorizedaccessexception">UnauthorizedAccessException</a></dt>
+    <dd><p>The file cannot be read.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Plugins.NotableDatePluginException.html">NotableDatePluginException</a></dt>
+    <dd><p>The file is not a valid managed assembly image.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Plugins.PluginNotTrustedException.html">PluginNotTrustedException</a></dt>
+    <dd><p>The trust policy rejected the assembly.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Plugins.PluginMissingAttributeException.html">PluginMissingAttributeException</a></dt>
+    <dd><p>The assembly does not declare a plugin attribute.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Plugins.PluginActivationException.html">PluginActivationException</a></dt>
+    <dd><p>The plugin type could not be loaded or activated, or is not a plugin.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Globalization_Calendar_Plugins_NotableDatePluginLoader_LoadFromFile_" data-uid="Bodu.Globalization.Calendar.Plugins.NotableDatePluginLoader.LoadFromFile*"></a>
+
+  <h3 id="Bodu_Globalization_Calendar_Plugins_NotableDatePluginLoader_LoadFromFile_System_String_Bodu_Globalization_Calendar_Plugins_IPluginTrustPolicy_Microsoft_Extensions_Logging_ILogger_" data-uid="Bodu.Globalization.Calendar.Plugins.NotableDatePluginLoader.LoadFromFile(System.String,Bodu.Globalization.Calendar.Plugins.IPluginTrustPolicy,Microsoft.Extensions.Logging.ILogger)">
+  LoadFromFile(string, IPluginTrustPolicy, ILogger?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Globalization.Calendar.Plugins/src/NotableDatePluginLoader.cs/#L183"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Loads the plugin declared by an assembly at a file path, into a dedicated load context, after a trust check,
 returning a handle that owns the context so the plugin can later be unloaded.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Globalization_Calendar_Plugins_NotableDatePluginLoader_RegisterAlgorithms_Bodu_Globalization_Calendar_Plugins_INotableDatePlugin_Bodu_Globalization_Calendar_Algorithms_NotableDateAlgorithmRegistry_Bodu_Globalization_Calendar_Plugins_PluginAlgorithmRegistrationOptions_Microsoft_Extensions_Logging_ILogger_" data-uid="Bodu.Globalization.Calendar.Plugins.NotableDatePluginLoader.RegisterAlgorithms(Bodu.Globalization.Calendar.Plugins.INotableDatePlugin,Bodu.Globalization.Calendar.Algorithms.NotableDateAlgorithmRegistry,Bodu.Globalization.Calendar.Plugins.PluginAlgorithmRegistrationOptions,Microsoft.Extensions.Logging.ILogger)">
-          <a class="xref" href="Bodu.Globalization.Calendar.Plugins.NotableDatePluginLoader.RegisterAlgorithms.html#Bodu_Globalization_Calendar_Plugins_NotableDatePluginLoader_RegisterAlgorithms_Bodu_Globalization_Calendar_Plugins_INotableDatePlugin_Bodu_Globalization_Calendar_Algorithms_NotableDateAlgorithmRegistry_Bodu_Globalization_Calendar_Plugins_PluginAlgorithmRegistrationOptions_Microsoft_Extensions_Logging_ILogger_">RegisterAlgorithms(INotableDatePlugin, NotableDateAlgorithmRegistry, PluginAlgorithmRegistrationOptions, ILogger?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Registers the algorithms contributed by a plugin with a registry under the supplied collision policy.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Globalization_Calendar_Plugins_NotableDatePluginLoader_RegisterAlgorithms_Bodu_Globalization_Calendar_Plugins_INotableDatePlugin_Bodu_Globalization_Calendar_Algorithms_NotableDateAlgorithmRegistry_Microsoft_Extensions_Logging_ILogger_" data-uid="Bodu.Globalization.Calendar.Plugins.NotableDatePluginLoader.RegisterAlgorithms(Bodu.Globalization.Calendar.Plugins.INotableDatePlugin,Bodu.Globalization.Calendar.Algorithms.NotableDateAlgorithmRegistry,Microsoft.Extensions.Logging.ILogger)">
-          <a class="xref" href="Bodu.Globalization.Calendar.Plugins.NotableDatePluginLoader.RegisterAlgorithms.html#Bodu_Globalization_Calendar_Plugins_NotableDatePluginLoader_RegisterAlgorithms_Bodu_Globalization_Calendar_Plugins_INotableDatePlugin_Bodu_Globalization_Calendar_Algorithms_NotableDateAlgorithmRegistry_Microsoft_Extensions_Logging_ILogger_">RegisterAlgorithms(INotableDatePlugin, NotableDateAlgorithmRegistry, ILogger?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Registers the algorithms contributed by a plugin with a registry, rejecting keys that collide with built-in
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[RequiresUnreferencedCode(&quot;Plugin loading inspects assemblies via reflection; plugin types and their algorithm implementations cannot be statically discovered by the trimmer.&quot;)]
+[RequiresDynamicCode(&quot;Plugin loading executes assemblies discovered at run time, which native AOT cannot compile ahead of time. The AOT-compatible alternative is shipping rules as data (see the calendar rule-pack roadmap).&quot;)]
+public static NotableDatePluginHandle LoadFromFile(string assemblyPath, IPluginTrustPolicy trustPolicy, ILogger? logger = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>assemblyPath</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The file path of the plugin assembly.</p>
+</dd>
+    <dt><code>trustPolicy</code> <a class="xref" href="Bodu.Globalization.Calendar.Plugins.IPluginTrustPolicy.html">IPluginTrustPolicy</a></dt>
+    <dd><p>The policy that must trust the assembly before its plugin is activated.</p>
+</dd>
+    <dt><code>logger</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.ilogger">ILogger</a></dt>
+    <dd><p>The logger that receives diagnostics for the load. <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> selects
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.abstractions.nulllogger.instance">Instance</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Plugins.NotableDatePluginHandle.html">NotableDatePluginHandle</a></dt>
+    <dd><p>A disposable handle owning the activated plugin and its load context.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Globalization_Calendar_Plugins_NotableDatePluginLoader_LoadFromFile_System_String_Bodu_Globalization_Calendar_Plugins_IPluginTrustPolicy_Microsoft_Extensions_Logging_ILogger__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+This overload behaves like <a class="xref" href="Bodu.Globalization.Calendar.Plugins.NotableDatePluginLoader.html#Bodu_Globalization_Calendar_Plugins_NotableDatePluginLoader_LoadFrom_System_String_Bodu_Globalization_Calendar_Plugins_IPluginTrustPolicy_Microsoft_Extensions_Logging_ILogger_">LoadFrom(string, IPluginTrustPolicy, ILogger?)</a> but additionally hands
+ownership of the plugin's collectible <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.runtime.loader.assemblyloadcontext">AssemblyLoadContext</a> to the caller: disposing the returned
+handle initiates the unload. Unloading completes only once nothing references the plugin's types — a registry
+still holding the plugin's algorithms (or a service over that registry) keeps the context alive.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">assemblyPath</code> or <code class="paramref">trustPolicy</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">assemblyPath</code> is empty.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.filenotfoundexception">FileNotFoundException</a></dt>
+    <dd><p>No file exists at <code class="paramref">assemblyPath</code>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.directorynotfoundexception">DirectoryNotFoundException</a></dt>
+    <dd><p>A directory component of <code class="paramref">assemblyPath</code> does not exist.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.unauthorizedaccessexception">UnauthorizedAccessException</a></dt>
+    <dd><p>The file cannot be read.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Plugins.NotableDatePluginException.html">NotableDatePluginException</a></dt>
+    <dd><p>The file is not a valid managed assembly image.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Plugins.PluginNotTrustedException.html">PluginNotTrustedException</a></dt>
+    <dd><p>The trust policy rejected the assembly.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Plugins.PluginMissingAttributeException.html">PluginMissingAttributeException</a></dt>
+    <dd><p>The assembly does not declare a plugin attribute.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Plugins.PluginActivationException.html">PluginActivationException</a></dt>
+    <dd><p>The plugin type could not be loaded or activated, or is not a plugin.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Globalization_Calendar_Plugins_NotableDatePluginLoader_RegisterAlgorithms_" data-uid="Bodu.Globalization.Calendar.Plugins.NotableDatePluginLoader.RegisterAlgorithms*"></a>
+
+  <h3 id="Bodu_Globalization_Calendar_Plugins_NotableDatePluginLoader_RegisterAlgorithms_Bodu_Globalization_Calendar_Plugins_INotableDatePlugin_Bodu_Globalization_Calendar_Algorithms_NotableDateAlgorithmRegistry_Bodu_Globalization_Calendar_Plugins_PluginAlgorithmRegistrationOptions_Microsoft_Extensions_Logging_ILogger_" data-uid="Bodu.Globalization.Calendar.Plugins.NotableDatePluginLoader.RegisterAlgorithms(Bodu.Globalization.Calendar.Plugins.INotableDatePlugin,Bodu.Globalization.Calendar.Algorithms.NotableDateAlgorithmRegistry,Bodu.Globalization.Calendar.Plugins.PluginAlgorithmRegistrationOptions,Microsoft.Extensions.Logging.ILogger)">
+  RegisterAlgorithms(INotableDatePlugin, NotableDateAlgorithmRegistry, PluginAlgorithmRegistrationOptions, ILogger?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Globalization.Calendar.Plugins/src/NotableDatePluginLoader.cs/#L308"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Registers the algorithms contributed by a plugin with a registry under the supplied collision policy.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static int RegisterAlgorithms(INotableDatePlugin plugin, NotableDateAlgorithmRegistry registry, PluginAlgorithmRegistrationOptions options, ILogger? logger = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>plugin</code> <a class="xref" href="Bodu.Globalization.Calendar.Plugins.INotableDatePlugin.html">INotableDatePlugin</a></dt>
+    <dd><p>The plugin whose algorithms are registered.</p>
+</dd>
+    <dt><code>registry</code> <a class="xref" href="Bodu.Globalization.Calendar.Algorithms.NotableDateAlgorithmRegistry.html">NotableDateAlgorithmRegistry</a></dt>
+    <dd><p>The registry to populate.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Globalization.Calendar.Plugins.PluginAlgorithmRegistrationOptions.html">PluginAlgorithmRegistrationOptions</a></dt>
+    <dd><p>The options controlling how colliding keys are treated.</p>
+</dd>
+    <dt><code>logger</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.ilogger">ILogger</a></dt>
+    <dd><p>The logger that receives diagnostics for the registration. <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> selects
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.abstractions.nulllogger.instance">Instance</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of algorithms registered.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Globalization_Calendar_Plugins_NotableDatePluginLoader_RegisterAlgorithms_Bodu_Globalization_Calendar_Plugins_INotableDatePlugin_Bodu_Globalization_Calendar_Algorithms_NotableDateAlgorithmRegistry_Bodu_Globalization_Calendar_Plugins_PluginAlgorithmRegistrationOptions_Microsoft_Extensions_Logging_ILogger__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+Registration is atomic: the plugin's contribution is fully staged and validated before the registry is touched,
+so a faulting or malformed plugin never leaves the registry partially mutated. With
+<a class="xref" href="Bodu.Globalization.Calendar.Plugins.PluginAlgorithmRegistrationOptions.html#Bodu_Globalization_Calendar_Plugins_PluginAlgorithmRegistrationOptions_AllowOverride">AllowOverride</a> enabled, each replacement of a built-in or
+existing key is logged at <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel#microsoft-extensions-logging-loglevel-warning">Warning</a>.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">plugin</code>, <code class="paramref">registry</code>, or <code class="paramref">options</code> is
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Plugins.NotableDatePluginException.html">NotableDatePluginException</a></dt>
+    <dd><p>The plugin's contribution is malformed or faults, or a contributed key collides with a built-in algorithm or an
+existing registration while <a class="xref" href="Bodu.Globalization.Calendar.Plugins.PluginAlgorithmRegistrationOptions.html#Bodu_Globalization_Calendar_Plugins_PluginAlgorithmRegistrationOptions_AllowOverride">AllowOverride</a> is
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>. The registry is left unchanged.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Globalization_Calendar_Plugins_NotableDatePluginLoader_RegisterAlgorithms_" data-uid="Bodu.Globalization.Calendar.Plugins.NotableDatePluginLoader.RegisterAlgorithms*"></a>
+
+  <h3 id="Bodu_Globalization_Calendar_Plugins_NotableDatePluginLoader_RegisterAlgorithms_Bodu_Globalization_Calendar_Plugins_INotableDatePlugin_Bodu_Globalization_Calendar_Algorithms_NotableDateAlgorithmRegistry_Microsoft_Extensions_Logging_ILogger_" data-uid="Bodu.Globalization.Calendar.Plugins.NotableDatePluginLoader.RegisterAlgorithms(Bodu.Globalization.Calendar.Plugins.INotableDatePlugin,Bodu.Globalization.Calendar.Algorithms.NotableDateAlgorithmRegistry,Microsoft.Extensions.Logging.ILogger)">
+  RegisterAlgorithms(INotableDatePlugin, NotableDateAlgorithmRegistry, ILogger?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Globalization.Calendar.Plugins/src/NotableDatePluginLoader.cs/#L277"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Registers the algorithms contributed by a plugin with a registry, rejecting keys that collide with built-in
 algorithms or existing registrations.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="seealso">See Also</h3>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static int RegisterAlgorithms(INotableDatePlugin plugin, NotableDateAlgorithmRegistry registry, ILogger? logger = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>plugin</code> <a class="xref" href="Bodu.Globalization.Calendar.Plugins.INotableDatePlugin.html">INotableDatePlugin</a></dt>
+    <dd><p>The plugin whose algorithms are registered.</p>
+</dd>
+    <dt><code>registry</code> <a class="xref" href="Bodu.Globalization.Calendar.Algorithms.NotableDateAlgorithmRegistry.html">NotableDateAlgorithmRegistry</a></dt>
+    <dd><p>The registry to populate.</p>
+</dd>
+    <dt><code>logger</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.ilogger">ILogger</a></dt>
+    <dd><p>The logger that receives diagnostics for the registration. <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> selects
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.abstractions.nulllogger.instance">Instance</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of algorithms registered.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">plugin</code> or <code class="paramref">registry</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.Plugins.NotableDatePluginException.html">NotableDatePluginException</a></dt>
+    <dd><p>The plugin's contribution is malformed or faults, or a contributed key collides with a built-in algorithm or an
+existing registration. The registry is left unchanged.</p>
+</dd>
+  </dl>
+
+
+
+  <h2 id="seealso">See Also</h2>
   <div class="seealso">
       <div><a class="xref" href="Bodu.Globalization.Calendar.Plugins.IPluginTrustPolicy.html">IPluginTrustPolicy</a></div>
       <div><a class="xref" href="Bodu.Globalization.Calendar.Plugins.INotableDateAlgorithmPlugin.html">INotableDateAlgorithmPlugin</a></div>
@@ -214,49 +566,24 @@ algorithms or existing registrations.</p>
   </div>
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 302e395 · Built: 2026-09-29 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 1e0dd9a · Built: 2026-09-29 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

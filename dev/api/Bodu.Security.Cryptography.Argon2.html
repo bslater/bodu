@@ -1,102 +1,135 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
       <title>Class Argon2 | BODU </title>
-      <meta name="viewport" content="width=device-width">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class Argon2 | BODU ">
-    
-    <meta name="description" content="Provides the shared base for the Argon2 password-hashing and key-derivation functions defined by RFC 9106. The concrete variants are , , and .">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      
+      <meta name="description" content="Provides the shared base for the Argon2 password-hashing and key-derivation functions defined by RFC 9106. The concrete variants are , , and .">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/new/master/apiSpec/new?filename=Bodu_Security_Cryptography_Argon2.md&amp;value=---%0Auid%3A%20Bodu.Security.Cryptography.Argon2%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Security.Cryptography.Argon2">
+
+        <article data-uid="Bodu.Security.Cryptography.Argon2">
 
 
 
-  <h1 id="Bodu_Security_Cryptography_Argon2" data-uid="Bodu.Security.Cryptography.Argon2" class="text-break">Class Argon2</h1>
-  <div class="markdown level0 summary"><p>Provides the shared base for the Argon2 password-hashing and key-derivation functions defined by RFC 9106. The
+  <h1 id="Bodu_Security_Cryptography_Argon2" data-uid="Bodu.Security.Cryptography.Argon2" class="text-break">
+Class Argon2  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/Argon2.cs/#L44"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Security</span>.<a class="xref" href="Bodu.Security.Cryptography.html">Cryptography</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Security.Cryptography.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides the shared base for the Argon2 password-hashing and key-derivation functions defined by RFC 9106. The
 concrete variants are <a class="xref" href="Bodu.Security.Cryptography.Argon2d.html">Argon2d</a>, <a class="xref" href="Bodu.Security.Cryptography.Argon2i.html">Argon2i</a>, and <a class="xref" href="Bodu.Security.Cryptography.Argon2id.html">Argon2id</a>.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><span class="xref">Argon2</span></div>
-      <div class="level2"><a class="xref" href="Bodu.Security.Cryptography.Argon2d.html">Argon2d</a></div>
-      <div class="level2"><a class="xref" href="Bodu.Security.Cryptography.Argon2i.html">Argon2i</a></div>
-      <div class="level2"><a class="xref" href="Bodu.Security.Cryptography.Argon2id.html">Argon2id</a></div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public abstract class Argon2</code></pre>
   </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">Argon2</span></div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist derived">
+    <dt>Derived</dt>
+    <dd>
+      <div><a class="xref" href="Bodu.Security.Cryptography.Argon2d.html">Argon2d</a></div>
+      <div><a class="xref" href="Bodu.Security.Cryptography.Argon2i.html">Argon2i</a></div>
+      <div><a class="xref" href="Bodu.Security.Cryptography.Argon2id.html">Argon2id</a></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
@@ -118,26 +151,43 @@ concrete variants are <a class="xref" href="Bodu.Security.Cryptography.Argon2d.h
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
+  </dd></dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Security</span>.<a class="xref" href="Bodu.Security.Cryptography.html">Cryptography</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Security.Cryptography.dll</h6>
-  <h5 id="Bodu_Security_Cryptography_Argon2_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public abstract class Argon2</code></pre>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h5 id="Bodu_Security_Cryptography_Argon2_remarks"><strong>Remarks</strong></h5>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  </dd></dl>
+
+
+
+  <h2 id="Bodu_Security_Cryptography_Argon2_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
 Argon2 is a memory-hard function designed to make password cracking expensive on parallel hardware. An instance
 binds a set of cost <a class="xref" href="Bodu.Security.Cryptography.Argon2Parameters.html">Argon2Parameters</a> (memory, iterations, parallelism, and tag length) once, then
 derives keys or password hashes from a password and salt. Cross-variant verification of a PHC encoded string is
-available through the static <a class="xref" href="Bodu.Security.Cryptography.Argon2.Verify.html#Bodu_Security_Cryptography_Argon2_Verify_System_String_System_ReadOnlySpan_System_Byte__">Verify(string, ReadOnlySpan&lt;byte&gt;)</a> method, which dispatches to the
+available through the static <a class="xref" href="Bodu.Security.Cryptography.Argon2.html#Bodu_Security_Cryptography_Argon2_Verify_System_String_System_ReadOnlySpan_System_Byte__">Verify(string, ReadOnlySpan&lt;byte&gt;)</a> method, which dispatches to the
 variant named in the string.
 </p>
 <p>
-A derivation fills its lanes on several threads when that pays: up to <a class="xref" href="Bodu.Security.Cryptography.Argon2Parameters.Parallelism.html#Bodu_Security_Cryptography_Argon2Parameters_Parallelism">Parallelism</a>
+A derivation fills its lanes on several threads when that pays: up to <a class="xref" href="Bodu.Security.Cryptography.Argon2Parameters.html#Bodu_Security_Cryptography_Argon2Parameters_Parallelism">Parallelism</a>
 threads, bounded by the processor count, once each lane's share of a pass is large enough to be worth dividing (in
 the region of 1 MiB). The calling thread always takes part, so a derivation never waits on an idle thread pool, and
-the tag never depends on the threads used. <a class="xref" href="Bodu.Security.Cryptography.Argon2.MaxDegreeOfParallelism.html#Bodu_Security_Cryptography_Argon2_MaxDegreeOfParallelism">MaxDegreeOfParallelism</a> bounds a derivation's threads for
+the tag never depends on the threads used. <a class="xref" href="Bodu.Security.Cryptography.Argon2.html#Bodu_Security_Cryptography_Argon2_MaxDegreeOfParallelism">MaxDegreeOfParallelism</a> bounds a derivation's threads for
 callers that already run many derivations at once.
 </p>
 <p>
@@ -152,175 +202,511 @@ registers or its own stack slots are beyond the library's reach.
 This implementation is not independently audited and offers best-effort, not guaranteed, side-channel resistance.
 </p>
 </div>
-  <h3 id="constructors">Constructors
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Argon2__ctor_Bodu_Security_Cryptography_Argon2Parameters_" data-uid="Bodu.Security.Cryptography.Argon2.#ctor(Bodu.Security.Cryptography.Argon2Parameters)">
-          <a class="xref" href="Bodu.Security.Cryptography.Argon2.-ctor.html#Bodu_Security_Cryptography_Argon2__ctor_Bodu_Security_Cryptography_Argon2Parameters_">Argon2(Argon2Parameters)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Security.Cryptography.Argon2.html">Argon2</a> class with the specified cost parameters.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="properties">Properties
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Argon2_MaxDegreeOfParallelism" data-uid="Bodu.Security.Cryptography.Argon2.MaxDegreeOfParallelism">
-          <a class="xref" href="Bodu.Security.Cryptography.Argon2.MaxDegreeOfParallelism.html#Bodu_Security_Cryptography_Argon2_MaxDegreeOfParallelism">MaxDegreeOfParallelism</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the greatest number of threads one derivation by this instance may use, the calling thread included.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Argon2_Parameters" data-uid="Bodu.Security.Cryptography.Argon2.Parameters">
-          <a class="xref" href="Bodu.Security.Cryptography.Argon2.Parameters.html#Bodu_Security_Cryptography_Argon2_Parameters">Parameters</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the cost and auxiliary parameters bound to this instance.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Argon2_DeriveKey_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__System_Span_System_Byte__" data-uid="Bodu.Security.Cryptography.Argon2.DeriveKey(System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte},System.Span{System.Byte})">
-          <a class="xref" href="Bodu.Security.Cryptography.Argon2.DeriveKey.html#Bodu_Security_Cryptography_Argon2_DeriveKey_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">DeriveKey(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Derives a tag into the supplied destination buffer.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Argon2_GetBytes_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.Argon2.GetBytes(System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte})">
-          <a class="xref" href="Bodu.Security.Cryptography.Argon2.GetBytes.html#Bodu_Security_Cryptography_Argon2_GetBytes_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__">GetBytes(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Derives a tag of the configured <a class="xref" href="Bodu.Security.Cryptography.Argon2Parameters.TagLength.html#Bodu_Security_Cryptography_Argon2Parameters_TagLength">TagLength</a> from the supplied password and salt.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Argon2_Hash_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.Argon2.Hash(System.ReadOnlySpan{System.Byte})">
-          <a class="xref" href="Bodu.Security.Cryptography.Argon2.Hash.html#Bodu_Security_Cryptography_Argon2_Hash_System_ReadOnlySpan_System_Byte__">Hash(ReadOnlySpan&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Derives a tag from the password and a freshly generated random 16-byte salt and returns the result as a PHC
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Bodu_Security_Cryptography_Argon2__ctor_" data-uid="Bodu.Security.Cryptography.Argon2.#ctor*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_Argon2__ctor_Bodu_Security_Cryptography_Argon2Parameters_" data-uid="Bodu.Security.Cryptography.Argon2.#ctor(Bodu.Security.Cryptography.Argon2Parameters)">
+  Argon2(Argon2Parameters)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/Argon2.cs/#L63"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Security.Cryptography.Argon2.html">Argon2</a> class with the specified cost parameters.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected Argon2(Argon2Parameters parameters)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>parameters</code> <a class="xref" href="Bodu.Security.Cryptography.Argon2Parameters.html">Argon2Parameters</a></dt>
+    <dd><p>The cost and auxiliary parameters governing the derivation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">parameters</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>A cost parameter in <code class="paramref">parameters</code> falls outside the range permitted by RFC 9106.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>The version code in <code class="paramref">parameters</code> is neither 0x10 nor 0x13.</p>
+</dd>
+  </dl>
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Bodu_Security_Cryptography_Argon2_MaxDegreeOfParallelism_" data-uid="Bodu.Security.Cryptography.Argon2.MaxDegreeOfParallelism*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_Argon2_MaxDegreeOfParallelism" data-uid="Bodu.Security.Cryptography.Argon2.MaxDegreeOfParallelism">
+  MaxDegreeOfParallelism
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/Argon2.cs/#L110"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the greatest number of threads one derivation by this instance may use, the calling thread included.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int MaxDegreeOfParallelism { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p><code>-1</code>, the default, when the library chooses: up to <a class="xref" href="Bodu.Security.Cryptography.Argon2Parameters.html#Bodu_Security_Cryptography_Argon2Parameters_Parallelism">Parallelism</a> threads,
+bounded by the processor count, when the lanes are large enough to be worth dividing. <code>1</code> confines every
+derivation to the calling thread; a larger value bounds the threads. A derivation never uses more threads than
+it has lanes, and the tag never depends on this value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Security_Cryptography_Argon2_Parameters_" data-uid="Bodu.Security.Cryptography.Argon2.Parameters*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_Argon2_Parameters" data-uid="Bodu.Security.Cryptography.Argon2.Parameters">
+  Parameters
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/Argon2.cs/#L99"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the cost and auxiliary parameters bound to this instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Argon2Parameters Parameters { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Security.Cryptography.Argon2Parameters.html">Argon2Parameters</a></dt>
+    <dd><p>The <a class="xref" href="Bodu.Security.Cryptography.Argon2Parameters.html">Argon2Parameters</a> supplied at construction.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Security_Cryptography_Argon2_DeriveKey_" data-uid="Bodu.Security.Cryptography.Argon2.DeriveKey*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_Argon2_DeriveKey_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__System_Span_System_Byte__" data-uid="Bodu.Security.Cryptography.Argon2.DeriveKey(System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte},System.Span{System.Byte})">
+  DeriveKey(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/Argon2.cs/#L224"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Derives a tag into the supplied destination buffer.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void DeriveKey(ReadOnlySpan&lt;byte&gt; password, ReadOnlySpan&lt;byte&gt; salt, Span&lt;byte&gt; destination)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>password</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The password / message to derive from.</p>
+</dd>
+    <dt><code>salt</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The salt; must be at least 8 bytes.</p>
+</dd>
+    <dt><code>destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The buffer to receive the tag; its length must equal the configured tag length.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">salt</code> is shorter than 8 bytes, or <code class="paramref">destination</code> does not have the
+configured tag length.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Security_Cryptography_Argon2_GetBytes_" data-uid="Bodu.Security.Cryptography.Argon2.GetBytes*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_Argon2_GetBytes_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.Argon2.GetBytes(System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte})">
+  GetBytes(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/Argon2.cs/#L244"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Derives a tag of the configured <a class="xref" href="Bodu.Security.Cryptography.Argon2Parameters.html#Bodu_Security_Cryptography_Argon2Parameters_TagLength">TagLength</a> from the supplied password and salt.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public byte[] GetBytes(ReadOnlySpan&lt;byte&gt; password, ReadOnlySpan&lt;byte&gt; salt)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>password</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The password / message to derive from.</p>
+</dd>
+    <dt><code>salt</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The salt; must be at least 8 bytes.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The derived tag.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">salt</code> is shorter than 8 bytes.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Security_Cryptography_Argon2_Hash_" data-uid="Bodu.Security.Cryptography.Argon2.Hash*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_Argon2_Hash_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.Argon2.Hash(System.ReadOnlySpan{System.Byte})">
+  Hash(ReadOnlySpan&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/Argon2.cs/#L259"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Derives a tag from the password and a freshly generated random 16-byte salt and returns the result as a PHC
 encoded-hash string.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Argon2_Hash_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.Argon2.Hash(System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte})">
-          <a class="xref" href="Bodu.Security.Cryptography.Argon2.Hash.html#Bodu_Security_Cryptography_Argon2_Hash_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__">Hash(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Derives a tag from the password and the supplied salt and returns the result as a PHC encoded-hash string.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Argon2_Verify_System_String_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.Argon2.Verify(System.String,System.ReadOnlySpan{System.Byte})">
-          <a class="xref" href="Bodu.Security.Cryptography.Argon2.Verify.html#Bodu_Security_Cryptography_Argon2_Verify_System_String_System_ReadOnlySpan_System_Byte__">Verify(string, ReadOnlySpan&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Verifies a password against an Argon2 PHC encoded-hash string, dispatching to the variant named in the string.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Argon2_Verify_System_String_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.Argon2.Verify(System.String,System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte})">
-          <a class="xref" href="Bodu.Security.Cryptography.Argon2.Verify.html#Bodu_Security_Cryptography_Argon2_Verify_System_String_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__">Verify(string, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Verifies a password against an Argon2 PHC encoded-hash string using the supplied secret key.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_Argon2_Verify_System_String_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__System_Int32_" data-uid="Bodu.Security.Cryptography.Argon2.Verify(System.String,System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte},System.Int32)">
-          <a class="xref" href="Bodu.Security.Cryptography.Argon2.Verify.html#Bodu_Security_Cryptography_Argon2_Verify_System_String_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__System_Int32_">Verify(string, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;, int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Verifies a password against an Argon2 PHC encoded-hash string using the supplied secret key, with a bound on the
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string Hash(ReadOnlySpan&lt;byte&gt; password)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>password</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The password to hash.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The PHC encoded-hash string, including the generated salt.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_Security_Cryptography_Argon2_Hash_" data-uid="Bodu.Security.Cryptography.Argon2.Hash*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_Argon2_Hash_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.Argon2.Hash(System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte})">
+  Hash(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/Argon2.cs/#L273"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Derives a tag from the password and the supplied salt and returns the result as a PHC encoded-hash string.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string Hash(ReadOnlySpan&lt;byte&gt; password, ReadOnlySpan&lt;byte&gt; salt)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>password</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The password to hash.</p>
+</dd>
+    <dt><code>salt</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The salt to embed in the encoded string; must be at least 8 bytes.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The PHC encoded-hash string.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">salt</code> is shorter than 8 bytes.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Security_Cryptography_Argon2_Verify_" data-uid="Bodu.Security.Cryptography.Argon2.Verify*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_Argon2_Verify_System_String_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.Argon2.Verify(System.String,System.ReadOnlySpan{System.Byte})">
+  Verify(string, ReadOnlySpan&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/Argon2.cs/#L133"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Verifies a password against an Argon2 PHC encoded-hash string, dispatching to the variant named in the string.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool Verify(string encoded, ReadOnlySpan&lt;byte&gt; password)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>encoded</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The PHC encoded-hash string produced by an Argon2 variant.</p>
+</dd>
+    <dt><code>password</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The password to verify.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the password matches the encoded hash; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_Argon2_Verify_System_String_System_ReadOnlySpan_System_Byte___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This overload supplies no secret key. Hashes produced with an <a class="xref" href="Bodu.Security.Cryptography.Argon2Parameters.html#Bodu_Security_Cryptography_Argon2Parameters_Secret">Secret</a> must be
+verified through <a class="xref" href="Bodu.Security.Cryptography.Argon2.html#Bodu_Security_Cryptography_Argon2_Verify_System_String_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__">Verify(string, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">encoded</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p><code class="paramref">encoded</code> is not a well-formed Argon2 PHC string.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Security_Cryptography_Argon2_Verify_" data-uid="Bodu.Security.Cryptography.Argon2.Verify*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_Argon2_Verify_System_String_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.Argon2.Verify(System.String,System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte})">
+  Verify(string, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/Argon2.cs/#L149"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Verifies a password against an Argon2 PHC encoded-hash string using the supplied secret key.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool Verify(string encoded, ReadOnlySpan&lt;byte&gt; password, ReadOnlySpan&lt;byte&gt; secret)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>encoded</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The PHC encoded-hash string produced by an Argon2 variant.</p>
+</dd>
+    <dt><code>password</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The password to verify.</p>
+</dd>
+    <dt><code>secret</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The secret key (pepper) used when the hash was produced; empty when none was used.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the password matches the encoded hash; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">encoded</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p><code class="paramref">encoded</code> is not a well-formed Argon2 PHC string.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Security_Cryptography_Argon2_Verify_" data-uid="Bodu.Security.Cryptography.Argon2.Verify*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_Argon2_Verify_System_String_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__System_Int32_" data-uid="Bodu.Security.Cryptography.Argon2.Verify(System.String,System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte},System.Int32)">
+  Verify(string, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;, int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/Argon2.cs/#L177"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Verifies a password against an Argon2 PHC encoded-hash string using the supplied secret key, with a bound on the
 threads the derivation may use.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool Verify(string encoded, ReadOnlySpan&lt;byte&gt; password, ReadOnlySpan&lt;byte&gt; secret, int maxDegreeOfParallelism)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>encoded</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The PHC encoded-hash string produced by an Argon2 variant.</p>
+</dd>
+    <dt><code>password</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The password to verify.</p>
+</dd>
+    <dt><code>secret</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The secret key (pepper) used when the hash was produced; empty when none was used.</p>
+</dd>
+    <dt><code>maxDegreeOfParallelism</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The greatest number of threads the derivation may use, the calling thread included; <code>-1</code> lets the library
+choose.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the password matches the encoded hash; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_Argon2_Verify_System_String_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__System_Int32__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The bound serves a service that verifies many passwords at once and gains nothing when each derivation spreads
+across every core. The result never depends on it.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">encoded</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">maxDegreeOfParallelism</code> is zero or less than <code>-1</code>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p><code class="paramref">encoded</code> is not a well-formed Argon2 PHC string.</p>
+</dd>
+  </dl>
+
+
+
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 302e395 · Built: 2026-09-29 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 1e0dd9a · Built: 2026-09-29 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

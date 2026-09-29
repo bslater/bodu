@@ -1,99 +1,127 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
       <title>Class ConfigurationResolveOptions | BODU </title>
-      <meta name="viewport" content="width=device-width">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class ConfigurationResolveOptions | BODU ">
-    
-    <meta name="description" content="Controls how a  is projected into a  for a specific target path.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      
+      <meta name="description" content="Controls how a  is projected into a  for a specific target path.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/new/master/apiSpec/new?filename=Bodu_Text_Configuration_ConfigurationResolveOptions.md&amp;value=---%0Auid%3A%20Bodu.Text.Configuration.ConfigurationResolveOptions%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Text.Configuration.ConfigurationResolveOptions">
+
+        <article data-uid="Bodu.Text.Configuration.ConfigurationResolveOptions">
 
 
 
-  <h1 id="Bodu_Text_Configuration_ConfigurationResolveOptions" data-uid="Bodu.Text.Configuration.ConfigurationResolveOptions" class="text-break">Class ConfigurationResolveOptions</h1>
-  <div class="markdown level0 summary"><p>Controls how a <a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.html">ConfigurationDocument</a> is projected into a <a class="xref" href="Bodu.Text.Configuration.ConfigurationView.html">ConfigurationView</a> for a
+  <h1 id="Bodu_Text_Configuration_ConfigurationResolveOptions" data-uid="Bodu.Text.Configuration.ConfigurationResolveOptions" class="text-break">
+Class ConfigurationResolveOptions  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationResolveOptions.Presets.cs/#L9"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Configuration.html">Configuration</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Text.Configuration.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Controls how a <a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.html">ConfigurationDocument</a> is projected into a <a class="xref" href="Bodu.Text.Configuration.ConfigurationView.html">ConfigurationView</a> for a
 specific target path.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><span class="xref">ConfigurationResolveOptions</span></div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class ConfigurationResolveOptions</code></pre>
   </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">ConfigurationResolveOptions</span></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
@@ -112,14 +140,31 @@ specific target path.</p>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
+  </dd></dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Configuration.html">Configuration</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Text.Configuration.dll</h6>
-  <h5 id="Bodu_Text_Configuration_ConfigurationResolveOptions_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class ConfigurationResolveOptions</code></pre>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h5 id="Bodu_Text_Configuration_ConfigurationResolveOptions_remarks"><strong>Remarks</strong></h5>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  </dd></dl>
+
+
+
+  <h2 id="Bodu_Text_Configuration_ConfigurationResolveOptions_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
 Resolution is path-aware: each section in the document either matches the supplied target path (under EditorConfig
 glob semantics) or does not, and the resolved view layers the preamble and every matching section in source order,
@@ -128,15 +173,15 @@ layering — which path root anchors anchored globs, whether preamble properties
 is used for path matching, and how the EditorConfig <code>unset</code> sentinel is handled.
 </p>
 <p>
-<a class="xref" href="Bodu.Text.Configuration.ConfigurationResolveOptions.PathRoot.html#Bodu_Text_Configuration_ConfigurationResolveOptions_PathRoot">PathRoot</a> deserves attention when the document was parsed from a string rather than loaded from a
-file. With no path on the document and <a class="xref" href="Bodu.Text.Configuration.ConfigurationResolveOptions.PathRoot.html#Bodu_Text_Configuration_ConfigurationResolveOptions_PathRoot">PathRoot</a> left <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, the resolver consults
-<a class="xref" href="Bodu.Text.Configuration.ConfigurationResolveOptions.MissingPathRootMode.html#Bodu_Text_Configuration_ConfigurationResolveOptions_MissingPathRootMode">MissingPathRootMode</a> to decide whether to use the empty root, throw, or fall back to the target path's
+<a class="xref" href="Bodu.Text.Configuration.ConfigurationResolveOptions.html#Bodu_Text_Configuration_ConfigurationResolveOptions_PathRoot">PathRoot</a> deserves attention when the document was parsed from a string rather than loaded from a
+file. With no path on the document and <a class="xref" href="Bodu.Text.Configuration.ConfigurationResolveOptions.html#Bodu_Text_Configuration_ConfigurationResolveOptions_PathRoot">PathRoot</a> left <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, the resolver consults
+<a class="xref" href="Bodu.Text.Configuration.ConfigurationResolveOptions.html#Bodu_Text_Configuration_ConfigurationResolveOptions_MissingPathRootMode">MissingPathRootMode</a> to decide whether to use the empty root, throw, or fall back to the target path's
 parent — that choice changes which sections match.
 </p>
 <p>
-<a class="xref" href="Bodu.Text.Configuration.ConfigurationResolveOptions.KeyOptions.html#Bodu_Text_Configuration_ConfigurationResolveOptions_KeyOptions">KeyOptions</a> should normally be the same instance passed to
-<a class="xref" href="Bodu.Text.Configuration.ConfigurationParseOptions.KeyOptions.html#Bodu_Text_Configuration_ConfigurationParseOptions_KeyOptions">KeyOptions</a> so that lookups against the resolved view use the same comparer
-and mapping that produced the parsed keys. The default <a class="xref" href="Bodu.Text.Configuration.ConfigurationKeyOptions.Default.html#Bodu_Text_Configuration_ConfigurationKeyOptions_Default">Default</a> matches the
+<a class="xref" href="Bodu.Text.Configuration.ConfigurationResolveOptions.html#Bodu_Text_Configuration_ConfigurationResolveOptions_KeyOptions">KeyOptions</a> should normally be the same instance passed to
+<a class="xref" href="Bodu.Text.Configuration.ConfigurationParseOptions.html#Bodu_Text_Configuration_ConfigurationParseOptions_KeyOptions">KeyOptions</a> so that lookups against the resolved view use the same comparer
+and mapping that produced the parsed keys. The default <a class="xref" href="Bodu.Text.Configuration.ConfigurationKeyOptions.html#Bodu_Text_Configuration_ConfigurationKeyOptions_Default">Default</a> matches the
 <code>Microsoft.Extensions.Configuration</code> shape.
 </p>
 <example>
@@ -152,163 +197,380 @@ and mapping that produced the parsed keys. The default <a class="xref" href="Bod
 ConfigurationView strict = document.Resolve(null, ConfigurationResolveOptions.For(ConfigurationProfile.Strict));</code></pre>
 </example>
 </div>
-  <h3 id="properties">Properties
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Text_Configuration_ConfigurationResolveOptions_ApplyPreambleProperties" data-uid="Bodu.Text.Configuration.ConfigurationResolveOptions.ApplyPreambleProperties">
-          <a class="xref" href="Bodu.Text.Configuration.ConfigurationResolveOptions.ApplyPreambleProperties.html#Bodu_Text_Configuration_ConfigurationResolveOptions_ApplyPreambleProperties">ApplyPreambleProperties</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets a value indicating whether preamble (global) properties contribute to resolution. Defaults to
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationResolveOptions_ApplyPreambleProperties_" data-uid="Bodu.Text.Configuration.ConfigurationResolveOptions.ApplyPreambleProperties*"></a>
+
+  <h3 id="Bodu_Text_Configuration_ConfigurationResolveOptions_ApplyPreambleProperties" data-uid="Bodu.Text.Configuration.ConfigurationResolveOptions.ApplyPreambleProperties">
+  ApplyPreambleProperties
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationResolveOptions.cs/#L77"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether preamble (global) properties contribute to resolution. Defaults to
 <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> for the Bodu profile and <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> for EditorConfig-compatible.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Configuration_ConfigurationResolveOptions_Bodu" data-uid="Bodu.Text.Configuration.ConfigurationResolveOptions.Bodu">
-          <a class="xref" href="Bodu.Text.Configuration.ConfigurationResolveOptions.Bodu.html#Bodu_Text_Configuration_ConfigurationResolveOptions_Bodu">Bodu</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the canonical option set for the default Bodu profile.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Configuration_ConfigurationResolveOptions_EditorConfigCompatible" data-uid="Bodu.Text.Configuration.ConfigurationResolveOptions.EditorConfigCompatible">
-          <a class="xref" href="Bodu.Text.Configuration.ConfigurationResolveOptions.EditorConfigCompatible.html#Bodu_Text_Configuration_ConfigurationResolveOptions_EditorConfigCompatible">EditorConfigCompatible</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the canonical option set for the EditorConfig-compatible profile.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Configuration_ConfigurationResolveOptions_KeyOptions" data-uid="Bodu.Text.Configuration.ConfigurationResolveOptions.KeyOptions">
-          <a class="xref" href="Bodu.Text.Configuration.ConfigurationResolveOptions.KeyOptions.html#Bodu_Text_Configuration_ConfigurationResolveOptions_KeyOptions">KeyOptions</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the key options used when expanding raw keys into configuration keys for the resolved view.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Configuration_ConfigurationResolveOptions_MissingPathRootMode" data-uid="Bodu.Text.Configuration.ConfigurationResolveOptions.MissingPathRootMode">
-          <a class="xref" href="Bodu.Text.Configuration.ConfigurationResolveOptions.MissingPathRootMode.html#Bodu_Text_Configuration_ConfigurationResolveOptions_MissingPathRootMode">MissingPathRootMode</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets how the resolver reacts to an absent <a class="xref" href="Bodu.Text.Configuration.ConfigurationResolveOptions.PathRoot.html#Bodu_Text_Configuration_ConfigurationResolveOptions_PathRoot">PathRoot</a> when the document was parsed from a string.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Configuration_ConfigurationResolveOptions_PathComparison" data-uid="Bodu.Text.Configuration.ConfigurationResolveOptions.PathComparison">
-          <a class="xref" href="Bodu.Text.Configuration.ConfigurationResolveOptions.PathComparison.html#Bodu_Text_Configuration_ConfigurationResolveOptions_PathComparison">PathComparison</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the comparison used when matching target paths against section patterns.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Configuration_ConfigurationResolveOptions_PathRoot" data-uid="Bodu.Text.Configuration.ConfigurationResolveOptions.PathRoot">
-          <a class="xref" href="Bodu.Text.Configuration.ConfigurationResolveOptions.PathRoot.html#Bodu_Text_Configuration_ConfigurationResolveOptions_PathRoot">PathRoot</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the optional path root used to evaluate anchored glob patterns. When <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> the document's
-load path is used; if neither is available, <a class="xref" href="Bodu.Text.Configuration.ConfigurationResolveOptions.MissingPathRootMode.html#Bodu_Text_Configuration_ConfigurationResolveOptions_MissingPathRootMode">MissingPathRootMode</a> controls behaviour.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Configuration_ConfigurationResolveOptions_Profile" data-uid="Bodu.Text.Configuration.ConfigurationResolveOptions.Profile">
-          <a class="xref" href="Bodu.Text.Configuration.ConfigurationResolveOptions.Profile.html#Bodu_Text_Configuration_ConfigurationResolveOptions_Profile">Profile</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the behaviour profile this option bag represents.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Configuration_ConfigurationResolveOptions_UnsetValueMode" data-uid="Bodu.Text.Configuration.ConfigurationResolveOptions.UnsetValueMode">
-          <a class="xref" href="Bodu.Text.Configuration.ConfigurationResolveOptions.UnsetValueMode.html#Bodu_Text_Configuration_ConfigurationResolveOptions_UnsetValueMode">UnsetValueMode</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the unset-value handling mode used by the resolver.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Text_Configuration_ConfigurationResolveOptions_For_Bodu_Text_Configuration_ConfigurationProfile_" data-uid="Bodu.Text.Configuration.ConfigurationResolveOptions.For(Bodu.Text.Configuration.ConfigurationProfile)">
-          <a class="xref" href="Bodu.Text.Configuration.ConfigurationResolveOptions.For.html#Bodu_Text_Configuration_ConfigurationResolveOptions_For_Bodu_Text_Configuration_ConfigurationProfile_">For(ConfigurationProfile)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the canonical option set for the specified profile.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool ApplyPreambleProperties { get; init; }</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when preamble properties are honoured.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationResolveOptions_Bodu_" data-uid="Bodu.Text.Configuration.ConfigurationResolveOptions.Bodu*"></a>
+
+  <h3 id="Bodu_Text_Configuration_ConfigurationResolveOptions_Bodu" data-uid="Bodu.Text.Configuration.ConfigurationResolveOptions.Bodu">
+  Bodu
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationResolveOptions.Presets.cs/#L15"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the canonical option set for the default Bodu profile.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ConfigurationResolveOptions Bodu { get; }</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Configuration.ConfigurationResolveOptions.html">ConfigurationResolveOptions</a></dt>
+    <dd><p>A cached default options instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationResolveOptions_EditorConfigCompatible_" data-uid="Bodu.Text.Configuration.ConfigurationResolveOptions.EditorConfigCompatible*"></a>
+
+  <h3 id="Bodu_Text_Configuration_ConfigurationResolveOptions_EditorConfigCompatible" data-uid="Bodu.Text.Configuration.ConfigurationResolveOptions.EditorConfigCompatible">
+  EditorConfigCompatible
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationResolveOptions.Presets.cs/#L21"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the canonical option set for the EditorConfig-compatible profile.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ConfigurationResolveOptions EditorConfigCompatible { get; }</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Configuration.ConfigurationResolveOptions.html">ConfigurationResolveOptions</a></dt>
+    <dd><p>A cached EditorConfig-compatible options instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationResolveOptions_KeyOptions_" data-uid="Bodu.Text.Configuration.ConfigurationResolveOptions.KeyOptions*"></a>
+
+  <h3 id="Bodu_Text_Configuration_ConfigurationResolveOptions_KeyOptions" data-uid="Bodu.Text.Configuration.ConfigurationResolveOptions.KeyOptions">
+  KeyOptions
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationResolveOptions.cs/#L96"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the key options used when expanding raw keys into configuration keys for the resolved view.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ConfigurationKeyOptions KeyOptions { get; init; }</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Configuration.ConfigurationKeyOptions.html">ConfigurationKeyOptions</a></dt>
+    <dd><p>The selected key options.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationResolveOptions_MissingPathRootMode_" data-uid="Bodu.Text.Configuration.ConfigurationResolveOptions.MissingPathRootMode*"></a>
+
+  <h3 id="Bodu_Text_Configuration_ConfigurationResolveOptions_MissingPathRootMode" data-uid="Bodu.Text.Configuration.ConfigurationResolveOptions.MissingPathRootMode">
+  MissingPathRootMode
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationResolveOptions.cs/#L69"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets how the resolver reacts to an absent <a class="xref" href="Bodu.Text.Configuration.ConfigurationResolveOptions.html#Bodu_Text_Configuration_ConfigurationResolveOptions_PathRoot">PathRoot</a> when the document was parsed from a string.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ConfigurationMissingPathRootMode MissingPathRootMode { get; init; }</code></pre>
   </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Configuration.ConfigurationMissingPathRootMode.html">ConfigurationMissingPathRootMode</a></dt>
+    <dd><p>The selected mode.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationResolveOptions_PathComparison_" data-uid="Bodu.Text.Configuration.ConfigurationResolveOptions.PathComparison*"></a>
+
+  <h3 id="Bodu_Text_Configuration_ConfigurationResolveOptions_PathComparison" data-uid="Bodu.Text.Configuration.ConfigurationResolveOptions.PathComparison">
+  PathComparison
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationResolveOptions.cs/#L83"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the comparison used when matching target paths against section patterns.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public StringComparison PathComparison { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.stringcomparison">StringComparison</a></dt>
+    <dd><p>The selected <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.stringcomparison">StringComparison</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationResolveOptions_PathRoot_" data-uid="Bodu.Text.Configuration.ConfigurationResolveOptions.PathRoot*"></a>
+
+  <h3 id="Bodu_Text_Configuration_ConfigurationResolveOptions_PathRoot" data-uid="Bodu.Text.Configuration.ConfigurationResolveOptions.PathRoot">
+  PathRoot
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationResolveOptions.cs/#L63"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the optional path root used to evaluate anchored glob patterns. When <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> the document's
+load path is used; if neither is available, <a class="xref" href="Bodu.Text.Configuration.ConfigurationResolveOptions.html#Bodu_Text_Configuration_ConfigurationResolveOptions_MissingPathRootMode">MissingPathRootMode</a> controls behaviour.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string? PathRoot { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The path root, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationResolveOptions_Profile_" data-uid="Bodu.Text.Configuration.ConfigurationResolveOptions.Profile*"></a>
+
+  <h3 id="Bodu_Text_Configuration_ConfigurationResolveOptions_Profile" data-uid="Bodu.Text.Configuration.ConfigurationResolveOptions.Profile">
+  Profile
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationResolveOptions.cs/#L56"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the behaviour profile this option bag represents.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ConfigurationProfile Profile { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Configuration.ConfigurationProfile.html">ConfigurationProfile</a></dt>
+    <dd><p>The selected profile.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationResolveOptions_UnsetValueMode_" data-uid="Bodu.Text.Configuration.ConfigurationResolveOptions.UnsetValueMode*"></a>
+
+  <h3 id="Bodu_Text_Configuration_ConfigurationResolveOptions_UnsetValueMode" data-uid="Bodu.Text.Configuration.ConfigurationResolveOptions.UnsetValueMode">
+  UnsetValueMode
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationResolveOptions.cs/#L89"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the unset-value handling mode used by the resolver.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ConfigurationUnsetValueMode UnsetValueMode { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Configuration.ConfigurationUnsetValueMode.html">ConfigurationUnsetValueMode</a></dt>
+    <dd><p>The selected unset-value mode.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationResolveOptions_For_" data-uid="Bodu.Text.Configuration.ConfigurationResolveOptions.For*"></a>
+
+  <h3 id="Bodu_Text_Configuration_ConfigurationResolveOptions_For_Bodu_Text_Configuration_ConfigurationProfile_" data-uid="Bodu.Text.Configuration.ConfigurationResolveOptions.For(Bodu.Text.Configuration.ConfigurationProfile)">
+  For(ConfigurationProfile)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationResolveOptions.Presets.cs/#L30"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the canonical option set for the specified profile.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ConfigurationResolveOptions For(ConfigurationProfile profile)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>profile</code> <a class="xref" href="Bodu.Text.Configuration.ConfigurationProfile.html">ConfigurationProfile</a></dt>
+    <dd><p>The profile to materialize.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Configuration.ConfigurationResolveOptions.html">ConfigurationResolveOptions</a></dt>
+    <dd><p>An options instance configured for <code class="paramref">profile</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">profile</code> is not a defined value.</p>
+</dd>
+  </dl>
+
+
+
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 302e395 · Built: 2026-09-29 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 1e0dd9a · Built: 2026-09-29 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

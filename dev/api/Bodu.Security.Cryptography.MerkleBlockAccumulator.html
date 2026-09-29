@@ -1,103 +1,133 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
       <title>Class MerkleBlockAccumulator | BODU </title>
-      <meta name="viewport" content="width=device-width">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class MerkleBlockAccumulator | BODU ">
-    
-    <meta name="description" content="Accumulates a byte stream into fixed-size Merkle leaves as it is written, so a root can be produced from the same calls that already feed a flat digest — without a second pass over the input.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      
+      <meta name="description" content="Accumulates a byte stream into fixed-size Merkle leaves as it is written, so a root can be produced from the same calls that already feed a flat digest — without a second pass over the input.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/new/master/apiSpec/new?filename=Bodu_Security_Cryptography_MerkleBlockAccumulator.md&amp;value=---%0Auid%3A%20Bodu.Security.Cryptography.MerkleBlockAccumulator%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Security.Cryptography.MerkleBlockAccumulator">
+
+        <article data-uid="Bodu.Security.Cryptography.MerkleBlockAccumulator">
 
 
 
-  <h1 id="Bodu_Security_Cryptography_MerkleBlockAccumulator" data-uid="Bodu.Security.Cryptography.MerkleBlockAccumulator" class="text-break">Class MerkleBlockAccumulator</h1>
-  <div class="markdown level0 summary"><p>Accumulates a byte stream into fixed-size Merkle leaves as it is written, so a root can be produced from the same
+  <h1 id="Bodu_Security_Cryptography_MerkleBlockAccumulator" data-uid="Bodu.Security.Cryptography.MerkleBlockAccumulator" class="text-break">
+Class MerkleBlockAccumulator  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleBlockAccumulator.cs/#L58"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Security</span>.<a class="xref" href="Bodu.Security.Cryptography.html">Cryptography</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Security.Cryptography.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Accumulates a byte stream into fixed-size Merkle leaves as it is written, so a root can be produced from the same
 calls that already feed a flat digest — without a second pass over the input.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><span class="xref">MerkleBlockAccumulator</span></div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class MerkleBlockAccumulator : IDisposable</code></pre>
   </div>
-  <div class="implements">
-    <h5>Implements</h5>
-    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
-  </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">MerkleBlockAccumulator</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
@@ -116,38 +146,30 @@ calls that already feed a flat digest — without a second pass over the input.<
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
+  </dd></dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Security</span>.<a class="xref" href="Bodu.Security.Cryptography.html">Cryptography</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Security.Cryptography.dll</h6>
-  <h5 id="Bodu_Security_Cryptography_MerkleBlockAccumulator_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class MerkleBlockAccumulator : IDisposable</code></pre>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h5 id="Bodu_Security_Cryptography_MerkleBlockAccumulator_remarks"><strong>Remarks</strong></h5>
-  <div class="markdown level0 remarks"><p>
-A writer that streams bytes to storage typically feeds them to an incremental digest as they go. This type gives the
-Merkle root the same shape: <a class="xref" href="Bodu.Security.Cryptography.MerkleBlockAccumulator.Append.html#Bodu_Security_Cryptography_MerkleBlockAccumulator_Append_System_ReadOnlySpan_System_Byte__">Append(ReadOnlySpan&lt;byte&gt;)</a> takes bytes in whatever sizes they arrive, re-blocks them into
-<a class="xref" href="Bodu.Security.Cryptography.MerkleBlockAccumulator.BlockSize.html#Bodu_Security_Cryptography_MerkleBlockAccumulator_BlockSize">BlockSize</a>-byte leaves internally, and folds each completed leaf into the tree at once. The root is
-therefore independent of how the input was split across calls, and equals the root
-<code>MerkleTree.ComputeRootOfBlocks</code> computes over the same bytes at the same block size.
-</p>
-<p>
-Memory is one block plus one pending hash per tree level — logarithmic in the leaf count — unless
-<a class="xref" href="Bodu.Security.Cryptography.MerkleBlockAccumulator.RetainsLeafHashes.html#Bodu_Security_Cryptography_MerkleBlockAccumulator_RetainsLeafHashes">RetainsLeafHashes</a> was requested, in which case every leaf hash is kept so
-<a class="xref" href="Bodu.Security.Cryptography.MerkleBlockAccumulator.FinishComputation.html#Bodu_Security_Cryptography_MerkleBlockAccumulator_FinishComputation">FinishComputation()</a> can hand back a <a class="xref" href="Bodu.Security.Cryptography.MerkleBlockComputation.html">MerkleBlockComputation</a> for building authentication
-paths. A final short block is hashed at its actual length, never padded, and an input that ends exactly on a block
-boundary produces no empty leaf. An empty input folds to the empty tree's root, <code>H()</code>.
-</p>
-<p>
-<strong>Lifecycle.</strong> Append until the input ends, then call one of the <code>Finish</code> members — any number of
-times, they return the same result — and <a class="xref" href="Bodu.Security.Cryptography.MerkleBlockAccumulator.Reset.html#Bodu_Security_Cryptography_MerkleBlockAccumulator_Reset">Reset()</a> to start over with the same algorithm and buffer.
-Appending after a finish throws; a reset clears the finished state. An instance owns one
-<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a> from the tree's factory and is used from one thread at a time; dispose it when done. A
-<a class="xref" href="Bodu.Security.Cryptography.MerkleTreeDiagnostics.html">MerkleTreeDiagnostics</a> supplied at creation keeps recording across resets, so use a fresh accumulator
-when a clean trace is wanted.
-</p>
-</div>
-  <h5 id="Bodu_Security_Cryptography_MerkleBlockAccumulator_examples"><strong>Examples</strong></h5>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  </dd></dl>
+
+
+  <h2 id="Bodu_Security_Cryptography_MerkleBlockAccumulator_examples">Examples</h2>
   <pre><code class="lang-csharp">var tree = new MerkleTree(SHA256.Create);
 using MerkleBlockAccumulator merkle = tree.CreateBlockAccumulator(blockSize: 1 &lt;&lt; 20);
 using IncrementalHash digest = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
@@ -161,182 +183,511 @@ while (TryReadChunk(out ReadOnlySpan&lt;byte&gt; chunk))
 byte[] flatDigest = digest.GetHashAndReset();
 byte[] boundRoot = merkle.FinishBound();   // H(0x02 || u64_be(length) || MTH)</code></pre>
 
-  <h3 id="properties">Properties
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Security_Cryptography_MerkleBlockAccumulator_BlockSize" data-uid="Bodu.Security.Cryptography.MerkleBlockAccumulator.BlockSize">
-          <a class="xref" href="Bodu.Security.Cryptography.MerkleBlockAccumulator.BlockSize.html#Bodu_Security_Cryptography_MerkleBlockAccumulator_BlockSize">BlockSize</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the size, in bytes, of each leaf block.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_MerkleBlockAccumulator_HashLength" data-uid="Bodu.Security.Cryptography.MerkleBlockAccumulator.HashLength">
-          <a class="xref" href="Bodu.Security.Cryptography.MerkleBlockAccumulator.HashLength.html#Bodu_Security_Cryptography_MerkleBlockAccumulator_HashLength">HashLength</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the length, in bytes, of every leaf hash and of the root.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_MerkleBlockAccumulator_IsFinished" data-uid="Bodu.Security.Cryptography.MerkleBlockAccumulator.IsFinished">
-          <a class="xref" href="Bodu.Security.Cryptography.MerkleBlockAccumulator.IsFinished.html#Bodu_Security_Cryptography_MerkleBlockAccumulator_IsFinished">IsFinished</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets a value indicating whether a <code>Finish</code> member has been called since construction or the last
-<a class="xref" href="Bodu.Security.Cryptography.MerkleBlockAccumulator.Reset.html#Bodu_Security_Cryptography_MerkleBlockAccumulator_Reset">Reset()</a>, after which <a class="xref" href="Bodu.Security.Cryptography.MerkleBlockAccumulator.Append.html#Bodu_Security_Cryptography_MerkleBlockAccumulator_Append_System_ReadOnlySpan_System_Byte__">Append(ReadOnlySpan&lt;byte&gt;)</a> is refused.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_MerkleBlockAccumulator_LeafCount" data-uid="Bodu.Security.Cryptography.MerkleBlockAccumulator.LeafCount">
-          <a class="xref" href="Bodu.Security.Cryptography.MerkleBlockAccumulator.LeafCount.html#Bodu_Security_Cryptography_MerkleBlockAccumulator_LeafCount">LeafCount</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the number of leaves hashed so far.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_MerkleBlockAccumulator_Length" data-uid="Bodu.Security.Cryptography.MerkleBlockAccumulator.Length">
-          <a class="xref" href="Bodu.Security.Cryptography.MerkleBlockAccumulator.Length.html#Bodu_Security_Cryptography_MerkleBlockAccumulator_Length">Length</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the number of bytes appended since construction or the last <a class="xref" href="Bodu.Security.Cryptography.MerkleBlockAccumulator.Reset.html#Bodu_Security_Cryptography_MerkleBlockAccumulator_Reset">Reset()</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_MerkleBlockAccumulator_RetainsLeafHashes" data-uid="Bodu.Security.Cryptography.MerkleBlockAccumulator.RetainsLeafHashes">
-          <a class="xref" href="Bodu.Security.Cryptography.MerkleBlockAccumulator.RetainsLeafHashes.html#Bodu_Security_Cryptography_MerkleBlockAccumulator_RetainsLeafHashes">RetainsLeafHashes</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets a value indicating whether every leaf hash is being kept, so <a class="xref" href="Bodu.Security.Cryptography.MerkleBlockAccumulator.FinishComputation.html#Bodu_Security_Cryptography_MerkleBlockAccumulator_FinishComputation">FinishComputation()</a> is available.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Security_Cryptography_MerkleBlockAccumulator_Append_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.MerkleBlockAccumulator.Append(System.ReadOnlySpan{System.Byte})">
-          <a class="xref" href="Bodu.Security.Cryptography.MerkleBlockAccumulator.Append.html#Bodu_Security_Cryptography_MerkleBlockAccumulator_Append_System_ReadOnlySpan_System_Byte__">Append(ReadOnlySpan&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Appends bytes to the input, hashing every leaf block they complete.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_MerkleBlockAccumulator_Dispose" data-uid="Bodu.Security.Cryptography.MerkleBlockAccumulator.Dispose">
-          <a class="xref" href="Bodu.Security.Cryptography.MerkleBlockAccumulator.Dispose.html#Bodu_Security_Cryptography_MerkleBlockAccumulator_Dispose">Dispose()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_MerkleBlockAccumulator_Finish" data-uid="Bodu.Security.Cryptography.MerkleBlockAccumulator.Finish">
-          <a class="xref" href="Bodu.Security.Cryptography.MerkleBlockAccumulator.Finish.html#Bodu_Security_Cryptography_MerkleBlockAccumulator_Finish">Finish()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Hashes any partial final block and returns the tree's root.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_MerkleBlockAccumulator_FinishBound" data-uid="Bodu.Security.Cryptography.MerkleBlockAccumulator.FinishBound">
-          <a class="xref" href="Bodu.Security.Cryptography.MerkleBlockAccumulator.FinishBound.html#Bodu_Security_Cryptography_MerkleBlockAccumulator_FinishBound">FinishBound()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Finishes the computation and returns the root bound to the input's byte length,
+
+  <h2 id="Bodu_Security_Cryptography_MerkleBlockAccumulator_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>
+A writer that streams bytes to storage typically feeds them to an incremental digest as they go. This type gives the
+Merkle root the same shape: <a class="xref" href="Bodu.Security.Cryptography.MerkleBlockAccumulator.html#Bodu_Security_Cryptography_MerkleBlockAccumulator_Append_System_ReadOnlySpan_System_Byte__">Append(ReadOnlySpan&lt;byte&gt;)</a> takes bytes in whatever sizes they arrive, re-blocks them into
+<a class="xref" href="Bodu.Security.Cryptography.MerkleBlockAccumulator.html#Bodu_Security_Cryptography_MerkleBlockAccumulator_BlockSize">BlockSize</a>-byte leaves internally, and folds each completed leaf into the tree at once. The root is
+therefore independent of how the input was split across calls, and equals the root
+<code>MerkleTree.ComputeRootOfBlocks</code> computes over the same bytes at the same block size.
+</p>
+<p>
+Memory is one block plus one pending hash per tree level — logarithmic in the leaf count — unless
+<a class="xref" href="Bodu.Security.Cryptography.MerkleBlockAccumulator.html#Bodu_Security_Cryptography_MerkleBlockAccumulator_RetainsLeafHashes">RetainsLeafHashes</a> was requested, in which case every leaf hash is kept so
+<a class="xref" href="Bodu.Security.Cryptography.MerkleBlockAccumulator.html#Bodu_Security_Cryptography_MerkleBlockAccumulator_FinishComputation">FinishComputation()</a> can hand back a <a class="xref" href="Bodu.Security.Cryptography.MerkleBlockComputation.html">MerkleBlockComputation</a> for building authentication
+paths. A final short block is hashed at its actual length, never padded, and an input that ends exactly on a block
+boundary produces no empty leaf. An empty input folds to the empty tree's root, <code>H()</code>.
+</p>
+<p>
+<strong>Lifecycle.</strong> Append until the input ends, then call one of the <code>Finish</code> members — any number of
+times, they return the same result — and <a class="xref" href="Bodu.Security.Cryptography.MerkleBlockAccumulator.html#Bodu_Security_Cryptography_MerkleBlockAccumulator_Reset">Reset()</a> to start over with the same algorithm and buffer.
+Appending after a finish throws; a reset clears the finished state. An instance owns one
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a> from the tree's factory and is used from one thread at a time; dispose it when done. A
+<a class="xref" href="Bodu.Security.Cryptography.MerkleTreeDiagnostics.html">MerkleTreeDiagnostics</a> supplied at creation keeps recording across resets, so use a fresh accumulator
+when a clean trace is wanted.
+</p>
+</div>
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Bodu_Security_Cryptography_MerkleBlockAccumulator_BlockSize_" data-uid="Bodu.Security.Cryptography.MerkleBlockAccumulator.BlockSize*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_MerkleBlockAccumulator_BlockSize" data-uid="Bodu.Security.Cryptography.MerkleBlockAccumulator.BlockSize">
+  BlockSize
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleBlockAccumulator.cs/#L124"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the size, in bytes, of each leaf block.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int BlockSize { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Security_Cryptography_MerkleBlockAccumulator_HashLength_" data-uid="Bodu.Security.Cryptography.MerkleBlockAccumulator.HashLength*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_MerkleBlockAccumulator_HashLength" data-uid="Bodu.Security.Cryptography.MerkleBlockAccumulator.HashLength">
+  HashLength
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleBlockAccumulator.cs/#L129"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the length, in bytes, of every leaf hash and of the root.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int HashLength { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Security_Cryptography_MerkleBlockAccumulator_IsFinished_" data-uid="Bodu.Security.Cryptography.MerkleBlockAccumulator.IsFinished*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_MerkleBlockAccumulator_IsFinished" data-uid="Bodu.Security.Cryptography.MerkleBlockAccumulator.IsFinished">
+  IsFinished
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleBlockAccumulator.cs/#L154"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether a <code>Finish</code> member has been called since construction or the last
+<a class="xref" href="Bodu.Security.Cryptography.MerkleBlockAccumulator.html#Bodu_Security_Cryptography_MerkleBlockAccumulator_Reset">Reset()</a>, after which <a class="xref" href="Bodu.Security.Cryptography.MerkleBlockAccumulator.html#Bodu_Security_Cryptography_MerkleBlockAccumulator_Append_System_ReadOnlySpan_System_Byte__">Append(ReadOnlySpan&lt;byte&gt;)</a> is refused.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsFinished { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Security_Cryptography_MerkleBlockAccumulator_LeafCount_" data-uid="Bodu.Security.Cryptography.MerkleBlockAccumulator.LeafCount*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_MerkleBlockAccumulator_LeafCount" data-uid="Bodu.Security.Cryptography.MerkleBlockAccumulator.LeafCount">
+  LeafCount
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleBlockAccumulator.cs/#L143"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the number of leaves hashed so far.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public long LeafCount { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a></dt>
+    <dd><p>The number of completed blocks; a partially filled final block is counted only once a <code>Finish</code> member has
+hashed it.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Security_Cryptography_MerkleBlockAccumulator_Length_" data-uid="Bodu.Security.Cryptography.MerkleBlockAccumulator.Length*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_MerkleBlockAccumulator_Length" data-uid="Bodu.Security.Cryptography.MerkleBlockAccumulator.Length">
+  Length
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleBlockAccumulator.cs/#L134"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the number of bytes appended since construction or the last <a class="xref" href="Bodu.Security.Cryptography.MerkleBlockAccumulator.html#Bodu_Security_Cryptography_MerkleBlockAccumulator_Reset">Reset()</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public long Length { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Security_Cryptography_MerkleBlockAccumulator_RetainsLeafHashes_" data-uid="Bodu.Security.Cryptography.MerkleBlockAccumulator.RetainsLeafHashes*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_MerkleBlockAccumulator_RetainsLeafHashes" data-uid="Bodu.Security.Cryptography.MerkleBlockAccumulator.RetainsLeafHashes">
+  RetainsLeafHashes
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleBlockAccumulator.cs/#L148"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether every leaf hash is being kept, so <a class="xref" href="Bodu.Security.Cryptography.MerkleBlockAccumulator.html#Bodu_Security_Cryptography_MerkleBlockAccumulator_FinishComputation">FinishComputation()</a> is available.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool RetainsLeafHashes { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Security_Cryptography_MerkleBlockAccumulator_Append_" data-uid="Bodu.Security.Cryptography.MerkleBlockAccumulator.Append*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_MerkleBlockAccumulator_Append_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.MerkleBlockAccumulator.Append(System.ReadOnlySpan{System.Byte})">
+  Append(ReadOnlySpan&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleBlockAccumulator.cs/#L169"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Appends bytes to the input, hashing every leaf block they complete.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Append(ReadOnlySpan&lt;byte&gt; source)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The next bytes of the input, in any size.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_MerkleBlockAccumulator_Append_System_ReadOnlySpan_System_Byte___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Bytes are copied into the block being filled and hashed only when it is full, so a partial block is never
+emitted mid-stream and the leaves are the same however the input was chunked. An empty span is accepted and
+changes nothing.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>The accumulator has been disposed.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>A <code>Finish</code> member has already been called; call <a class="xref" href="Bodu.Security.Cryptography.MerkleBlockAccumulator.html#Bodu_Security_Cryptography_MerkleBlockAccumulator_Reset">Reset()</a> to start a new computation.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Security_Cryptography_MerkleBlockAccumulator_Dispose_" data-uid="Bodu.Security.Cryptography.MerkleBlockAccumulator.Dispose*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_MerkleBlockAccumulator_Dispose" data-uid="Bodu.Security.Cryptography.MerkleBlockAccumulator.Dispose">
+  Dispose()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleBlockAccumulator.cs/#L273"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Dispose()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_MerkleBlockAccumulator_Dispose_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Disposes the owned <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a> and clears the block buffer. Every other member then throws
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a>; disposing again does nothing.</p>
+</div>
+
+
+
+
+  <a id="Bodu_Security_Cryptography_MerkleBlockAccumulator_Finish_" data-uid="Bodu.Security.Cryptography.MerkleBlockAccumulator.Finish*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_MerkleBlockAccumulator_Finish" data-uid="Bodu.Security.Cryptography.MerkleBlockAccumulator.Finish">
+  Finish()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleBlockAccumulator.cs/#L196"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Hashes any partial final block and returns the tree's root.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public byte[] Finish()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The root; the empty tree's root, <code>H()</code>, when nothing was appended.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_MerkleBlockAccumulator_Finish_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The first call completes the computation; later calls return the same root without further work. The root is
+identical to <code>MerkleTree.ComputeRootOfBlocks</code> over the same bytes at <a class="xref" href="Bodu.Security.Cryptography.MerkleBlockAccumulator.html#Bodu_Security_Cryptography_MerkleBlockAccumulator_BlockSize">BlockSize</a>.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>The accumulator has been disposed.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Security_Cryptography_MerkleBlockAccumulator_FinishBound_" data-uid="Bodu.Security.Cryptography.MerkleBlockAccumulator.FinishBound*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_MerkleBlockAccumulator_FinishBound" data-uid="Bodu.Security.Cryptography.MerkleBlockAccumulator.FinishBound">
+  FinishBound()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleBlockAccumulator.cs/#L223"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Finishes the computation and returns the root bound to the input's byte length,
 <code>H(0x02 || u64_be(length) || root)</code>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_MerkleBlockAccumulator_FinishComputation" data-uid="Bodu.Security.Cryptography.MerkleBlockAccumulator.FinishComputation">
-          <a class="xref" href="Bodu.Security.Cryptography.MerkleBlockAccumulator.FinishComputation.html#Bodu_Security_Cryptography_MerkleBlockAccumulator_FinishComputation">FinishComputation()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Finishes the computation and returns it together with the retained leaf hashes, so authentication paths can be
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public byte[] FinishBound()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The length-bound root.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_MerkleBlockAccumulator_FinishBound_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This is the commitment to publish when a verifier will later be told the input's length by a party it does not
+trust: <a class="xref" href="Bodu.Security.Cryptography.MerkleTree.html#Bodu_Security_Cryptography_MerkleTree_VerifyBlockInclusion_System_ReadOnlySpan_System_Byte__System_Int64_System_Int32_System_Int64_System_ReadOnlySpan_System_Byte__System_Collections_Generic_IReadOnlyList_System_ReadOnlyMemory_System_Byte___">VerifyBlockInclusion(ReadOnlySpan&lt;byte&gt;, long, int, long, ReadOnlySpan&lt;byte&gt;, IReadOnlyList&lt;ReadOnlyMemory&lt;byte&gt;&gt;)</a> derives the tree size from the bound length, so a
+misstated length fails closed. It is exactly <a class="xref" href="Bodu.Security.Cryptography.MerkleTree.html#Bodu_Security_Cryptography_MerkleTree_BindRoot_System_ReadOnlySpan_System_Byte__System_Int64_">BindRoot(ReadOnlySpan&lt;byte&gt;, long)</a> applied to <a class="xref" href="Bodu.Security.Cryptography.MerkleBlockAccumulator.html#Bodu_Security_Cryptography_MerkleBlockAccumulator_Finish">Finish()</a>
+and <a class="xref" href="Bodu.Security.Cryptography.MerkleBlockAccumulator.html#Bodu_Security_Cryptography_MerkleBlockAccumulator_Length">Length</a>.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>The accumulator has been disposed.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Security_Cryptography_MerkleBlockAccumulator_FinishComputation_" data-uid="Bodu.Security.Cryptography.MerkleBlockAccumulator.FinishComputation*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_MerkleBlockAccumulator_FinishComputation" data-uid="Bodu.Security.Cryptography.MerkleBlockAccumulator.FinishComputation">
+  FinishComputation()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleBlockAccumulator.cs/#L239"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Finishes the computation and returns it together with the retained leaf hashes, so authentication paths can be
 built without a second pass over the input.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_MerkleBlockAccumulator_Reset" data-uid="Bodu.Security.Cryptography.MerkleBlockAccumulator.Reset">
-          <a class="xref" href="Bodu.Security.Cryptography.MerkleBlockAccumulator.Reset.html#Bodu_Security_Cryptography_MerkleBlockAccumulator_Reset">Reset()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Discards the current input and any finished root so the accumulator can take a new input.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public MerkleBlockComputation FinishComputation()</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Security.Cryptography.MerkleBlockComputation.html">MerkleBlockComputation</a></dt>
+    <dd><p>The root, input length, block size and ordered leaf hashes.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_MerkleBlockAccumulator_FinishComputation_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The result is what <code>MerkleTree.ComputeBlocked</code> would have returned over the same bytes. A subsequent
+<a class="xref" href="Bodu.Security.Cryptography.MerkleBlockAccumulator.html#Bodu_Security_Cryptography_MerkleBlockAccumulator_Reset">Reset()</a> does not disturb it: the returned computation keeps its own list.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>The accumulator has been disposed.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The accumulator was created without <code>retainLeafHashes</code>, so no leaf hashes were kept.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Security_Cryptography_MerkleBlockAccumulator_Reset_" data-uid="Bodu.Security.Cryptography.MerkleBlockAccumulator.Reset*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_MerkleBlockAccumulator_Reset" data-uid="Bodu.Security.Cryptography.MerkleBlockAccumulator.Reset">
+  Reset()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleBlockAccumulator.cs/#L256"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Discards the current input and any finished root so the accumulator can take a new input.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Reset()</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <h3 id="seealso">See Also</h3>
+
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_MerkleBlockAccumulator_Reset_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The hash algorithm and the block buffer are reused; the fold and, when leaf hashes are retained, the list are
+replaced, so a <a class="xref" href="Bodu.Security.Cryptography.MerkleBlockComputation.html">MerkleBlockComputation</a> already handed out is unaffected.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>The accumulator has been disposed.</p>
+</dd>
+  </dl>
+
+
+
+  <h2 id="seealso">See Also</h2>
   <div class="seealso">
-      <div><a class="xref" href="Bodu.Security.Cryptography.MerkleTree.CreateBlockAccumulator.html#Bodu_Security_Cryptography_MerkleTree_CreateBlockAccumulator_System_Int32_System_Boolean_Bodu_Security_Cryptography_MerkleTreeDiagnostics_">CreateBlockAccumulator</a>(<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>, <a class="xref" href="Bodu.Security.Cryptography.MerkleTreeDiagnostics.html">MerkleTreeDiagnostics</a>)</div>
+      <div><a class="xref" href="Bodu.Security.Cryptography.MerkleTree.html#Bodu_Security_Cryptography_MerkleTree_CreateBlockAccumulator_System_Int32_System_Boolean_Bodu_Security_Cryptography_MerkleTreeDiagnostics_">CreateBlockAccumulator</a>(<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>, <a class="xref" href="Bodu.Security.Cryptography.MerkleTreeDiagnostics.html">MerkleTreeDiagnostics</a>)</div>
   </div>
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 302e395 · Built: 2026-09-29 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 1e0dd9a · Built: 2026-09-29 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

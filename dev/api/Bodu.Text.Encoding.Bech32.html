@@ -1,100 +1,128 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
       <title>Class Bech32 | BODU </title>
-      <meta name="viewport" content="width=device-width">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class Bech32 | BODU ">
-    
-    <meta name="description" content="Provides Bech32 (BIP-173) and Bech32m (BIP-350) encoding and decoding — a checksummed base-32 format consisting of a human-readable part (HRP), the 1 separator, a data part of 5-bit groups, and a six-symbol error-detecting checksum.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      
+      <meta name="description" content="Provides Bech32 (BIP-173) and Bech32m (BIP-350) encoding and decoding — a checksummed base-32 format consisting of a human-readable part (HRP), the 1 separator, a data part of 5-bit groups, and a six-symbol error-detecting checksum.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/new/master/apiSpec/new?filename=Bodu_Text_Encoding_Bech32.md&amp;value=---%0Auid%3A%20Bodu.Text.Encoding.Bech32%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Text.Encoding.Bech32">
+
+        <article data-uid="Bodu.Text.Encoding.Bech32">
 
 
 
-  <h1 id="Bodu_Text_Encoding_Bech32" data-uid="Bodu.Text.Encoding.Bech32" class="text-break">Class Bech32</h1>
-  <div class="markdown level0 summary"><p>Provides Bech32 (BIP-173) and Bech32m (BIP-350) encoding and decoding — a checksummed base-32 format consisting of a
+  <h1 id="Bodu_Text_Encoding_Bech32" data-uid="Bodu.Text.Encoding.Bech32" class="text-break">
+Class Bech32  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Encoding/src/Text.Encoding/Bech32.Encode.cs/#L11"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Encoding.html">Encoding</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Text.Encoding.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides Bech32 (BIP-173) and Bech32m (BIP-350) encoding and decoding — a checksummed base-32 format consisting of a
 human-readable part (HRP), the <code>1</code> separator, a data part of 5-bit groups, and a six-symbol error-detecting
 checksum.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><span class="xref">Bech32</span></div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class Bech32</code></pre>
   </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">Bech32</span></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
@@ -116,21 +144,27 @@ checksum.</p>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
-  </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Encoding.html">Encoding</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Text.Encoding.dll</h6>
-  <h5 id="Bodu_Text_Encoding_Bech32_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static class Bech32</code></pre>
-  </div>
-  <h5 id="Bodu_Text_Encoding_Bech32_remarks"><strong>Remarks</strong></h5>
+  </dd></dl>
+
+
+
+  <h2 id="Bodu_Text_Encoding_Bech32_examples">Examples</h2>
+  <pre><code class="lang-csharp">// Encode 5-bit data groups under a human-readable prefix.
+byte[] data = { 0x00, 0x01, 0x02 };                 // already 5-bit values
+string encoded = Bech32.Encode("abc", data);        // "abc1..." with a Bech32 checksum
+
+// Decode and recover the parts.
+Bech32.Decode(encoded, out string hrp, out byte[] groups, out Bech32Encoding scheme);</code></pre>
+
+
+  <h2 id="Bodu_Text_Encoding_Bech32_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
 <img src="../images/diagrams/encoding-special-purpose.svg" alt="Special-purpose encodings. Base45 (RFC 9285) packs each pair of bytes into three characters from the QR-code Alphanumeric-mode alphabet with no padding. Base62 uses the GMP-style alphabet 0-9 A-Z a-z and big-integer division by 62. Bech32 and Bech32m (BIP 173 / 350) are not plain binary-to-text encodings: an encoded string is a human-readable part, the 1 separator, 5-bit data groups, and a six-symbol error-detecting checksum.">
 </p>
 <p>
 Bech32 is not a plain binary-to-text encoding: every encoded string carries an HRP prefix and a checksum, so the
 type is modelled on <a class="xref" href="Bodu.Text.Encoding.Base58Check.html">Base58Check</a> rather than the <a class="xref" href="Bodu.Text.Encoding.IBinaryEncoding.html">IBinaryEncoding</a> family. The core
-surface operates on 5-bit data groups (each value <code>0</code>–<code>31</code>); use <a class="xref" href="Bodu.Text.Encoding.Bech32.ConvertBits.html#Bodu_Text_Encoding_Bech32_ConvertBits_System_ReadOnlySpan_System_Byte__System_Int32_System_Int32_System_Boolean_">ConvertBits(ReadOnlySpan&lt;byte&gt;, int, int, bool)</a> — or the
+surface operates on 5-bit data groups (each value <code>0</code>–<code>31</code>); use <a class="xref" href="Bodu.Text.Encoding.Bech32.html#Bodu_Text_Encoding_Bech32_ConvertBits_System_ReadOnlySpan_System_Byte__System_Int32_System_Int32_System_Boolean_">ConvertBits(ReadOnlySpan&lt;byte&gt;, int, int, bool)</a> — or the
 <code>FromBytes</code> / <code>ToBytes</code> convenience members — to translate between 8-bit bytes and 5-bit groups.
 </p>
 <p>
@@ -139,155 +173,607 @@ string and rejects mixed case per BIP-173; the returned HRP is normalized to low
 scheme validated the checksum through the <a class="xref" href="Bodu.Text.Encoding.Bech32Encoding.html">Bech32Encoding</a> out-parameter.
 </p>
 </div>
-  <h5 id="Bodu_Text_Encoding_Bech32_examples"><strong>Examples</strong></h5>
-  <pre><code class="lang-csharp">// Encode 5-bit data groups under a human-readable prefix.
-byte[] data = { 0x00, 0x01, 0x02 };                 // already 5-bit values
-string encoded = Bech32.Encode("abc", data);        // "abc1..." with a Bech32 checksum
 
-// Decode and recover the parts.
-Bech32.Decode(encoded, out string hrp, out byte[] groups, out Bech32Encoding scheme);</code></pre>
 
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Text_Encoding_Bech32_ConvertBits_System_ReadOnlySpan_System_Byte__System_Int32_System_Int32_System_Boolean_" data-uid="Bodu.Text.Encoding.Bech32.ConvertBits(System.ReadOnlySpan{System.Byte},System.Int32,System.Int32,System.Boolean)">
-          <a class="xref" href="Bodu.Text.Encoding.Bech32.ConvertBits.html#Bodu_Text_Encoding_Bech32_ConvertBits_System_ReadOnlySpan_System_Byte__System_Int32_System_Int32_System_Boolean_">ConvertBits(ReadOnlySpan&lt;byte&gt;, int, int, bool)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Converts a sequence of integers between bit widths, as defined by the BIP-173 reference <code>convertbits</code>
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Text_Encoding_Bech32_ConvertBits_" data-uid="Bodu.Text.Encoding.Bech32.ConvertBits*"></a>
+
+  <h3 id="Bodu_Text_Encoding_Bech32_ConvertBits_System_ReadOnlySpan_System_Byte__System_Int32_System_Int32_System_Boolean_" data-uid="Bodu.Text.Encoding.Bech32.ConvertBits(System.ReadOnlySpan{System.Byte},System.Int32,System.Int32,System.Boolean)">
+  ConvertBits(ReadOnlySpan&lt;byte&gt;, int, int, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Encoding/src/Text.Encoding/Bech32.cs/#L92"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Converts a sequence of integers between bit widths, as defined by the BIP-173 reference <code>convertbits</code>
 routine — the operation that packs 8-bit bytes into 5-bit Bech32 groups and back.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Bech32_Decode_System_ReadOnlySpan_System_Char__System_String__System_Byte____Bodu_Text_Encoding_Bech32Encoding__" data-uid="Bodu.Text.Encoding.Bech32.Decode(System.ReadOnlySpan{System.Char},System.String@,System.Byte[]@,Bodu.Text.Encoding.Bech32Encoding@)">
-          <a class="xref" href="Bodu.Text.Encoding.Bech32.Decode.html#Bodu_Text_Encoding_Bech32_Decode_System_ReadOnlySpan_System_Char__System_String__System_Byte____Bodu_Text_Encoding_Bech32Encoding__">Decode(ReadOnlySpan&lt;char&gt;, out string, out byte[], out Bech32Encoding)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Decodes a Bech32 or Bech32m character span into its human-readable part and 5-bit data groups, verifying the
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static byte[]? ConvertBits(ReadOnlySpan&lt;byte&gt; data, int fromBits, int toBits, bool pad)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>data</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The input values, each fitting within <code class="paramref">fromBits</code> bits.</p>
+</dd>
+    <dt><code>fromBits</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The bit width of each input value.</p>
+</dd>
+    <dt><code>toBits</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The bit width of each output value.</p>
+</dd>
+    <dt><code>pad</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>When <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, the final group is zero-padded; when <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>, a non-zero residue
+or an over-wide residue causes failure.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The converted values, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when an input value exceeds <code class="paramref">fromBits</code> bits,
+or when <code class="paramref">pad</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> and the trailing bits are not a clean zero residue.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <code class="paramref">fromBits</code> or <code class="paramref">toBits</code> is not in the range 1 to 8.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Encoding_Bech32_Decode_" data-uid="Bodu.Text.Encoding.Bech32.Decode*"></a>
+
+  <h3 id="Bodu_Text_Encoding_Bech32_Decode_System_ReadOnlySpan_System_Char__System_String__System_Byte____Bodu_Text_Encoding_Bech32Encoding__" data-uid="Bodu.Text.Encoding.Bech32.Decode(System.ReadOnlySpan{System.Char},System.String@,System.Byte[]@,Bodu.Text.Encoding.Bech32Encoding@)">
+  Decode(ReadOnlySpan&lt;char&gt;, out string, out byte[], out Bech32Encoding)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Encoding/src/Text.Encoding/Bech32.Decode.cs/#L43"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Decodes a Bech32 or Bech32m character span into its human-readable part and 5-bit data groups, verifying the
 checksum.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Bech32_Decode_System_String_System_String__System_Byte____Bodu_Text_Encoding_Bech32Encoding__" data-uid="Bodu.Text.Encoding.Bech32.Decode(System.String,System.String@,System.Byte[]@,Bodu.Text.Encoding.Bech32Encoding@)">
-          <a class="xref" href="Bodu.Text.Encoding.Bech32.Decode.html#Bodu_Text_Encoding_Bech32_Decode_System_String_System_String__System_Byte____Bodu_Text_Encoding_Bech32Encoding__">Decode(string, out string, out byte[], out Bech32Encoding)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Decodes a Bech32 or Bech32m string into its human-readable part and 5-bit data groups, verifying the checksum.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Bech32_DecodeToBytes_System_String_System_String__System_Byte____Bodu_Text_Encoding_Bech32Encoding__" data-uid="Bodu.Text.Encoding.Bech32.DecodeToBytes(System.String,System.String@,System.Byte[]@,Bodu.Text.Encoding.Bech32Encoding@)">
-          <a class="xref" href="Bodu.Text.Encoding.Bech32.DecodeToBytes.html#Bodu_Text_Encoding_Bech32_DecodeToBytes_System_String_System_String__System_Byte____Bodu_Text_Encoding_Bech32Encoding__">DecodeToBytes(string, out string, out byte[], out Bech32Encoding)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Decodes a Bech32 or Bech32m string and repacks its 5-bit data groups into 8-bit bytes — the inverse of
-<a class="xref" href="Bodu.Text.Encoding.Bech32.EncodeFromBytes.html#Bodu_Text_Encoding_Bech32_EncodeFromBytes_System_String_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_Bech32Encoding_">EncodeFromBytes(string, ReadOnlySpan&lt;byte&gt;, Bech32Encoding)</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Bech32_Encode_System_String_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_Bech32Encoding_" data-uid="Bodu.Text.Encoding.Bech32.Encode(System.String,System.ReadOnlySpan{System.Byte},Bodu.Text.Encoding.Bech32Encoding)">
-          <a class="xref" href="Bodu.Text.Encoding.Bech32.Encode.html#Bodu_Text_Encoding_Bech32_Encode_System_String_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_Bech32Encoding_">Encode(string, ReadOnlySpan&lt;byte&gt;, Bech32Encoding)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encodes 5-bit <code class="paramref">data</code> groups under <code class="paramref">hrp</code> into a Bech32 or Bech32m string with
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void Decode(ReadOnlySpan&lt;char&gt; source, out string hrp, out byte[] data, out Bech32Encoding encoding)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The encoded character span.</p>
+</dd>
+    <dt><code>hrp</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>When this method returns, the lower-case human-readable part.</p>
+</dd>
+    <dt><code>data</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>When this method returns, the 5-bit data groups with the checksum stripped.</p>
+</dd>
+    <dt><code>encoding</code> <a class="xref" href="Bodu.Text.Encoding.Bech32Encoding.html">Bech32Encoding</a></dt>
+    <dd><p>When this method returns, the scheme whose checksum constant validated the input.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p>Thrown when the input is not a valid Bech32 or Bech32m string.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Encoding_Bech32_Decode_" data-uid="Bodu.Text.Encoding.Bech32.Decode*"></a>
+
+  <h3 id="Bodu_Text_Encoding_Bech32_Decode_System_String_System_String__System_Byte____Bodu_Text_Encoding_Bech32Encoding__" data-uid="Bodu.Text.Encoding.Bech32.Decode(System.String,System.String@,System.Byte[]@,Bodu.Text.Encoding.Bech32Encoding@)">
+  Decode(string, out string, out byte[], out Bech32Encoding)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Encoding/src/Text.Encoding/Bech32.Decode.cs/#L28"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Decodes a Bech32 or Bech32m string into its human-readable part and 5-bit data groups, verifying the checksum.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void Decode(string source, out string hrp, out byte[] data, out Bech32Encoding encoding)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The encoded string.</p>
+</dd>
+    <dt><code>hrp</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>When this method returns, the lower-case human-readable part.</p>
+</dd>
+    <dt><code>data</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>When this method returns, the 5-bit data groups with the checksum stripped.</p>
+</dd>
+    <dt><code>encoding</code> <a class="xref" href="Bodu.Text.Encoding.Bech32Encoding.html">Bech32Encoding</a></dt>
+    <dd><p>When this method returns, the scheme whose checksum constant validated the input.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">source</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p>Thrown when the input mixes case, exceeds the 90-character maximum, lacks the <code>1</code> separator, has an empty
+human-readable part, is too short to contain a checksum, contains an out-of-range character, or fails checksum
+verification.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Encoding_Bech32_DecodeToBytes_" data-uid="Bodu.Text.Encoding.Bech32.DecodeToBytes*"></a>
+
+  <h3 id="Bodu_Text_Encoding_Bech32_DecodeToBytes_System_String_System_String__System_Byte____Bodu_Text_Encoding_Bech32Encoding__" data-uid="Bodu.Text.Encoding.Bech32.DecodeToBytes(System.String,System.String@,System.Byte[]@,Bodu.Text.Encoding.Bech32Encoding@)">
+  DecodeToBytes(string, out string, out byte[], out Bech32Encoding)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Encoding/src/Text.Encoding/Bech32.Decode.cs/#L81"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Decodes a Bech32 or Bech32m string and repacks its 5-bit data groups into 8-bit bytes — the inverse of
+<a class="xref" href="Bodu.Text.Encoding.Bech32.html#Bodu_Text_Encoding_Bech32_EncodeFromBytes_System_String_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_Bech32Encoding_">EncodeFromBytes(string, ReadOnlySpan&lt;byte&gt;, Bech32Encoding)</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void DecodeToBytes(string source, out string hrp, out byte[] data, out Bech32Encoding encoding)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The encoded string.</p>
+</dd>
+    <dt><code>hrp</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>When this method returns, the lower-case human-readable part.</p>
+</dd>
+    <dt><code>data</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>When this method returns, the decoded 8-bit bytes.</p>
+</dd>
+    <dt><code>encoding</code> <a class="xref" href="Bodu.Text.Encoding.Bech32Encoding.html">Bech32Encoding</a></dt>
+    <dd><p>When this method returns, the scheme whose checksum constant validated the input.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">source</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p>Thrown when the input is not a valid Bech32 or Bech32m string, or when its 5-bit groups do not repack cleanly
+into bytes.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Encoding_Bech32_Encode_" data-uid="Bodu.Text.Encoding.Bech32.Encode*"></a>
+
+  <h3 id="Bodu_Text_Encoding_Bech32_Encode_System_String_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_Bech32Encoding_" data-uid="Bodu.Text.Encoding.Bech32.Encode(System.String,System.ReadOnlySpan{System.Byte},Bodu.Text.Encoding.Bech32Encoding)">
+  Encode(string, ReadOnlySpan&lt;byte&gt;, Bech32Encoding)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Encoding/src/Text.Encoding/Bech32.Encode.cs/#L33"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Encodes 5-bit <code class="paramref">data</code> groups under <code class="paramref">hrp</code> into a Bech32 or Bech32m string with
 an appended six-symbol checksum.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Bech32_EncodeFromBytes_System_String_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_Bech32Encoding_" data-uid="Bodu.Text.Encoding.Bech32.EncodeFromBytes(System.String,System.ReadOnlySpan{System.Byte},Bodu.Text.Encoding.Bech32Encoding)">
-          <a class="xref" href="Bodu.Text.Encoding.Bech32.EncodeFromBytes.html#Bodu_Text_Encoding_Bech32_EncodeFromBytes_System_String_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_Bech32Encoding_">EncodeFromBytes(string, ReadOnlySpan&lt;byte&gt;, Bech32Encoding)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encodes 8-bit <code class="paramref">data</code> bytes under <code class="paramref">hrp</code> by first repacking them into 5-bit
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string Encode(string hrp, ReadOnlySpan&lt;byte&gt; data, Bech32Encoding encoding = Bech32Encoding.Bech32)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>hrp</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The human-readable part. Lower-cased to produce canonical output.</p>
+</dd>
+    <dt><code>data</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The data groups, each a 5-bit value in the range 0 to 31.</p>
+</dd>
+    <dt><code>encoding</code> <a class="xref" href="Bodu.Text.Encoding.Bech32Encoding.html">Bech32Encoding</a></dt>
+    <dd><p>The scheme selecting the checksum constant.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The lower-case encoded string.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Text_Encoding_Bech32_Encode_System_String_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_Bech32Encoding__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This method does not impose the BIP-173 90-character maximum, so it can serve longer non-address schemes (for
+example Lightning BOLT11 invoices). The decoder enforces the 90-character limit by default.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">hrp</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">hrp</code> is empty or contains a character outside the US-ASCII range 33 to 126, or
+when any element of <code class="paramref">data</code> exceeds 31.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <code class="paramref">encoding</code> is undefined.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Encoding_Bech32_EncodeFromBytes_" data-uid="Bodu.Text.Encoding.Bech32.EncodeFromBytes*"></a>
+
+  <h3 id="Bodu_Text_Encoding_Bech32_EncodeFromBytes_System_String_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_Bech32Encoding_" data-uid="Bodu.Text.Encoding.Bech32.EncodeFromBytes(System.String,System.ReadOnlySpan{System.Byte},Bodu.Text.Encoding.Bech32Encoding)">
+  EncodeFromBytes(string, ReadOnlySpan&lt;byte&gt;, Bech32Encoding)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Encoding/src/Text.Encoding/Bech32.Encode.cs/#L57"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Encodes 8-bit <code class="paramref">data</code> bytes under <code class="paramref">hrp</code> by first repacking them into 5-bit
 groups (with zero padding) and then encoding.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Bech32_GetEncodedLength_System_Int32_System_Int32_" data-uid="Bodu.Text.Encoding.Bech32.GetEncodedLength(System.Int32,System.Int32)">
-          <a class="xref" href="Bodu.Text.Encoding.Bech32.GetEncodedLength.html#Bodu_Text_Encoding_Bech32_GetEncodedLength_System_Int32_System_Int32_">GetEncodedLength(int, int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the overall encoded length for a Bech32 string with the supplied part lengths.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Bech32_IsValid_System_ReadOnlySpan_System_Char__" data-uid="Bodu.Text.Encoding.Bech32.IsValid(System.ReadOnlySpan{System.Char})">
-          <a class="xref" href="Bodu.Text.Encoding.Bech32.IsValid.html#Bodu_Text_Encoding_Bech32_IsValid_System_ReadOnlySpan_System_Char__">IsValid(ReadOnlySpan&lt;char&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Indicates whether <code class="paramref">source</code> is a structurally valid Bech32 or Bech32m string with a verifying
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string EncodeFromBytes(string hrp, ReadOnlySpan&lt;byte&gt; data, Bech32Encoding encoding = Bech32Encoding.Bech32)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>hrp</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The human-readable part. Lower-cased to produce canonical output.</p>
+</dd>
+    <dt><code>data</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The raw bytes to encode.</p>
+</dd>
+    <dt><code>encoding</code> <a class="xref" href="Bodu.Text.Encoding.Bech32Encoding.html">Bech32Encoding</a></dt>
+    <dd><p>The scheme selecting the checksum constant.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The lower-case encoded string.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">hrp</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">hrp</code> is empty or contains a character outside the US-ASCII range 33 to 126.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <code class="paramref">encoding</code> is undefined.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Encoding_Bech32_GetEncodedLength_" data-uid="Bodu.Text.Encoding.Bech32.GetEncodedLength*"></a>
+
+  <h3 id="Bodu_Text_Encoding_Bech32_GetEncodedLength_System_Int32_System_Int32_" data-uid="Bodu.Text.Encoding.Bech32.GetEncodedLength(System.Int32,System.Int32)">
+  GetEncodedLength(int, int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Encoding/src/Text.Encoding/Bech32.cs/#L155"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the overall encoded length for a Bech32 string with the supplied part lengths.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static int GetEncodedLength(int hrpLength, int dataLength)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>hrpLength</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of characters in the human-readable part.</p>
+</dd>
+    <dt><code>dataLength</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of 5-bit data groups, excluding the checksum.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The total character count: <code class="paramref">hrpLength</code> + 1 separator + <code class="paramref">dataLength</code> + 6
+checksum symbols.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <code class="paramref">hrpLength</code> or <code class="paramref">dataLength</code> is negative.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Encoding_Bech32_IsValid_" data-uid="Bodu.Text.Encoding.Bech32.IsValid*"></a>
+
+  <h3 id="Bodu_Text_Encoding_Bech32_IsValid_System_ReadOnlySpan_System_Char__" data-uid="Bodu.Text.Encoding.Bech32.IsValid(System.ReadOnlySpan{System.Char})">
+  IsValid(ReadOnlySpan&lt;char&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Encoding/src/Text.Encoding/Bech32.cs/#L140"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Indicates whether <code class="paramref">source</code> is a structurally valid Bech32 or Bech32m string with a verifying
 checksum.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Bech32_TryDecode_System_ReadOnlySpan_System_Char__System_String__System_Byte____Bodu_Text_Encoding_Bech32Encoding__" data-uid="Bodu.Text.Encoding.Bech32.TryDecode(System.ReadOnlySpan{System.Char},System.String@,System.Byte[]@,Bodu.Text.Encoding.Bech32Encoding@)">
-          <a class="xref" href="Bodu.Text.Encoding.Bech32.TryDecode.html#Bodu_Text_Encoding_Bech32_TryDecode_System_ReadOnlySpan_System_Char__System_String__System_Byte____Bodu_Text_Encoding_Bech32Encoding__">TryDecode(ReadOnlySpan&lt;char&gt;, out string?, out byte[]?, out Bech32Encoding)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to decode a Bech32 or Bech32m character span without throwing.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Bech32_TryDecodeToBytes_System_ReadOnlySpan_System_Char__System_String__System_Byte____Bodu_Text_Encoding_Bech32Encoding__" data-uid="Bodu.Text.Encoding.Bech32.TryDecodeToBytes(System.ReadOnlySpan{System.Char},System.String@,System.Byte[]@,Bodu.Text.Encoding.Bech32Encoding@)">
-          <a class="xref" href="Bodu.Text.Encoding.Bech32.TryDecodeToBytes.html#Bodu_Text_Encoding_Bech32_TryDecodeToBytes_System_ReadOnlySpan_System_Char__System_String__System_Byte____Bodu_Text_Encoding_Bech32Encoding__">TryDecodeToBytes(ReadOnlySpan&lt;char&gt;, out string?, out byte[]?, out Bech32Encoding)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to decode a Bech32 or Bech32m character span and repack its 5-bit data groups into 8-bit bytes without
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsValid(ReadOnlySpan&lt;char&gt; source)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The candidate string.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when <code class="paramref">source</code> decodes without error; otherwise
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_Text_Encoding_Bech32_TryDecode_" data-uid="Bodu.Text.Encoding.Bech32.TryDecode*"></a>
+
+  <h3 id="Bodu_Text_Encoding_Bech32_TryDecode_System_ReadOnlySpan_System_Char__System_String__System_Byte____Bodu_Text_Encoding_Bech32Encoding__" data-uid="Bodu.Text.Encoding.Bech32.TryDecode(System.ReadOnlySpan{System.Char},System.String@,System.Byte[]@,Bodu.Text.Encoding.Bech32Encoding@)">
+  TryDecode(ReadOnlySpan&lt;char&gt;, out string?, out byte[]?, out Bech32Encoding)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Encoding/src/Text.Encoding/Bech32.Decode.cs/#L63"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Attempts to decode a Bech32 or Bech32m character span without throwing.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool TryDecode(ReadOnlySpan&lt;char&gt; source, out string? hrp, out byte[]? data, out Bech32Encoding encoding)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The encoded character span.</p>
+</dd>
+    <dt><code>hrp</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>When this method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, the lower-case human-readable part.</p>
+</dd>
+    <dt><code>data</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>When this method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, the 5-bit data groups with the checksum stripped.</p>
+</dd>
+    <dt><code>encoding</code> <a class="xref" href="Bodu.Text.Encoding.Bech32Encoding.html">Bech32Encoding</a></dt>
+    <dd><p>When this method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, the scheme whose checksum constant validated the input.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the input is a valid Bech32 or Bech32m string; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_Text_Encoding_Bech32_TryDecodeToBytes_" data-uid="Bodu.Text.Encoding.Bech32.TryDecodeToBytes*"></a>
+
+  <h3 id="Bodu_Text_Encoding_Bech32_TryDecodeToBytes_System_ReadOnlySpan_System_Char__System_String__System_Byte____Bodu_Text_Encoding_Bech32Encoding__" data-uid="Bodu.Text.Encoding.Bech32.TryDecodeToBytes(System.ReadOnlySpan{System.Char},System.String@,System.Byte[]@,Bodu.Text.Encoding.Bech32Encoding@)">
+  TryDecodeToBytes(ReadOnlySpan&lt;char&gt;, out string?, out byte[]?, out Bech32Encoding)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Encoding/src/Text.Encoding/Bech32.Decode.cs/#L104"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Attempts to decode a Bech32 or Bech32m character span and repack its 5-bit data groups into 8-bit bytes without
 throwing.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_Bech32_TryEncode_System_String_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_Bech32Encoding_System_String__" data-uid="Bodu.Text.Encoding.Bech32.TryEncode(System.String,System.ReadOnlySpan{System.Byte},Bodu.Text.Encoding.Bech32Encoding,System.String@)">
-          <a class="xref" href="Bodu.Text.Encoding.Bech32.TryEncode.html#Bodu_Text_Encoding_Bech32_TryEncode_System_String_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_Bech32Encoding_System_String__">TryEncode(string, ReadOnlySpan&lt;byte&gt;, Bech32Encoding, out string?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to encode 5-bit <code class="paramref">data</code> groups under <code class="paramref">hrp</code> without throwing.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool TryDecodeToBytes(ReadOnlySpan&lt;char&gt; source, out string? hrp, out byte[]? data, out Bech32Encoding encoding)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The encoded character span.</p>
+</dd>
+    <dt><code>hrp</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>When this method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, the lower-case human-readable part.</p>
+</dd>
+    <dt><code>data</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>When this method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, the decoded 8-bit bytes.</p>
+</dd>
+    <dt><code>encoding</code> <a class="xref" href="Bodu.Text.Encoding.Bech32Encoding.html">Bech32Encoding</a></dt>
+    <dd><p>When this method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, the scheme whose checksum constant validated the input.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the input is valid and its groups repack cleanly into bytes; otherwise
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_Text_Encoding_Bech32_TryEncode_" data-uid="Bodu.Text.Encoding.Bech32.TryEncode*"></a>
+
+  <h3 id="Bodu_Text_Encoding_Bech32_TryEncode_System_String_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_Bech32Encoding_System_String__" data-uid="Bodu.Text.Encoding.Bech32.TryEncode(System.String,System.ReadOnlySpan{System.Byte},Bodu.Text.Encoding.Bech32Encoding,System.String@)">
+  TryEncode(string, ReadOnlySpan&lt;byte&gt;, Bech32Encoding, out string?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Encoding/src/Text.Encoding/Bech32.Encode.cs/#L80"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Attempts to encode 5-bit <code class="paramref">data</code> groups under <code class="paramref">hrp</code> without throwing.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool TryEncode(string hrp, ReadOnlySpan&lt;byte&gt; data, Bech32Encoding encoding, out string? result)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>hrp</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The human-readable part.</p>
+</dd>
+    <dt><code>data</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The data groups, each a 5-bit value in the range 0 to 31.</p>
+</dd>
+    <dt><code>encoding</code> <a class="xref" href="Bodu.Text.Encoding.Bech32Encoding.html">Bech32Encoding</a></dt>
+    <dd><p>The scheme selecting the checksum constant.</p>
+</dd>
+    <dt><code>result</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>When this method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, the encoded string; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the parts are valid and encoding succeeds; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <code class="paramref">encoding</code> is undefined.</p>
+</dd>
+  </dl>
+
+
+
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 302e395 · Built: 2026-09-29 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 1e0dd9a · Built: 2026-09-29 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

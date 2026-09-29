@@ -1,99 +1,127 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
       <title>Class ResultAsyncExtensions | BODU </title>
-      <meta name="viewport" content="width=device-width">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class ResultAsyncExtensions | BODU ">
-    
-    <meta name="description" content="Provides Task-based asynchronous companions to the  and non-generic  railway combinators.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      
+      <meta name="description" content="Provides Task-based asynchronous companions to the  and non-generic  railway combinators.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/new/master/apiSpec/new?filename=Bodu_Functional_ResultAsyncExtensions.md&amp;value=---%0Auid%3A%20Bodu.Functional.ResultAsyncExtensions%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Functional.ResultAsyncExtensions">
+
+        <article data-uid="Bodu.Functional.ResultAsyncExtensions">
 
 
 
-  <h1 id="Bodu_Functional_ResultAsyncExtensions" data-uid="Bodu.Functional.ResultAsyncExtensions" class="text-break">Class ResultAsyncExtensions</h1>
-  <div class="markdown level0 summary"><p>Provides Task-based asynchronous companions to the <a class="xref" href="Bodu.Functional.Result-1.html">Result&lt;T&gt;</a> and non-generic <a class="xref" href="Bodu.Functional.Result.html">Result</a>
+  <h1 id="Bodu_Functional_ResultAsyncExtensions" data-uid="Bodu.Functional.ResultAsyncExtensions" class="text-break">
+Class ResultAsyncExtensions  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Functional/ResultAsyncExtensions.TapAsync.cs/#L14"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Functional.html">Functional</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Core.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides Task-based asynchronous companions to the <a class="xref" href="Bodu.Functional.Result-1.html">Result&lt;T&gt;</a> and non-generic <a class="xref" href="Bodu.Functional.Result.html">Result</a>
 railway combinators.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><span class="xref">ResultAsyncExtensions</span></div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class ResultAsyncExtensions</code></pre>
   </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">ResultAsyncExtensions</span></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
@@ -115,21 +143,19 @@ railway combinators.</p>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
-  </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Functional.html">Functional</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Core.dll</h6>
-  <h5 id="Bodu_Functional_ResultAsyncExtensions_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static class ResultAsyncExtensions</code></pre>
-  </div>
-  <h5 id="Bodu_Functional_ResultAsyncExtensions_remarks"><strong>Remarks</strong></h5>
+  </dd></dl>
+
+
+
+
+  <h2 id="Bodu_Functional_ResultAsyncExtensions_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
 Each operation mirrors its synchronous counterpart — <code>MapAsync</code> pairs with
-<a class="xref" href="Bodu.Functional.Result-1.Map.html#Bodu_Functional_Result_1_Map__1_System_Func__0___0__">Map&lt;TResult&gt;(Func&lt;T, TResult&gt;)</a>, <code>BindAsync</code> with
-<a class="xref" href="Bodu.Functional.Result-1.Bind.html#Bodu_Functional_Result_1_Bind__1_System_Func__0_Bodu_Functional_Result___0___">Bind&lt;TResult&gt;(Func&lt;T, Result&lt;TResult&gt;&gt;)</a>, <code>MatchAsync</code> with
-<a class="xref" href="Bodu.Functional.Result-1.Match.html#Bodu_Functional_Result_1_Match__1_System_Func__0___0__System_Func_Bodu_Functional_ResultError___0__">Match&lt;TResult&gt;(Func&lt;T, TResult&gt;, Func&lt;ResultError, TResult&gt;)</a>, and <code>TapAsync</code> /
-<code>TapErrorAsync</code> with <a class="xref" href="Bodu.Functional.Result-1.Tap.html#Bodu_Functional_Result_1_Tap_System_Action__0__">Tap(Action&lt;T&gt;)</a> and
-<a class="xref" href="Bodu.Functional.Result-1.TapError.html#Bodu_Functional_Result_1_TapError_System_Action_Bodu_Functional_ResultError__">TapError(Action&lt;ResultError&gt;)</a> — so an asynchronous pipeline over
+<a class="xref" href="Bodu.Functional.Result-1.html#Bodu_Functional_Result_1_Map__1_System_Func__0___0__">Map&lt;TResult&gt;(Func&lt;T, TResult&gt;)</a>, <code>BindAsync</code> with
+<a class="xref" href="Bodu.Functional.Result-1.html#Bodu_Functional_Result_1_Bind__1_System_Func__0_Bodu_Functional_Result___0___">Bind&lt;TResult&gt;(Func&lt;T, Result&lt;TResult&gt;&gt;)</a>, <code>MatchAsync</code> with
+<a class="xref" href="Bodu.Functional.Result-1.html#Bodu_Functional_Result_1_Match__1_System_Func__0___0__System_Func_Bodu_Functional_ResultError___0__">Match&lt;TResult&gt;(Func&lt;T, TResult&gt;, Func&lt;ResultError, TResult&gt;)</a>, and <code>TapAsync</code> /
+<code>TapErrorAsync</code> with <a class="xref" href="Bodu.Functional.Result-1.html#Bodu_Functional_Result_1_Tap_System_Action__0__">Tap(Action&lt;T&gt;)</a> and
+<a class="xref" href="Bodu.Functional.Result-1.html#Bodu_Functional_Result_1_TapError_System_Action_Bodu_Functional_ResultError__">TapError(Action&lt;ResultError&gt;)</a> — so an asynchronous pipeline over
 <code>Task&lt;Result&lt;T&gt;&gt;</code> composes exactly like its synchronous equivalent, with the error propagating
 untouched past every combinator.
 </p>
@@ -142,199 +168,1195 @@ The combinators accept no <a class="xref" href="https://learn.microsoft.com/dotn
 belongs to the caller's delegates, which can close over their own tokens.
 </p>
 </div>
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Functional_ResultAsyncExtensions_BindAsync__2_Bodu_Functional_Result___0__System_Func___0_System_Threading_Tasks_Task_Bodu_Functional_Result___1____" data-uid="Bodu.Functional.ResultAsyncExtensions.BindAsync``2(Bodu.Functional.Result{``0},System.Func{``0,System.Threading.Tasks.Task{Bodu.Functional.Result{``1}}})">
-          <a class="xref" href="Bodu.Functional.ResultAsyncExtensions.BindAsync.html#Bodu_Functional_ResultAsyncExtensions_BindAsync__2_Bodu_Functional_Result___0__System_Func___0_System_Threading_Tasks_Task_Bodu_Functional_Result___1____">BindAsync&lt;T, TResult&gt;(Result&lt;T&gt;, Func&lt;T, Task&lt;Result&lt;TResult&gt;&gt;&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Asynchronously projects the carried value into another result using the specified asynchronous result-returning
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Functional_ResultAsyncExtensions_BindAsync_" data-uid="Bodu.Functional.ResultAsyncExtensions.BindAsync*"></a>
+
+  <h3 id="Bodu_Functional_ResultAsyncExtensions_BindAsync__2_Bodu_Functional_Result___0__System_Func___0_System_Threading_Tasks_Task_Bodu_Functional_Result___1____" data-uid="Bodu.Functional.ResultAsyncExtensions.BindAsync``2(Bodu.Functional.Result{``0},System.Func{``0,System.Threading.Tasks.Task{Bodu.Functional.Result{``1}}})">
+  BindAsync&lt;T, TResult&gt;(Result&lt;T&gt;, Func&lt;T, Task&lt;Result&lt;TResult&gt;&gt;&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Functional/ResultAsyncExtensions.BindAsync.cs/#L108"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously projects the carried value into another result using the specified asynchronous result-returning
 selector.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Functional_ResultAsyncExtensions_BindAsync__2_System_Threading_Tasks_Task_Bodu_Functional_Result___0___System_Func___0_Bodu_Functional_Result___1___" data-uid="Bodu.Functional.ResultAsyncExtensions.BindAsync``2(System.Threading.Tasks.Task{Bodu.Functional.Result{``0}},System.Func{``0,Bodu.Functional.Result{``1}})">
-          <a class="xref" href="Bodu.Functional.ResultAsyncExtensions.BindAsync.html#Bodu_Functional_ResultAsyncExtensions_BindAsync__2_System_Threading_Tasks_Task_Bodu_Functional_Result___0___System_Func___0_Bodu_Functional_Result___1___">BindAsync&lt;T, TResult&gt;(Task&lt;Result&lt;T&gt;&gt;, Func&lt;T, Result&lt;TResult&gt;&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Asynchronously projects the value carried by the awaited result into another result using the specified
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;TResult&gt;&gt; BindAsync&lt;T, TResult&gt;(this Result&lt;T&gt; source, Func&lt;T, Task&lt;Result&lt;TResult&gt;&gt;&gt; selector)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="Bodu.Functional.Result-1.html">Result</a>&lt;T&gt;</dt>
+    <dd><p>The result to project.</p>
+</dd>
+    <dt><code>selector</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;T, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Bodu.Functional.Result-1.html">Result</a>&lt;TResult&gt;&gt;&gt;</dt>
+    <dd><p>The asynchronous result-returning projection applied to the carried value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Bodu.Functional.Result-1.html">Result</a>&lt;TResult&gt;&gt;</dt>
+    <dd><p>A task that completes with the result produced by the awaited selector when the result represents success;
+otherwise a failure carrying the original error.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The value type of the source result.</p>
+</dd>
+    <dt><code>TResult</code></dt>
+    <dd><p>The value type of the resulting result.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Functional_ResultAsyncExtensions_BindAsync__2_Bodu_Functional_Result___0__System_Func___0_System_Threading_Tasks_Task_Bodu_Functional_Result___1_____remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+The selector is not invoked when the result is a failure. Argument validation runs synchronously, so a
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> selector faults at the call site rather than on the returned task.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">selector</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Functional_ResultAsyncExtensions_BindAsync_" data-uid="Bodu.Functional.ResultAsyncExtensions.BindAsync*"></a>
+
+  <h3 id="Bodu_Functional_ResultAsyncExtensions_BindAsync__2_System_Threading_Tasks_Task_Bodu_Functional_Result___0___System_Func___0_Bodu_Functional_Result___1___" data-uid="Bodu.Functional.ResultAsyncExtensions.BindAsync``2(System.Threading.Tasks.Task{Bodu.Functional.Result{``0}},System.Func{``0,Bodu.Functional.Result{``1}})">
+  BindAsync&lt;T, TResult&gt;(Task&lt;Result&lt;T&gt;&gt;, Func&lt;T, Result&lt;TResult&gt;&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Functional/ResultAsyncExtensions.BindAsync.cs/#L37"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously projects the value carried by the awaited result into another result using the specified
 result-returning selector.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Functional_ResultAsyncExtensions_BindAsync__2_System_Threading_Tasks_Task_Bodu_Functional_Result___0___System_Func___0_System_Threading_Tasks_Task_Bodu_Functional_Result___1____" data-uid="Bodu.Functional.ResultAsyncExtensions.BindAsync``2(System.Threading.Tasks.Task{Bodu.Functional.Result{``0}},System.Func{``0,System.Threading.Tasks.Task{Bodu.Functional.Result{``1}}})">
-          <a class="xref" href="Bodu.Functional.ResultAsyncExtensions.BindAsync.html#Bodu_Functional_ResultAsyncExtensions_BindAsync__2_System_Threading_Tasks_Task_Bodu_Functional_Result___0___System_Func___0_System_Threading_Tasks_Task_Bodu_Functional_Result___1____">BindAsync&lt;T, TResult&gt;(Task&lt;Result&lt;T&gt;&gt;, Func&lt;T, Task&lt;Result&lt;TResult&gt;&gt;&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Asynchronously projects the value carried by the awaited result into another result using the specified
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;TResult&gt;&gt; BindAsync&lt;T, TResult&gt;(this Task&lt;Result&lt;T&gt;&gt; source, Func&lt;T, Result&lt;TResult&gt;&gt; selector)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Bodu.Functional.Result-1.html">Result</a>&lt;T&gt;&gt;</dt>
+    <dd><p>The task producing the result to project. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>selector</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;T, <a class="xref" href="Bodu.Functional.Result-1.html">Result</a>&lt;TResult&gt;&gt;</dt>
+    <dd><p>The result-returning projection applied to the carried value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Bodu.Functional.Result-1.html">Result</a>&lt;TResult&gt;&gt;</dt>
+    <dd><p>A task that completes with the result produced by the selector when the awaited result represents success;
+otherwise a failure carrying the original error.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The value type of the source result.</p>
+</dd>
+    <dt><code>TResult</code></dt>
+    <dd><p>The value type of the resulting result.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Functional_ResultAsyncExtensions_BindAsync__2_System_Threading_Tasks_Task_Bodu_Functional_Result___0___System_Func___0_Bodu_Functional_Result___1____remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+The selector is not invoked when the awaited result is a failure. Argument validation runs synchronously, so a
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> argument faults at the call site rather than on the returned task.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">source</code> or <code class="paramref">selector</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Functional_ResultAsyncExtensions_BindAsync_" data-uid="Bodu.Functional.ResultAsyncExtensions.BindAsync*"></a>
+
+  <h3 id="Bodu_Functional_ResultAsyncExtensions_BindAsync__2_System_Threading_Tasks_Task_Bodu_Functional_Result___0___System_Func___0_System_Threading_Tasks_Task_Bodu_Functional_Result___1____" data-uid="Bodu.Functional.ResultAsyncExtensions.BindAsync``2(System.Threading.Tasks.Task{Bodu.Functional.Result{``0}},System.Func{``0,System.Threading.Tasks.Task{Bodu.Functional.Result{``1}}})">
+  BindAsync&lt;T, TResult&gt;(Task&lt;Result&lt;T&gt;&gt;, Func&lt;T, Task&lt;Result&lt;TResult&gt;&gt;&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Functional/ResultAsyncExtensions.BindAsync.cs/#L72"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously projects the value carried by the awaited result into another result using the specified
 asynchronous result-returning selector.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Functional_ResultAsyncExtensions_MapAsync__2_Bodu_Functional_Result___0__System_Func___0_System_Threading_Tasks_Task___1___" data-uid="Bodu.Functional.ResultAsyncExtensions.MapAsync``2(Bodu.Functional.Result{``0},System.Func{``0,System.Threading.Tasks.Task{``1}})">
-          <a class="xref" href="Bodu.Functional.ResultAsyncExtensions.MapAsync.html#Bodu_Functional_ResultAsyncExtensions_MapAsync__2_Bodu_Functional_Result___0__System_Func___0_System_Threading_Tasks_Task___1___">MapAsync&lt;T, TResult&gt;(Result&lt;T&gt;, Func&lt;T, Task&lt;TResult&gt;&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Asynchronously projects the carried value using the specified asynchronous selector.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Functional_ResultAsyncExtensions_MapAsync__2_System_Threading_Tasks_Task_Bodu_Functional_Result___0___System_Func___0_System_Threading_Tasks_Task___1___" data-uid="Bodu.Functional.ResultAsyncExtensions.MapAsync``2(System.Threading.Tasks.Task{Bodu.Functional.Result{``0}},System.Func{``0,System.Threading.Tasks.Task{``1}})">
-          <a class="xref" href="Bodu.Functional.ResultAsyncExtensions.MapAsync.html#Bodu_Functional_ResultAsyncExtensions_MapAsync__2_System_Threading_Tasks_Task_Bodu_Functional_Result___0___System_Func___0_System_Threading_Tasks_Task___1___">MapAsync&lt;T, TResult&gt;(Task&lt;Result&lt;T&gt;&gt;, Func&lt;T, Task&lt;TResult&gt;&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Asynchronously projects the value carried by the awaited result using the specified asynchronous selector.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Functional_ResultAsyncExtensions_MapAsync__2_System_Threading_Tasks_Task_Bodu_Functional_Result___0___System_Func___0___1__" data-uid="Bodu.Functional.ResultAsyncExtensions.MapAsync``2(System.Threading.Tasks.Task{Bodu.Functional.Result{``0}},System.Func{``0,``1})">
-          <a class="xref" href="Bodu.Functional.ResultAsyncExtensions.MapAsync.html#Bodu_Functional_ResultAsyncExtensions_MapAsync__2_System_Threading_Tasks_Task_Bodu_Functional_Result___0___System_Func___0___1__">MapAsync&lt;T, TResult&gt;(Task&lt;Result&lt;T&gt;&gt;, Func&lt;T, TResult&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Asynchronously projects the value carried by the awaited result using the specified selector.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Functional_ResultAsyncExtensions_MatchAsync__1_Bodu_Functional_Result_System_Func_System_Threading_Tasks_Task___0___System_Func_Bodu_Functional_ResultError_System_Threading_Tasks_Task___0___" data-uid="Bodu.Functional.ResultAsyncExtensions.MatchAsync``1(Bodu.Functional.Result,System.Func{System.Threading.Tasks.Task{``0}},System.Func{Bodu.Functional.ResultError,System.Threading.Tasks.Task{``0}})">
-          <a class="xref" href="Bodu.Functional.ResultAsyncExtensions.MatchAsync.html#Bodu_Functional_ResultAsyncExtensions_MatchAsync__1_Bodu_Functional_Result_System_Func_System_Threading_Tasks_Task___0___System_Func_Bodu_Functional_ResultError_System_Threading_Tasks_Task___0___">MatchAsync&lt;TResult&gt;(Result, Func&lt;Task&lt;TResult&gt;&gt;, Func&lt;ResultError, Task&lt;TResult&gt;&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Asynchronously collapses the valueless result to a single value by invoking and awaiting the matching
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;TResult&gt;&gt; BindAsync&lt;T, TResult&gt;(this Task&lt;Result&lt;T&gt;&gt; source, Func&lt;T, Task&lt;Result&lt;TResult&gt;&gt;&gt; selector)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Bodu.Functional.Result-1.html">Result</a>&lt;T&gt;&gt;</dt>
+    <dd><p>The task producing the result to project. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>selector</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;T, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Bodu.Functional.Result-1.html">Result</a>&lt;TResult&gt;&gt;&gt;</dt>
+    <dd><p>The asynchronous result-returning projection applied to the carried value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Bodu.Functional.Result-1.html">Result</a>&lt;TResult&gt;&gt;</dt>
+    <dd><p>A task that completes with the result produced by the awaited selector when the awaited result represents
+success; otherwise a failure carrying the original error.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The value type of the source result.</p>
+</dd>
+    <dt><code>TResult</code></dt>
+    <dd><p>The value type of the resulting result.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Functional_ResultAsyncExtensions_BindAsync__2_System_Threading_Tasks_Task_Bodu_Functional_Result___0___System_Func___0_System_Threading_Tasks_Task_Bodu_Functional_Result___1_____remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+The selector is not invoked when the awaited result is a failure. Argument validation runs synchronously, so a
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> argument faults at the call site rather than on the returned task.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">source</code> or <code class="paramref">selector</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Functional_ResultAsyncExtensions_MapAsync_" data-uid="Bodu.Functional.ResultAsyncExtensions.MapAsync*"></a>
+
+  <h3 id="Bodu_Functional_ResultAsyncExtensions_MapAsync__2_Bodu_Functional_Result___0__System_Func___0_System_Threading_Tasks_Task___1___" data-uid="Bodu.Functional.ResultAsyncExtensions.MapAsync``2(Bodu.Functional.Result{``0},System.Func{``0,System.Threading.Tasks.Task{``1}})">
+  MapAsync&lt;T, TResult&gt;(Result&lt;T&gt;, Func&lt;T, Task&lt;TResult&gt;&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Functional/ResultAsyncExtensions.MapAsync.cs/#L120"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously projects the carried value using the specified asynchronous selector.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;TResult&gt;&gt; MapAsync&lt;T, TResult&gt;(this Result&lt;T&gt; source, Func&lt;T, Task&lt;TResult&gt;&gt; selector)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="Bodu.Functional.Result-1.html">Result</a>&lt;T&gt;</dt>
+    <dd><p>The result to project.</p>
+</dd>
+    <dt><code>selector</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;T, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;TResult&gt;&gt;</dt>
+    <dd><p>The asynchronous projection applied to the carried value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Bodu.Functional.Result-1.html">Result</a>&lt;TResult&gt;&gt;</dt>
+    <dd><p>A task that completes with <code>Success(await selector(value))</code> when the result represents success; otherwise a
+failure carrying the original error.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The value type of the source result.</p>
+</dd>
+    <dt><code>TResult</code></dt>
+    <dd><p>The type produced by the selector.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Functional_ResultAsyncExtensions_MapAsync__2_Bodu_Functional_Result___0__System_Func___0_System_Threading_Tasks_Task___1____remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+The selector is not invoked when the result is a failure. The projected value is lifted through the strict
+<a class="xref" href="Bodu.Functional.Result.html#Bodu_Functional_Result_Success__1___0_">Success&lt;T&gt;(T)</a> factory, so a <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> awaited projection result throws
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a>, matching <a class="xref" href="Bodu.Functional.Result-1.html#Bodu_Functional_Result_1_Map__1_System_Func__0___0__">Map&lt;TResult&gt;(Func&lt;T, TResult&gt;)</a>. Argument
+validation runs synchronously, so a <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> selector faults at the call site rather than on the
+returned task.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">selector</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, or the awaited projection produced
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Functional_ResultAsyncExtensions_MapAsync_" data-uid="Bodu.Functional.ResultAsyncExtensions.MapAsync*"></a>
+
+  <h3 id="Bodu_Functional_ResultAsyncExtensions_MapAsync__2_System_Threading_Tasks_Task_Bodu_Functional_Result___0___System_Func___0_System_Threading_Tasks_Task___1___" data-uid="Bodu.Functional.ResultAsyncExtensions.MapAsync``2(System.Threading.Tasks.Task{Bodu.Functional.Result{``0}},System.Func{``0,System.Threading.Tasks.Task{``1}})">
+  MapAsync&lt;T, TResult&gt;(Task&lt;Result&lt;T&gt;&gt;, Func&lt;T, Task&lt;TResult&gt;&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Functional/ResultAsyncExtensions.MapAsync.cs/#L78"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously projects the value carried by the awaited result using the specified asynchronous selector.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;TResult&gt;&gt; MapAsync&lt;T, TResult&gt;(this Task&lt;Result&lt;T&gt;&gt; source, Func&lt;T, Task&lt;TResult&gt;&gt; selector)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Bodu.Functional.Result-1.html">Result</a>&lt;T&gt;&gt;</dt>
+    <dd><p>The task producing the result to project. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>selector</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;T, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;TResult&gt;&gt;</dt>
+    <dd><p>The asynchronous projection applied to the carried value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Bodu.Functional.Result-1.html">Result</a>&lt;TResult&gt;&gt;</dt>
+    <dd><p>A task that completes with <code>Success(await selector(value))</code> when the awaited result represents success;
+otherwise a failure carrying the original error.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The value type of the source result.</p>
+</dd>
+    <dt><code>TResult</code></dt>
+    <dd><p>The type produced by the selector.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Functional_ResultAsyncExtensions_MapAsync__2_System_Threading_Tasks_Task_Bodu_Functional_Result___0___System_Func___0_System_Threading_Tasks_Task___1____remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+The selector is not invoked when the awaited result is a failure. The projected value is lifted through the
+strict <a class="xref" href="Bodu.Functional.Result.html#Bodu_Functional_Result_Success__1___0_">Success&lt;T&gt;(T)</a> factory, so a <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> awaited projection result
+throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a>, matching <a class="xref" href="Bodu.Functional.Result-1.html#Bodu_Functional_Result_1_Map__1_System_Func__0___0__">Map&lt;TResult&gt;(Func&lt;T, TResult&gt;)</a>.
+Argument validation runs synchronously, so a <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> argument faults at the call site rather
+than on the returned task.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">source</code> or <code class="paramref">selector</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, or the awaited projection
+produced <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Functional_ResultAsyncExtensions_MapAsync_" data-uid="Bodu.Functional.ResultAsyncExtensions.MapAsync*"></a>
+
+  <h3 id="Bodu_Functional_ResultAsyncExtensions_MapAsync__2_System_Threading_Tasks_Task_Bodu_Functional_Result___0___System_Func___0___1__" data-uid="Bodu.Functional.ResultAsyncExtensions.MapAsync``2(System.Threading.Tasks.Task{Bodu.Functional.Result{``0}},System.Func{``0,``1})">
+  MapAsync&lt;T, TResult&gt;(Task&lt;Result&lt;T&gt;&gt;, Func&lt;T, TResult&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Functional/ResultAsyncExtensions.MapAsync.cs/#L40"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously projects the value carried by the awaited result using the specified selector.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;TResult&gt;&gt; MapAsync&lt;T, TResult&gt;(this Task&lt;Result&lt;T&gt;&gt; source, Func&lt;T, TResult&gt; selector)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Bodu.Functional.Result-1.html">Result</a>&lt;T&gt;&gt;</dt>
+    <dd><p>The task producing the result to project. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>selector</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;T, TResult&gt;</dt>
+    <dd><p>The projection applied to the carried value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Bodu.Functional.Result-1.html">Result</a>&lt;TResult&gt;&gt;</dt>
+    <dd><p>A task that completes with <code>Success(selector(value))</code> when the awaited result represents success; otherwise
+a failure carrying the original error.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The value type of the source result.</p>
+</dd>
+    <dt><code>TResult</code></dt>
+    <dd><p>The type produced by the selector.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Functional_ResultAsyncExtensions_MapAsync__2_System_Threading_Tasks_Task_Bodu_Functional_Result___0___System_Func___0___1___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+The selector is not invoked when the awaited result is a failure. The projected value is lifted through the
+strict <a class="xref" href="Bodu.Functional.Result.html#Bodu_Functional_Result_Success__1___0_">Success&lt;T&gt;(T)</a> factory, so a <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> projection result throws
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a>, matching <a class="xref" href="Bodu.Functional.Result-1.html#Bodu_Functional_Result_1_Map__1_System_Func__0___0__">Map&lt;TResult&gt;(Func&lt;T, TResult&gt;)</a>. Argument
+validation runs synchronously, so a <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> argument faults at the call site rather than on the
+returned task.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">source</code> or <code class="paramref">selector</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, or the projection
+returned <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Functional_ResultAsyncExtensions_MatchAsync_" data-uid="Bodu.Functional.ResultAsyncExtensions.MatchAsync*"></a>
+
+  <h3 id="Bodu_Functional_ResultAsyncExtensions_MatchAsync__1_Bodu_Functional_Result_System_Func_System_Threading_Tasks_Task___0___System_Func_Bodu_Functional_ResultError_System_Threading_Tasks_Task___0___" data-uid="Bodu.Functional.ResultAsyncExtensions.MatchAsync``1(Bodu.Functional.Result,System.Func{System.Threading.Tasks.Task{``0}},System.Func{Bodu.Functional.ResultError,System.Threading.Tasks.Task{``0}})">
+  MatchAsync&lt;TResult&gt;(Result, Func&lt;Task&lt;TResult&gt;&gt;, Func&lt;ResultError, Task&lt;TResult&gt;&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Functional/ResultAsyncExtensions.MatchAsync.cs/#L223"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously collapses the valueless result to a single value by invoking and awaiting the matching
 asynchronous branch.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Functional_ResultAsyncExtensions_MatchAsync__1_System_Threading_Tasks_Task_Bodu_Functional_Result__System_Func_System_Threading_Tasks_Task___0___System_Func_Bodu_Functional_ResultError_System_Threading_Tasks_Task___0___" data-uid="Bodu.Functional.ResultAsyncExtensions.MatchAsync``1(System.Threading.Tasks.Task{Bodu.Functional.Result},System.Func{System.Threading.Tasks.Task{``0}},System.Func{Bodu.Functional.ResultError,System.Threading.Tasks.Task{``0}})">
-          <a class="xref" href="Bodu.Functional.ResultAsyncExtensions.MatchAsync.html#Bodu_Functional_ResultAsyncExtensions_MatchAsync__1_System_Threading_Tasks_Task_Bodu_Functional_Result__System_Func_System_Threading_Tasks_Task___0___System_Func_Bodu_Functional_ResultError_System_Threading_Tasks_Task___0___">MatchAsync&lt;TResult&gt;(Task&lt;Result&gt;, Func&lt;Task&lt;TResult&gt;&gt;, Func&lt;ResultError, Task&lt;TResult&gt;&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Asynchronously collapses the awaited valueless result to a single value by invoking and awaiting the matching
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;TResult&gt; MatchAsync&lt;TResult&gt;(this Result source, Func&lt;Task&lt;TResult&gt;&gt; onSuccess, Func&lt;ResultError, Task&lt;TResult&gt;&gt; onFailure)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="Bodu.Functional.Result.html">Result</a></dt>
+    <dd><p>The result to collapse.</p>
+</dd>
+    <dt><code>onSuccess</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-1">Func</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;TResult&gt;&gt;</dt>
+    <dd><p>The asynchronous factory invoked when the result represents success.</p>
+</dd>
+    <dt><code>onFailure</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="Bodu.Functional.ResultError.html">ResultError</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;TResult&gt;&gt;</dt>
+    <dd><p>The asynchronous projection invoked with the carried error when the result represents failure.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;TResult&gt;</dt>
+    <dd><p>A task that completes with the value produced by the awaited branch.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TResult</code></dt>
+    <dd><p>The type produced by both branches.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Functional_ResultAsyncExtensions_MatchAsync__1_Bodu_Functional_Result_System_Func_System_Threading_Tasks_Task___0___System_Func_Bodu_Functional_ResultError_System_Threading_Tasks_Task___0____remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+Exactly one branch is invoked. Argument validation runs synchronously, so a <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> argument
+faults at the call site rather than on the returned task.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">onSuccess</code> or <code class="paramref">onFailure</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Functional_ResultAsyncExtensions_MatchAsync_" data-uid="Bodu.Functional.ResultAsyncExtensions.MatchAsync*"></a>
+
+  <h3 id="Bodu_Functional_ResultAsyncExtensions_MatchAsync__1_System_Threading_Tasks_Task_Bodu_Functional_Result__System_Func_System_Threading_Tasks_Task___0___System_Func_Bodu_Functional_ResultError_System_Threading_Tasks_Task___0___" data-uid="Bodu.Functional.ResultAsyncExtensions.MatchAsync``1(System.Threading.Tasks.Task{Bodu.Functional.Result},System.Func{System.Threading.Tasks.Task{``0}},System.Func{Bodu.Functional.ResultError,System.Threading.Tasks.Task{``0}})">
+  MatchAsync&lt;TResult&gt;(Task&lt;Result&gt;, Func&lt;Task&lt;TResult&gt;&gt;, Func&lt;ResultError, Task&lt;TResult&gt;&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Functional/ResultAsyncExtensions.MatchAsync.cs/#L186"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously collapses the awaited valueless result to a single value by invoking and awaiting the matching
 asynchronous branch.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Functional_ResultAsyncExtensions_MatchAsync__1_System_Threading_Tasks_Task_Bodu_Functional_Result__System_Func___0__System_Func_Bodu_Functional_ResultError___0__" data-uid="Bodu.Functional.ResultAsyncExtensions.MatchAsync``1(System.Threading.Tasks.Task{Bodu.Functional.Result},System.Func{``0},System.Func{Bodu.Functional.ResultError,``0})">
-          <a class="xref" href="Bodu.Functional.ResultAsyncExtensions.MatchAsync.html#Bodu_Functional_ResultAsyncExtensions_MatchAsync__1_System_Threading_Tasks_Task_Bodu_Functional_Result__System_Func___0__System_Func_Bodu_Functional_ResultError___0__">MatchAsync&lt;TResult&gt;(Task&lt;Result&gt;, Func&lt;TResult&gt;, Func&lt;ResultError, TResult&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Asynchronously collapses the awaited valueless result to a single value by invoking the matching branch.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Functional_ResultAsyncExtensions_MatchAsync__2_Bodu_Functional_Result___0__System_Func___0_System_Threading_Tasks_Task___1___System_Func_Bodu_Functional_ResultError_System_Threading_Tasks_Task___1___" data-uid="Bodu.Functional.ResultAsyncExtensions.MatchAsync``2(Bodu.Functional.Result{``0},System.Func{``0,System.Threading.Tasks.Task{``1}},System.Func{Bodu.Functional.ResultError,System.Threading.Tasks.Task{``1}})">
-          <a class="xref" href="Bodu.Functional.ResultAsyncExtensions.MatchAsync.html#Bodu_Functional_ResultAsyncExtensions_MatchAsync__2_Bodu_Functional_Result___0__System_Func___0_System_Threading_Tasks_Task___1___System_Func_Bodu_Functional_ResultError_System_Threading_Tasks_Task___1___">MatchAsync&lt;T, TResult&gt;(Result&lt;T&gt;, Func&lt;T, Task&lt;TResult&gt;&gt;, Func&lt;ResultError, Task&lt;TResult&gt;&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Asynchronously collapses the result to a single value by invoking and awaiting the matching asynchronous branch.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Functional_ResultAsyncExtensions_MatchAsync__2_System_Threading_Tasks_Task_Bodu_Functional_Result___0___System_Func___0_System_Threading_Tasks_Task___1___System_Func_Bodu_Functional_ResultError_System_Threading_Tasks_Task___1___" data-uid="Bodu.Functional.ResultAsyncExtensions.MatchAsync``2(System.Threading.Tasks.Task{Bodu.Functional.Result{``0}},System.Func{``0,System.Threading.Tasks.Task{``1}},System.Func{Bodu.Functional.ResultError,System.Threading.Tasks.Task{``1}})">
-          <a class="xref" href="Bodu.Functional.ResultAsyncExtensions.MatchAsync.html#Bodu_Functional_ResultAsyncExtensions_MatchAsync__2_System_Threading_Tasks_Task_Bodu_Functional_Result___0___System_Func___0_System_Threading_Tasks_Task___1___System_Func_Bodu_Functional_ResultError_System_Threading_Tasks_Task___1___">MatchAsync&lt;T, TResult&gt;(Task&lt;Result&lt;T&gt;&gt;, Func&lt;T, Task&lt;TResult&gt;&gt;, Func&lt;ResultError, Task&lt;TResult&gt;&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Asynchronously collapses the awaited result to a single value by invoking and awaiting the matching asynchronous
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;TResult&gt; MatchAsync&lt;TResult&gt;(this Task&lt;Result&gt; source, Func&lt;Task&lt;TResult&gt;&gt; onSuccess, Func&lt;ResultError, Task&lt;TResult&gt;&gt; onFailure)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Bodu.Functional.Result.html">Result</a>&gt;</dt>
+    <dd><p>The task producing the result to collapse. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>onSuccess</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-1">Func</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;TResult&gt;&gt;</dt>
+    <dd><p>The asynchronous factory invoked when the result represents success.</p>
+</dd>
+    <dt><code>onFailure</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="Bodu.Functional.ResultError.html">ResultError</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;TResult&gt;&gt;</dt>
+    <dd><p>The asynchronous projection invoked with the carried error when the result represents failure.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;TResult&gt;</dt>
+    <dd><p>A task that completes with the value produced by the awaited branch.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TResult</code></dt>
+    <dd><p>The type produced by both branches.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Functional_ResultAsyncExtensions_MatchAsync__1_System_Threading_Tasks_Task_Bodu_Functional_Result__System_Func_System_Threading_Tasks_Task___0___System_Func_Bodu_Functional_ResultError_System_Threading_Tasks_Task___0____remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+Exactly one branch is invoked. Argument validation runs synchronously, so a <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> argument
+faults at the call site rather than on the returned task.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">source</code>, <code class="paramref">onSuccess</code>, or <code class="paramref">onFailure</code> is
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Functional_ResultAsyncExtensions_MatchAsync_" data-uid="Bodu.Functional.ResultAsyncExtensions.MatchAsync*"></a>
+
+  <h3 id="Bodu_Functional_ResultAsyncExtensions_MatchAsync__1_System_Threading_Tasks_Task_Bodu_Functional_Result__System_Func___0__System_Func_Bodu_Functional_ResultError___0__" data-uid="Bodu.Functional.ResultAsyncExtensions.MatchAsync``1(System.Threading.Tasks.Task{Bodu.Functional.Result},System.Func{``0},System.Func{Bodu.Functional.ResultError,``0})">
+  MatchAsync&lt;TResult&gt;(Task&lt;Result&gt;, Func&lt;TResult&gt;, Func&lt;ResultError, TResult&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Functional/ResultAsyncExtensions.MatchAsync.cs/#L150"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously collapses the awaited valueless result to a single value by invoking the matching branch.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;TResult&gt; MatchAsync&lt;TResult&gt;(this Task&lt;Result&gt; source, Func&lt;TResult&gt; onSuccess, Func&lt;ResultError, TResult&gt; onFailure)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Bodu.Functional.Result.html">Result</a>&gt;</dt>
+    <dd><p>The task producing the result to collapse. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>onSuccess</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-1">Func</a>&lt;TResult&gt;</dt>
+    <dd><p>The factory invoked when the result represents success.</p>
+</dd>
+    <dt><code>onFailure</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="Bodu.Functional.ResultError.html">ResultError</a>, TResult&gt;</dt>
+    <dd><p>The projection invoked with the carried error when the result represents failure.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;TResult&gt;</dt>
+    <dd><p>A task that completes with the value produced by the invoked branch.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TResult</code></dt>
+    <dd><p>The type produced by both branches.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Functional_ResultAsyncExtensions_MatchAsync__1_System_Threading_Tasks_Task_Bodu_Functional_Result__System_Func___0__System_Func_Bodu_Functional_ResultError___0___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+Exactly one branch is invoked. Argument validation runs synchronously, so a <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> argument
+faults at the call site rather than on the returned task.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">source</code>, <code class="paramref">onSuccess</code>, or <code class="paramref">onFailure</code> is
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Functional_ResultAsyncExtensions_MatchAsync_" data-uid="Bodu.Functional.ResultAsyncExtensions.MatchAsync*"></a>
+
+  <h3 id="Bodu_Functional_ResultAsyncExtensions_MatchAsync__2_Bodu_Functional_Result___0__System_Func___0_System_Threading_Tasks_Task___1___System_Func_Bodu_Functional_ResultError_System_Threading_Tasks_Task___1___" data-uid="Bodu.Functional.ResultAsyncExtensions.MatchAsync``2(Bodu.Functional.Result{``0},System.Func{``0,System.Threading.Tasks.Task{``1}},System.Func{Bodu.Functional.ResultError,System.Threading.Tasks.Task{``1}})">
+  MatchAsync&lt;T, TResult&gt;(Result&lt;T&gt;, Func&lt;T, Task&lt;TResult&gt;&gt;, Func&lt;ResultError, Task&lt;TResult&gt;&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Functional/ResultAsyncExtensions.MatchAsync.cs/#L117"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously collapses the result to a single value by invoking and awaiting the matching asynchronous branch.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;TResult&gt; MatchAsync&lt;T, TResult&gt;(this Result&lt;T&gt; source, Func&lt;T, Task&lt;TResult&gt;&gt; onSuccess, Func&lt;ResultError, Task&lt;TResult&gt;&gt; onFailure)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="Bodu.Functional.Result-1.html">Result</a>&lt;T&gt;</dt>
+    <dd><p>The result to collapse.</p>
+</dd>
+    <dt><code>onSuccess</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;T, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;TResult&gt;&gt;</dt>
+    <dd><p>The asynchronous projection invoked with the carried value when the result represents success.</p>
+</dd>
+    <dt><code>onFailure</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="Bodu.Functional.ResultError.html">ResultError</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;TResult&gt;&gt;</dt>
+    <dd><p>The asynchronous projection invoked with the carried error when the result represents failure.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;TResult&gt;</dt>
+    <dd><p>A task that completes with the value produced by the awaited branch.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The value type of the source result.</p>
+</dd>
+    <dt><code>TResult</code></dt>
+    <dd><p>The type produced by both branches.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Functional_ResultAsyncExtensions_MatchAsync__2_Bodu_Functional_Result___0__System_Func___0_System_Threading_Tasks_Task___1___System_Func_Bodu_Functional_ResultError_System_Threading_Tasks_Task___1____remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+Exactly one branch is invoked. Argument validation runs synchronously, so a <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> argument
+faults at the call site rather than on the returned task.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">onSuccess</code> or <code class="paramref">onFailure</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Functional_ResultAsyncExtensions_MatchAsync_" data-uid="Bodu.Functional.ResultAsyncExtensions.MatchAsync*"></a>
+
+  <h3 id="Bodu_Functional_ResultAsyncExtensions_MatchAsync__2_System_Threading_Tasks_Task_Bodu_Functional_Result___0___System_Func___0_System_Threading_Tasks_Task___1___System_Func_Bodu_Functional_ResultError_System_Threading_Tasks_Task___1___" data-uid="Bodu.Functional.ResultAsyncExtensions.MatchAsync``2(System.Threading.Tasks.Task{Bodu.Functional.Result{``0}},System.Func{``0,System.Threading.Tasks.Task{``1}},System.Func{Bodu.Functional.ResultError,System.Threading.Tasks.Task{``1}})">
+  MatchAsync&lt;T, TResult&gt;(Task&lt;Result&lt;T&gt;&gt;, Func&lt;T, Task&lt;TResult&gt;&gt;, Func&lt;ResultError, Task&lt;TResult&gt;&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Functional/ResultAsyncExtensions.MatchAsync.cs/#L78"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously collapses the awaited result to a single value by invoking and awaiting the matching asynchronous
 branch.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Functional_ResultAsyncExtensions_MatchAsync__2_System_Threading_Tasks_Task_Bodu_Functional_Result___0___System_Func___0___1__System_Func_Bodu_Functional_ResultError___1__" data-uid="Bodu.Functional.ResultAsyncExtensions.MatchAsync``2(System.Threading.Tasks.Task{Bodu.Functional.Result{``0}},System.Func{``0,``1},System.Func{Bodu.Functional.ResultError,``1})">
-          <a class="xref" href="Bodu.Functional.ResultAsyncExtensions.MatchAsync.html#Bodu_Functional_ResultAsyncExtensions_MatchAsync__2_System_Threading_Tasks_Task_Bodu_Functional_Result___0___System_Func___0___1__System_Func_Bodu_Functional_ResultError___1__">MatchAsync&lt;T, TResult&gt;(Task&lt;Result&lt;T&gt;&gt;, Func&lt;T, TResult&gt;, Func&lt;ResultError, TResult&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Asynchronously collapses the awaited result to a single value by invoking the matching branch.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Functional_ResultAsyncExtensions_TapAsync__1_Bodu_Functional_Result___0__System_Func___0_System_Threading_Tasks_Task__" data-uid="Bodu.Functional.ResultAsyncExtensions.TapAsync``1(Bodu.Functional.Result{``0},System.Func{``0,System.Threading.Tasks.Task})">
-          <a class="xref" href="Bodu.Functional.ResultAsyncExtensions.TapAsync.html#Bodu_Functional_ResultAsyncExtensions_TapAsync__1_Bodu_Functional_Result___0__System_Func___0_System_Threading_Tasks_Task__">TapAsync&lt;T&gt;(Result&lt;T&gt;, Func&lt;T, Task&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Asynchronously invokes and awaits the specified asynchronous callback with the carried value when the result
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;TResult&gt; MatchAsync&lt;T, TResult&gt;(this Task&lt;Result&lt;T&gt;&gt; source, Func&lt;T, Task&lt;TResult&gt;&gt; onSuccess, Func&lt;ResultError, Task&lt;TResult&gt;&gt; onFailure)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Bodu.Functional.Result-1.html">Result</a>&lt;T&gt;&gt;</dt>
+    <dd><p>The task producing the result to collapse. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>onSuccess</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;T, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;TResult&gt;&gt;</dt>
+    <dd><p>The asynchronous projection invoked with the carried value when the result represents success.</p>
+</dd>
+    <dt><code>onFailure</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="Bodu.Functional.ResultError.html">ResultError</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;TResult&gt;&gt;</dt>
+    <dd><p>The asynchronous projection invoked with the carried error when the result represents failure.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;TResult&gt;</dt>
+    <dd><p>A task that completes with the value produced by the awaited branch.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The value type of the source result.</p>
+</dd>
+    <dt><code>TResult</code></dt>
+    <dd><p>The type produced by both branches.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Functional_ResultAsyncExtensions_MatchAsync__2_System_Threading_Tasks_Task_Bodu_Functional_Result___0___System_Func___0_System_Threading_Tasks_Task___1___System_Func_Bodu_Functional_ResultError_System_Threading_Tasks_Task___1____remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+Exactly one branch is invoked. Argument validation runs synchronously, so a <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> argument
+faults at the call site rather than on the returned task.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">source</code>, <code class="paramref">onSuccess</code>, or <code class="paramref">onFailure</code> is
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Functional_ResultAsyncExtensions_MatchAsync_" data-uid="Bodu.Functional.ResultAsyncExtensions.MatchAsync*"></a>
+
+  <h3 id="Bodu_Functional_ResultAsyncExtensions_MatchAsync__2_System_Threading_Tasks_Task_Bodu_Functional_Result___0___System_Func___0___1__System_Func_Bodu_Functional_ResultError___1__" data-uid="Bodu.Functional.ResultAsyncExtensions.MatchAsync``2(System.Threading.Tasks.Task{Bodu.Functional.Result{``0}},System.Func{``0,``1},System.Func{Bodu.Functional.ResultError,``1})">
+  MatchAsync&lt;T, TResult&gt;(Task&lt;Result&lt;T&gt;&gt;, Func&lt;T, TResult&gt;, Func&lt;ResultError, TResult&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Functional/ResultAsyncExtensions.MatchAsync.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously collapses the awaited result to a single value by invoking the matching branch.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;TResult&gt; MatchAsync&lt;T, TResult&gt;(this Task&lt;Result&lt;T&gt;&gt; source, Func&lt;T, TResult&gt; onSuccess, Func&lt;ResultError, TResult&gt; onFailure)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Bodu.Functional.Result-1.html">Result</a>&lt;T&gt;&gt;</dt>
+    <dd><p>The task producing the result to collapse. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>onSuccess</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;T, TResult&gt;</dt>
+    <dd><p>The projection invoked with the carried value when the result represents success.</p>
+</dd>
+    <dt><code>onFailure</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="Bodu.Functional.ResultError.html">ResultError</a>, TResult&gt;</dt>
+    <dd><p>The projection invoked with the carried error when the result represents failure.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;TResult&gt;</dt>
+    <dd><p>A task that completes with the value produced by the invoked branch.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The value type of the source result.</p>
+</dd>
+    <dt><code>TResult</code></dt>
+    <dd><p>The type produced by both branches.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Functional_ResultAsyncExtensions_MatchAsync__2_System_Threading_Tasks_Task_Bodu_Functional_Result___0___System_Func___0___1__System_Func_Bodu_Functional_ResultError___1___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+Exactly one branch is invoked. Argument validation runs synchronously, so a <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> argument
+faults at the call site rather than on the returned task.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">source</code>, <code class="paramref">onSuccess</code>, or <code class="paramref">onFailure</code> is
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Functional_ResultAsyncExtensions_TapAsync_" data-uid="Bodu.Functional.ResultAsyncExtensions.TapAsync*"></a>
+
+  <h3 id="Bodu_Functional_ResultAsyncExtensions_TapAsync__1_Bodu_Functional_Result___0__System_Func___0_System_Threading_Tasks_Task__" data-uid="Bodu.Functional.ResultAsyncExtensions.TapAsync``1(Bodu.Functional.Result{``0},System.Func{``0,System.Threading.Tasks.Task})">
+  TapAsync&lt;T&gt;(Result&lt;T&gt;, Func&lt;T, Task&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Functional/ResultAsyncExtensions.TapAsync.cs/#L98"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously invokes and awaits the specified asynchronous callback with the carried value when the result
 represents success.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Functional_ResultAsyncExtensions_TapAsync__1_System_Threading_Tasks_Task_Bodu_Functional_Result___0___System_Action___0__" data-uid="Bodu.Functional.ResultAsyncExtensions.TapAsync``1(System.Threading.Tasks.Task{Bodu.Functional.Result{``0}},System.Action{``0})">
-          <a class="xref" href="Bodu.Functional.ResultAsyncExtensions.TapAsync.html#Bodu_Functional_ResultAsyncExtensions_TapAsync__1_System_Threading_Tasks_Task_Bodu_Functional_Result___0___System_Action___0__">TapAsync&lt;T&gt;(Task&lt;Result&lt;T&gt;&gt;, Action&lt;T&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Asynchronously invokes the specified action with the carried value when the awaited result represents success.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Functional_ResultAsyncExtensions_TapAsync__1_System_Threading_Tasks_Task_Bodu_Functional_Result___0___System_Func___0_System_Threading_Tasks_Task__" data-uid="Bodu.Functional.ResultAsyncExtensions.TapAsync``1(System.Threading.Tasks.Task{Bodu.Functional.Result{``0}},System.Func{``0,System.Threading.Tasks.Task})">
-          <a class="xref" href="Bodu.Functional.ResultAsyncExtensions.TapAsync.html#Bodu_Functional_ResultAsyncExtensions_TapAsync__1_System_Threading_Tasks_Task_Bodu_Functional_Result___0___System_Func___0_System_Threading_Tasks_Task__">TapAsync&lt;T&gt;(Task&lt;Result&lt;T&gt;&gt;, Func&lt;T, Task&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Asynchronously invokes and awaits the specified asynchronous callback with the carried value when the awaited
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;T&gt;&gt; TapAsync&lt;T&gt;(this Result&lt;T&gt; source, Func&lt;T, Task&gt; onSuccess)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="Bodu.Functional.Result-1.html">Result</a>&lt;T&gt;</dt>
+    <dd><p>The result to observe.</p>
+</dd>
+    <dt><code>onSuccess</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;T, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a>&gt;</dt>
+    <dd><p>The asynchronous side effect invoked with the carried value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Bodu.Functional.Result-1.html">Result</a>&lt;T&gt;&gt;</dt>
+    <dd><p>A task that completes with this result, unchanged, so calls can be chained.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The value type of the source result.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Functional_ResultAsyncExtensions_TapAsync__1_Bodu_Functional_Result___0__System_Func___0_System_Threading_Tasks_Task___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+The callback is not invoked when the result is a failure; the result itself is always returned, and the callback
+is awaited before the returned task completes. Argument validation runs synchronously, so a
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> callback faults at the call site rather than on the returned task.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">onSuccess</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Functional_ResultAsyncExtensions_TapAsync_" data-uid="Bodu.Functional.ResultAsyncExtensions.TapAsync*"></a>
+
+  <h3 id="Bodu_Functional_ResultAsyncExtensions_TapAsync__1_System_Threading_Tasks_Task_Bodu_Functional_Result___0___System_Action___0__" data-uid="Bodu.Functional.ResultAsyncExtensions.TapAsync``1(System.Threading.Tasks.Task{Bodu.Functional.Result{``0}},System.Action{``0})">
+  TapAsync&lt;T&gt;(Task&lt;Result&lt;T&gt;&gt;, Action&lt;T&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Functional/ResultAsyncExtensions.TapAsync.cs/#L33"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously invokes the specified action with the carried value when the awaited result represents success.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;T&gt;&gt; TapAsync&lt;T&gt;(this Task&lt;Result&lt;T&gt;&gt; source, Action&lt;T&gt; onSuccess)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Bodu.Functional.Result-1.html">Result</a>&lt;T&gt;&gt;</dt>
+    <dd><p>The task producing the result to observe. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>onSuccess</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;T&gt;</dt>
+    <dd><p>The side effect invoked with the carried value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Bodu.Functional.Result-1.html">Result</a>&lt;T&gt;&gt;</dt>
+    <dd><p>A task that completes with the awaited result, unchanged, so calls can be chained.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The value type of the source result.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Functional_ResultAsyncExtensions_TapAsync__1_System_Threading_Tasks_Task_Bodu_Functional_Result___0___System_Action___0___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+The action is not invoked when the awaited result is a failure; the result itself is always returned. Argument
+validation runs synchronously, so a <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> argument faults at the call site rather than on the
+returned task.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">source</code> or <code class="paramref">onSuccess</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Functional_ResultAsyncExtensions_TapAsync_" data-uid="Bodu.Functional.ResultAsyncExtensions.TapAsync*"></a>
+
+  <h3 id="Bodu_Functional_ResultAsyncExtensions_TapAsync__1_System_Threading_Tasks_Task_Bodu_Functional_Result___0___System_Func___0_System_Threading_Tasks_Task__" data-uid="Bodu.Functional.ResultAsyncExtensions.TapAsync``1(System.Threading.Tasks.Task{Bodu.Functional.Result{``0}},System.Func{``0,System.Threading.Tasks.Task})">
+  TapAsync&lt;T&gt;(Task&lt;Result&lt;T&gt;&gt;, Func&lt;T, Task&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Functional/ResultAsyncExtensions.TapAsync.cs/#L65"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously invokes and awaits the specified asynchronous callback with the carried value when the awaited
 result represents success.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Functional_ResultAsyncExtensions_TapErrorAsync__1_Bodu_Functional_Result___0__System_Func_Bodu_Functional_ResultError_System_Threading_Tasks_Task__" data-uid="Bodu.Functional.ResultAsyncExtensions.TapErrorAsync``1(Bodu.Functional.Result{``0},System.Func{Bodu.Functional.ResultError,System.Threading.Tasks.Task})">
-          <a class="xref" href="Bodu.Functional.ResultAsyncExtensions.TapErrorAsync.html#Bodu_Functional_ResultAsyncExtensions_TapErrorAsync__1_Bodu_Functional_Result___0__System_Func_Bodu_Functional_ResultError_System_Threading_Tasks_Task__">TapErrorAsync&lt;T&gt;(Result&lt;T&gt;, Func&lt;ResultError, Task&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Asynchronously invokes and awaits the specified asynchronous callback with the carried error when the result
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;T&gt;&gt; TapAsync&lt;T&gt;(this Task&lt;Result&lt;T&gt;&gt; source, Func&lt;T, Task&gt; onSuccess)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Bodu.Functional.Result-1.html">Result</a>&lt;T&gt;&gt;</dt>
+    <dd><p>The task producing the result to observe. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>onSuccess</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;T, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a>&gt;</dt>
+    <dd><p>The asynchronous side effect invoked with the carried value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Bodu.Functional.Result-1.html">Result</a>&lt;T&gt;&gt;</dt>
+    <dd><p>A task that completes with the awaited result, unchanged, so calls can be chained.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The value type of the source result.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Functional_ResultAsyncExtensions_TapAsync__1_System_Threading_Tasks_Task_Bodu_Functional_Result___0___System_Func___0_System_Threading_Tasks_Task___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+The callback is not invoked when the awaited result is a failure; the result itself is always returned, and the
+callback is awaited before the returned task completes. Argument validation runs synchronously, so a
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> argument faults at the call site rather than on the returned task.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">source</code> or <code class="paramref">onSuccess</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Functional_ResultAsyncExtensions_TapErrorAsync_" data-uid="Bodu.Functional.ResultAsyncExtensions.TapErrorAsync*"></a>
+
+  <h3 id="Bodu_Functional_ResultAsyncExtensions_TapErrorAsync__1_Bodu_Functional_Result___0__System_Func_Bodu_Functional_ResultError_System_Threading_Tasks_Task__" data-uid="Bodu.Functional.ResultAsyncExtensions.TapErrorAsync``1(Bodu.Functional.Result{``0},System.Func{Bodu.Functional.ResultError,System.Threading.Tasks.Task})">
+  TapErrorAsync&lt;T&gt;(Result&lt;T&gt;, Func&lt;ResultError, Task&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Functional/ResultAsyncExtensions.TapAsync.cs/#L196"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously invokes and awaits the specified asynchronous callback with the carried error when the result
 represents failure.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Functional_ResultAsyncExtensions_TapErrorAsync__1_System_Threading_Tasks_Task_Bodu_Functional_Result___0___System_Action_Bodu_Functional_ResultError__" data-uid="Bodu.Functional.ResultAsyncExtensions.TapErrorAsync``1(System.Threading.Tasks.Task{Bodu.Functional.Result{``0}},System.Action{Bodu.Functional.ResultError})">
-          <a class="xref" href="Bodu.Functional.ResultAsyncExtensions.TapErrorAsync.html#Bodu_Functional_ResultAsyncExtensions_TapErrorAsync__1_System_Threading_Tasks_Task_Bodu_Functional_Result___0___System_Action_Bodu_Functional_ResultError__">TapErrorAsync&lt;T&gt;(Task&lt;Result&lt;T&gt;&gt;, Action&lt;ResultError&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Asynchronously invokes the specified action with the carried error when the awaited result represents failure.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Functional_ResultAsyncExtensions_TapErrorAsync__1_System_Threading_Tasks_Task_Bodu_Functional_Result___0___System_Func_Bodu_Functional_ResultError_System_Threading_Tasks_Task__" data-uid="Bodu.Functional.ResultAsyncExtensions.TapErrorAsync``1(System.Threading.Tasks.Task{Bodu.Functional.Result{``0}},System.Func{Bodu.Functional.ResultError,System.Threading.Tasks.Task})">
-          <a class="xref" href="Bodu.Functional.ResultAsyncExtensions.TapErrorAsync.html#Bodu_Functional_ResultAsyncExtensions_TapErrorAsync__1_System_Threading_Tasks_Task_Bodu_Functional_Result___0___System_Func_Bodu_Functional_ResultError_System_Threading_Tasks_Task__">TapErrorAsync&lt;T&gt;(Task&lt;Result&lt;T&gt;&gt;, Func&lt;ResultError, Task&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Asynchronously invokes and awaits the specified asynchronous callback with the carried error when the awaited
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;T&gt;&gt; TapErrorAsync&lt;T&gt;(this Result&lt;T&gt; source, Func&lt;ResultError, Task&gt; onFailure)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="Bodu.Functional.Result-1.html">Result</a>&lt;T&gt;</dt>
+    <dd><p>The result to observe.</p>
+</dd>
+    <dt><code>onFailure</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="Bodu.Functional.ResultError.html">ResultError</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a>&gt;</dt>
+    <dd><p>The asynchronous side effect invoked with the carried error.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Bodu.Functional.Result-1.html">Result</a>&lt;T&gt;&gt;</dt>
+    <dd><p>A task that completes with this result, unchanged, so calls can be chained.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The value type of the source result.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Functional_ResultAsyncExtensions_TapErrorAsync__1_Bodu_Functional_Result___0__System_Func_Bodu_Functional_ResultError_System_Threading_Tasks_Task___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+The callback is not invoked when the result is a success; the result itself is always returned, and the callback
+is awaited before the returned task completes. Argument validation runs synchronously, so a
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> callback faults at the call site rather than on the returned task.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">onFailure</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Functional_ResultAsyncExtensions_TapErrorAsync_" data-uid="Bodu.Functional.ResultAsyncExtensions.TapErrorAsync*"></a>
+
+  <h3 id="Bodu_Functional_ResultAsyncExtensions_TapErrorAsync__1_System_Threading_Tasks_Task_Bodu_Functional_Result___0___System_Action_Bodu_Functional_ResultError__" data-uid="Bodu.Functional.ResultAsyncExtensions.TapErrorAsync``1(System.Threading.Tasks.Task{Bodu.Functional.Result{``0}},System.Action{Bodu.Functional.ResultError})">
+  TapErrorAsync&lt;T&gt;(Task&lt;Result&lt;T&gt;&gt;, Action&lt;ResultError&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Functional/ResultAsyncExtensions.TapAsync.cs/#L131"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously invokes the specified action with the carried error when the awaited result represents failure.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;T&gt;&gt; TapErrorAsync&lt;T&gt;(this Task&lt;Result&lt;T&gt;&gt; source, Action&lt;ResultError&gt; onFailure)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Bodu.Functional.Result-1.html">Result</a>&lt;T&gt;&gt;</dt>
+    <dd><p>The task producing the result to observe. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>onFailure</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<a class="xref" href="Bodu.Functional.ResultError.html">ResultError</a>&gt;</dt>
+    <dd><p>The side effect invoked with the carried error.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Bodu.Functional.Result-1.html">Result</a>&lt;T&gt;&gt;</dt>
+    <dd><p>A task that completes with the awaited result, unchanged, so calls can be chained.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The value type of the source result.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Functional_ResultAsyncExtensions_TapErrorAsync__1_System_Threading_Tasks_Task_Bodu_Functional_Result___0___System_Action_Bodu_Functional_ResultError___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+The action is not invoked when the awaited result is a success; the result itself is always returned. Argument
+validation runs synchronously, so a <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> argument faults at the call site rather than on the
+returned task.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">source</code> or <code class="paramref">onFailure</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Functional_ResultAsyncExtensions_TapErrorAsync_" data-uid="Bodu.Functional.ResultAsyncExtensions.TapErrorAsync*"></a>
+
+  <h3 id="Bodu_Functional_ResultAsyncExtensions_TapErrorAsync__1_System_Threading_Tasks_Task_Bodu_Functional_Result___0___System_Func_Bodu_Functional_ResultError_System_Threading_Tasks_Task__" data-uid="Bodu.Functional.ResultAsyncExtensions.TapErrorAsync``1(System.Threading.Tasks.Task{Bodu.Functional.Result{``0}},System.Func{Bodu.Functional.ResultError,System.Threading.Tasks.Task})">
+  TapErrorAsync&lt;T&gt;(Task&lt;Result&lt;T&gt;&gt;, Func&lt;ResultError, Task&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Functional/ResultAsyncExtensions.TapAsync.cs/#L163"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously invokes and awaits the specified asynchronous callback with the carried error when the awaited
 result represents failure.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;T&gt;&gt; TapErrorAsync&lt;T&gt;(this Task&lt;Result&lt;T&gt;&gt; source, Func&lt;ResultError, Task&gt; onFailure)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Bodu.Functional.Result-1.html">Result</a>&lt;T&gt;&gt;</dt>
+    <dd><p>The task producing the result to observe. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>onFailure</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="Bodu.Functional.ResultError.html">ResultError</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a>&gt;</dt>
+    <dd><p>The asynchronous side effect invoked with the carried error.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Bodu.Functional.Result-1.html">Result</a>&lt;T&gt;&gt;</dt>
+    <dd><p>A task that completes with the awaited result, unchanged, so calls can be chained.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The value type of the source result.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Functional_ResultAsyncExtensions_TapErrorAsync__1_System_Threading_Tasks_Task_Bodu_Functional_Result___0___System_Func_Bodu_Functional_ResultError_System_Threading_Tasks_Task___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+The callback is not invoked when the awaited result is a success; the result itself is always returned, and the
+callback is awaited before the returned task completes. Argument validation runs synchronously, so a
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> argument faults at the call site rather than on the returned task.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">source</code> or <code class="paramref">onFailure</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 302e395 · Built: 2026-09-29 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 1e0dd9a · Built: 2026-09-29 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

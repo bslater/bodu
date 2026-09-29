@@ -1,84 +1,90 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
       <title>Namespace Bodu.Text.Configuration | BODU </title>
-      <meta name="viewport" content="width=device-width">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Namespace Bodu.Text.Configuration | BODU ">
-    
-    
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      
+      
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Text.Configuration">
+
+        <article data-uid="Bodu.Text.Configuration">
 
   <h1 id="Bodu_Text_Configuration" data-uid="Bodu.Text.Configuration" class="text-break">Namespace Bodu.Text.Configuration</h1>
   <div class="markdown level0 summary"></div>
@@ -184,180 +190,216 @@ string canonicalText = sw.ToString();
 </ul>
 </div>
   <div class="markdown level0 remarks"></div>
+
     <h3 id="classes">
 Classes
 </h3>
-      <h4><a class="xref" href="Bodu.Text.Configuration.ConfigurationDiagnostic.html">ConfigurationDiagnostic</a></h4>
-      <section><p>Represents a single diagnostic — informational message, warning, or recoverable error — produced while reading or
+    <dl class="jumplist">
+      <dt><a class="xref" href="Bodu.Text.Configuration.ConfigurationDiagnostic.html">ConfigurationDiagnostic</a></dt>
+      <dd><p>Represents a single diagnostic — informational message, warning, or recoverable error — produced while reading or
 resolving a configuration document.</p>
-</section>
-      <h4><a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.html">ConfigurationDocument</a></h4>
-      <section><p>Represents a parsed Bodu Text Configuration document and provides the profile-aware entry points for parsing,
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.html">ConfigurationDocument</a></dt>
+      <dd><p>Represents a parsed Bodu Text Configuration document and provides the profile-aware entry points for parsing,
 loading, and saving such documents. It inherits the read-only INI model from <a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.html">IniDocumentBase</a> (global
 section, named sections, lookup) and adds Bodu-specific behaviour — profile presets, inline-comment-mode handling,
 diagnostic routing, and round-trip support — on top of the shared INI infrastructure.</p>
-</section>
-      <h4><a class="xref" href="Bodu.Text.Configuration.ConfigurationExtensions.html">ConfigurationExtensions</a></h4>
-      <section><p>Extension methods that layer Bodu Text Configuration behaviour (path-aware resolution and dotted-to-colon key
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Bodu.Text.Configuration.ConfigurationExtensions.html">ConfigurationExtensions</a></dt>
+      <dd><p>Extension methods that layer Bodu Text Configuration behaviour (path-aware resolution and dotted-to-colon key
 mapping) onto the underlying <a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.html">IniDocumentBase</a> and <a class="xref" href="Bodu.Text.Configuration.IniEntry.html">IniEntry</a> primitives.</p>
-</section>
-      <h4><a class="xref" href="Bodu.Text.Configuration.ConfigurationKeyOptions.html">ConfigurationKeyOptions</a></h4>
-      <section><p>Controls how raw configuration keys are split into segments and mapped to the colon-delimited logical key shape used
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Bodu.Text.Configuration.ConfigurationKeyOptions.html">ConfigurationKeyOptions</a></dt>
+      <dd><p>Controls how raw configuration keys are split into segments and mapped to the colon-delimited logical key shape used
 by the resolved view and the Microsoft.Extensions.Configuration bridge.</p>
-</section>
-      <h4><a class="xref" href="Bodu.Text.Configuration.ConfigurationParseException.html">ConfigurationParseException</a></h4>
-      <section><p>The exception raised when a configuration document cannot be parsed. Exposes the originating diagnostic (
-<a class="xref" href="Bodu.Text.Configuration.ConfigurationParseException.Diagnostic.html#Bodu_Text_Configuration_ConfigurationParseException_Diagnostic">Diagnostic</a>) together with any additional diagnostics gathered before the failure.</p>
-</section>
-      <h4><a class="xref" href="Bodu.Text.Configuration.ConfigurationParseOptions.html">ConfigurationParseOptions</a></h4>
-      <section><p>Controls how a configuration document is parsed: comment handling, duplicate handling, diagnostic routing, length
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Bodu.Text.Configuration.ConfigurationParseException.html">ConfigurationParseException</a></dt>
+      <dd><p>The exception raised when a configuration document cannot be parsed. Exposes the originating diagnostic (
+<a class="xref" href="Bodu.Text.Configuration.ConfigurationParseException.html#Bodu_Text_Configuration_ConfigurationParseException_Diagnostic">Diagnostic</a>) together with any additional diagnostics gathered before the failure.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Bodu.Text.Configuration.ConfigurationParseOptions.html">ConfigurationParseOptions</a></dt>
+      <dd><p>Controls how a configuration document is parsed: comment handling, duplicate handling, diagnostic routing, length
 limits, and the key mapping options.</p>
-</section>
-      <h4><a class="xref" href="Bodu.Text.Configuration.ConfigurationParseResult.html">ConfigurationParseResult</a></h4>
-      <section><p>Carries the outcome of a configuration parse: the populated <a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.html">ConfigurationDocument</a> and any diagnostics
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Bodu.Text.Configuration.ConfigurationParseResult.html">ConfigurationParseResult</a></dt>
+      <dd><p>Carries the outcome of a configuration parse: the populated <a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.html">ConfigurationDocument</a> and any diagnostics
 collected during the parse.</p>
-</section>
-      <h4><a class="xref" href="Bodu.Text.Configuration.ConfigurationPattern.html">ConfigurationPattern</a></h4>
-      <section><p>A compiled EditorConfig-style glob pattern that matches forward-slash-delimited paths.</p>
-</section>
-      <h4><a class="xref" href="Bodu.Text.Configuration.ConfigurationResolveOptions.html">ConfigurationResolveOptions</a></h4>
-      <section><p>Controls how a <a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.html">ConfigurationDocument</a> is projected into a <a class="xref" href="Bodu.Text.Configuration.ConfigurationView.html">ConfigurationView</a> for a
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Bodu.Text.Configuration.ConfigurationPattern.html">ConfigurationPattern</a></dt>
+      <dd><p>A compiled EditorConfig-style glob pattern that matches forward-slash-delimited paths.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Bodu.Text.Configuration.ConfigurationResolveOptions.html">ConfigurationResolveOptions</a></dt>
+      <dd><p>Controls how a <a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.html">ConfigurationDocument</a> is projected into a <a class="xref" href="Bodu.Text.Configuration.ConfigurationView.html">ConfigurationView</a> for a
 specific target path.</p>
-</section>
-      <h4><a class="xref" href="Bodu.Text.Configuration.ConfigurationResolvedEntry.html">ConfigurationResolvedEntry</a></h4>
-      <section><p>Carries the origin metadata for a single key/value pair in a <a class="xref" href="Bodu.Text.Configuration.ConfigurationView.html">ConfigurationView</a> — which section &quot;won&quot;
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Bodu.Text.Configuration.ConfigurationResolvedEntry.html">ConfigurationResolvedEntry</a></dt>
+      <dd><p>Carries the origin metadata for a single key/value pair in a <a class="xref" href="Bodu.Text.Configuration.ConfigurationView.html">ConfigurationView</a> — which section &quot;won&quot;
 for the key, which line of which file supplied the value, and the resolved key path itself.</p>
-</section>
-      <h4><a class="xref" href="Bodu.Text.Configuration.ConfigurationView.html">ConfigurationView</a></h4>
-      <section><p>Represents the resolved snapshot of a configuration document for a specific target path: a flattened dictionary of
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Bodu.Text.Configuration.ConfigurationView.html">ConfigurationView</a></dt>
+      <dd><p>Represents the resolved snapshot of a configuration document for a specific target path: a flattened dictionary of
 configuration keys to their effective values, computed by layering preamble and matching sections in source order.</p>
-</section>
-      <h4><a class="xref" href="Bodu.Text.Configuration.ConfigurationWriteOptions.html">ConfigurationWriteOptions</a></h4>
-      <section><p>Controls how a configuration document is emitted by
-<a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.Save.html#Bodu_Text_Configuration_ConfigurationDocument_Save_Bodu_Text_Configuration_IniDocumentBase_System_String_Bodu_Text_Configuration_ConfigurationWriteOptions_">Save(IniDocumentBase, string, ConfigurationWriteOptions?)</a> and related methods.</p>
-</section>
-      <h4><a class="xref" href="Bodu.Text.Configuration.IniDocument.html">IniDocument</a></h4>
-      <section><p>Represents a mutable INI-style document, providing access to the global section and all named sections, together
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Bodu.Text.Configuration.ConfigurationWriteOptions.html">ConfigurationWriteOptions</a></dt>
+      <dd><p>Controls how a configuration document is emitted by
+<a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.html#Bodu_Text_Configuration_ConfigurationDocument_Save_Bodu_Text_Configuration_IniDocumentBase_System_String_Bodu_Text_Configuration_ConfigurationWriteOptions_">Save(IniDocumentBase, string, ConfigurationWriteOptions?)</a> and related methods.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Bodu.Text.Configuration.IniDocument.html">IniDocument</a></dt>
+      <dd><p>Represents a mutable INI-style document, providing access to the global section and all named sections, together
 with a mutation surface for authoring documents programmatically.</p>
-</section>
-      <h4><a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.html">IniDocumentBase</a></h4>
-      <section><p>Provides the shared, read-oriented model for an INI-style document: a global section plus an ordered set of named
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.html">IniDocumentBase</a></dt>
+      <dd><p>Provides the shared, read-oriented model for an INI-style document: a global section plus an ordered set of named
 sections, with name-based lookup. Serves as the common base for the mutable <a class="xref" href="Bodu.Text.Configuration.IniDocument.html">IniDocument</a> and for
 configuration-layer document types that expose only a read surface.</p>
-</section>
-      <h4><a class="xref" href="Bodu.Text.Configuration.IniEntry.html">IniEntry</a></h4>
-      <section><p>Represents a single key/value entry within an <a class="xref" href="Bodu.Text.Configuration.IniSection.html">IniSection</a>. The key and value are immutable data;
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Bodu.Text.Configuration.IniEntry.html">IniEntry</a></dt>
+      <dd><p>Represents a single key/value entry within an <a class="xref" href="Bodu.Text.Configuration.IniSection.html">IniSection</a>. The key and value are immutable data;
 callers assemble documents programmatically through the owning <a class="xref" href="Bodu.Text.Configuration.IniSection.html">IniSection</a> and may edit comment trivia
 before writing the document back out.</p>
-</section>
-      <h4><a class="xref" href="Bodu.Text.Configuration.IniSection.html">IniSection</a></h4>
-      <section><p>Represents a single <code>[section]</code> block in an INI-style configuration document, exposing its ordered entries and
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Bodu.Text.Configuration.IniSection.html">IniSection</a></dt>
+      <dd><p>Represents a single <code>[section]</code> block in an INI-style configuration document, exposing its ordered entries and
 providing O(1) key lookup with optional typed value conversion.</p>
-</section>
+</dd>
+    </dl>
     <h3 id="structs">
 Structs
 </h3>
-      <h4><a class="xref" href="Bodu.Text.Configuration.ConfigurationKey.html">ConfigurationKey</a></h4>
-      <section><p>Represents a configuration key in both its raw, file-level form and its colon-delimited logical form used by the
+    <dl class="jumplist">
+      <dt><a class="xref" href="Bodu.Text.Configuration.ConfigurationKey.html">ConfigurationKey</a></dt>
+      <dd><p>Represents a configuration key in both its raw, file-level form and its colon-delimited logical form used by the
 resolved view and by <code>Microsoft.Extensions.Configuration</code>.</p>
-</section>
-      <h4><a class="xref" href="Bodu.Text.Configuration.ConfigurationSourceLocation.html">ConfigurationSourceLocation</a></h4>
-      <section><p>Identifies a specific position in a configuration source document so that diagnostics, exceptions, and model
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Bodu.Text.Configuration.ConfigurationSourceLocation.html">ConfigurationSourceLocation</a></dt>
+      <dd><p>Identifies a specific position in a configuration source document so that diagnostics, exceptions, and model
 elements can point back to the originating line and column.</p>
-</section>
-      <h4><a class="xref" href="Bodu.Text.Configuration.IniComment.html">IniComment</a></h4>
-      <section><p>Represents a single comment line preserved as trivia within an <a class="xref" href="Bodu.Text.Configuration.IniDocument.html">IniDocument</a>.</p>
-</section>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Bodu.Text.Configuration.IniComment.html">IniComment</a></dt>
+      <dd><p>Represents a single comment line preserved as trivia within an <a class="xref" href="Bodu.Text.Configuration.IniDocument.html">IniDocument</a>.</p>
+</dd>
+    </dl>
     <h3 id="enums">
 Enums
 </h3>
-      <h4><a class="xref" href="Bodu.Text.Configuration.ConfigurationDiagnosticCode.html">ConfigurationDiagnosticCode</a></h4>
-      <section><p>Identifies a specific class of <a class="xref" href="Bodu.Text.Configuration.ConfigurationDiagnostic.html">ConfigurationDiagnostic</a>. Codes are stable so that consumers may
+    <dl class="jumplist">
+      <dt><a class="xref" href="Bodu.Text.Configuration.ConfigurationDiagnosticCode.html">ConfigurationDiagnosticCode</a></dt>
+      <dd><p>Identifies a specific class of <a class="xref" href="Bodu.Text.Configuration.ConfigurationDiagnostic.html">ConfigurationDiagnostic</a>. Codes are stable so that consumers may
 suppress, filter, or test for particular conditions without inspecting the message text.</p>
-</section>
-      <h4><a class="xref" href="Bodu.Text.Configuration.ConfigurationDiagnosticMode.html">ConfigurationDiagnosticMode</a></h4>
-      <section><p>Controls how the reader reacts to recoverable diagnostics — either throwing immediately, gathering them on the
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Bodu.Text.Configuration.ConfigurationDiagnosticMode.html">ConfigurationDiagnosticMode</a></dt>
+      <dd><p>Controls how the reader reacts to recoverable diagnostics — either throwing immediately, gathering them on the
 resulting document, or silently ignoring them.</p>
-</section>
-      <h4><a class="xref" href="Bodu.Text.Configuration.ConfigurationDiagnosticSeverity.html">ConfigurationDiagnosticSeverity</a></h4>
-      <section><p>Classifies the severity of a <a class="xref" href="Bodu.Text.Configuration.ConfigurationDiagnostic.html">ConfigurationDiagnostic</a> emitted while reading or resolving a
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Bodu.Text.Configuration.ConfigurationDiagnosticSeverity.html">ConfigurationDiagnosticSeverity</a></dt>
+      <dd><p>Classifies the severity of a <a class="xref" href="Bodu.Text.Configuration.ConfigurationDiagnostic.html">ConfigurationDiagnostic</a> emitted while reading or resolving a
 configuration document.</p>
-</section>
-      <h4><a class="xref" href="Bodu.Text.Configuration.ConfigurationInlineCommentMode.html">ConfigurationInlineCommentMode</a></h4>
-      <section><p>Controls how the reader treats <code>#</code> or <code>;</code> characters that appear after a property value.</p>
-</section>
-      <h4><a class="xref" href="Bodu.Text.Configuration.ConfigurationKeyMapping.html">ConfigurationKeyMapping</a></h4>
-      <section><p>Selects how raw configuration keys are mapped to the colon-delimited logical keys used by the resolved view and by
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Bodu.Text.Configuration.ConfigurationInlineCommentMode.html">ConfigurationInlineCommentMode</a></dt>
+      <dd><p>Controls how the reader treats <code>#</code> or <code>;</code> characters that appear after a property value.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Bodu.Text.Configuration.ConfigurationKeyMapping.html">ConfigurationKeyMapping</a></dt>
+      <dd><p>Selects how raw configuration keys are mapped to the colon-delimited logical keys used by the resolved view and by
 <code>Microsoft.Extensions.Configuration</code>.</p>
-</section>
-      <h4><a class="xref" href="Bodu.Text.Configuration.ConfigurationMissingPathRootMode.html">ConfigurationMissingPathRootMode</a></h4>
-      <section><p>Selects how <a class="xref" href="Bodu.Text.Configuration.ConfigurationExtensions.Resolve.html#Bodu_Text_Configuration_ConfigurationExtensions_Resolve_Bodu_Text_Configuration_IniDocumentBase_System_String_Bodu_Text_Configuration_ConfigurationResolveOptions_">Resolve(IniDocumentBase, string?, ConfigurationResolveOptions?)</a>
-reacts when the document was parsed from a string and no <a class="xref" href="Bodu.Text.Configuration.ConfigurationResolveOptions.PathRoot.html#Bodu_Text_Configuration_ConfigurationResolveOptions_PathRoot">PathRoot</a> was
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Bodu.Text.Configuration.ConfigurationMissingPathRootMode.html">ConfigurationMissingPathRootMode</a></dt>
+      <dd><p>Selects how <a class="xref" href="Bodu.Text.Configuration.ConfigurationExtensions.html#Bodu_Text_Configuration_ConfigurationExtensions_Resolve_Bodu_Text_Configuration_IniDocumentBase_System_String_Bodu_Text_Configuration_ConfigurationResolveOptions_">Resolve(IniDocumentBase, string?, ConfigurationResolveOptions?)</a>
+reacts when the document was parsed from a string and no <a class="xref" href="Bodu.Text.Configuration.ConfigurationResolveOptions.html#Bodu_Text_Configuration_ConfigurationResolveOptions_PathRoot">PathRoot</a> was
 supplied.</p>
-</section>
-      <h4><a class="xref" href="Bodu.Text.Configuration.ConfigurationProfile.html">ConfigurationProfile</a></h4>
-      <section><p>Selects one of the predefined behaviour profiles that govern how a configuration document is parsed, resolved, and
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Bodu.Text.Configuration.ConfigurationProfile.html">ConfigurationProfile</a></dt>
+      <dd><p>Selects one of the predefined behaviour profiles that govern how a configuration document is parsed, resolved, and
 re-emitted.</p>
-</section>
-      <h4><a class="xref" href="Bodu.Text.Configuration.ConfigurationSectionHeaderMode.html">ConfigurationSectionHeaderMode</a></h4>
-      <section><p>Controls how the reader treats non-whitespace text after the closing <code>]</code> of a section header.</p>
-</section>
-      <h4><a class="xref" href="Bodu.Text.Configuration.ConfigurationUnsetValueMode.html">ConfigurationUnsetValueMode</a></h4>
-      <section><p>Selects how the resolver treats the literal value <code>unset</code>, which EditorConfig defines as a sentinel that
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Bodu.Text.Configuration.ConfigurationSectionHeaderMode.html">ConfigurationSectionHeaderMode</a></dt>
+      <dd><p>Controls how the reader treats non-whitespace text after the closing <code>]</code> of a section header.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Bodu.Text.Configuration.ConfigurationUnsetValueMode.html">ConfigurationUnsetValueMode</a></dt>
+      <dd><p>Selects how the resolver treats the literal value <code>unset</code>, which EditorConfig defines as a sentinel that
 removes the effect of any previously set property for the matching path.</p>
-</section>
-      <h4><a class="xref" href="Bodu.Text.Configuration.DuplicateKeyPolicy.html">DuplicateKeyPolicy</a></h4>
-      <section><p>Specifies how the configuration parser resolves a key that appears more than once within the same section.</p>
-</section>
-      <h4><a class="xref" href="Bodu.Text.Configuration.IniDuplicateSectionBehavior.html">IniDuplicateSectionBehavior</a></h4>
-      <section><p>Defines how the configuration parser resolves a section name that appears more than once in the source.</p>
-</section>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Bodu.Text.Configuration.DuplicateKeyPolicy.html">DuplicateKeyPolicy</a></dt>
+      <dd><p>Specifies how the configuration parser resolves a key that appears more than once within the same section.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Bodu.Text.Configuration.IniDuplicateSectionBehavior.html">IniDuplicateSectionBehavior</a></dt>
+      <dd><p>Defines how the configuration parser resolves a section name that appears more than once in the source.</p>
+</dd>
+    </dl>
 
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 302e395 · Built: 2026-09-29 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 1e0dd9a · Built: 2026-09-29 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

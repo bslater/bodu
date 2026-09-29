@@ -1,98 +1,126 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
       <title>Class GraphAlgorithms | BODU </title>
-      <meta name="viewport" content="width=device-width">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class GraphAlgorithms | BODU ">
-    
-    <meta name="description" content="Provides traversal, ordering, connectivity, and shortest-path algorithms over .">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      
+      <meta name="description" content="Provides traversal, ordering, connectivity, and shortest-path algorithms over .">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/new/master/apiSpec/new?filename=Bodu_Collections_Generic_Graphs_GraphAlgorithms.md&amp;value=---%0Auid%3A%20Bodu.Collections.Generic.Graphs.GraphAlgorithms%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Collections.Generic.Graphs.GraphAlgorithms">
+
+        <article data-uid="Bodu.Collections.Generic.Graphs.GraphAlgorithms">
 
 
 
-  <h1 id="Bodu_Collections_Generic_Graphs_GraphAlgorithms" data-uid="Bodu.Collections.Generic.Graphs.GraphAlgorithms" class="text-break">Class GraphAlgorithms</h1>
-  <div class="markdown level0 summary"><p>Provides traversal, ordering, connectivity, and shortest-path algorithms over <a class="xref" href="Bodu.Collections.Generic.Graphs.Graph-1.html">Graph&lt;T&gt;</a>.</p>
-</div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><span class="xref">GraphAlgorithms</span></div>
+  <h1 id="Bodu_Collections_Generic_Graphs_GraphAlgorithms" data-uid="Bodu.Collections.Generic.Graphs.GraphAlgorithms" class="text-break">
+Class GraphAlgorithms  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Collections/src/Collections.Generic.Graphs/GraphAlgorithms.Traversal.cs/#L9"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Collections.html">Collections</a>.<a class="xref" href="Bodu.Collections.Generic.html">Generic</a>.<a class="xref" href="Bodu.Collections.Generic.Graphs.html">Graphs</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Collections.dll</dd></dl>
   </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+  <div class="markdown summary"><p>Provides traversal, ordering, connectivity, and shortest-path algorithms over <a class="xref" href="Bodu.Collections.Generic.Graphs.Graph-1.html">Graph&lt;T&gt;</a>.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class GraphAlgorithms</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">GraphAlgorithms</span></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
@@ -114,132 +142,582 @@
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
-  </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Collections</span>.<a class="xref" href="Bodu.Collections.Generic.html">Generic</a>.<a class="xref" href="Bodu.Collections.Generic.Graphs.html">Graphs</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Collections.dll</h6>
-  <h5 id="Bodu_Collections_Generic_Graphs_GraphAlgorithms_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static class GraphAlgorithms</code></pre>
-  </div>
-  <h5 id="Bodu_Collections_Generic_Graphs_GraphAlgorithms_remarks"><strong>Remarks</strong></h5>
+  </dd></dl>
+
+
+
+
+  <h2 id="Bodu_Collections_Generic_Graphs_GraphAlgorithms_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>The algorithms reuse the library's existing primitives — <a class="xref" href="Bodu.Collections.Generic.Deque-1.html">Deque&lt;T&gt;</a> for breadth-first frontiers and
 <a class="xref" href="Bodu.Collections.Generic.IndexedPriorityQueue-2.html">IndexedPriorityQueue&lt;TElement, TPriority&gt;</a> for Dijkstra relaxation — and evaluate iteratively so they
 do not overflow the stack on large or deep graphs.</p>
 </div>
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Collections_Generic_Graphs_GraphAlgorithms_BreadthFirstSearch__1_Bodu_Collections_Generic_Graphs_IReadOnlyGraph___0____0_" data-uid="Bodu.Collections.Generic.Graphs.GraphAlgorithms.BreadthFirstSearch``1(Bodu.Collections.Generic.Graphs.IReadOnlyGraph{``0},``0)">
-          <a class="xref" href="Bodu.Collections.Generic.Graphs.GraphAlgorithms.BreadthFirstSearch.html#Bodu_Collections_Generic_Graphs_GraphAlgorithms_BreadthFirstSearch__1_Bodu_Collections_Generic_Graphs_IReadOnlyGraph___0____0_">BreadthFirstSearch&lt;T&gt;(IReadOnlyGraph&lt;T&gt;, T)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Enumerates the vertices reachable from the specified source in breadth-first order.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Collections_Generic_Graphs_GraphAlgorithms_ConnectedComponents__1_Bodu_Collections_Generic_Graphs_IReadOnlyGraph___0__" data-uid="Bodu.Collections.Generic.Graphs.GraphAlgorithms.ConnectedComponents``1(Bodu.Collections.Generic.Graphs.IReadOnlyGraph{``0})">
-          <a class="xref" href="Bodu.Collections.Generic.Graphs.GraphAlgorithms.ConnectedComponents.html#Bodu_Collections_Generic_Graphs_GraphAlgorithms_ConnectedComponents__1_Bodu_Collections_Generic_Graphs_IReadOnlyGraph___0__">ConnectedComponents&lt;T&gt;(IReadOnlyGraph&lt;T&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Groups the vertices of the graph into connected components, treating every edge as undirected.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Collections_Generic_Graphs_GraphAlgorithms_DepthFirstSearch__1_Bodu_Collections_Generic_Graphs_IReadOnlyGraph___0____0_" data-uid="Bodu.Collections.Generic.Graphs.GraphAlgorithms.DepthFirstSearch``1(Bodu.Collections.Generic.Graphs.IReadOnlyGraph{``0},``0)">
-          <a class="xref" href="Bodu.Collections.Generic.Graphs.GraphAlgorithms.DepthFirstSearch.html#Bodu_Collections_Generic_Graphs_GraphAlgorithms_DepthFirstSearch__1_Bodu_Collections_Generic_Graphs_IReadOnlyGraph___0____0_">DepthFirstSearch&lt;T&gt;(IReadOnlyGraph&lt;T&gt;, T)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Enumerates the vertices reachable from the specified source in depth-first order.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Collections_Generic_Graphs_GraphAlgorithms_ShortestPathLengths__1_Bodu_Collections_Generic_Graphs_IReadOnlyWeightedGraph___0____0_" data-uid="Bodu.Collections.Generic.Graphs.GraphAlgorithms.ShortestPathLengths``1(Bodu.Collections.Generic.Graphs.IReadOnlyWeightedGraph{``0},``0)">
-          <a class="xref" href="Bodu.Collections.Generic.Graphs.GraphAlgorithms.ShortestPathLengths.html#Bodu_Collections_Generic_Graphs_GraphAlgorithms_ShortestPathLengths__1_Bodu_Collections_Generic_Graphs_IReadOnlyWeightedGraph___0____0_">ShortestPathLengths&lt;T&gt;(IReadOnlyWeightedGraph&lt;T&gt;, T)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Computes the shortest distance from the specified source to every reachable vertex using Dijkstra's algorithm.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Collections_Generic_Graphs_GraphAlgorithms_ShortestPath__1_Bodu_Collections_Generic_Graphs_IReadOnlyWeightedGraph___0____0___0_" data-uid="Bodu.Collections.Generic.Graphs.GraphAlgorithms.ShortestPath``1(Bodu.Collections.Generic.Graphs.IReadOnlyWeightedGraph{``0},``0,``0)">
-          <a class="xref" href="Bodu.Collections.Generic.Graphs.GraphAlgorithms.ShortestPath.html#Bodu_Collections_Generic_Graphs_GraphAlgorithms_ShortestPath__1_Bodu_Collections_Generic_Graphs_IReadOnlyWeightedGraph___0____0___0_">ShortestPath&lt;T&gt;(IReadOnlyWeightedGraph&lt;T&gt;, T, T)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Computes the shortest path between two vertices using Dijkstra's algorithm over the non-negative edge weights.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Collections_Generic_Graphs_GraphAlgorithms_TopologicalSort__1_Bodu_Collections_Generic_Graphs_IReadOnlyGraph___0__" data-uid="Bodu.Collections.Generic.Graphs.GraphAlgorithms.TopologicalSort``1(Bodu.Collections.Generic.Graphs.IReadOnlyGraph{``0})">
-          <a class="xref" href="Bodu.Collections.Generic.Graphs.GraphAlgorithms.TopologicalSort.html#Bodu_Collections_Generic_Graphs_GraphAlgorithms_TopologicalSort__1_Bodu_Collections_Generic_Graphs_IReadOnlyGraph___0__">TopologicalSort&lt;T&gt;(IReadOnlyGraph&lt;T&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Produces a topological ordering of the vertices of a directed acyclic graph using Kahn's algorithm.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Collections_Generic_Graphs_GraphAlgorithms_TryShortestPath__1_Bodu_Collections_Generic_Graphs_IReadOnlyWeightedGraph___0____0___0_" data-uid="Bodu.Collections.Generic.Graphs.GraphAlgorithms.TryShortestPath``1(Bodu.Collections.Generic.Graphs.IReadOnlyWeightedGraph{``0},``0,``0)">
-          <a class="xref" href="Bodu.Collections.Generic.Graphs.GraphAlgorithms.TryShortestPath.html#Bodu_Collections_Generic_Graphs_GraphAlgorithms_TryShortestPath__1_Bodu_Collections_Generic_Graphs_IReadOnlyWeightedGraph___0____0___0_">TryShortestPath&lt;T&gt;(IReadOnlyWeightedGraph&lt;T&gt;, T, T)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to compute the shortest path between two vertices using Dijkstra's algorithm, reporting the path, its
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Collections_Generic_Graphs_GraphAlgorithms_BreadthFirstSearch_" data-uid="Bodu.Collections.Generic.Graphs.GraphAlgorithms.BreadthFirstSearch*"></a>
+
+  <h3 id="Bodu_Collections_Generic_Graphs_GraphAlgorithms_BreadthFirstSearch__1_Bodu_Collections_Generic_Graphs_IReadOnlyGraph___0____0_" data-uid="Bodu.Collections.Generic.Graphs.GraphAlgorithms.BreadthFirstSearch``1(Bodu.Collections.Generic.Graphs.IReadOnlyGraph{``0},``0)">
+  BreadthFirstSearch&lt;T&gt;(IReadOnlyGraph&lt;T&gt;, T)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Collections/src/Collections.Generic.Graphs/GraphAlgorithms.Traversal.cs/#L35"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Enumerates the vertices reachable from the specified source in breadth-first order.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;T&gt; BreadthFirstSearch&lt;T&gt;(IReadOnlyGraph&lt;T&gt; graph, T source) where T : notnull</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>graph</code> <a class="xref" href="Bodu.Collections.Generic.Graphs.IReadOnlyGraph-1.html">IReadOnlyGraph</a>&lt;T&gt;</dt>
+    <dd><p>The graph to traverse.</p>
+</dd>
+    <dt><code>source</code> <span class="xref">T</span></dt>
+    <dd><p>The vertex at which traversal starts.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;T&gt;</dt>
+    <dd><p>A lazily evaluated sequence of reachable vertices, beginning with <code class="paramref">source</code>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The vertex type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Generic_Graphs_GraphAlgorithms_BreadthFirstSearch__1_Bodu_Collections_Generic_Graphs_IReadOnlyGraph___0____0__examples">Examples</h4>
+  <pre><code class="lang-csharp">var graph = new Graph&lt;int&gt;(GraphKind.Directed);
+graph.AddEdge(1, 2);
+graph.AddEdge(1, 3);
+graph.AddEdge(2, 4);
+
+// Breadth-first visits the source, then its neighbors, then theirs: 1, 2, 3, 4.
+var order = GraphAlgorithms.BreadthFirstSearch(graph, 1).ToList();</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">graph</code> or <code class="paramref">source</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">source</code> is not in the graph.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Collections_Generic_Graphs_GraphAlgorithms_ConnectedComponents_" data-uid="Bodu.Collections.Generic.Graphs.GraphAlgorithms.ConnectedComponents*"></a>
+
+  <h3 id="Bodu_Collections_Generic_Graphs_GraphAlgorithms_ConnectedComponents__1_Bodu_Collections_Generic_Graphs_IReadOnlyGraph___0__" data-uid="Bodu.Collections.Generic.Graphs.GraphAlgorithms.ConnectedComponents``1(Bodu.Collections.Generic.Graphs.IReadOnlyGraph{``0})">
+  ConnectedComponents&lt;T&gt;(IReadOnlyGraph&lt;T&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Collections/src/Collections.Generic.Graphs/GraphAlgorithms.ConnectedComponents.cs/#L36"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Groups the vertices of the graph into connected components, treating every edge as undirected.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IReadOnlyList&lt;IReadOnlyList&lt;T&gt;&gt; ConnectedComponents&lt;T&gt;(IReadOnlyGraph&lt;T&gt; graph) where T : notnull</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>graph</code> <a class="xref" href="Bodu.Collections.Generic.Graphs.IReadOnlyGraph-1.html">IReadOnlyGraph</a>&lt;T&gt;</dt>
+    <dd><p>The graph to partition.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;T&gt;&gt;</dt>
+    <dd><p>A list of components, each containing the vertices that are mutually reachable.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The vertex type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Generic_Graphs_GraphAlgorithms_ConnectedComponents__1_Bodu_Collections_Generic_Graphs_IReadOnlyGraph___0___examples">Examples</h4>
+  <pre><code class="lang-csharp">var graph = new Graph&lt;int&gt;(GraphKind.Undirected);
+graph.AddEdge(1, 2);
+graph.AddEdge(2, 3);
+graph.AddEdge(10, 11);
+graph.AddVertex(20);   // isolated vertex
+
+// Three components: { 1, 2, 3 }, { 10, 11 }, { 20 }.
+var components = GraphAlgorithms.ConnectedComponents(graph);</code></pre>
+
+
+  <h4 class="section" id="Bodu_Collections_Generic_Graphs_GraphAlgorithms_ConnectedComponents__1_Bodu_Collections_Generic_Graphs_IReadOnlyGraph___0___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>For a directed graph this yields the weakly connected components — vertices are grouped without regard to edge
+direction. The partition is computed with a <a class="xref" href="Bodu.Collections.Generic.Graphs.DisjointSet-1.html">DisjointSet&lt;T&gt;</a> over the graph's edges.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">graph</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Collections_Generic_Graphs_GraphAlgorithms_DepthFirstSearch_" data-uid="Bodu.Collections.Generic.Graphs.GraphAlgorithms.DepthFirstSearch*"></a>
+
+  <h3 id="Bodu_Collections_Generic_Graphs_GraphAlgorithms_DepthFirstSearch__1_Bodu_Collections_Generic_Graphs_IReadOnlyGraph___0____0_" data-uid="Bodu.Collections.Generic.Graphs.GraphAlgorithms.DepthFirstSearch``1(Bodu.Collections.Generic.Graphs.IReadOnlyGraph{``0},``0)">
+  DepthFirstSearch&lt;T&gt;(IReadOnlyGraph&lt;T&gt;, T)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Collections/src/Collections.Generic.Graphs/GraphAlgorithms.Traversal.cs/#L69"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Enumerates the vertices reachable from the specified source in depth-first order.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;T&gt; DepthFirstSearch&lt;T&gt;(IReadOnlyGraph&lt;T&gt; graph, T source) where T : notnull</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>graph</code> <a class="xref" href="Bodu.Collections.Generic.Graphs.IReadOnlyGraph-1.html">IReadOnlyGraph</a>&lt;T&gt;</dt>
+    <dd><p>The graph to traverse.</p>
+</dd>
+    <dt><code>source</code> <span class="xref">T</span></dt>
+    <dd><p>The vertex at which traversal starts.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;T&gt;</dt>
+    <dd><p>A lazily evaluated sequence of reachable vertices, beginning with <code class="paramref">source</code>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The vertex type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Generic_Graphs_GraphAlgorithms_DepthFirstSearch__1_Bodu_Collections_Generic_Graphs_IReadOnlyGraph___0____0__examples">Examples</h4>
+  <pre><code class="lang-csharp">var graph = new Graph&lt;int&gt;(GraphKind.Directed);
+graph.AddEdge(1, 2);
+graph.AddEdge(1, 3);
+graph.AddEdge(2, 4);
+
+// Depth-first dives down one branch before backtracking, e.g. 1, 3, 2, 4.
+var order = GraphAlgorithms.DepthFirstSearch(graph, 1).ToList();</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">graph</code> or <code class="paramref">source</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">source</code> is not in the graph.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Collections_Generic_Graphs_GraphAlgorithms_ShortestPathLengths_" data-uid="Bodu.Collections.Generic.Graphs.GraphAlgorithms.ShortestPathLengths*"></a>
+
+  <h3 id="Bodu_Collections_Generic_Graphs_GraphAlgorithms_ShortestPathLengths__1_Bodu_Collections_Generic_Graphs_IReadOnlyWeightedGraph___0____0_" data-uid="Bodu.Collections.Generic.Graphs.GraphAlgorithms.ShortestPathLengths``1(Bodu.Collections.Generic.Graphs.IReadOnlyWeightedGraph{``0},``0)">
+  ShortestPathLengths&lt;T&gt;(IReadOnlyWeightedGraph&lt;T&gt;, T)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Collections/src/Collections.Generic.Graphs/GraphAlgorithms.ShortestPath.cs/#L136"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Computes the shortest distance from the specified source to every reachable vertex using Dijkstra's algorithm.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IReadOnlyDictionary&lt;T, double&gt; ShortestPathLengths&lt;T&gt;(IReadOnlyWeightedGraph&lt;T&gt; graph, T source) where T : notnull</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>graph</code> <a class="xref" href="Bodu.Collections.Generic.Graphs.IReadOnlyWeightedGraph-1.html">IReadOnlyWeightedGraph</a>&lt;T&gt;</dt>
+    <dd><p>The graph to search.</p>
+</dd>
+    <dt><code>source</code> <span class="xref">T</span></dt>
+    <dd><p>The starting vertex.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlydictionary-2">IReadOnlyDictionary</a>&lt;T, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a>&gt;</dt>
+    <dd><p>A map from each reachable vertex to its shortest distance from <code class="paramref">source</code>. Unreachable vertices
+are omitted.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The vertex type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Generic_Graphs_GraphAlgorithms_ShortestPathLengths__1_Bodu_Collections_Generic_Graphs_IReadOnlyWeightedGraph___0____0__examples">Examples</h4>
+  <pre><code class="lang-csharp">var graph = new Graph&lt;string&gt;(GraphKind.Directed);
+graph.AddEdge("A", "B", 1);
+graph.AddEdge("B", "C", 2);
+
+// Distance from A to every reachable vertex: { A: 0, B: 1, C: 3 }.
+IReadOnlyDictionary&lt;string, double&gt; distances = GraphAlgorithms.ShortestPathLengths(graph, "A");</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">graph</code> or <code class="paramref">source</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">source</code> is not in the graph, or a negative edge weight is encountered during the search
+(Dijkstra's algorithm requires non-negative weights).</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Collections_Generic_Graphs_GraphAlgorithms_ShortestPath_" data-uid="Bodu.Collections.Generic.Graphs.GraphAlgorithms.ShortestPath*"></a>
+
+  <h3 id="Bodu_Collections_Generic_Graphs_GraphAlgorithms_ShortestPath__1_Bodu_Collections_Generic_Graphs_IReadOnlyWeightedGraph___0____0___0_" data-uid="Bodu.Collections.Generic.Graphs.GraphAlgorithms.ShortestPath``1(Bodu.Collections.Generic.Graphs.IReadOnlyWeightedGraph{``0},``0,``0)">
+  ShortestPath&lt;T&gt;(IReadOnlyWeightedGraph&lt;T&gt;, T, T)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Collections/src/Collections.Generic.Graphs/GraphAlgorithms.ShortestPath.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Computes the shortest path between two vertices using Dijkstra's algorithm over the non-negative edge weights.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IReadOnlyList&lt;T&gt; ShortestPath&lt;T&gt;(IReadOnlyWeightedGraph&lt;T&gt; graph, T source, T target) where T : notnull</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>graph</code> <a class="xref" href="Bodu.Collections.Generic.Graphs.IReadOnlyWeightedGraph-1.html">IReadOnlyWeightedGraph</a>&lt;T&gt;</dt>
+    <dd><p>The graph to search.</p>
+</dd>
+    <dt><code>source</code> <span class="xref">T</span></dt>
+    <dd><p>The starting vertex.</p>
+</dd>
+    <dt><code>target</code> <span class="xref">T</span></dt>
+    <dd><p>The destination vertex.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;T&gt;</dt>
+    <dd><p>The vertices of the shortest path from <code class="paramref">source</code> to <code class="paramref">target</code> inclusive, or an
+empty list when no path exists.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The vertex type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Generic_Graphs_GraphAlgorithms_ShortestPath__1_Bodu_Collections_Generic_Graphs_IReadOnlyWeightedGraph___0____0___0__examples">Examples</h4>
+  <pre><code class="lang-csharp">var graph = new Graph&lt;string&gt;(GraphKind.Directed);
+graph.AddEdge("A", "B", 1);
+graph.AddEdge("B", "C", 2);
+graph.AddEdge("A", "C", 5);
+
+// Cheapest route A -&gt; B -&gt; C (total 3) beats the direct A -&gt; C (5).
+var path = GraphAlgorithms.ShortestPath(graph, "A", "C"); // [A, B, C]</code></pre>
+
+
+  <h4 class="section" id="Bodu_Collections_Generic_Graphs_GraphAlgorithms_ShortestPath__1_Bodu_Collections_Generic_Graphs_IReadOnlyWeightedGraph___0____0___0__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This is a convenience wrapper over <a class="xref" href="Bodu.Collections.Generic.Graphs.GraphAlgorithms.html#Bodu_Collections_Generic_Graphs_GraphAlgorithms_TryShortestPath__1_Bodu_Collections_Generic_Graphs_IReadOnlyWeightedGraph___0____0___0_">TryShortestPath&lt;T&gt;(IReadOnlyWeightedGraph&lt;T&gt;, T, T)</a>; use that
+overload when the path distance or a reachability flag is also needed.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Any argument is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">source</code> or <code class="paramref">target</code> is not in the graph, or a negative edge weight is
+encountered during the search (Dijkstra's algorithm requires non-negative weights).</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Collections_Generic_Graphs_GraphAlgorithms_TopologicalSort_" data-uid="Bodu.Collections.Generic.Graphs.GraphAlgorithms.TopologicalSort*"></a>
+
+  <h3 id="Bodu_Collections_Generic_Graphs_GraphAlgorithms_TopologicalSort__1_Bodu_Collections_Generic_Graphs_IReadOnlyGraph___0__" data-uid="Bodu.Collections.Generic.Graphs.GraphAlgorithms.TopologicalSort``1(Bodu.Collections.Generic.Graphs.IReadOnlyGraph{``0})">
+  TopologicalSort&lt;T&gt;(IReadOnlyGraph&lt;T&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Collections/src/Collections.Generic.Graphs/GraphAlgorithms.TopologicalSort.cs/#L34"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Produces a topological ordering of the vertices of a directed acyclic graph using Kahn's algorithm.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IReadOnlyList&lt;T&gt; TopologicalSort&lt;T&gt;(IReadOnlyGraph&lt;T&gt; graph) where T : notnull</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>graph</code> <a class="xref" href="Bodu.Collections.Generic.Graphs.IReadOnlyGraph-1.html">IReadOnlyGraph</a>&lt;T&gt;</dt>
+    <dd><p>The directed graph to order.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;T&gt;</dt>
+    <dd><p>The vertices in an order where every edge points from an earlier vertex to a later one.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The vertex type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Generic_Graphs_GraphAlgorithms_TopologicalSort__1_Bodu_Collections_Generic_Graphs_IReadOnlyGraph___0___examples">Examples</h4>
+  <pre><code class="lang-csharp">var graph = new Graph&lt;string&gt;(GraphKind.Directed);
+graph.AddEdge("a", "b");
+graph.AddEdge("b", "c");
+graph.AddEdge("c", "a");   // introduces a cycle
+
+// Throws InvalidOperationException because the graph is cyclic.
+var order = GraphAlgorithms.TopologicalSort(graph);</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">graph</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The graph is undirected, or it contains a cycle.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Collections_Generic_Graphs_GraphAlgorithms_TryShortestPath_" data-uid="Bodu.Collections.Generic.Graphs.GraphAlgorithms.TryShortestPath*"></a>
+
+  <h3 id="Bodu_Collections_Generic_Graphs_GraphAlgorithms_TryShortestPath__1_Bodu_Collections_Generic_Graphs_IReadOnlyWeightedGraph___0____0___0_" data-uid="Bodu.Collections.Generic.Graphs.GraphAlgorithms.TryShortestPath``1(Bodu.Collections.Generic.Graphs.IReadOnlyWeightedGraph{``0},``0,``0)">
+  TryShortestPath&lt;T&gt;(IReadOnlyWeightedGraph&lt;T&gt;, T, T)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Collections/src/Collections.Generic.Graphs/GraphAlgorithms.ShortestPath.cs/#L79"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Attempts to compute the shortest path between two vertices using Dijkstra's algorithm, reporting the path, its
 total distance, and whether the target is reachable.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Collections_Generic_Graphs_GraphAlgorithms_TryTopologicalSort__1_Bodu_Collections_Generic_Graphs_IReadOnlyGraph___0__System_Collections_Generic_IReadOnlyList___0___" data-uid="Bodu.Collections.Generic.Graphs.GraphAlgorithms.TryTopologicalSort``1(Bodu.Collections.Generic.Graphs.IReadOnlyGraph{``0},System.Collections.Generic.IReadOnlyList{``0}@)">
-          <a class="xref" href="Bodu.Collections.Generic.Graphs.GraphAlgorithms.TryTopologicalSort.html#Bodu_Collections_Generic_Graphs_GraphAlgorithms_TryTopologicalSort__1_Bodu_Collections_Generic_Graphs_IReadOnlyGraph___0__System_Collections_Generic_IReadOnlyList___0___">TryTopologicalSort&lt;T&gt;(IReadOnlyGraph&lt;T&gt;, out IReadOnlyList&lt;T&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to produce a topological ordering of the vertices of a directed graph.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ShortestPathResult&lt;T&gt; TryShortestPath&lt;T&gt;(IReadOnlyWeightedGraph&lt;T&gt; graph, T source, T target) where T : notnull</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>graph</code> <a class="xref" href="Bodu.Collections.Generic.Graphs.IReadOnlyWeightedGraph-1.html">IReadOnlyWeightedGraph</a>&lt;T&gt;</dt>
+    <dd><p>The graph to search.</p>
+</dd>
+    <dt><code>source</code> <span class="xref">T</span></dt>
+    <dd><p>The starting vertex.</p>
+</dd>
+    <dt><code>target</code> <span class="xref">T</span></dt>
+    <dd><p>The destination vertex.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Collections.Generic.Graphs.ShortestPathResult-1.html">ShortestPathResult</a>&lt;T&gt;</dt>
+    <dd><p>A <a class="xref" href="Bodu.Collections.Generic.Graphs.ShortestPathResult-1.html">ShortestPathResult&lt;TVertex&gt;</a> describing the path. When no path exists, the result is not found,
+its distance is <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double.positiveinfinity">PositiveInfinity</a>, and its path is empty.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The vertex type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Generic_Graphs_GraphAlgorithms_TryShortestPath__1_Bodu_Collections_Generic_Graphs_IReadOnlyWeightedGraph___0____0___0__examples">Examples</h4>
+  <pre><code class="lang-csharp">var graph = new Graph&lt;string&gt;(GraphKind.Directed);
+graph.AddEdge("A", "B", 1);
+graph.AddVertex("Z");   // present but unreachable from A
+
+ShortestPathResult&lt;string&gt; result = GraphAlgorithms.TryShortestPath(graph, "A", "Z");
+// result.Found is false, result.Distance is double.PositiveInfinity, result.Path is empty</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Any argument is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">source</code> or <code class="paramref">target</code> is not in the graph, or a negative edge weight is
+encountered during the search (Dijkstra's algorithm requires non-negative weights).</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Collections_Generic_Graphs_GraphAlgorithms_TryTopologicalSort_" data-uid="Bodu.Collections.Generic.Graphs.GraphAlgorithms.TryTopologicalSort*"></a>
+
+  <h3 id="Bodu_Collections_Generic_Graphs_GraphAlgorithms_TryTopologicalSort__1_Bodu_Collections_Generic_Graphs_IReadOnlyGraph___0__System_Collections_Generic_IReadOnlyList___0___" data-uid="Bodu.Collections.Generic.Graphs.GraphAlgorithms.TryTopologicalSort``1(Bodu.Collections.Generic.Graphs.IReadOnlyGraph{``0},System.Collections.Generic.IReadOnlyList{``0}@)">
+  TryTopologicalSort&lt;T&gt;(IReadOnlyGraph&lt;T&gt;, out IReadOnlyList&lt;T&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Collections/src/Collections.Generic.Graphs/GraphAlgorithms.TopologicalSort.cs/#L70"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Attempts to produce a topological ordering of the vertices of a directed graph.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool TryTopologicalSort&lt;T&gt;(IReadOnlyGraph&lt;T&gt; graph, out IReadOnlyList&lt;T&gt; order) where T : notnull</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>graph</code> <a class="xref" href="Bodu.Collections.Generic.Graphs.IReadOnlyGraph-1.html">IReadOnlyGraph</a>&lt;T&gt;</dt>
+    <dd><p>The directed graph to order.</p>
+</dd>
+    <dt><code>order</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;T&gt;</dt>
+    <dd><p>When this method returns, contains the topological ordering, or an empty list if the graph contains a cycle.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if an ordering was produced; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> if the graph contains a cycle.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The vertex type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="Bodu_Collections_Generic_Graphs_GraphAlgorithms_TryTopologicalSort__1_Bodu_Collections_Generic_Graphs_IReadOnlyGraph___0__System_Collections_Generic_IReadOnlyList___0____examples">Examples</h4>
+  <pre><code class="lang-csharp">var graph = new Graph&lt;string&gt;(GraphKind.Directed);
+graph.AddEdge("compile", "link");
+graph.AddEdge("link", "run");
+
+if (GraphAlgorithms.TryTopologicalSort(graph, out var order))
+{
+    // order respects every edge, e.g. compile, link, run.
+}</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">graph</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The graph is undirected.</p>
+</dd>
+  </dl>
+
+
+
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 302e395 · Built: 2026-09-29 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 1e0dd9a · Built: 2026-09-29 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

@@ -1,105 +1,134 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
       <title>Struct WeekPattern | BODU </title>
-      <meta name="viewport" content="width=device-width">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Struct WeekPattern | BODU ">
-    
-    <meta name="description" content="Represents an immutable set of selected days in a standard seven-day week.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      
+      <meta name="description" content="Represents an immutable set of selected days in a standard seven-day week.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/new/master/apiSpec/new?filename=Bodu_WeekPattern.md&amp;value=---%0Auid%3A%20Bodu.WeekPattern%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.WeekPattern">
+
+        <article data-uid="Bodu.WeekPattern">
 
 
 
-  <h1 id="Bodu_WeekPattern" data-uid="Bodu.WeekPattern" class="text-break">Struct WeekPattern</h1>
-  <div class="markdown level0 summary"><p>Represents an immutable set of selected days in a standard seven-day week.</p>
-</div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="implements">
-    <h5>Implements</h5>
-    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a>&gt;</div>
-    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerable">IEnumerable</a></div>
-    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iformattable">IFormattable</a></div>
-    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.icomparable-1">IComparable</a>&lt;<a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a>&gt;</div>
-    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.icomparable-1">IComparable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</div>
-    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.icomparable">IComparable</a></div>
-    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a>&gt;</div>
-    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</div>
-    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.runtime.serialization.iserializable">ISerializable</a></div>
+  <h1 id="Bodu_WeekPattern" data-uid="Bodu.WeekPattern" class="text-break">
+Struct WeekPattern  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/WeekPattern.Serializable.cs/#L12"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Core.dll</dd></dl>
   </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+  <div class="markdown summary"><p>Represents an immutable set of selected days in a standard seven-day week.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Serializable]
+public readonly struct WeekPattern : IEnumerable&lt;DayOfWeek&gt;, IEnumerable, IFormattable, IComparable&lt;WeekPattern&gt;, IComparable&lt;byte&gt;, IComparable, IEquatable&lt;WeekPattern&gt;, IEquatable&lt;byte&gt;, ISerializable</code></pre>
+  </div>
+
+
+
+
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a>&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerable">IEnumerable</a></div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iformattable">IFormattable</a></div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.icomparable-1">IComparable</a>&lt;<a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a>&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.icomparable-1">IComparable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.icomparable">IComparable</a></div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a>&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.runtime.serialization.iserializable">ISerializable</a></div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
     </div>
@@ -109,22 +138,257 @@
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
     </div>
+  </dd></dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.BufferConverter.html#Bodu_Extensions_BufferConverter_CopyTo__1___0_System_Byte___System_Int32_">BufferConverter.CopyTo&lt;T&gt;(T, byte[], int)</a>
   </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Core.dll</h6>
-  <h5 id="Bodu_WeekPattern_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[Serializable]
-public readonly struct WeekPattern : IEnumerable&lt;DayOfWeek&gt;, IEnumerable, IFormattable, IComparable&lt;WeekPattern&gt;, IComparable&lt;byte&gt;, IComparable, IEquatable&lt;WeekPattern&gt;, IEquatable&lt;byte&gt;, ISerializable</code></pre>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_">ComparableExtensions.AtLeast&lt;T&gt;(T, T)</a>
   </div>
-  <h5 id="Bodu_WeekPattern_remarks"><strong>Remarks</strong></h5>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_">ComparableExtensions.AtMost&lt;T&gt;(T, T)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__">ComparableExtensions.Clamp&lt;T&gt;(T, T?, T?)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.Clamp&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsBetween__1___0___0___0_">ComparableExtensions.IsBetween&lt;T&gt;(T, T?, T?)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsBetween__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsBetween&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual__1___0___0_">ComparableExtensions.IsGreaterThanOrEqual&lt;T&gt;(T, T?)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsGreaterThan__1___0___0_">ComparableExtensions.IsGreaterThan&lt;T&gt;(T, T?)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsGreaterThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual__1___0___0_">ComparableExtensions.IsLessThanOrEqual&lt;T&gt;(T, T?)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsLessThan__1___0___0_">ComparableExtensions.IsLessThan&lt;T&gt;(T, T?)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsLessThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsOutside__1___0___0___0_">ComparableExtensions.IsOutside&lt;T&gt;(T, T?, T?)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsOutside__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsOutside&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_">ComparableExtensions.Max&lt;T&gt;(T, T)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_">ComparableExtensions.Min&lt;T&gt;(T, T)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.WorkingDaysOfWeekExtensions.html#Bodu_Extensions_WorkingDaysOfWeekExtensions_ToWorkingDaysOfWeek_Bodu_WeekPattern_">WorkingDaysOfWeekExtensions.ToWorkingDaysOfWeek(WeekPattern)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.WorkingDaysOfWeekExtensions.html#Bodu_Extensions_WorkingDaysOfWeekExtensions_TryGetWorkingDaysOfWeek_Bodu_WeekPattern_Bodu_WorkingDaysOfWeek__">WorkingDaysOfWeekExtensions.TryGetWorkingDaysOfWeek(WeekPattern, out WorkingDaysOfWeek)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__2_System_Collections_Generic_IEnumerable___0____1_System_Func___1___0_System_Int32___1__">IEnumerableExtensions.Aggregate&lt;TSource, TAccumulate&gt;(IEnumerable&lt;TSource&gt;, TAccumulate, Func&lt;TAccumulate, TSource, int, TAccumulate&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__3_System_Collections_Generic_IEnumerable___0____1___2_System_Func___1___0_System_Int32___1__System_Func___2___0_System_Int32___2__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2&gt;(IEnumerable&lt;TSource&gt;, T1, T2, Func&lt;T1, TSource, int, T1&gt;, Func&lt;T2, TSource, int, T2&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__3_System_Collections_Generic_IEnumerable___0____1___2_System_Func___1___0___1__System_Func___2___0___2__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2&gt;(IEnumerable&lt;TSource&gt;, T1, T2, Func&lt;T1, TSource, T1&gt;, Func&lt;T2, TSource, T2&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__3_System_Collections_Generic_IEnumerable___0____1_System_Func___1___0_System_Int32___1__System_Func___1___2__">IEnumerableExtensions.Aggregate&lt;TSource, TAccumulate, TResult&gt;(IEnumerable&lt;TSource&gt;, TAccumulate, Func&lt;TAccumulate, TSource, int, TAccumulate&gt;, Func&lt;TAccumulate, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__4_System_Collections_Generic_IEnumerable___0____1___2_System_Func___1___0_System_Int32___1__System_Func___2___0_System_Int32___2__System_Func___1___2___3__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2, TResult&gt;(IEnumerable&lt;TSource&gt;, T1, T2, Func&lt;T1, TSource, int, T1&gt;, Func&lt;T2, TSource, int, T2&gt;, Func&lt;T1, T2, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__4_System_Collections_Generic_IEnumerable___0____1___2_System_Func___1___0___1__System_Func___2___0___2__System_Func___1___2___3__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2, TResult&gt;(IEnumerable&lt;TSource&gt;, T1, T2, Func&lt;T1, TSource, T1&gt;, Func&lt;T2, TSource, T2&gt;, Func&lt;T1, T2, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__4_System_Collections_Generic_IEnumerable___0____1___2___3_System_Func___1___0_System_Int32___1__System_Func___2___0_System_Int32___2__System_Func___3___0_System_Int32___3__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2, T3&gt;(IEnumerable&lt;TSource&gt;, T1, T2, T3, Func&lt;T1, TSource, int, T1&gt;, Func&lt;T2, TSource, int, T2&gt;, Func&lt;T3, TSource, int, T3&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__4_System_Collections_Generic_IEnumerable___0____1___2___3_System_Func___1___0___1__System_Func___2___0___2__System_Func___3___0___3__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2, T3&gt;(IEnumerable&lt;TSource&gt;, T1, T2, T3, Func&lt;T1, TSource, T1&gt;, Func&lt;T2, TSource, T2&gt;, Func&lt;T3, TSource, T3&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__5_System_Collections_Generic_IEnumerable___0____1___2___3_System_Func___1___0_System_Int32___1__System_Func___2___0_System_Int32___2__System_Func___3___0_System_Int32___3__System_Func___1___2___3___4__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2, T3, TResult&gt;(IEnumerable&lt;TSource&gt;, T1, T2, T3, Func&lt;T1, TSource, int, T1&gt;, Func&lt;T2, TSource, int, T2&gt;, Func&lt;T3, TSource, int, T3&gt;, Func&lt;T1, T2, T3, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__5_System_Collections_Generic_IEnumerable___0____1___2___3_System_Func___1___0___1__System_Func___2___0___2__System_Func___3___0___3__System_Func___1___2___3___4__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2, T3, TResult&gt;(IEnumerable&lt;TSource&gt;, T1, T2, T3, Func&lt;T1, TSource, T1&gt;, Func&lt;T2, TSource, T2&gt;, Func&lt;T3, TSource, T3&gt;, Func&lt;T1, T2, T3, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_BatchPooled__1_System_Collections_Generic_IEnumerable___0__System_Int32_">IEnumerableExtensions.BatchPooled&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, int)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_BatchPooled__2_System_Collections_Generic_IEnumerable___0__System_Int32_System_Func___0_System_Int32___1__">IEnumerableExtensions.BatchPooled&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, int, Func&lt;TSource, int, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Batch__2_System_Collections_Generic_IEnumerable___0__System_Int32_System_Func___0_System_Int32___1__">IEnumerableExtensions.Batch&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, int, Func&lt;TSource, int, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Batch__2_System_Collections_Generic_IEnumerable___0__System_Int32_System_Func___0___1__">IEnumerableExtensions.Batch&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, int, Func&lt;TSource, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Cache__1_System_Collections_Generic_IEnumerable___0__">IEnumerableExtensions.Cache&lt;T&gt;(IEnumerable&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_CartesianProduct__2_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1__">IEnumerableExtensions.CartesianProduct&lt;TFirst, TSecond&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_CartesianProduct__3_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1__System_Func___0___1___2__">IEnumerableExtensions.CartesianProduct&lt;TFirst, TSecond, TResult&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;, Func&lt;TFirst, TSecond, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ChunkBy__2_System_Collections_Generic_IEnumerable___0__System_Func___0___1__">IEnumerableExtensions.ChunkBy&lt;TSource, TKey&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TKey&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ChunkBy__2_System_Collections_Generic_IEnumerable___0__System_Func___0___1__System_Collections_Generic_IEqualityComparer___1__">IEnumerableExtensions.ChunkBy&lt;TSource, TKey&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TKey&gt;, IEqualityComparer&lt;TKey&gt;?)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Combinations__1_System_Collections_Generic_IEnumerable___0__System_Int32_">IEnumerableExtensions.Combinations&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, int)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ContainsAll__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEqualityComparer___0__">IEnumerableExtensions.ContainsAll&lt;T&gt;(IEnumerable&lt;T&gt;, IEnumerable&lt;T&gt;, IEqualityComparer&lt;T&gt;?)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ContainsAny__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEqualityComparer___0__">IEnumerableExtensions.ContainsAny&lt;T&gt;(IEnumerable&lt;T&gt;, IEnumerable&lt;T&gt;, IEqualityComparer&lt;T&gt;?)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ForEach__1_System_Collections_Generic_IEnumerable___0__System_Action___0__">IEnumerableExtensions.ForEach&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Action&lt;TSource&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Index__1_System_Collections_Generic_IEnumerable___0__">IEnumerableExtensions.Index&lt;TSource&gt;(IEnumerable&lt;TSource&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Interleave__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0____">IEnumerableExtensions.Interleave&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, params IEnumerable&lt;TSource&gt;[])</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_IsNullOrEmpty__1_System_Collections_Generic_IEnumerable___0__">IEnumerableExtensions.IsNullOrEmpty&lt;TSource&gt;(IEnumerable&lt;TSource&gt;?)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Pairwise__1_System_Collections_Generic_IEnumerable___0__">IEnumerableExtensions.Pairwise&lt;TSource&gt;(IEnumerable&lt;TSource&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Pairwise__2_System_Collections_Generic_IEnumerable___0__System_Func___0___0___1__">IEnumerableExtensions.Pairwise&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TSource, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Permutations__1_System_Collections_Generic_IEnumerable___0__">IEnumerableExtensions.Permutations&lt;TSource&gt;(IEnumerable&lt;TSource&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Permutations__1_System_Collections_Generic_IEnumerable___0__System_Int32_">IEnumerableExtensions.Permutations&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, int)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Randomize__1_System_Collections_Generic_IEnumerable___0__Bodu_Collections_Generic_Extensions_RandomizationMode_Bodu_IRandomGenerator_System_Nullable_System_Int32__">IEnumerableExtensions.Randomize&lt;T&gt;(IEnumerable&lt;T&gt;, RandomizationMode, IRandomGenerator, int?)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RecursiveSelect__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Collections_Generic_IEnumerable___0___">IEnumerableExtensions.RecursiveSelect&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, IEnumerable&lt;TSource&gt;&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RecursiveSelect__2_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Collections_Generic_IEnumerable___0___System_Func___0_System_Int32_System_Int32___1__">IEnumerableExtensions.RecursiveSelect&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, IEnumerable&lt;TSource&gt;&gt;, Func&lt;TSource, int, int, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RecursiveSelect__2_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Collections_Generic_IEnumerable___0___System_Func___0_System_Int32_System_Int32___1__System_Func___0_Bodu_Collections_Extensions_RecursiveSelectControl__">IEnumerableExtensions.RecursiveSelect&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, IEnumerable&lt;TSource&gt;&gt;, Func&lt;TSource, int, int, TResult&gt;, Func&lt;TSource, RecursiveSelectControl&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RecursiveSelect__2_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Collections_Generic_IEnumerable___0___System_Func___0_System_Int32___1__">IEnumerableExtensions.RecursiveSelect&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, IEnumerable&lt;TSource&gt;&gt;, Func&lt;TSource, int, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RecursiveSelect__2_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Collections_Generic_IEnumerable___0___System_Func___0___1__">IEnumerableExtensions.RecursiveSelect&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, IEnumerable&lt;TSource&gt;&gt;, Func&lt;TSource, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RunLengthEncode__1_System_Collections_Generic_IEnumerable___0__">IEnumerableExtensions.RunLengthEncode&lt;TSource&gt;(IEnumerable&lt;TSource&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RunLengthEncode__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEqualityComparer___0__">IEnumerableExtensions.RunLengthEncode&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, IEqualityComparer&lt;TSource&gt;?)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Scan__2_System_Collections_Generic_IEnumerable___0____1_System_Func___1___0___1__">IEnumerableExtensions.Scan&lt;TSource, TAccumulate&gt;(IEnumerable&lt;TSource&gt;, TAccumulate, Func&lt;TAccumulate, TSource, TAccumulate&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Scan__3_System_Collections_Generic_IEnumerable___0____1_System_Func___1___0___1__System_Func___1___2__">IEnumerableExtensions.Scan&lt;TSource, TAccumulate, TResult&gt;(IEnumerable&lt;TSource&gt;, TAccumulate, Func&lt;TAccumulate, TSource, TAccumulate&gt;, Func&lt;TAccumulate, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_SplitWhen__1_System_Collections_Generic_IEnumerable___0__System_Func___0___0_System_Boolean__">IEnumerableExtensions.SplitWhen&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TSource, bool&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Windowed__1_System_Collections_Generic_IEnumerable___0__System_Int32_">IEnumerableExtensions.Windowed&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, int)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Windowed__2_System_Collections_Generic_IEnumerable___0__System_Int32_System_Func_System_Collections_Generic_IReadOnlyList___0____1__">IEnumerableExtensions.Windowed&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, int, Func&lt;IReadOnlyList&lt;TSource&gt;, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ZipLongest__2_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1__">IEnumerableExtensions.ZipLongest&lt;TFirst, TSecond&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ZipLongest__2_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1____0___1_">IEnumerableExtensions.ZipLongest&lt;TFirst, TSecond&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;, TFirst, TSecond)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ZipLongest__3_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1____0___1_System_Func___0___1___2__">IEnumerableExtensions.ZipLongest&lt;TFirst, TSecond, TResult&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;, TFirst, TSecond, Func&lt;TFirst, TSecond, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.html#Bodu_Collections_Extensions_IEnumerableExtensions_CountOrDefault_System_Collections_IEnumerable_">IEnumerableExtensions.CountOrDefault(IEnumerable)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.html#Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_Generic_IEnumerable_System_Object___System_Func_System_Object_System_Int32_System_Int32_System_Object__">IEnumerableExtensions.RecursiveSelect(IEnumerable, Func&lt;object, IEnumerable&lt;object&gt;&gt;, Func&lt;object, int, int, object&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.html#Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_Generic_IEnumerable_System_Object___System_Func_System_Object_System_Int32_System_Int32_System_Object__System_Func_System_Object_Bodu_Collections_Extensions_RecursiveSelectControl__">IEnumerableExtensions.RecursiveSelect(IEnumerable, Func&lt;object, IEnumerable&lt;object&gt;&gt;, Func&lt;object, int, int, object&gt;, Func&lt;object, RecursiveSelectControl&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.html#Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_Generic_IEnumerable_System_Object___System_Func_System_Object_System_Int32_System_Object__">IEnumerableExtensions.RecursiveSelect(IEnumerable, Func&lt;object, IEnumerable&lt;object&gt;&gt;, Func&lt;object, int, object&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.html#Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_Generic_IEnumerable_System_Object___System_Func_System_Object_System_Object__">IEnumerableExtensions.RecursiveSelect(IEnumerable, Func&lt;object, IEnumerable&lt;object&gt;&gt;, Func&lt;object, object&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.html#Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_IEnumerable__">IEnumerableExtensions.RecursiveSelect(IEnumerable, Func&lt;object, IEnumerable&gt;)</a>
+  </div>
+  </dd></dl>
+
+
+
+  <h2 id="Bodu_WeekPattern_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
 <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> provides a compact bitmask representation of selected days, supporting non-destructive
 composition, parsing, formatting, comparison, and enumeration.
 </p>
 <p>
 Because <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> is a value type, all operations that change the selection return a new instance
-rather than modifying the receiver. Use <a class="xref" href="Bodu.WeekPattern.With.html#Bodu_WeekPattern_With_System_DayOfWeek_">With(DayOfWeek)</a> and <a class="xref" href="Bodu.WeekPattern.Without.html#Bodu_WeekPattern_Without_System_DayOfWeek_">Without(DayOfWeek)</a> to build patterns
+rather than modifying the receiver. Use <a class="xref" href="Bodu.WeekPattern.html#Bodu_WeekPattern_With_System_DayOfWeek_">With(DayOfWeek)</a> and <a class="xref" href="Bodu.WeekPattern.html#Bodu_WeekPattern_Without_System_DayOfWeek_">Without(DayOfWeek)</a> to build patterns
 incrementally, and the bitwise operators to combine or intersect them.
 </p>
 <pre><code class="lang-csharp">Build a pattern for Monday, Wednesday, and Friday
@@ -143,697 +407,2025 @@ Enumerate selected days
 foreach (DayOfWeek day in pattern)
     Console.WriteLine(day);</code></pre>
 </div>
-  <h3 id="constructors">Constructors
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_WeekPattern__ctor_System_DayOfWeek___" data-uid="Bodu.WeekPattern.#ctor(System.DayOfWeek[])">
-          <a class="xref" href="Bodu.WeekPattern.-ctor.html#Bodu_WeekPattern__ctor_System_DayOfWeek___">WeekPattern(params DayOfWeek[])</a>
-        </td>
-        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> struct with the specified selected days.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_WeekPattern__ctor_System_String_" data-uid="Bodu.WeekPattern.#ctor(System.String)">
-          <a class="xref" href="Bodu.WeekPattern.-ctor.html#Bodu_WeekPattern__ctor_System_String_">WeekPattern(string)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> struct by parsing the specified string.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="fields">Fields
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_WeekPattern_AllDays" data-uid="Bodu.WeekPattern.AllDays">
-          <a class="xref" href="Bodu.WeekPattern.AllDays.html">AllDays</a>
-        </td>
-        <td class="markdown level1 summary"><p>Represents a working-week <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> with every day of the week selected.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_WeekPattern_Empty" data-uid="Bodu.WeekPattern.Empty">
-          <a class="xref" href="Bodu.WeekPattern.Empty.html">Empty</a>
-        </td>
-        <td class="markdown level1 summary"><p>Represents a <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> with no days selected.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_WeekPattern_MondayToFriday" data-uid="Bodu.WeekPattern.MondayToFriday">
-          <a class="xref" href="Bodu.WeekPattern.MondayToFriday.html">MondayToFriday</a>
-        </td>
-        <td class="markdown level1 summary"><p>Represents a working-week <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> with Monday through Friday selected.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_WeekPattern_MondayToSaturday" data-uid="Bodu.WeekPattern.MondayToSaturday">
-          <a class="xref" href="Bodu.WeekPattern.MondayToSaturday.html">MondayToSaturday</a>
-        </td>
-        <td class="markdown level1 summary"><p>Represents a working-week <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> with Monday through Saturday selected.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_WeekPattern_MondayToThursdayAndSaturday" data-uid="Bodu.WeekPattern.MondayToThursdayAndSaturday">
-          <a class="xref" href="Bodu.WeekPattern.MondayToThursdayAndSaturday.html">MondayToThursdayAndSaturday</a>
-        </td>
-        <td class="markdown level1 summary"><p>Represents a working-week <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> with Monday through Thursday and Saturday selected.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_WeekPattern_SaturdayToThursday" data-uid="Bodu.WeekPattern.SaturdayToThursday">
-          <a class="xref" href="Bodu.WeekPattern.SaturdayToThursday.html">SaturdayToThursday</a>
-        </td>
-        <td class="markdown level1 summary"><p>Represents a working-week <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> with Saturday through Thursday selected.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_WeekPattern_SaturdayToWednesday" data-uid="Bodu.WeekPattern.SaturdayToWednesday">
-          <a class="xref" href="Bodu.WeekPattern.SaturdayToWednesday.html">SaturdayToWednesday</a>
-        </td>
-        <td class="markdown level1 summary"><p>Represents a working-week <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> with Saturday through Wednesday selected.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_WeekPattern_SundayToFriday" data-uid="Bodu.WeekPattern.SundayToFriday">
-          <a class="xref" href="Bodu.WeekPattern.SundayToFriday.html">SundayToFriday</a>
-        </td>
-        <td class="markdown level1 summary"><p>Represents a working-week <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> with Sunday through Friday selected.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_WeekPattern_SundayToThursday" data-uid="Bodu.WeekPattern.SundayToThursday">
-          <a class="xref" href="Bodu.WeekPattern.SundayToThursday.html">SundayToThursday</a>
-        </td>
-        <td class="markdown level1 summary"><p>Represents a working-week <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> with Sunday through Thursday selected.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_WeekPattern_Weekdays" data-uid="Bodu.WeekPattern.Weekdays">
-          <a class="xref" href="Bodu.WeekPattern.Weekdays.html">Weekdays</a>
-        </td>
-        <td class="markdown level1 summary"><p>Represents a <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> with Monday through Friday selected.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_WeekPattern_Weekend" data-uid="Bodu.WeekPattern.Weekend">
-          <a class="xref" href="Bodu.WeekPattern.Weekend.html">Weekend</a>
-        </td>
-        <td class="markdown level1 summary"><p>Represents a <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> with Saturday and Sunday selected.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="properties">Properties
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_WeekPattern_Count" data-uid="Bodu.WeekPattern.Count">
-          <a class="xref" href="Bodu.WeekPattern.Count.html#Bodu_WeekPattern_Count">Count</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the number of days currently selected.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_WeekPattern_Item_System_DayOfWeek_" data-uid="Bodu.WeekPattern.Item(System.DayOfWeek)">
-          <a class="xref" href="Bodu.WeekPattern.Item.html#Bodu_WeekPattern_Item_System_DayOfWeek_">this[DayOfWeek]</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets whether the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a> is selected.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_WeekPattern_CompareTo_Bodu_WeekPattern_" data-uid="Bodu.WeekPattern.CompareTo(Bodu.WeekPattern)">
-          <a class="xref" href="Bodu.WeekPattern.CompareTo.html#Bodu_WeekPattern_CompareTo_Bodu_WeekPattern_">CompareTo(WeekPattern)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Compares this instance to a specified <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> and returns an indication of their relative
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Bodu_WeekPattern__ctor_" data-uid="Bodu.WeekPattern.#ctor*"></a>
+
+  <h3 id="Bodu_WeekPattern__ctor_System_DayOfWeek___" data-uid="Bodu.WeekPattern.#ctor(System.DayOfWeek[])">
+  WeekPattern(params DayOfWeek[])
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/WeekPattern.cs/#L98"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> struct with the specified selected days.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public WeekPattern(params DayOfWeek[] daysOfWeek)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>daysOfWeek</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a>[]</dt>
+    <dd><p>An array of <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a> values to mark as selected.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_WeekPattern__ctor_System_DayOfWeek____examples">Examples</h4>
+  <pre><code class="lang-csharp">var pattern = new WeekPattern(DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday);
+Console.WriteLine(pattern.Count); // 3</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown if any value in <code class="paramref">daysOfWeek</code> is outside the valid <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a> range.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_WeekPattern__ctor_" data-uid="Bodu.WeekPattern.#ctor*"></a>
+
+  <h3 id="Bodu_WeekPattern__ctor_System_String_" data-uid="Bodu.WeekPattern.#ctor(System.String)">
+  WeekPattern(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/WeekPattern.cs/#L122"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> struct by parsing the specified string.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public WeekPattern(string input)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>input</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The input string representing selected days. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_WeekPattern__ctor_System_String__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This constructor behaves identically to <a class="xref" href="Bodu.WeekPattern.html#Bodu_WeekPattern_Parse_System_String_">Parse(string)</a>, automatically inferring the format from
+the input string. Use <a class="xref" href="Bodu.WeekPattern.html#Bodu_WeekPattern_ParseExact_System_String_System_String_">ParseExact(string, string)</a> when the format must be specified explicitly.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown if <code class="paramref">input</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p>Thrown if <code class="paramref">input</code> is not exactly seven characters long or contains invalid characters.</p>
+</dd>
+  </dl>
+
+
+
+  <h2 class="section" id="fields">Fields
+</h2>
+
+
+
+  <h3 id="Bodu_WeekPattern_AllDays" data-uid="Bodu.WeekPattern.AllDays">
+  AllDays
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/WeekPattern.Presets.cs/#L66"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Represents a working-week <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> with every day of the week selected.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static readonly WeekPattern AllDays</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="Bodu_WeekPattern_AllDays_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Corresponds to <a class="xref" href="Bodu.WorkingDaysOfWeek.html#Bodu_WorkingDaysOfWeek_AllDays">AllDays</a>.</p>
+</div>
+
+
+
+
+
+  <h3 id="Bodu_WeekPattern_Empty" data-uid="Bodu.WeekPattern.Empty">
+  Empty
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/WeekPattern.cs/#L72"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Represents a <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> with no days selected.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static readonly WeekPattern Empty</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Bodu_WeekPattern_MondayToFriday" data-uid="Bodu.WeekPattern.MondayToFriday">
+  MondayToFriday
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/WeekPattern.Presets.cs/#L17"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Represents a working-week <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> with Monday through Friday selected.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static readonly WeekPattern MondayToFriday</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="Bodu_WeekPattern_MondayToFriday_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This is an alias for <a class="xref" href="Bodu.WeekPattern.html#Bodu_WeekPattern_Weekdays">Weekdays</a> and corresponds to <a class="xref" href="Bodu.WorkingDaysOfWeek.html#Bodu_WorkingDaysOfWeek_MondayToFriday">MondayToFriday</a>.</p>
+</div>
+
+
+
+
+
+  <h3 id="Bodu_WeekPattern_MondayToSaturday" data-uid="Bodu.WeekPattern.MondayToSaturday">
+  MondayToSaturday
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/WeekPattern.Presets.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Represents a working-week <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> with Monday through Saturday selected.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static readonly WeekPattern MondayToSaturday</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="Bodu_WeekPattern_MondayToSaturday_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Corresponds to <a class="xref" href="Bodu.WorkingDaysOfWeek.html#Bodu_WorkingDaysOfWeek_MondayToSaturday">MondayToSaturday</a>.</p>
+</div>
+
+
+
+
+
+  <h3 id="Bodu_WeekPattern_MondayToThursdayAndSaturday" data-uid="Bodu.WeekPattern.MondayToThursdayAndSaturday">
+  MondayToThursdayAndSaturday
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/WeekPattern.Presets.cs/#L31"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Represents a working-week <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> with Monday through Thursday and Saturday selected.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static readonly WeekPattern MondayToThursdayAndSaturday</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="Bodu_WeekPattern_MondayToThursdayAndSaturday_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Corresponds to <a class="xref" href="Bodu.WorkingDaysOfWeek.html#Bodu_WorkingDaysOfWeek_MondayToThursdayAndSaturday">MondayToThursdayAndSaturday</a>.</p>
+</div>
+
+
+
+
+
+  <h3 id="Bodu_WeekPattern_SaturdayToThursday" data-uid="Bodu.WeekPattern.SaturdayToThursday">
+  SaturdayToThursday
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/WeekPattern.Presets.cs/#L38"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Represents a working-week <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> with Saturday through Thursday selected.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static readonly WeekPattern SaturdayToThursday</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="Bodu_WeekPattern_SaturdayToThursday_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Corresponds to <a class="xref" href="Bodu.WorkingDaysOfWeek.html#Bodu_WorkingDaysOfWeek_SaturdayToThursday">SaturdayToThursday</a>.</p>
+</div>
+
+
+
+
+
+  <h3 id="Bodu_WeekPattern_SaturdayToWednesday" data-uid="Bodu.WeekPattern.SaturdayToWednesday">
+  SaturdayToWednesday
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/WeekPattern.Presets.cs/#L45"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Represents a working-week <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> with Saturday through Wednesday selected.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static readonly WeekPattern SaturdayToWednesday</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="Bodu_WeekPattern_SaturdayToWednesday_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Corresponds to <a class="xref" href="Bodu.WorkingDaysOfWeek.html#Bodu_WorkingDaysOfWeek_SaturdayToWednesday">SaturdayToWednesday</a>.</p>
+</div>
+
+
+
+
+
+  <h3 id="Bodu_WeekPattern_SundayToFriday" data-uid="Bodu.WeekPattern.SundayToFriday">
+  SundayToFriday
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/WeekPattern.Presets.cs/#L52"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Represents a working-week <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> with Sunday through Friday selected.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static readonly WeekPattern SundayToFriday</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="Bodu_WeekPattern_SundayToFriday_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Corresponds to <a class="xref" href="Bodu.WorkingDaysOfWeek.html#Bodu_WorkingDaysOfWeek_SundayToFriday">SundayToFriday</a>.</p>
+</div>
+
+
+
+
+
+  <h3 id="Bodu_WeekPattern_SundayToThursday" data-uid="Bodu.WeekPattern.SundayToThursday">
+  SundayToThursday
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/WeekPattern.Presets.cs/#L59"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Represents a working-week <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> with Sunday through Thursday selected.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static readonly WeekPattern SundayToThursday</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="Bodu_WeekPattern_SundayToThursday_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Corresponds to <a class="xref" href="Bodu.WorkingDaysOfWeek.html#Bodu_WorkingDaysOfWeek_SundayToThursday">SundayToThursday</a>.</p>
+</div>
+
+
+
+
+
+  <h3 id="Bodu_WeekPattern_Weekdays" data-uid="Bodu.WeekPattern.Weekdays">
+  Weekdays
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/WeekPattern.cs/#L75"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Represents a <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> with Monday through Friday selected.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static readonly WeekPattern Weekdays</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Bodu_WeekPattern_Weekend" data-uid="Bodu.WeekPattern.Weekend">
+  Weekend
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/WeekPattern.cs/#L79"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Represents a <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> with Saturday and Sunday selected.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static readonly WeekPattern Weekend</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Bodu_WeekPattern_Count_" data-uid="Bodu.WeekPattern.Count*"></a>
+
+  <h3 id="Bodu_WeekPattern_Count" data-uid="Bodu.WeekPattern.Count">
+  Count
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/WeekPattern.cs/#L143"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the number of days currently selected.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int Count { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>An <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a> in the range [0, 7] representing the total number of selected days.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_WeekPattern_Item_" data-uid="Bodu.WeekPattern.Item*"></a>
+
+  <h3 id="Bodu_WeekPattern_Item_System_DayOfWeek_" data-uid="Bodu.WeekPattern.Item(System.DayOfWeek)">
+  this[DayOfWeek]
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/WeekPattern.cs/#L156"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets whether the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a> is selected.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool this[DayOfWeek day] { get; }</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>day</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a></dt>
+    <dd><p>The day to query.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if <code class="paramref">day</code> is selected; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown if <code class="paramref">day</code> is outside the valid <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a> range.</p>
+</dd>
+  </dl>
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_WeekPattern_CompareTo_" data-uid="Bodu.WeekPattern.CompareTo*"></a>
+
+  <h3 id="Bodu_WeekPattern_CompareTo_Bodu_WeekPattern_" data-uid="Bodu.WeekPattern.CompareTo(Bodu.WeekPattern)">
+  CompareTo(WeekPattern)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/WeekPattern.IComparable.cs/#L53"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Compares this instance to a specified <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> and returns an indication of their relative
 values.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_WeekPattern_CompareTo_System_Byte_" data-uid="Bodu.WeekPattern.CompareTo(System.Byte)">
-          <a class="xref" href="Bodu.WeekPattern.CompareTo.html#Bodu_WeekPattern_CompareTo_System_Byte_">CompareTo(byte)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Compares this instance to a specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a> bitmask value and returns an indication of their
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int CompareTo(WeekPattern other)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>other</code> <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a></dt>
+    <dd><p>A <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> to compare with this instance.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>A signed integer whose sign indicates whether this instance is less than, equal to, or greater than
+<code class="paramref">other</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_WeekPattern_CompareTo_" data-uid="Bodu.WeekPattern.CompareTo*"></a>
+
+  <h3 id="Bodu_WeekPattern_CompareTo_System_Byte_" data-uid="Bodu.WeekPattern.CompareTo(System.Byte)">
+  CompareTo(byte)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/WeekPattern.IComparable.cs/#L65"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Compares this instance to a specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a> bitmask value and returns an indication of their
 relative values.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_WeekPattern_CompareTo_System_Object_" data-uid="Bodu.WeekPattern.CompareTo(System.Object)">
-          <a class="xref" href="Bodu.WeekPattern.CompareTo.html#Bodu_WeekPattern_CompareTo_System_Object_">CompareTo(object?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Compares this instance to a specified object and returns an indication of their relative values.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_WeekPattern_Contains_System_DayOfWeek_" data-uid="Bodu.WeekPattern.Contains(System.DayOfWeek)">
-          <a class="xref" href="Bodu.WeekPattern.Contains.html#Bodu_WeekPattern_Contains_System_DayOfWeek_">Contains(DayOfWeek)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a> is selected in this pattern.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_WeekPattern_Equals_Bodu_WeekPattern_" data-uid="Bodu.WeekPattern.Equals(Bodu.WeekPattern)">
-          <a class="xref" href="Bodu.WeekPattern.Equals.html#Bodu_WeekPattern_Equals_Bodu_WeekPattern_">Equals(WeekPattern)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether the specified <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> is equal to the current instance.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_WeekPattern_Equals_System_Byte_" data-uid="Bodu.WeekPattern.Equals(System.Byte)">
-          <a class="xref" href="Bodu.WeekPattern.Equals.html#Bodu_WeekPattern_Equals_System_Byte_">Equals(byte)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a> bitmask is equal to the underlying bitmask of the current
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int CompareTo(byte other)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>other</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a></dt>
+    <dd><p>A <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a> bitmask to compare with the underlying value of this instance.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>A signed integer whose sign indicates whether this instance is less than, equal to, or greater than
+<code class="paramref">other</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_WeekPattern_CompareTo_" data-uid="Bodu.WeekPattern.CompareTo*"></a>
+
+  <h3 id="Bodu_WeekPattern_CompareTo_System_Object_" data-uid="Bodu.WeekPattern.CompareTo(System.Object)">
+  CompareTo(object?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/WeekPattern.IComparable.cs/#L35"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Compares this instance to a specified object and returns an indication of their relative values.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int CompareTo(object? obj)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>obj</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></dt>
+    <dd><p>An object to compare. Must be a <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> or a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>A signed integer indicating the relative order: greater than zero if this instance is greater than
+<code class="paramref">obj</code> or <code class="paramref">obj</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>; zero if equal; less than zero if
+smaller.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_WeekPattern_CompareTo_System_Object__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Ordering is based on the numeric value of the underlying bitmask and has no inherent day-of-week meaning. It is
+provided to support sorting and binary-search scenarios where a consistent total order is required. For
+domain-specific ordering, enumerate the selected days directly.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown if <code class="paramref">obj</code> is not a <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> or <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_WeekPattern_Contains_" data-uid="Bodu.WeekPattern.Contains*"></a>
+
+  <h3 id="Bodu_WeekPattern_Contains_System_DayOfWeek_" data-uid="Bodu.WeekPattern.Contains(System.DayOfWeek)">
+  Contains(DayOfWeek)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/WeekPattern.cs/#L191"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines whether the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a> is selected in this pattern.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Contains(DayOfWeek day)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>day</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a></dt>
+    <dd><p>The day to test. Must be a valid <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a> value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if <code class="paramref">day</code> is selected; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown if <code class="paramref">day</code> is outside the valid <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a> range.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_WeekPattern_Equals_" data-uid="Bodu.WeekPattern.Equals*"></a>
+
+  <h3 id="Bodu_WeekPattern_Equals_Bodu_WeekPattern_" data-uid="Bodu.WeekPattern.Equals(Bodu.WeekPattern)">
+  Equals(WeekPattern)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/WeekPattern.IEquatable.cs/#L43"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines whether the specified <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> is equal to the current instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Equals(WeekPattern other)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>other</code> <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a></dt>
+    <dd><p>The <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> to compare with this instance.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if both instances have the same selected days; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_WeekPattern_Equals_" data-uid="Bodu.WeekPattern.Equals*"></a>
+
+  <h3 id="Bodu_WeekPattern_Equals_System_Byte_" data-uid="Bodu.WeekPattern.Equals(System.Byte)">
+  Equals(byte)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/WeekPattern.IEquatable.cs/#L51"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines whether the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a> bitmask is equal to the underlying bitmask of the current
 instance.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_WeekPattern_Equals_System_Object_" data-uid="Bodu.WeekPattern.Equals(System.Object)">
-          <a class="xref" href="Bodu.WeekPattern.Equals.html#Bodu_WeekPattern_Equals_System_Object_">Equals(object?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether the specified object is equal to the current <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_WeekPattern_FromByte_System_Byte_" data-uid="Bodu.WeekPattern.FromByte(System.Byte)">
-          <a class="xref" href="Bodu.WeekPattern.FromByte.html#Bodu_WeekPattern_FromByte_System_Byte_">FromByte(byte)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Creates a <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> from the specified bitmask byte value.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_WeekPattern_GetEnumerator" data-uid="Bodu.WeekPattern.GetEnumerator">
-          <a class="xref" href="Bodu.WeekPattern.GetEnumerator.html#Bodu_WeekPattern_GetEnumerator">GetEnumerator()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns a struct enumerator that yields each selected <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a> in Sunday-first order without
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Equals(byte other)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>other</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a></dt>
+    <dd><p>The <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a> value to compare.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the bit patterns match; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_WeekPattern_Equals_" data-uid="Bodu.WeekPattern.Equals*"></a>
+
+  <h3 id="Bodu_WeekPattern_Equals_System_Object_" data-uid="Bodu.WeekPattern.Equals(System.Object)">
+  Equals(object?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/WeekPattern.IEquatable.cs/#L33"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines whether the specified object is equal to the current <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override bool Equals(object? obj)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>obj</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></dt>
+    <dd><p>The object to compare. Only another boxed <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> can be equal; all other types, including a
+boxed <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a> and <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, return <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if <code class="paramref">obj</code> is a <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> with the same selected-day
+bitmask; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_WeekPattern_Equals_System_Object__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+A boxed <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a> is intentionally not considered equal here so that <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a>-level
+equality stays symmetric: <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte.equals#system-byte-equals(system-object)">Equals(object)</a> can never recognize a boxed
+<a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a>, so treating the reverse comparison as equal would violate the reflexive-symmetric
+contract of <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">Equals(object)</a> and corrupt hash-based collections. Use the strongly typed
+<a class="xref" href="Bodu.WeekPattern.html#Bodu_WeekPattern_Equals_System_Byte_">Equals(byte)</a> overload to compare against a raw bitmask.
+</p>
+</div>
+
+
+
+
+  <a id="Bodu_WeekPattern_FromByte_" data-uid="Bodu.WeekPattern.FromByte*"></a>
+
+  <h3 id="Bodu_WeekPattern_FromByte_System_Byte_" data-uid="Bodu.WeekPattern.FromByte(System.Byte)">
+  FromByte(byte)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/WeekPattern.cs/#L173"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> from the specified bitmask byte value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static WeekPattern FromByte(byte value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a></dt>
+    <dd><p>A <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a> in the range [0, 127] where each bit represents a day of the week in Sunday-first order.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a></dt>
+    <dd><p>A <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> corresponding to the supplied bitmask.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown if <code class="paramref">value</code> exceeds 127.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_WeekPattern_GetEnumerator_" data-uid="Bodu.WeekPattern.GetEnumerator*"></a>
+
+  <h3 id="Bodu_WeekPattern_GetEnumerator" data-uid="Bodu.WeekPattern.GetEnumerator">
+  GetEnumerator()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/WeekPattern.cs/#L202"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns a struct enumerator that yields each selected <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a> in Sunday-first order without
 allocating.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_WeekPattern_GetHashCode" data-uid="Bodu.WeekPattern.GetHashCode">
-          <a class="xref" href="Bodu.WeekPattern.GetHashCode.html#Bodu_WeekPattern_GetHashCode">GetHashCode()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns a hash code for the current instance derived from the underlying bitmask.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_WeekPattern_Parse_System_String_" data-uid="Bodu.WeekPattern.Parse(System.String)">
-          <a class="xref" href="Bodu.WeekPattern.Parse.html#Bodu_WeekPattern_Parse_System_String_">Parse(string)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Converts the string representation of selected days into a <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a>, automatically inferring
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public WeekPattern.Enumerator GetEnumerator()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a>.<a class="xref" href="Bodu.WeekPattern.Enumerator.html">Enumerator</a></dt>
+    <dd><p>A <a class="xref" href="Bodu.WeekPattern.Enumerator.html">WeekPattern.Enumerator</a> that iterates the selected days. Returning the struct directly avoids the heap
+allocation that a yield-state-machine enumerator would incur, and the C# <code>foreach</code> pattern binds to it via
+pattern matching without going through <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable&lt;T&gt;</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_WeekPattern_GetHashCode_" data-uid="Bodu.WeekPattern.GetHashCode*"></a>
+
+  <h3 id="Bodu_WeekPattern_GetHashCode" data-uid="Bodu.WeekPattern.GetHashCode">
+  GetHashCode()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/WeekPattern.IEquatable.cs/#L57"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns a hash code for the current instance derived from the underlying bitmask.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override int GetHashCode()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>An <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a> hash code consistent with <a class="xref" href="Bodu.WeekPattern.html#Bodu_WeekPattern_Equals_Bodu_WeekPattern_">Equals(WeekPattern)</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_WeekPattern_Parse_" data-uid="Bodu.WeekPattern.Parse*"></a>
+
+  <h3 id="Bodu_WeekPattern_Parse_System_String_" data-uid="Bodu.WeekPattern.Parse(System.String)">
+  Parse(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/WeekPattern.Parse.cs/#L37"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Converts the string representation of selected days into a <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a>, automatically inferring
 the format.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_WeekPattern_ParseExact_System_String_System_String_" data-uid="Bodu.WeekPattern.ParseExact(System.String,System.String)">
-          <a class="xref" href="Bodu.WeekPattern.ParseExact.html#Bodu_WeekPattern_ParseExact_System_String_System_String_">ParseExact(string, string)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Converts the string representation of selected days into a <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> using a specified format.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_WeekPattern_ToByte" data-uid="Bodu.WeekPattern.ToByte">
-          <a class="xref" href="Bodu.WeekPattern.ToByte.html#Bodu_WeekPattern_ToByte">ToByte()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a> representation of the selected days.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_WeekPattern_ToInt32" data-uid="Bodu.WeekPattern.ToInt32">
-          <a class="xref" href="Bodu.WeekPattern.ToInt32.html#Bodu_WeekPattern_ToInt32">ToInt32()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a> representation of the selected days, for contexts where an integer type is
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static WeekPattern Parse(string input)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>input</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The input string that represents selected days. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a></dt>
+    <dd><p>A <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> corresponding to the selected days in <code class="paramref">input</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_WeekPattern_Parse_System_String__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+The format is inferred from the length and character patterns of the input. For symbol strings the day ordering
+is resolved from the first position whose letter is valid in only one layout.
+</p>
+<p>
+One symbol form is genuinely ambiguous: a string whose only day letter is an <code>'S'</code> in the final position (<code>"______S"</code>)
+is a valid Saturday-only pattern in Sunday-first order and a valid Sunday-only pattern in Monday-first order.
+Auto-detection resolves it as the <b>Sunday-first</b> reading (Saturday-only), matching the ordering produced by
+the default <a class="xref" href="Bodu.WeekPattern.html#Bodu_WeekPattern_ToString">ToString()</a>. Strings produced with the explicit Monday-first format should
+be parsed with <a class="xref" href="Bodu.WeekPattern.html#Bodu_WeekPattern_ParseExact_System_String_System_String_">ParseExact(string, string)</a> and the <code>"M"</code> format, which is the unambiguous
+round-trip partner of <code>ToString("M")</code>.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown if <code class="paramref">input</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p>Thrown if <code class="paramref">input</code> is incorrectly formatted or cannot be parsed.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_WeekPattern_ParseExact_" data-uid="Bodu.WeekPattern.ParseExact*"></a>
+
+  <h3 id="Bodu_WeekPattern_ParseExact_System_String_System_String_" data-uid="Bodu.WeekPattern.ParseExact(System.String,System.String)">
+  ParseExact(string, string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/WeekPattern.Parse.cs/#L59"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Converts the string representation of selected days into a <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> using a specified format.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static WeekPattern ParseExact(string input, string format)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>input</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The input string that represents selected days. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>format</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>A format string that defines the day ordering and the character used for unselected days. See
+<a class="xref" href="Bodu.WeekPattern.html#Bodu_WeekPattern_ToString_System_String_System_IFormatProvider_">ToString(string?, IFormatProvider?)</a> for supported values. Must not be
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a></dt>
+    <dd><p>A <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> parsed according to the specified format.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown if <code class="paramref">input</code> or <code class="paramref">format</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p>Thrown if <code class="paramref">input</code> or <code class="paramref">format</code> is invalid or unrecognized.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_WeekPattern_ToByte_" data-uid="Bodu.WeekPattern.ToByte*"></a>
+
+  <h3 id="Bodu_WeekPattern_ToByte" data-uid="Bodu.WeekPattern.ToByte">
+  ToByte()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/WeekPattern.cs/#L208"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a> representation of the selected days.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public byte ToByte()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a></dt>
+    <dd><p>A <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a> whose bits correspond to the selected days in Sunday-first order.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_WeekPattern_ToInt32_" data-uid="Bodu.WeekPattern.ToInt32*"></a>
+
+  <h3 id="Bodu_WeekPattern_ToInt32" data-uid="Bodu.WeekPattern.ToInt32">
+  ToInt32()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/WeekPattern.cs/#L215"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a> representation of the selected days, for contexts where an integer type is
 required.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_WeekPattern_ToString" data-uid="Bodu.WeekPattern.ToString">
-          <a class="xref" href="Bodu.WeekPattern.ToString.html#Bodu_WeekPattern_ToString">ToString()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns a string representation of the current <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> using the default Sunday-first format
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int ToInt32()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>An <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a> whose value equals the underlying bitmask.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_WeekPattern_ToString_" data-uid="Bodu.WeekPattern.ToString*"></a>
+
+  <h3 id="Bodu_WeekPattern_ToString" data-uid="Bodu.WeekPattern.ToString">
+  ToString()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/WeekPattern.Formatting.cs/#L20"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns a string representation of the current <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> using the default Sunday-first format
 with underscore for unselected days.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_WeekPattern_ToString_System_IFormatProvider_" data-uid="Bodu.WeekPattern.ToString(System.IFormatProvider)">
-          <a class="xref" href="Bodu.WeekPattern.ToString.html#Bodu_WeekPattern_ToString_System_IFormatProvider_">ToString(IFormatProvider)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns a string representation of the current <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> using the default format and the
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override string ToString()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>A seven-character string in Sunday-to-Saturday order where each selected day is represented by its initial
+letter and each unselected day by <code>'_'</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_WeekPattern_ToString_" data-uid="Bodu.WeekPattern.ToString*"></a>
+
+  <h3 id="Bodu_WeekPattern_ToString_System_IFormatProvider_" data-uid="Bodu.WeekPattern.ToString(System.IFormatProvider)">
+  ToString(IFormatProvider)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/WeekPattern.Formatting.cs/#L43"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns a string representation of the current <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> using the default format and the
 specified culture-specific formatting information.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_WeekPattern_ToString_System_String_" data-uid="Bodu.WeekPattern.ToString(System.String)">
-          <a class="xref" href="Bodu.WeekPattern.ToString.html#Bodu_WeekPattern_ToString_System_String_">ToString(string)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns a string representation of the current <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> using the specified format.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_WeekPattern_ToString_System_String_System_IFormatProvider_" data-uid="Bodu.WeekPattern.ToString(System.String,System.IFormatProvider)">
-          <a class="xref" href="Bodu.WeekPattern.ToString.html#Bodu_WeekPattern_ToString_System_String_System_IFormatProvider_">ToString(string?, IFormatProvider?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns a string representation of the current <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> using the specified format and
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string ToString(IFormatProvider provider)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>provider</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iformatprovider">IFormatProvider</a></dt>
+    <dd><p>An <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iformatprovider">IFormatProvider</a> supplying culture-specific formatting information (currently ignored).</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>A string representing the selected days in Sunday-to-Saturday order with <code>'_'</code> for unselected days.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_WeekPattern_ToString_" data-uid="Bodu.WeekPattern.ToString*"></a>
+
+  <h3 id="Bodu_WeekPattern_ToString_System_String_" data-uid="Bodu.WeekPattern.ToString(System.String)">
+  ToString(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/WeekPattern.Formatting.cs/#L31"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns a string representation of the current <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> using the specified format.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string ToString(string format)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>format</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>A format string that defines the day ordering and the character used for unselected days. See
+<a class="xref" href="Bodu.WeekPattern.html#Bodu_WeekPattern_ToString_System_String_System_IFormatProvider_">ToString(string?, IFormatProvider?)</a> for supported values.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>A formatted string representing the selected days.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown if <code class="paramref">format</code> is not recognized.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_WeekPattern_ToString_" data-uid="Bodu.WeekPattern.ToString*"></a>
+
+  <h3 id="Bodu_WeekPattern_ToString_System_String_System_IFormatProvider_" data-uid="Bodu.WeekPattern.ToString(System.String,System.IFormatProvider)">
+  ToString(string?, IFormatProvider?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/WeekPattern.Formatting.cs/#L80"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns a string representation of the current <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> using the specified format and
 culture-specific formatting information.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_WeekPattern_TryParse_System_String_Bodu_WeekPattern__" data-uid="Bodu.WeekPattern.TryParse(System.String,Bodu.WeekPattern@)">
-          <a class="xref" href="Bodu.WeekPattern.TryParse.html#Bodu_WeekPattern_TryParse_System_String_Bodu_WeekPattern__">TryParse(string, out WeekPattern)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to parse the string representation of selected days into a <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a>, automatically
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string ToString(string? format, IFormatProvider? formatProvider)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>format</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>A format string determining day ordering and the unselected-day placeholder. Supported values:</p>
+<ul><li><code>'S'</code> or <code>'s'</code> — Sunday-to-Saturday; unselected = <code>'_'</code>.</li><li><code>'M'</code> or <code>'m'</code> — Monday-to-Sunday; unselected = <code>'_'</code>.</li><li>
+<code>'E'</code>, <code>'U'</code>, <code>'D'</code>, <code>'A'</code> — Sunday-to-Saturday with space, underscore, dash, or asterisk
+for unselected days respectively.
+</li><li>
+<code>'0'</code>, <code>'1'</code>, <code>'B'</code>, or <code>"01"</code> — Binary: <code>'1'</code> selected, <code>'0'</code> unselected.
+</li><li>
+Two-character format: first character <code>'S'</code> or <code>'M'</code> for day ordering; second character <code>'E'</code>,
+<code>'U'</code>, <code>'D'</code>, or <code>'A'</code> for the unselected placeholder.
+</li></ul>
+</dd>
+    <dt><code>formatProvider</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iformatprovider">IFormatProvider</a></dt>
+    <dd><p>An <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iformatprovider">IFormatProvider</a> (currently ignored).</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>A formatted seven-character string representing the selected days.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown if <code class="paramref">format</code> is not recognized.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_WeekPattern_TryParse_" data-uid="Bodu.WeekPattern.TryParse*"></a>
+
+  <h3 id="Bodu_WeekPattern_TryParse_System_String_Bodu_WeekPattern__" data-uid="Bodu.WeekPattern.TryParse(System.String,Bodu.WeekPattern@)">
+  TryParse(string, out WeekPattern)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/WeekPattern.Parse.cs/#L75"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Attempts to parse the string representation of selected days into a <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a>, automatically
 inferring the format.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_WeekPattern_TryParseExact_System_String_System_String_Bodu_WeekPattern__" data-uid="Bodu.WeekPattern.TryParseExact(System.String,System.String,Bodu.WeekPattern@)">
-          <a class="xref" href="Bodu.WeekPattern.TryParseExact.html#Bodu_WeekPattern_TryParseExact_System_String_System_String_Bodu_WeekPattern__">TryParseExact(string, string, out WeekPattern)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to parse the string representation of selected days into a <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> using a specified
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[SuppressMessage(&quot;Design&quot;, &quot;CA1062:Validate arguments of public methods&quot;, Justification = &quot;Argument validation is performed centrally in ParseCore.&quot;)]
+public static bool TryParse(string input, out WeekPattern result)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>input</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The input string that represents selected days.</p>
+</dd>
+    <dt><code>result</code> <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a></dt>
+    <dd><p>When this method returns, contains the parsed <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> if parsing succeeded; otherwise,
+contains <a class="xref" href="Bodu.WeekPattern.html#Bodu_WeekPattern_Empty">Empty</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if parsing succeeded; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_WeekPattern_TryParseExact_" data-uid="Bodu.WeekPattern.TryParseExact*"></a>
+
+  <h3 id="Bodu_WeekPattern_TryParseExact_System_String_System_String_Bodu_WeekPattern__" data-uid="Bodu.WeekPattern.TryParseExact(System.String,System.String,Bodu.WeekPattern@)">
+  TryParseExact(string, string, out WeekPattern)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/WeekPattern.Parse.cs/#L110"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Attempts to parse the string representation of selected days into a <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> using a specified
 format.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_WeekPattern_With_System_DayOfWeek_" data-uid="Bodu.WeekPattern.With(System.DayOfWeek)">
-          <a class="xref" href="Bodu.WeekPattern.With.html#Bodu_WeekPattern_With_System_DayOfWeek_">With(DayOfWeek)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> that includes the specified day in addition to those already selected.
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[SuppressMessage(&quot;Design&quot;, &quot;CA1062:Validate arguments of public methods&quot;, Justification = &quot;Argument validation is performed centrally in ParseCore.&quot;)]
+public static bool TryParseExact(string input, string format, out WeekPattern result)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>input</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The input string that represents selected days.</p>
+</dd>
+    <dt><code>format</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>A format string that defines the day ordering and the character used for unselected days. See
+<a class="xref" href="Bodu.WeekPattern.html#Bodu_WeekPattern_ToString_System_String_System_IFormatProvider_">ToString(string?, IFormatProvider?)</a> for supported values.</p>
+</dd>
+    <dt><code>result</code> <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a></dt>
+    <dd><p>When this method returns, contains the parsed <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> if parsing succeeded; otherwise,
+contains <a class="xref" href="Bodu.WeekPattern.html#Bodu_WeekPattern_Empty">Empty</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if parsing succeeded; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_WeekPattern_With_" data-uid="Bodu.WeekPattern.With*"></a>
+
+  <h3 id="Bodu_WeekPattern_With_System_DayOfWeek_" data-uid="Bodu.WeekPattern.With(System.DayOfWeek)">
+  With(DayOfWeek)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/WeekPattern.cs/#L228"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns a new <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> that includes the specified day in addition to those already selected.
 If <code class="paramref">day</code> is already selected the returned instance is equal to the current one.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_WeekPattern_Without_System_DayOfWeek_" data-uid="Bodu.WeekPattern.Without(System.DayOfWeek)">
-          <a class="xref" href="Bodu.WeekPattern.Without.html#Bodu_WeekPattern_Without_System_DayOfWeek_">Without(DayOfWeek)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> that excludes the specified day. If <code class="paramref">day</code> is not
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public WeekPattern With(DayOfWeek day)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>day</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a></dt>
+    <dd><p>The <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a> to add.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a></dt>
+    <dd><p>A new <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> with <code class="paramref">day</code> selected alongside all previously selected days.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown if <code class="paramref">day</code> is outside the valid <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a> range.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_WeekPattern_Without_" data-uid="Bodu.WeekPattern.Without*"></a>
+
+  <h3 id="Bodu_WeekPattern_Without_System_DayOfWeek_" data-uid="Bodu.WeekPattern.Without(System.DayOfWeek)">
+  Without(DayOfWeek)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/WeekPattern.cs/#L246"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns a new <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> that excludes the specified day. If <code class="paramref">day</code> is not
 selected the returned instance is equal to the current one.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="operators">Operators
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_WeekPattern_op_BitwiseAnd_Bodu_WeekPattern_Bodu_WeekPattern_" data-uid="Bodu.WeekPattern.op_BitwiseAnd(Bodu.WeekPattern,Bodu.WeekPattern)">
-          <a class="xref" href="Bodu.WeekPattern.op_BitwiseAnd.html#Bodu_WeekPattern_op_BitwiseAnd_Bodu_WeekPattern_Bodu_WeekPattern_">operator &amp;(WeekPattern, WeekPattern)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> containing only the days selected in both operands (set intersection).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_WeekPattern_op_BitwiseOr_Bodu_WeekPattern_Bodu_WeekPattern_" data-uid="Bodu.WeekPattern.op_BitwiseOr(Bodu.WeekPattern,Bodu.WeekPattern)">
-          <a class="xref" href="Bodu.WeekPattern.op_BitwiseOr.html#Bodu_WeekPattern_op_BitwiseOr_Bodu_WeekPattern_Bodu_WeekPattern_">operator |(WeekPattern, WeekPattern)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> containing all days selected in either operand (set union).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_WeekPattern_op_Equality_Bodu_WeekPattern_Bodu_WeekPattern_" data-uid="Bodu.WeekPattern.op_Equality(Bodu.WeekPattern,Bodu.WeekPattern)">
-          <a class="xref" href="Bodu.WeekPattern.op_Equality.html#Bodu_WeekPattern_op_Equality_Bodu_WeekPattern_Bodu_WeekPattern_">operator ==(WeekPattern, WeekPattern)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether two <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> instances have the same selected days.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_WeekPattern_op_ExclusiveOr_Bodu_WeekPattern_Bodu_WeekPattern_" data-uid="Bodu.WeekPattern.op_ExclusiveOr(Bodu.WeekPattern,Bodu.WeekPattern)">
-          <a class="xref" href="Bodu.WeekPattern.op_ExclusiveOr.html#Bodu_WeekPattern_op_ExclusiveOr_Bodu_WeekPattern_Bodu_WeekPattern_">operator ^(WeekPattern, WeekPattern)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> containing only the days selected in exactly one of the two operands
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public WeekPattern Without(DayOfWeek day)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>day</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a></dt>
+    <dd><p>The <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a> to remove.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a></dt>
+    <dd><p>A new <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> with <code class="paramref">day</code> unselected and all other previously selected days
+retained.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown if <code class="paramref">day</code> is outside the valid <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a> range.</p>
+</dd>
+  </dl>
+
+
+
+  <h2 class="section" id="operators">Operators
+</h2>
+
+
+  <a id="Bodu_WeekPattern_op_BitwiseAnd_" data-uid="Bodu.WeekPattern.op_BitwiseAnd*"></a>
+
+  <h3 id="Bodu_WeekPattern_op_BitwiseAnd_Bodu_WeekPattern_Bodu_WeekPattern_" data-uid="Bodu.WeekPattern.op_BitwiseAnd(Bodu.WeekPattern,Bodu.WeekPattern)">
+  operator &amp;(WeekPattern, WeekPattern)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/WeekPattern.Operators.cs/#L74"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns a new <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> containing only the days selected in both operands (set intersection).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static WeekPattern operator &amp;(WeekPattern left, WeekPattern right)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>left</code> <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a></dt>
+    <dd><p>The first operand.</p>
+</dd>
+    <dt><code>right</code> <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a></dt>
+    <dd><p>The second operand.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a></dt>
+    <dd><p>A <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> whose selected days are the intersection of the two operands.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_WeekPattern_op_BitwiseOr_" data-uid="Bodu.WeekPattern.op_BitwiseOr*"></a>
+
+  <h3 id="Bodu_WeekPattern_op_BitwiseOr_Bodu_WeekPattern_Bodu_WeekPattern_" data-uid="Bodu.WeekPattern.op_BitwiseOr(Bodu.WeekPattern,Bodu.WeekPattern)">
+  operator |(WeekPattern, WeekPattern)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/WeekPattern.Operators.cs/#L49"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns a new <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> containing all days selected in either operand (set union).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static WeekPattern operator |(WeekPattern left, WeekPattern right)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>left</code> <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a></dt>
+    <dd><p>The first operand.</p>
+</dd>
+    <dt><code>right</code> <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a></dt>
+    <dd><p>The second operand.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a></dt>
+    <dd><p>A <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> whose selected days are the union of the two operands.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_WeekPattern_op_Equality_" data-uid="Bodu.WeekPattern.op_Equality*"></a>
+
+  <h3 id="Bodu_WeekPattern_op_Equality_Bodu_WeekPattern_Bodu_WeekPattern_" data-uid="Bodu.WeekPattern.op_Equality(Bodu.WeekPattern,Bodu.WeekPattern)">
+  operator ==(WeekPattern, WeekPattern)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/WeekPattern.Operators.cs/#L27"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines whether two <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> instances have the same selected days.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool operator ==(WeekPattern left, WeekPattern right)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>left</code> <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a></dt>
+    <dd><p>The first operand.</p>
+</dd>
+    <dt><code>right</code> <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a></dt>
+    <dd><p>The second operand.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if both instances are equal; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_WeekPattern_op_ExclusiveOr_" data-uid="Bodu.WeekPattern.op_ExclusiveOr*"></a>
+
+  <h3 id="Bodu_WeekPattern_op_ExclusiveOr_Bodu_WeekPattern_Bodu_WeekPattern_" data-uid="Bodu.WeekPattern.op_ExclusiveOr(Bodu.WeekPattern,Bodu.WeekPattern)">
+  operator ^(WeekPattern, WeekPattern)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/WeekPattern.Operators.cs/#L63"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns a new <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> containing only the days selected in exactly one of the two operands
 (symmetric difference).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_WeekPattern_op_GreaterThan_Bodu_WeekPattern_Bodu_WeekPattern_" data-uid="Bodu.WeekPattern.op_GreaterThan(Bodu.WeekPattern,Bodu.WeekPattern)">
-          <a class="xref" href="Bodu.WeekPattern.op_GreaterThan.html#Bodu_WeekPattern_op_GreaterThan_Bodu_WeekPattern_Bodu_WeekPattern_">operator &gt;(WeekPattern, WeekPattern)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether one <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> follows another in the underlying bitmask ordering.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_WeekPattern_op_GreaterThanOrEqual_Bodu_WeekPattern_Bodu_WeekPattern_" data-uid="Bodu.WeekPattern.op_GreaterThanOrEqual(Bodu.WeekPattern,Bodu.WeekPattern)">
-          <a class="xref" href="Bodu.WeekPattern.op_GreaterThanOrEqual.html#Bodu_WeekPattern_op_GreaterThanOrEqual_Bodu_WeekPattern_Bodu_WeekPattern_">operator &gt;=(WeekPattern, WeekPattern)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether one <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> follows or equals another in the underlying bitmask ordering.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_WeekPattern_op_Implicit_Bodu_WeekPattern__System_Byte" data-uid="Bodu.WeekPattern.op_Implicit(Bodu.WeekPattern)~System.Byte">
-          <a class="xref" href="Bodu.WeekPattern.op_Implicit.html#Bodu_WeekPattern_op_Implicit_Bodu_WeekPattern__System_Byte">implicit operator byte(WeekPattern)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Implicitly converts a <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> to its underlying <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a> bitmask.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_WeekPattern_op_Inequality_Bodu_WeekPattern_Bodu_WeekPattern_" data-uid="Bodu.WeekPattern.op_Inequality(Bodu.WeekPattern,Bodu.WeekPattern)">
-          <a class="xref" href="Bodu.WeekPattern.op_Inequality.html#Bodu_WeekPattern_op_Inequality_Bodu_WeekPattern_Bodu_WeekPattern_">operator !=(WeekPattern, WeekPattern)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether two <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> instances have different selected days.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_WeekPattern_op_LessThan_Bodu_WeekPattern_Bodu_WeekPattern_" data-uid="Bodu.WeekPattern.op_LessThan(Bodu.WeekPattern,Bodu.WeekPattern)">
-          <a class="xref" href="Bodu.WeekPattern.op_LessThan.html#Bodu_WeekPattern_op_LessThan_Bodu_WeekPattern_Bodu_WeekPattern_">operator &lt;(WeekPattern, WeekPattern)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether one <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> precedes another in the underlying bitmask ordering.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_WeekPattern_op_LessThanOrEqual_Bodu_WeekPattern_Bodu_WeekPattern_" data-uid="Bodu.WeekPattern.op_LessThanOrEqual(Bodu.WeekPattern,Bodu.WeekPattern)">
-          <a class="xref" href="Bodu.WeekPattern.op_LessThanOrEqual.html#Bodu_WeekPattern_op_LessThanOrEqual_Bodu_WeekPattern_Bodu_WeekPattern_">operator &lt;=(WeekPattern, WeekPattern)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether one <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> precedes or equals another in the underlying bitmask ordering.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_WeekPattern_op_OnesComplement_Bodu_WeekPattern_" data-uid="Bodu.WeekPattern.op_OnesComplement(Bodu.WeekPattern)">
-          <a class="xref" href="Bodu.WeekPattern.op_OnesComplement.html#Bodu_WeekPattern_op_OnesComplement_Bodu_WeekPattern_">operator ~(WeekPattern)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> with all seven days toggled — selected days become unselected and vice
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static WeekPattern operator ^(WeekPattern left, WeekPattern right)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>left</code> <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a></dt>
+    <dd><p>The first operand.</p>
+</dd>
+    <dt><code>right</code> <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a></dt>
+    <dd><p>The second operand.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a></dt>
+    <dd><p>A <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> whose selected days are those that differ between the two operands.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_WeekPattern_op_GreaterThan_" data-uid="Bodu.WeekPattern.op_GreaterThan*"></a>
+
+  <h3 id="Bodu_WeekPattern_op_GreaterThan_Bodu_WeekPattern_Bodu_WeekPattern_" data-uid="Bodu.WeekPattern.op_GreaterThan(Bodu.WeekPattern,Bodu.WeekPattern)">
+  operator &gt;(WeekPattern, WeekPattern)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/WeekPattern.Operators.cs/#L136"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines whether one <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> follows another in the underlying bitmask ordering.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool operator &gt;(WeekPattern left, WeekPattern right)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>left</code> <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a></dt>
+    <dd><p>The first operand.</p>
+</dd>
+    <dt><code>right</code> <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a></dt>
+    <dd><p>The second operand.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if <code class="paramref">left</code> is greater than <code class="paramref">right</code>; otherwise,
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_WeekPattern_op_GreaterThan_Bodu_WeekPattern_Bodu_WeekPattern__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Ordering is based on the numeric value of the underlying bitmask and has no inherent day-of-week meaning.</p>
+</div>
+
+
+
+
+  <a id="Bodu_WeekPattern_op_GreaterThanOrEqual_" data-uid="Bodu.WeekPattern.op_GreaterThanOrEqual*"></a>
+
+  <h3 id="Bodu_WeekPattern_op_GreaterThanOrEqual_Bodu_WeekPattern_Bodu_WeekPattern_" data-uid="Bodu.WeekPattern.op_GreaterThanOrEqual(Bodu.WeekPattern,Bodu.WeekPattern)">
+  operator &gt;=(WeekPattern, WeekPattern)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/WeekPattern.Operators.cs/#L153"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines whether one <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> follows or equals another in the underlying bitmask ordering.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool operator &gt;=(WeekPattern left, WeekPattern right)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>left</code> <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a></dt>
+    <dd><p>The first operand.</p>
+</dd>
+    <dt><code>right</code> <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a></dt>
+    <dd><p>The second operand.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if <code class="paramref">left</code> is greater than or equal to <code class="paramref">right</code>;
+otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_WeekPattern_op_GreaterThanOrEqual_Bodu_WeekPattern_Bodu_WeekPattern__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Ordering is based on the numeric value of the underlying bitmask and has no inherent day-of-week meaning.</p>
+</div>
+
+
+
+
+  <a id="Bodu_WeekPattern_op_Implicit_" data-uid="Bodu.WeekPattern.op_Implicit*"></a>
+
+  <h3 id="Bodu_WeekPattern_op_Implicit_Bodu_WeekPattern__System_Byte" data-uid="Bodu.WeekPattern.op_Implicit(Bodu.WeekPattern)~System.Byte">
+  implicit operator byte(WeekPattern)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/WeekPattern.Operators.cs/#L16"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Implicitly converts a <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> to its underlying <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a> bitmask.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static implicit operator byte(WeekPattern pattern)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>pattern</code> <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a></dt>
+    <dd><p>The <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> to convert.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a></dt>
+    <dd><p>A <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a> representing the selected days.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_WeekPattern_op_Inequality_" data-uid="Bodu.WeekPattern.op_Inequality*"></a>
+
+  <h3 id="Bodu_WeekPattern_op_Inequality_Bodu_WeekPattern_Bodu_WeekPattern_" data-uid="Bodu.WeekPattern.op_Inequality(Bodu.WeekPattern,Bodu.WeekPattern)">
+  operator !=(WeekPattern, WeekPattern)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/WeekPattern.Operators.cs/#L85"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines whether two <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> instances have different selected days.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool operator !=(WeekPattern left, WeekPattern right)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>left</code> <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a></dt>
+    <dd><p>The first operand.</p>
+</dd>
+    <dt><code>right</code> <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a></dt>
+    <dd><p>The second operand.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the instances differ; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_WeekPattern_op_LessThan_" data-uid="Bodu.WeekPattern.op_LessThan*"></a>
+
+  <h3 id="Bodu_WeekPattern_op_LessThan_Bodu_WeekPattern_Bodu_WeekPattern_" data-uid="Bodu.WeekPattern.op_LessThan(Bodu.WeekPattern,Bodu.WeekPattern)">
+  operator &lt;(WeekPattern, WeekPattern)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/WeekPattern.Operators.cs/#L102"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines whether one <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> precedes another in the underlying bitmask ordering.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool operator &lt;(WeekPattern left, WeekPattern right)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>left</code> <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a></dt>
+    <dd><p>The first operand.</p>
+</dd>
+    <dt><code>right</code> <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a></dt>
+    <dd><p>The second operand.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if <code class="paramref">left</code> is less than <code class="paramref">right</code>; otherwise,
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_WeekPattern_op_LessThan_Bodu_WeekPattern_Bodu_WeekPattern__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Ordering is based on the numeric value of the underlying bitmask and has no inherent day-of-week meaning.</p>
+</div>
+
+
+
+
+  <a id="Bodu_WeekPattern_op_LessThanOrEqual_" data-uid="Bodu.WeekPattern.op_LessThanOrEqual*"></a>
+
+  <h3 id="Bodu_WeekPattern_op_LessThanOrEqual_Bodu_WeekPattern_Bodu_WeekPattern_" data-uid="Bodu.WeekPattern.op_LessThanOrEqual(Bodu.WeekPattern,Bodu.WeekPattern)">
+  operator &lt;=(WeekPattern, WeekPattern)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/WeekPattern.Operators.cs/#L119"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines whether one <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> precedes or equals another in the underlying bitmask ordering.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool operator &lt;=(WeekPattern left, WeekPattern right)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>left</code> <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a></dt>
+    <dd><p>The first operand.</p>
+</dd>
+    <dt><code>right</code> <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a></dt>
+    <dd><p>The second operand.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if <code class="paramref">left</code> is less than or equal to <code class="paramref">right</code>;
+otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_WeekPattern_op_LessThanOrEqual_Bodu_WeekPattern_Bodu_WeekPattern__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Ordering is based on the numeric value of the underlying bitmask and has no inherent day-of-week meaning.</p>
+</div>
+
+
+
+
+  <a id="Bodu_WeekPattern_op_OnesComplement_" data-uid="Bodu.WeekPattern.op_OnesComplement*"></a>
+
+  <h3 id="Bodu_WeekPattern_op_OnesComplement_Bodu_WeekPattern_" data-uid="Bodu.WeekPattern.op_OnesComplement(Bodu.WeekPattern)">
+  operator ~(WeekPattern)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/WeekPattern.Operators.cs/#L38"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns a new <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> with all seven days toggled — selected days become unselected and vice
 versa.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="Bodu.Extensions.BufferConverter.CopyTo.html#Bodu_Extensions_BufferConverter_CopyTo__1___0_System_Byte___System_Int32_">BufferConverter.CopyTo&lt;T&gt;(T, byte[], int)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_">ComparableExtensions.AtLeast&lt;T&gt;(T, T)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_">ComparableExtensions.AtMost&lt;T&gt;(T, T)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Clamp.html#Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__">ComparableExtensions.Clamp&lt;T&gt;(T, T?, T?)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Clamp.html#Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.Clamp&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsBetween.html#Bodu_Extensions_ComparableExtensions_IsBetween__1___0___0___0_">ComparableExtensions.IsBetween&lt;T&gt;(T, T?, T?)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsBetween.html#Bodu_Extensions_ComparableExtensions_IsBetween__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsBetween&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual__1___0___0_">ComparableExtensions.IsGreaterThanOrEqual&lt;T&gt;(T, T?)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThan.html#Bodu_Extensions_ComparableExtensions_IsGreaterThan__1___0___0_">ComparableExtensions.IsGreaterThan&lt;T&gt;(T, T?)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThan.html#Bodu_Extensions_ComparableExtensions_IsGreaterThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual__1___0___0_">ComparableExtensions.IsLessThanOrEqual&lt;T&gt;(T, T?)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThan.html#Bodu_Extensions_ComparableExtensions_IsLessThan__1___0___0_">ComparableExtensions.IsLessThan&lt;T&gt;(T, T?)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThan.html#Bodu_Extensions_ComparableExtensions_IsLessThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsOutside.html#Bodu_Extensions_ComparableExtensions_IsOutside__1___0___0___0_">ComparableExtensions.IsOutside&lt;T&gt;(T, T?, T?)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsOutside.html#Bodu_Extensions_ComparableExtensions_IsOutside__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsOutside&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_">ComparableExtensions.Max&lt;T&gt;(T, T)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_">ComparableExtensions.Min&lt;T&gt;(T, T)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.WorkingDaysOfWeekExtensions.ToWorkingDaysOfWeek.html#Bodu_Extensions_WorkingDaysOfWeekExtensions_ToWorkingDaysOfWeek_Bodu_WeekPattern_">WorkingDaysOfWeekExtensions.ToWorkingDaysOfWeek(WeekPattern)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.WorkingDaysOfWeekExtensions.TryGetWorkingDaysOfWeek.html#Bodu_Extensions_WorkingDaysOfWeekExtensions_TryGetWorkingDaysOfWeek_Bodu_WeekPattern_Bodu_WorkingDaysOfWeek__">WorkingDaysOfWeekExtensions.TryGetWorkingDaysOfWeek(WeekPattern, out WorkingDaysOfWeek)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__2_System_Collections_Generic_IEnumerable___0____1_System_Func___1___0_System_Int32___1__">IEnumerableExtensions.Aggregate&lt;TSource, TAccumulate&gt;(IEnumerable&lt;TSource&gt;, TAccumulate, Func&lt;TAccumulate, TSource, int, TAccumulate&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__3_System_Collections_Generic_IEnumerable___0____1___2_System_Func___1___0_System_Int32___1__System_Func___2___0_System_Int32___2__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2&gt;(IEnumerable&lt;TSource&gt;, T1, T2, Func&lt;T1, TSource, int, T1&gt;, Func&lt;T2, TSource, int, T2&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__3_System_Collections_Generic_IEnumerable___0____1___2_System_Func___1___0___1__System_Func___2___0___2__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2&gt;(IEnumerable&lt;TSource&gt;, T1, T2, Func&lt;T1, TSource, T1&gt;, Func&lt;T2, TSource, T2&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__3_System_Collections_Generic_IEnumerable___0____1_System_Func___1___0_System_Int32___1__System_Func___1___2__">IEnumerableExtensions.Aggregate&lt;TSource, TAccumulate, TResult&gt;(IEnumerable&lt;TSource&gt;, TAccumulate, Func&lt;TAccumulate, TSource, int, TAccumulate&gt;, Func&lt;TAccumulate, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__4_System_Collections_Generic_IEnumerable___0____1___2_System_Func___1___0_System_Int32___1__System_Func___2___0_System_Int32___2__System_Func___1___2___3__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2, TResult&gt;(IEnumerable&lt;TSource&gt;, T1, T2, Func&lt;T1, TSource, int, T1&gt;, Func&lt;T2, TSource, int, T2&gt;, Func&lt;T1, T2, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__4_System_Collections_Generic_IEnumerable___0____1___2_System_Func___1___0___1__System_Func___2___0___2__System_Func___1___2___3__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2, TResult&gt;(IEnumerable&lt;TSource&gt;, T1, T2, Func&lt;T1, TSource, T1&gt;, Func&lt;T2, TSource, T2&gt;, Func&lt;T1, T2, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__4_System_Collections_Generic_IEnumerable___0____1___2___3_System_Func___1___0_System_Int32___1__System_Func___2___0_System_Int32___2__System_Func___3___0_System_Int32___3__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2, T3&gt;(IEnumerable&lt;TSource&gt;, T1, T2, T3, Func&lt;T1, TSource, int, T1&gt;, Func&lt;T2, TSource, int, T2&gt;, Func&lt;T3, TSource, int, T3&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__4_System_Collections_Generic_IEnumerable___0____1___2___3_System_Func___1___0___1__System_Func___2___0___2__System_Func___3___0___3__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2, T3&gt;(IEnumerable&lt;TSource&gt;, T1, T2, T3, Func&lt;T1, TSource, T1&gt;, Func&lt;T2, TSource, T2&gt;, Func&lt;T3, TSource, T3&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__5_System_Collections_Generic_IEnumerable___0____1___2___3_System_Func___1___0_System_Int32___1__System_Func___2___0_System_Int32___2__System_Func___3___0_System_Int32___3__System_Func___1___2___3___4__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2, T3, TResult&gt;(IEnumerable&lt;TSource&gt;, T1, T2, T3, Func&lt;T1, TSource, int, T1&gt;, Func&lt;T2, TSource, int, T2&gt;, Func&lt;T3, TSource, int, T3&gt;, Func&lt;T1, T2, T3, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__5_System_Collections_Generic_IEnumerable___0____1___2___3_System_Func___1___0___1__System_Func___2___0___2__System_Func___3___0___3__System_Func___1___2___3___4__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2, T3, TResult&gt;(IEnumerable&lt;TSource&gt;, T1, T2, T3, Func&lt;T1, TSource, T1&gt;, Func&lt;T2, TSource, T2&gt;, Func&lt;T3, TSource, T3&gt;, Func&lt;T1, T2, T3, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.BatchPooled.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_BatchPooled__1_System_Collections_Generic_IEnumerable___0__System_Int32_">IEnumerableExtensions.BatchPooled&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, int)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.BatchPooled.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_BatchPooled__2_System_Collections_Generic_IEnumerable___0__System_Int32_System_Func___0_System_Int32___1__">IEnumerableExtensions.BatchPooled&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, int, Func&lt;TSource, int, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Batch.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Batch__2_System_Collections_Generic_IEnumerable___0__System_Int32_System_Func___0_System_Int32___1__">IEnumerableExtensions.Batch&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, int, Func&lt;TSource, int, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Batch.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Batch__2_System_Collections_Generic_IEnumerable___0__System_Int32_System_Func___0___1__">IEnumerableExtensions.Batch&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, int, Func&lt;TSource, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Cache.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Cache__1_System_Collections_Generic_IEnumerable___0__">IEnumerableExtensions.Cache&lt;T&gt;(IEnumerable&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.CartesianProduct.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_CartesianProduct__2_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1__">IEnumerableExtensions.CartesianProduct&lt;TFirst, TSecond&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.CartesianProduct.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_CartesianProduct__3_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1__System_Func___0___1___2__">IEnumerableExtensions.CartesianProduct&lt;TFirst, TSecond, TResult&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;, Func&lt;TFirst, TSecond, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ChunkBy.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ChunkBy__2_System_Collections_Generic_IEnumerable___0__System_Func___0___1__">IEnumerableExtensions.ChunkBy&lt;TSource, TKey&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TKey&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ChunkBy.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ChunkBy__2_System_Collections_Generic_IEnumerable___0__System_Func___0___1__System_Collections_Generic_IEqualityComparer___1__">IEnumerableExtensions.ChunkBy&lt;TSource, TKey&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TKey&gt;, IEqualityComparer&lt;TKey&gt;?)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Combinations.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Combinations__1_System_Collections_Generic_IEnumerable___0__System_Int32_">IEnumerableExtensions.Combinations&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, int)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ContainsAll.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ContainsAll__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEqualityComparer___0__">IEnumerableExtensions.ContainsAll&lt;T&gt;(IEnumerable&lt;T&gt;, IEnumerable&lt;T&gt;, IEqualityComparer&lt;T&gt;?)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ContainsAny.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ContainsAny__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEqualityComparer___0__">IEnumerableExtensions.ContainsAny&lt;T&gt;(IEnumerable&lt;T&gt;, IEnumerable&lt;T&gt;, IEqualityComparer&lt;T&gt;?)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ForEach.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ForEach__1_System_Collections_Generic_IEnumerable___0__System_Action___0__">IEnumerableExtensions.ForEach&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Action&lt;TSource&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Index.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Index__1_System_Collections_Generic_IEnumerable___0__">IEnumerableExtensions.Index&lt;TSource&gt;(IEnumerable&lt;TSource&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Interleave.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Interleave__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0____">IEnumerableExtensions.Interleave&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, params IEnumerable&lt;TSource&gt;[])</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.IsNullOrEmpty.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_IsNullOrEmpty__1_System_Collections_Generic_IEnumerable___0__">IEnumerableExtensions.IsNullOrEmpty&lt;TSource&gt;(IEnumerable&lt;TSource&gt;?)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Pairwise.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Pairwise__1_System_Collections_Generic_IEnumerable___0__">IEnumerableExtensions.Pairwise&lt;TSource&gt;(IEnumerable&lt;TSource&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Pairwise.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Pairwise__2_System_Collections_Generic_IEnumerable___0__System_Func___0___0___1__">IEnumerableExtensions.Pairwise&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TSource, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Permutations.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Permutations__1_System_Collections_Generic_IEnumerable___0__">IEnumerableExtensions.Permutations&lt;TSource&gt;(IEnumerable&lt;TSource&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Permutations.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Permutations__1_System_Collections_Generic_IEnumerable___0__System_Int32_">IEnumerableExtensions.Permutations&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, int)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Randomize.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Randomize__1_System_Collections_Generic_IEnumerable___0__Bodu_Collections_Generic_Extensions_RandomizationMode_Bodu_IRandomGenerator_System_Nullable_System_Int32__">IEnumerableExtensions.Randomize&lt;T&gt;(IEnumerable&lt;T&gt;, RandomizationMode, IRandomGenerator, int?)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RecursiveSelect__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Collections_Generic_IEnumerable___0___">IEnumerableExtensions.RecursiveSelect&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, IEnumerable&lt;TSource&gt;&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RecursiveSelect__2_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Collections_Generic_IEnumerable___0___System_Func___0_System_Int32_System_Int32___1__">IEnumerableExtensions.RecursiveSelect&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, IEnumerable&lt;TSource&gt;&gt;, Func&lt;TSource, int, int, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RecursiveSelect__2_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Collections_Generic_IEnumerable___0___System_Func___0_System_Int32_System_Int32___1__System_Func___0_Bodu_Collections_Extensions_RecursiveSelectControl__">IEnumerableExtensions.RecursiveSelect&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, IEnumerable&lt;TSource&gt;&gt;, Func&lt;TSource, int, int, TResult&gt;, Func&lt;TSource, RecursiveSelectControl&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RecursiveSelect__2_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Collections_Generic_IEnumerable___0___System_Func___0_System_Int32___1__">IEnumerableExtensions.RecursiveSelect&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, IEnumerable&lt;TSource&gt;&gt;, Func&lt;TSource, int, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RecursiveSelect__2_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Collections_Generic_IEnumerable___0___System_Func___0___1__">IEnumerableExtensions.RecursiveSelect&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, IEnumerable&lt;TSource&gt;&gt;, Func&lt;TSource, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RunLengthEncode.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RunLengthEncode__1_System_Collections_Generic_IEnumerable___0__">IEnumerableExtensions.RunLengthEncode&lt;TSource&gt;(IEnumerable&lt;TSource&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RunLengthEncode.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RunLengthEncode__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEqualityComparer___0__">IEnumerableExtensions.RunLengthEncode&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, IEqualityComparer&lt;TSource&gt;?)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Scan.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Scan__2_System_Collections_Generic_IEnumerable___0____1_System_Func___1___0___1__">IEnumerableExtensions.Scan&lt;TSource, TAccumulate&gt;(IEnumerable&lt;TSource&gt;, TAccumulate, Func&lt;TAccumulate, TSource, TAccumulate&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Scan.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Scan__3_System_Collections_Generic_IEnumerable___0____1_System_Func___1___0___1__System_Func___1___2__">IEnumerableExtensions.Scan&lt;TSource, TAccumulate, TResult&gt;(IEnumerable&lt;TSource&gt;, TAccumulate, Func&lt;TAccumulate, TSource, TAccumulate&gt;, Func&lt;TAccumulate, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.SplitWhen.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_SplitWhen__1_System_Collections_Generic_IEnumerable___0__System_Func___0___0_System_Boolean__">IEnumerableExtensions.SplitWhen&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TSource, bool&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Windowed.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Windowed__1_System_Collections_Generic_IEnumerable___0__System_Int32_">IEnumerableExtensions.Windowed&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, int)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Windowed.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Windowed__2_System_Collections_Generic_IEnumerable___0__System_Int32_System_Func_System_Collections_Generic_IReadOnlyList___0____1__">IEnumerableExtensions.Windowed&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, int, Func&lt;IReadOnlyList&lt;TSource&gt;, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ZipLongest.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ZipLongest__2_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1__">IEnumerableExtensions.ZipLongest&lt;TFirst, TSecond&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ZipLongest.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ZipLongest__2_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1____0___1_">IEnumerableExtensions.ZipLongest&lt;TFirst, TSecond&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;, TFirst, TSecond)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ZipLongest.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ZipLongest__3_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1____0___1_System_Func___0___1___2__">IEnumerableExtensions.ZipLongest&lt;TFirst, TSecond, TResult&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;, TFirst, TSecond, Func&lt;TFirst, TSecond, TResult&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.CountOrDefault.html#Bodu_Collections_Extensions_IEnumerableExtensions_CountOrDefault_System_Collections_IEnumerable_">IEnumerableExtensions.CountOrDefault(IEnumerable)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_Generic_IEnumerable_System_Object___System_Func_System_Object_System_Int32_System_Int32_System_Object__">IEnumerableExtensions.RecursiveSelect(IEnumerable, Func&lt;object, IEnumerable&lt;object&gt;&gt;, Func&lt;object, int, int, object&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_Generic_IEnumerable_System_Object___System_Func_System_Object_System_Int32_System_Int32_System_Object__System_Func_System_Object_Bodu_Collections_Extensions_RecursiveSelectControl__">IEnumerableExtensions.RecursiveSelect(IEnumerable, Func&lt;object, IEnumerable&lt;object&gt;&gt;, Func&lt;object, int, int, object&gt;, Func&lt;object, RecursiveSelectControl&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_Generic_IEnumerable_System_Object___System_Func_System_Object_System_Int32_System_Object__">IEnumerableExtensions.RecursiveSelect(IEnumerable, Func&lt;object, IEnumerable&lt;object&gt;&gt;, Func&lt;object, int, object&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_Generic_IEnumerable_System_Object___System_Func_System_Object_System_Object__">IEnumerableExtensions.RecursiveSelect(IEnumerable, Func&lt;object, IEnumerable&lt;object&gt;&gt;, Func&lt;object, object&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_IEnumerable__">IEnumerableExtensions.RecursiveSelect(IEnumerable, Func&lt;object, IEnumerable&gt;)</a>
-  </div>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static WeekPattern operator ~(WeekPattern pattern)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>pattern</code> <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a></dt>
+    <dd><p>The <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> to complement.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a></dt>
+    <dd><p>The bitwise complement of <code class="paramref">pattern</code>, masked to the valid seven-day range.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 302e395 · Built: 2026-09-29 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 1e0dd9a · Built: 2026-09-29 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

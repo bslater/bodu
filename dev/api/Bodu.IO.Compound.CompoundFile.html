@@ -1,103 +1,133 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
       <title>Class CompoundFile | BODU </title>
-      <meta name="viewport" content="width=device-width">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class CompoundFile | BODU ">
-    
-    <meta name="description" content="Represents an OLE2 / Compound File Binary (CFB) container opened over a path or stream, exposing its storage hierarchy, the metadata of every entry, and the byte payload of each named stream for reading or editing.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      
+      <meta name="description" content="Represents an OLE2 / Compound File Binary (CFB) container opened over a path or stream, exposing its storage hierarchy, the metadata of every entry, and the byte payload of each named stream for reading or editing.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/new/master/apiSpec/new?filename=Bodu_IO_Compound_CompoundFile.md&amp;value=---%0Auid%3A%20Bodu.IO.Compound.CompoundFile%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.IO.Compound.CompoundFile">
+
+        <article data-uid="Bodu.IO.Compound.CompoundFile">
 
 
 
-  <h1 id="Bodu_IO_Compound_CompoundFile" data-uid="Bodu.IO.Compound.CompoundFile" class="text-break">Class CompoundFile</h1>
-  <div class="markdown level0 summary"><p>Represents an OLE2 / Compound File Binary (CFB) container opened over a path or stream, exposing its storage
+  <h1 id="Bodu_IO_Compound_CompoundFile" data-uid="Bodu.IO.Compound.CompoundFile" class="text-break">
+Class CompoundFile  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs/#L64"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.IO.html">IO</a>.<a class="xref" href="Bodu.IO.Compound.html">Compound</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.IO.Compound.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Represents an OLE2 / Compound File Binary (CFB) container opened over a path or stream, exposing its storage
 hierarchy, the metadata of every entry, and the byte payload of each named stream for reading or editing.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><span class="xref">CompoundFile</span></div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class CompoundFile : IDisposable</code></pre>
   </div>
-  <div class="implements">
-    <h5>Implements</h5>
-    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
-  </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">CompoundFile</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
@@ -116,40 +146,30 @@ hierarchy, the metadata of every entry, and the byte payload of each named strea
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
+  </dd></dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">IO</span>.<a class="xref" href="Bodu.IO.Compound.html">Compound</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.IO.Compound.dll</h6>
-  <h5 id="Bodu_IO_Compound_CompoundFile_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class CompoundFile : IDisposable</code></pre>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h5 id="Bodu_IO_Compound_CompoundFile_remarks"><strong>Remarks</strong></h5>
-  <div class="markdown level0 remarks"><p>
-<img src="../images/diagrams/io-compound-structure.svg" alt="A compound file is a structured-storage envelope: one physical file that begins with the OLE2 signature D0 CF 11 E0 and holds a header, allocation tables (FAT and mini-FAT), a directory, and sectors. CompoundFile.Open parses that container and exposes a logical hierarchy. Navigation starts at RootStorage and descends through nested CompoundStorage containers to CompoundStream leaves; a CompoundStorage is the managed counterpart of the COM IStorage interface and a CompoundStream is the counterpart of IStream.">
-</p>
-<p>
-A compound file is a structured-storage envelope — effectively a small file system embedded in a single file — used
-by legacy Microsoft Office formats (<code>.xls</code>, <code>.doc</code>, <code>.ppt</code>, <code>.msg</code>) and other technologies. This
-type is the managed counterpart of the COM <code>StgOpenStorage</code> entry point: navigation begins at
-<a class="xref" href="Bodu.IO.Compound.CompoundFile.RootStorage.html#Bodu_IO_Compound_CompoundFile_RootStorage">RootStorage</a> and descends through nested <a class="xref" href="Bodu.IO.Compound.CompoundStorage.html">CompoundStorage</a> objects to the
-<a class="xref" href="Bodu.IO.Compound.CompoundStream.html">CompoundStream</a> leaves.
-</p>
-<p>
-By default a read-only file buffers the entire source into memory when opened, so access after opening never touches
-the original source and the read-only instance is safe to share across threads. Opening read-only with
-<code>buffered: false</code> instead reads sectors on demand from a seekable stream — bounding memory for large files — in
-which case the stream must stay open for the instance's lifetime and reads are serialized rather than parallel.
-</p>
-<p>
-Opening with <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.fileaccess#system-io-fileaccess-read">Read</a> yields a read-only file.
-<a class="xref" href="Bodu.IO.Compound.CompoundFile.Create.html#Bodu_IO_Compound_CompoundFile_Create_System_IO_Stream_System_Boolean_Bodu_IO_Compound_Builders_CompoundBuildOptions_">Create(Stream, bool, CompoundBuildOptions)</a> (or a creating
-<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.filemode">FileMode</a>) starts a new writable file, and <code>Open</code> with <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.fileaccess#system-io-fileaccess-readwrite">ReadWrite</a> loads
-an existing file for editing. Edits are staged in memory and written to the destination only by
-<a class="xref" href="Bodu.IO.Compound.CompoundFile.Commit.html#Bodu_IO_Compound_CompoundFile_Commit">Commit()</a> (which rewrites the whole container); <a class="xref" href="Bodu.IO.Compound.CompoundFile.Revert.html#Bodu_IO_Compound_CompoundFile_Revert">Revert()</a> discards them. Mutating an
-existing file requires read access — write-only access is supported only for creating modes.
-</p>
-</div>
-  <h5 id="Bodu_IO_Compound_CompoundFile_examples"><strong>Examples</strong></h5>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  </dd></dl>
+
+
+  <h2 id="Bodu_IO_Compound_CompoundFile_examples">Examples</h2>
   <p>The following example opens a compound file, walks its top-level entries, and reads one named stream. The instance
 is disposed by the <code>using</code> declaration, which also closes the source stream unless <code>leaveOpen</code> is set.</p>
 <pre><code class="lang-csharp">using Bodu.IO.Compound;
@@ -164,272 +184,1298 @@ if (file.RootStorage.TryOpenStream("Workbook", out CompoundStream? workbook))
         // ... read the BIFF records from the workbook stream ...
 }</code></pre>
 
-  <h3 id="properties">Properties
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_IO_Compound_CompoundFile_Access" data-uid="Bodu.IO.Compound.CompoundFile.Access">
-          <a class="xref" href="Bodu.IO.Compound.CompoundFile.Access.html#Bodu_IO_Compound_CompoundFile_Access">Access</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the access level the compound file was opened with.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_CompoundFile_CanRead" data-uid="Bodu.IO.Compound.CompoundFile.CanRead">
-          <a class="xref" href="Bodu.IO.Compound.CompoundFile.CanRead.html#Bodu_IO_Compound_CompoundFile_CanRead">CanRead</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets a value indicating whether the compound file can be read.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_CompoundFile_CanWrite" data-uid="Bodu.IO.Compound.CompoundFile.CanWrite">
-          <a class="xref" href="Bodu.IO.Compound.CompoundFile.CanWrite.html#Bodu_IO_Compound_CompoundFile_CanWrite">CanWrite</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets a value indicating whether the compound file can be written.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_CompoundFile_IsDirty" data-uid="Bodu.IO.Compound.CompoundFile.IsDirty">
-          <a class="xref" href="Bodu.IO.Compound.CompoundFile.IsDirty.html#Bodu_IO_Compound_CompoundFile_IsDirty">IsDirty</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets a value indicating whether the file has staged edits that have not been committed.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_CompoundFile_RootStorage" data-uid="Bodu.IO.Compound.CompoundFile.RootStorage">
-          <a class="xref" href="Bodu.IO.Compound.CompoundFile.RootStorage.html#Bodu_IO_Compound_CompoundFile_RootStorage">RootStorage</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the root storage that anchors the compound file's directory hierarchy.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_IO_Compound_CompoundFile_Commit" data-uid="Bodu.IO.Compound.CompoundFile.Commit">
-          <a class="xref" href="Bodu.IO.Compound.CompoundFile.Commit.html#Bodu_IO_Compound_CompoundFile_Commit">Commit()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Writes the staged contents of a writable file to its destination, clearing the dirty state.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_CompoundFile_CommitAsync_System_Threading_CancellationToken_" data-uid="Bodu.IO.Compound.CompoundFile.CommitAsync(System.Threading.CancellationToken)">
-          <a class="xref" href="Bodu.IO.Compound.CompoundFile.CommitAsync.html#Bodu_IO_Compound_CompoundFile_CommitAsync_System_Threading_CancellationToken_">CommitAsync(CancellationToken)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Asynchronously writes the staged contents of a writable file to its destination, clearing the dirty state.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_CompoundFile_Create_System_IO_Stream_System_Boolean_Bodu_IO_Compound_Builders_CompoundBuildOptions_" data-uid="Bodu.IO.Compound.CompoundFile.Create(System.IO.Stream,System.Boolean,Bodu.IO.Compound.Builders.CompoundBuildOptions)">
-          <a class="xref" href="Bodu.IO.Compound.CompoundFile.Create.html#Bodu_IO_Compound_CompoundFile_Create_System_IO_Stream_System_Boolean_Bodu_IO_Compound_Builders_CompoundBuildOptions_">Create(Stream, bool, CompoundBuildOptions)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Creates a new, empty writable compound file whose staged contents are written to the supplied destination by
-<a class="xref" href="Bodu.IO.Compound.CompoundFile.Commit.html#Bodu_IO_Compound_CompoundFile_Commit">Commit()</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_CompoundFile_Create_System_String_Bodu_IO_Compound_Builders_CompoundBuildOptions_" data-uid="Bodu.IO.Compound.CompoundFile.Create(System.String,Bodu.IO.Compound.Builders.CompoundBuildOptions)">
-          <a class="xref" href="Bodu.IO.Compound.CompoundFile.Create.html#Bodu_IO_Compound_CompoundFile_Create_System_String_Bodu_IO_Compound_Builders_CompoundBuildOptions_">Create(string, CompoundBuildOptions)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Creates a new, empty writable compound file whose staged contents are written to the file at the specified path
-by <a class="xref" href="Bodu.IO.Compound.CompoundFile.Commit.html#Bodu_IO_Compound_CompoundFile_Commit">Commit()</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_CompoundFile_Dispose" data-uid="Bodu.IO.Compound.CompoundFile.Dispose">
-          <a class="xref" href="Bodu.IO.Compound.CompoundFile.Dispose.html#Bodu_IO_Compound_CompoundFile_Dispose">Dispose()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_CompoundFile_Flush" data-uid="Bodu.IO.Compound.CompoundFile.Flush">
-          <a class="xref" href="Bodu.IO.Compound.CompoundFile.Flush.html#Bodu_IO_Compound_CompoundFile_Flush">Flush()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Writes the staged contents of a writable file to its destination, clearing the dirty state.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_CompoundFile_FlushAsync_System_Threading_CancellationToken_" data-uid="Bodu.IO.Compound.CompoundFile.FlushAsync(System.Threading.CancellationToken)">
-          <a class="xref" href="Bodu.IO.Compound.CompoundFile.FlushAsync.html#Bodu_IO_Compound_CompoundFile_FlushAsync_System_Threading_CancellationToken_">FlushAsync(CancellationToken)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Asynchronously writes the staged contents of a writable file to its destination, clearing the dirty state.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_CompoundFile_IsCompoundFile_System_IO_Stream_" data-uid="Bodu.IO.Compound.CompoundFile.IsCompoundFile(System.IO.Stream)">
-          <a class="xref" href="Bodu.IO.Compound.CompoundFile.IsCompoundFile.html#Bodu_IO_Compound_CompoundFile_IsCompoundFile_System_IO_Stream_">IsCompoundFile(Stream)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether the supplied stream begins with the compound-file (OLE2) signature without parsing the file.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_CompoundFile_IsCompoundFile_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.IO.Compound.CompoundFile.IsCompoundFile(System.ReadOnlySpan{System.Byte})">
-          <a class="xref" href="Bodu.IO.Compound.CompoundFile.IsCompoundFile.html#Bodu_IO_Compound_CompoundFile_IsCompoundFile_System_ReadOnlySpan_System_Byte__">IsCompoundFile(ReadOnlySpan&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether the supplied bytes begin with the compound-file (OLE2) signature.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_CompoundFile_Open_System_IO_Stream_Bodu_IO_Compound_CompoundFileOptions_System_Boolean_" data-uid="Bodu.IO.Compound.CompoundFile.Open(System.IO.Stream,Bodu.IO.Compound.CompoundFileOptions,System.Boolean)">
-          <a class="xref" href="Bodu.IO.Compound.CompoundFile.Open.html#Bodu_IO_Compound_CompoundFile_Open_System_IO_Stream_Bodu_IO_Compound_CompoundFileOptions_System_Boolean_">Open(Stream, CompoundFileOptions, bool)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Opens an existing compound file over the supplied stream for read-only access using the supplied options.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_CompoundFile_Open_System_IO_Stream_System_Boolean_System_Boolean_" data-uid="Bodu.IO.Compound.CompoundFile.Open(System.IO.Stream,System.Boolean,System.Boolean)">
-          <a class="xref" href="Bodu.IO.Compound.CompoundFile.Open.html#Bodu_IO_Compound_CompoundFile_Open_System_IO_Stream_System_Boolean_System_Boolean_">Open(Stream, bool, bool)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Opens an existing compound file over the supplied stream for read-only access, buffering its content into memory
+
+  <h2 id="Bodu_IO_Compound_CompoundFile_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>
+<img src="../images/diagrams/io-compound-structure.svg" alt="A compound file is a structured-storage envelope: one physical file that begins with the OLE2 signature D0 CF 11 E0 and holds a header, allocation tables (FAT and mini-FAT), a directory, and sectors. CompoundFile.Open parses that container and exposes a logical hierarchy. Navigation starts at RootStorage and descends through nested CompoundStorage containers to CompoundStream leaves; a CompoundStorage is the managed counterpart of the COM IStorage interface and a CompoundStream is the counterpart of IStream.">
+</p>
+<p>
+A compound file is a structured-storage envelope — effectively a small file system embedded in a single file — used
+by legacy Microsoft Office formats (<code>.xls</code>, <code>.doc</code>, <code>.ppt</code>, <code>.msg</code>) and other technologies. This
+type is the managed counterpart of the COM <code>StgOpenStorage</code> entry point: navigation begins at
+<a class="xref" href="Bodu.IO.Compound.CompoundFile.html#Bodu_IO_Compound_CompoundFile_RootStorage">RootStorage</a> and descends through nested <a class="xref" href="Bodu.IO.Compound.CompoundStorage.html">CompoundStorage</a> objects to the
+<a class="xref" href="Bodu.IO.Compound.CompoundStream.html">CompoundStream</a> leaves.
+</p>
+<p>
+By default a read-only file buffers the entire source into memory when opened, so access after opening never touches
+the original source and the read-only instance is safe to share across threads. Opening read-only with
+<code>buffered: false</code> instead reads sectors on demand from a seekable stream — bounding memory for large files — in
+which case the stream must stay open for the instance's lifetime and reads are serialized rather than parallel.
+</p>
+<p>
+Opening with <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.fileaccess#system-io-fileaccess-read">Read</a> yields a read-only file.
+<a class="xref" href="Bodu.IO.Compound.CompoundFile.html#Bodu_IO_Compound_CompoundFile_Create_System_IO_Stream_System_Boolean_Bodu_IO_Compound_Builders_CompoundBuildOptions_">Create(Stream, bool, CompoundBuildOptions)</a> (or a creating
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.filemode">FileMode</a>) starts a new writable file, and <code>Open</code> with <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.fileaccess#system-io-fileaccess-readwrite">ReadWrite</a> loads
+an existing file for editing. Edits are staged in memory and written to the destination only by
+<a class="xref" href="Bodu.IO.Compound.CompoundFile.html#Bodu_IO_Compound_CompoundFile_Commit">Commit()</a> (which rewrites the whole container); <a class="xref" href="Bodu.IO.Compound.CompoundFile.html#Bodu_IO_Compound_CompoundFile_Revert">Revert()</a> discards them. Mutating an
+existing file requires read access — write-only access is supported only for creating modes.
+</p>
+</div>
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Bodu_IO_Compound_CompoundFile_Access_" data-uid="Bodu.IO.Compound.CompoundFile.Access*"></a>
+
+  <h3 id="Bodu_IO_Compound_CompoundFile_Access" data-uid="Bodu.IO.Compound.CompoundFile.Access">
+  Access
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs/#L181"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the access level the compound file was opened with.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public FileAccess Access { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.fileaccess">FileAccess</a></dt>
+    <dd><p>The <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.fileaccess">FileAccess</a> supplied at open time.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_IO_Compound_CompoundFile_CanRead_" data-uid="Bodu.IO.Compound.CompoundFile.CanRead*"></a>
+
+  <h3 id="Bodu_IO_Compound_CompoundFile_CanRead" data-uid="Bodu.IO.Compound.CompoundFile.CanRead">
+  CanRead
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs/#L189"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether the compound file can be read.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool CanRead { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the file was opened with read access; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_IO_Compound_CompoundFile_CanWrite_" data-uid="Bodu.IO.Compound.CompoundFile.CanWrite*"></a>
+
+  <h3 id="Bodu_IO_Compound_CompoundFile_CanWrite" data-uid="Bodu.IO.Compound.CompoundFile.CanWrite">
+  CanWrite
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs/#L197"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether the compound file can be written.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool CanWrite { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the file was opened with write access; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_IO_Compound_CompoundFile_IsDirty_" data-uid="Bodu.IO.Compound.CompoundFile.IsDirty*"></a>
+
+  <h3 id="Bodu_IO_Compound_CompoundFile_IsDirty" data-uid="Bodu.IO.Compound.CompoundFile.IsDirty">
+  IsDirty
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs/#L205"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether the file has staged edits that have not been committed.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsDirty { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when a writable file has uncommitted changes; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_IO_Compound_CompoundFile_RootStorage_" data-uid="Bodu.IO.Compound.CompoundFile.RootStorage*"></a>
+
+  <h3 id="Bodu_IO_Compound_CompoundFile_RootStorage" data-uid="Bodu.IO.Compound.CompoundFile.RootStorage">
+  RootStorage
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs/#L211"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the root storage that anchors the compound file's directory hierarchy.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CompoundStorage RootStorage { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Compound.CompoundStorage.html">CompoundStorage</a></dt>
+    <dd><p>The root <a class="xref" href="Bodu.IO.Compound.CompoundStorage.html">CompoundStorage</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_IO_Compound_CompoundFile_Commit_" data-uid="Bodu.IO.Compound.CompoundFile.Commit*"></a>
+
+  <h3 id="Bodu_IO_Compound_CompoundFile_Commit" data-uid="Bodu.IO.Compound.CompoundFile.Commit">
+  Commit()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs/#L772"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Writes the staged contents of a writable file to its destination, clearing the dirty state.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Commit()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_IO_Compound_CompoundFile_Commit_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The destination is truncated and the whole container is rewritten from the staging tree. When the destination is
+not seekable, the committed bytes are appended at the current position.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when the file is read-only.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown when the file has been disposed.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.IO.Compound.CompoundFileSerializationException.html">CompoundFileSerializationException</a></dt>
+    <dd><p>Thrown when the staging tree cannot be represented.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_IO_Compound_CompoundFile_CommitAsync_" data-uid="Bodu.IO.Compound.CompoundFile.CommitAsync*"></a>
+
+  <h3 id="Bodu_IO_Compound_CompoundFile_CommitAsync_System_Threading_CancellationToken_" data-uid="Bodu.IO.Compound.CompoundFile.CommitAsync(System.Threading.CancellationToken)">
+  CommitAsync(CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs/#L821"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously writes the staged contents of a writable file to its destination, clearing the dirty state.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task CommitAsync(CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A token that cancels the commit before or during the write.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a></dt>
+    <dd><p>A task that completes when the container has been written and flushed.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_IO_Compound_CompoundFile_CommitAsync_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The asynchronous counterpart of <a class="xref" href="Bodu.IO.Compound.CompoundFile.html#Bodu_IO_Compound_CompoundFile_Commit">Commit()</a>, sharing the same layout computation. Cancellation is
+observed before any destination mutation and again during the write; a cancellation or failure mid-write leaves
+the destination partially written and the file dirty — the same surface a synchronous <a class="xref" href="Bodu.IO.Compound.CompoundFile.html#Bodu_IO_Compound_CompoundFile_Commit">Commit()</a>
+fault presents — so call <a class="xref" href="Bodu.IO.Compound.CompoundFile.html#Bodu_IO_Compound_CompoundFile_CommitAsync_System_Threading_CancellationToken_">CommitAsync(CancellationToken)</a> (or <a class="xref" href="Bodu.IO.Compound.CompoundFile.html#Bodu_IO_Compound_CompoundFile_Commit">Commit()</a>) again, or <a class="xref" href="Bodu.IO.Compound.CompoundFile.html#Bodu_IO_Compound_CompoundFile_Revert">Revert()</a>.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when the file is read-only.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown when the file has been disposed.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.IO.Compound.CompoundFileSerializationException.html">CompoundFileSerializationException</a></dt>
+    <dd><p>Thrown when the staging tree cannot be represented.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.operationcanceledexception">OperationCanceledException</a></dt>
+    <dd><p>Thrown when <code class="paramref">cancellationToken</code> is canceled.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_IO_Compound_CompoundFile_Create_" data-uid="Bodu.IO.Compound.CompoundFile.Create*"></a>
+
+  <h3 id="Bodu_IO_Compound_CompoundFile_Create_System_IO_Stream_System_Boolean_Bodu_IO_Compound_Builders_CompoundBuildOptions_" data-uid="Bodu.IO.Compound.CompoundFile.Create(System.IO.Stream,System.Boolean,Bodu.IO.Compound.Builders.CompoundBuildOptions)">
+  Create(Stream, bool, CompoundBuildOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs/#L385"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a new, empty writable compound file whose staged contents are written to the supplied destination by
+<a class="xref" href="Bodu.IO.Compound.CompoundFile.html#Bodu_IO_Compound_CompoundFile_Commit">Commit()</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CompoundFile Create(Stream destination, bool leaveOpen = false, CompoundBuildOptions options = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The stream the committed compound file is written to.</p>
+</dd>
+    <dt><code>leaveOpen</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> to leave <code class="paramref">destination</code> open when the returned instance is disposed;
+otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.IO.Compound.Builders.CompoundBuildOptions.html">CompoundBuildOptions</a></dt>
+    <dd><p>The build options applied when the staging tree is serialized.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Compound.CompoundFile.html">CompoundFile</a></dt>
+    <dd><p>A new writable <a class="xref" href="Bodu.IO.Compound.CompoundFile.html">CompoundFile</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_IO_Compound_CompoundFile_Create_System_IO_Stream_System_Boolean_Bodu_IO_Compound_Builders_CompoundBuildOptions__examples">Examples</h4>
+  <pre><code class="lang-csharp">using FileStream output = File.Create("book.xls");
+using CompoundFile file = CompoundFile.Create(output);
+using (CompoundStream stream = file.RootStorage.CreateStream("Workbook"))
+    stream.Write(workbookBytes);
+file.Commit();</code></pre>
+
+
+  <h4 class="section" id="Bodu_IO_Compound_CompoundFile_Create_System_IO_Stream_System_Boolean_Bodu_IO_Compound_Builders_CompoundBuildOptions__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Edits made through <a class="xref" href="Bodu.IO.Compound.CompoundFile.html#Bodu_IO_Compound_CompoundFile_RootStorage">RootStorage</a> are staged in memory; nothing is written to
+<code class="paramref">destination</code> until <a class="xref" href="Bodu.IO.Compound.CompoundFile.html#Bodu_IO_Compound_CompoundFile_Commit">Commit()</a> is called. Disposing the file without committing
+discards the staged edits.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">destination</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_IO_Compound_CompoundFile_Create_" data-uid="Bodu.IO.Compound.CompoundFile.Create*"></a>
+
+  <h3 id="Bodu_IO_Compound_CompoundFile_Create_System_String_Bodu_IO_Compound_Builders_CompoundBuildOptions_" data-uid="Bodu.IO.Compound.CompoundFile.Create(System.String,Bodu.IO.Compound.Builders.CompoundBuildOptions)">
+  Create(string, CompoundBuildOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs/#L406"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a new, empty writable compound file whose staged contents are written to the file at the specified path
+by <a class="xref" href="Bodu.IO.Compound.CompoundFile.html#Bodu_IO_Compound_CompoundFile_Commit">Commit()</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CompoundFile Create(string path, CompoundBuildOptions options = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The path of the file the committed compound file is written to.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.IO.Compound.Builders.CompoundBuildOptions.html">CompoundBuildOptions</a></dt>
+    <dd><p>The build options applied when the staging tree is serialized.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Compound.CompoundFile.html">CompoundFile</a></dt>
+    <dd><p>A new writable <a class="xref" href="Bodu.IO.Compound.CompoundFile.html">CompoundFile</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_IO_Compound_CompoundFile_Create_System_String_Bodu_IO_Compound_Builders_CompoundBuildOptions__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The returned instance owns the created file and closes it when disposed. Edits are staged in memory until
+<a class="xref" href="Bodu.IO.Compound.CompoundFile.html#Bodu_IO_Compound_CompoundFile_Commit">Commit()</a> is called; disposing without committing leaves the file empty.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">path</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_IO_Compound_CompoundFile_Dispose_" data-uid="Bodu.IO.Compound.CompoundFile.Dispose*"></a>
+
+  <h3 id="Bodu_IO_Compound_CompoundFile_Dispose" data-uid="Bodu.IO.Compound.CompoundFile.Dispose">
+  Dispose()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs/#L877"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Dispose()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_IO_Compound_CompoundFile_Flush_" data-uid="Bodu.IO.Compound.CompoundFile.Flush*"></a>
+
+  <h3 id="Bodu_IO_Compound_CompoundFile_Flush" data-uid="Bodu.IO.Compound.CompoundFile.Flush">
+  Flush()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs/#L799"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Writes the staged contents of a writable file to its destination, clearing the dirty state.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Flush()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_IO_Compound_CompoundFile_Flush_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This is an alias for <a class="xref" href="Bodu.IO.Compound.CompoundFile.html#Bodu_IO_Compound_CompoundFile_Commit">Commit()</a>, named for parity with stream-style consumers.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when the file is read-only.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown when the file has been disposed.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.IO.Compound.CompoundFileSerializationException.html">CompoundFileSerializationException</a></dt>
+    <dd><p>Thrown when the staging tree cannot be represented.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_IO_Compound_CompoundFile_FlushAsync_" data-uid="Bodu.IO.Compound.CompoundFile.FlushAsync*"></a>
+
+  <h3 id="Bodu_IO_Compound_CompoundFile_FlushAsync_System_Threading_CancellationToken_" data-uid="Bodu.IO.Compound.CompoundFile.FlushAsync(System.Threading.CancellationToken)">
+  FlushAsync(CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs/#L851"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously writes the staged contents of a writable file to its destination, clearing the dirty state.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task FlushAsync(CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>A token that cancels the write.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a></dt>
+    <dd><p>A task that completes when the container has been written and flushed.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_IO_Compound_CompoundFile_FlushAsync_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This is an alias for <a class="xref" href="Bodu.IO.Compound.CompoundFile.html#Bodu_IO_Compound_CompoundFile_CommitAsync_System_Threading_CancellationToken_">CommitAsync(CancellationToken)</a>, named for parity with stream-style consumers.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when the file is read-only.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown when the file has been disposed.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.IO.Compound.CompoundFileSerializationException.html">CompoundFileSerializationException</a></dt>
+    <dd><p>Thrown when the staging tree cannot be represented.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_IO_Compound_CompoundFile_IsCompoundFile_" data-uid="Bodu.IO.Compound.CompoundFile.IsCompoundFile*"></a>
+
+  <h3 id="Bodu_IO_Compound_CompoundFile_IsCompoundFile_System_IO_Stream_" data-uid="Bodu.IO.Compound.CompoundFile.IsCompoundFile(System.IO.Stream)">
+  IsCompoundFile(Stream)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs/#L635"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines whether the supplied stream begins with the compound-file (OLE2) signature without parsing the file.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsCompoundFile(Stream stream)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>stream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>A seekable stream to inspect; its position is restored before the method returns.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the stream's leading bytes are the compound-file signature; otherwise
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_IO_Compound_CompoundFile_IsCompoundFile_System_IO_Stream__examples">Examples</h4>
+  <p>Probe a file cheaply before committing to a full open:</p>
+<pre><code class="lang-csharp">using FileStream source = File.OpenRead(path);
+if (CompoundFile.IsCompoundFile(source))
+{
+    using CompoundFile file = CompoundFile.Open(source, leaveOpen: true);
+    // ...
+}</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">stream</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">stream</code> is not seekable.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_IO_Compound_CompoundFile_IsCompoundFile_" data-uid="Bodu.IO.Compound.CompoundFile.IsCompoundFile*"></a>
+
+  <h3 id="Bodu_IO_Compound_CompoundFile_IsCompoundFile_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.IO.Compound.CompoundFile.IsCompoundFile(System.ReadOnlySpan{System.Byte})">
+  IsCompoundFile(ReadOnlySpan&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs/#L662"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines whether the supplied bytes begin with the compound-file (OLE2) signature.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsCompoundFile(ReadOnlySpan&lt;byte&gt; data)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>data</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The bytes to inspect.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when <code class="paramref">data</code> begins with the compound-file signature; otherwise
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_IO_Compound_CompoundFile_Open_" data-uid="Bodu.IO.Compound.CompoundFile.Open*"></a>
+
+  <h3 id="Bodu_IO_Compound_CompoundFile_Open_System_IO_Stream_Bodu_IO_Compound_CompoundFileOptions_System_Boolean_" data-uid="Bodu.IO.Compound.CompoundFile.Open(System.IO.Stream,Bodu.IO.Compound.CompoundFileOptions,System.Boolean)">
+  Open(Stream, CompoundFileOptions, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs/#L270"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Opens an existing compound file over the supplied stream for read-only access using the supplied options.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CompoundFile Open(Stream stream, CompoundFileOptions options, bool leaveOpen = false)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>stream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The stream containing the compound file; read from its current position to the end.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.IO.Compound.CompoundFileOptions.html">CompoundFileOptions</a></dt>
+    <dd><p>The options controlling the read strategy and validation level.</p>
+</dd>
+    <dt><code>leaveOpen</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> to leave <code class="paramref">stream</code> open when the returned instance is disposed;
+otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Compound.CompoundFile.html">CompoundFile</a></dt>
+    <dd><p>An open, read-only <a class="xref" href="Bodu.IO.Compound.CompoundFile.html">CompoundFile</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">stream</code> or <code class="paramref">options</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.IO.Compound.CompoundFileFormatException.html">CompoundFileFormatException</a></dt>
+    <dd><p>Thrown when the stream content is not a well-formed compound file.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_IO_Compound_CompoundFile_Open_" data-uid="Bodu.IO.Compound.CompoundFile.Open*"></a>
+
+  <h3 id="Bodu_IO_Compound_CompoundFile_Open_System_IO_Stream_System_Boolean_System_Boolean_" data-uid="Bodu.IO.Compound.CompoundFile.Open(System.IO.Stream,System.Boolean,System.Boolean)">
+  Open(Stream, bool, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs/#L247"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Opens an existing compound file over the supplied stream for read-only access, buffering its content into memory
 by default.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_CompoundFile_Open_System_IO_Stream_System_IO_FileMode_System_IO_FileAccess_System_Boolean_System_Boolean_" data-uid="Bodu.IO.Compound.CompoundFile.Open(System.IO.Stream,System.IO.FileMode,System.IO.FileAccess,System.Boolean,System.Boolean)">
-          <a class="xref" href="Bodu.IO.Compound.CompoundFile.Open.html#Bodu_IO_Compound_CompoundFile_Open_System_IO_Stream_System_IO_FileMode_System_IO_FileAccess_System_Boolean_System_Boolean_">Open(Stream, FileMode, FileAccess, bool, bool)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Opens a compound file over the supplied stream with BCL-style <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.filemode">FileMode</a> and
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CompoundFile Open(Stream stream, bool leaveOpen = false, bool buffered = true)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>stream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The stream containing the compound file; read from its current position to the end.</p>
+</dd>
+    <dt><code>leaveOpen</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> to leave <code class="paramref">stream</code> open when the returned instance is disposed;
+otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+    <dt><code>buffered</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> (the default) to read the whole file into memory at open time; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>
+to read sectors on demand from the seekable <code class="paramref">stream</code>, bounding memory for large files. When
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>, the stream must remain open and unmodified for the lifetime of the returned instance.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Compound.CompoundFile.html">CompoundFile</a></dt>
+    <dd><p>An open, read-only <a class="xref" href="Bodu.IO.Compound.CompoundFile.html">CompoundFile</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_IO_Compound_CompoundFile_Open_System_IO_Stream_System_Boolean_System_Boolean__examples">Examples</h4>
+  <pre><code class="lang-csharp">using CompoundFile file = CompoundFile.Open(File.OpenRead("book.xls"));
+using FileStream source = File.OpenRead("large.msg");
+using CompoundFile streamed = CompoundFile.Open(source, buffered: false);</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">stream</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">buffered</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> and <code class="paramref">stream</code> is not
+seekable.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.IO.Compound.CompoundFileFormatException.html">CompoundFileFormatException</a></dt>
+    <dd><p>Thrown when the stream content is not a well-formed compound file.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_IO_Compound_CompoundFile_Open_" data-uid="Bodu.IO.Compound.CompoundFile.Open*"></a>
+
+  <h3 id="Bodu_IO_Compound_CompoundFile_Open_System_IO_Stream_System_IO_FileMode_System_IO_FileAccess_System_Boolean_System_Boolean_" data-uid="Bodu.IO.Compound.CompoundFile.Open(System.IO.Stream,System.IO.FileMode,System.IO.FileAccess,System.Boolean,System.Boolean)">
+  Open(Stream, FileMode, FileAccess, bool, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs/#L318"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Opens a compound file over the supplied stream with BCL-style <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.filemode">FileMode</a> and
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.fileaccess">FileAccess</a> semantics, mirroring <code>System.IO.Packaging.Package.Open</code>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_CompoundFile_Open_System_String_System_IO_FileMode_System_IO_FileAccess_System_IO_FileShare_" data-uid="Bodu.IO.Compound.CompoundFile.Open(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare)">
-          <a class="xref" href="Bodu.IO.Compound.CompoundFile.Open.html#Bodu_IO_Compound_CompoundFile_Open_System_String_System_IO_FileMode_System_IO_FileAccess_System_IO_FileShare_">Open(string, FileMode, FileAccess, FileShare)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Opens the compound file at the specified path with BCL-style <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.filemode">FileMode</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.fileaccess">FileAccess</a>,
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CompoundFile Open(Stream stream, FileMode mode, FileAccess access, bool leaveOpen = false, bool buffered = true)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>stream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The stream containing the compound file, or the destination for a writable file.</p>
+</dd>
+    <dt><code>mode</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.filemode">FileMode</a></dt>
+    <dd><p>The file mode. <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.filemode#system-io-filemode-open">Open</a> with <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.fileaccess#system-io-fileaccess-read">Read</a> opens for reading; a creating
+mode (<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.filemode#system-io-filemode-create">Create</a>/<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.filemode#system-io-filemode-createnew">CreateNew</a>, or <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.filemode#system-io-filemode-openorcreate">OpenOrCreate</a>
+over empty content) with write access starts a new file; <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.filemode#system-io-filemode-open">Open</a> with
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.fileaccess#system-io-fileaccess-readwrite">ReadWrite</a> loads an existing file for editing.</p>
+</dd>
+    <dt><code>access</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.fileaccess">FileAccess</a></dt>
+    <dd><p>The access level. Mutating an existing file requires <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.fileaccess#system-io-fileaccess-readwrite">ReadWrite</a>; write-only access is
+supported only for creating modes.</p>
+</dd>
+    <dt><code>leaveOpen</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> to leave <code class="paramref">stream</code> open when the returned instance is disposed;
+otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+    <dt><code>buffered</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> (the default) to read the whole file into memory at open time; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>
+to read sectors on demand from the seekable <code class="paramref">stream</code>. Ignored for writable files.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Compound.CompoundFile.html">CompoundFile</a></dt>
+    <dd><p>An open <a class="xref" href="Bodu.IO.Compound.CompoundFile.html">CompoundFile</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_IO_Compound_CompoundFile_Open_System_IO_Stream_System_IO_FileMode_System_IO_FileAccess_System_Boolean_System_Boolean__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Write access loads the existing content (for <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.filemode#system-io-filemode-open">Open</a> and a non-empty
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.filemode#system-io-filemode-openorcreate">OpenOrCreate</a>) or starts empty (for <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.filemode#system-io-filemode-create">Create</a>,
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.filemode#system-io-filemode-createnew">CreateNew</a>, and an empty <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.filemode#system-io-filemode-openorcreate">OpenOrCreate</a>) into a staging tree. Edits
+are written back to <code class="paramref">stream</code> — which must be writable and seekable — only by
+<a class="xref" href="Bodu.IO.Compound.CompoundFile.html#Bodu_IO_Compound_CompoundFile_Commit">Commit()</a>, which rewrites the whole container.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">stream</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>Thrown when the combination of <code class="paramref">mode</code> and <code class="paramref">access</code> is not supported.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.IO.Compound.CompoundFileFormatException.html">CompoundFileFormatException</a></dt>
+    <dd><p>Thrown when the stream content is not a well-formed compound file.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_IO_Compound_CompoundFile_Open_" data-uid="Bodu.IO.Compound.CompoundFile.Open*"></a>
+
+  <h3 id="Bodu_IO_Compound_CompoundFile_Open_System_String_System_IO_FileMode_System_IO_FileAccess_System_IO_FileShare_" data-uid="Bodu.IO.Compound.CompoundFile.Open(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare)">
+  Open(string, FileMode, FileAccess, FileShare)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs/#L594"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Opens the compound file at the specified path with BCL-style <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.filemode">FileMode</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.fileaccess">FileAccess</a>,
 and <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.fileshare">FileShare</a> semantics, mirroring <code>System.IO.Packaging.Package.Open</code>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_CompoundFile_OpenRead_System_String_" data-uid="Bodu.IO.Compound.CompoundFile.OpenRead(System.String)">
-          <a class="xref" href="Bodu.IO.Compound.CompoundFile.OpenRead.html#Bodu_IO_Compound_CompoundFile_OpenRead_System_String_">OpenRead(string)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Opens an existing compound file at the specified path for read-only access, buffering its content into memory.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_CompoundFile_OpenRead_System_String_Bodu_IO_Compound_CompoundFileOptions_" data-uid="Bodu.IO.Compound.CompoundFile.OpenRead(System.String,Bodu.IO.Compound.CompoundFileOptions)">
-          <a class="xref" href="Bodu.IO.Compound.CompoundFile.OpenRead.html#Bodu_IO_Compound_CompoundFile_OpenRead_System_String_Bodu_IO_Compound_CompoundFileOptions_">OpenRead(string, CompoundFileOptions)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Opens an existing compound file at the specified path for read-only access using the supplied options.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_CompoundFile_Revert" data-uid="Bodu.IO.Compound.CompoundFile.Revert">
-          <a class="xref" href="Bodu.IO.Compound.CompoundFile.Revert.html#Bodu_IO_Compound_CompoundFile_Revert">Revert()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Discards all staged edits since the file was opened.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_CompoundFile_SetDocumentSummaryInformation_Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_" data-uid="Bodu.IO.Compound.CompoundFile.SetDocumentSummaryInformation(Bodu.IO.Compound.PropertySets.DocumentSummaryInformation)">
-          <a class="xref" href="Bodu.IO.Compound.CompoundFile.SetDocumentSummaryInformation.html#Bodu_IO_Compound_CompoundFile_SetDocumentSummaryInformation_Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_">SetDocumentSummaryInformation(DocumentSummaryInformation)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Writes the standard document-summary-information property set into the root storage, creating or replacing the
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CompoundFile Open(string path, FileMode mode, FileAccess access, FileShare share = FileShare.Read)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The path of the compound file to open or create.</p>
+</dd>
+    <dt><code>mode</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.filemode">FileMode</a></dt>
+    <dd><p>The file mode. <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.filemode#system-io-filemode-open">Open</a> with <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.fileaccess#system-io-fileaccess-read">Read</a> opens for reading; a creating
+mode with write access starts a new file; <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.filemode#system-io-filemode-open">Open</a> with write access loads the existing file
+for update.</p>
+</dd>
+    <dt><code>access</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.fileaccess">FileAccess</a></dt>
+    <dd><p>The access level. Write access requires a creating or updating <code class="paramref">mode</code>.</p>
+</dd>
+    <dt><code>share</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.fileshare">FileShare</a></dt>
+    <dd><p>The sharing mode granted to other openers of the file.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Compound.CompoundFile.html">CompoundFile</a></dt>
+    <dd><p>An open <a class="xref" href="Bodu.IO.Compound.CompoundFile.html">CompoundFile</a> that owns and closes the underlying file when disposed.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_IO_Compound_CompoundFile_Open_System_String_System_IO_FileMode_System_IO_FileAccess_System_IO_FileShare__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>For writable modes the staged edits are written back to the file only by <a class="xref" href="Bodu.IO.Compound.CompoundFile.html#Bodu_IO_Compound_CompoundFile_Commit">Commit()</a>; disposing
+without committing leaves the file unchanged.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">path</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.filenotfoundexception">FileNotFoundException</a></dt>
+    <dd><p>Thrown when <code class="paramref">mode</code> requires an existing file but none exists at <code class="paramref">path</code>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>Thrown when the combination of <code class="paramref">mode</code> and <code class="paramref">access</code> is not supported.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.IO.Compound.CompoundFileFormatException.html">CompoundFileFormatException</a></dt>
+    <dd><p>Thrown when the existing file content is not a well-formed compound file.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_IO_Compound_CompoundFile_OpenRead_" data-uid="Bodu.IO.Compound.CompoundFile.OpenRead*"></a>
+
+  <h3 id="Bodu_IO_Compound_CompoundFile_OpenRead_System_String_" data-uid="Bodu.IO.Compound.CompoundFile.OpenRead(System.String)">
+  OpenRead(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs/#L526"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Opens an existing compound file at the specified path for read-only access, buffering its content into memory.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CompoundFile OpenRead(string path)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The path of the compound file to open.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Compound.CompoundFile.html">CompoundFile</a></dt>
+    <dd><p>An open, read-only <a class="xref" href="Bodu.IO.Compound.CompoundFile.html">CompoundFile</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_IO_Compound_CompoundFile_OpenRead_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">using CompoundFile file = CompoundFile.OpenRead("book.xls");
+foreach (CompoundEntryInfo info in file.RootStorage.EnumerateEntries())
+    Console.WriteLine($"{info.EntryType}: {info.Name}");</code></pre>
+
+
+  <h4 class="section" id="Bodu_IO_Compound_CompoundFile_OpenRead_System_String__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The returned instance owns the opened file and closes it when disposed. The file is opened with
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.fileshare#system-io-fileshare-read">Read</a>, so it does not lock out other readers.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">path</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.filenotfoundexception">FileNotFoundException</a></dt>
+    <dd><p>Thrown when no file exists at <code class="paramref">path</code>.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.IO.Compound.CompoundFileFormatException.html">CompoundFileFormatException</a></dt>
+    <dd><p>Thrown when the file content is not a well-formed compound file.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_IO_Compound_CompoundFile_OpenRead_" data-uid="Bodu.IO.Compound.CompoundFile.OpenRead*"></a>
+
+  <h3 id="Bodu_IO_Compound_CompoundFile_OpenRead_System_String_Bodu_IO_Compound_CompoundFileOptions_" data-uid="Bodu.IO.Compound.CompoundFile.OpenRead(System.String,Bodu.IO.Compound.CompoundFileOptions)">
+  OpenRead(string, CompoundFileOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs/#L546"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Opens an existing compound file at the specified path for read-only access using the supplied options.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CompoundFile OpenRead(string path, CompoundFileOptions options)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The path of the compound file to open.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.IO.Compound.CompoundFileOptions.html">CompoundFileOptions</a></dt>
+    <dd><p>The options controlling the read strategy and validation level.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Compound.CompoundFile.html">CompoundFile</a></dt>
+    <dd><p>An open, read-only <a class="xref" href="Bodu.IO.Compound.CompoundFile.html">CompoundFile</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_IO_Compound_CompoundFile_OpenRead_System_String_Bodu_IO_Compound_CompoundFileOptions__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The returned instance owns the opened file and closes it when disposed. The file is opened with
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.fileshare#system-io-fileshare-read">Read</a>, so it does not lock out other readers.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">path</code> or <code class="paramref">options</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.filenotfoundexception">FileNotFoundException</a></dt>
+    <dd><p>Thrown when no file exists at <code class="paramref">path</code>.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.IO.Compound.CompoundFileFormatException.html">CompoundFileFormatException</a></dt>
+    <dd><p>Thrown when the file content is not a well-formed compound file.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_IO_Compound_CompoundFile_Revert_" data-uid="Bodu.IO.Compound.CompoundFile.Revert*"></a>
+
+  <h3 id="Bodu_IO_Compound_CompoundFile_Revert" data-uid="Bodu.IO.Compound.CompoundFile.Revert">
+  Revert()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs/#L863"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Discards all staged edits since the file was opened.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Revert()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_IO_Compound_CompoundFile_Revert_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>For a file opened in update mode this restores the contents loaded at open time; for a newly created file it
+restores the empty root storage.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when the file is read-only.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown when the file has been disposed.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_IO_Compound_CompoundFile_SetDocumentSummaryInformation_" data-uid="Bodu.IO.Compound.CompoundFile.SetDocumentSummaryInformation*"></a>
+
+  <h3 id="Bodu_IO_Compound_CompoundFile_SetDocumentSummaryInformation_Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_" data-uid="Bodu.IO.Compound.CompoundFile.SetDocumentSummaryInformation(Bodu.IO.Compound.PropertySets.DocumentSummaryInformation)">
+  SetDocumentSummaryInformation(DocumentSummaryInformation)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs/#L752"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Writes the standard document-summary-information property set into the root storage, creating or replacing the
 stream.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_CompoundFile_SetSummaryInformation_Bodu_IO_Compound_PropertySets_SummaryInformation_" data-uid="Bodu.IO.Compound.CompoundFile.SetSummaryInformation(Bodu.IO.Compound.PropertySets.SummaryInformation)">
-          <a class="xref" href="Bodu.IO.Compound.CompoundFile.SetSummaryInformation.html#Bodu_IO_Compound_CompoundFile_SetSummaryInformation_Bodu_IO_Compound_PropertySets_SummaryInformation_">SetSummaryInformation(SummaryInformation)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Writes the standard summary-information property set into the root storage, creating or replacing the stream.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_CompoundFile_TryGetDocumentSummaryInformation_Bodu_IO_Compound_PropertySets_DocumentSummaryInformation__" data-uid="Bodu.IO.Compound.CompoundFile.TryGetDocumentSummaryInformation(Bodu.IO.Compound.PropertySets.DocumentSummaryInformation@)">
-          <a class="xref" href="Bodu.IO.Compound.CompoundFile.TryGetDocumentSummaryInformation.html#Bodu_IO_Compound_CompoundFile_TryGetDocumentSummaryInformation_Bodu_IO_Compound_PropertySets_DocumentSummaryInformation__">TryGetDocumentSummaryInformation(out DocumentSummaryInformation)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to read the document-summary-information property set from the root storage.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_CompoundFile_TryGetSummaryInformation_Bodu_IO_Compound_PropertySets_SummaryInformation__" data-uid="Bodu.IO.Compound.CompoundFile.TryGetSummaryInformation(Bodu.IO.Compound.PropertySets.SummaryInformation@)">
-          <a class="xref" href="Bodu.IO.Compound.CompoundFile.TryGetSummaryInformation.html#Bodu_IO_Compound_CompoundFile_TryGetSummaryInformation_Bodu_IO_Compound_PropertySets_SummaryInformation__">TryGetSummaryInformation(out SummaryInformation)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to read the standard summary-information property set from the root storage.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void SetDocumentSummaryInformation(DocumentSummaryInformation summary)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>summary</code> <a class="xref" href="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.html">DocumentSummaryInformation</a></dt>
+    <dd><p>The document summary information to write.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_IO_Compound_CompoundFile_SetDocumentSummaryInformation_Bodu_IO_Compound_PropertySets_DocumentSummaryInformation__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The write counterpart of <a class="xref" href="Bodu.IO.Compound.CompoundFile.html#Bodu_IO_Compound_CompoundFile_TryGetDocumentSummaryInformation_Bodu_IO_Compound_PropertySets_DocumentSummaryInformation__">TryGetDocumentSummaryInformation(out DocumentSummaryInformation)</a>: the
+record's underlying <a class="xref" href="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.html#Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_PropertySet">PropertySet</a> is staged as the
+<code>\x05DocumentSummaryInformation</code> stream and persisted when <a class="xref" href="Bodu.IO.Compound.CompoundFile.html#Bodu_IO_Compound_CompoundFile_Commit">Commit()</a> is called.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">summary</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown when the file has been disposed.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when the file is read-only.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_IO_Compound_CompoundFile_SetSummaryInformation_" data-uid="Bodu.IO.Compound.CompoundFile.SetSummaryInformation*"></a>
+
+  <h3 id="Bodu_IO_Compound_CompoundFile_SetSummaryInformation_Bodu_IO_Compound_PropertySets_SummaryInformation_" data-uid="Bodu.IO.Compound.CompoundFile.SetSummaryInformation(Bodu.IO.Compound.PropertySets.SummaryInformation)">
+  SetSummaryInformation(SummaryInformation)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs/#L729"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Writes the standard summary-information property set into the root storage, creating or replacing the stream.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void SetSummaryInformation(SummaryInformation summary)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>summary</code> <a class="xref" href="Bodu.IO.Compound.PropertySets.SummaryInformation.html">SummaryInformation</a></dt>
+    <dd><p>The summary information to write.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_IO_Compound_CompoundFile_SetSummaryInformation_Bodu_IO_Compound_PropertySets_SummaryInformation__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The write counterpart of <a class="xref" href="Bodu.IO.Compound.CompoundFile.html#Bodu_IO_Compound_CompoundFile_TryGetSummaryInformation_Bodu_IO_Compound_PropertySets_SummaryInformation__">TryGetSummaryInformation(out SummaryInformation)</a>: the record's
+underlying <a class="xref" href="Bodu.IO.Compound.PropertySets.SummaryInformation.html#Bodu_IO_Compound_PropertySets_SummaryInformation_PropertySet">PropertySet</a> is staged as the <code>\x05SummaryInformation</code> stream
+and persisted when <a class="xref" href="Bodu.IO.Compound.CompoundFile.html#Bodu_IO_Compound_CompoundFile_Commit">Commit()</a> is called.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">summary</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown when the file has been disposed.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when the file is read-only.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_IO_Compound_CompoundFile_TryGetDocumentSummaryInformation_" data-uid="Bodu.IO.Compound.CompoundFile.TryGetDocumentSummaryInformation*"></a>
+
+  <h3 id="Bodu_IO_Compound_CompoundFile_TryGetDocumentSummaryInformation_Bodu_IO_Compound_PropertySets_DocumentSummaryInformation__" data-uid="Bodu.IO.Compound.CompoundFile.TryGetDocumentSummaryInformation(Bodu.IO.Compound.PropertySets.DocumentSummaryInformation@)">
+  TryGetDocumentSummaryInformation(out DocumentSummaryInformation)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs/#L703"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Attempts to read the document-summary-information property set from the root storage.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TryGetDocumentSummaryInformation(out DocumentSummaryInformation summary)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>summary</code> <a class="xref" href="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.html">DocumentSummaryInformation</a></dt>
+    <dd><p>When this method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, the parsed <a class="xref" href="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.html">DocumentSummaryInformation</a>;
+otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the root storage contains a document-summary-information stream; otherwise
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown when the file has been disposed.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.IO.Compound.CompoundFileFormatException.html">CompoundFileFormatException</a></dt>
+    <dd><p>Thrown when the property-set stream is malformed.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_IO_Compound_CompoundFile_TryGetSummaryInformation_" data-uid="Bodu.IO.Compound.CompoundFile.TryGetSummaryInformation*"></a>
+
+  <h3 id="Bodu_IO_Compound_CompoundFile_TryGetSummaryInformation_Bodu_IO_Compound_PropertySets_SummaryInformation__" data-uid="Bodu.IO.Compound.CompoundFile.TryGetSummaryInformation(Bodu.IO.Compound.PropertySets.SummaryInformation@)">
+  TryGetSummaryInformation(out SummaryInformation)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound/CompoundFile.cs/#L678"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Attempts to read the standard summary-information property set from the root storage.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TryGetSummaryInformation(out SummaryInformation summary)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>summary</code> <a class="xref" href="Bodu.IO.Compound.PropertySets.SummaryInformation.html">SummaryInformation</a></dt>
+    <dd><p>When this method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, the parsed <a class="xref" href="Bodu.IO.Compound.PropertySets.SummaryInformation.html">SummaryInformation</a>; otherwise
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the root storage contains a summary-information stream; otherwise
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown when the file has been disposed.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.IO.Compound.CompoundFileFormatException.html">CompoundFileFormatException</a></dt>
+    <dd><p>Thrown when the property-set stream is malformed.</p>
+</dd>
+  </dl>
+
+
+
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 302e395 · Built: 2026-09-29 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 1e0dd9a · Built: 2026-09-29 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

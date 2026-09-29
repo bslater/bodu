@@ -1,99 +1,127 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
       <title>Class DocumentSummaryInformation | BODU </title>
-      <meta name="viewport" content="width=device-width">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class DocumentSummaryInformation | BODU ">
-    
-    <meta name="description" content="Provides a strongly-typed view over the document-summary-information property set (\x05DocumentSummaryInformation) of a compound file, including any user-defined custom properties.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      
+      <meta name="description" content="Provides a strongly-typed view over the document-summary-information property set (\x05DocumentSummaryInformation) of a compound file, including any user-defined custom properties.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/new/master/apiSpec/new?filename=Bodu_IO_Compound_PropertySets_DocumentSummaryInformation.md&amp;value=---%0Auid%3A%20Bodu.IO.Compound.PropertySets.DocumentSummaryInformation%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation">
+
+        <article data-uid="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation">
 
 
 
-  <h1 id="Bodu_IO_Compound_PropertySets_DocumentSummaryInformation" data-uid="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation" class="text-break">Class DocumentSummaryInformation</h1>
-  <div class="markdown level0 summary"><p>Provides a strongly-typed view over the document-summary-information property set (<code>\x05DocumentSummaryInformation</code>)
+  <h1 id="Bodu_IO_Compound_PropertySets_DocumentSummaryInformation" data-uid="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation" class="text-break">
+Class DocumentSummaryInformation  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound.PropertySets/DocumentSummaryInformation.cs/#L36"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.IO.html">IO</a>.<a class="xref" href="Bodu.IO.Compound.html">Compound</a>.<a class="xref" href="Bodu.IO.Compound.PropertySets.html">PropertySets</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.IO.Compound.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides a strongly-typed view over the document-summary-information property set (<code>\x05DocumentSummaryInformation</code>)
 of a compound file, including any user-defined custom properties.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><span class="xref">DocumentSummaryInformation</span></div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class DocumentSummaryInformation</code></pre>
   </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">DocumentSummaryInformation</span></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
@@ -112,14 +140,31 @@ of a compound file, including any user-defined custom properties.</p>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
+  </dd></dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">IO</span>.<a class="xref" href="Bodu.IO.Compound.html">Compound</a>.<a class="xref" href="Bodu.IO.Compound.PropertySets.html">PropertySets</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.IO.Compound.dll</h6>
-  <h5 id="Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class DocumentSummaryInformation</code></pre>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h5 id="Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_remarks"><strong>Remarks</strong></h5>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  </dd></dl>
+
+
+
+  <h2 id="Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>The document-summary-information set carries extended document metadata such as the category, company, and slide
 count, and may include a second, user-defined section whose properties are named by a dictionary. Each property is
 optional; a property that is absent or of an unexpected type is surfaced as <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
@@ -138,241 +183,658 @@ if (file.TryGetDocumentSummaryInformation(out DocumentSummaryInformation? info))
 }</code></pre>
 </example>
 </div>
-  <h3 id="constructors">Constructors
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_IO_Compound_PropertySets_DocumentSummaryInformation__ctor_Bodu_IO_Compound_PropertySets_OlePropertySet_" data-uid="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.#ctor(Bodu.IO.Compound.PropertySets.OlePropertySet)">
-          <a class="xref" href="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.-ctor.html#Bodu_IO_Compound_PropertySets_DocumentSummaryInformation__ctor_Bodu_IO_Compound_PropertySets_OlePropertySet_">DocumentSummaryInformation(OlePropertySet)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.html">DocumentSummaryInformation</a> class over a parsed property set.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="fields">Fields
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_StreamName" data-uid="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.StreamName">
-          <a class="xref" href="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.StreamName.html">StreamName</a>
-        </td>
-        <td class="markdown level1 summary"><p>The directory name of the document-summary-information stream, including its leading control prefix.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="properties">Properties
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_Bytes" data-uid="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.Bytes">
-          <a class="xref" href="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.Bytes.html#Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_Bytes">Bytes</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the document size in bytes.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_Category" data-uid="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.Category">
-          <a class="xref" href="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.Category.html#Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_Category">Category</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the document category.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_Company" data-uid="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.Company">
-          <a class="xref" href="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.Company.html#Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_Company">Company</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the document company.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_CustomProperties" data-uid="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.CustomProperties">
-          <a class="xref" href="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.CustomProperties.html#Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_CustomProperties">CustomProperties</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the user-defined custom properties, keyed by their human-readable names.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_HiddenCount" data-uid="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.HiddenCount">
-          <a class="xref" href="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.HiddenCount.html#Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_HiddenCount">HiddenCount</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the hidden-slide count.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_LineCount" data-uid="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.LineCount">
-          <a class="xref" href="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.LineCount.html#Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_LineCount">LineCount</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the line count.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_LinksUpToDate" data-uid="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.LinksUpToDate">
-          <a class="xref" href="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.LinksUpToDate.html#Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_LinksUpToDate">LinksUpToDate</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets a value indicating whether the document's links are up to date.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_Manager" data-uid="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.Manager">
-          <a class="xref" href="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.Manager.html#Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_Manager">Manager</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the document manager.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_MultimediaClipCount" data-uid="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.MultimediaClipCount">
-          <a class="xref" href="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.MultimediaClipCount.html#Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_MultimediaClipCount">MultimediaClipCount</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the multimedia-clip count.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_NoteCount" data-uid="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.NoteCount">
-          <a class="xref" href="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.NoteCount.html#Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_NoteCount">NoteCount</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the note count.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_ParagraphCount" data-uid="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.ParagraphCount">
-          <a class="xref" href="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.ParagraphCount.html#Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_ParagraphCount">ParagraphCount</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the paragraph count.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_PresentationTarget" data-uid="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.PresentationTarget">
-          <a class="xref" href="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.PresentationTarget.html#Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_PresentationTarget">PresentationTarget</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the presentation target format.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_PropertySet" data-uid="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.PropertySet">
-          <a class="xref" href="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.PropertySet.html#Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_PropertySet">PropertySet</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the underlying parsed property set.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_ScaleCrop" data-uid="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.ScaleCrop">
-          <a class="xref" href="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.ScaleCrop.html#Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_ScaleCrop">ScaleCrop</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets a value indicating whether the document is scaled to crop.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_SlideCount" data-uid="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.SlideCount">
-          <a class="xref" href="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.SlideCount.html#Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_SlideCount">SlideCount</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the slide count.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_Read_System_IO_Stream_" data-uid="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.Read(System.IO.Stream)">
-          <a class="xref" href="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.Read.html#Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_Read_System_IO_Stream_">Read(Stream)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Reads and parses a document-summary-information property set from a stream, consuming it to the end.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Bodu_IO_Compound_PropertySets_DocumentSummaryInformation__ctor_" data-uid="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.#ctor*"></a>
+
+  <h3 id="Bodu_IO_Compound_PropertySets_DocumentSummaryInformation__ctor_Bodu_IO_Compound_PropertySets_OlePropertySet_" data-uid="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.#ctor(Bodu.IO.Compound.PropertySets.OlePropertySet)">
+  DocumentSummaryInformation(OlePropertySet)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound.PropertySets/DocumentSummaryInformation.cs/#L51"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.html">DocumentSummaryInformation</a> class over a parsed property set.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DocumentSummaryInformation(OlePropertySet propertySet)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>propertySet</code> <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertySet.html">OlePropertySet</a></dt>
+    <dd><p>The parsed document-summary-information property set.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">propertySet</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <h2 class="section" id="fields">Fields
+</h2>
+
+
+
+  <h3 id="Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_StreamName" data-uid="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.StreamName">
+  StreamName
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound.PropertySets/DocumentSummaryInformation.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The directory name of the document-summary-information stream, including its leading control prefix.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string StreamName = &quot;\u0005DocumentSummaryInformation&quot;</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_Bytes_" data-uid="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.Bytes*"></a>
+
+  <h3 id="Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_Bytes" data-uid="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.Bytes">
+  Bytes
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound.PropertySets/DocumentSummaryInformation.cs/#L94"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the document size in bytes.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int? Bytes { get; }</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd><p>The byte count, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when absent.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_Category_" data-uid="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.Category*"></a>
+
+  <h3 id="Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_Category" data-uid="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.Category">
+  Category
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound.PropertySets/DocumentSummaryInformation.cs/#L82"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the document category.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string? Category { get; }</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The category, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when absent.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_Company_" data-uid="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.Company*"></a>
+
+  <h3 id="Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_Company" data-uid="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.Company">
+  Company
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound.PropertySets/DocumentSummaryInformation.cs/#L148"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the document company.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string? Company { get; }</code></pre>
   </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The company, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when absent.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_CustomProperties_" data-uid="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.CustomProperties*"></a>
+
+  <h3 id="Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_CustomProperties" data-uid="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.CustomProperties">
+  CustomProperties
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound.PropertySets/DocumentSummaryInformation.cs/#L163"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the user-defined custom properties, keyed by their human-readable names.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyDictionary&lt;string, OlePropertyValue&gt; CustomProperties { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlydictionary-2">IReadOnlyDictionary</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertyValue.html">OlePropertyValue</a>&gt;</dt>
+    <dd><p>A dictionary of custom property name to value drawn from the user-defined section; empty when the property set
+has no user-defined section.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_HiddenCount_" data-uid="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.HiddenCount*"></a>
+
+  <h3 id="Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_HiddenCount" data-uid="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.HiddenCount">
+  HiddenCount
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound.PropertySets/DocumentSummaryInformation.cs/#L124"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the hidden-slide count.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int? HiddenCount { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd><p>The hidden-slide count, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when absent.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_LineCount_" data-uid="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.LineCount*"></a>
+
+  <h3 id="Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_LineCount" data-uid="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.LineCount">
+  LineCount
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound.PropertySets/DocumentSummaryInformation.cs/#L100"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the line count.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int? LineCount { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd><p>The line count, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when absent.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_LinksUpToDate_" data-uid="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.LinksUpToDate*"></a>
+
+  <h3 id="Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_LinksUpToDate" data-uid="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.LinksUpToDate">
+  LinksUpToDate
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound.PropertySets/DocumentSummaryInformation.cs/#L154"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether the document's links are up to date.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool? LinksUpToDate { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>?</dt>
+    <dd><p>The links-up-to-date flag, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when absent.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_Manager_" data-uid="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.Manager*"></a>
+
+  <h3 id="Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_Manager" data-uid="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.Manager">
+  Manager
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound.PropertySets/DocumentSummaryInformation.cs/#L142"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the document manager.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string? Manager { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The manager, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when absent.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_MultimediaClipCount_" data-uid="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.MultimediaClipCount*"></a>
+
+  <h3 id="Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_MultimediaClipCount" data-uid="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.MultimediaClipCount">
+  MultimediaClipCount
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound.PropertySets/DocumentSummaryInformation.cs/#L130"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the multimedia-clip count.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int? MultimediaClipCount { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd><p>The multimedia-clip count, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when absent.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_NoteCount_" data-uid="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.NoteCount*"></a>
+
+  <h3 id="Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_NoteCount" data-uid="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.NoteCount">
+  NoteCount
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound.PropertySets/DocumentSummaryInformation.cs/#L118"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the note count.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int? NoteCount { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd><p>The note count, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when absent.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_ParagraphCount_" data-uid="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.ParagraphCount*"></a>
+
+  <h3 id="Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_ParagraphCount" data-uid="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.ParagraphCount">
+  ParagraphCount
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound.PropertySets/DocumentSummaryInformation.cs/#L106"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the paragraph count.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int? ParagraphCount { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd><p>The paragraph count, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when absent.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_PresentationTarget_" data-uid="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.PresentationTarget*"></a>
+
+  <h3 id="Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_PresentationTarget" data-uid="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.PresentationTarget">
+  PresentationTarget
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound.PropertySets/DocumentSummaryInformation.cs/#L88"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the presentation target format.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string? PresentationTarget { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The presentation target, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when absent.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_PropertySet_" data-uid="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.PropertySet*"></a>
+
+  <h3 id="Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_PropertySet" data-uid="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.PropertySet">
+  PropertySet
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound.PropertySets/DocumentSummaryInformation.cs/#L76"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the underlying parsed property set.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public OlePropertySet PropertySet { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertySet.html">OlePropertySet</a></dt>
+    <dd><p>The document-summary-information <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertySet.html">OlePropertySet</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_ScaleCrop_" data-uid="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.ScaleCrop*"></a>
+
+  <h3 id="Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_ScaleCrop" data-uid="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.ScaleCrop">
+  ScaleCrop
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound.PropertySets/DocumentSummaryInformation.cs/#L136"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether the document is scaled to crop.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool? ScaleCrop { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>?</dt>
+    <dd><p>The scale-crop flag, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when absent.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_SlideCount_" data-uid="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.SlideCount*"></a>
+
+  <h3 id="Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_SlideCount" data-uid="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.SlideCount">
+  SlideCount
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound.PropertySets/DocumentSummaryInformation.cs/#L112"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the slide count.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int? SlideCount { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd><p>The slide count, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when absent.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_Read_" data-uid="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.Read*"></a>
+
+  <h3 id="Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_Read_System_IO_Stream_" data-uid="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.Read(System.IO.Stream)">
+  Read(Stream)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound.PropertySets/DocumentSummaryInformation.cs/#L69"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reads and parses a document-summary-information property set from a stream, consuming it to the end.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DocumentSummaryInformation Read(Stream stream)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>stream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The stream containing the document-summary-information property-set bytes.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.html">DocumentSummaryInformation</a></dt>
+    <dd><p>A <a class="xref" href="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.html">DocumentSummaryInformation</a> view over the parsed property set.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">stream</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.IO.Compound.CompoundFileFormatException.html">CompoundFileFormatException</a></dt>
+    <dd><p>Thrown when the data is not a well-formed property set.</p>
+</dd>
+  </dl>
+
+
+
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 302e395 · Built: 2026-09-29 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 1e0dd9a · Built: 2026-09-29 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

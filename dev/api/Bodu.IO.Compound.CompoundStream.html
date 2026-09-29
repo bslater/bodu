@@ -1,105 +1,135 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
       <title>Class CompoundStream | BODU </title>
-      <meta name="viewport" content="width=device-width">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class CompoundStream | BODU ">
-    
-    <meta name="description" content="Provides seekable access to the bytes of a single stream within a compound file.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      
+      <meta name="description" content="Provides seekable access to the bytes of a single stream within a compound file.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/new/master/apiSpec/new?filename=Bodu_IO_Compound_CompoundStream.md&amp;value=---%0Auid%3A%20Bodu.IO.Compound.CompoundStream%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.IO.Compound.CompoundStream">
+
+        <article data-uid="Bodu.IO.Compound.CompoundStream">
 
 
 
-  <h1 id="Bodu_IO_Compound_CompoundStream" data-uid="Bodu.IO.Compound.CompoundStream" class="text-break">Class CompoundStream</h1>
-  <div class="markdown level0 summary"><p>Provides seekable access to the bytes of a single stream within a compound file.</p>
+  <h1 id="Bodu_IO_Compound_CompoundStream" data-uid="Bodu.IO.Compound.CompoundStream" class="text-break">
+Class CompoundStream  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound/CompoundStream.cs/#L68"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.IO.html">IO</a>.<a class="xref" href="Bodu.IO.Compound.html">Compound</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.IO.Compound.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides seekable access to the bytes of a single stream within a compound file.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.marshalbyrefobject">MarshalByRefObject</a></div>
-    <div class="level2"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></div>
-    <div class="level3"><span class="xref">CompoundStream</span></div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class CompoundStream : Stream, IAsyncDisposable, IDisposable</code></pre>
   </div>
-  <div class="implements">
-    <h5>Implements</h5>
-    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iasyncdisposable">IAsyncDisposable</a></div>
-    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
-  </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.marshalbyrefobject">MarshalByRefObject</a></div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></div>
+      <div><span class="xref">CompoundStream</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iasyncdisposable">IAsyncDisposable</a></div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream.null">Stream.Null</a>
     </div>
@@ -211,48 +241,42 @@
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
+  </dd></dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">IO</span>.<a class="xref" href="Bodu.IO.Compound.html">Compound</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.IO.Compound.dll</h6>
-  <h5 id="Bodu_IO_Compound_CompoundStream_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class CompoundStream : Stream, IAsyncDisposable, IDisposable</code></pre>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h5 id="Bodu_IO_Compound_CompoundStream_remarks"><strong>Remarks</strong></h5>
-  <div class="markdown level0 remarks"><p>
-<img src="../images/diagrams/io-compound-stream-access.svg" alt="CompoundStorage.OpenStream returns a CompoundStream, a read-only seekable Stream cursor whose CanWrite is false. When the owning CompoundFile was opened buffered (the default), the stream's whole payload is materialized into an in-memory byte array at open time and Read, Seek, and AsMemory work over that array. When the file was opened with buffered false, the cursor walks the stream's sector chain in the source on demand: each Read locates the sector for the current Position, copies only the bytes within that sector, and advances, so the full payload is never held in memory. AsMemory materializes the whole chain on request.">
-</p>
-<p>
-<a class="xref" href="Bodu.IO.Compound.CompoundStream.html">CompoundStream</a> is a standard <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a> cursor obtained from
-<a class="xref" href="Bodu.IO.Compound.CompoundStorage.OpenStream.html#Bodu_IO_Compound_CompoundStorage_OpenStream_System_String_">OpenStream(string)</a>, so it composes with the BCL surfaces that consume a
-<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a> — <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.streamreader">StreamReader</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.binaryreader">BinaryReader</a>,
-<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream.copyto#system-io-stream-copyto(system-io-stream)">CopyTo(Stream)</a>, and the deserializers built on top of them.
-</p>
-<p>
-A stream opened from a buffered compound file is backed by an in-memory payload assembled at open time. A stream
-opened from a streaming compound file (see <a class="xref" href="Bodu.IO.Compound.CompoundFile.Open.html#Bodu_IO_Compound_CompoundFile_Open_System_IO_Stream_System_Boolean_System_Boolean_">Open(Stream, bool, bool)</a> with
-<code>buffered: false</code>) reads its sectors on demand from the underlying source, so it never materializes the whole
-payload. In the streaming case the owning <a class="xref" href="Bodu.IO.Compound.CompoundFile.html">CompoundFile</a> and its source must remain open for the
-lifetime of the cursor.
-</p>
-<p>
-A stream opened from a writable compound file (see
-<a class="xref" href="Bodu.IO.Compound.CompoundFile.Create.html#Bodu_IO_Compound_CompoundFile_Create_System_IO_Stream_System_Boolean_Bodu_IO_Compound_Builders_CompoundBuildOptions_">Create(Stream, bool, CompoundBuildOptions)</a>) is
-backed by a growable in-memory buffer: <a class="xref" href="Bodu.IO.Compound.CompoundStream.CanWrite.html#Bodu_IO_Compound_CompoundStream_CanWrite">CanWrite</a> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, and
-<a class="xref" href="Bodu.IO.Compound.CompoundStream.Write.html#Bodu_IO_Compound_CompoundStream_Write_System_Byte___System_Int32_System_Int32_">Write(byte[], int, int)</a> and <a class="xref" href="Bodu.IO.Compound.CompoundStream.SetLength.html#Bodu_IO_Compound_CompoundStream_SetLength_System_Int64_">SetLength(long)</a> mutate the buffer. The edits are staged in
-memory and are persisted to the underlying destination only when <a class="xref" href="Bodu.IO.Compound.CompoundFile.Commit.html#Bodu_IO_Compound_CompoundFile_Commit">Commit()</a> is called;
-closing the cursor flushes its buffer into the staging tree but does not write to the destination. A writable cursor
-holds at most <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32.maxvalue">MaxValue</a> bytes — payloads beyond that are authored through the deferred stream
-sources on <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.html">CompoundStorageBuilder</a> (<code>AddStream(name, openRead, length)</code>
-or <code>AddStreamFromFile</code>), which never buffer the whole payload.
-</p>
-<p>
-A read-only cursor (<a class="xref" href="Bodu.IO.Compound.CompoundStream.CanWrite.html#Bodu_IO_Compound_CompoundStream_CanWrite">CanWrite</a> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>) throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a>
-from <a class="xref" href="Bodu.IO.Compound.CompoundStream.Write.html#Bodu_IO_Compound_CompoundStream_Write_System_Byte___System_Int32_System_Int32_">Write(byte[], int, int)</a> and <a class="xref" href="Bodu.IO.Compound.CompoundStream.SetLength.html#Bodu_IO_Compound_CompoundStream_SetLength_System_Int64_">SetLength(long)</a>. Because reads against a streaming
-source advance a shared position, a single cursor is not safe for concurrent use; open one cursor per reader.
-</p>
-</div>
-  <h5 id="Bodu_IO_Compound_CompoundStream_examples"><strong>Examples</strong></h5>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.StreamExtensions.html#Bodu_Extensions_StreamExtensions_ReadAllBytes_System_IO_Stream_">StreamExtensions.ReadAllBytes(Stream)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.StreamExtensions.html#Bodu_Extensions_StreamExtensions_ReadAllBytesAsync_System_IO_Stream_System_Threading_CancellationToken_">StreamExtensions.ReadAllBytesAsync(Stream, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.StreamExtensions.html#Bodu_Extensions_StreamExtensions_WriteAllBytes_System_IO_Stream_System_ReadOnlySpan_System_Byte__">StreamExtensions.WriteAllBytes(Stream, ReadOnlySpan&lt;byte&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.StreamExtensions.html#Bodu_Extensions_StreamExtensions_WriteAllBytesAsync_System_IO_Stream_System_ReadOnlyMemory_System_Byte__System_Threading_CancellationToken_">StreamExtensions.WriteAllBytesAsync(Stream, ReadOnlyMemory&lt;byte&gt;, CancellationToken)</a>
+  </div>
+  </dd></dl>
+
+
+  <h2 id="Bodu_IO_Compound_CompoundStream_examples">Examples</h2>
   <p>The following example opens a compound file, navigates to a named stream, and reads its leading bytes through the
 cursor.</p>
 <pre><code class="lang-csharp">using Bodu.IO.Compound;
@@ -267,264 +291,1136 @@ stream.Seek(0, SeekOrigin.Begin);
 using var reader = new BinaryReader(stream);
 ushort recordType = reader.ReadUInt16();</code></pre>
 
-  <h3 id="properties">Properties
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_IO_Compound_CompoundStream_CanRead" data-uid="Bodu.IO.Compound.CompoundStream.CanRead">
-          <a class="xref" href="Bodu.IO.Compound.CompoundStream.CanRead.html#Bodu_IO_Compound_CompoundStream_CanRead">CanRead</a>
-        </td>
-        <td class="markdown level1 summary"><p>When overridden in a derived class, gets a value indicating whether the current stream supports reading.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_CompoundStream_CanSeek" data-uid="Bodu.IO.Compound.CompoundStream.CanSeek">
-          <a class="xref" href="Bodu.IO.Compound.CompoundStream.CanSeek.html#Bodu_IO_Compound_CompoundStream_CanSeek">CanSeek</a>
-        </td>
-        <td class="markdown level1 summary"><p>When overridden in a derived class, gets a value indicating whether the current stream supports seeking.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_CompoundStream_CanWrite" data-uid="Bodu.IO.Compound.CompoundStream.CanWrite">
-          <a class="xref" href="Bodu.IO.Compound.CompoundStream.CanWrite.html#Bodu_IO_Compound_CompoundStream_CanWrite">CanWrite</a>
-        </td>
-        <td class="markdown level1 summary"><p>When overridden in a derived class, gets a value indicating whether the current stream supports writing.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_CompoundStream_Length" data-uid="Bodu.IO.Compound.CompoundStream.Length">
-          <a class="xref" href="Bodu.IO.Compound.CompoundStream.Length.html#Bodu_IO_Compound_CompoundStream_Length">Length</a>
-        </td>
-        <td class="markdown level1 summary"><p>When overridden in a derived class, gets the length in bytes of the stream.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_CompoundStream_Name" data-uid="Bodu.IO.Compound.CompoundStream.Name">
-          <a class="xref" href="Bodu.IO.Compound.CompoundStream.Name.html#Bodu_IO_Compound_CompoundStream_Name">Name</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the directory name of the stream.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_CompoundStream_Parent" data-uid="Bodu.IO.Compound.CompoundStream.Parent">
-          <a class="xref" href="Bodu.IO.Compound.CompoundStream.Parent.html#Bodu_IO_Compound_CompoundStream_Parent">Parent</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the storage that owns this stream cursor.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_CompoundStream_Position" data-uid="Bodu.IO.Compound.CompoundStream.Position">
-          <a class="xref" href="Bodu.IO.Compound.CompoundStream.Position.html#Bodu_IO_Compound_CompoundStream_Position">Position</a>
-        </td>
-        <td class="markdown level1 summary"><p>When overridden in a derived class, gets or sets the position within the current stream.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_CompoundStream_Stat" data-uid="Bodu.IO.Compound.CompoundStream.Stat">
-          <a class="xref" href="Bodu.IO.Compound.CompoundStream.Stat.html#Bodu_IO_Compound_CompoundStream_Stat">Stat</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the metadata snapshot for this stream entry.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_IO_Compound_CompoundStream_AsMemory" data-uid="Bodu.IO.Compound.CompoundStream.AsMemory">
-          <a class="xref" href="Bodu.IO.Compound.CompoundStream.AsMemory.html#Bodu_IO_Compound_CompoundStream_AsMemory">AsMemory()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns a read-only view over the entire stream payload, materializing it for an on-demand stream.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_CompoundStream_Dispose_System_Boolean_" data-uid="Bodu.IO.Compound.CompoundStream.Dispose(System.Boolean)">
-          <a class="xref" href="Bodu.IO.Compound.CompoundStream.Dispose.html#Bodu_IO_Compound_CompoundStream_Dispose_System_Boolean_">Dispose(bool)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Releases the unmanaged resources used by the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a> and optionally releases the managed resources.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_CompoundStream_Flush" data-uid="Bodu.IO.Compound.CompoundStream.Flush">
-          <a class="xref" href="Bodu.IO.Compound.CompoundStream.Flush.html#Bodu_IO_Compound_CompoundStream_Flush">Flush()</a>
-        </td>
-        <td class="markdown level1 summary"><p>When overridden in a derived class, clears all buffers for this stream and causes any buffered data to be written to the underlying device.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_CompoundStream_FlushAsync_System_Threading_CancellationToken_" data-uid="Bodu.IO.Compound.CompoundStream.FlushAsync(System.Threading.CancellationToken)">
-          <a class="xref" href="Bodu.IO.Compound.CompoundStream.FlushAsync.html#Bodu_IO_Compound_CompoundStream_FlushAsync_System_Threading_CancellationToken_">FlushAsync(CancellationToken)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Asynchronously clears all buffers for this stream, causes any buffered data to be written to the underlying device, and monitors cancellation requests.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_CompoundStream_Read_System_Byte___System_Int32_System_Int32_" data-uid="Bodu.IO.Compound.CompoundStream.Read(System.Byte[],System.Int32,System.Int32)">
-          <a class="xref" href="Bodu.IO.Compound.CompoundStream.Read.html#Bodu_IO_Compound_CompoundStream_Read_System_Byte___System_Int32_System_Int32_">Read(byte[], int, int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>When overridden in a derived class, reads a sequence of bytes from the current stream and advances the position within the stream by the number of bytes read.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_CompoundStream_Read_System_Span_System_Byte__" data-uid="Bodu.IO.Compound.CompoundStream.Read(System.Span{System.Byte})">
-          <a class="xref" href="Bodu.IO.Compound.CompoundStream.Read.html#Bodu_IO_Compound_CompoundStream_Read_System_Span_System_Byte__">Read(Span&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>When overridden in a derived class, reads a sequence of bytes from the current stream and advances the position within the stream by the number of bytes read.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_CompoundStream_ReadAllBytes" data-uid="Bodu.IO.Compound.CompoundStream.ReadAllBytes">
-          <a class="xref" href="Bodu.IO.Compound.CompoundStream.ReadAllBytes.html#Bodu_IO_Compound_CompoundStream_ReadAllBytes">ReadAllBytes()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Copies the entire stream payload into a new byte array, independent of the current position.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_CompoundStream_ReadAsync_System_Byte___System_Int32_System_Int32_System_Threading_CancellationToken_" data-uid="Bodu.IO.Compound.CompoundStream.ReadAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
-          <a class="xref" href="Bodu.IO.Compound.CompoundStream.ReadAsync.html#Bodu_IO_Compound_CompoundStream_ReadAsync_System_Byte___System_Int32_System_Int32_System_Threading_CancellationToken_">ReadAsync(byte[], int, int, CancellationToken)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Asynchronously reads a sequence of bytes from the current stream, advances the position within the stream by the number of bytes read, and monitors cancellation requests.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_CompoundStream_ReadAsync_System_Memory_System_Byte__System_Threading_CancellationToken_" data-uid="Bodu.IO.Compound.CompoundStream.ReadAsync(System.Memory{System.Byte},System.Threading.CancellationToken)">
-          <a class="xref" href="Bodu.IO.Compound.CompoundStream.ReadAsync.html#Bodu_IO_Compound_CompoundStream_ReadAsync_System_Memory_System_Byte__System_Threading_CancellationToken_">ReadAsync(Memory&lt;byte&gt;, CancellationToken)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Asynchronously reads a sequence of bytes from the current stream, advances the position within the stream by the number of bytes read, and monitors cancellation requests.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_CompoundStream_Seek_System_Int64_System_IO_SeekOrigin_" data-uid="Bodu.IO.Compound.CompoundStream.Seek(System.Int64,System.IO.SeekOrigin)">
-          <a class="xref" href="Bodu.IO.Compound.CompoundStream.Seek.html#Bodu_IO_Compound_CompoundStream_Seek_System_Int64_System_IO_SeekOrigin_">Seek(long, SeekOrigin)</a>
-        </td>
-        <td class="markdown level1 summary"><p>When overridden in a derived class, sets the position within the current stream.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_CompoundStream_SetLength_System_Int64_" data-uid="Bodu.IO.Compound.CompoundStream.SetLength(System.Int64)">
-          <a class="xref" href="Bodu.IO.Compound.CompoundStream.SetLength.html#Bodu_IO_Compound_CompoundStream_SetLength_System_Int64_">SetLength(long)</a>
-        </td>
-        <td class="markdown level1 summary"><p>When overridden in a derived class, sets the length of the current stream.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_CompoundStream_Write_System_Byte___System_Int32_System_Int32_" data-uid="Bodu.IO.Compound.CompoundStream.Write(System.Byte[],System.Int32,System.Int32)">
-          <a class="xref" href="Bodu.IO.Compound.CompoundStream.Write.html#Bodu_IO_Compound_CompoundStream_Write_System_Byte___System_Int32_System_Int32_">Write(byte[], int, int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>When overridden in a derived class, writes a sequence of bytes to the current stream and advances the current position within this stream by the number of bytes written.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_CompoundStream_Write_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.IO.Compound.CompoundStream.Write(System.ReadOnlySpan{System.Byte})">
-          <a class="xref" href="Bodu.IO.Compound.CompoundStream.Write.html#Bodu_IO_Compound_CompoundStream_Write_System_ReadOnlySpan_System_Byte__">Write(ReadOnlySpan&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>When overridden in a derived class, writes a sequence of bytes to the current stream and advances the current position within this stream by the number of bytes written.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_CompoundStream_WriteAsync_System_Byte___System_Int32_System_Int32_System_Threading_CancellationToken_" data-uid="Bodu.IO.Compound.CompoundStream.WriteAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
-          <a class="xref" href="Bodu.IO.Compound.CompoundStream.WriteAsync.html#Bodu_IO_Compound_CompoundStream_WriteAsync_System_Byte___System_Int32_System_Int32_System_Threading_CancellationToken_">WriteAsync(byte[], int, int, CancellationToken)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Asynchronously writes a sequence of bytes to the current stream, advances the current position within this stream by the number of bytes written, and monitors cancellation requests.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_IO_Compound_CompoundStream_WriteAsync_System_ReadOnlyMemory_System_Byte__System_Threading_CancellationToken_" data-uid="Bodu.IO.Compound.CompoundStream.WriteAsync(System.ReadOnlyMemory{System.Byte},System.Threading.CancellationToken)">
-          <a class="xref" href="Bodu.IO.Compound.CompoundStream.WriteAsync.html#Bodu_IO_Compound_CompoundStream_WriteAsync_System_ReadOnlyMemory_System_Byte__System_Threading_CancellationToken_">WriteAsync(ReadOnlyMemory&lt;byte&gt;, CancellationToken)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Asynchronously writes a sequence of bytes to the current stream, advances the current position within this stream by the number of bytes written, and monitors cancellation requests.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+  <h2 id="Bodu_IO_Compound_CompoundStream_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>
+<img src="../images/diagrams/io-compound-stream-access.svg" alt="CompoundStorage.OpenStream returns a CompoundStream, a read-only seekable Stream cursor whose CanWrite is false. When the owning CompoundFile was opened buffered (the default), the stream's whole payload is materialized into an in-memory byte array at open time and Read, Seek, and AsMemory work over that array. When the file was opened with buffered false, the cursor walks the stream's sector chain in the source on demand: each Read locates the sector for the current Position, copies only the bytes within that sector, and advances, so the full payload is never held in memory. AsMemory materializes the whole chain on request.">
+</p>
+<p>
+<a class="xref" href="Bodu.IO.Compound.CompoundStream.html">CompoundStream</a> is a standard <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a> cursor obtained from
+<a class="xref" href="Bodu.IO.Compound.CompoundStorage.html#Bodu_IO_Compound_CompoundStorage_OpenStream_System_String_">OpenStream(string)</a>, so it composes with the BCL surfaces that consume a
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a> — <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.streamreader">StreamReader</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.binaryreader">BinaryReader</a>,
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream.copyto#system-io-stream-copyto(system-io-stream)">CopyTo(Stream)</a>, and the deserializers built on top of them.
+</p>
+<p>
+A stream opened from a buffered compound file is backed by an in-memory payload assembled at open time. A stream
+opened from a streaming compound file (see <a class="xref" href="Bodu.IO.Compound.CompoundFile.html#Bodu_IO_Compound_CompoundFile_Open_System_IO_Stream_System_Boolean_System_Boolean_">Open(Stream, bool, bool)</a> with
+<code>buffered: false</code>) reads its sectors on demand from the underlying source, so it never materializes the whole
+payload. In the streaming case the owning <a class="xref" href="Bodu.IO.Compound.CompoundFile.html">CompoundFile</a> and its source must remain open for the
+lifetime of the cursor.
+</p>
+<p>
+A stream opened from a writable compound file (see
+<a class="xref" href="Bodu.IO.Compound.CompoundFile.html#Bodu_IO_Compound_CompoundFile_Create_System_IO_Stream_System_Boolean_Bodu_IO_Compound_Builders_CompoundBuildOptions_">Create(Stream, bool, CompoundBuildOptions)</a>) is
+backed by a growable in-memory buffer: <a class="xref" href="Bodu.IO.Compound.CompoundStream.html#Bodu_IO_Compound_CompoundStream_CanWrite">CanWrite</a> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, and
+<a class="xref" href="Bodu.IO.Compound.CompoundStream.html#Bodu_IO_Compound_CompoundStream_Write_System_Byte___System_Int32_System_Int32_">Write(byte[], int, int)</a> and <a class="xref" href="Bodu.IO.Compound.CompoundStream.html#Bodu_IO_Compound_CompoundStream_SetLength_System_Int64_">SetLength(long)</a> mutate the buffer. The edits are staged in
+memory and are persisted to the underlying destination only when <a class="xref" href="Bodu.IO.Compound.CompoundFile.html#Bodu_IO_Compound_CompoundFile_Commit">Commit()</a> is called;
+closing the cursor flushes its buffer into the staging tree but does not write to the destination. A writable cursor
+holds at most <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32.maxvalue">MaxValue</a> bytes — payloads beyond that are authored through the deferred stream
+sources on <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.html">CompoundStorageBuilder</a> (<code>AddStream(name, openRead, length)</code>
+or <code>AddStreamFromFile</code>), which never buffer the whole payload.
+</p>
+<p>
+A read-only cursor (<a class="xref" href="Bodu.IO.Compound.CompoundStream.html#Bodu_IO_Compound_CompoundStream_CanWrite">CanWrite</a> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>) throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a>
+from <a class="xref" href="Bodu.IO.Compound.CompoundStream.html#Bodu_IO_Compound_CompoundStream_Write_System_Byte___System_Int32_System_Int32_">Write(byte[], int, int)</a> and <a class="xref" href="Bodu.IO.Compound.CompoundStream.html#Bodu_IO_Compound_CompoundStream_SetLength_System_Int64_">SetLength(long)</a>. Because reads against a streaming
+source advance a shared position, a single cursor is not safe for concurrent use; open one cursor per reader.
+</p>
+</div>
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Bodu_IO_Compound_CompoundStream_CanRead_" data-uid="Bodu.IO.Compound.CompoundStream.CanRead*"></a>
+
+  <h3 id="Bodu_IO_Compound_CompoundStream_CanRead" data-uid="Bodu.IO.Compound.CompoundStream.CanRead">
+  CanRead
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound/CompoundStream.cs/#L198"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>When overridden in a derived class, gets a value indicating whether the current stream supports reading.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override bool CanRead { get; }</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the stream supports reading; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_IO_Compound_CompoundStream_CanSeek_" data-uid="Bodu.IO.Compound.CompoundStream.CanSeek*"></a>
+
+  <h3 id="Bodu_IO_Compound_CompoundStream_CanSeek" data-uid="Bodu.IO.Compound.CompoundStream.CanSeek">
+  CanSeek
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound/CompoundStream.cs/#L201"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>When overridden in a derived class, gets a value indicating whether the current stream supports seeking.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override bool CanSeek { get; }</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the stream supports seeking; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_IO_Compound_CompoundStream_CanWrite_" data-uid="Bodu.IO.Compound.CompoundStream.CanWrite*"></a>
+
+  <h3 id="Bodu_IO_Compound_CompoundStream_CanWrite" data-uid="Bodu.IO.Compound.CompoundStream.CanWrite">
+  CanWrite
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound/CompoundStream.cs/#L204"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>When overridden in a derived class, gets a value indicating whether the current stream supports writing.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override bool CanWrite { get; }</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the stream supports writing; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_IO_Compound_CompoundStream_Length_" data-uid="Bodu.IO.Compound.CompoundStream.Length*"></a>
+
+  <h3 id="Bodu_IO_Compound_CompoundStream_Length" data-uid="Bodu.IO.Compound.CompoundStream.Length">
+  Length
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound/CompoundStream.cs/#L208"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>When overridden in a derived class, gets the length in bytes of the stream.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override long Length { get; }</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a></dt>
+    <dd><p>A long value representing the length of the stream in bytes.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>A class derived from <code>Stream</code> does not support seeking and the length is unknown.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Methods were called after the stream was closed.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown when the cursor has been disposed.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_IO_Compound_CompoundStream_Name_" data-uid="Bodu.IO.Compound.CompoundStream.Name*"></a>
+
+  <h3 id="Bodu_IO_Compound_CompoundStream_Name" data-uid="Bodu.IO.Compound.CompoundStream.Name">
+  Name
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound/CompoundStream.cs/#L182"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the directory name of the stream.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string Name { get; }</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.StreamExtensions.ReadAllBytes.html#Bodu_Extensions_StreamExtensions_ReadAllBytes_System_IO_Stream_">StreamExtensions.ReadAllBytes(Stream)</a>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The stream name as stored in the compound-file directory.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_IO_Compound_CompoundStream_Parent_" data-uid="Bodu.IO.Compound.CompoundStream.Parent*"></a>
+
+  <h3 id="Bodu_IO_Compound_CompoundStream_Parent" data-uid="Bodu.IO.Compound.CompoundStream.Parent">
+  Parent
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound/CompoundStream.cs/#L188"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the storage that owns this stream cursor.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CompoundStorage? Parent { get; }</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.StreamExtensions.ReadAllBytesAsync.html#Bodu_Extensions_StreamExtensions_ReadAllBytesAsync_System_IO_Stream_System_Threading_CancellationToken_">StreamExtensions.ReadAllBytesAsync(Stream, CancellationToken)</a>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Compound.CompoundStorage.html">CompoundStorage</a></dt>
+    <dd><p>The owning <a class="xref" href="Bodu.IO.Compound.CompoundStorage.html">CompoundStorage</a>, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when not available.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_IO_Compound_CompoundStream_Position_" data-uid="Bodu.IO.Compound.CompoundStream.Position*"></a>
+
+  <h3 id="Bodu_IO_Compound_CompoundStream_Position" data-uid="Bodu.IO.Compound.CompoundStream.Position">
+  Position
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound/CompoundStream.cs/#L220"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>When overridden in a derived class, gets or sets the position within the current stream.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override long Position { get; set; }</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.StreamExtensions.WriteAllBytes.html#Bodu_Extensions_StreamExtensions_WriteAllBytes_System_IO_Stream_System_ReadOnlySpan_System_Byte__">StreamExtensions.WriteAllBytes(Stream, ReadOnlySpan&lt;byte&gt;)</a>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a></dt>
+    <dd><p>The current position within the stream.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.ioexception">IOException</a></dt>
+    <dd><p>An I/O error occurs.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>The stream does not support seeking.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Methods were called after the stream was closed.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown on set when the value is negative.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown when the cursor has been disposed.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_IO_Compound_CompoundStream_Stat_" data-uid="Bodu.IO.Compound.CompoundStream.Stat*"></a>
+
+  <h3 id="Bodu_IO_Compound_CompoundStream_Stat" data-uid="Bodu.IO.Compound.CompoundStream.Stat">
+  Stat
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound/CompoundStream.cs/#L194"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the metadata snapshot for this stream entry.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CompoundEntryInfo Stat { get; }</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.StreamExtensions.WriteAllBytesAsync.html#Bodu_Extensions_StreamExtensions_WriteAllBytesAsync_System_IO_Stream_System_ReadOnlyMemory_System_Byte__System_Threading_CancellationToken_">StreamExtensions.WriteAllBytesAsync(Stream, ReadOnlyMemory&lt;byte&gt;, CancellationToken)</a>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.IO.Compound.CompoundEntryInfo.html">CompoundEntryInfo</a></dt>
+    <dd><p>A <a class="xref" href="Bodu.IO.Compound.CompoundEntryInfo.html">CompoundEntryInfo</a> describing the stream's name, size, class id, and timestamps.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_IO_Compound_CompoundStream_AsMemory_" data-uid="Bodu.IO.Compound.CompoundStream.AsMemory*"></a>
+
+  <h3 id="Bodu_IO_Compound_CompoundStream_AsMemory" data-uid="Bodu.IO.Compound.CompoundStream.AsMemory">
+  AsMemory()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound/CompoundStream.cs/#L258"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns a read-only view over the entire stream payload, materializing it for an on-demand stream.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ReadOnlyMemory&lt;byte&gt; AsMemory()</code></pre>
   </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlymemory-1">ReadOnlyMemory</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>A <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlymemory-1">ReadOnlyMemory&lt;T&gt;</a> spanning the payload bytes.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_IO_Compound_CompoundStream_AsMemory_examples">Examples</h4>
+  <pre><code class="lang-csharp">using CompoundStream stream = storage.OpenStream("Workbook");
+ReadOnlyMemory&lt;byte&gt; payload = stream.AsMemory();
+ushort recordType = BinaryPrimitives.ReadUInt16LittleEndian(payload.Span);</code></pre>
+
+
+  <h4 class="section" id="Bodu_IO_Compound_CompoundStream_AsMemory_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>For a buffered stream this returns a view over the already-materialized payload without copying; for a streaming
+stream it reads the whole payload into memory; for a writable stream it returns the bytes written so far. The
+returned view does not advance or depend on <a class="xref" href="Bodu.IO.Compound.CompoundStream.html#Bodu_IO_Compound_CompoundStream_Position">Position</a>. Prefer chunked
+<a class="xref" href="Bodu.IO.Compound.CompoundStream.html#Bodu_IO_Compound_CompoundStream_Read_System_Span_System_Byte__">Read(Span&lt;byte&gt;)</a> for large streaming payloads.</p>
+</div>
+
+
+
+
+  <a id="Bodu_IO_Compound_CompoundStream_Dispose_" data-uid="Bodu.IO.Compound.CompoundStream.Dispose*"></a>
+
+  <h3 id="Bodu_IO_Compound_CompoundStream_Dispose_System_Boolean_" data-uid="Bodu.IO.Compound.CompoundStream.Dispose(System.Boolean)">
+  Dispose(bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound/CompoundStream.cs/#L562"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Releases the unmanaged resources used by the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a> and optionally releases the managed resources.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override void Dispose(bool disposing)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>disposing</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> to release both managed and unmanaged resources; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> to release only unmanaged resources.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_IO_Compound_CompoundStream_Flush_" data-uid="Bodu.IO.Compound.CompoundStream.Flush*"></a>
+
+  <h3 id="Bodu_IO_Compound_CompoundStream_Flush" data-uid="Bodu.IO.Compound.CompoundStream.Flush">
+  Flush()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound/CompoundStream.cs/#L444"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>When overridden in a derived class, clears all buffers for this stream and causes any buffered data to be written to the underlying device.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override void Flush()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_IO_Compound_CompoundStream_Flush_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>For a writable cursor this flushes the buffered bytes into the staging tree and marks the owning file dirty; the
+destination is written only by <a class="xref" href="Bodu.IO.Compound.CompoundFile.html#Bodu_IO_Compound_CompoundFile_Commit">Commit()</a>. For a read-only cursor this is a no-op.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.ioexception">IOException</a></dt>
+    <dd><p>An I/O error occurs.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown when the cursor has been disposed.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_IO_Compound_CompoundStream_FlushAsync_" data-uid="Bodu.IO.Compound.CompoundStream.FlushAsync*"></a>
+
+  <h3 id="Bodu_IO_Compound_CompoundStream_FlushAsync_System_Threading_CancellationToken_" data-uid="Bodu.IO.Compound.CompoundStream.FlushAsync(System.Threading.CancellationToken)">
+  FlushAsync(CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound/CompoundStream.cs/#L545"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously clears all buffers for this stream, causes any buffered data to be written to the underlying device, and monitors cancellation requests.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task FlushAsync(CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>The token to monitor for cancellation requests. The default value is <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken.none">None</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a></dt>
+    <dd><p>A task that represents the asynchronous flush operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>The stream has been disposed.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_IO_Compound_CompoundStream_Read_" data-uid="Bodu.IO.Compound.CompoundStream.Read*"></a>
+
+  <h3 id="Bodu_IO_Compound_CompoundStream_Read_System_Byte___System_Int32_System_Int32_" data-uid="Bodu.IO.Compound.CompoundStream.Read(System.Byte[],System.Int32,System.Int32)">
+  Read(byte[], int, int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound/CompoundStream.cs/#L280"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>When overridden in a derived class, reads a sequence of bytes from the current stream and advances the position within the stream by the number of bytes read.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override int Read(byte[] buffer, int offset, int count)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>buffer</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>An array of bytes. When this method returns, the buffer contains the specified byte array with the values between <code class="paramref">offset</code> and (<code class="paramref">offset</code> + <code class="paramref">count</code> - 1) replaced by the bytes read from the current source.</p>
+</dd>
+    <dt><code>offset</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The zero-based byte offset in <code class="paramref">buffer</code> at which to begin storing the data read from the current stream.</p>
+</dd>
+    <dt><code>count</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The maximum number of bytes to be read from the current stream.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The total number of bytes read into the buffer. This can be less than the number of bytes requested if that many bytes are not currently available, or zero (0) if <code class="paramref">count</code> is 0 or the end of the stream has been reached.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>The sum of <code class="paramref">offset</code> and <code class="paramref">count</code> is larger than the buffer length.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">buffer</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">offset</code> or <code class="paramref">count</code> is negative.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.ioexception">IOException</a></dt>
+    <dd><p>An I/O error occurs.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>The stream does not support reading.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Methods were called after the stream was closed.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_IO_Compound_CompoundStream_Read_" data-uid="Bodu.IO.Compound.CompoundStream.Read*"></a>
+
+  <h3 id="Bodu_IO_Compound_CompoundStream_Read_System_Span_System_Byte__" data-uid="Bodu.IO.Compound.CompoundStream.Read(System.Span{System.Byte})">
+  Read(Span&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound/CompoundStream.cs/#L291"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>When overridden in a derived class, reads a sequence of bytes from the current stream and advances the position within the stream by the number of bytes read.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override int Read(Span&lt;byte&gt; buffer)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>buffer</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>A region of memory. When this method returns, the contents of this region are replaced by the bytes read from the current source.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The total number of bytes read into the buffer. This can be less than the size of the buffer if that many bytes are not currently available, or zero (0) if the buffer's length is zero or the end of the stream has been reached.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>Thrown when the cursor is write-only.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown when the cursor has been disposed.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_IO_Compound_CompoundStream_ReadAllBytes_" data-uid="Bodu.IO.Compound.CompoundStream.ReadAllBytes*"></a>
+
+  <h3 id="Bodu_IO_Compound_CompoundStream_ReadAllBytes" data-uid="Bodu.IO.Compound.CompoundStream.ReadAllBytes">
+  ReadAllBytes()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound/CompoundStream.cs/#L276"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Copies the entire stream payload into a new byte array, independent of the current position.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public byte[] ReadAllBytes()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>A <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a> array containing the whole payload.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_IO_Compound_CompoundStream_ReadAllBytes_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Mirrors <code>File.ReadAllBytes</code> for callers that consume the whole stream in one pass. Prefer
+<a class="xref" href="Bodu.IO.Compound.CompoundStream.html#Bodu_IO_Compound_CompoundStream_AsMemory">AsMemory()</a> when a zero-copy view suffices, or chunked <a class="xref" href="Bodu.IO.Compound.CompoundStream.html#Bodu_IO_Compound_CompoundStream_Read_System_Span_System_Byte__">Read(Span&lt;byte&gt;)</a> for large
+streaming payloads.</p>
+</div>
+
+
+
+
+  <a id="Bodu_IO_Compound_CompoundStream_ReadAsync_" data-uid="Bodu.IO.Compound.CompoundStream.ReadAsync*"></a>
+
+  <h3 id="Bodu_IO_Compound_CompoundStream_ReadAsync_System_Byte___System_Int32_System_Int32_System_Threading_CancellationToken_" data-uid="Bodu.IO.Compound.CompoundStream.ReadAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
+  ReadAsync(byte[], int, int, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound/CompoundStream.cs/#L339"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously reads a sequence of bytes from the current stream, advances the position within the stream by the number of bytes read, and monitors cancellation requests.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task&lt;int&gt; ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>buffer</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The buffer to write the data into.</p>
+</dd>
+    <dt><code>offset</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The byte offset in <code class="paramref">buffer</code> at which to begin writing data from the stream.</p>
+</dd>
+    <dt><code>count</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The maximum number of bytes to read.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>The token to monitor for cancellation requests. The default value is <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken.none">None</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>&gt;</dt>
+    <dd><p>A task that represents the asynchronous read operation. The value of the <code class="paramref">TResult</code> parameter contains the total number of bytes read into the buffer. The result value can be less than the number of bytes requested if the number of bytes currently available is less than the requested number, or it can be 0 (zero) if <code class="paramref">count</code> is 0 or if the end of the stream has been reached.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">buffer</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">offset</code> or <code class="paramref">count</code> is negative.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>The sum of <code class="paramref">offset</code> and <code class="paramref">count</code> is larger than the buffer length.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>The stream does not support reading.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>The stream has been disposed.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The stream is currently in use by a previous read operation.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_IO_Compound_CompoundStream_ReadAsync_" data-uid="Bodu.IO.Compound.CompoundStream.ReadAsync*"></a>
+
+  <h3 id="Bodu_IO_Compound_CompoundStream_ReadAsync_System_Memory_System_Byte__System_Threading_CancellationToken_" data-uid="Bodu.IO.Compound.CompoundStream.ReadAsync(System.Memory{System.Byte},System.Threading.CancellationToken)">
+  ReadAsync(Memory&lt;byte&gt;, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound/CompoundStream.cs/#L352"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously reads a sequence of bytes from the current stream, advances the position within the stream by the number of bytes read, and monitors cancellation requests.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override ValueTask&lt;int&gt; ReadAsync(Memory&lt;byte&gt; buffer, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>buffer</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.memory-1">Memory</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The region of memory to write the data into.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>The token to monitor for cancellation requests. The default value is <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken.none">None</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.valuetask-1">ValueTask</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>&gt;</dt>
+    <dd><p>A task that represents the asynchronous read operation. The value of its <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.valuetask-1.result">Result</a> property contains the total number of bytes read into the buffer. The result value can be less than the length of the buffer if that many bytes are not currently available, or it can be 0 (zero) if the length of the buffer is 0 or if the end of the stream has been reached.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_IO_Compound_CompoundStream_ReadAsync_System_Memory_System_Byte__System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This is truly asynchronous only for a streaming-mode cursor, which reads its sectors on demand from the
+underlying source; a buffered or writable cursor reads from memory and completes synchronously.</p>
+</div>
+
+
+
+
+  <a id="Bodu_IO_Compound_CompoundStream_Seek_" data-uid="Bodu.IO.Compound.CompoundStream.Seek*"></a>
+
+  <h3 id="Bodu_IO_Compound_CompoundStream_Seek_System_Int64_System_IO_SeekOrigin_" data-uid="Bodu.IO.Compound.CompoundStream.Seek(System.Int64,System.IO.SeekOrigin)">
+  Seek(long, SeekOrigin)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound/CompoundStream.cs/#L416"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>When overridden in a derived class, sets the position within the current stream.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override long Seek(long offset, SeekOrigin origin)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>offset</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a></dt>
+    <dd><p>A byte offset relative to the <code class="paramref">origin</code> parameter.</p>
+</dd>
+    <dt><code>origin</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.seekorigin">SeekOrigin</a></dt>
+    <dd><p>A value of type <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.seekorigin">SeekOrigin</a> indicating the reference point used to obtain the new position.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a></dt>
+    <dd><p>The new position within the current stream.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.ioexception">IOException</a></dt>
+    <dd><p>An I/O error occurs.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>The stream does not support seeking, such as if the stream is constructed from a pipe or console output.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Methods were called after the stream was closed.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown when the cursor has been disposed.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_IO_Compound_CompoundStream_SetLength_" data-uid="Bodu.IO.Compound.CompoundStream.SetLength*"></a>
+
+  <h3 id="Bodu_IO_Compound_CompoundStream_SetLength_System_Int64_" data-uid="Bodu.IO.Compound.CompoundStream.SetLength(System.Int64)">
+  SetLength(long)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound/CompoundStream.cs/#L462"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>When overridden in a derived class, sets the length of the current stream.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override void SetLength(long value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a></dt>
+    <dd><p>The desired length of the current stream in bytes.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_IO_Compound_CompoundStream_SetLength_System_Int64__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>A writable cursor buffers its payload in memory and supports at most <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32.maxvalue">MaxValue</a> bytes; author
+larger payloads through a deferred stream source (<code>AddStream(name, openRead, length)</code> or
+<code>AddStreamFromFile</code>).</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.ioexception">IOException</a></dt>
+    <dd><p>An I/O error occurs.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>The stream does not support both writing and seeking, such as if the stream is constructed from a pipe or console output.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Methods were called after the stream was closed.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>Thrown when the cursor is read-only, or when <code class="paramref">value</code> exceeds the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32.maxvalue">MaxValue</a>
+writable-cursor payload cap.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown when the cursor has been disposed.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_IO_Compound_CompoundStream_Write_" data-uid="Bodu.IO.Compound.CompoundStream.Write*"></a>
+
+  <h3 id="Bodu_IO_Compound_CompoundStream_Write_System_Byte___System_Int32_System_Int32_" data-uid="Bodu.IO.Compound.CompoundStream.Write(System.Byte[],System.Int32,System.Int32)">
+  Write(byte[], int, int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound/CompoundStream.cs/#L475"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>When overridden in a derived class, writes a sequence of bytes to the current stream and advances the current position within this stream by the number of bytes written.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override void Write(byte[] buffer, int offset, int count)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>buffer</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>An array of bytes. This method copies <code class="paramref">count</code> bytes from <code class="paramref">buffer</code> to the current stream.</p>
+</dd>
+    <dt><code>offset</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The zero-based byte offset in <code class="paramref">buffer</code> at which to begin copying bytes to the current stream.</p>
+</dd>
+    <dt><code>count</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of bytes to be written to the current stream.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>The sum of <code class="paramref">offset</code> and <code class="paramref">count</code> is greater than the buffer length.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">buffer</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">offset</code> or <code class="paramref">count</code> is negative.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.ioexception">IOException</a></dt>
+    <dd><p>An I/O error occurred, such as the specified file cannot be found.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>The stream does not support writing.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream.write#system-io-stream-write(system-byte()-system-int32-system-int32)">Write(byte[], int, int)</a> was called after the stream was closed.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_IO_Compound_CompoundStream_Write_" data-uid="Bodu.IO.Compound.CompoundStream.Write*"></a>
+
+  <h3 id="Bodu_IO_Compound_CompoundStream_Write_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.IO.Compound.CompoundStream.Write(System.ReadOnlySpan{System.Byte})">
+  Write(ReadOnlySpan&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound/CompoundStream.cs/#L494"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>When overridden in a derived class, writes a sequence of bytes to the current stream and advances the current position within this stream by the number of bytes written.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override void Write(ReadOnlySpan&lt;byte&gt; buffer)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>buffer</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>A region of memory. This method copies the contents of this region to the current stream.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_IO_Compound_CompoundStream_Write_System_ReadOnlySpan_System_Byte___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>A writable cursor buffers its payload in memory and supports at most <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32.maxvalue">MaxValue</a> bytes; author
+larger payloads through a deferred stream source (<code>AddStream(name, openRead, length)</code> or
+<code>AddStreamFromFile</code>).</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>Thrown when the cursor is read-only, or when the write would grow the payload beyond the
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32.maxvalue">MaxValue</a> writable-cursor cap.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown when the cursor has been disposed.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_IO_Compound_CompoundStream_WriteAsync_" data-uid="Bodu.IO.Compound.CompoundStream.WriteAsync*"></a>
+
+  <h3 id="Bodu_IO_Compound_CompoundStream_WriteAsync_System_Byte___System_Int32_System_Int32_System_Threading_CancellationToken_" data-uid="Bodu.IO.Compound.CompoundStream.WriteAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
+  WriteAsync(byte[], int, int, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound/CompoundStream.cs/#L508"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously writes a sequence of bytes to the current stream, advances the current position within this stream by the number of bytes written, and monitors cancellation requests.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>buffer</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The buffer to write data from.</p>
+</dd>
+    <dt><code>offset</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The zero-based byte offset in <code class="paramref">buffer</code> from which to begin copying bytes to the stream.</p>
+</dd>
+    <dt><code>count</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The maximum number of bytes to write.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>The token to monitor for cancellation requests. The default value is <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken.none">None</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a></dt>
+    <dd><p>A task that represents the asynchronous write operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">buffer</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">offset</code> or <code class="paramref">count</code> is negative.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>The sum of <code class="paramref">offset</code> and <code class="paramref">count</code> is larger than the buffer length.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>The stream does not support writing.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>The stream has been disposed.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The stream is currently in use by a previous write operation.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>Thrown when the cursor is read-only.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_IO_Compound_CompoundStream_WriteAsync_" data-uid="Bodu.IO.Compound.CompoundStream.WriteAsync*"></a>
+
+  <h3 id="Bodu_IO_Compound_CompoundStream_WriteAsync_System_ReadOnlyMemory_System_Byte__System_Threading_CancellationToken_" data-uid="Bodu.IO.Compound.CompoundStream.WriteAsync(System.ReadOnlyMemory{System.Byte},System.Threading.CancellationToken)">
+  WriteAsync(ReadOnlyMemory&lt;byte&gt;, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.IO.Compound/src/IO.Compound/CompoundStream.cs/#L528"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously writes a sequence of bytes to the current stream, advances the current position within this stream by the number of bytes written, and monitors cancellation requests.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override ValueTask WriteAsync(ReadOnlyMemory&lt;byte&gt; buffer, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>buffer</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlymemory-1">ReadOnlyMemory</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The region of memory to write data from.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>The token to monitor for cancellation requests. The default value is <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken.none">None</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.valuetask">ValueTask</a></dt>
+    <dd><p>A task that represents the asynchronous write operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>Thrown when the cursor is read-only.</p>
+</dd>
+  </dl>
+
+
+
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 302e395 · Built: 2026-09-29 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 1e0dd9a · Built: 2026-09-29 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

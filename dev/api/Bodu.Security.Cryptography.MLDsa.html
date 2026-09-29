@@ -1,111 +1,146 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
       <title>Class MLDsa | BODU </title>
-      <meta name="viewport" content="width=device-width">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class MLDsa | BODU ">
-    
-    <meta name="description" content="Provides the family base class for the ML-DSA module-lattice digital signature algorithm standardized by NIST FIPS 204, exposed through the standard  framework. Use the sealed , , or  parameter sets.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      
+      <meta name="description" content="Provides the family base class for the ML-DSA module-lattice digital signature algorithm standardized by NIST FIPS 204, exposed through the standard  framework. Use the sealed , , or  parameter sets.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/new/master/apiSpec/new?filename=Bodu_Security_Cryptography_MLDsa.md&amp;value=---%0Auid%3A%20Bodu.Security.Cryptography.MLDsa%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Security.Cryptography.MLDsa">
+
+        <article data-uid="Bodu.Security.Cryptography.MLDsa">
 
 
 
-  <h1 id="Bodu_Security_Cryptography_MLDsa" data-uid="Bodu.Security.Cryptography.MLDsa" class="text-break">Class MLDsa</h1>
-  <div class="markdown level0 summary"><p>Provides the family base class for the ML-DSA module-lattice digital signature algorithm standardized by NIST FIPS
+  <h1 id="Bodu_Security_Cryptography_MLDsa" data-uid="Bodu.Security.Cryptography.MLDsa" class="text-break">
+Class MLDsa  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/MLDsa.KeyFormats.cs/#L17"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Security</span>.<a class="xref" href="Bodu.Security.Cryptography.html">Cryptography</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Security.Cryptography.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides the family base class for the ML-DSA module-lattice digital signature algorithm standardized by NIST FIPS
 204, exposed through the standard <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm">AsymmetricAlgorithm</a> framework. Use the sealed
 <a class="xref" href="Bodu.Security.Cryptography.MLDsa44.html">MLDsa44</a>, <a class="xref" href="Bodu.Security.Cryptography.MLDsa65.html">MLDsa65</a>, or <a class="xref" href="Bodu.Security.Cryptography.MLDsa87.html">MLDsa87</a> parameter sets.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm">AsymmetricAlgorithm</a></div>
-    <div class="level2"><a class="xref" href="Bodu.Security.Cryptography.RawKeyAsymmetricAlgorithm.html">RawKeyAsymmetricAlgorithm</a></div>
-    <div class="level3"><span class="xref">MLDsa</span></div>
-      <div class="level4"><a class="xref" href="Bodu.Security.Cryptography.MLDsa44.html">MLDsa44</a></div>
-      <div class="level4"><a class="xref" href="Bodu.Security.Cryptography.MLDsa65.html">MLDsa65</a></div>
-      <div class="level4"><a class="xref" href="Bodu.Security.Cryptography.MLDsa87.html">MLDsa87</a></div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public abstract class MLDsa : RawKeyAsymmetricAlgorithm, IDisposable</code></pre>
   </div>
-  <div class="implements">
-    <h5>Implements</h5>
-    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
-  </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm">AsymmetricAlgorithm</a></div>
+      <div><a class="xref" href="Bodu.Security.Cryptography.RawKeyAsymmetricAlgorithm.html">RawKeyAsymmetricAlgorithm</a></div>
+      <div><span class="xref">MLDsa</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist derived">
+    <dt>Derived</dt>
+    <dd>
+      <div><a class="xref" href="Bodu.Security.Cryptography.MLDsa44.html">MLDsa44</a></div>
+      <div><a class="xref" href="Bodu.Security.Cryptography.MLDsa65.html">MLDsa65</a></div>
+      <div><a class="xref" href="Bodu.Security.Cryptography.MLDsa87.html">MLDsa87</a></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
-      <a class="xref" href="Bodu.Security.Cryptography.RawKeyAsymmetricAlgorithm.Dispose.html#Bodu_Security_Cryptography_RawKeyAsymmetricAlgorithm_Dispose_System_Boolean_">RawKeyAsymmetricAlgorithm.Dispose(bool)</a>
+      <a class="xref" href="Bodu.Security.Cryptography.RawKeyAsymmetricAlgorithm.html#Bodu_Security_Cryptography_RawKeyAsymmetricAlgorithm_Dispose_System_Boolean_">RawKeyAsymmetricAlgorithm.Dispose(bool)</a>
     </div>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm.keysizevalue">AsymmetricAlgorithm.KeySizeValue</a>
@@ -197,14 +232,40 @@
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
+  </dd></dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Security</span>.<a class="xref" href="Bodu.Security.Cryptography.html">Cryptography</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Security.Cryptography.dll</h6>
-  <h5 id="Bodu_Security_Cryptography_MLDsa_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public abstract class MLDsa : RawKeyAsymmetricAlgorithm, IDisposable</code></pre>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h5 id="Bodu_Security_Cryptography_MLDsa_remarks"><strong>Remarks</strong></h5>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  </dd></dl>
+
+
+  <h2 id="Bodu_Security_Cryptography_MLDsa_examples">Examples</h2>
+  <pre><code class="lang-csharp">using var signer = MLDsa65.Create();
+signer.GenerateKey();
+byte[] signature = signer.SignData(message);
+
+using var verifier = MLDsa65.Create();
+verifier.ImportPublicKey(signer.ExportPublicKey());
+bool valid = verifier.VerifyData(message, signature);</code></pre>
+
+
+  <h2 id="Bodu_Security_Cryptography_MLDsa_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
 ML-DSA is a digital signature scheme believed secure against quantum adversaries (its hardness rests on the
 Module-LWE and SelfTargetMSIS problems). Signing accepts an optional <em>context</em> string of at most 255 bytes
@@ -214,7 +275,7 @@ context.
 <p>
 <strong>Hedged versus deterministic signing.</strong> By default signing is <em>hedged</em>: each signature mixes 32
 fresh random bytes into the nonce derivation, which is the FIPS 204 default and protects against fault-injection and
-randomness-disclosure attacks. Setting <a class="xref" href="Bodu.Security.Cryptography.MLDsa.DeterministicSigning.html#Bodu_Security_Cryptography_MLDsa_DeterministicSigning">DeterministicSigning</a> to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> substitutes
+randomness-disclosure attacks. Setting <a class="xref" href="Bodu.Security.Cryptography.MLDsa.html#Bodu_Security_Cryptography_MLDsa_DeterministicSigning">DeterministicSigning</a> to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> substitutes
 the all-zero string, making signatures reproducible for a fixed key and message. Both variants are standard;
 verification is unaffected.
 </p>
@@ -226,8 +287,8 @@ length in bits.
 <p>
 <strong>Scope.</strong> This type implements pure ML-DSA (the ML-DSA.Sign / ML-DSA.Verify external functions). The
 pre-hash variant HashML-DSA is deliberately out of scope for this version. Only the raw FIPS 204 byte encodings are
-supported: the 32-byte seed ξ via <a class="xref" href="Bodu.Security.Cryptography.MLDsa.ImportPrivateSeed.html#Bodu_Security_Cryptography_MLDsa_ImportPrivateSeed_System_ReadOnlySpan_System_Byte__">ImportPrivateSeed(ReadOnlySpan&lt;byte&gt;)</a> and the encoded keys via
-<a class="xref" href="Bodu.Security.Cryptography.MLDsa.ImportPrivateKey.html#Bodu_Security_Cryptography_MLDsa_ImportPrivateKey_System_ReadOnlySpan_System_Byte__">ImportPrivateKey(ReadOnlySpan&lt;byte&gt;)</a> (which cross-checks the embedded public-key hash) and <a class="xref" href="Bodu.Security.Cryptography.MLDsa.ImportPublicKey.html#Bodu_Security_Cryptography_MLDsa_ImportPublicKey_System_ReadOnlySpan_System_Byte__">ImportPublicKey(ReadOnlySpan&lt;byte&gt;)</a>
+supported: the 32-byte seed ξ via <a class="xref" href="Bodu.Security.Cryptography.MLDsa.html#Bodu_Security_Cryptography_MLDsa_ImportPrivateSeed_System_ReadOnlySpan_System_Byte__">ImportPrivateSeed(ReadOnlySpan&lt;byte&gt;)</a> and the encoded keys via
+<a class="xref" href="Bodu.Security.Cryptography.MLDsa.html#Bodu_Security_Cryptography_MLDsa_ImportPrivateKey_System_ReadOnlySpan_System_Byte__">ImportPrivateKey(ReadOnlySpan&lt;byte&gt;)</a> (which cross-checks the embedded public-key hash) and <a class="xref" href="Bodu.Security.Cryptography.MLDsa.html#Bodu_Security_Cryptography_MLDsa_ImportPublicKey_System_ReadOnlySpan_System_Byte__">ImportPublicKey(ReadOnlySpan&lt;byte&gt;)</a>
 . The PKCS#8 / SubjectPublicKeyInfo members inherited from <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm">AsymmetricAlgorithm</a> are not implemented
 and retain their base (throwing) behavior.
 </p>
@@ -243,347 +304,1493 @@ signatures. Private key material, the cached secret vectors included, is zeroed 
 offers best-effort side-channel resistance and has not been independently audited.
 </p>
 </div>
-  <h5 id="Bodu_Security_Cryptography_MLDsa_examples"><strong>Examples</strong></h5>
-  <pre><code class="lang-csharp">using var signer = MLDsa65.Create();
-signer.GenerateKey();
-byte[] signature = signer.SignData(message);
 
-using var verifier = MLDsa65.Create();
-verifier.ImportPublicKey(signer.ExportPublicKey());
-bool valid = verifier.VerifyData(message, signature);</code></pre>
 
-  <h3 id="fields">Fields
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Security_Cryptography_MLDsa_MaxContextSizeInBytes" data-uid="Bodu.Security.Cryptography.MLDsa.MaxContextSizeInBytes">
-          <a class="xref" href="Bodu.Security.Cryptography.MLDsa.MaxContextSizeInBytes.html">MaxContextSizeInBytes</a>
-        </td>
-        <td class="markdown level1 summary"><p>The maximum length, in bytes, of the signature context string.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_MLDsa_PrivateSeedSizeInBytes" data-uid="Bodu.Security.Cryptography.MLDsa.PrivateSeedSizeInBytes">
-          <a class="xref" href="Bodu.Security.Cryptography.MLDsa.PrivateSeedSizeInBytes.html">PrivateSeedSizeInBytes</a>
-        </td>
-        <td class="markdown level1 summary"><p>The size, in bytes, of the private seed ξ accepted by <a class="xref" href="Bodu.Security.Cryptography.MLDsa.ImportPrivateSeed.html#Bodu_Security_Cryptography_MLDsa_ImportPrivateSeed_System_ReadOnlySpan_System_Byte__">ImportPrivateSeed(ReadOnlySpan&lt;byte&gt;)</a>.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="properties">Properties
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Security_Cryptography_MLDsa_AlgorithmName" data-uid="Bodu.Security.Cryptography.MLDsa.AlgorithmName">
-          <a class="xref" href="Bodu.Security.Cryptography.MLDsa.AlgorithmName.html#Bodu_Security_Cryptography_MLDsa_AlgorithmName">AlgorithmName</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the FIPS 204 parameter-set name, such as <code>&quot;ML-DSA-65&quot;</code>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_MLDsa_DeterministicSigning" data-uid="Bodu.Security.Cryptography.MLDsa.DeterministicSigning">
-          <a class="xref" href="Bodu.Security.Cryptography.MLDsa.DeterministicSigning.html#Bodu_Security_Cryptography_MLDsa_DeterministicSigning">DeterministicSigning</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets or sets a value indicating whether signing is deterministic instead of hedged.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_MLDsa_HasPrivateKey" data-uid="Bodu.Security.Cryptography.MLDsa.HasPrivateKey">
-          <a class="xref" href="Bodu.Security.Cryptography.MLDsa.HasPrivateKey.html#Bodu_Security_Cryptography_MLDsa_HasPrivateKey">HasPrivateKey</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets a value indicating whether the instance currently holds a private key.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_MLDsa_HasPublicKey" data-uid="Bodu.Security.Cryptography.MLDsa.HasPublicKey">
-          <a class="xref" href="Bodu.Security.Cryptography.MLDsa.HasPublicKey.html#Bodu_Security_Cryptography_MLDsa_HasPublicKey">HasPublicKey</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets a value indicating whether the instance currently holds a public key.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_MLDsa_KeyExchangeAlgorithm" data-uid="Bodu.Security.Cryptography.MLDsa.KeyExchangeAlgorithm">
-          <a class="xref" href="Bodu.Security.Cryptography.MLDsa.KeyExchangeAlgorithm.html#Bodu_Security_Cryptography_MLDsa_KeyExchangeAlgorithm">KeyExchangeAlgorithm</a>
-        </td>
-        <td class="markdown level1 summary"><p>When overridden in a derived class, gets the name of the key exchange algorithm. Otherwise, throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notimplementedexception">NotImplementedException</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_MLDsa_PrivateKeySizeInBytes" data-uid="Bodu.Security.Cryptography.MLDsa.PrivateKeySizeInBytes">
-          <a class="xref" href="Bodu.Security.Cryptography.MLDsa.PrivateKeySizeInBytes.html#Bodu_Security_Cryptography_MLDsa_PrivateKeySizeInBytes">PrivateKeySizeInBytes</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the size, in bytes, of the encoded private key.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_MLDsa_PublicKeySizeInBytes" data-uid="Bodu.Security.Cryptography.MLDsa.PublicKeySizeInBytes">
-          <a class="xref" href="Bodu.Security.Cryptography.MLDsa.PublicKeySizeInBytes.html#Bodu_Security_Cryptography_MLDsa_PublicKeySizeInBytes">PublicKeySizeInBytes</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the size, in bytes, of the encoded public key.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_MLDsa_SecurityStrengthBits" data-uid="Bodu.Security.Cryptography.MLDsa.SecurityStrengthBits">
-          <a class="xref" href="Bodu.Security.Cryptography.MLDsa.SecurityStrengthBits.html#Bodu_Security_Cryptography_MLDsa_SecurityStrengthBits">SecurityStrengthBits</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the claimed security strength of the selected parameter set, in bits (128, 192, or 256 for ML-DSA-44,
+  <h2 class="section" id="fields">Fields
+</h2>
+
+
+
+  <h3 id="Bodu_Security_Cryptography_MLDsa_MaxContextSizeInBytes" data-uid="Bodu.Security.Cryptography.MLDsa.MaxContextSizeInBytes">
+  MaxContextSizeInBytes
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/MLDsa.cs/#L73"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The maximum length, in bytes, of the signature context string.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const int MaxContextSizeInBytes = 255</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Bodu_Security_Cryptography_MLDsa_PrivateSeedSizeInBytes" data-uid="Bodu.Security.Cryptography.MLDsa.PrivateSeedSizeInBytes">
+  PrivateSeedSizeInBytes
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/MLDsa.cs/#L76"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The size, in bytes, of the private seed ξ accepted by <a class="xref" href="Bodu.Security.Cryptography.MLDsa.html#Bodu_Security_Cryptography_MLDsa_ImportPrivateSeed_System_ReadOnlySpan_System_Byte__">ImportPrivateSeed(ReadOnlySpan&lt;byte&gt;)</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const int PrivateSeedSizeInBytes = 32</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Bodu_Security_Cryptography_MLDsa_AlgorithmName_" data-uid="Bodu.Security.Cryptography.MLDsa.AlgorithmName*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_MLDsa_AlgorithmName" data-uid="Bodu.Security.Cryptography.MLDsa.AlgorithmName">
+  AlgorithmName
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/MLDsa.KeyFormats.cs/#L27"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the FIPS 204 parameter-set name, such as <code>&quot;ML-DSA-65&quot;</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string AlgorithmName { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The parameter-set name selected when the instance was created.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_MLDsa_AlgorithmName_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Unlike the inherited <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm.keysize">KeySize</a>, which reports a fixed parameter-set designator
+rather than a meaningful bit length for a post-quantum scheme, this property names the parameter set directly.</p>
+</div>
+
+
+
+
+  <a id="Bodu_Security_Cryptography_MLDsa_DeterministicSigning_" data-uid="Bodu.Security.Cryptography.MLDsa.DeterministicSigning*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_MLDsa_DeterministicSigning" data-uid="Bodu.Security.Cryptography.MLDsa.DeterministicSigning">
+  DeterministicSigning
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/MLDsa.cs/#L112"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets a value indicating whether signing is deterministic instead of hedged.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool DeterministicSigning { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> (the default) to mix 32 fresh random bytes into every signature per the FIPS 204 hedged
+variant; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> to use the all-zero string, making signatures reproducible.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Security_Cryptography_MLDsa_HasPrivateKey_" data-uid="Bodu.Security.Cryptography.MLDsa.HasPrivateKey*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_MLDsa_HasPrivateKey" data-uid="Bodu.Security.Cryptography.MLDsa.HasPrivateKey">
+  HasPrivateKey
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/MLDsa.cs/#L121"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether the instance currently holds a private key.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool HasPrivateKey { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when private key material is present; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>The instance has been disposed.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Security_Cryptography_MLDsa_HasPublicKey_" data-uid="Bodu.Security.Cryptography.MLDsa.HasPublicKey*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_MLDsa_HasPublicKey" data-uid="Bodu.Security.Cryptography.MLDsa.HasPublicKey">
+  HasPublicKey
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/MLDsa.cs/#L135"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether the instance currently holds a public key.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool HasPublicKey { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when public key material is present; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>The instance has been disposed.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Security_Cryptography_MLDsa_KeyExchangeAlgorithm_" data-uid="Bodu.Security.Cryptography.MLDsa.KeyExchangeAlgorithm*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_MLDsa_KeyExchangeAlgorithm" data-uid="Bodu.Security.Cryptography.MLDsa.KeyExchangeAlgorithm">
+  KeyExchangeAlgorithm
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/MLDsa.cs/#L146"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>When overridden in a derived class, gets the name of the key exchange algorithm. Otherwise, throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notimplementedexception">NotImplementedException</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override string? KeyExchangeAlgorithm { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the key exchange algorithm.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Security_Cryptography_MLDsa_PrivateKeySizeInBytes_" data-uid="Bodu.Security.Cryptography.MLDsa.PrivateKeySizeInBytes*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_MLDsa_PrivateKeySizeInBytes" data-uid="Bodu.Security.Cryptography.MLDsa.PrivateKeySizeInBytes">
+  PrivateKeySizeInBytes
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/MLDsa.cs/#L154"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the size, in bytes, of the encoded private key.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int PrivateKeySizeInBytes { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>2560, 4032, or 4896 depending on the parameter set.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>The instance has been disposed.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Security_Cryptography_MLDsa_PublicKeySizeInBytes_" data-uid="Bodu.Security.Cryptography.MLDsa.PublicKeySizeInBytes*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_MLDsa_PublicKeySizeInBytes" data-uid="Bodu.Security.Cryptography.MLDsa.PublicKeySizeInBytes">
+  PublicKeySizeInBytes
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/MLDsa.cs/#L168"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the size, in bytes, of the encoded public key.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int PublicKeySizeInBytes { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>1312, 1952, or 2592 depending on the parameter set.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>The instance has been disposed.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Security_Cryptography_MLDsa_SecurityStrengthBits_" data-uid="Bodu.Security.Cryptography.MLDsa.SecurityStrengthBits*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_MLDsa_SecurityStrengthBits" data-uid="Bodu.Security.Cryptography.MLDsa.SecurityStrengthBits">
+  SecurityStrengthBits
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/MLDsa.KeyFormats.cs/#L35"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the claimed security strength of the selected parameter set, in bits (128, 192, or 256 for ML-DSA-44,
 ML-DSA-65, and ML-DSA-87 respectively, corresponding to NIST security categories 2, 3, and 5).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_MLDsa_SignatureAlgorithm" data-uid="Bodu.Security.Cryptography.MLDsa.SignatureAlgorithm">
-          <a class="xref" href="Bodu.Security.Cryptography.MLDsa.SignatureAlgorithm.html#Bodu_Security_Cryptography_MLDsa_SignatureAlgorithm">SignatureAlgorithm</a>
-        </td>
-        <td class="markdown level1 summary"><p>When implemented in a derived class, gets the name of the signature algorithm. Otherwise, always throws a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notimplementedexception">NotImplementedException</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_MLDsa_SignatureSizeInBytes" data-uid="Bodu.Security.Cryptography.MLDsa.SignatureSizeInBytes">
-          <a class="xref" href="Bodu.Security.Cryptography.MLDsa.SignatureSizeInBytes.html#Bodu_Security_Cryptography_MLDsa_SignatureSizeInBytes">SignatureSizeInBytes</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the size, in bytes, of an encoded signature.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Security_Cryptography_MLDsa_ExportPrivateKey" data-uid="Bodu.Security.Cryptography.MLDsa.ExportPrivateKey">
-          <a class="xref" href="Bodu.Security.Cryptography.MLDsa.ExportPrivateKey.html#Bodu_Security_Cryptography_MLDsa_ExportPrivateKey">ExportPrivateKey()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Exports the encoded FIPS 204 private key.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_MLDsa_ExportPublicKey" data-uid="Bodu.Security.Cryptography.MLDsa.ExportPublicKey">
-          <a class="xref" href="Bodu.Security.Cryptography.MLDsa.ExportPublicKey.html#Bodu_Security_Cryptography_MLDsa_ExportPublicKey">ExportPublicKey()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Exports the encoded FIPS 204 public key.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_MLDsa_FromXmlString_System_String_" data-uid="Bodu.Security.Cryptography.MLDsa.FromXmlString(System.String)">
-          <a class="xref" href="Bodu.Security.Cryptography.MLDsa.FromXmlString.html#Bodu_Security_Cryptography_MLDsa_FromXmlString_System_String_">FromXmlString(string)</a>
-        </td>
-        <td class="markdown level1 summary"><p>When overridden in a derived class, reconstructs an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm">AsymmetricAlgorithm</a> object from an XML string. Otherwise, throws a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notimplementedexception">NotImplementedException</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_MLDsa_GenerateKey" data-uid="Bodu.Security.Cryptography.MLDsa.GenerateKey">
-          <a class="xref" href="Bodu.Security.Cryptography.MLDsa.GenerateKey.html#Bodu_Security_Cryptography_MLDsa_GenerateKey">GenerateKey()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Generates a fresh random key pair, replacing any existing key material on the instance.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_MLDsa_ImportEncryptedPkcs8PrivateKey_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__System_Int32__" data-uid="Bodu.Security.Cryptography.MLDsa.ImportEncryptedPkcs8PrivateKey(System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte},System.Int32@)">
-          <a class="xref" href="Bodu.Security.Cryptography.MLDsa.ImportEncryptedPkcs8PrivateKey.html#Bodu_Security_Cryptography_MLDsa_ImportEncryptedPkcs8PrivateKey_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__System_Int32__">ImportEncryptedPkcs8PrivateKey(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;, out int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>When overridden in a derived class, imports the public/private keypair from a PKCS#8 EncryptedPrivateKeyInfo structure after decrypting with a byte-based password, replacing the keys for this object.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_MLDsa_ImportEncryptedPkcs8PrivateKey_System_ReadOnlySpan_System_Char__System_ReadOnlySpan_System_Byte__System_Int32__" data-uid="Bodu.Security.Cryptography.MLDsa.ImportEncryptedPkcs8PrivateKey(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Byte},System.Int32@)">
-          <a class="xref" href="Bodu.Security.Cryptography.MLDsa.ImportEncryptedPkcs8PrivateKey.html#Bodu_Security_Cryptography_MLDsa_ImportEncryptedPkcs8PrivateKey_System_ReadOnlySpan_System_Char__System_ReadOnlySpan_System_Byte__System_Int32__">ImportEncryptedPkcs8PrivateKey(ReadOnlySpan&lt;char&gt;, ReadOnlySpan&lt;byte&gt;, out int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>When overridden in a derived class, imports the public/private keypair from a PKCS#8 EncryptedPrivateKeyInfo structure after decrypting with a char-based password, replacing the keys for this object.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_MLDsa_ImportPkcs8PrivateKey_System_ReadOnlySpan_System_Byte__System_Int32__" data-uid="Bodu.Security.Cryptography.MLDsa.ImportPkcs8PrivateKey(System.ReadOnlySpan{System.Byte},System.Int32@)">
-          <a class="xref" href="Bodu.Security.Cryptography.MLDsa.ImportPkcs8PrivateKey.html#Bodu_Security_Cryptography_MLDsa_ImportPkcs8PrivateKey_System_ReadOnlySpan_System_Byte__System_Int32__">ImportPkcs8PrivateKey(ReadOnlySpan&lt;byte&gt;, out int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>When overriden in a derived class, imports the public/private keypair from a PKCS#8 PrivateKeyInfo structure after decryption, replacing the keys for this object.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_MLDsa_ImportPrivateKey_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.MLDsa.ImportPrivateKey(System.ReadOnlySpan{System.Byte})">
-          <a class="xref" href="Bodu.Security.Cryptography.MLDsa.ImportPrivateKey.html#Bodu_Security_Cryptography_MLDsa_ImportPrivateKey_System_ReadOnlySpan_System_Byte__">ImportPrivateKey(ReadOnlySpan&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Imports an encoded FIPS 204 private key, recomputing and caching the matching public key, and replacing any
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int SecurityStrengthBits { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The security strength in bits.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Security_Cryptography_MLDsa_SignatureAlgorithm_" data-uid="Bodu.Security.Cryptography.MLDsa.SignatureAlgorithm*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_MLDsa_SignatureAlgorithm" data-uid="Bodu.Security.Cryptography.MLDsa.SignatureAlgorithm">
+  SignatureAlgorithm
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/MLDsa.cs/#L179"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>When implemented in a derived class, gets the name of the signature algorithm. Otherwise, always throws a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notimplementedexception">NotImplementedException</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override string? SignatureAlgorithm { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the signature algorithm.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Security_Cryptography_MLDsa_SignatureSizeInBytes_" data-uid="Bodu.Security.Cryptography.MLDsa.SignatureSizeInBytes*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_MLDsa_SignatureSizeInBytes" data-uid="Bodu.Security.Cryptography.MLDsa.SignatureSizeInBytes">
+  SignatureSizeInBytes
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/MLDsa.cs/#L187"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the size, in bytes, of an encoded signature.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int SignatureSizeInBytes { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>2420, 3309, or 4627 depending on the parameter set.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>The instance has been disposed.</p>
+</dd>
+  </dl>
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Security_Cryptography_MLDsa_ExportPrivateKey_" data-uid="Bodu.Security.Cryptography.MLDsa.ExportPrivateKey*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_MLDsa_ExportPrivateKey" data-uid="Bodu.Security.Cryptography.MLDsa.ExportPrivateKey">
+  ExportPrivateKey()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/MLDsa.cs/#L202"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Exports the encoded FIPS 204 private key.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public byte[] ExportPrivateKey()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>A fresh copy of the encoded private key.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>The instance has been disposed.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicexception">CryptographicException</a></dt>
+    <dd><p>The instance does not hold a private key.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Security_Cryptography_MLDsa_ExportPublicKey_" data-uid="Bodu.Security.Cryptography.MLDsa.ExportPublicKey*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_MLDsa_ExportPublicKey" data-uid="Bodu.Security.Cryptography.MLDsa.ExportPublicKey">
+  ExportPublicKey()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/MLDsa.cs/#L216"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Exports the encoded FIPS 204 public key.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public byte[] ExportPublicKey()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>A fresh copy of the encoded public key.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>The instance has been disposed.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicexception">CryptographicException</a></dt>
+    <dd><p>The instance does not hold a public key.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Security_Cryptography_MLDsa_FromXmlString_" data-uid="Bodu.Security.Cryptography.MLDsa.FromXmlString*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_MLDsa_FromXmlString_System_String_" data-uid="Bodu.Security.Cryptography.MLDsa.FromXmlString(System.String)">
+  FromXmlString(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/MLDsa.KeyFormats.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>When overridden in a derived class, reconstructs an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm">AsymmetricAlgorithm</a> object from an XML string. Otherwise, throws a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notimplementedexception">NotImplementedException</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override void FromXmlString(string xmlString)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>xmlString</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The XML string to use to reconstruct the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm">AsymmetricAlgorithm</a> object.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_Security_Cryptography_MLDsa_GenerateKey_" data-uid="Bodu.Security.Cryptography.MLDsa.GenerateKey*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_MLDsa_GenerateKey" data-uid="Bodu.Security.Cryptography.MLDsa.GenerateKey">
+  GenerateKey()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/MLDsa.cs/#L232"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Generates a fresh random key pair, replacing any existing key material on the instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void GenerateKey()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_MLDsa_GenerateKey_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The 32-byte seed ξ is drawn from a cryptographically secure random source. Any previously held private key is
+zeroed before being replaced.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>The instance has been disposed.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Security_Cryptography_MLDsa_ImportEncryptedPkcs8PrivateKey_" data-uid="Bodu.Security.Cryptography.MLDsa.ImportEncryptedPkcs8PrivateKey*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_MLDsa_ImportEncryptedPkcs8PrivateKey_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__System_Int32__" data-uid="Bodu.Security.Cryptography.MLDsa.ImportEncryptedPkcs8PrivateKey(System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte},System.Int32@)">
+  ImportEncryptedPkcs8PrivateKey(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;, out int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/MLDsa.KeyFormats.cs/#L55"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>When overridden in a derived class, imports the public/private keypair from a PKCS#8 EncryptedPrivateKeyInfo structure after decrypting with a byte-based password, replacing the keys for this object.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override void ImportEncryptedPkcs8PrivateKey(ReadOnlySpan&lt;byte&gt; passwordBytes, ReadOnlySpan&lt;byte&gt; source, out int bytesRead)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>passwordBytes</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The bytes to use as a password when decrypting the key material.</p>
+</dd>
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The bytes of a PKCS#8 EncryptedPrivateKeyInfo structure in the ASN.1-BER encoding.</p>
+</dd>
+    <dt><code>bytesRead</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>When this method returns, contains a value that indicates the number of bytes read from <code class="paramref">source</code>. This parameter is treated as uninitialized.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicexception">CryptographicException</a></dt>
+    <dd><p>The password is incorrect.</p>
+<p>-or-</p>
+<p>The contents of <code class="paramref">source</code> indicate the Key Derivation Function (KDF) to apply is the legacy PKCS#12 KDF, which requires <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>-based passwords.</p>
+<p>-or-</p>
+<p>The contents of <code class="paramref">source</code> do not represent an ASN.1-BER-encoded PKCS#8 EncryptedPrivateKeyInfo structure.</p>
+<p>-or-</p>
+<p>The contents of <code class="paramref">source</code> indicate the key is for an algorithm other than the algorithm represented by this instance.</p>
+<p>-or-</p>
+<p>The contents of <code class="paramref">source</code> represent the key in a format that is not supported.</p>
+<p>-or-</p>
+<p>The algorithm-specific key import failed.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notimplementedexception">NotImplementedException</a></dt>
+    <dd><p>A derived type has not overriden this member.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Security_Cryptography_MLDsa_ImportEncryptedPkcs8PrivateKey_" data-uid="Bodu.Security.Cryptography.MLDsa.ImportEncryptedPkcs8PrivateKey*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_MLDsa_ImportEncryptedPkcs8PrivateKey_System_ReadOnlySpan_System_Char__System_ReadOnlySpan_System_Byte__System_Int32__" data-uid="Bodu.Security.Cryptography.MLDsa.ImportEncryptedPkcs8PrivateKey(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Byte},System.Int32@)">
+  ImportEncryptedPkcs8PrivateKey(ReadOnlySpan&lt;char&gt;, ReadOnlySpan&lt;byte&gt;, out int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/MLDsa.KeyFormats.cs/#L59"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>When overridden in a derived class, imports the public/private keypair from a PKCS#8 EncryptedPrivateKeyInfo structure after decrypting with a char-based password, replacing the keys for this object.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override void ImportEncryptedPkcs8PrivateKey(ReadOnlySpan&lt;char&gt; password, ReadOnlySpan&lt;byte&gt; source, out int bytesRead)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>password</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The password to use for decrypting the key material.</p>
+</dd>
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The bytes of a PKCS#8 EncryptedPrivateKeyInfo structure in the ASN.1-BER encoding.</p>
+</dd>
+    <dt><code>bytesRead</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>When this method returns, contains a value that indicates the number of bytes read from <code class="paramref">source</code>. This parameter is treated as uninitialized.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicexception">CryptographicException</a></dt>
+    <dd><p>The password is incorrect.</p>
+<p>-or-</p>
+<p>The contents of <code class="paramref">source</code> do not represent an ASN.1-BER-encoded PKCS#8 EncryptedPrivateKeyInfo structure.</p>
+<p>-or-</p>
+<p>The contents of <code class="paramref">source</code> indicate the key is for an algorithm other than the algorithm represented by this instance.</p>
+<p>-or-</p>
+<p>The contents of <code class="paramref">source</code> represent the key in a format that is not supported.</p>
+<p>-or-</p>
+<p>The algorithm-specific key import failed.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notimplementedexception">NotImplementedException</a></dt>
+    <dd><p>A derived type has not overriden this member.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Security_Cryptography_MLDsa_ImportPkcs8PrivateKey_" data-uid="Bodu.Security.Cryptography.MLDsa.ImportPkcs8PrivateKey*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_MLDsa_ImportPkcs8PrivateKey_System_ReadOnlySpan_System_Byte__System_Int32__" data-uid="Bodu.Security.Cryptography.MLDsa.ImportPkcs8PrivateKey(System.ReadOnlySpan{System.Byte},System.Int32@)">
+  ImportPkcs8PrivateKey(ReadOnlySpan&lt;byte&gt;, out int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/MLDsa.KeyFormats.cs/#L51"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>When overriden in a derived class, imports the public/private keypair from a PKCS#8 PrivateKeyInfo structure after decryption, replacing the keys for this object.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override void ImportPkcs8PrivateKey(ReadOnlySpan&lt;byte&gt; source, out int bytesRead)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The bytes of a PKCS#8 PrivateKeyInfo structure in the ASN.1-BER encoding.</p>
+</dd>
+    <dt><code>bytesRead</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>When this method returns, contains a value that indicates the number of bytes read from <code class="paramref">source</code>. This parameter is treated as uninitialized.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicexception">CryptographicException</a></dt>
+    <dd><p>The contents of <code class="paramref">source</code> do not represent an ASN.1-BER-encoded PKCS#8 PrivateKeyInfo structure.</p>
+<p>-or-</p>
+<p>The contents of <code class="paramref">source</code> indicate the key is for an algorithm other than the algorithm represented by this instance.</p>
+<p>-or-</p>
+<p>The contents of <code class="paramref">source</code> represent the key in a format that is not supported.</p>
+<p>-or-</p>
+<p>The algorithm-specific key import failed.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notimplementedexception">NotImplementedException</a></dt>
+    <dd><p>A derived type has not overriden this member.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Security_Cryptography_MLDsa_ImportPrivateKey_" data-uid="Bodu.Security.Cryptography.MLDsa.ImportPrivateKey*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_MLDsa_ImportPrivateKey_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.MLDsa.ImportPrivateKey(System.ReadOnlySpan{System.Byte})">
+  ImportPrivateKey(ReadOnlySpan&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/MLDsa.cs/#L254"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Imports an encoded FIPS 204 private key, recomputing and caching the matching public key, and replacing any
 existing key material on the instance.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_MLDsa_ImportPrivateSeed_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.MLDsa.ImportPrivateSeed(System.ReadOnlySpan{System.Byte})">
-          <a class="xref" href="Bodu.Security.Cryptography.MLDsa.ImportPrivateSeed.html#Bodu_Security_Cryptography_MLDsa_ImportPrivateSeed_System_ReadOnlySpan_System_Byte__">ImportPrivateSeed(ReadOnlySpan&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Imports the FIPS 204 32-byte private seed ξ and regenerates the full key pair from it, replacing any existing
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void ImportPrivateKey(ReadOnlySpan&lt;byte&gt; privateKey)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>privateKey</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The encoded private key ρ ‖ K ‖ tr ‖ s₁ ‖ s₂ ‖ t₀.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>The instance has been disposed.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">privateKey</code> does not have the exact parameter-set length; encodes an s₁ or s₂ coefficient
+outside its canonical [−η, η] range; carries a t₀ vector inconsistent with the low bits recomputed from the
+secret vectors; or its embedded tr hash does not match the public key recomputed from those vectors.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Security_Cryptography_MLDsa_ImportPrivateSeed_" data-uid="Bodu.Security.Cryptography.MLDsa.ImportPrivateSeed*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_MLDsa_ImportPrivateSeed_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.MLDsa.ImportPrivateSeed(System.ReadOnlySpan{System.Byte})">
+  ImportPrivateSeed(ReadOnlySpan&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/MLDsa.cs/#L282"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Imports the FIPS 204 32-byte private seed ξ and regenerates the full key pair from it, replacing any existing
 key material on the instance.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_MLDsa_ImportPublicKey_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.MLDsa.ImportPublicKey(System.ReadOnlySpan{System.Byte})">
-          <a class="xref" href="Bodu.Security.Cryptography.MLDsa.ImportPublicKey.html#Bodu_Security_Cryptography_MLDsa_ImportPublicKey_System_ReadOnlySpan_System_Byte__">ImportPublicKey(ReadOnlySpan&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Imports an encoded FIPS 204 public key, replacing any existing key material on the instance.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_MLDsa_ImportSubjectPublicKeyInfo_System_ReadOnlySpan_System_Byte__System_Int32__" data-uid="Bodu.Security.Cryptography.MLDsa.ImportSubjectPublicKeyInfo(System.ReadOnlySpan{System.Byte},System.Int32@)">
-          <a class="xref" href="Bodu.Security.Cryptography.MLDsa.ImportSubjectPublicKeyInfo.html#Bodu_Security_Cryptography_MLDsa_ImportSubjectPublicKeyInfo_System_ReadOnlySpan_System_Byte__System_Int32__">ImportSubjectPublicKeyInfo(ReadOnlySpan&lt;byte&gt;, out int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>When overriden in a derived class, imports the public key from an X.509 SubjectPublicKeyInfo structure after decryption, replacing the keys for this object.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_MLDsa_SignData_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.MLDsa.SignData(System.ReadOnlySpan{System.Byte})">
-          <a class="xref" href="Bodu.Security.Cryptography.MLDsa.SignData.html#Bodu_Security_Cryptography_MLDsa_SignData_System_ReadOnlySpan_System_Byte__">SignData(ReadOnlySpan&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Signs the supplied data with an empty context string.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_MLDsa_SignData_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.MLDsa.SignData(System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte})">
-          <a class="xref" href="Bodu.Security.Cryptography.MLDsa.SignData.html#Bodu_Security_Cryptography_MLDsa_SignData_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__">SignData(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Signs the supplied data under a context string.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_MLDsa_SignData_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__System_Span_System_Byte__" data-uid="Bodu.Security.Cryptography.MLDsa.SignData(System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte},System.Span{System.Byte})">
-          <a class="xref" href="Bodu.Security.Cryptography.MLDsa.SignData.html#Bodu_Security_Cryptography_MLDsa_SignData_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">SignData(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Signs the supplied data under a context string, writing the encoded signature into
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void ImportPrivateSeed(ReadOnlySpan&lt;byte&gt; seed)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>seed</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The 32-byte key-generation seed ξ.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>The instance has been disposed.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">seed</code> is not exactly 32 bytes long.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Security_Cryptography_MLDsa_ImportPublicKey_" data-uid="Bodu.Security.Cryptography.MLDsa.ImportPublicKey*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_MLDsa_ImportPublicKey_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.MLDsa.ImportPublicKey(System.ReadOnlySpan{System.Byte})">
+  ImportPublicKey(ReadOnlySpan&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/MLDsa.cs/#L301"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Imports an encoded FIPS 204 public key, replacing any existing key material on the instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void ImportPublicKey(ReadOnlySpan&lt;byte&gt; publicKey)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>publicKey</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The encoded public key ρ ‖ t₁.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_MLDsa_ImportPublicKey_System_ReadOnlySpan_System_Byte___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Any private key previously held by the instance is zeroed and discarded, leaving a verify-only instance.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>The instance has been disposed.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">publicKey</code> does not have the exact parameter-set length.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Security_Cryptography_MLDsa_ImportSubjectPublicKeyInfo_" data-uid="Bodu.Security.Cryptography.MLDsa.ImportSubjectPublicKeyInfo*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_MLDsa_ImportSubjectPublicKeyInfo_System_ReadOnlySpan_System_Byte__System_Int32__" data-uid="Bodu.Security.Cryptography.MLDsa.ImportSubjectPublicKeyInfo(System.ReadOnlySpan{System.Byte},System.Int32@)">
+  ImportSubjectPublicKeyInfo(ReadOnlySpan&lt;byte&gt;, out int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/MLDsa.KeyFormats.cs/#L47"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>When overriden in a derived class, imports the public key from an X.509 SubjectPublicKeyInfo structure after decryption, replacing the keys for this object.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override void ImportSubjectPublicKeyInfo(ReadOnlySpan&lt;byte&gt; source, out int bytesRead)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The bytes of an X.509 SubjectPublicKeyInfo structure in the ASN.1-DER encoding.</p>
+</dd>
+    <dt><code>bytesRead</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>When this method returns, contains a value that indicates the number of bytes read from <code class="paramref">source</code>. This parameter is treated as uninitialized.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicexception">CryptographicException</a></dt>
+    <dd><p>The contents of <code class="paramref">source</code> do not represent an ASN.1-DER-encoded X.509 SubjectPublicKeyInfo structure.</p>
+<p>-or-</p>
+<p>The contents of <code class="paramref">source</code> indicate the key is for an algorithm other than the algorithm represented by this instance.</p>
+<p>-or-</p>
+<p>The contents of <code class="paramref">source</code> represent the key in a format that is not supported.</p>
+<p>-or-</p>
+<p>The algorithm-specific key import failed.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notimplementedexception">NotImplementedException</a></dt>
+    <dd><p>A derived type has not overriden this member.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Security_Cryptography_MLDsa_SignData_" data-uid="Bodu.Security.Cryptography.MLDsa.SignData*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_MLDsa_SignData_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.MLDsa.SignData(System.ReadOnlySpan{System.Byte})">
+  SignData(ReadOnlySpan&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/MLDsa.cs/#L317"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Signs the supplied data with an empty context string.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public byte[] SignData(ReadOnlySpan&lt;byte&gt; data)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>data</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The message bytes to sign. May be empty.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The encoded signature.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>The instance has been disposed.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicexception">CryptographicException</a></dt>
+    <dd><p>The instance does not hold a private key.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Security_Cryptography_MLDsa_SignData_" data-uid="Bodu.Security.Cryptography.MLDsa.SignData*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_MLDsa_SignData_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.MLDsa.SignData(System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte})">
+  SignData(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/MLDsa.cs/#L329"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Signs the supplied data under a context string.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public byte[] SignData(ReadOnlySpan&lt;byte&gt; data, ReadOnlySpan&lt;byte&gt; context)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>data</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The message bytes to sign. May be empty.</p>
+</dd>
+    <dt><code>context</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The domain-separation context string of at most 255 bytes. May be empty.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The encoded signature.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>The instance has been disposed.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">context</code> is longer than 255 bytes.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicexception">CryptographicException</a></dt>
+    <dd><p>The instance does not hold a private key.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Security_Cryptography_MLDsa_SignData_" data-uid="Bodu.Security.Cryptography.MLDsa.SignData*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_MLDsa_SignData_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__System_Span_System_Byte__" data-uid="Bodu.Security.Cryptography.MLDsa.SignData(System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte},System.Span{System.Byte})">
+  SignData(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/MLDsa.cs/#L354"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Signs the supplied data under a context string, writing the encoded signature into
 <code class="paramref">destination</code>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_MLDsa_ToXmlString_System_Boolean_" data-uid="Bodu.Security.Cryptography.MLDsa.ToXmlString(System.Boolean)">
-          <a class="xref" href="Bodu.Security.Cryptography.MLDsa.ToXmlString.html#Bodu_Security_Cryptography_MLDsa_ToXmlString_System_Boolean_">ToXmlString(bool)</a>
-        </td>
-        <td class="markdown level1 summary"><p>When overridden in a derived class, creates and returns an XML string representation of the current <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm">AsymmetricAlgorithm</a> object. Otherwise, throws a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notimplementedexception">NotImplementedException</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_MLDsa_TryExportEncryptedPkcs8PrivateKey_System_ReadOnlySpan_System_Byte__System_Security_Cryptography_PbeParameters_System_Span_System_Byte__System_Int32__" data-uid="Bodu.Security.Cryptography.MLDsa.TryExportEncryptedPkcs8PrivateKey(System.ReadOnlySpan{System.Byte},System.Security.Cryptography.PbeParameters,System.Span{System.Byte},System.Int32@)">
-          <a class="xref" href="Bodu.Security.Cryptography.MLDsa.TryExportEncryptedPkcs8PrivateKey.html#Bodu_Security_Cryptography_MLDsa_TryExportEncryptedPkcs8PrivateKey_System_ReadOnlySpan_System_Byte__System_Security_Cryptography_PbeParameters_System_Span_System_Byte__System_Int32__">TryExportEncryptedPkcs8PrivateKey(ReadOnlySpan&lt;byte&gt;, PbeParameters, Span&lt;byte&gt;, out int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>When overridden in a derived class, attempts to export the current key in the PKCS#8 EncryptedPrivateKeyInfo format into a provided buffer, using a byte-based password.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_MLDsa_TryExportEncryptedPkcs8PrivateKey_System_ReadOnlySpan_System_Char__System_Security_Cryptography_PbeParameters_System_Span_System_Byte__System_Int32__" data-uid="Bodu.Security.Cryptography.MLDsa.TryExportEncryptedPkcs8PrivateKey(System.ReadOnlySpan{System.Char},System.Security.Cryptography.PbeParameters,System.Span{System.Byte},System.Int32@)">
-          <a class="xref" href="Bodu.Security.Cryptography.MLDsa.TryExportEncryptedPkcs8PrivateKey.html#Bodu_Security_Cryptography_MLDsa_TryExportEncryptedPkcs8PrivateKey_System_ReadOnlySpan_System_Char__System_Security_Cryptography_PbeParameters_System_Span_System_Byte__System_Int32__">TryExportEncryptedPkcs8PrivateKey(ReadOnlySpan&lt;char&gt;, PbeParameters, Span&lt;byte&gt;, out int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>When overriden in a derived class, attempts to export the current key in the PKCS#8 EncryptedPrivateKeyInfo format into a provided buffer, using a char-based password.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_MLDsa_TryExportPkcs8PrivateKey_System_Span_System_Byte__System_Int32__" data-uid="Bodu.Security.Cryptography.MLDsa.TryExportPkcs8PrivateKey(System.Span{System.Byte},System.Int32@)">
-          <a class="xref" href="Bodu.Security.Cryptography.MLDsa.TryExportPkcs8PrivateKey.html#Bodu_Security_Cryptography_MLDsa_TryExportPkcs8PrivateKey_System_Span_System_Byte__System_Int32__">TryExportPkcs8PrivateKey(Span&lt;byte&gt;, out int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>When overridden in a derived class, attempts to export the current key in the PKCS#8 PrivateKeyInfo format into a provided buffer.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_MLDsa_TryExportSubjectPublicKeyInfo_System_Span_System_Byte__System_Int32__" data-uid="Bodu.Security.Cryptography.MLDsa.TryExportSubjectPublicKeyInfo(System.Span{System.Byte},System.Int32@)">
-          <a class="xref" href="Bodu.Security.Cryptography.MLDsa.TryExportSubjectPublicKeyInfo.html#Bodu_Security_Cryptography_MLDsa_TryExportSubjectPublicKeyInfo_System_Span_System_Byte__System_Int32__">TryExportSubjectPublicKeyInfo(Span&lt;byte&gt;, out int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>When overridden in a derived class, attempts to export the current key in the X.509 SubjectPublicKeyInfo format into a provided buffer.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_MLDsa_VerifyData_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.MLDsa.VerifyData(System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte})">
-          <a class="xref" href="Bodu.Security.Cryptography.MLDsa.VerifyData.html#Bodu_Security_Cryptography_MLDsa_VerifyData_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__">VerifyData(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Verifies a signature over the supplied data with an empty context string.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_MLDsa_VerifyData_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.MLDsa.VerifyData(System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte})">
-          <a class="xref" href="Bodu.Security.Cryptography.MLDsa.VerifyData.html#Bodu_Security_Cryptography_MLDsa_VerifyData_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__">VerifyData(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Verifies a signature over the supplied data under a context string.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void SignData(ReadOnlySpan&lt;byte&gt; data, ReadOnlySpan&lt;byte&gt; context, Span&lt;byte&gt; destination)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>data</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The message bytes to sign. May be empty.</p>
+</dd>
+    <dt><code>context</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The domain-separation context string of at most 255 bytes. May be empty.</p>
+</dd>
+    <dt><code>destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The span receiving the signature. Must be exactly <a class="xref" href="Bodu.Security.Cryptography.MLDsa.html#Bodu_Security_Cryptography_MLDsa_SignatureSizeInBytes">SignatureSizeInBytes</a> bytes.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>The instance has been disposed.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">context</code> is longer than 255 bytes, or <code class="paramref">destination</code> does not have the exact
+signature length.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicexception">CryptographicException</a></dt>
+    <dd><p>The instance does not hold a private key.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Security_Cryptography_MLDsa_ToXmlString_" data-uid="Bodu.Security.Cryptography.MLDsa.ToXmlString*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_MLDsa_ToXmlString_System_Boolean_" data-uid="Bodu.Security.Cryptography.MLDsa.ToXmlString(System.Boolean)">
+  ToXmlString(bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/MLDsa.KeyFormats.cs/#L43"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>When overridden in a derived class, creates and returns an XML string representation of the current <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm">AsymmetricAlgorithm</a> object. Otherwise, throws a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notimplementedexception">NotImplementedException</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override string ToXmlString(bool includePrivateParameters)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>includePrivateParameters</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> to include private parameters; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>An XML string encoding of the current <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm">AsymmetricAlgorithm</a> object.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_Security_Cryptography_MLDsa_TryExportEncryptedPkcs8PrivateKey_" data-uid="Bodu.Security.Cryptography.MLDsa.TryExportEncryptedPkcs8PrivateKey*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_MLDsa_TryExportEncryptedPkcs8PrivateKey_System_ReadOnlySpan_System_Byte__System_Security_Cryptography_PbeParameters_System_Span_System_Byte__System_Int32__" data-uid="Bodu.Security.Cryptography.MLDsa.TryExportEncryptedPkcs8PrivateKey(System.ReadOnlySpan{System.Byte},System.Security.Cryptography.PbeParameters,System.Span{System.Byte},System.Int32@)">
+  TryExportEncryptedPkcs8PrivateKey(ReadOnlySpan&lt;byte&gt;, PbeParameters, Span&lt;byte&gt;, out int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/MLDsa.KeyFormats.cs/#L71"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>When overridden in a derived class, attempts to export the current key in the PKCS#8 EncryptedPrivateKeyInfo format into a provided buffer, using a byte-based password.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override bool TryExportEncryptedPkcs8PrivateKey(ReadOnlySpan&lt;byte&gt; passwordBytes, PbeParameters pbeParameters, Span&lt;byte&gt; destination, out int bytesWritten)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>passwordBytes</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The bytes to use as a password when encrypting the key material.</p>
+</dd>
+    <dt><code>pbeParameters</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.pbeparameters">PbeParameters</a></dt>
+    <dd><p>The password-based encryption (PBE) parameters to use when encrypting the key material.</p>
+</dd>
+    <dt><code>destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The byte span to receive the PKCS#8 EncryptedPrivateKeyInfo data.</p>
+</dd>
+    <dt><code>bytesWritten</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>When this method returns, contains a value that indicates the number of bytes written to <code class="paramref">destination</code>. This parameter is treated as uninitialized.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if <code class="paramref">destination</code> is big enough to receive the output; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicexception">CryptographicException</a></dt>
+    <dd><p>The key could not be exported.</p>
+<p>-or-</p>
+<p><code class="paramref">pbeParameters</code> indicates that <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.pbeencryptionalgorithm#system-security-cryptography-pbeencryptionalgorithm-tripledes3keypkcs12">TripleDes3KeyPkcs12</a> should be used, which requires <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>-based passwords.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notimplementedexception">NotImplementedException</a></dt>
+    <dd><p>A derived type has not overriden this member.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Security_Cryptography_MLDsa_TryExportEncryptedPkcs8PrivateKey_" data-uid="Bodu.Security.Cryptography.MLDsa.TryExportEncryptedPkcs8PrivateKey*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_MLDsa_TryExportEncryptedPkcs8PrivateKey_System_ReadOnlySpan_System_Char__System_Security_Cryptography_PbeParameters_System_Span_System_Byte__System_Int32__" data-uid="Bodu.Security.Cryptography.MLDsa.TryExportEncryptedPkcs8PrivateKey(System.ReadOnlySpan{System.Char},System.Security.Cryptography.PbeParameters,System.Span{System.Byte},System.Int32@)">
+  TryExportEncryptedPkcs8PrivateKey(ReadOnlySpan&lt;char&gt;, PbeParameters, Span&lt;byte&gt;, out int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/MLDsa.KeyFormats.cs/#L75"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>When overriden in a derived class, attempts to export the current key in the PKCS#8 EncryptedPrivateKeyInfo format into a provided buffer, using a char-based password.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override bool TryExportEncryptedPkcs8PrivateKey(ReadOnlySpan&lt;char&gt; password, PbeParameters pbeParameters, Span&lt;byte&gt; destination, out int bytesWritten)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>password</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The password to use when encrypting the key material.</p>
+</dd>
+    <dt><code>pbeParameters</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.pbeparameters">PbeParameters</a></dt>
+    <dd><p>The password-based encryption (PBE) parameters to use when encrypting the key material.</p>
+</dd>
+    <dt><code>destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The byte span to receive the PKCS#8 EncryptedPrivateKeyInfo data.</p>
+</dd>
+    <dt><code>bytesWritten</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>When this method returns, contains a value that indicates the number of bytes written to <code class="paramref">destination</code>. This parameter is treated as uninitialized.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if <code class="paramref">destination</code> is big enough to receive the output; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicexception">CryptographicException</a></dt>
+    <dd><p>The key could not be exported.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notimplementedexception">NotImplementedException</a></dt>
+    <dd><p>A derived type has not overriden this member.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Security_Cryptography_MLDsa_TryExportPkcs8PrivateKey_" data-uid="Bodu.Security.Cryptography.MLDsa.TryExportPkcs8PrivateKey*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_MLDsa_TryExportPkcs8PrivateKey_System_Span_System_Byte__System_Int32__" data-uid="Bodu.Security.Cryptography.MLDsa.TryExportPkcs8PrivateKey(System.Span{System.Byte},System.Int32@)">
+  TryExportPkcs8PrivateKey(Span&lt;byte&gt;, out int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/MLDsa.KeyFormats.cs/#L67"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>When overridden in a derived class, attempts to export the current key in the PKCS#8 PrivateKeyInfo format into a provided buffer.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override bool TryExportPkcs8PrivateKey(Span&lt;byte&gt; destination, out int bytesWritten)</code></pre>
   </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The byte span to receive the PKCS#8 PrivateKeyInfo data.</p>
+</dd>
+    <dt><code>bytesWritten</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>When this method returns, contains a value that indicates the number of bytes written to <code class="paramref">destination</code>. This parameter is treated as uninitialized.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if <code class="paramref">destination</code> is big enough to receive the output; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicexception">CryptographicException</a></dt>
+    <dd><p>The key could not be exported.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notimplementedexception">NotImplementedException</a></dt>
+    <dd><p>A derived type has not overriden this member.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Security_Cryptography_MLDsa_TryExportSubjectPublicKeyInfo_" data-uid="Bodu.Security.Cryptography.MLDsa.TryExportSubjectPublicKeyInfo*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_MLDsa_TryExportSubjectPublicKeyInfo_System_Span_System_Byte__System_Int32__" data-uid="Bodu.Security.Cryptography.MLDsa.TryExportSubjectPublicKeyInfo(System.Span{System.Byte},System.Int32@)">
+  TryExportSubjectPublicKeyInfo(Span&lt;byte&gt;, out int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/MLDsa.KeyFormats.cs/#L63"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>When overridden in a derived class, attempts to export the current key in the X.509 SubjectPublicKeyInfo format into a provided buffer.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override bool TryExportSubjectPublicKeyInfo(Span&lt;byte&gt; destination, out int bytesWritten)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The byte span to receive the X.509 SubjectPublicKeyInfo data.</p>
+</dd>
+    <dt><code>bytesWritten</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>When this method returns, contains a value that indicates the number of bytes written to <code class="paramref">destination</code>. This parameter is treated as uninitialized.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if <code class="paramref">destination</code> is big enough to receive the output; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicexception">CryptographicException</a></dt>
+    <dd><p>The key could not be exported.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notimplementedexception">NotImplementedException</a></dt>
+    <dd><p>A derived type has not overriden this member.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Security_Cryptography_MLDsa_VerifyData_" data-uid="Bodu.Security.Cryptography.MLDsa.VerifyData*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_MLDsa_VerifyData_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.MLDsa.VerifyData(System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte})">
+  VerifyData(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/MLDsa.cs/#L382"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Verifies a signature over the supplied data with an empty context string.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool VerifyData(ReadOnlySpan&lt;byte&gt; data, ReadOnlySpan&lt;byte&gt; signature)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>data</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The message bytes that were signed. May be empty.</p>
+</dd>
+    <dt><code>signature</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The candidate encoded signature.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the signature is valid; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> for any invalid, malformed, or
+wrong-length signature.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>The instance has been disposed.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicexception">CryptographicException</a></dt>
+    <dd><p>The instance does not hold a public key.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Security_Cryptography_MLDsa_VerifyData_" data-uid="Bodu.Security.Cryptography.MLDsa.VerifyData*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_MLDsa_VerifyData_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.MLDsa.VerifyData(System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte})">
+  VerifyData(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/MLDsa.cs/#L398"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Verifies a signature over the supplied data under a context string.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool VerifyData(ReadOnlySpan&lt;byte&gt; data, ReadOnlySpan&lt;byte&gt; signature, ReadOnlySpan&lt;byte&gt; context)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>data</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The message bytes that were signed. May be empty.</p>
+</dd>
+    <dt><code>signature</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The candidate encoded signature.</p>
+</dd>
+    <dt><code>context</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The domain-separation context string used at signing time. May be empty.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the signature is valid; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> for any invalid, malformed, or
+wrong-length signature.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>The instance has been disposed.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">context</code> is longer than 255 bytes.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicexception">CryptographicException</a></dt>
+    <dd><p>The instance does not hold a public key.</p>
+</dd>
+  </dl>
+
+
+
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 302e395 · Built: 2026-09-29 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 1e0dd9a · Built: 2026-09-29 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

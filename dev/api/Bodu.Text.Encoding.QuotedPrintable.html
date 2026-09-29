@@ -1,99 +1,127 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
       <title>Class QuotedPrintable | BODU </title>
-      <meta name="viewport" content="width=device-width">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class QuotedPrintable | BODU ">
-    
-    <meta name="description" content="Provides MIME Quoted-Printable body encoding and decoding (RFC 2045 &#167;6.7) of binary data, with selectable binary or canonical-text line handling, configurable soft line wrapping, and strict-by-default decoding.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      
+      <meta name="description" content="Provides MIME Quoted-Printable body encoding and decoding (RFC 2045 &#167;6.7) of binary data, with selectable binary or canonical-text line handling, configurable soft line wrapping, and strict-by-default decoding.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/new/master/apiSpec/new?filename=Bodu_Text_Encoding_QuotedPrintable.md&amp;value=---%0Auid%3A%20Bodu.Text.Encoding.QuotedPrintable%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Text.Encoding.QuotedPrintable">
+
+        <article data-uid="Bodu.Text.Encoding.QuotedPrintable">
 
 
 
-  <h1 id="Bodu_Text_Encoding_QuotedPrintable" data-uid="Bodu.Text.Encoding.QuotedPrintable" class="text-break">Class QuotedPrintable</h1>
-  <div class="markdown level0 summary"><p>Provides MIME Quoted-Printable body encoding and decoding (RFC 2045 §6.7) of binary data, with selectable binary or
+  <h1 id="Bodu_Text_Encoding_QuotedPrintable" data-uid="Bodu.Text.Encoding.QuotedPrintable" class="text-break">
+Class QuotedPrintable  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Encoding/src/Text.Encoding/QuotedPrintable.Encode.cs/#L9"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Encoding.html">Encoding</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Text.Encoding.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides MIME Quoted-Printable body encoding and decoding (RFC 2045 §6.7) of binary data, with selectable binary or
 canonical-text line handling, configurable soft line wrapping, and strict-by-default decoding.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><span class="xref">QuotedPrintable</span></div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class QuotedPrintable</code></pre>
   </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">QuotedPrintable</span></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
@@ -115,14 +143,21 @@ canonical-text line handling, configurable soft line wrapping, and strict-by-def
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
-  </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Encoding.html">Encoding</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Text.Encoding.dll</h6>
-  <h5 id="Bodu_Text_Encoding_QuotedPrintable_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static class QuotedPrintable</code></pre>
-  </div>
-  <h5 id="Bodu_Text_Encoding_QuotedPrintable_remarks"><strong>Remarks</strong></h5>
+  </dd></dl>
+
+
+
+  <h2 id="Bodu_Text_Encoding_QuotedPrintable_examples">Examples</h2>
+  <pre><code class="lang-csharp">byte[] data = "café = møney"u8.ToArray();
+
+// Binary mode (default) — arbitrary octets, 76-column soft wrapping, CRLF.
+string encoded = QuotedPrintable.Encode(data);
+
+// Round-trip.
+byte[] roundtrip = QuotedPrintable.Decode(encoded);</code></pre>
+
+
+  <h2 id="Bodu_Text_Encoding_QuotedPrintable_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
 Quoted-Printable represents mostly-7-bit-safe octets as readable text: printable ASCII passes through literally,
 while other octets are escaped as <code>=HH</code> with uppercase hexadecimal digits. Encoded lines are kept within a
@@ -146,140 +181,483 @@ registered in <a class="xref" href="Bodu.Text.Encoding.BinaryEncodings.html">Bin
 carry that information.
 </p>
 </div>
-  <h5 id="Bodu_Text_Encoding_QuotedPrintable_examples"><strong>Examples</strong></h5>
-  <pre><code class="lang-csharp">byte[] data = "café = møney"u8.ToArray();
 
-// Binary mode (default) — arbitrary octets, 76-column soft wrapping, CRLF.
-string encoded = QuotedPrintable.Encode(data);
 
-// Round-trip.
-byte[] roundtrip = QuotedPrintable.Decode(encoded);</code></pre>
+  <h2 class="section" id="methods">Methods
+</h2>
 
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Text_Encoding_QuotedPrintable_Decode_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_QuotedPrintableDecodingOptions_" data-uid="Bodu.Text.Encoding.QuotedPrintable.Decode(System.ReadOnlySpan{System.Char},Bodu.Text.Encoding.QuotedPrintableDecodingOptions)">
-          <a class="xref" href="Bodu.Text.Encoding.QuotedPrintable.Decode.html#Bodu_Text_Encoding_QuotedPrintable_Decode_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_QuotedPrintableDecodingOptions_">Decode(ReadOnlySpan&lt;char&gt;, QuotedPrintableDecodingOptions)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Decodes a Quoted-Printable character span into a byte array using the supplied options.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_QuotedPrintable_Encode_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_QuotedPrintableEncodingOptions_" data-uid="Bodu.Text.Encoding.QuotedPrintable.Encode(System.ReadOnlySpan{System.Byte},Bodu.Text.Encoding.QuotedPrintableEncodingOptions)">
-          <a class="xref" href="Bodu.Text.Encoding.QuotedPrintable.Encode.html#Bodu_Text_Encoding_QuotedPrintable_Encode_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_QuotedPrintableEncodingOptions_">Encode(ReadOnlySpan&lt;byte&gt;, QuotedPrintableEncodingOptions)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encodes <code class="paramref">source</code> into a Quoted-Printable string using the supplied options.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_QuotedPrintable_GetEncodedLength_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_QuotedPrintableEncodingOptions_" data-uid="Bodu.Text.Encoding.QuotedPrintable.GetEncodedLength(System.ReadOnlySpan{System.Byte},Bodu.Text.Encoding.QuotedPrintableEncodingOptions)">
-          <a class="xref" href="Bodu.Text.Encoding.QuotedPrintable.GetEncodedLength.html#Bodu_Text_Encoding_QuotedPrintable_GetEncodedLength_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_QuotedPrintableEncodingOptions_">GetEncodedLength(ReadOnlySpan&lt;byte&gt;, QuotedPrintableEncodingOptions)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the exact number of characters that
-<a class="xref" href="Bodu.Text.Encoding.QuotedPrintable.Encode.html#Bodu_Text_Encoding_QuotedPrintable_Encode_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_QuotedPrintableEncodingOptions_">Encode(ReadOnlySpan&lt;byte&gt;, QuotedPrintableEncodingOptions)</a> produces for the supplied data and
+
+  <a id="Bodu_Text_Encoding_QuotedPrintable_Decode_" data-uid="Bodu.Text.Encoding.QuotedPrintable.Decode*"></a>
+
+  <h3 id="Bodu_Text_Encoding_QuotedPrintable_Decode_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_QuotedPrintableDecodingOptions_" data-uid="Bodu.Text.Encoding.QuotedPrintable.Decode(System.ReadOnlySpan{System.Char},Bodu.Text.Encoding.QuotedPrintableDecodingOptions)">
+  Decode(ReadOnlySpan&lt;char&gt;, QuotedPrintableDecodingOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Encoding/src/Text.Encoding/QuotedPrintable.Decode.cs/#L18"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Decodes a Quoted-Printable character span into a byte array using the supplied options.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static byte[] Decode(ReadOnlySpan&lt;char&gt; source, QuotedPrintableDecodingOptions options = QuotedPrintableDecodingOptions.None)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The Quoted-Printable input.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Encoding.QuotedPrintableDecodingOptions.html">QuotedPrintableDecodingOptions</a></dt>
+    <dd><p>The decoding options.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The decoded byte array. Returns an empty array for empty input.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p>Thrown when the input is not well-formed Quoted-Printable.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Encoding_QuotedPrintable_Encode_" data-uid="Bodu.Text.Encoding.QuotedPrintable.Encode*"></a>
+
+  <h3 id="Bodu_Text_Encoding_QuotedPrintable_Encode_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_QuotedPrintableEncodingOptions_" data-uid="Bodu.Text.Encoding.QuotedPrintable.Encode(System.ReadOnlySpan{System.Byte},Bodu.Text.Encoding.QuotedPrintableEncodingOptions)">
+  Encode(ReadOnlySpan&lt;byte&gt;, QuotedPrintableEncodingOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Encoding/src/Text.Encoding/QuotedPrintable.Encode.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Encodes <code class="paramref">source</code> into a Quoted-Printable string using the supplied options.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string Encode(ReadOnlySpan&lt;byte&gt; source, QuotedPrintableEncodingOptions options = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The bytes to encode.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Encoding.QuotedPrintableEncodingOptions.html">QuotedPrintableEncodingOptions</a></dt>
+    <dd><p>The encoding options.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>A Quoted-Printable string.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <a class="xref" href="Bodu.Text.Encoding.QuotedPrintableEncodingOptions.html#Bodu_Text_Encoding_QuotedPrintableEncodingOptions_Mode">Mode</a> is undefined or the normalized
+<a class="xref" href="Bodu.Text.Encoding.QuotedPrintableEncodingOptions.html#Bodu_Text_Encoding_QuotedPrintableEncodingOptions_MaxLineLength">MaxLineLength</a> is less than four.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <a class="xref" href="Bodu.Text.Encoding.QuotedPrintableEncodingOptions.html#Bodu_Text_Encoding_QuotedPrintableEncodingOptions_NewLine">NewLine</a> is not <code>&quot;\r\n&quot;</code> or <code>&quot;\n&quot;</code>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Encoding_QuotedPrintable_GetEncodedLength_" data-uid="Bodu.Text.Encoding.QuotedPrintable.GetEncodedLength*"></a>
+
+  <h3 id="Bodu_Text_Encoding_QuotedPrintable_GetEncodedLength_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_QuotedPrintableEncodingOptions_" data-uid="Bodu.Text.Encoding.QuotedPrintable.GetEncodedLength(System.ReadOnlySpan{System.Byte},Bodu.Text.Encoding.QuotedPrintableEncodingOptions)">
+  GetEncodedLength(ReadOnlySpan&lt;byte&gt;, QuotedPrintableEncodingOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Encoding/src/Text.Encoding/QuotedPrintable.cs/#L82"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the exact number of characters that
+<a class="xref" href="Bodu.Text.Encoding.QuotedPrintable.html#Bodu_Text_Encoding_QuotedPrintable_Encode_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_QuotedPrintableEncodingOptions_">Encode(ReadOnlySpan&lt;byte&gt;, QuotedPrintableEncodingOptions)</a> produces for the supplied data and
 options.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_QuotedPrintable_GetMaxDecodedLength_System_Int32_" data-uid="Bodu.Text.Encoding.QuotedPrintable.GetMaxDecodedLength(System.Int32)">
-          <a class="xref" href="Bodu.Text.Encoding.QuotedPrintable.GetMaxDecodedLength.html#Bodu_Text_Encoding_QuotedPrintable_GetMaxDecodedLength_System_Int32_">GetMaxDecodedLength(int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the maximum number of bytes that decoding <code class="paramref">charCount</code> characters could produce.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_QuotedPrintable_GetMaxEncodedLength_System_Int32_Bodu_Text_Encoding_QuotedPrintableEncodingOptions_" data-uid="Bodu.Text.Encoding.QuotedPrintable.GetMaxEncodedLength(System.Int32,Bodu.Text.Encoding.QuotedPrintableEncodingOptions)">
-          <a class="xref" href="Bodu.Text.Encoding.QuotedPrintable.GetMaxEncodedLength.html#Bodu_Text_Encoding_QuotedPrintable_GetMaxEncodedLength_System_Int32_Bodu_Text_Encoding_QuotedPrintableEncodingOptions_">GetMaxEncodedLength(int, QuotedPrintableEncodingOptions)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns an upper bound on the number of characters that encoding <code class="paramref">byteCount</code> bytes could
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static int GetEncodedLength(ReadOnlySpan&lt;byte&gt; source, QuotedPrintableEncodingOptions options = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The input bytes.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Encoding.QuotedPrintableEncodingOptions.html">QuotedPrintableEncodingOptions</a></dt>
+    <dd><p>The encoding options.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The exact encoded character count.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <a class="xref" href="Bodu.Text.Encoding.QuotedPrintableEncodingOptions.html#Bodu_Text_Encoding_QuotedPrintableEncodingOptions_Mode">Mode</a> is undefined or the normalized
+<a class="xref" href="Bodu.Text.Encoding.QuotedPrintableEncodingOptions.html#Bodu_Text_Encoding_QuotedPrintableEncodingOptions_MaxLineLength">MaxLineLength</a> is less than four.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <a class="xref" href="Bodu.Text.Encoding.QuotedPrintableEncodingOptions.html#Bodu_Text_Encoding_QuotedPrintableEncodingOptions_NewLine">NewLine</a> is not <code>&quot;\r\n&quot;</code> or <code>&quot;\n&quot;</code>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Encoding_QuotedPrintable_GetMaxDecodedLength_" data-uid="Bodu.Text.Encoding.QuotedPrintable.GetMaxDecodedLength*"></a>
+
+  <h3 id="Bodu_Text_Encoding_QuotedPrintable_GetMaxDecodedLength_System_Int32_" data-uid="Bodu.Text.Encoding.QuotedPrintable.GetMaxDecodedLength(System.Int32)">
+  GetMaxDecodedLength(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Encoding/src/Text.Encoding/QuotedPrintable.cs/#L130"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the maximum number of bytes that decoding <code class="paramref">charCount</code> characters could produce.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static int GetMaxDecodedLength(int charCount)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>charCount</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The input character count. Must be non-negative.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The worst-case decoded byte count, equal to <code class="paramref">charCount</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <code class="paramref">charCount</code> is negative.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Encoding_QuotedPrintable_GetMaxEncodedLength_" data-uid="Bodu.Text.Encoding.QuotedPrintable.GetMaxEncodedLength*"></a>
+
+  <h3 id="Bodu_Text_Encoding_QuotedPrintable_GetMaxEncodedLength_System_Int32_Bodu_Text_Encoding_QuotedPrintableEncodingOptions_" data-uid="Bodu.Text.Encoding.QuotedPrintable.GetMaxEncodedLength(System.Int32,Bodu.Text.Encoding.QuotedPrintableEncodingOptions)">
+  GetMaxEncodedLength(int, QuotedPrintableEncodingOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Encoding/src/Text.Encoding/QuotedPrintable.cs/#L104"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns an upper bound on the number of characters that encoding <code class="paramref">byteCount</code> bytes could
 produce under the supplied options.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_QuotedPrintable_IsValid_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_QuotedPrintableDecodingOptions_" data-uid="Bodu.Text.Encoding.QuotedPrintable.IsValid(System.ReadOnlySpan{System.Char},Bodu.Text.Encoding.QuotedPrintableDecodingOptions)">
-          <a class="xref" href="Bodu.Text.Encoding.QuotedPrintable.IsValid.html#Bodu_Text_Encoding_QuotedPrintable_IsValid_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_QuotedPrintableDecodingOptions_">IsValid(ReadOnlySpan&lt;char&gt;, QuotedPrintableDecodingOptions)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Indicates whether <code class="paramref">source</code> is <em>canonical</em> RFC 2045 Quoted-Printable under the supplied
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static int GetMaxEncodedLength(int byteCount, QuotedPrintableEncodingOptions options = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>byteCount</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The input byte count. Must be non-negative.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Encoding.QuotedPrintableEncodingOptions.html">QuotedPrintableEncodingOptions</a></dt>
+    <dd><p>The encoding options.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The worst-case encoded character count.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <code class="paramref">byteCount</code> is negative, <a class="xref" href="Bodu.Text.Encoding.QuotedPrintableEncodingOptions.html#Bodu_Text_Encoding_QuotedPrintableEncodingOptions_Mode">Mode</a> is
+undefined, or the normalized <a class="xref" href="Bodu.Text.Encoding.QuotedPrintableEncodingOptions.html#Bodu_Text_Encoding_QuotedPrintableEncodingOptions_MaxLineLength">MaxLineLength</a> is less than four.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <a class="xref" href="Bodu.Text.Encoding.QuotedPrintableEncodingOptions.html#Bodu_Text_Encoding_QuotedPrintableEncodingOptions_NewLine">NewLine</a> is not <code>&quot;\r\n&quot;</code> or <code>&quot;\n&quot;</code>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Encoding_QuotedPrintable_IsValid_" data-uid="Bodu.Text.Encoding.QuotedPrintable.IsValid*"></a>
+
+  <h3 id="Bodu_Text_Encoding_QuotedPrintable_IsValid_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_QuotedPrintableDecodingOptions_" data-uid="Bodu.Text.Encoding.QuotedPrintable.IsValid(System.ReadOnlySpan{System.Char},Bodu.Text.Encoding.QuotedPrintableDecodingOptions)">
+  IsValid(ReadOnlySpan&lt;char&gt;, QuotedPrintableDecodingOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Encoding/src/Text.Encoding/QuotedPrintable.cs/#L150"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Indicates whether <code class="paramref">source</code> is <em>canonical</em> RFC 2045 Quoted-Printable under the supplied
 options, including the 76-character encoded-line limit.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_QuotedPrintable_TryDecode_System_ReadOnlySpan_System_Char__System_Span_System_Byte__System_Int32__Bodu_Text_Encoding_QuotedPrintableDecodingOptions_" data-uid="Bodu.Text.Encoding.QuotedPrintable.TryDecode(System.ReadOnlySpan{System.Char},System.Span{System.Byte},System.Int32@,Bodu.Text.Encoding.QuotedPrintableDecodingOptions)">
-          <a class="xref" href="Bodu.Text.Encoding.QuotedPrintable.TryDecode.html#Bodu_Text_Encoding_QuotedPrintable_TryDecode_System_ReadOnlySpan_System_Char__System_Span_System_Byte__System_Int32__Bodu_Text_Encoding_QuotedPrintableDecodingOptions_">TryDecode(ReadOnlySpan&lt;char&gt;, Span&lt;byte&gt;, out int, QuotedPrintableDecodingOptions)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to decode a Quoted-Printable character span into a destination byte span.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_QuotedPrintable_TryEncode_System_ReadOnlySpan_System_Byte__System_Span_System_Char__System_Int32__Bodu_Text_Encoding_QuotedPrintableEncodingOptions_" data-uid="Bodu.Text.Encoding.QuotedPrintable.TryEncode(System.ReadOnlySpan{System.Byte},System.Span{System.Char},System.Int32@,Bodu.Text.Encoding.QuotedPrintableEncodingOptions)">
-          <a class="xref" href="Bodu.Text.Encoding.QuotedPrintable.TryEncode.html#Bodu_Text_Encoding_QuotedPrintable_TryEncode_System_ReadOnlySpan_System_Byte__System_Span_System_Char__System_Int32__Bodu_Text_Encoding_QuotedPrintableEncodingOptions_">TryEncode(ReadOnlySpan&lt;byte&gt;, Span&lt;char&gt;, out int, QuotedPrintableEncodingOptions)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to encode <code class="paramref">source</code> into a destination character span.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_QuotedPrintable_TryGetDecodedLength_System_ReadOnlySpan_System_Char__System_Int32__Bodu_Text_Encoding_QuotedPrintableDecodingOptions_" data-uid="Bodu.Text.Encoding.QuotedPrintable.TryGetDecodedLength(System.ReadOnlySpan{System.Char},System.Int32@,Bodu.Text.Encoding.QuotedPrintableDecodingOptions)">
-          <a class="xref" href="Bodu.Text.Encoding.QuotedPrintable.TryGetDecodedLength.html#Bodu_Text_Encoding_QuotedPrintable_TryGetDecodedLength_System_ReadOnlySpan_System_Char__System_Int32__Bodu_Text_Encoding_QuotedPrintableDecodingOptions_">TryGetDecodedLength(ReadOnlySpan&lt;char&gt;, out int, QuotedPrintableDecodingOptions)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to determine the exact number of bytes that
-<a class="xref" href="Bodu.Text.Encoding.QuotedPrintable.Decode.html#Bodu_Text_Encoding_QuotedPrintable_Decode_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_QuotedPrintableDecodingOptions_">Decode(ReadOnlySpan&lt;char&gt;, QuotedPrintableDecodingOptions)</a> will write for the supplied input.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsValid(ReadOnlySpan&lt;char&gt; source, QuotedPrintableDecodingOptions options = QuotedPrintableDecodingOptions.None)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The input characters.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Encoding.QuotedPrintableDecodingOptions.html">QuotedPrintableDecodingOptions</a></dt>
+    <dd><p>The decoding options.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the input is canonical; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Text_Encoding_QuotedPrintable_IsValid_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_QuotedPrintableDecodingOptions__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This is stricter than <a class="xref" href="Bodu.Text.Encoding.QuotedPrintable.html#Bodu_Text_Encoding_QuotedPrintable_Decode_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_QuotedPrintableDecodingOptions_">Decode(ReadOnlySpan&lt;char&gt;, QuotedPrintableDecodingOptions)</a>, which performs
+lenient recovery and accepts encoded lines longer than 76 characters. <code>IsValid</code> enforces the fixed RFC 2045
+limit (the soft-break <code>=</code> counted within it, the CRLF terminator not) regardless of any custom encode
+<a class="xref" href="Bodu.Text.Encoding.QuotedPrintableEncodingOptions.html#Bodu_Text_Encoding_QuotedPrintableEncodingOptions_MaxLineLength">MaxLineLength</a>. <code>IsValid</code> returning <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>
+implies <code>Decode</code> succeeds, but not the converse.</p>
+</div>
+
+
+
+
+  <a id="Bodu_Text_Encoding_QuotedPrintable_TryDecode_" data-uid="Bodu.Text.Encoding.QuotedPrintable.TryDecode*"></a>
+
+  <h3 id="Bodu_Text_Encoding_QuotedPrintable_TryDecode_System_ReadOnlySpan_System_Char__System_Span_System_Byte__System_Int32__Bodu_Text_Encoding_QuotedPrintableDecodingOptions_" data-uid="Bodu.Text.Encoding.QuotedPrintable.TryDecode(System.ReadOnlySpan{System.Char},System.Span{System.Byte},System.Int32@,Bodu.Text.Encoding.QuotedPrintableDecodingOptions)">
+  TryDecode(ReadOnlySpan&lt;char&gt;, Span&lt;byte&gt;, out int, QuotedPrintableDecodingOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Encoding/src/Text.Encoding/QuotedPrintable.Decode.cs/#L47"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Attempts to decode a Quoted-Printable character span into a destination byte span.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool TryDecode(ReadOnlySpan&lt;char&gt; source, Span&lt;byte&gt; destination, out int bytesWritten, QuotedPrintableDecodingOptions options = QuotedPrintableDecodingOptions.None)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The Quoted-Printable input.</p>
+</dd>
+    <dt><code>destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The destination byte span.</p>
+</dd>
+    <dt><code>bytesWritten</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>When this method returns, contains the number of bytes written.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Encoding.QuotedPrintableDecodingOptions.html">QuotedPrintableDecodingOptions</a></dt>
+    <dd><p>The decoding options.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> on success; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> when the input is malformed or the destination is
+too small.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_Text_Encoding_QuotedPrintable_TryEncode_" data-uid="Bodu.Text.Encoding.QuotedPrintable.TryEncode*"></a>
+
+  <h3 id="Bodu_Text_Encoding_QuotedPrintable_TryEncode_System_ReadOnlySpan_System_Byte__System_Span_System_Char__System_Int32__Bodu_Text_Encoding_QuotedPrintableEncodingOptions_" data-uid="Bodu.Text.Encoding.QuotedPrintable.TryEncode(System.ReadOnlySpan{System.Byte},System.Span{System.Char},System.Int32@,Bodu.Text.Encoding.QuotedPrintableEncodingOptions)">
+  TryEncode(ReadOnlySpan&lt;byte&gt;, Span&lt;char&gt;, out int, QuotedPrintableEncodingOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Encoding/src/Text.Encoding/QuotedPrintable.Encode.cs/#L49"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Attempts to encode <code class="paramref">source</code> into a destination character span.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool TryEncode(ReadOnlySpan&lt;byte&gt; source, Span&lt;char&gt; destination, out int charsWritten, QuotedPrintableEncodingOptions options = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The bytes to encode.</p>
+</dd>
+    <dt><code>destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The destination span.</p>
+</dd>
+    <dt><code>charsWritten</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>When this method returns, contains the number of characters written.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Encoding.QuotedPrintableEncodingOptions.html">QuotedPrintableEncodingOptions</a></dt>
+    <dd><p>The encoding options.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the options are valid and the destination is large enough; otherwise
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_Text_Encoding_QuotedPrintable_TryGetDecodedLength_" data-uid="Bodu.Text.Encoding.QuotedPrintable.TryGetDecodedLength*"></a>
+
+  <h3 id="Bodu_Text_Encoding_QuotedPrintable_TryGetDecodedLength_System_ReadOnlySpan_System_Char__System_Int32__Bodu_Text_Encoding_QuotedPrintableDecodingOptions_" data-uid="Bodu.Text.Encoding.QuotedPrintable.TryGetDecodedLength(System.ReadOnlySpan{System.Char},System.Int32@,Bodu.Text.Encoding.QuotedPrintableDecodingOptions)">
+  TryGetDecodedLength(ReadOnlySpan&lt;char&gt;, out int, QuotedPrintableDecodingOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Encoding/src/Text.Encoding/QuotedPrintable.cs/#L168"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Attempts to determine the exact number of bytes that
+<a class="xref" href="Bodu.Text.Encoding.QuotedPrintable.html#Bodu_Text_Encoding_QuotedPrintable_Decode_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_QuotedPrintableDecodingOptions_">Decode(ReadOnlySpan&lt;char&gt;, QuotedPrintableDecodingOptions)</a> will write for the supplied input.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool TryGetDecodedLength(ReadOnlySpan&lt;char&gt; source, out int byteCount, QuotedPrintableDecodingOptions options = QuotedPrintableDecodingOptions.None)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The input characters.</p>
+</dd>
+    <dt><code>byteCount</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>When this method returns, contains the decoded byte count, or <code>0</code> on failure.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Encoding.QuotedPrintableDecodingOptions.html">QuotedPrintableDecodingOptions</a></dt>
+    <dd><p>The decoding options.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the input is decodable; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Text_Encoding_QuotedPrintable_TryGetDecodedLength_System_ReadOnlySpan_System_Char__System_Int32__Bodu_Text_Encoding_QuotedPrintableDecodingOptions__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This mirrors <a class="xref" href="Bodu.Text.Encoding.QuotedPrintable.html#Bodu_Text_Encoding_QuotedPrintable_Decode_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_QuotedPrintableDecodingOptions_">Decode(ReadOnlySpan&lt;char&gt;, QuotedPrintableDecodingOptions)</a> (lenient recovery), not
+<a class="xref" href="Bodu.Text.Encoding.QuotedPrintable.html#Bodu_Text_Encoding_QuotedPrintable_IsValid_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_QuotedPrintableDecodingOptions_">IsValid(ReadOnlySpan&lt;char&gt;, QuotedPrintableDecodingOptions)</a> (canonical conformance): it does not
+enforce the 76-character line limit, so the result can size a decode buffer even for overlong input.</p>
+</div>
+
+
+
+
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 302e395 · Built: 2026-09-29 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 1e0dd9a · Built: 2026-09-29 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

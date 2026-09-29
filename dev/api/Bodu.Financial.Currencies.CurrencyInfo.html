@@ -1,103 +1,133 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
       <title>Class CurrencyInfo | BODU </title>
-      <meta name="viewport" content="width=device-width">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class CurrencyInfo | BODU ">
-    
-    <meta name="description" content="Carries the runtime metadata of a currency: ISO 4217 code, minor-unit precision, cash-rounding increment, and historicity / successor information.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      
+      <meta name="description" content="Carries the runtime metadata of a currency: ISO 4217 code, minor-unit precision, cash-rounding increment, and historicity / successor information.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/new/master/apiSpec/new?filename=Bodu_Financial_Currencies_CurrencyInfo.md&amp;value=---%0Auid%3A%20Bodu.Financial.Currencies.CurrencyInfo%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Financial.Currencies.CurrencyInfo">
+
+        <article data-uid="Bodu.Financial.Currencies.CurrencyInfo">
 
 
 
-  <h1 id="Bodu_Financial_Currencies_CurrencyInfo" data-uid="Bodu.Financial.Currencies.CurrencyInfo" class="text-break">Class CurrencyInfo</h1>
-  <div class="markdown level0 summary"><p>Carries the runtime metadata of a currency: ISO 4217 code, minor-unit precision, cash-rounding increment, and
+  <h1 id="Bodu_Financial_Currencies_CurrencyInfo" data-uid="Bodu.Financial.Currencies.CurrencyInfo" class="text-break">
+Class CurrencyInfo  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.Currencies/CurrencyInfo.cs/#L37"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Financial.html">Financial</a>.<a class="xref" href="Bodu.Financial.Currencies.html">Currencies</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Financial.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Carries the runtime metadata of a currency: ISO 4217 code, minor-unit precision, cash-rounding increment, and
 historicity / successor information.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><span class="xref">CurrencyInfo</span></div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed record CurrencyInfo : IEquatable&lt;CurrencyInfo&gt;</code></pre>
   </div>
-  <div class="implements">
-    <h5>Implements</h5>
-    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="Bodu.Financial.Currencies.CurrencyInfo.html">CurrencyInfo</a>&gt;</div>
-  </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">CurrencyInfo</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="Bodu.Financial.Currencies.CurrencyInfo.html">CurrencyInfo</a>&gt;</div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
@@ -116,247 +146,744 @@ historicity / successor information.</p>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
+  </dd></dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Financial.html">Financial</a>.<a class="xref" href="Bodu.Financial.Currencies.html">Currencies</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Financial.dll</h6>
-  <h5 id="Bodu_Financial_Currencies_CurrencyInfo_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed record CurrencyInfo : IEquatable&lt;CurrencyInfo&gt;</code></pre>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h5 id="Bodu_Financial_Currencies_CurrencyInfo_remarks"><strong>Remarks</strong></h5>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  </dd></dl>
+
+
+
+  <h2 id="Bodu_Financial_Currencies_CurrencyInfo_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>This record is the runtime counterpart of an <a class="xref" href="Bodu.Financial.Currencies.ICurrency.html">ICurrency</a> tag type. The runtime-tagged <code>Money</code> and
 the <code>MoneyBag</code> aggregate operate against <a class="xref" href="Bodu.Financial.Currencies.CurrencyRegistry.html">CurrencyRegistry</a> entries of this shape so they can
 handle currencies the consumer learns about at runtime (for example, from a deserialised JSON payload).</p>
 </div>
-  <h3 id="constructors">Constructors
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyInfo__ctor_System_String_System_Int32_System_Decimal_System_Boolean_System_Nullable_System_DateOnly__System_String_System_String_System_Int32_" data-uid="Bodu.Financial.Currencies.CurrencyInfo.#ctor(System.String,System.Int32,System.Decimal,System.Boolean,System.Nullable{System.DateOnly},System.String,System.String,System.Int32)">
-          <a class="xref" href="Bodu.Financial.Currencies.CurrencyInfo.-ctor.html#Bodu_Financial_Currencies_CurrencyInfo__ctor_System_String_System_Int32_System_Decimal_System_Boolean_System_Nullable_System_DateOnly__System_String_System_String_System_Int32_">CurrencyInfo(string, int, decimal, bool, DateOnly?, string?, string, int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Carries the runtime metadata of a currency: ISO 4217 code, minor-unit precision, cash-rounding increment, and
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Bodu_Financial_Currencies_CurrencyInfo__ctor_" data-uid="Bodu.Financial.Currencies.CurrencyInfo.#ctor*"></a>
+
+  <h3 id="Bodu_Financial_Currencies_CurrencyInfo__ctor_System_String_System_Int32_System_Decimal_System_Boolean_System_Nullable_System_DateOnly__System_String_System_String_System_Int32_" data-uid="Bodu.Financial.Currencies.CurrencyInfo.#ctor(System.String,System.Int32,System.Decimal,System.Boolean,System.Nullable{System.DateOnly},System.String,System.String,System.Int32)">
+  CurrencyInfo(string, int, decimal, bool, DateOnly?, string?, string, int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.Currencies/CurrencyInfo.cs/#L37"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Carries the runtime metadata of a currency: ISO 4217 code, minor-unit precision, cash-rounding increment, and
 historicity / successor information.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="properties">Properties
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyInfo_AlternativeSymbols" data-uid="Bodu.Financial.Currencies.CurrencyInfo.AlternativeSymbols">
-          <a class="xref" href="Bodu.Financial.Currencies.CurrencyInfo.AlternativeSymbols.html#Bodu_Financial_Currencies_CurrencyInfo_AlternativeSymbols">AlternativeSymbols</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets alternative symbols that may also denote the currency.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyInfo_CashRoundingIncrement" data-uid="Bodu.Financial.Currencies.CurrencyInfo.CashRoundingIncrement">
-          <a class="xref" href="Bodu.Financial.Currencies.CurrencyInfo.CashRoundingIncrement.html#Bodu_Financial_Currencies_CurrencyInfo_CashRoundingIncrement">CashRoundingIncrement</a>
-        </td>
-        <td class="markdown level1 summary"><p>The smallest physical cash denomination in the major unit, or <code>0m</code> when no special cash rounding is required
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CurrencyInfo(string IsoCode, int MinorUnits, decimal CashRoundingIncrement, bool IsHistoric, DateOnly? DemonetizedOn, string? SuccessorIsoCode, string EnglishName = &quot;&quot;, int NumericCode = 0)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>IsoCode</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The ISO 4217 three-letter alphabetic code.</p>
+</dd>
+    <dt><code>MinorUnits</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of fractional digits in the currency's minor unit.</p>
+</dd>
+    <dt><code>CashRoundingIncrement</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a></dt>
+    <dd><p>The smallest physical cash denomination in the major unit, or <code>0m</code> when no special cash rounding is required
 beyond <code class="paramref">MinorUnits</code>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyInfo_DemonetizedOn" data-uid="Bodu.Financial.Currencies.CurrencyInfo.DemonetizedOn">
-          <a class="xref" href="Bodu.Financial.Currencies.CurrencyInfo.DemonetizedOn.html#Bodu_Financial_Currencies_CurrencyInfo_DemonetizedOn">DemonetizedOn</a>
-        </td>
-        <td class="markdown level1 summary"><p>The date the currency was withdrawn from circulation, when known.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyInfo_EnglishName" data-uid="Bodu.Financial.Currencies.CurrencyInfo.EnglishName">
-          <a class="xref" href="Bodu.Financial.Currencies.CurrencyInfo.EnglishName.html#Bodu_Financial_Currencies_CurrencyInfo_EnglishName">EnglishName</a>
-        </td>
-        <td class="markdown level1 summary"><p>The currency's English-language name in singular Title Case (for example, <code>&quot;United States Dollar&quot;</code>), or an
+</dd>
+    <dt><code>IsHistoric</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>Whether the currency has been demonetized.</p>
+</dd>
+    <dt><code>DemonetizedOn</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a>?</dt>
+    <dd><p>The date the currency was withdrawn from circulation, when known.</p>
+</dd>
+    <dt><code>SuccessorIsoCode</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The ISO 4217 code of the currency that replaced this one, when defined.</p>
+</dd>
+    <dt><code>EnglishName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The currency's English-language name in singular Title Case (for example, <code>&quot;United States Dollar&quot;</code>), or an
 empty string when no name is supplied.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyInfo_InternationalSymbol" data-uid="Bodu.Financial.Currencies.CurrencyInfo.InternationalSymbol">
-          <a class="xref" href="Bodu.Financial.Currencies.CurrencyInfo.InternationalSymbol.html#Bodu_Financial_Currencies_CurrencyInfo_InternationalSymbol">InternationalSymbol</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the currency's internationally disambiguated symbol (for example, <code>&quot;US$&quot;</code> or <code>&quot;R$&quot;</code>), or an empty
-string when none is supplied.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyInfo_IsHistoric" data-uid="Bodu.Financial.Currencies.CurrencyInfo.IsHistoric">
-          <a class="xref" href="Bodu.Financial.Currencies.CurrencyInfo.IsHistoric.html#Bodu_Financial_Currencies_CurrencyInfo_IsHistoric">IsHistoric</a>
-        </td>
-        <td class="markdown level1 summary"><p>Whether the currency has been demonetized.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyInfo_IsoCode" data-uid="Bodu.Financial.Currencies.CurrencyInfo.IsoCode">
-          <a class="xref" href="Bodu.Financial.Currencies.CurrencyInfo.IsoCode.html#Bodu_Financial_Currencies_CurrencyInfo_IsoCode">IsoCode</a>
-        </td>
-        <td class="markdown level1 summary"><p>The ISO 4217 three-letter alphabetic code.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyInfo_MinorUnits" data-uid="Bodu.Financial.Currencies.CurrencyInfo.MinorUnits">
-          <a class="xref" href="Bodu.Financial.Currencies.CurrencyInfo.MinorUnits.html#Bodu_Financial_Currencies_CurrencyInfo_MinorUnits">MinorUnits</a>
-        </td>
-        <td class="markdown level1 summary"><p>The number of fractional digits in the currency's minor unit.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyInfo_NativeName" data-uid="Bodu.Financial.Currencies.CurrencyInfo.NativeName">
-          <a class="xref" href="Bodu.Financial.Currencies.CurrencyInfo.NativeName.html#Bodu_Financial_Currencies_CurrencyInfo_NativeName">NativeName</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the currency's name in its primary native language, or an empty string when none is supplied.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyInfo_NumericCode" data-uid="Bodu.Financial.Currencies.CurrencyInfo.NumericCode">
-          <a class="xref" href="Bodu.Financial.Currencies.CurrencyInfo.NumericCode.html#Bodu_Financial_Currencies_CurrencyInfo_NumericCode">NumericCode</a>
-        </td>
-        <td class="markdown level1 summary"><p>The ISO 4217 three-digit numeric code (for example, <code>840</code> for <code>USD</code>, <code>36</code> for <code>AUD</code>), or
+</dd>
+    <dt><code>NumericCode</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The ISO 4217 three-digit numeric code (for example, <code>840</code> for <code>USD</code>, <code>36</code> for <code>AUD</code>), or
 <code>0</code> when the currency is custom or the numeric code is unknown.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyInfo_RegionCodes" data-uid="Bodu.Financial.Currencies.CurrencyInfo.RegionCodes">
-          <a class="xref" href="Bodu.Financial.Currencies.CurrencyInfo.RegionCodes.html#Bodu_Financial_Currencies_CurrencyInfo_RegionCodes">RegionCodes</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the ISO 3166 region codes in which the currency is used.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyInfo_SuccessorIsoCode" data-uid="Bodu.Financial.Currencies.CurrencyInfo.SuccessorIsoCode">
-          <a class="xref" href="Bodu.Financial.Currencies.CurrencyInfo.SuccessorIsoCode.html#Bodu_Financial_Currencies_CurrencyInfo_SuccessorIsoCode">SuccessorIsoCode</a>
-        </td>
-        <td class="markdown level1 summary"><p>The ISO 4217 code of the currency that replaced this one, when defined.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyInfo_Symbol" data-uid="Bodu.Financial.Currencies.CurrencyInfo.Symbol">
-          <a class="xref" href="Bodu.Financial.Currencies.CurrencyInfo.Symbol.html#Bodu_Financial_Currencies_CurrencyInfo_Symbol">Symbol</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the currency's primary symbol (for example, <code>&quot;$&quot;</code> or <code>&quot;€&quot;</code>), or an empty string when none is
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Financial_Currencies_CurrencyInfo__ctor_System_String_System_Int32_System_Decimal_System_Boolean_System_Nullable_System_DateOnly__System_String_System_String_System_Int32__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This record is the runtime counterpart of an <a class="xref" href="Bodu.Financial.Currencies.ICurrency.html">ICurrency</a> tag type. The runtime-tagged <code>Money</code> and
+the <code>MoneyBag</code> aggregate operate against <a class="xref" href="Bodu.Financial.Currencies.CurrencyRegistry.html">CurrencyRegistry</a> entries of this shape so they can
+handle currencies the consumer learns about at runtime (for example, from a deserialised JSON payload).</p>
+</div>
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Bodu_Financial_Currencies_CurrencyInfo_AlternativeSymbols_" data-uid="Bodu.Financial.Currencies.CurrencyInfo.AlternativeSymbols*"></a>
+
+  <h3 id="Bodu_Financial_Currencies_CurrencyInfo_AlternativeSymbols" data-uid="Bodu.Financial.Currencies.CurrencyInfo.AlternativeSymbols">
+  AlternativeSymbols
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.Currencies/CurrencyInfo.cs/#L77"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets alternative symbols that may also denote the currency.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;string&gt; AlternativeSymbols { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>The additional symbols recognised for the currency.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Financial_Currencies_CurrencyInfo_CashRoundingIncrement_" data-uid="Bodu.Financial.Currencies.CurrencyInfo.CashRoundingIncrement*"></a>
+
+  <h3 id="Bodu_Financial_Currencies_CurrencyInfo_CashRoundingIncrement" data-uid="Bodu.Financial.Currencies.CurrencyInfo.CashRoundingIncrement">
+  CashRoundingIncrement
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.Currencies/CurrencyInfo.cs/#L40"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The smallest physical cash denomination in the major unit, or <code>0m</code> when no special cash rounding is required
+beyond <code class="paramref">MinorUnits</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public decimal CashRoundingIncrement { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Financial_Currencies_CurrencyInfo_DemonetizedOn_" data-uid="Bodu.Financial.Currencies.CurrencyInfo.DemonetizedOn*"></a>
+
+  <h3 id="Bodu_Financial_Currencies_CurrencyInfo_DemonetizedOn" data-uid="Bodu.Financial.Currencies.CurrencyInfo.DemonetizedOn">
+  DemonetizedOn
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.Currencies/CurrencyInfo.cs/#L42"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The date the currency was withdrawn from circulation, when known.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DateOnly? DemonetizedOn { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Financial_Currencies_CurrencyInfo_EnglishName_" data-uid="Bodu.Financial.Currencies.CurrencyInfo.EnglishName*"></a>
+
+  <h3 id="Bodu_Financial_Currencies_CurrencyInfo_EnglishName" data-uid="Bodu.Financial.Currencies.CurrencyInfo.EnglishName">
+  EnglishName
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.Currencies/CurrencyInfo.cs/#L44"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The currency's English-language name in singular Title Case (for example, <code>&quot;United States Dollar&quot;</code>), or an
+empty string when no name is supplied.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string EnglishName { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Financial_Currencies_CurrencyInfo_InternationalSymbol_" data-uid="Bodu.Financial.Currencies.CurrencyInfo.InternationalSymbol*"></a>
+
+  <h3 id="Bodu_Financial_Currencies_CurrencyInfo_InternationalSymbol" data-uid="Bodu.Financial.Currencies.CurrencyInfo.InternationalSymbol">
+  InternationalSymbol
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.Currencies/CurrencyInfo.cs/#L59"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the currency's internationally disambiguated symbol (for example, <code>&quot;US$&quot;</code> or <code>&quot;R$&quot;</code>), or an empty
+string when none is supplied.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string InternationalSymbol { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The unambiguous symbol used where the bare <a class="xref" href="Bodu.Financial.Currencies.CurrencyInfo.html#Bodu_Financial_Currencies_CurrencyInfo_Symbol">Symbol</a> would be ambiguous.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Financial_Currencies_CurrencyInfo_IsHistoric_" data-uid="Bodu.Financial.Currencies.CurrencyInfo.IsHistoric*"></a>
+
+  <h3 id="Bodu_Financial_Currencies_CurrencyInfo_IsHistoric" data-uid="Bodu.Financial.Currencies.CurrencyInfo.IsHistoric">
+  IsHistoric
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.Currencies/CurrencyInfo.cs/#L41"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Whether the currency has been demonetized.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsHistoric { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Financial_Currencies_CurrencyInfo_IsoCode_" data-uid="Bodu.Financial.Currencies.CurrencyInfo.IsoCode*"></a>
+
+  <h3 id="Bodu_Financial_Currencies_CurrencyInfo_IsoCode" data-uid="Bodu.Financial.Currencies.CurrencyInfo.IsoCode">
+  IsoCode
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.Currencies/CurrencyInfo.cs/#L38"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The ISO 4217 three-letter alphabetic code.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string IsoCode { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Financial_Currencies_CurrencyInfo_MinorUnits_" data-uid="Bodu.Financial.Currencies.CurrencyInfo.MinorUnits*"></a>
+
+  <h3 id="Bodu_Financial_Currencies_CurrencyInfo_MinorUnits" data-uid="Bodu.Financial.Currencies.CurrencyInfo.MinorUnits">
+  MinorUnits
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.Currencies/CurrencyInfo.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The number of fractional digits in the currency's minor unit.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int MinorUnits { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Financial_Currencies_CurrencyInfo_NativeName_" data-uid="Bodu.Financial.Currencies.CurrencyInfo.NativeName*"></a>
+
+  <h3 id="Bodu_Financial_Currencies_CurrencyInfo_NativeName" data-uid="Bodu.Financial.Currencies.CurrencyInfo.NativeName">
+  NativeName
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.Currencies/CurrencyInfo.cs/#L65"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the currency's name in its primary native language, or an empty string when none is supplied.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string NativeName { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The localized currency name.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Financial_Currencies_CurrencyInfo_NumericCode_" data-uid="Bodu.Financial.Currencies.CurrencyInfo.NumericCode*"></a>
+
+  <h3 id="Bodu_Financial_Currencies_CurrencyInfo_NumericCode" data-uid="Bodu.Financial.Currencies.CurrencyInfo.NumericCode">
+  NumericCode
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.Currencies/CurrencyInfo.cs/#L45"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The ISO 4217 three-digit numeric code (for example, <code>840</code> for <code>USD</code>, <code>36</code> for <code>AUD</code>), or
+<code>0</code> when the currency is custom or the numeric code is unknown.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int NumericCode { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Financial_Currencies_CurrencyInfo_RegionCodes_" data-uid="Bodu.Financial.Currencies.CurrencyInfo.RegionCodes*"></a>
+
+  <h3 id="Bodu_Financial_Currencies_CurrencyInfo_RegionCodes" data-uid="Bodu.Financial.Currencies.CurrencyInfo.RegionCodes">
+  RegionCodes
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.Currencies/CurrencyInfo.cs/#L71"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the ISO 3166 region codes in which the currency is used.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;string&gt; RegionCodes { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>The regions associated with the currency.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Financial_Currencies_CurrencyInfo_SuccessorIsoCode_" data-uid="Bodu.Financial.Currencies.CurrencyInfo.SuccessorIsoCode*"></a>
+
+  <h3 id="Bodu_Financial_Currencies_CurrencyInfo_SuccessorIsoCode" data-uid="Bodu.Financial.Currencies.CurrencyInfo.SuccessorIsoCode">
+  SuccessorIsoCode
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.Currencies/CurrencyInfo.cs/#L43"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The ISO 4217 code of the currency that replaced this one, when defined.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string? SuccessorIsoCode { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Financial_Currencies_CurrencyInfo_Symbol_" data-uid="Bodu.Financial.Currencies.CurrencyInfo.Symbol*"></a>
+
+  <h3 id="Bodu_Financial_Currencies_CurrencyInfo_Symbol" data-uid="Bodu.Financial.Currencies.CurrencyInfo.Symbol">
+  Symbol
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.Currencies/CurrencyInfo.cs/#L52"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the currency's primary symbol (for example, <code>&quot;$&quot;</code> or <code>&quot;€&quot;</code>), or an empty string when none is
 supplied.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyInfo_FromCurrencyCode_Bodu_Financial_Currencies_CurrencyCode_" data-uid="Bodu.Financial.Currencies.CurrencyInfo.FromCurrencyCode(Bodu.Financial.Currencies.CurrencyCode)">
-          <a class="xref" href="Bodu.Financial.Currencies.CurrencyInfo.FromCurrencyCode.html#Bodu_Financial_Currencies_CurrencyInfo_FromCurrencyCode_Bodu_Financial_Currencies_CurrencyCode_">FromCurrencyCode(CurrencyCode)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Resolves a <a class="xref" href="Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a> enum value to its registered <a class="xref" href="Bodu.Financial.Currencies.CurrencyInfo.html">CurrencyInfo</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyInfo_ParseCurrencyCode_System_String_" data-uid="Bodu.Financial.Currencies.CurrencyInfo.ParseCurrencyCode(System.String)">
-          <a class="xref" href="Bodu.Financial.Currencies.CurrencyInfo.ParseCurrencyCode.html#Bodu_Financial_Currencies_CurrencyInfo_ParseCurrencyCode_System_String_">ParseCurrencyCode(string)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Resolves an ISO 4217 alphabetic code to the matching <a class="xref" href="Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a> enum member.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyInfo_ToCurrencyCode" data-uid="Bodu.Financial.Currencies.CurrencyInfo.ToCurrencyCode">
-          <a class="xref" href="Bodu.Financial.Currencies.CurrencyInfo.ToCurrencyCode.html#Bodu_Financial_Currencies_CurrencyInfo_ToCurrencyCode">ToCurrencyCode()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the <a class="xref" href="Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a> enum value corresponding to this <a class="xref" href="Bodu.Financial.Currencies.CurrencyInfo.html">CurrencyInfo</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyInfo_TryGetCurrencyCode_System_String_Bodu_Financial_Currencies_CurrencyCode__" data-uid="Bodu.Financial.Currencies.CurrencyInfo.TryGetCurrencyCode(System.String,Bodu.Financial.Currencies.CurrencyCode@)">
-          <a class="xref" href="Bodu.Financial.Currencies.CurrencyInfo.TryGetCurrencyCode.html#Bodu_Financial_Currencies_CurrencyInfo_TryGetCurrencyCode_System_String_Bodu_Financial_Currencies_CurrencyCode__">TryGetCurrencyCode(string, out CurrencyCode)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to resolve an ISO 4217 alphabetic code to the matching <a class="xref" href="Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a> enum member.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string Symbol { get; init; }</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The display symbol associated with the currency.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Financial_Currencies_CurrencyInfo_FromCurrencyCode_" data-uid="Bodu.Financial.Currencies.CurrencyInfo.FromCurrencyCode*"></a>
+
+  <h3 id="Bodu_Financial_Currencies_CurrencyInfo_FromCurrencyCode_Bodu_Financial_Currencies_CurrencyCode_" data-uid="Bodu.Financial.Currencies.CurrencyInfo.FromCurrencyCode(Bodu.Financial.Currencies.CurrencyCode)">
+  FromCurrencyCode(CurrencyCode)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.Currencies/CurrencyInfo.cs/#L88"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Resolves a <a class="xref" href="Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a> enum value to its registered <a class="xref" href="Bodu.Financial.Currencies.CurrencyInfo.html">CurrencyInfo</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CurrencyInfo FromCurrencyCode(CurrencyCode code)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>code</code> <a class="xref" href="Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a></dt>
+    <dd><p>The ISO 4217 currency code to resolve.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Financial.Currencies.CurrencyInfo.html">CurrencyInfo</a></dt>
+    <dd><p>The registry entry corresponding to <code class="paramref">code</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">code</code> is <a class="xref" href="Bodu.Financial.Currencies.CurrencyCode.html#Bodu_Financial_Currencies_CurrencyCode_None">None</a> or is not a defined <a class="xref" href="Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a>
+member.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Financial_Currencies_CurrencyInfo_ParseCurrencyCode_" data-uid="Bodu.Financial.Currencies.CurrencyInfo.ParseCurrencyCode*"></a>
+
+  <h3 id="Bodu_Financial_Currencies_CurrencyInfo_ParseCurrencyCode_System_String_" data-uid="Bodu.Financial.Currencies.CurrencyInfo.ParseCurrencyCode(System.String)">
+  ParseCurrencyCode(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.Currencies/CurrencyInfo.cs/#L134"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Resolves an ISO 4217 alphabetic code to the matching <a class="xref" href="Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a> enum member.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CurrencyCode ParseCurrencyCode(string isoCode)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>isoCode</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The three-letter uppercase ISO code.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a></dt>
+    <dd><p>The <a class="xref" href="Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a> member matching <code class="paramref">isoCode</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Financial_Currencies_CurrencyInfo_ParseCurrencyCode_System_String__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The throwing counterpart of <a class="xref" href="Bodu.Financial.Currencies.CurrencyInfo.html#Bodu_Financial_Currencies_CurrencyInfo_TryGetCurrencyCode_System_String_Bodu_Financial_Currencies_CurrencyCode__">TryGetCurrencyCode(string, out CurrencyCode)</a>, and the canonical
+boundary helper for turning an externally supplied ISO string into the stored enum representation.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">isoCode</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">isoCode</code> does not match any active or historic currency in <a class="xref" href="Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Financial_Currencies_CurrencyInfo_ToCurrencyCode_" data-uid="Bodu.Financial.Currencies.CurrencyInfo.ToCurrencyCode*"></a>
+
+  <h3 id="Bodu_Financial_Currencies_CurrencyInfo_ToCurrencyCode" data-uid="Bodu.Financial.Currencies.CurrencyInfo.ToCurrencyCode">
+  ToCurrencyCode()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.Currencies/CurrencyInfo.cs/#L156"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the <a class="xref" href="Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a> enum value corresponding to this <a class="xref" href="Bodu.Financial.Currencies.CurrencyInfo.html">CurrencyInfo</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CurrencyCode ToCurrencyCode()</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a></dt>
+    <dd><p>The matching enum member.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The currency's <a class="xref" href="Bodu.Financial.Currencies.CurrencyInfo.html#Bodu_Financial_Currencies_CurrencyInfo_IsoCode">IsoCode</a> does not correspond to any <a class="xref" href="Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a> member (for
+example, a currency outside the shipped ISO 4217 catalogue).</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Financial_Currencies_CurrencyInfo_TryGetCurrencyCode_" data-uid="Bodu.Financial.Currencies.CurrencyInfo.TryGetCurrencyCode*"></a>
+
+  <h3 id="Bodu_Financial_Currencies_CurrencyInfo_TryGetCurrencyCode_System_String_Bodu_Financial_Currencies_CurrencyCode__" data-uid="Bodu.Financial.Currencies.CurrencyInfo.TryGetCurrencyCode(System.String,Bodu.Financial.Currencies.CurrencyCode@)">
+  TryGetCurrencyCode(string, out CurrencyCode)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.Currencies/CurrencyInfo.cs/#L109"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Attempts to resolve an ISO 4217 alphabetic code to the matching <a class="xref" href="Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a> enum member.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool TryGetCurrencyCode(string isoCode, out CurrencyCode code)</code></pre>
   </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>isoCode</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The three-letter uppercase ISO code.</p>
+</dd>
+    <dt><code>code</code> <a class="xref" href="Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a></dt>
+    <dd><p>When this method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, the matching enum value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when <code class="paramref">isoCode</code> matches a currency in the enum — active or historic;
+otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Financial_Currencies_CurrencyInfo_TryGetCurrencyCode_System_String_Bodu_Financial_Currencies_CurrencyCode___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The match is case-sensitive: only the canonical three-uppercase-letter ISO form resolves successfully. The
+<a class="xref" href="Bodu.Financial.Currencies.CurrencyCode.html#Bodu_Financial_Currencies_CurrencyCode_None">None</a> sentinel and any code outside the shipped catalogue surface here as
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</div>
+
+
+
+
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 302e395 · Built: 2026-09-29 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 1e0dd9a · Built: 2026-09-29 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

@@ -1,99 +1,127 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
       <title>Class PercentEncoding | BODU </title>
-      <meta name="viewport" content="width=device-width">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class PercentEncoding | BODU ">
-    
-    <meta name="description" content="Provides span-first percent-encoding and decoding of URI components and form-style values (RFC 3986 &#167;2.1 with the WHATWG application/x-www-form-urlencoded rules), selecting the unescaped character set by component mode.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      
+      <meta name="description" content="Provides span-first percent-encoding and decoding of URI components and form-style values (RFC 3986 &#167;2.1 with the WHATWG application/x-www-form-urlencoded rules), selecting the unescaped character set by component mode.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/new/master/apiSpec/new?filename=Bodu_Text_Encoding_PercentEncoding.md&amp;value=---%0Auid%3A%20Bodu.Text.Encoding.PercentEncoding%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Text.Encoding.PercentEncoding">
+
+        <article data-uid="Bodu.Text.Encoding.PercentEncoding">
 
 
 
-  <h1 id="Bodu_Text_Encoding_PercentEncoding" data-uid="Bodu.Text.Encoding.PercentEncoding" class="text-break">Class PercentEncoding</h1>
-  <div class="markdown level0 summary"><p>Provides span-first percent-encoding and decoding of URI components and form-style values (RFC 3986 §2.1 with the
+  <h1 id="Bodu_Text_Encoding_PercentEncoding" data-uid="Bodu.Text.Encoding.PercentEncoding" class="text-break">
+Class PercentEncoding  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Encoding/src/Text.Encoding/PercentEncoding.Encode.cs/#L9"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Encoding.html">Encoding</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Text.Encoding.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides span-first percent-encoding and decoding of URI components and form-style values (RFC 3986 §2.1 with the
 WHATWG <code>application/x-www-form-urlencoded</code> rules), selecting the unescaped character set by component mode.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><span class="xref">PercentEncoding</span></div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class PercentEncoding</code></pre>
   </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">PercentEncoding</span></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
@@ -115,34 +143,11 @@ WHATWG <code>application/x-www-form-urlencoded</code> rules), selecting the unes
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
-  </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Encoding.html">Encoding</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Text.Encoding.dll</h6>
-  <h5 id="Bodu_Text_Encoding_PercentEncoding_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static class PercentEncoding</code></pre>
-  </div>
-  <h5 id="Bodu_Text_Encoding_PercentEncoding_remarks"><strong>Remarks</strong></h5>
-  <div class="markdown level0 remarks"><p>
-Percent-encoding represents an octet as <code>%HH</code> using uppercase hexadecimal digits. Each
-<a class="xref" href="Bodu.Text.Encoding.PercentEncodingMode.html">PercentEncodingMode</a> selects which bytes pass through unescaped — from the conservative
-unreserved-only <a class="xref" href="Bodu.Text.Encoding.PercentEncodingMode.html#Bodu_Text_Encoding_PercentEncodingMode_UriComponent">UriComponent</a> set through to the WHATWG
-<a class="xref" href="Bodu.Text.Encoding.PercentEncodingMode.html#Bodu_Text_Encoding_PercentEncodingMode_FormUrlEncoded">FormUrlEncoded</a> set, where space becomes <code>+</code>. Encoding always emits uppercase
-hex; decoding accepts both uppercase and lowercase, which RFC 3986 defines as equivalent.
-</p>
-<p>
-The byte-oriented surfaces operate on ASCII percent-encoded text; the <a class="xref" href="Bodu.Text.Encoding.PercentEncoding.EncodeString.html#Bodu_Text_Encoding_PercentEncoding_EncodeString_System_String_System_Text_Encoding_Bodu_Text_Encoding_PercentEncodingMode_">EncodeString(string, Encoding?, PercentEncodingMode)</a> and
-<a class="xref" href="Bodu.Text.Encoding.PercentEncoding.DecodeString.html#Bodu_Text_Encoding_PercentEncoding_DecodeString_System_ReadOnlySpan_System_Char__System_Text_Encoding_Bodu_Text_Encoding_PercentEncodingMode_Bodu_Text_Encoding_PercentDecodingOptions_">DecodeString(ReadOnlySpan&lt;char&gt;, Encoding?, PercentEncodingMode, PercentDecodingOptions)</a> helpers bridge .NET strings through a configurable text encoding (UTF-8 by default).
-This type is not a URL parser: it does not resolve relative URLs, normalise hosts, paths, dot-segments, or scheme
-casing, implement IDNA or IRI processing, accept the obsolete <code>%uXXXX</code> syntax, or depend on <code>System.Web</code>.
-</p>
-<p>
-Because correct use depends on the component mode and decoding options, this is a static type and is intentionally
-not registered in <a class="xref" href="Bodu.Text.Encoding.BinaryEncodings.html">BinaryEncodings</a> — the parameterless <a class="xref" href="Bodu.Text.Encoding.IBinaryEncoding.html">IBinaryEncoding</a> contract cannot
-carry that information.
-</p>
-</div>
-  <h5 id="Bodu_Text_Encoding_PercentEncoding_examples"><strong>Examples</strong></h5>
+  </dd></dl>
+
+
+
+  <h2 id="Bodu_Text_Encoding_PercentEncoding_examples">Examples</h2>
   <pre><code class="lang-csharp">// URI component (default) — only unreserved characters pass through.
 string component = PercentEncoding.EncodeString("a/b?c=d");   // a%2Fb%3Fc%3Dd
 
@@ -152,146 +157,628 @@ string field = PercentEncoding.EncodeString("a b+c", mode: PercentEncodingMode.F
 // Round-trip.
 string value = PercentEncoding.DecodeString("a%2Fb", mode: PercentEncodingMode.UriComponent);   // a/b</code></pre>
 
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Text_Encoding_PercentEncoding_Decode_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_PercentEncodingMode_Bodu_Text_Encoding_PercentDecodingOptions_" data-uid="Bodu.Text.Encoding.PercentEncoding.Decode(System.ReadOnlySpan{System.Char},Bodu.Text.Encoding.PercentEncodingMode,Bodu.Text.Encoding.PercentDecodingOptions)">
-          <a class="xref" href="Bodu.Text.Encoding.PercentEncoding.Decode.html#Bodu_Text_Encoding_PercentEncoding_Decode_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_PercentEncodingMode_Bodu_Text_Encoding_PercentDecodingOptions_">Decode(ReadOnlySpan&lt;char&gt;, PercentEncodingMode, PercentDecodingOptions)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Decodes percent-encoded characters into a byte array using the supplied mode and options.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_PercentEncoding_DecodeString_System_ReadOnlySpan_System_Char__System_Text_Encoding_Bodu_Text_Encoding_PercentEncodingMode_Bodu_Text_Encoding_PercentDecodingOptions_" data-uid="Bodu.Text.Encoding.PercentEncoding.DecodeString(System.ReadOnlySpan{System.Char},System.Text.Encoding,Bodu.Text.Encoding.PercentEncodingMode,Bodu.Text.Encoding.PercentDecodingOptions)">
-          <a class="xref" href="Bodu.Text.Encoding.PercentEncoding.DecodeString.html#Bodu_Text_Encoding_PercentEncoding_DecodeString_System_ReadOnlySpan_System_Char__System_Text_Encoding_Bodu_Text_Encoding_PercentEncodingMode_Bodu_Text_Encoding_PercentDecodingOptions_">DecodeString(ReadOnlySpan&lt;char&gt;, Encoding?, PercentEncodingMode, PercentDecodingOptions)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Decodes percent-encoded characters to bytes, then converts those bytes to a string with
+
+  <h2 id="Bodu_Text_Encoding_PercentEncoding_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>
+Percent-encoding represents an octet as <code>%HH</code> using uppercase hexadecimal digits. Each
+<a class="xref" href="Bodu.Text.Encoding.PercentEncodingMode.html">PercentEncodingMode</a> selects which bytes pass through unescaped — from the conservative
+unreserved-only <a class="xref" href="Bodu.Text.Encoding.PercentEncodingMode.html#Bodu_Text_Encoding_PercentEncodingMode_UriComponent">UriComponent</a> set through to the WHATWG
+<a class="xref" href="Bodu.Text.Encoding.PercentEncodingMode.html#Bodu_Text_Encoding_PercentEncodingMode_FormUrlEncoded">FormUrlEncoded</a> set, where space becomes <code>+</code>. Encoding always emits uppercase
+hex; decoding accepts both uppercase and lowercase, which RFC 3986 defines as equivalent.
+</p>
+<p>
+The byte-oriented surfaces operate on ASCII percent-encoded text; the <a class="xref" href="Bodu.Text.Encoding.PercentEncoding.html#Bodu_Text_Encoding_PercentEncoding_EncodeString_System_String_System_Text_Encoding_Bodu_Text_Encoding_PercentEncodingMode_">EncodeString(string, Encoding?, PercentEncodingMode)</a> and
+<a class="xref" href="Bodu.Text.Encoding.PercentEncoding.html#Bodu_Text_Encoding_PercentEncoding_DecodeString_System_ReadOnlySpan_System_Char__System_Text_Encoding_Bodu_Text_Encoding_PercentEncodingMode_Bodu_Text_Encoding_PercentDecodingOptions_">DecodeString(ReadOnlySpan&lt;char&gt;, Encoding?, PercentEncodingMode, PercentDecodingOptions)</a> helpers bridge .NET strings through a configurable text encoding (UTF-8 by default).
+This type is not a URL parser: it does not resolve relative URLs, normalise hosts, paths, dot-segments, or scheme
+casing, implement IDNA or IRI processing, accept the obsolete <code>%uXXXX</code> syntax, or depend on <code>System.Web</code>.
+</p>
+<p>
+Because correct use depends on the component mode and decoding options, this is a static type and is intentionally
+not registered in <a class="xref" href="Bodu.Text.Encoding.BinaryEncodings.html">BinaryEncodings</a> — the parameterless <a class="xref" href="Bodu.Text.Encoding.IBinaryEncoding.html">IBinaryEncoding</a> contract cannot
+carry that information.
+</p>
+</div>
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Text_Encoding_PercentEncoding_Decode_" data-uid="Bodu.Text.Encoding.PercentEncoding.Decode*"></a>
+
+  <h3 id="Bodu_Text_Encoding_PercentEncoding_Decode_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_PercentEncodingMode_Bodu_Text_Encoding_PercentDecodingOptions_" data-uid="Bodu.Text.Encoding.PercentEncoding.Decode(System.ReadOnlySpan{System.Char},Bodu.Text.Encoding.PercentEncodingMode,Bodu.Text.Encoding.PercentDecodingOptions)">
+  Decode(ReadOnlySpan&lt;char&gt;, PercentEncodingMode, PercentDecodingOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Encoding/src/Text.Encoding/PercentEncoding.Decode.cs/#L23"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Decodes percent-encoded characters into a byte array using the supplied mode and options.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static byte[] Decode(ReadOnlySpan&lt;char&gt; source, PercentEncodingMode mode = PercentEncodingMode.UriComponent, PercentDecodingOptions options = PercentDecodingOptions.None)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The percent-encoded input.</p>
+</dd>
+    <dt><code>mode</code> <a class="xref" href="Bodu.Text.Encoding.PercentEncodingMode.html">PercentEncodingMode</a></dt>
+    <dd><p>The component mode.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Encoding.PercentDecodingOptions.html">PercentDecodingOptions</a></dt>
+    <dd><p>The decoding options.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The decoded byte array. Returns an empty array for empty input.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <code class="paramref">mode</code> is undefined.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p>Thrown when the input contains a non-ASCII character or a malformed percent sequence (and
+<a class="xref" href="Bodu.Text.Encoding.PercentDecodingOptions.html#Bodu_Text_Encoding_PercentDecodingOptions_AllowInvalidPercentLiterals">AllowInvalidPercentLiterals</a> is not set).</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Encoding_PercentEncoding_DecodeString_" data-uid="Bodu.Text.Encoding.PercentEncoding.DecodeString*"></a>
+
+  <h3 id="Bodu_Text_Encoding_PercentEncoding_DecodeString_System_ReadOnlySpan_System_Char__System_Text_Encoding_Bodu_Text_Encoding_PercentEncodingMode_Bodu_Text_Encoding_PercentDecodingOptions_" data-uid="Bodu.Text.Encoding.PercentEncoding.DecodeString(System.ReadOnlySpan{System.Char},System.Text.Encoding,Bodu.Text.Encoding.PercentEncodingMode,Bodu.Text.Encoding.PercentDecodingOptions)">
+  DecodeString(ReadOnlySpan&lt;char&gt;, Encoding?, PercentEncodingMode, PercentDecodingOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Encoding/src/Text.Encoding/PercentEncoding.Decode.cs/#L64"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Decodes percent-encoded characters to bytes, then converts those bytes to a string with
 <code class="paramref">textEncoding</code> (UTF-8 by default).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_PercentEncoding_Encode_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_PercentEncodingMode_" data-uid="Bodu.Text.Encoding.PercentEncoding.Encode(System.ReadOnlySpan{System.Byte},Bodu.Text.Encoding.PercentEncodingMode)">
-          <a class="xref" href="Bodu.Text.Encoding.PercentEncoding.Encode.html#Bodu_Text_Encoding_PercentEncoding_Encode_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_PercentEncodingMode_">Encode(ReadOnlySpan&lt;byte&gt;, PercentEncodingMode)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encodes <code class="paramref">source</code> into a percent-encoded string using the supplied component mode.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_PercentEncoding_EncodeString_System_String_System_Text_Encoding_Bodu_Text_Encoding_PercentEncodingMode_" data-uid="Bodu.Text.Encoding.PercentEncoding.EncodeString(System.String,System.Text.Encoding,Bodu.Text.Encoding.PercentEncodingMode)">
-          <a class="xref" href="Bodu.Text.Encoding.PercentEncoding.EncodeString.html#Bodu_Text_Encoding_PercentEncoding_EncodeString_System_String_System_Text_Encoding_Bodu_Text_Encoding_PercentEncodingMode_">EncodeString(string, Encoding?, PercentEncodingMode)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encodes a .NET string by first converting it to bytes with <code class="paramref">textEncoding</code> (UTF-8 by default),
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string DecodeString(ReadOnlySpan&lt;char&gt; source, Encoding? textEncoding = null, PercentEncodingMode mode = PercentEncodingMode.UriComponent, PercentDecodingOptions options = PercentDecodingOptions.None)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The percent-encoded input.</p>
+</dd>
+    <dt><code>textEncoding</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoding">Encoding</a></dt>
+    <dd><p>The text encoding used to build the string, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for UTF-8.</p>
+</dd>
+    <dt><code>mode</code> <a class="xref" href="Bodu.Text.Encoding.PercentEncodingMode.html">PercentEncodingMode</a></dt>
+    <dd><p>The component mode.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Encoding.PercentDecodingOptions.html">PercentDecodingOptions</a></dt>
+    <dd><p>The decoding options.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The decoded string.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Text_Encoding_PercentEncoding_DecodeString_System_ReadOnlySpan_System_Char__System_Text_Encoding_Bodu_Text_Encoding_PercentEncodingMode_Bodu_Text_Encoding_PercentDecodingOptions__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The default <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoding.utf8">UTF8</a> uses a <em>replacement</em> decoder fallback, so invalid
+UTF-8 byte sequences become the U+FFFD replacement character rather than failing. Pass a throwing encoding (for
+example <code>new UTF8Encoding(false, throwOnInvalidBytes: true)</code>) to reject invalid sequences instead.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <code class="paramref">mode</code> is undefined.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p>Thrown when the percent-encoded input is malformed.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.decoderfallbackexception">DecoderFallbackException</a></dt>
+    <dd><p>Thrown when the decoded bytes are invalid for <code class="paramref">textEncoding</code> and it uses a throwing fallback.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Encoding_PercentEncoding_Encode_" data-uid="Bodu.Text.Encoding.PercentEncoding.Encode*"></a>
+
+  <h3 id="Bodu_Text_Encoding_PercentEncoding_Encode_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_PercentEncodingMode_" data-uid="Bodu.Text.Encoding.PercentEncoding.Encode(System.ReadOnlySpan{System.Byte},Bodu.Text.Encoding.PercentEncodingMode)">
+  Encode(ReadOnlySpan&lt;byte&gt;, PercentEncodingMode)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Encoding/src/Text.Encoding/PercentEncoding.Encode.cs/#L18"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Encodes <code class="paramref">source</code> into a percent-encoded string using the supplied component mode.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string Encode(ReadOnlySpan&lt;byte&gt; source, PercentEncodingMode mode = PercentEncodingMode.UriComponent)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The bytes to encode.</p>
+</dd>
+    <dt><code>mode</code> <a class="xref" href="Bodu.Text.Encoding.PercentEncodingMode.html">PercentEncodingMode</a></dt>
+    <dd><p>The component mode.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>A percent-encoded string.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <code class="paramref">mode</code> is undefined.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Encoding_PercentEncoding_EncodeString_" data-uid="Bodu.Text.Encoding.PercentEncoding.EncodeString*"></a>
+
+  <h3 id="Bodu_Text_Encoding_PercentEncoding_EncodeString_System_String_System_Text_Encoding_Bodu_Text_Encoding_PercentEncodingMode_" data-uid="Bodu.Text.Encoding.PercentEncoding.EncodeString(System.String,System.Text.Encoding,Bodu.Text.Encoding.PercentEncodingMode)">
+  EncodeString(string, Encoding?, PercentEncodingMode)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Encoding/src/Text.Encoding/PercentEncoding.Encode.cs/#L44"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Encodes a .NET string by first converting it to bytes with <code class="paramref">textEncoding</code> (UTF-8 by default),
 then percent-encoding those bytes.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_PercentEncoding_GetEncodedLength_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_PercentEncodingMode_" data-uid="Bodu.Text.Encoding.PercentEncoding.GetEncodedLength(System.ReadOnlySpan{System.Byte},Bodu.Text.Encoding.PercentEncodingMode)">
-          <a class="xref" href="Bodu.Text.Encoding.PercentEncoding.GetEncodedLength.html#Bodu_Text_Encoding_PercentEncoding_GetEncodedLength_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_PercentEncodingMode_">GetEncodedLength(ReadOnlySpan&lt;byte&gt;, PercentEncodingMode)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the exact number of characters that <a class="xref" href="Bodu.Text.Encoding.PercentEncoding.Encode.html#Bodu_Text_Encoding_PercentEncoding_Encode_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_PercentEncodingMode_">Encode(ReadOnlySpan&lt;byte&gt;, PercentEncodingMode)</a>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string EncodeString(string value, Encoding? textEncoding = null, PercentEncodingMode mode = PercentEncodingMode.UriComponent)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The string to encode.</p>
+</dd>
+    <dt><code>textEncoding</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoding">Encoding</a></dt>
+    <dd><p>The text encoding used to obtain bytes, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for UTF-8.</p>
+</dd>
+    <dt><code>mode</code> <a class="xref" href="Bodu.Text.Encoding.PercentEncodingMode.html">PercentEncodingMode</a></dt>
+    <dd><p>The component mode.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>A percent-encoded string.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">value</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <code class="paramref">mode</code> is undefined.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Encoding_PercentEncoding_GetEncodedLength_" data-uid="Bodu.Text.Encoding.PercentEncoding.GetEncodedLength*"></a>
+
+  <h3 id="Bodu_Text_Encoding_PercentEncoding_GetEncodedLength_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_PercentEncodingMode_" data-uid="Bodu.Text.Encoding.PercentEncoding.GetEncodedLength(System.ReadOnlySpan{System.Byte},Bodu.Text.Encoding.PercentEncodingMode)">
+  GetEncodedLength(ReadOnlySpan&lt;byte&gt;, PercentEncodingMode)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Encoding/src/Text.Encoding/PercentEncoding.Encode.cs/#L61"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the exact number of characters that <a class="xref" href="Bodu.Text.Encoding.PercentEncoding.html#Bodu_Text_Encoding_PercentEncoding_Encode_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_PercentEncodingMode_">Encode(ReadOnlySpan&lt;byte&gt;, PercentEncodingMode)</a>
 produces for the supplied data and mode.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_PercentEncoding_GetMaxDecodedLength_System_Int32_" data-uid="Bodu.Text.Encoding.PercentEncoding.GetMaxDecodedLength(System.Int32)">
-          <a class="xref" href="Bodu.Text.Encoding.PercentEncoding.GetMaxDecodedLength.html#Bodu_Text_Encoding_PercentEncoding_GetMaxDecodedLength_System_Int32_">GetMaxDecodedLength(int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the maximum number of bytes that decoding <code class="paramref">charCount</code> characters could produce.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_PercentEncoding_GetMaxEncodedLength_System_Int32_" data-uid="Bodu.Text.Encoding.PercentEncoding.GetMaxEncodedLength(System.Int32)">
-          <a class="xref" href="Bodu.Text.Encoding.PercentEncoding.GetMaxEncodedLength.html#Bodu_Text_Encoding_PercentEncoding_GetMaxEncodedLength_System_Int32_">GetMaxEncodedLength(int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the maximum number of characters that encoding <code class="paramref">byteCount</code> bytes could produce.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_PercentEncoding_IsValid_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_PercentEncodingMode_Bodu_Text_Encoding_PercentDecodingOptions_" data-uid="Bodu.Text.Encoding.PercentEncoding.IsValid(System.ReadOnlySpan{System.Char},Bodu.Text.Encoding.PercentEncodingMode,Bodu.Text.Encoding.PercentDecodingOptions)">
-          <a class="xref" href="Bodu.Text.Encoding.PercentEncoding.IsValid.html#Bodu_Text_Encoding_PercentEncoding_IsValid_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_PercentEncodingMode_Bodu_Text_Encoding_PercentDecodingOptions_">IsValid(ReadOnlySpan&lt;char&gt;, PercentEncodingMode, PercentDecodingOptions)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Indicates whether <code class="paramref">source</code> is the <em>canonical</em> percent-encoded form for the supplied
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static int GetEncodedLength(ReadOnlySpan&lt;byte&gt; source, PercentEncodingMode mode = PercentEncodingMode.UriComponent)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The input bytes.</p>
+</dd>
+    <dt><code>mode</code> <a class="xref" href="Bodu.Text.Encoding.PercentEncodingMode.html">PercentEncodingMode</a></dt>
+    <dd><p>The component mode.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The exact encoded character count.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <code class="paramref">mode</code> is undefined.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Encoding_PercentEncoding_GetMaxDecodedLength_" data-uid="Bodu.Text.Encoding.PercentEncoding.GetMaxDecodedLength*"></a>
+
+  <h3 id="Bodu_Text_Encoding_PercentEncoding_GetMaxDecodedLength_System_Int32_" data-uid="Bodu.Text.Encoding.PercentEncoding.GetMaxDecodedLength(System.Int32)">
+  GetMaxDecodedLength(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Encoding/src/Text.Encoding/PercentEncoding.cs/#L79"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the maximum number of bytes that decoding <code class="paramref">charCount</code> characters could produce.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static int GetMaxDecodedLength(int charCount)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>charCount</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The input character count. Must be non-negative.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The worst-case decoded byte count, equal to <code class="paramref">charCount</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <code class="paramref">charCount</code> is negative.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Encoding_PercentEncoding_GetMaxEncodedLength_" data-uid="Bodu.Text.Encoding.PercentEncoding.GetMaxEncodedLength*"></a>
+
+  <h3 id="Bodu_Text_Encoding_PercentEncoding_GetMaxEncodedLength_System_Int32_" data-uid="Bodu.Text.Encoding.PercentEncoding.GetMaxEncodedLength(System.Int32)">
+  GetMaxEncodedLength(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Encoding/src/Text.Encoding/PercentEncoding.cs/#L64"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the maximum number of characters that encoding <code class="paramref">byteCount</code> bytes could produce.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static int GetMaxEncodedLength(int byteCount)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>byteCount</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The input byte count. Must be non-negative.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The worst-case encoded character count, <code>byteCount * 3</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <code class="paramref">byteCount</code> is negative.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Encoding_PercentEncoding_IsValid_" data-uid="Bodu.Text.Encoding.PercentEncoding.IsValid*"></a>
+
+  <h3 id="Bodu_Text_Encoding_PercentEncoding_IsValid_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_PercentEncodingMode_Bodu_Text_Encoding_PercentDecodingOptions_" data-uid="Bodu.Text.Encoding.PercentEncoding.IsValid(System.ReadOnlySpan{System.Char},Bodu.Text.Encoding.PercentEncodingMode,Bodu.Text.Encoding.PercentDecodingOptions)">
+  IsValid(ReadOnlySpan&lt;char&gt;, PercentEncodingMode, PercentDecodingOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Encoding/src/Text.Encoding/PercentEncoding.cs/#L104"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Indicates whether <code class="paramref">source</code> is the <em>canonical</em> percent-encoded form for the supplied
 mode — every literal character is one the mode leaves unescaped, and every percent sequence is well-formed.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_PercentEncoding_TryDecode_System_ReadOnlySpan_System_Char__System_Span_System_Byte__System_Int32__Bodu_Text_Encoding_PercentEncodingMode_Bodu_Text_Encoding_PercentDecodingOptions_" data-uid="Bodu.Text.Encoding.PercentEncoding.TryDecode(System.ReadOnlySpan{System.Char},System.Span{System.Byte},System.Int32@,Bodu.Text.Encoding.PercentEncodingMode,Bodu.Text.Encoding.PercentDecodingOptions)">
-          <a class="xref" href="Bodu.Text.Encoding.PercentEncoding.TryDecode.html#Bodu_Text_Encoding_PercentEncoding_TryDecode_System_ReadOnlySpan_System_Char__System_Span_System_Byte__System_Int32__Bodu_Text_Encoding_PercentEncodingMode_Bodu_Text_Encoding_PercentDecodingOptions_">TryDecode(ReadOnlySpan&lt;char&gt;, Span&lt;byte&gt;, out int, PercentEncodingMode, PercentDecodingOptions)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to decode percent-encoded characters into a destination byte span.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_PercentEncoding_TryEncode_System_ReadOnlySpan_System_Byte__System_Span_System_Char__System_Int32__Bodu_Text_Encoding_PercentEncodingMode_" data-uid="Bodu.Text.Encoding.PercentEncoding.TryEncode(System.ReadOnlySpan{System.Byte},System.Span{System.Char},System.Int32@,Bodu.Text.Encoding.PercentEncodingMode)">
-          <a class="xref" href="Bodu.Text.Encoding.PercentEncoding.TryEncode.html#Bodu_Text_Encoding_PercentEncoding_TryEncode_System_ReadOnlySpan_System_Byte__System_Span_System_Char__System_Int32__Bodu_Text_Encoding_PercentEncodingMode_">TryEncode(ReadOnlySpan&lt;byte&gt;, Span&lt;char&gt;, out int, PercentEncodingMode)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to encode <code class="paramref">source</code> into a destination character span.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Encoding_PercentEncoding_TryGetDecodedLength_System_ReadOnlySpan_System_Char__System_Int32__Bodu_Text_Encoding_PercentEncodingMode_Bodu_Text_Encoding_PercentDecodingOptions_" data-uid="Bodu.Text.Encoding.PercentEncoding.TryGetDecodedLength(System.ReadOnlySpan{System.Char},System.Int32@,Bodu.Text.Encoding.PercentEncodingMode,Bodu.Text.Encoding.PercentDecodingOptions)">
-          <a class="xref" href="Bodu.Text.Encoding.PercentEncoding.TryGetDecodedLength.html#Bodu_Text_Encoding_PercentEncoding_TryGetDecodedLength_System_ReadOnlySpan_System_Char__System_Int32__Bodu_Text_Encoding_PercentEncodingMode_Bodu_Text_Encoding_PercentDecodingOptions_">TryGetDecodedLength(ReadOnlySpan&lt;char&gt;, out int, PercentEncodingMode, PercentDecodingOptions)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to determine the exact number of bytes that
-<a class="xref" href="Bodu.Text.Encoding.PercentEncoding.Decode.html#Bodu_Text_Encoding_PercentEncoding_Decode_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_PercentEncodingMode_Bodu_Text_Encoding_PercentDecodingOptions_">Decode(ReadOnlySpan&lt;char&gt;, PercentEncodingMode, PercentDecodingOptions)</a> will write for the
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsValid(ReadOnlySpan&lt;char&gt; source, PercentEncodingMode mode = PercentEncodingMode.UriComponent, PercentDecodingOptions options = PercentDecodingOptions.None)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The input characters.</p>
+</dd>
+    <dt><code>mode</code> <a class="xref" href="Bodu.Text.Encoding.PercentEncodingMode.html">PercentEncodingMode</a></dt>
+    <dd><p>The component mode.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Encoding.PercentDecodingOptions.html">PercentDecodingOptions</a></dt>
+    <dd><p>The decoding options.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the input is canonical for the mode; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Text_Encoding_PercentEncoding_IsValid_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_PercentEncodingMode_Bodu_Text_Encoding_PercentDecodingOptions__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This is stricter than <a class="xref" href="Bodu.Text.Encoding.PercentEncoding.html#Bodu_Text_Encoding_PercentEncoding_Decode_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_PercentEncodingMode_Bodu_Text_Encoding_PercentDecodingOptions_">Decode(ReadOnlySpan&lt;char&gt;, PercentEncodingMode, PercentDecodingOptions)</a>,
+which performs lenient recovery: a literal character the mode would have percent-encoded (for example <code>#</code>
+in <a class="xref" href="Bodu.Text.Encoding.PercentEncodingMode.html#Bodu_Text_Encoding_PercentEncodingMode_UriComponent">UriComponent</a>, or a literal space) makes <code>IsValid</code> return
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> even though <code>Decode</code> would still accept it. A percent-escaped octet such as
+<code>%2F</code> is always canonical, so <code>IsValid</code> accepts it even when a literal <code>/</code> would not be allowed.
+<a class="xref" href="Bodu.Text.Encoding.PercentEncoding.html#Bodu_Text_Encoding_PercentEncoding_IsValid_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_PercentEncodingMode_Bodu_Text_Encoding_PercentDecodingOptions_">IsValid(ReadOnlySpan&lt;char&gt;, PercentEncodingMode, PercentDecodingOptions)</a> returning
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> implies <code>Decode</code> succeeds, but not the converse.</p>
+</div>
+
+
+
+
+  <a id="Bodu_Text_Encoding_PercentEncoding_TryDecode_" data-uid="Bodu.Text.Encoding.PercentEncoding.TryDecode*"></a>
+
+  <h3 id="Bodu_Text_Encoding_PercentEncoding_TryDecode_System_ReadOnlySpan_System_Char__System_Span_System_Byte__System_Int32__Bodu_Text_Encoding_PercentEncodingMode_Bodu_Text_Encoding_PercentDecodingOptions_" data-uid="Bodu.Text.Encoding.PercentEncoding.TryDecode(System.ReadOnlySpan{System.Char},System.Span{System.Byte},System.Int32@,Bodu.Text.Encoding.PercentEncodingMode,Bodu.Text.Encoding.PercentDecodingOptions)">
+  TryDecode(ReadOnlySpan&lt;char&gt;, Span&lt;byte&gt;, out int, PercentEncodingMode, PercentDecodingOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Encoding/src/Text.Encoding/PercentEncoding.Decode.cs/#L82"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Attempts to decode percent-encoded characters into a destination byte span.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool TryDecode(ReadOnlySpan&lt;char&gt; source, Span&lt;byte&gt; destination, out int bytesWritten, PercentEncodingMode mode = PercentEncodingMode.UriComponent, PercentDecodingOptions options = PercentDecodingOptions.None)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The percent-encoded input.</p>
+</dd>
+    <dt><code>destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The destination byte span.</p>
+</dd>
+    <dt><code>bytesWritten</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>When this method returns, contains the number of bytes written.</p>
+</dd>
+    <dt><code>mode</code> <a class="xref" href="Bodu.Text.Encoding.PercentEncodingMode.html">PercentEncodingMode</a></dt>
+    <dd><p>The component mode.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Encoding.PercentDecodingOptions.html">PercentDecodingOptions</a></dt>
+    <dd><p>The decoding options.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> on success; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> when the mode is undefined, the input is malformed,
+or the destination is too small.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_Text_Encoding_PercentEncoding_TryEncode_" data-uid="Bodu.Text.Encoding.PercentEncoding.TryEncode*"></a>
+
+  <h3 id="Bodu_Text_Encoding_PercentEncoding_TryEncode_System_ReadOnlySpan_System_Byte__System_Span_System_Char__System_Int32__Bodu_Text_Encoding_PercentEncodingMode_" data-uid="Bodu.Text.Encoding.PercentEncoding.TryEncode(System.ReadOnlySpan{System.Byte},System.Span{System.Char},System.Int32@,Bodu.Text.Encoding.PercentEncodingMode)">
+  TryEncode(ReadOnlySpan&lt;byte&gt;, Span&lt;char&gt;, out int, PercentEncodingMode)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Encoding/src/Text.Encoding/PercentEncoding.Encode.cs/#L80"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Attempts to encode <code class="paramref">source</code> into a destination character span.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool TryEncode(ReadOnlySpan&lt;byte&gt; source, Span&lt;char&gt; destination, out int charsWritten, PercentEncodingMode mode = PercentEncodingMode.UriComponent)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The bytes to encode.</p>
+</dd>
+    <dt><code>destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The destination span.</p>
+</dd>
+    <dt><code>charsWritten</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>When this method returns, contains the number of characters written.</p>
+</dd>
+    <dt><code>mode</code> <a class="xref" href="Bodu.Text.Encoding.PercentEncodingMode.html">PercentEncodingMode</a></dt>
+    <dd><p>The component mode.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the mode is defined and the destination is large enough; otherwise
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_Text_Encoding_PercentEncoding_TryGetDecodedLength_" data-uid="Bodu.Text.Encoding.PercentEncoding.TryGetDecodedLength*"></a>
+
+  <h3 id="Bodu_Text_Encoding_PercentEncoding_TryGetDecodedLength_System_ReadOnlySpan_System_Char__System_Int32__Bodu_Text_Encoding_PercentEncodingMode_Bodu_Text_Encoding_PercentDecodingOptions_" data-uid="Bodu.Text.Encoding.PercentEncoding.TryGetDecodedLength(System.ReadOnlySpan{System.Char},System.Int32@,Bodu.Text.Encoding.PercentEncodingMode,Bodu.Text.Encoding.PercentDecodingOptions)">
+  TryGetDecodedLength(ReadOnlySpan&lt;char&gt;, out int, PercentEncodingMode, PercentDecodingOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Encoding/src/Text.Encoding/PercentEncoding.cs/#L130"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Attempts to determine the exact number of bytes that
+<a class="xref" href="Bodu.Text.Encoding.PercentEncoding.html#Bodu_Text_Encoding_PercentEncoding_Decode_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_PercentEncodingMode_Bodu_Text_Encoding_PercentDecodingOptions_">Decode(ReadOnlySpan&lt;char&gt;, PercentEncodingMode, PercentDecodingOptions)</a> will write for the
 supplied input.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool TryGetDecodedLength(ReadOnlySpan&lt;char&gt; source, out int byteCount, PercentEncodingMode mode = PercentEncodingMode.UriComponent, PercentDecodingOptions options = PercentDecodingOptions.None)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The input characters.</p>
+</dd>
+    <dt><code>byteCount</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>When this method returns, contains the decoded byte count, or <code>0</code> on failure.</p>
+</dd>
+    <dt><code>mode</code> <a class="xref" href="Bodu.Text.Encoding.PercentEncodingMode.html">PercentEncodingMode</a></dt>
+    <dd><p>The component mode.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Encoding.PercentDecodingOptions.html">PercentDecodingOptions</a></dt>
+    <dd><p>The decoding options.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the input is decodable; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Text_Encoding_PercentEncoding_TryGetDecodedLength_System_ReadOnlySpan_System_Char__System_Int32__Bodu_Text_Encoding_PercentEncodingMode_Bodu_Text_Encoding_PercentDecodingOptions__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This mirrors <a class="xref" href="Bodu.Text.Encoding.PercentEncoding.html#Bodu_Text_Encoding_PercentEncoding_Decode_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_PercentEncodingMode_Bodu_Text_Encoding_PercentDecodingOptions_">Decode(ReadOnlySpan&lt;char&gt;, PercentEncodingMode, PercentDecodingOptions)</a> (lenient
+recovery), not <a class="xref" href="Bodu.Text.Encoding.PercentEncoding.html#Bodu_Text_Encoding_PercentEncoding_IsValid_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_PercentEncodingMode_Bodu_Text_Encoding_PercentDecodingOptions_">IsValid(ReadOnlySpan&lt;char&gt;, PercentEncodingMode, PercentDecodingOptions)</a>
+(canonical conformance): it returns the exact length <code>Decode</code> would write, so the result can size a decode
+buffer even for decodable-but-non-canonical input.</p>
+</div>
+
+
+
+
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 302e395 · Built: 2026-09-29 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 1e0dd9a · Built: 2026-09-29 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

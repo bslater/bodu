@@ -1,98 +1,126 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
       <title>Struct ConfigurationKey | BODU </title>
-      <meta name="viewport" content="width=device-width">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Struct ConfigurationKey | BODU ">
-    
-    <meta name="description" content="Represents a configuration key in both its raw, file-level form and its colon-delimited logical form used by the resolved view and by Microsoft.Extensions.Configuration.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      
+      <meta name="description" content="Represents a configuration key in both its raw, file-level form and its colon-delimited logical form used by the resolved view and by Microsoft.Extensions.Configuration.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/new/master/apiSpec/new?filename=Bodu_Text_Configuration_ConfigurationKey.md&amp;value=---%0Auid%3A%20Bodu.Text.Configuration.ConfigurationKey%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Text.Configuration.ConfigurationKey">
+
+        <article data-uid="Bodu.Text.Configuration.ConfigurationKey">
 
 
 
-  <h1 id="Bodu_Text_Configuration_ConfigurationKey" data-uid="Bodu.Text.Configuration.ConfigurationKey" class="text-break">Struct ConfigurationKey</h1>
-  <div class="markdown level0 summary"><p>Represents a configuration key in both its raw, file-level form and its colon-delimited logical form used by the
+  <h1 id="Bodu_Text_Configuration_ConfigurationKey" data-uid="Bodu.Text.Configuration.ConfigurationKey" class="text-break">
+Struct ConfigurationKey  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationKey.Parse.cs/#L9"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Configuration.html">Configuration</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Text.Configuration.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Represents a configuration key in both its raw, file-level form and its colon-delimited logical form used by the
 resolved view and by <code>Microsoft.Extensions.Configuration</code>.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="implements">
-    <h5>Implements</h5>
-    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="Bodu.Text.Configuration.ConfigurationKey.html">ConfigurationKey</a>&gt;</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly struct ConfigurationKey : IEquatable&lt;ConfigurationKey&gt;</code></pre>
   </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="Bodu.Text.Configuration.ConfigurationKey.html">ConfigurationKey</a>&gt;</div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
     </div>
@@ -102,28 +130,51 @@ resolved view and by <code>Microsoft.Extensions.Configuration</code>.</p>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
     </div>
+  </dd></dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Configuration.html">Configuration</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Text.Configuration.dll</h6>
-  <h5 id="Bodu_Text_Configuration_ConfigurationKey_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public readonly struct ConfigurationKey : IEquatable&lt;ConfigurationKey&gt;</code></pre>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h5 id="Bodu_Text_Configuration_ConfigurationKey_remarks"><strong>Remarks</strong></h5>
-  <div class="markdown level0 remarks"><p>
-The struct stores the input <a class="xref" href="Bodu.Text.Configuration.ConfigurationKey.RawKey.html#Bodu_Text_Configuration_ConfigurationKey_RawKey">RawKey</a> verbatim. <a class="xref" href="Bodu.Text.Configuration.ConfigurationKey.Path.html#Bodu_Text_Configuration_ConfigurationKey_Path">Path</a> is the canonical colon-joined form
-derived from <a class="xref" href="Bodu.Text.Configuration.ConfigurationKey.Segments.html#Bodu_Text_Configuration_ConfigurationKey_Segments">Segments</a>, applying the mapping policy from <a class="xref" href="Bodu.Text.Configuration.ConfigurationKeyOptions.html">ConfigurationKeyOptions</a>.
-</p>
-<p>
-Equality compares the segment sequence under the configured comparer; the raw form is informational only.
-</p>
-<p>
-Both dotted (<code>logging.level.default</code>) and colon-delimited (<code>logging:level:default</code>) source forms produce
-the same canonical <a class="xref" href="Bodu.Text.Configuration.ConfigurationKey.Path.html#Bodu_Text_Configuration_ConfigurationKey_Path">Path</a>, so consumers can mix the two notations in a document without disturbing the
-resolved view. Whitespace in segments is trimmed; control characters are rejected at construction time.
-</p>
-</div>
-  <h5 id="Bodu_Text_Configuration_ConfigurationKey_examples"><strong>Examples</strong></h5>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.Clamp&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsBetween__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsBetween&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsGreaterThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsLessThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsOutside__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsOutside&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  </dd></dl>
+
+
+  <h2 id="Bodu_Text_Configuration_ConfigurationKey_examples">Examples</h2>
   <pre><code class="lang-csharp">// Default mapping — split on '.' and ':', case-insensitive comparison.
 var k1 = new ConfigurationKey("Logging.Level.Default");
 var k2 = new ConfigurationKey("logging:level:default");
@@ -137,243 +188,648 @@ var k3   = new ConfigurationKey("Foo:Bar", opts);
 var k4   = new ConfigurationKey("foo:bar", opts);
 Console.WriteLine(k3 == k4);              // False</code></pre>
 
-  <h3 id="constructors">Constructors
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Text_Configuration_ConfigurationKey__ctor_System_String_Bodu_Text_Configuration_ConfigurationKeyOptions_" data-uid="Bodu.Text.Configuration.ConfigurationKey.#ctor(System.String,Bodu.Text.Configuration.ConfigurationKeyOptions)">
-          <a class="xref" href="Bodu.Text.Configuration.ConfigurationKey.-ctor.html#Bodu_Text_Configuration_ConfigurationKey__ctor_System_String_Bodu_Text_Configuration_ConfigurationKeyOptions_">ConfigurationKey(string, ConfigurationKeyOptions?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Text.Configuration.ConfigurationKey.html">ConfigurationKey</a> struct from a raw key string using the
+
+  <h2 id="Bodu_Text_Configuration_ConfigurationKey_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>
+The struct stores the input <a class="xref" href="Bodu.Text.Configuration.ConfigurationKey.html#Bodu_Text_Configuration_ConfigurationKey_RawKey">RawKey</a> verbatim. <a class="xref" href="Bodu.Text.Configuration.ConfigurationKey.html#Bodu_Text_Configuration_ConfigurationKey_Path">Path</a> is the canonical colon-joined form
+derived from <a class="xref" href="Bodu.Text.Configuration.ConfigurationKey.html#Bodu_Text_Configuration_ConfigurationKey_Segments">Segments</a>, applying the mapping policy from <a class="xref" href="Bodu.Text.Configuration.ConfigurationKeyOptions.html">ConfigurationKeyOptions</a>.
+</p>
+<p>
+Equality compares the segment sequence under the configured comparer; the raw form is informational only.
+</p>
+<p>
+Both dotted (<code>logging.level.default</code>) and colon-delimited (<code>logging:level:default</code>) source forms produce
+the same canonical <a class="xref" href="Bodu.Text.Configuration.ConfigurationKey.html#Bodu_Text_Configuration_ConfigurationKey_Path">Path</a>, so consumers can mix the two notations in a document without disturbing the
+resolved view. Whitespace in segments is trimmed; control characters are rejected at construction time.
+</p>
+</div>
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationKey__ctor_" data-uid="Bodu.Text.Configuration.ConfigurationKey.#ctor*"></a>
+
+  <h3 id="Bodu_Text_Configuration_ConfigurationKey__ctor_System_String_Bodu_Text_Configuration_ConfigurationKeyOptions_" data-uid="Bodu.Text.Configuration.ConfigurationKey.#ctor(System.String,Bodu.Text.Configuration.ConfigurationKeyOptions)">
+  ConfigurationKey(string, ConfigurationKeyOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationKey.cs/#L71"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Text.Configuration.ConfigurationKey.html">ConfigurationKey</a> struct from a raw key string using the
 supplied options.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="properties">Properties
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Text_Configuration_ConfigurationKey_CaseSensitive" data-uid="Bodu.Text.Configuration.ConfigurationKey.CaseSensitive">
-          <a class="xref" href="Bodu.Text.Configuration.ConfigurationKey.CaseSensitive.html#Bodu_Text_Configuration_ConfigurationKey_CaseSensitive">CaseSensitive</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets a value indicating whether equality and hashing for this key are case-sensitive.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Configuration_ConfigurationKey_Path" data-uid="Bodu.Text.Configuration.ConfigurationKey.Path">
-          <a class="xref" href="Bodu.Text.Configuration.ConfigurationKey.Path.html#Bodu_Text_Configuration_ConfigurationKey_Path">Path</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the canonical colon-delimited logical key path derived from <a class="xref" href="Bodu.Text.Configuration.ConfigurationKey.Segments.html#Bodu_Text_Configuration_ConfigurationKey_Segments">Segments</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Configuration_ConfigurationKey_RawKey" data-uid="Bodu.Text.Configuration.ConfigurationKey.RawKey">
-          <a class="xref" href="Bodu.Text.Configuration.ConfigurationKey.RawKey.html#Bodu_Text_Configuration_ConfigurationKey_RawKey">RawKey</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the raw key string exactly as it appeared in the source document.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Configuration_ConfigurationKey_Segments" data-uid="Bodu.Text.Configuration.ConfigurationKey.Segments">
-          <a class="xref" href="Bodu.Text.Configuration.ConfigurationKey.Segments.html#Bodu_Text_Configuration_ConfigurationKey_Segments">Segments</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the segments produced by splitting <a class="xref" href="Bodu.Text.Configuration.ConfigurationKey.RawKey.html#Bodu_Text_Configuration_ConfigurationKey_RawKey">RawKey</a> on the configured separators.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Text_Configuration_ConfigurationKey_Equals_Bodu_Text_Configuration_ConfigurationKey_" data-uid="Bodu.Text.Configuration.ConfigurationKey.Equals(Bodu.Text.Configuration.ConfigurationKey)">
-          <a class="xref" href="Bodu.Text.Configuration.ConfigurationKey.Equals.html#Bodu_Text_Configuration_ConfigurationKey_Equals_Bodu_Text_Configuration_ConfigurationKey_">Equals(ConfigurationKey)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether this key has the same segment sequence as <code class="paramref">other</code> under the configured
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ConfigurationKey(string rawKey, ConfigurationKeyOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>rawKey</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The raw key as authored in the configuration source.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Configuration.ConfigurationKeyOptions.html">ConfigurationKeyOptions</a></dt>
+    <dd><p>The key options to apply, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for the defaults.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">rawKey</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, empty, or contains only whitespace; or a segment was
+empty when empty segments are not permitted.</p>
+</dd>
+  </dl>
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationKey_CaseSensitive_" data-uid="Bodu.Text.Configuration.ConfigurationKey.CaseSensitive*"></a>
+
+  <h3 id="Bodu_Text_Configuration_ConfigurationKey_CaseSensitive" data-uid="Bodu.Text.Configuration.ConfigurationKey.CaseSensitive">
+  CaseSensitive
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationKey.cs/#L107"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether equality and hashing for this key are case-sensitive.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool CaseSensitive { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when ordinal case-sensitive comparison is used; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> for
+ordinal-ignore-case.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationKey_Path_" data-uid="Bodu.Text.Configuration.ConfigurationKey.Path*"></a>
+
+  <h3 id="Bodu_Text_Configuration_ConfigurationKey_Path" data-uid="Bodu.Text.Configuration.ConfigurationKey.Path">
+  Path
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationKey.cs/#L113"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the canonical colon-delimited logical key path derived from <a class="xref" href="Bodu.Text.Configuration.ConfigurationKey.html#Bodu_Text_Configuration_ConfigurationKey_Segments">Segments</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string Path { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The configuration key in colon-delimited form, or the empty string for a default instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationKey_RawKey_" data-uid="Bodu.Text.Configuration.ConfigurationKey.RawKey*"></a>
+
+  <h3 id="Bodu_Text_Configuration_ConfigurationKey_RawKey" data-uid="Bodu.Text.Configuration.ConfigurationKey.RawKey">
+  RawKey
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationKey.cs/#L119"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the raw key string exactly as it appeared in the source document.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string RawKey { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The original key text, or the empty string for a default instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationKey_Segments_" data-uid="Bodu.Text.Configuration.ConfigurationKey.Segments*"></a>
+
+  <h3 id="Bodu_Text_Configuration_ConfigurationKey_Segments" data-uid="Bodu.Text.Configuration.ConfigurationKey.Segments">
+  Segments
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationKey.cs/#L125"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the segments produced by splitting <a class="xref" href="Bodu.Text.Configuration.ConfigurationKey.html#Bodu_Text_Configuration_ConfigurationKey_RawKey">RawKey</a> on the configured separators.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ImmutableArray&lt;string&gt; Segments { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.immutable.immutablearray-1">ImmutableArray</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>An immutable array of segment strings.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationKey_Equals_" data-uid="Bodu.Text.Configuration.ConfigurationKey.Equals*"></a>
+
+  <h3 id="Bodu_Text_Configuration_ConfigurationKey_Equals_Bodu_Text_Configuration_ConfigurationKey_" data-uid="Bodu.Text.Configuration.ConfigurationKey.Equals(Bodu.Text.Configuration.ConfigurationKey)">
+  Equals(ConfigurationKey)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationKey.cs/#L158"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines whether this key has the same segment sequence as <code class="paramref">other</code> under the configured
 comparer.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Configuration_ConfigurationKey_Equals_System_Object_" data-uid="Bodu.Text.Configuration.ConfigurationKey.Equals(System.Object)">
-          <a class="xref" href="Bodu.Text.Configuration.ConfigurationKey.Equals.html#Bodu_Text_Configuration_ConfigurationKey_Equals_System_Object_">Equals(object?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Indicates whether this instance and a specified object are equal.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Configuration_ConfigurationKey_GetHashCode" data-uid="Bodu.Text.Configuration.ConfigurationKey.GetHashCode">
-          <a class="xref" href="Bodu.Text.Configuration.ConfigurationKey.GetHashCode.html#Bodu_Text_Configuration_ConfigurationKey_GetHashCode">GetHashCode()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the hash code for this instance.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Configuration_ConfigurationKey_Parse_System_String_" data-uid="Bodu.Text.Configuration.ConfigurationKey.Parse(System.String)">
-          <a class="xref" href="Bodu.Text.Configuration.ConfigurationKey.Parse.html#Bodu_Text_Configuration_ConfigurationKey_Parse_System_String_">Parse(string)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Parses a raw configuration key into a <a class="xref" href="Bodu.Text.Configuration.ConfigurationKey.html">ConfigurationKey</a> using the default key options.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Configuration_ConfigurationKey_Parse_System_String_Bodu_Text_Configuration_ConfigurationKeyOptions_" data-uid="Bodu.Text.Configuration.ConfigurationKey.Parse(System.String,Bodu.Text.Configuration.ConfigurationKeyOptions)">
-          <a class="xref" href="Bodu.Text.Configuration.ConfigurationKey.Parse.html#Bodu_Text_Configuration_ConfigurationKey_Parse_System_String_Bodu_Text_Configuration_ConfigurationKeyOptions_">Parse(string, ConfigurationKeyOptions?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Parses a raw configuration key into a <a class="xref" href="Bodu.Text.Configuration.ConfigurationKey.html">ConfigurationKey</a> using the supplied options.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Configuration_ConfigurationKey_ToString" data-uid="Bodu.Text.Configuration.ConfigurationKey.ToString">
-          <a class="xref" href="Bodu.Text.Configuration.ConfigurationKey.ToString.html#Bodu_Text_Configuration_ConfigurationKey_ToString">ToString()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the fully qualified type name of this instance.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Configuration_ConfigurationKey_TryParse_System_String_Bodu_Text_Configuration_ConfigurationKey__" data-uid="Bodu.Text.Configuration.ConfigurationKey.TryParse(System.String,Bodu.Text.Configuration.ConfigurationKey@)">
-          <a class="xref" href="Bodu.Text.Configuration.ConfigurationKey.TryParse.html#Bodu_Text_Configuration_ConfigurationKey_TryParse_System_String_Bodu_Text_Configuration_ConfigurationKey__">TryParse(string?, out ConfigurationKey)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to parse a raw configuration key.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Configuration_ConfigurationKey_TryParse_System_String_Bodu_Text_Configuration_ConfigurationKeyOptions_Bodu_Text_Configuration_ConfigurationKey__" data-uid="Bodu.Text.Configuration.ConfigurationKey.TryParse(System.String,Bodu.Text.Configuration.ConfigurationKeyOptions,Bodu.Text.Configuration.ConfigurationKey@)">
-          <a class="xref" href="Bodu.Text.Configuration.ConfigurationKey.TryParse.html#Bodu_Text_Configuration_ConfigurationKey_TryParse_System_String_Bodu_Text_Configuration_ConfigurationKeyOptions_Bodu_Text_Configuration_ConfigurationKey__">TryParse(string?, ConfigurationKeyOptions?, out ConfigurationKey)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to parse a raw configuration key using the supplied options.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="operators">Operators
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Text_Configuration_ConfigurationKey_op_Equality_Bodu_Text_Configuration_ConfigurationKey_Bodu_Text_Configuration_ConfigurationKey_" data-uid="Bodu.Text.Configuration.ConfigurationKey.op_Equality(Bodu.Text.Configuration.ConfigurationKey,Bodu.Text.Configuration.ConfigurationKey)">
-          <a class="xref" href="Bodu.Text.Configuration.ConfigurationKey.op_Equality.html#Bodu_Text_Configuration_ConfigurationKey_op_Equality_Bodu_Text_Configuration_ConfigurationKey_Bodu_Text_Configuration_ConfigurationKey_">operator ==(ConfigurationKey, ConfigurationKey)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether two keys are equal.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Configuration_ConfigurationKey_op_Inequality_Bodu_Text_Configuration_ConfigurationKey_Bodu_Text_Configuration_ConfigurationKey_" data-uid="Bodu.Text.Configuration.ConfigurationKey.op_Inequality(Bodu.Text.Configuration.ConfigurationKey,Bodu.Text.Configuration.ConfigurationKey)">
-          <a class="xref" href="Bodu.Text.Configuration.ConfigurationKey.op_Inequality.html#Bodu_Text_Configuration_ConfigurationKey_op_Inequality_Bodu_Text_Configuration_ConfigurationKey_Bodu_Text_Configuration_ConfigurationKey_">operator !=(ConfigurationKey, ConfigurationKey)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether two keys are not equal.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Equals(ConfigurationKey other)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>other</code> <a class="xref" href="Bodu.Text.Configuration.ConfigurationKey.html">ConfigurationKey</a></dt>
+    <dd><p>The other key to compare with.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the segment sequences are equal under the chosen comparer; otherwise,
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationKey_Equals_" data-uid="Bodu.Text.Configuration.ConfigurationKey.Equals*"></a>
+
+  <h3 id="Bodu_Text_Configuration_ConfigurationKey_Equals_System_Object_" data-uid="Bodu.Text.Configuration.ConfigurationKey.Equals(System.Object)">
+  Equals(object?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationKey.cs/#L179"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Indicates whether this instance and a specified object are equal.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override bool Equals(object? obj)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Clamp.html#Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.Clamp&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>obj</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></dt>
+    <dd><p>The object to compare with the current instance.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if <code class="paramref">obj</code> and this instance are the same type and represent the same value; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationKey_GetHashCode_" data-uid="Bodu.Text.Configuration.ConfigurationKey.GetHashCode*"></a>
+
+  <h3 id="Bodu_Text_Configuration_ConfigurationKey_GetHashCode" data-uid="Bodu.Text.Configuration.ConfigurationKey.GetHashCode">
+  GetHashCode()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationKey.cs/#L183"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the hash code for this instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override int GetHashCode()</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsBetween.html#Bodu_Extensions_ComparableExtensions_IsBetween__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsBetween&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>A 32-bit signed integer that is the hash code for this instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationKey_Parse_" data-uid="Bodu.Text.Configuration.ConfigurationKey.Parse*"></a>
+
+  <h3 id="Bodu_Text_Configuration_ConfigurationKey_Parse_System_String_" data-uid="Bodu.Text.Configuration.ConfigurationKey.Parse(System.String)">
+  Parse(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationKey.Parse.cs/#L20"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Parses a raw configuration key into a <a class="xref" href="Bodu.Text.Configuration.ConfigurationKey.html">ConfigurationKey</a> using the default key options.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ConfigurationKey Parse(string rawKey)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>rawKey</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The raw key to parse.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Configuration.ConfigurationKey.html">ConfigurationKey</a></dt>
+    <dd><p>A <a class="xref" href="Bodu.Text.Configuration.ConfigurationKey.html">ConfigurationKey</a> built from <code class="paramref">rawKey</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">rawKey</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, empty, or contains only whitespace, or contains an empty
+segment when empty segments are not permitted.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationKey_Parse_" data-uid="Bodu.Text.Configuration.ConfigurationKey.Parse*"></a>
+
+  <h3 id="Bodu_Text_Configuration_ConfigurationKey_Parse_System_String_Bodu_Text_Configuration_ConfigurationKeyOptions_" data-uid="Bodu.Text.Configuration.ConfigurationKey.Parse(System.String,Bodu.Text.Configuration.ConfigurationKeyOptions)">
+  Parse(string, ConfigurationKeyOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationKey.Parse.cs/#L33"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Parses a raw configuration key into a <a class="xref" href="Bodu.Text.Configuration.ConfigurationKey.html">ConfigurationKey</a> using the supplied options.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ConfigurationKey Parse(string rawKey, ConfigurationKeyOptions? options)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>rawKey</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The raw key to parse.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Configuration.ConfigurationKeyOptions.html">ConfigurationKeyOptions</a></dt>
+    <dd><p>The key options to apply, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for the defaults.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Configuration.ConfigurationKey.html">ConfigurationKey</a></dt>
+    <dd><p>A <a class="xref" href="Bodu.Text.Configuration.ConfigurationKey.html">ConfigurationKey</a> built from <code class="paramref">rawKey</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">rawKey</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, empty, or contains only whitespace, or contains an empty
+segment when empty segments are not permitted.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationKey_ToString_" data-uid="Bodu.Text.Configuration.ConfigurationKey.ToString*"></a>
+
+  <h3 id="Bodu_Text_Configuration_ConfigurationKey_ToString" data-uid="Bodu.Text.Configuration.ConfigurationKey.ToString">
+  ToString()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationKey.cs/#L198"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the fully qualified type name of this instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override string ToString()</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThan.html#Bodu_Extensions_ComparableExtensions_IsGreaterThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The fully qualified type name.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationKey_TryParse_" data-uid="Bodu.Text.Configuration.ConfigurationKey.TryParse*"></a>
+
+  <h3 id="Bodu_Text_Configuration_ConfigurationKey_TryParse_System_String_Bodu_Text_Configuration_ConfigurationKey__" data-uid="Bodu.Text.Configuration.ConfigurationKey.TryParse(System.String,Bodu.Text.Configuration.ConfigurationKey@)">
+  TryParse(string?, out ConfigurationKey)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationKey.Parse.cs/#L44"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Attempts to parse a raw configuration key.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool TryParse(string? rawKey, out ConfigurationKey result)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>rawKey</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The raw key to parse.</p>
+</dd>
+    <dt><code>result</code> <a class="xref" href="Bodu.Text.Configuration.ConfigurationKey.html">ConfigurationKey</a></dt>
+    <dd><p>When this method returns, contains the parsed key if successful; otherwise, the default key.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when parsing succeeded; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationKey_TryParse_" data-uid="Bodu.Text.Configuration.ConfigurationKey.TryParse*"></a>
+
+  <h3 id="Bodu_Text_Configuration_ConfigurationKey_TryParse_System_String_Bodu_Text_Configuration_ConfigurationKeyOptions_Bodu_Text_Configuration_ConfigurationKey__" data-uid="Bodu.Text.Configuration.ConfigurationKey.TryParse(System.String,Bodu.Text.Configuration.ConfigurationKeyOptions,Bodu.Text.Configuration.ConfigurationKey@)">
+  TryParse(string?, ConfigurationKeyOptions?, out ConfigurationKey)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationKey.Parse.cs/#L56"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Attempts to parse a raw configuration key using the supplied options.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool TryParse(string? rawKey, ConfigurationKeyOptions? options, out ConfigurationKey result)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThan.html#Bodu_Extensions_ComparableExtensions_IsLessThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>rawKey</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The raw key to parse.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Configuration.ConfigurationKeyOptions.html">ConfigurationKeyOptions</a></dt>
+    <dd><p>The key options to apply, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for the defaults.</p>
+</dd>
+    <dt><code>result</code> <a class="xref" href="Bodu.Text.Configuration.ConfigurationKey.html">ConfigurationKey</a></dt>
+    <dd><p>When this method returns, contains the parsed key if successful; otherwise, the default key.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when parsing succeeded; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="operators">Operators
+</h2>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationKey_op_Equality_" data-uid="Bodu.Text.Configuration.ConfigurationKey.op_Equality*"></a>
+
+  <h3 id="Bodu_Text_Configuration_ConfigurationKey_op_Equality_Bodu_Text_Configuration_ConfigurationKey_Bodu_Text_Configuration_ConfigurationKey_" data-uid="Bodu.Text.Configuration.ConfigurationKey.op_Equality(Bodu.Text.Configuration.ConfigurationKey,Bodu.Text.Configuration.ConfigurationKey)">
+  operator ==(ConfigurationKey, ConfigurationKey)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationKey.cs/#L133"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines whether two keys are equal.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool operator ==(ConfigurationKey left, ConfigurationKey right)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsOutside.html#Bodu_Extensions_ComparableExtensions_IsOutside__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsOutside&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>left</code> <a class="xref" href="Bodu.Text.Configuration.ConfigurationKey.html">ConfigurationKey</a></dt>
+    <dd><p>The first key to compare.</p>
+</dd>
+    <dt><code>right</code> <a class="xref" href="Bodu.Text.Configuration.ConfigurationKey.html">ConfigurationKey</a></dt>
+    <dd><p>The second key to compare.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the keys are equal; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationKey_op_Inequality_" data-uid="Bodu.Text.Configuration.ConfigurationKey.op_Inequality*"></a>
+
+  <h3 id="Bodu_Text_Configuration_ConfigurationKey_op_Inequality_Bodu_Text_Configuration_ConfigurationKey_Bodu_Text_Configuration_ConfigurationKey_" data-uid="Bodu.Text.Configuration.ConfigurationKey.op_Inequality(Bodu.Text.Configuration.ConfigurationKey,Bodu.Text.Configuration.ConfigurationKey)">
+  operator !=(ConfigurationKey, ConfigurationKey)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationKey.cs/#L144"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines whether two keys are not equal.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool operator !=(ConfigurationKey left, ConfigurationKey right)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>left</code> <a class="xref" href="Bodu.Text.Configuration.ConfigurationKey.html">ConfigurationKey</a></dt>
+    <dd><p>The first key to compare.</p>
+</dd>
+    <dt><code>right</code> <a class="xref" href="Bodu.Text.Configuration.ConfigurationKey.html">ConfigurationKey</a></dt>
+    <dd><p>The second key to compare.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the keys differ; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 302e395 · Built: 2026-09-29 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 1e0dd9a · Built: 2026-09-29 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

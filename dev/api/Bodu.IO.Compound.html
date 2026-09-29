@@ -1,84 +1,90 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
       <title>Namespace Bodu.IO.Compound | BODU </title>
-      <meta name="viewport" content="width=device-width">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Namespace Bodu.IO.Compound | BODU ">
-    
-    
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      
+      
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.IO.Compound">
+
+        <article data-uid="Bodu.IO.Compound">
 
   <h1 id="Bodu_IO_Compound" data-uid="Bodu.IO.Compound" class="text-break">Namespace Bodu.IO.Compound</h1>
   <div class="markdown level0 summary"></div>
@@ -148,7 +154,7 @@ root.Save(&quot;out.xls&quot;);   // or ToArray() / WriteTo(stream)
 <h2 id="notes">Notes</h2>
 <ul>
 <li><strong>Two ways to read.</strong> <a class="xref" href="Bodu.IO.Compound.CompoundFileOptions.html">CompoundFileOptions</a> selects between fully <strong>buffered</strong> access (the whole source is read into memory at open time — the default, and safe to share across threads) and <strong>streaming</strong> access (sectors are read on demand from a seekable source, bounding memory for large files). The <code>Auto</code> strategy switches on <code>MaxBufferedBytes</code>.</li>
-<li><strong>Two ways to write.</strong> The detached <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.html">CompoundStorageBuilder</a> assembles a tree in memory and serializes it once (<code>Save</code> / <code>WriteTo</code> / <code>ToArray</code>) — ideal for authoring a container from scratch. The in-place <a class="xref" href="Bodu.IO.Compound.CompoundFile.Create.html">Create</a> path returns a writable file whose <code>RootStorage.CreateStream</code> / <code>CreateStorage</code> mutate a staging tree that <code>Commit</code> (or the asynchronous <code>CommitAsync</code> / <code>FlushAsync</code>) persists to the destination. A writable <a class="xref" href="Bodu.IO.Compound.CompoundStream.html">CompoundStream</a> is a true read-write <code>Stream</code> (<code>CanWrite</code> is <code>true</code>).</li>
+<li><strong>Two ways to write.</strong> The detached <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.html">CompoundStorageBuilder</a> assembles a tree in memory and serializes it once (<code>Save</code> / <code>WriteTo</code> / <code>ToArray</code>) — ideal for authoring a container from scratch. The in-place <a class="xref" href="Bodu.IO.Compound.CompoundFile.html#Bodu_IO_Compound_CompoundFile_Create_">Create</a> path returns a writable file whose <code>RootStorage.CreateStream</code> / <code>CreateStorage</code> mutate a staging tree that <code>Commit</code> (or the asynchronous <code>CommitAsync</code> / <code>FlushAsync</code>) persists to the destination. A writable <a class="xref" href="Bodu.IO.Compound.CompoundStream.html">CompoundStream</a> is a true read-write <code>Stream</code> (<code>CanWrite</code> is <code>true</code>).</li>
 <li><strong>Names.</strong> Entry names are at most 31 UTF-16 code units, non-empty, and free of <code>/</code> and null characters; comparison is case-insensitive by default (per the CFB format). Duplicate names and invalid names throw <a class="xref" href="Bodu.IO.Compound.CompoundFileSerializationException.html">CompoundFileSerializationException</a> at author time.</li>
 <li><strong>Versions.</strong> <code>V3</code> (512-byte sectors) is the most compatible default; <code>V4</code> (4096-byte sectors) suits larger containers. Choose via <a class="xref" href="Bodu.IO.Compound.Builders.CompoundBuildOptions.html">CompoundBuildOptions</a>.</li>
 <li><strong>Property sets round-trip.</strong> On a writable file, <code>CompoundFile.SetSummaryInformation</code> embeds a summary set and <code>CompoundFile.TryGetSummaryInformation</code> reads it back; <code>CompoundStorage.WritePropertySet</code> does the same for any named set. The writer emits every value shape the reader parses, including vector properties (variant vectors round-trip by value, not byte, identity).</li>
@@ -156,108 +162,125 @@ root.Save(&quot;out.xls&quot;);   // or ToArray() / WriteTo(stream)
 </ul>
 </div>
   <div class="markdown level0 remarks"></div>
+
+    <h3 id="namespaces">
+Namespaces
+</h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Bodu.IO.Compound.Builders.html">Bodu.IO.Compound.Builders</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Bodu.IO.Compound.PropertySets.html">Bodu.IO.Compound.PropertySets</a></dt>
+      <dd></dd>
+    </dl>
     <h3 id="classes">
 Classes
 </h3>
-      <h4><a class="xref" href="Bodu.IO.Compound.CompoundEntryInfo.html">CompoundEntryInfo</a></h4>
-      <section><p>Provides an immutable snapshot of the metadata recorded for a single compound-file directory entry — a storage, a
+    <dl class="jumplist">
+      <dt><a class="xref" href="Bodu.IO.Compound.CompoundEntryInfo.html">CompoundEntryInfo</a></dt>
+      <dd><p>Provides an immutable snapshot of the metadata recorded for a single compound-file directory entry — a storage, a
 stream, or the root storage.</p>
-</section>
-      <h4><a class="xref" href="Bodu.IO.Compound.CompoundFile.html">CompoundFile</a></h4>
-      <section><p>Represents an OLE2 / Compound File Binary (CFB) container opened over a path or stream, exposing its storage
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Bodu.IO.Compound.CompoundFile.html">CompoundFile</a></dt>
+      <dd><p>Represents an OLE2 / Compound File Binary (CFB) container opened over a path or stream, exposing its storage
 hierarchy, the metadata of every entry, and the byte payload of each named stream for reading or editing.</p>
-</section>
-      <h4><a class="xref" href="Bodu.IO.Compound.CompoundFileException.html">CompoundFileException</a></h4>
-      <section><p>The base class for exceptions raised by the compound-file reader, writer, and object model.</p>
-</section>
-      <h4><a class="xref" href="Bodu.IO.Compound.CompoundFileFormatException.html">CompoundFileFormatException</a></h4>
-      <section><p>The exception thrown when a stream cannot be interpreted as a well-formed OLE2 / Compound File Binary container.</p>
-</section>
-      <h4><a class="xref" href="Bodu.IO.Compound.CompoundFileOptions.html">CompoundFileOptions</a></h4>
-      <section><p>Specifies options that control how a <a class="xref" href="Bodu.IO.Compound.CompoundFile.html">CompoundFile</a> is opened for reading.</p>
-</section>
-      <h4><a class="xref" href="Bodu.IO.Compound.CompoundFileSerializationException.html">CompoundFileSerializationException</a></h4>
-      <section><p>The exception thrown when a compound file cannot be authored or serialized — for example, when a storage contains a
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Bodu.IO.Compound.CompoundFileException.html">CompoundFileException</a></dt>
+      <dd><p>The base class for exceptions raised by the compound-file reader, writer, and object model.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Bodu.IO.Compound.CompoundFileFormatException.html">CompoundFileFormatException</a></dt>
+      <dd><p>The exception thrown when a stream cannot be interpreted as a well-formed OLE2 / Compound File Binary container.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Bodu.IO.Compound.CompoundFileOptions.html">CompoundFileOptions</a></dt>
+      <dd><p>Specifies options that control how a <a class="xref" href="Bodu.IO.Compound.CompoundFile.html">CompoundFile</a> is opened for reading.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Bodu.IO.Compound.CompoundFileSerializationException.html">CompoundFileSerializationException</a></dt>
+      <dd><p>The exception thrown when a compound file cannot be authored or serialized — for example, when a storage contains a
 duplicate or invalid child name, the directory nesting is too deep, or a value cannot be represented in the
 container.</p>
-</section>
-      <h4><a class="xref" href="Bodu.IO.Compound.CompoundStorage.html">CompoundStorage</a></h4>
-      <section><p>Represents a storage within a compound file — a named container of child storages and streams — and provides
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Bodu.IO.Compound.CompoundStorage.html">CompoundStorage</a></dt>
+      <dd><p>Represents a storage within a compound file — a named container of child storages and streams — and provides
 navigation over its immediate children.</p>
-</section>
-      <h4><a class="xref" href="Bodu.IO.Compound.CompoundStream.html">CompoundStream</a></h4>
-      <section><p>Provides seekable access to the bytes of a single stream within a compound file.</p>
-</section>
-      <h4><a class="xref" href="Bodu.IO.Compound.CompoundStreamNotFoundException.html">CompoundStreamNotFoundException</a></h4>
-      <section><p>The exception thrown when a named stream is requested from a compound file but no matching directory entry exists.</p>
-</section>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Bodu.IO.Compound.CompoundStream.html">CompoundStream</a></dt>
+      <dd><p>Provides seekable access to the bytes of a single stream within a compound file.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Bodu.IO.Compound.CompoundStreamNotFoundException.html">CompoundStreamNotFoundException</a></dt>
+      <dd><p>The exception thrown when a named stream is requested from a compound file but no matching directory entry exists.</p>
+</dd>
+    </dl>
     <h3 id="enums">
 Enums
 </h3>
-      <h4><a class="xref" href="Bodu.IO.Compound.CompoundEntryColor.html">CompoundEntryColor</a></h4>
-      <section><p>Identifies the red-black tree node color recorded for a directory entry.</p>
-</section>
-      <h4><a class="xref" href="Bodu.IO.Compound.CompoundEntryType.html">CompoundEntryType</a></h4>
-      <section><p>Identifies the kind of object an entry describes within a compound file's directory.</p>
-</section>
-      <h4><a class="xref" href="Bodu.IO.Compound.CompoundFileError.html">CompoundFileError</a></h4>
-      <section><p>Categorizes the structural failure that caused a <a class="xref" href="Bodu.IO.Compound.CompoundFileFormatException.html">CompoundFileFormatException</a>.</p>
-</section>
-      <h4><a class="xref" href="Bodu.IO.Compound.CompoundFileVersion.html">CompoundFileVersion</a></h4>
-      <section><p>Specifies the compound-file format version, which determines the sector size used when writing.</p>
-</section>
-      <h4><a class="xref" href="Bodu.IO.Compound.CompoundReadStrategy.html">CompoundReadStrategy</a></h4>
-      <section><p>Specifies how the compound-file reader sources the bytes of an opened container.</p>
-</section>
-      <h4><a class="xref" href="Bodu.IO.Compound.CompoundValidationLevel.html">CompoundValidationLevel</a></h4>
-      <section><p>Specifies how strictly the compound-file reader validates a container's structure.</p>
-</section>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Bodu.IO.Compound.CompoundEntryColor.html">CompoundEntryColor</a></dt>
+      <dd><p>Identifies the red-black tree node color recorded for a directory entry.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Bodu.IO.Compound.CompoundEntryType.html">CompoundEntryType</a></dt>
+      <dd><p>Identifies the kind of object an entry describes within a compound file's directory.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Bodu.IO.Compound.CompoundFileError.html">CompoundFileError</a></dt>
+      <dd><p>Categorizes the structural failure that caused a <a class="xref" href="Bodu.IO.Compound.CompoundFileFormatException.html">CompoundFileFormatException</a>.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Bodu.IO.Compound.CompoundFileVersion.html">CompoundFileVersion</a></dt>
+      <dd><p>Specifies the compound-file format version, which determines the sector size used when writing.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Bodu.IO.Compound.CompoundReadStrategy.html">CompoundReadStrategy</a></dt>
+      <dd><p>Specifies how the compound-file reader sources the bytes of an opened container.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Bodu.IO.Compound.CompoundValidationLevel.html">CompoundValidationLevel</a></dt>
+      <dd><p>Specifies how strictly the compound-file reader validates a container's structure.</p>
+</dd>
+    </dl>
 
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 302e395 · Built: 2026-09-29 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 1e0dd9a · Built: 2026-09-29 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

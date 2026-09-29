@@ -1,84 +1,90 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
       <title>Namespace Bodu.IO.Compound.Builders | BODU </title>
-      <meta name="viewport" content="width=device-width">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Namespace Bodu.IO.Compound.Builders | BODU ">
-    
-    
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      
+      
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.IO.Compound.Builders">
+
+        <article data-uid="Bodu.IO.Compound.Builders">
 
   <h1 id="Bodu_IO_Compound_Builders" data-uid="Bodu.IO.Compound.Builders" class="text-break">Namespace Bodu.IO.Compound.Builders</h1>
   <div class="markdown level0 summary"></div>
@@ -86,7 +92,7 @@
 <p><img src="../images/hero-io-compound.svg" alt="Bodu.IO.Compound"></p>
 <h2 id="purpose">Purpose</h2>
 <p><strong>Bodu.IO.Compound.Builders</strong> is the detached authoring object model of <a class="xref" href="Bodu.IO.Compound.html">Bodu.IO.Compound</a>: a mutable tree of storages and streams that you assemble in memory — from scratch, or by loading an existing container — and serialize once at the end. It is the authoring counterpart of the read-only <a class="xref" href="Bodu.IO.Compound.CompoundStorage.html">CompoundStorage</a> / <a class="xref" href="Bodu.IO.Compound.CompoundStream.html">CompoundStream</a> navigation surface and is shaped after the <code>JsonNode</code> family: <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.html">CompoundStorageBuilder</a> is the <code>JsonObject</code> analogue (children keyed by name), <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStreamBuilder.html">CompoundStreamBuilder</a> the <code>JsonValue</code> leaf, and the abstract <a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.html">CompoundEntryBuilder</a> their common base. A compound file has no array or null concept, so those are the only two node kinds.</p>
-<p>The model is <strong>staged</strong>: no file handle is held while you build, a node belongs to at most one parent at a time, and nothing is written until <code>Save</code> / <code>WriteTo</code> / <code>ToArray</code> lays the tree out. This is the recommended path for authoring a container; the in-place path (<a class="xref" href="Bodu.IO.Compound.CompoundFile.Create.html">Create</a> plus <code>Commit</code>) suits writing through a real <code>Stream</code> cursor instead. Large payloads need not be held in memory — a <strong>deferred</strong> stream node holds a re-openable source of known length and copies it straight to the output during serialization.</p>
+<p>The model is <strong>staged</strong>: no file handle is held while you build, a node belongs to at most one parent at a time, and nothing is written until <code>Save</code> / <code>WriteTo</code> / <code>ToArray</code> lays the tree out. This is the recommended path for authoring a container; the in-place path (<a class="xref" href="Bodu.IO.Compound.CompoundFile.html#Bodu_IO_Compound_CompoundFile_Create_">Create</a> plus <code>Commit</code>) suits writing through a real <code>Stream</code> cursor instead. Large payloads need not be held in memory — a <strong>deferred</strong> stream node holds a re-openable source of known length and copies it straight to the output during serialization.</p>
 <h2 id="static-documentation">Static documentation</h2>
 <ul>
 <li><strong><a href="../guides/io-compound/authoring-compound-files.html">Authoring compound files</a></strong> — the builder and in-place paths side by side, deferred payloads, editing a loaded container, options and rules.</li>
@@ -154,76 +160,62 @@ byte[] original = snapshot.ToArray();
 </ul>
 </div>
   <div class="markdown level0 remarks"></div>
+
     <h3 id="classes">
 Classes
 </h3>
-      <h4><a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.html">CompoundEntryBuilder</a></h4>
-      <section><p>Represents a node in a mutable compound-file object model — either a storage (a named container) or a stream (a
+    <dl class="jumplist">
+      <dt><a class="xref" href="Bodu.IO.Compound.Builders.CompoundEntryBuilder.html">CompoundEntryBuilder</a></dt>
+      <dd><p>Represents a node in a mutable compound-file object model — either a storage (a named container) or a stream (a
 named byte payload).</p>
-</section>
-      <h4><a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.html">CompoundStorageBuilder</a></h4>
-      <section><p>Represents a storage entry in a mutable compound-file object model — a named container of child storages and
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.html">CompoundStorageBuilder</a></dt>
+      <dd><p>Represents a storage entry in a mutable compound-file object model — a named container of child storages and
 streams.</p>
-</section>
-      <h4><a class="xref" href="Bodu.IO.Compound.Builders.CompoundStreamBuilder.html">CompoundStreamBuilder</a></h4>
-      <section><p>Represents a stream entry in a mutable compound-file object model — a named, file-like node carrying an opaque byte
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Bodu.IO.Compound.Builders.CompoundStreamBuilder.html">CompoundStreamBuilder</a></dt>
+      <dd><p>Represents a stream entry in a mutable compound-file object model — a named, file-like node carrying an opaque byte
 payload.</p>
-</section>
+</dd>
+    </dl>
     <h3 id="structs">
 Structs
 </h3>
-      <h4><a class="xref" href="Bodu.IO.Compound.Builders.CompoundBuildOptions.html">CompoundBuildOptions</a></h4>
-      <section><p>Specifies options that control how a <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.html">CompoundStorageBuilder</a> tree serializes a compound file.</p>
-</section>
-      <h4><a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilderOptions.html">CompoundStorageBuilderOptions</a></h4>
-      <section><p>Specifies options that control the behavior of the mutable compound-file object model.</p>
-</section>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Bodu.IO.Compound.Builders.CompoundBuildOptions.html">CompoundBuildOptions</a></dt>
+      <dd><p>Specifies options that control how a <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.html">CompoundStorageBuilder</a> tree serializes a compound file.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilderOptions.html">CompoundStorageBuilderOptions</a></dt>
+      <dd><p>Specifies options that control the behavior of the mutable compound-file object model.</p>
+</dd>
+    </dl>
 
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 302e395 · Built: 2026-09-29 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 1e0dd9a · Built: 2026-09-29 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

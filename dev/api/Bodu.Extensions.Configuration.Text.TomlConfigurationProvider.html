@@ -1,104 +1,134 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
       <title>Class TomlConfigurationProvider | BODU </title>
-      <meta name="viewport" content="width=device-width">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class TomlConfigurationProvider | BODU ">
-    
-    <meta name="description" content="A read-only  that consumes TOML through the Bodu.Text.Toml read-only document model and flattens it into the colon-delimited configuration key model. Because the provider exposes no mutation surface,  is rejected.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      
+      <meta name="description" content="A read-only  that consumes TOML through the Bodu.Text.Toml read-only document model and flattens it into the colon-delimited configuration key model. Because the provider exposes no mutation surface,  is rejected.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/new/master/apiSpec/new?filename=Bodu_Extensions_Configuration_Text_TomlConfigurationProvider.md&amp;value=---%0Auid%3A%20Bodu.Extensions.Configuration.Text.TomlConfigurationProvider%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Extensions.Configuration.Text.TomlConfigurationProvider">
+
+        <article data-uid="Bodu.Extensions.Configuration.Text.TomlConfigurationProvider">
 
 
 
-  <h1 id="Bodu_Extensions_Configuration_Text_TomlConfigurationProvider" data-uid="Bodu.Extensions.Configuration.Text.TomlConfigurationProvider" class="text-break">Class TomlConfigurationProvider</h1>
-  <div class="markdown level0 summary"><p>A read-only <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.configuration.iconfigurationprovider">IConfigurationProvider</a> that consumes TOML through the <code>Bodu.Text.Toml</code> read-only
+  <h1 id="Bodu_Extensions_Configuration_Text_TomlConfigurationProvider" data-uid="Bodu.Extensions.Configuration.Text.TomlConfigurationProvider" class="text-break">
+Class TomlConfigurationProvider  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Extensions.Configuration.Text/src/Extensions.Configuration.Text/TomlConfigurationProvider.cs/#L42"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Extensions.html">Extensions</a>.<span class="xref">Configuration</span>.<a class="xref" href="Bodu.Extensions.Configuration.Text.html">Text</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Extensions.Configuration.Text.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>A read-only <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.configuration.iconfigurationprovider">IConfigurationProvider</a> that consumes TOML through the <code>Bodu.Text.Toml</code> read-only
 document model and flattens it into the colon-delimited configuration key model. Because the provider exposes no
-mutation surface, <a class="xref" href="Bodu.Extensions.Configuration.Text.TomlConfigurationProvider.Set.html#Bodu_Extensions_Configuration_Text_TomlConfigurationProvider_Set_System_String_System_String_">Set(string, string?)</a> is rejected.</p>
+mutation surface, <a class="xref" href="Bodu.Extensions.Configuration.Text.TomlConfigurationProvider.html#Bodu_Extensions_Configuration_Text_TomlConfigurationProvider_Set_System_String_System_String_">Set(string, string?)</a> is rejected.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><span class="xref">TomlConfigurationProvider</span></div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class TomlConfigurationProvider : IConfigurationProvider</code></pre>
   </div>
-  <div class="implements">
-    <h5>Implements</h5>
-    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.configuration.iconfigurationprovider">IConfigurationProvider</a></div>
-  </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">TomlConfigurationProvider</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.configuration.iconfigurationprovider">IConfigurationProvider</a></div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
@@ -117,14 +147,31 @@ mutation surface, <a class="xref" href="Bodu.Extensions.Configuration.Text.TomlC
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
+  </dd></dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Extensions.html">Extensions</a>.<span class="xref">Configuration</span>.<a class="xref" href="Bodu.Extensions.Configuration.Text.html">Text</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Extensions.Configuration.Text.dll</h6>
-  <h5 id="Bodu_Extensions_Configuration_Text_TomlConfigurationProvider_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class TomlConfigurationProvider : IConfigurationProvider</code></pre>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h5 id="Bodu_Extensions_Configuration_Text_TomlConfigurationProvider_remarks"><strong>Remarks</strong></h5>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  </dd></dl>
+
+
+
+  <h2 id="Bodu_Extensions_Configuration_Text_TomlConfigurationProvider_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
 The provider implements <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.configuration.iconfigurationprovider">IConfigurationProvider</a> directly rather than deriving from
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.configuration.configurationprovider">ConfigurationProvider</a>: omitting the mutable base keeps the
@@ -141,134 +188,271 @@ IConfiguration configuration = new ConfigurationBuilder()
 var level = configuration["logging:level"];</code></pre>
 </example>
 </div>
-  <h3 id="constructors">Constructors
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Extensions_Configuration_Text_TomlConfigurationProvider__ctor_Bodu_Extensions_Configuration_Text_TomlConfigurationSource_" data-uid="Bodu.Extensions.Configuration.Text.TomlConfigurationProvider.#ctor(Bodu.Extensions.Configuration.Text.TomlConfigurationSource)">
-          <a class="xref" href="Bodu.Extensions.Configuration.Text.TomlConfigurationProvider.-ctor.html#Bodu_Extensions_Configuration_Text_TomlConfigurationProvider__ctor_Bodu_Extensions_Configuration_Text_TomlConfigurationSource_">TomlConfigurationProvider(TomlConfigurationSource)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Extensions.Configuration.Text.TomlConfigurationProvider.html">TomlConfigurationProvider</a> class backed by the supplied source.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Extensions_Configuration_Text_TomlConfigurationProvider_GetChildKeys_System_Collections_Generic_IEnumerable_System_String__System_String_" data-uid="Bodu.Extensions.Configuration.Text.TomlConfigurationProvider.GetChildKeys(System.Collections.Generic.IEnumerable{System.String},System.String)">
-          <a class="xref" href="Bodu.Extensions.Configuration.Text.TomlConfigurationProvider.GetChildKeys.html#Bodu_Extensions_Configuration_Text_TomlConfigurationProvider_GetChildKeys_System_Collections_Generic_IEnumerable_System_String__System_String_">GetChildKeys(IEnumerable&lt;string&gt;, string?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the immediate child keys beneath <code class="paramref">parentPath</code>, merged with
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Bodu_Extensions_Configuration_Text_TomlConfigurationProvider__ctor_" data-uid="Bodu.Extensions.Configuration.Text.TomlConfigurationProvider.#ctor*"></a>
+
+  <h3 id="Bodu_Extensions_Configuration_Text_TomlConfigurationProvider__ctor_Bodu_Extensions_Configuration_Text_TomlConfigurationSource_" data-uid="Bodu.Extensions.Configuration.Text.TomlConfigurationProvider.#ctor(Bodu.Extensions.Configuration.Text.TomlConfigurationSource)">
+  TomlConfigurationProvider(TomlConfigurationSource)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Extensions.Configuration.Text/src/Extensions.Configuration.Text/TomlConfigurationProvider.cs/#L61"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Extensions.Configuration.Text.TomlConfigurationProvider.html">TomlConfigurationProvider</a> class backed by the supplied source.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TomlConfigurationProvider(TomlConfigurationSource source)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="Bodu.Extensions.Configuration.Text.TomlConfigurationSource.html">TomlConfigurationSource</a></dt>
+    <dd><p>The source that produced this provider.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">source</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Extensions_Configuration_Text_TomlConfigurationProvider_GetChildKeys_" data-uid="Bodu.Extensions.Configuration.Text.TomlConfigurationProvider.GetChildKeys*"></a>
+
+  <h3 id="Bodu_Extensions_Configuration_Text_TomlConfigurationProvider_GetChildKeys_System_Collections_Generic_IEnumerable_System_String__System_String_" data-uid="Bodu.Extensions.Configuration.Text.TomlConfigurationProvider.GetChildKeys(System.Collections.Generic.IEnumerable{System.String},System.String)">
+  GetChildKeys(IEnumerable&lt;string&gt;, string?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Extensions.Configuration.Text/src/Extensions.Configuration.Text/TomlConfigurationProvider.cs/#L137"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the immediate child keys beneath <code class="paramref">parentPath</code>, merged with
 <code class="paramref">earlierKeys</code>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_Configuration_Text_TomlConfigurationProvider_GetReloadToken" data-uid="Bodu.Extensions.Configuration.Text.TomlConfigurationProvider.GetReloadToken">
-          <a class="xref" href="Bodu.Extensions.Configuration.Text.TomlConfigurationProvider.GetReloadToken.html#Bodu_Extensions_Configuration_Text_TomlConfigurationProvider_GetReloadToken">GetReloadToken()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the change token for this provider. The provider does not reload, so the token never fires.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_Configuration_Text_TomlConfigurationProvider_Load" data-uid="Bodu.Extensions.Configuration.Text.TomlConfigurationProvider.Load">
-          <a class="xref" href="Bodu.Extensions.Configuration.Text.TomlConfigurationProvider.Load.html#Bodu_Extensions_Configuration_Text_TomlConfigurationProvider_Load">Load()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Loads (and flattens) the TOML source into the configuration data map.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_Configuration_Text_TomlConfigurationProvider_Set_System_String_System_String_" data-uid="Bodu.Extensions.Configuration.Text.TomlConfigurationProvider.Set(System.String,System.String)">
-          <a class="xref" href="Bodu.Extensions.Configuration.Text.TomlConfigurationProvider.Set.html#Bodu_Extensions_Configuration_Text_TomlConfigurationProvider_Set_System_String_System_String_">Set(string, string?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Rejected: the TOML configuration provider is read-only.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_Configuration_Text_TomlConfigurationProvider_TryGet_System_String_System_String__" data-uid="Bodu.Extensions.Configuration.Text.TomlConfigurationProvider.TryGet(System.String,System.String@)">
-          <a class="xref" href="Bodu.Extensions.Configuration.Text.TomlConfigurationProvider.TryGet.html#Bodu_Extensions_Configuration_Text_TomlConfigurationProvider_TryGet_System_String_System_String__">TryGet(string, out string?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to retrieve the configuration value for <code class="paramref">key</code>.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IEnumerable&lt;string&gt; GetChildKeys(IEnumerable&lt;string&gt; earlierKeys, string? parentPath)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>earlierKeys</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>Keys contributed by earlier providers.</p>
+</dd>
+    <dt><code>parentPath</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The parent key path, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for the root.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>The distinct child key segments in configuration order.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_Extensions_Configuration_Text_TomlConfigurationProvider_GetReloadToken_" data-uid="Bodu.Extensions.Configuration.Text.TomlConfigurationProvider.GetReloadToken*"></a>
+
+  <h3 id="Bodu_Extensions_Configuration_Text_TomlConfigurationProvider_GetReloadToken" data-uid="Bodu.Extensions.Configuration.Text.TomlConfigurationProvider.GetReloadToken">
+  GetReloadToken()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Extensions.Configuration.Text/src/Extensions.Configuration.Text/TomlConfigurationProvider.cs/#L127"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the change token for this provider. The provider does not reload, so the token never fires.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IChangeToken GetReloadToken()</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.primitives.ichangetoken">IChangeToken</a></dt>
+    <dd><p>A non-firing <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.primitives.ichangetoken">IChangeToken</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_Extensions_Configuration_Text_TomlConfigurationProvider_Load_" data-uid="Bodu.Extensions.Configuration.Text.TomlConfigurationProvider.Load*"></a>
+
+  <h3 id="Bodu_Extensions_Configuration_Text_TomlConfigurationProvider_Load" data-uid="Bodu.Extensions.Configuration.Text.TomlConfigurationProvider.Load">
+  Load()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Extensions.Configuration.Text/src/Extensions.Configuration.Text/TomlConfigurationProvider.cs/#L74"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Loads (and flattens) the TOML source into the configuration data map.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Load()</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Toml.TomlFormatException.html">TomlFormatException</a></dt>
+    <dd><p>Thrown when the source is not a valid TOML document.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.filenotfoundexception">FileNotFoundException</a></dt>
+    <dd><p>Thrown when the configured file is absent and the source is not optional.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Extensions_Configuration_Text_TomlConfigurationProvider_Set_" data-uid="Bodu.Extensions.Configuration.Text.TomlConfigurationProvider.Set*"></a>
+
+  <h3 id="Bodu_Extensions_Configuration_Text_TomlConfigurationProvider_Set_System_String_System_String_" data-uid="Bodu.Extensions.Configuration.Text.TomlConfigurationProvider.Set(System.String,System.String)">
+  Set(string, string?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Extensions.Configuration.Text/src/Extensions.Configuration.Text/TomlConfigurationProvider.cs/#L120"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Rejected: the TOML configuration provider is read-only.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Set(string key, string? value)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The configuration key.</p>
+</dd>
+    <dt><code>value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The value that would be assigned.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>Always thrown, because the provider does not permit mutation.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Extensions_Configuration_Text_TomlConfigurationProvider_TryGet_" data-uid="Bodu.Extensions.Configuration.Text.TomlConfigurationProvider.TryGet*"></a>
+
+  <h3 id="Bodu_Extensions_Configuration_Text_TomlConfigurationProvider_TryGet_System_String_System_String__" data-uid="Bodu.Extensions.Configuration.Text.TomlConfigurationProvider.TryGet(System.String,System.String@)">
+  TryGet(string, out string?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Extensions.Configuration.Text/src/Extensions.Configuration.Text/TomlConfigurationProvider.cs/#L109"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Attempts to retrieve the configuration value for <code class="paramref">key</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TryGet(string key, out string? value)</code></pre>
   </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The configuration key.</p>
+</dd>
+    <dt><code>value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>When this method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, the associated value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the key is present; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 302e395 · Built: 2026-09-29 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 1e0dd9a · Built: 2026-09-29 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

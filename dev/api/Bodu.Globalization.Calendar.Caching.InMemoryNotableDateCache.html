@@ -1,109 +1,139 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
       <title>Class InMemoryNotableDateCache | BODU </title>
-      <meta name="viewport" content="width=device-width">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class InMemoryNotableDateCache | BODU ">
-    
-    <meta name="description" content="An  that stores computed years in memory for the lifetime of the instance, expiring them through the same freshness and version mechanism as the file caches.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      
+      <meta name="description" content="An  that stores computed years in memory for the lifetime of the instance, expiring them through the same freshness and version mechanism as the file caches.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/new/master/apiSpec/new?filename=Bodu_Globalization_Calendar_Caching_InMemoryNotableDateCache.md&amp;value=---%0Auid%3A%20Bodu.Globalization.Calendar.Caching.InMemoryNotableDateCache%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Globalization.Calendar.Caching.InMemoryNotableDateCache">
+
+        <article data-uid="Bodu.Globalization.Calendar.Caching.InMemoryNotableDateCache">
 
 
 
-  <h1 id="Bodu_Globalization_Calendar_Caching_InMemoryNotableDateCache" data-uid="Bodu.Globalization.Calendar.Caching.InMemoryNotableDateCache" class="text-break">Class InMemoryNotableDateCache</h1>
-  <div class="markdown level0 summary"><p>An <a class="xref" href="Bodu.Globalization.Calendar.Caching.INotableDateCache.html">INotableDateCache</a> that stores computed years in memory for the lifetime of the instance, expiring
+  <h1 id="Bodu_Globalization_Calendar_Caching_InMemoryNotableDateCache" data-uid="Bodu.Globalization.Calendar.Caching.InMemoryNotableDateCache" class="text-break">
+Class InMemoryNotableDateCache  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Globalization.Calendar.Caching/src/Globalization.Calendar.Caching/InMemoryNotableDateCache.cs/#L27"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Globalization.html">Globalization</a>.<a class="xref" href="Bodu.Globalization.Calendar.html">Calendar</a>.<a class="xref" href="Bodu.Globalization.Calendar.Caching.html">Caching</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Globalization.Calendar.Caching.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>An <a class="xref" href="Bodu.Globalization.Calendar.Caching.INotableDateCache.html">INotableDateCache</a> that stores computed years in memory for the lifetime of the instance, expiring
 them through the same freshness and version mechanism as the file caches.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><a class="xref" href="Bodu.Globalization.Calendar.Caching.NotableDateCacheBase-1.html">NotableDateCacheBase</a>&lt;<a class="xref" href="Bodu.Globalization.Calendar.Caching.NotableDateCacheOptions.html">NotableDateCacheOptions</a>&gt;</div>
-    <div class="level2"><span class="xref">InMemoryNotableDateCache</span></div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class InMemoryNotableDateCache : NotableDateCacheBase&lt;NotableDateCacheOptions&gt;, INotableDateCache</code></pre>
   </div>
-  <div class="implements">
-    <h5>Implements</h5>
-    <div><a class="xref" href="Bodu.Globalization.Calendar.Caching.INotableDateCache.html">INotableDateCache</a></div>
-  </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><a class="xref" href="Bodu.Globalization.Calendar.Caching.NotableDateCacheBase-1.html">NotableDateCacheBase</a>&lt;<a class="xref" href="Bodu.Globalization.Calendar.Caching.NotableDateCacheOptions.html">NotableDateCacheOptions</a>&gt;</div>
+      <div><span class="xref">InMemoryNotableDateCache</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="Bodu.Globalization.Calendar.Caching.INotableDateCache.html">INotableDateCache</a></div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
-      <a class="xref" href="Bodu.Globalization.Calendar.Caching.NotableDateCacheBase-1.GetYear.html#Bodu_Globalization_Calendar_Caching_NotableDateCacheBase_1_GetYear_System_String_System_Int32_System_String_System_TimeSpan_System_DateTimeOffset_">NotableDateCacheBase&lt;NotableDateCacheOptions&gt;.GetYear(string, int, string, TimeSpan, DateTimeOffset)</a>
+      <a class="xref" href="Bodu.Globalization.Calendar.Caching.NotableDateCacheBase-1.html#Bodu_Globalization_Calendar_Caching_NotableDateCacheBase_1_GetYear_System_String_System_Int32_System_String_System_TimeSpan_System_DateTimeOffset_">NotableDateCacheBase&lt;NotableDateCacheOptions&gt;.GetYear(string, int, string, TimeSpan, DateTimeOffset)</a>
     </div>
     <div>
-      <a class="xref" href="Bodu.Globalization.Calendar.Caching.NotableDateCacheBase-1.StoreYear.html#Bodu_Globalization_Calendar_Caching_NotableDateCacheBase_1_StoreYear_Bodu_Globalization_Calendar_Caching_NotableDateCacheEntry_System_TimeSpan_System_DateTimeOffset_">NotableDateCacheBase&lt;NotableDateCacheOptions&gt;.StoreYear(NotableDateCacheEntry, TimeSpan, DateTimeOffset)</a>
+      <a class="xref" href="Bodu.Globalization.Calendar.Caching.NotableDateCacheBase-1.html#Bodu_Globalization_Calendar_Caching_NotableDateCacheBase_1_StoreYear_Bodu_Globalization_Calendar_Caching_NotableDateCacheEntry_System_TimeSpan_System_DateTimeOffset_">NotableDateCacheBase&lt;NotableDateCacheOptions&gt;.StoreYear(NotableDateCacheEntry, TimeSpan, DateTimeOffset)</a>
     </div>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
@@ -123,14 +153,31 @@ them through the same freshness and version mechanism as the file caches.</p>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
+  </dd></dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Globalization</span>.<a class="xref" href="Bodu.Globalization.Calendar.html">Calendar</a>.<a class="xref" href="Bodu.Globalization.Calendar.Caching.html">Caching</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Globalization.Calendar.Caching.dll</h6>
-  <h5 id="Bodu_Globalization_Calendar_Caching_InMemoryNotableDateCache_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class InMemoryNotableDateCache : NotableDateCacheBase&lt;NotableDateCacheOptions&gt;, INotableDateCache</code></pre>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h5 id="Bodu_Globalization_Calendar_Caching_InMemoryNotableDateCache_remarks"><strong>Remarks</strong></h5>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  </dd></dl>
+
+
+
+  <h2 id="Bodu_Globalization_Calendar_Caching_InMemoryNotableDateCache_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
 Entries expire by time-to-live and resource version rather than by storage: the shared
 <a class="xref" href="Bodu.Globalization.Calendar.Caching.NotableDateCacheBase-1.html">NotableDateCacheBase&lt;TOptions&gt;</a> filters stale and superseded entries on read and prunes them on write.
@@ -142,126 +189,228 @@ Reads and writes are individually thread-safe. As with every <a class="xref" hre
 store-after-store for the same territory resolves last-write-wins, which is acceptable for a best-effort cache.
 </p>
 </div>
-  <h3 id="constructors">Constructors
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Globalization_Calendar_Caching_InMemoryNotableDateCache__ctor" data-uid="Bodu.Globalization.Calendar.Caching.InMemoryNotableDateCache.#ctor">
-          <a class="xref" href="Bodu.Globalization.Calendar.Caching.InMemoryNotableDateCache.-ctor.html#Bodu_Globalization_Calendar_Caching_InMemoryNotableDateCache__ctor">InMemoryNotableDateCache()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Globalization.Calendar.Caching.InMemoryNotableDateCache.html">InMemoryNotableDateCache</a> class with default options.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Globalization_Calendar_Caching_InMemoryNotableDateCache__ctor_Bodu_Globalization_Calendar_Caching_NotableDateCacheOptions_" data-uid="Bodu.Globalization.Calendar.Caching.InMemoryNotableDateCache.#ctor(Bodu.Globalization.Calendar.Caching.NotableDateCacheOptions)">
-          <a class="xref" href="Bodu.Globalization.Calendar.Caching.InMemoryNotableDateCache.-ctor.html#Bodu_Globalization_Calendar_Caching_InMemoryNotableDateCache__ctor_Bodu_Globalization_Calendar_Caching_NotableDateCacheOptions_">InMemoryNotableDateCache(NotableDateCacheOptions)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Globalization.Calendar.Caching.InMemoryNotableDateCache.html">InMemoryNotableDateCache</a> class.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Globalization_Calendar_Caching_InMemoryNotableDateCache_Clear" data-uid="Bodu.Globalization.Calendar.Caching.InMemoryNotableDateCache.Clear">
-          <a class="xref" href="Bodu.Globalization.Calendar.Caching.InMemoryNotableDateCache.Clear.html#Bodu_Globalization_Calendar_Caching_InMemoryNotableDateCache_Clear">Clear()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Removes every cached entry, returning the cache to its empty state.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Globalization_Calendar_Caching_InMemoryNotableDateCache_ReadEntries_System_String_" data-uid="Bodu.Globalization.Calendar.Caching.InMemoryNotableDateCache.ReadEntries(System.String)">
-          <a class="xref" href="Bodu.Globalization.Calendar.Caching.InMemoryNotableDateCache.ReadEntries.html#Bodu_Globalization_Calendar_Caching_InMemoryNotableDateCache_ReadEntries_System_String_">ReadEntries(string)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Reads the raw, unfiltered persisted entries for a normalized territory.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Globalization_Calendar_Caching_InMemoryNotableDateCache_WriteEntries_System_String_System_Collections_Generic_IReadOnlyList_Bodu_Globalization_Calendar_Caching_NotableDateCacheEntry__" data-uid="Bodu.Globalization.Calendar.Caching.InMemoryNotableDateCache.WriteEntries(System.String,System.Collections.Generic.IReadOnlyList{Bodu.Globalization.Calendar.Caching.NotableDateCacheEntry})">
-          <a class="xref" href="Bodu.Globalization.Calendar.Caching.InMemoryNotableDateCache.WriteEntries.html#Bodu_Globalization_Calendar_Caching_InMemoryNotableDateCache_WriteEntries_System_String_System_Collections_Generic_IReadOnlyList_Bodu_Globalization_Calendar_Caching_NotableDateCacheEntry__">WriteEntries(string, IReadOnlyList&lt;NotableDateCacheEntry&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Writes the supplied entries for a normalized territory, replacing any existing state.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Bodu_Globalization_Calendar_Caching_InMemoryNotableDateCache__ctor_" data-uid="Bodu.Globalization.Calendar.Caching.InMemoryNotableDateCache.#ctor*"></a>
+
+  <h3 id="Bodu_Globalization_Calendar_Caching_InMemoryNotableDateCache__ctor" data-uid="Bodu.Globalization.Calendar.Caching.InMemoryNotableDateCache.#ctor">
+  InMemoryNotableDateCache()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Globalization.Calendar.Caching/src/Globalization.Calendar.Caching/InMemoryNotableDateCache.cs/#L48"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Globalization.Calendar.Caching.InMemoryNotableDateCache.html">InMemoryNotableDateCache</a> class with default options.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public InMemoryNotableDateCache()</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_Globalization_Calendar_Caching_InMemoryNotableDateCache__ctor_" data-uid="Bodu.Globalization.Calendar.Caching.InMemoryNotableDateCache.#ctor*"></a>
+
+  <h3 id="Bodu_Globalization_Calendar_Caching_InMemoryNotableDateCache__ctor_Bodu_Globalization_Calendar_Caching_NotableDateCacheOptions_" data-uid="Bodu.Globalization.Calendar.Caching.InMemoryNotableDateCache.#ctor(Bodu.Globalization.Calendar.Caching.NotableDateCacheOptions)">
+  InMemoryNotableDateCache(NotableDateCacheOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Globalization.Calendar.Caching/src/Globalization.Calendar.Caching/InMemoryNotableDateCache.cs/#L40"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Globalization.Calendar.Caching.InMemoryNotableDateCache.html">InMemoryNotableDateCache</a> class.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public InMemoryNotableDateCache(NotableDateCacheOptions options)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>options</code> <a class="xref" href="Bodu.Globalization.Calendar.Caching.NotableDateCacheOptions.html">NotableDateCacheOptions</a></dt>
+    <dd><p>The cache options.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">options</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Globalization_Calendar_Caching_InMemoryNotableDateCache_Clear_" data-uid="Bodu.Globalization.Calendar.Caching.InMemoryNotableDateCache.Clear*"></a>
+
+  <h3 id="Bodu_Globalization_Calendar_Caching_InMemoryNotableDateCache_Clear" data-uid="Bodu.Globalization.Calendar.Caching.InMemoryNotableDateCache.Clear">
+  Clear()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Globalization.Calendar.Caching/src/Globalization.Calendar.Caching/InMemoryNotableDateCache.cs/#L54"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Removes every cached entry, returning the cache to its empty state.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override void Clear()</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Globalization_Calendar_Caching_InMemoryNotableDateCache_Clear_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This is a best-effort operation: a backing-store failure is swallowed rather than thrown, consistent with the
+rest of the contract.</p>
+</div>
+
+
+
+
+  <a id="Bodu_Globalization_Calendar_Caching_InMemoryNotableDateCache_ReadEntries_" data-uid="Bodu.Globalization.Calendar.Caching.InMemoryNotableDateCache.ReadEntries*"></a>
+
+  <h3 id="Bodu_Globalization_Calendar_Caching_InMemoryNotableDateCache_ReadEntries_System_String_" data-uid="Bodu.Globalization.Calendar.Caching.InMemoryNotableDateCache.ReadEntries(System.String)">
+  ReadEntries(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Globalization.Calendar.Caching/src/Globalization.Calendar.Caching/InMemoryNotableDateCache.cs/#L58"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reads the raw, unfiltered persisted entries for a normalized territory.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override IReadOnlyList&lt;NotableDateCacheEntry&gt; ReadEntries(string territory)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>territory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The normalized territory key.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Bodu.Globalization.Calendar.Caching.NotableDateCacheEntry.html">NotableDateCacheEntry</a>&gt;</dt>
+    <dd><p>The stored entries, or an empty list when none are available or the read fails.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Globalization_Calendar_Caching_InMemoryNotableDateCache_ReadEntries_System_String__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Declared <code>protected internal</code> so the storage seam is open to the backends in this assembly and
+in the companion SQLite and distributed packages, which derive from this base. An unrelated third-party backend
+implements the public <a class="xref" href="Bodu.Globalization.Calendar.Caching.INotableDateCache.html">INotableDateCache</a> contract directly instead, as
+<a class="xref" href="Bodu.Globalization.Calendar.Caching.NullNotableDateCache.html">NullNotableDateCache</a> does.</p>
+</div>
+
+
+
+
+  <a id="Bodu_Globalization_Calendar_Caching_InMemoryNotableDateCache_WriteEntries_" data-uid="Bodu.Globalization.Calendar.Caching.InMemoryNotableDateCache.WriteEntries*"></a>
+
+  <h3 id="Bodu_Globalization_Calendar_Caching_InMemoryNotableDateCache_WriteEntries_System_String_System_Collections_Generic_IReadOnlyList_Bodu_Globalization_Calendar_Caching_NotableDateCacheEntry__" data-uid="Bodu.Globalization.Calendar.Caching.InMemoryNotableDateCache.WriteEntries(System.String,System.Collections.Generic.IReadOnlyList{Bodu.Globalization.Calendar.Caching.NotableDateCacheEntry})">
+  WriteEntries(string, IReadOnlyList&lt;NotableDateCacheEntry&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Globalization.Calendar.Caching/src/Globalization.Calendar.Caching/InMemoryNotableDateCache.cs/#L62"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Writes the supplied entries for a normalized territory, replacing any existing state.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override bool WriteEntries(string territory, IReadOnlyList&lt;NotableDateCacheEntry&gt; entries)</code></pre>
   </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>territory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The normalized territory key.</p>
+</dd>
+    <dt><code>entries</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Bodu.Globalization.Calendar.Caching.NotableDateCacheEntry.html">NotableDateCacheEntry</a>&gt;</dt>
+    <dd><p>The entries to persist. The list is freshly allocated by the caller for this write, so a backend may store the
+reference directly without a defensive copy.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the entries were persisted, including the deliberate deletion of an empty state;
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> when a storage failure was swallowed and nothing was persisted.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Globalization_Calendar_Caching_InMemoryNotableDateCache_WriteEntries_System_String_System_Collections_Generic_IReadOnlyList_Bodu_Globalization_Calendar_Caching_NotableDateCacheEntry___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Declared <code>protected internal</code> for the same reason as <a class="xref" href="Bodu.Globalization.Calendar.Caching.NotableDateCacheBase-1.html#Bodu_Globalization_Calendar_Caching_NotableDateCacheBase_1_ReadEntries_System_String_">ReadEntries(string)</a>. The
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a> result lets <a class="xref" href="Bodu.Globalization.Calendar.Caching.NotableDateCacheBase-1.html#Bodu_Globalization_Calendar_Caching_NotableDateCacheBase_1_StoreYear_Bodu_Globalization_Calendar_Caching_NotableDateCacheEntry_System_TimeSpan_System_DateTimeOffset_">StoreYear(NotableDateCacheEntry, TimeSpan, DateTimeOffset)</a> distinguish a durable write from a best-effort backend
+that swallowed a fault, so a failed write is reported as <a class="xref" href="Bodu.Globalization.Calendar.Caching.NotableDateCacheWriteStatus.html#Bodu_Globalization_Calendar_Caching_NotableDateCacheWriteStatus_Failed">Failed</a>
+rather than falsely as <a class="xref" href="Bodu.Globalization.Calendar.Caching.NotableDateCacheWriteStatus.html#Bodu_Globalization_Calendar_Caching_NotableDateCacheWriteStatus_Stored">Stored</a>.</p>
+</div>
+
+
+
+
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 302e395 · Built: 2026-09-29 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 1e0dd9a · Built: 2026-09-29 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

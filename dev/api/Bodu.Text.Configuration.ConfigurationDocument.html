@@ -1,113 +1,141 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
       <title>Class ConfigurationDocument | BODU </title>
-      <meta name="viewport" content="width=device-width">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class ConfigurationDocument | BODU ">
-    
-    <meta name="description" content="Represents a parsed Bodu Text Configuration document and provides the profile-aware entry points for parsing, loading, and saving such documents. It inherits the read-only INI model from  (global section, named sections, lookup) and adds Bodu-specific behaviour — profile presets, inline-comment-mode handling, diagnostic routing, and round-trip support — on top of the shared INI infrastructure.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      
+      <meta name="description" content="Represents a parsed Bodu Text Configuration document and provides the profile-aware entry points for parsing, loading, and saving such documents. It inherits the read-only INI model from  (global section, named sections, lookup) and adds Bodu-specific behaviour — profile presets, inline-comment-mode handling, diagnostic routing, and round-trip support — on top of the shared INI infrastructure.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/new/master/apiSpec/new?filename=Bodu_Text_Configuration_ConfigurationDocument.md&amp;value=---%0Auid%3A%20Bodu.Text.Configuration.ConfigurationDocument%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Text.Configuration.ConfigurationDocument">
+
+        <article data-uid="Bodu.Text.Configuration.ConfigurationDocument">
 
 
 
-  <h1 id="Bodu_Text_Configuration_ConfigurationDocument" data-uid="Bodu.Text.Configuration.ConfigurationDocument" class="text-break">Class ConfigurationDocument</h1>
-  <div class="markdown level0 summary"><p>Represents a parsed Bodu Text Configuration document and provides the profile-aware entry points for parsing,
+  <h1 id="Bodu_Text_Configuration_ConfigurationDocument" data-uid="Bodu.Text.Configuration.ConfigurationDocument" class="text-break">
+Class ConfigurationDocument  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationDocument.cs/#L57"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Configuration.html">Configuration</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Text.Configuration.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Represents a parsed Bodu Text Configuration document and provides the profile-aware entry points for parsing,
 loading, and saving such documents. It inherits the read-only INI model from <a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.html">IniDocumentBase</a> (global
 section, named sections, lookup) and adds Bodu-specific behaviour — profile presets, inline-comment-mode handling,
 diagnostic routing, and round-trip support — on top of the shared INI infrastructure.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.html">IniDocumentBase</a></div>
-    <div class="level2"><span class="xref">ConfigurationDocument</span></div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class ConfigurationDocument : IniDocumentBase</code></pre>
   </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.html">IniDocumentBase</a></div>
+      <div><span class="xref">ConfigurationDocument</span></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
-      <a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.GlobalSection.html#Bodu_Text_Configuration_IniDocumentBase_GlobalSection">IniDocumentBase.GlobalSection</a>
+      <a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.html#Bodu_Text_Configuration_IniDocumentBase_GlobalSection">IniDocumentBase.GlobalSection</a>
     </div>
     <div>
-      <a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.Sections.html#Bodu_Text_Configuration_IniDocumentBase_Sections">IniDocumentBase.Sections</a>
+      <a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.html#Bodu_Text_Configuration_IniDocumentBase_Sections">IniDocumentBase.Sections</a>
     </div>
     <div>
-      <a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.GetSection.html#Bodu_Text_Configuration_IniDocumentBase_GetSection_System_String_">IniDocumentBase.GetSection(string)</a>
+      <a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.html#Bodu_Text_Configuration_IniDocumentBase_GetSection_System_String_">IniDocumentBase.GetSection(string)</a>
     </div>
     <div>
-      <a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.TryGetSection.html#Bodu_Text_Configuration_IniDocumentBase_TryGetSection_System_String_Bodu_Text_Configuration_IniSection__">IniDocumentBase.TryGetSection(string, out IniSection)</a>
+      <a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.html#Bodu_Text_Configuration_IniDocumentBase_TryGetSection_System_String_Bodu_Text_Configuration_IniSection__">IniDocumentBase.TryGetSection(string, out IniSection)</a>
     </div>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
@@ -127,33 +155,36 @@ diagnostic routing, and round-trip support — on top of the shared INI infrastr
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
+  </dd></dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Configuration.html">Configuration</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Text.Configuration.dll</h6>
-  <h5 id="Bodu_Text_Configuration_ConfigurationDocument_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class ConfigurationDocument : IniDocumentBase</code></pre>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h5 id="Bodu_Text_Configuration_ConfigurationDocument_remarks"><strong>Remarks</strong></h5>
-  <div class="markdown level0 remarks"><p>
-Pair the <a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.Parse.html#Bodu_Text_Configuration_ConfigurationDocument_Parse_System_String_">Parse(string)</a> family with the
-<a class="xref" href="Bodu.Text.Configuration.ConfigurationExtensions.Resolve.html#Bodu_Text_Configuration_ConfigurationExtensions_Resolve_Bodu_Text_Configuration_IniDocumentBase_System_String_Bodu_Text_Configuration_ConfigurationResolveOptions_">Resolve(IniDocumentBase, string?, ConfigurationResolveOptions?)</a> extension
-method to evaluate the document for a specific target path. The document holds the raw, source-faithful model;
-<a class="xref" href="Bodu.Text.Configuration.ConfigurationView.html">ConfigurationView</a> holds the resolved, target-specific snapshot consumed by application code.
-</p>
-<p>
-A <a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.html">ConfigurationDocument</a> exposes only the read surface of <a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.html">IniDocumentBase</a>; it is
-produced by the configuration reader and is not mutated by application code.
-</p>
-<p>
-Diagnostic routing is controlled by the supplied <a class="xref" href="Bodu.Text.Configuration.ConfigurationParseOptions.html">ConfigurationParseOptions</a>. In
-<a class="xref" href="Bodu.Text.Configuration.ConfigurationDiagnosticMode.html#Bodu_Text_Configuration_ConfigurationDiagnosticMode_Throw">Throw</a> mode a recoverable parse error raises
-<a class="xref" href="Bodu.Text.Configuration.ConfigurationParseException.html">ConfigurationParseException</a> at the first issue; in <a class="xref" href="Bodu.Text.Configuration.ConfigurationDiagnosticMode.html#Bodu_Text_Configuration_ConfigurationDiagnosticMode_Collect">Collect</a>
-mode the parser continues, the document's valid portions remain usable, and every diagnostic surfaces on
-<a class="xref" href="Bodu.Text.Configuration.ConfigurationParseResult.Diagnostics.html#Bodu_Text_Configuration_ConfigurationParseResult_Diagnostics">Diagnostics</a>.
-</p>
-</div>
-  <h5 id="Bodu_Text_Configuration_ConfigurationDocument_examples"><strong>Examples</strong></h5>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Text.Configuration.ConfigurationExtensions.html#Bodu_Text_Configuration_ConfigurationExtensions_Resolve_Bodu_Text_Configuration_IniDocumentBase_System_String_">ConfigurationExtensions.Resolve(IniDocumentBase, string?)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Text.Configuration.ConfigurationExtensions.html#Bodu_Text_Configuration_ConfigurationExtensions_Resolve_Bodu_Text_Configuration_IniDocumentBase_System_String_Bodu_Text_Configuration_ConfigurationResolveOptions_">ConfigurationExtensions.Resolve(IniDocumentBase, string?, ConfigurationResolveOptions?)</a>
+  </div>
+  </dd></dl>
+
+
+  <h2 id="Bodu_Text_Configuration_ConfigurationDocument_examples">Examples</h2>
   <pre><code class="lang-csharp">// Parse and resolve a configuration file for a specific target path.
 ConfigurationDocument doc  = ConfigurationDocument.Parse(text);
 ConfigurationView     view = doc.Resolve("src/Foo.cs");
@@ -169,171 +200,641 @@ ConfigurationParseResult result = ConfigurationDocument.ParseWithDiagnostics(tex
 foreach (ConfigurationDiagnostic d in result.Diagnostics)
     Console.WriteLine(d);</code></pre>
 
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Text_Configuration_ConfigurationDocument_Load_System_IO_Stream_Bodu_Text_Configuration_ConfigurationParseOptions_System_Text_Encoding_System_Boolean_" data-uid="Bodu.Text.Configuration.ConfigurationDocument.Load(System.IO.Stream,Bodu.Text.Configuration.ConfigurationParseOptions,System.Text.Encoding,System.Boolean)">
-          <a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.Load.html#Bodu_Text_Configuration_ConfigurationDocument_Load_System_IO_Stream_Bodu_Text_Configuration_ConfigurationParseOptions_System_Text_Encoding_System_Boolean_">Load(Stream, ConfigurationParseOptions?, Encoding?, bool)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Loads a configuration document from the supplied stream.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Configuration_ConfigurationDocument_Load_System_IO_TextReader_Bodu_Text_Configuration_ConfigurationParseOptions_" data-uid="Bodu.Text.Configuration.ConfigurationDocument.Load(System.IO.TextReader,Bodu.Text.Configuration.ConfigurationParseOptions)">
-          <a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.Load.html#Bodu_Text_Configuration_ConfigurationDocument_Load_System_IO_TextReader_Bodu_Text_Configuration_ConfigurationParseOptions_">Load(TextReader, ConfigurationParseOptions?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Loads a configuration document from the supplied text reader.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Configuration_ConfigurationDocument_Load_System_String_" data-uid="Bodu.Text.Configuration.ConfigurationDocument.Load(System.String)">
-          <a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.Load.html#Bodu_Text_Configuration_ConfigurationDocument_Load_System_String_">Load(string)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Loads a configuration document from the file at <code class="paramref">path</code> using the default Bodu profile and
+
+  <h2 id="Bodu_Text_Configuration_ConfigurationDocument_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>
+Pair the <a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.html#Bodu_Text_Configuration_ConfigurationDocument_Parse_System_String_">Parse(string)</a> family with the
+<a class="xref" href="Bodu.Text.Configuration.ConfigurationExtensions.html#Bodu_Text_Configuration_ConfigurationExtensions_Resolve_Bodu_Text_Configuration_IniDocumentBase_System_String_Bodu_Text_Configuration_ConfigurationResolveOptions_">Resolve(IniDocumentBase, string?, ConfigurationResolveOptions?)</a> extension
+method to evaluate the document for a specific target path. The document holds the raw, source-faithful model;
+<a class="xref" href="Bodu.Text.Configuration.ConfigurationView.html">ConfigurationView</a> holds the resolved, target-specific snapshot consumed by application code.
+</p>
+<p>
+A <a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.html">ConfigurationDocument</a> exposes only the read surface of <a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.html">IniDocumentBase</a>; it is
+produced by the configuration reader and is not mutated by application code.
+</p>
+<p>
+Diagnostic routing is controlled by the supplied <a class="xref" href="Bodu.Text.Configuration.ConfigurationParseOptions.html">ConfigurationParseOptions</a>. In
+<a class="xref" href="Bodu.Text.Configuration.ConfigurationDiagnosticMode.html#Bodu_Text_Configuration_ConfigurationDiagnosticMode_Throw">Throw</a> mode a recoverable parse error raises
+<a class="xref" href="Bodu.Text.Configuration.ConfigurationParseException.html">ConfigurationParseException</a> at the first issue; in <a class="xref" href="Bodu.Text.Configuration.ConfigurationDiagnosticMode.html#Bodu_Text_Configuration_ConfigurationDiagnosticMode_Collect">Collect</a>
+mode the parser continues, the document's valid portions remain usable, and every diagnostic surfaces on
+<a class="xref" href="Bodu.Text.Configuration.ConfigurationParseResult.html#Bodu_Text_Configuration_ConfigurationParseResult_Diagnostics">Diagnostics</a>.
+</p>
+</div>
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationDocument_Load_" data-uid="Bodu.Text.Configuration.ConfigurationDocument.Load*"></a>
+
+  <h3 id="Bodu_Text_Configuration_ConfigurationDocument_Load_System_IO_Stream_Bodu_Text_Configuration_ConfigurationParseOptions_System_Text_Encoding_System_Boolean_" data-uid="Bodu.Text.Configuration.ConfigurationDocument.Load(System.IO.Stream,Bodu.Text.Configuration.ConfigurationParseOptions,System.Text.Encoding,System.Boolean)">
+  Load(Stream, ConfigurationParseOptions?, Encoding?, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationDocument.cs/#L217"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Loads a configuration document from the supplied stream.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ConfigurationDocument Load(Stream stream, ConfigurationParseOptions? options = null, Encoding? encoding = null, bool leaveOpen = false)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>stream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The stream to read from. Must support reading.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Configuration.ConfigurationParseOptions.html">ConfigurationParseOptions</a></dt>
+    <dd><p>The parse options to apply, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for the defaults.</p>
+</dd>
+    <dt><code>encoding</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoding">Encoding</a></dt>
+    <dd><p>The encoding to use when the stream lacks a byte order mark, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to use the parse
+options' default encoding.</p>
+</dd>
+    <dt><code>leaveOpen</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>When <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, the stream remains open after parsing.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.html">ConfigurationDocument</a></dt>
+    <dd><p>A populated <a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.html">ConfigurationDocument</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">stream</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">stream</code> does not support reading.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationDocument_Load_" data-uid="Bodu.Text.Configuration.ConfigurationDocument.Load*"></a>
+
+  <h3 id="Bodu_Text_Configuration_ConfigurationDocument_Load_System_IO_TextReader_Bodu_Text_Configuration_ConfigurationParseOptions_" data-uid="Bodu.Text.Configuration.ConfigurationDocument.Load(System.IO.TextReader,Bodu.Text.Configuration.ConfigurationParseOptions)">
+  Load(TextReader, ConfigurationParseOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationDocument.cs/#L240"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Loads a configuration document from the supplied text reader.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ConfigurationDocument Load(TextReader reader, ConfigurationParseOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>reader</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.textreader">TextReader</a></dt>
+    <dd><p>The reader to consume.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Configuration.ConfigurationParseOptions.html">ConfigurationParseOptions</a></dt>
+    <dd><p>The parse options, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for the defaults.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.html">ConfigurationDocument</a></dt>
+    <dd><p>A populated <a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.html">ConfigurationDocument</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">reader</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationDocument_Load_" data-uid="Bodu.Text.Configuration.ConfigurationDocument.Load*"></a>
+
+  <h3 id="Bodu_Text_Configuration_ConfigurationDocument_Load_System_String_" data-uid="Bodu.Text.Configuration.ConfigurationDocument.Load(System.String)">
+  Load(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationDocument.cs/#L183"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Loads a configuration document from the file at <code class="paramref">path</code> using the default Bodu profile and
 UTF-8 encoding with BOM detection.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Configuration_ConfigurationDocument_Load_System_String_Bodu_Text_Configuration_ConfigurationParseOptions_" data-uid="Bodu.Text.Configuration.ConfigurationDocument.Load(System.String,Bodu.Text.Configuration.ConfigurationParseOptions)">
-          <a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.Load.html#Bodu_Text_Configuration_ConfigurationDocument_Load_System_String_Bodu_Text_Configuration_ConfigurationParseOptions_">Load(string, ConfigurationParseOptions?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Loads a configuration document from the file at <code class="paramref">path</code> using the supplied options.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Configuration_ConfigurationDocument_Parse_System_String_" data-uid="Bodu.Text.Configuration.ConfigurationDocument.Parse(System.String)">
-          <a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.Parse.html#Bodu_Text_Configuration_ConfigurationDocument_Parse_System_String_">Parse(string)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Parses configuration text using the default Bodu profile.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Configuration_ConfigurationDocument_Parse_System_String_Bodu_Text_Configuration_ConfigurationParseOptions_" data-uid="Bodu.Text.Configuration.ConfigurationDocument.Parse(System.String,Bodu.Text.Configuration.ConfigurationParseOptions)">
-          <a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.Parse.html#Bodu_Text_Configuration_ConfigurationDocument_Parse_System_String_Bodu_Text_Configuration_ConfigurationParseOptions_">Parse(string, ConfigurationParseOptions?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Parses configuration text using the supplied options.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Configuration_ConfigurationDocument_ParseWithDiagnostics_System_String_Bodu_Text_Configuration_ConfigurationParseOptions_" data-uid="Bodu.Text.Configuration.ConfigurationDocument.ParseWithDiagnostics(System.String,Bodu.Text.Configuration.ConfigurationParseOptions)">
-          <a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.ParseWithDiagnostics.html#Bodu_Text_Configuration_ConfigurationDocument_ParseWithDiagnostics_System_String_Bodu_Text_Configuration_ConfigurationParseOptions_">ParseWithDiagnostics(string, ConfigurationParseOptions?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Parses configuration text and returns the resulting document together with any diagnostics collected during the
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ConfigurationDocument Load(string path)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The file path.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.html">ConfigurationDocument</a></dt>
+    <dd><p>A populated <a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.html">ConfigurationDocument</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">path</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">path</code> is empty or whitespace.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationDocument_Load_" data-uid="Bodu.Text.Configuration.ConfigurationDocument.Load*"></a>
+
+  <h3 id="Bodu_Text_Configuration_ConfigurationDocument_Load_System_String_Bodu_Text_Configuration_ConfigurationParseOptions_" data-uid="Bodu.Text.Configuration.ConfigurationDocument.Load(System.String,Bodu.Text.Configuration.ConfigurationParseOptions)">
+  Load(string, ConfigurationParseOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationDocument.cs/#L194"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Loads a configuration document from the file at <code class="paramref">path</code> using the supplied options.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ConfigurationDocument Load(string path, ConfigurationParseOptions? options)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The file path.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Configuration.ConfigurationParseOptions.html">ConfigurationParseOptions</a></dt>
+    <dd><p>The parse options, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for the Bodu defaults.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.html">ConfigurationDocument</a></dt>
+    <dd><p>A populated <a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.html">ConfigurationDocument</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">path</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">path</code> is empty or whitespace.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationDocument_Parse_" data-uid="Bodu.Text.Configuration.ConfigurationDocument.Parse*"></a>
+
+  <h3 id="Bodu_Text_Configuration_ConfigurationDocument_Parse_System_String_" data-uid="Bodu.Text.Configuration.ConfigurationDocument.Parse(System.String)">
+  Parse(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationDocument.cs/#L98"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Parses configuration text using the default Bodu profile.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ConfigurationDocument Parse(string text)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>text</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The configuration text to parse.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.html">ConfigurationDocument</a></dt>
+    <dd><p>A populated <a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.html">ConfigurationDocument</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">text</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Text.Configuration.ConfigurationParseException.html">ConfigurationParseException</a></dt>
+    <dd><p>The text could not be parsed.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationDocument_Parse_" data-uid="Bodu.Text.Configuration.ConfigurationDocument.Parse*"></a>
+
+  <h3 id="Bodu_Text_Configuration_ConfigurationDocument_Parse_System_String_Bodu_Text_Configuration_ConfigurationParseOptions_" data-uid="Bodu.Text.Configuration.ConfigurationDocument.Parse(System.String,Bodu.Text.Configuration.ConfigurationParseOptions)">
+  Parse(string, ConfigurationParseOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationDocument.cs/#L109"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Parses configuration text using the supplied options.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ConfigurationDocument Parse(string text, ConfigurationParseOptions? options)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>text</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The configuration text to parse.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Configuration.ConfigurationParseOptions.html">ConfigurationParseOptions</a></dt>
+    <dd><p>The parse options to apply, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for the Bodu defaults.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.html">ConfigurationDocument</a></dt>
+    <dd><p>A populated <a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.html">ConfigurationDocument</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">text</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Text.Configuration.ConfigurationParseException.html">ConfigurationParseException</a></dt>
+    <dd><p>The text could not be parsed.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationDocument_ParseWithDiagnostics_" data-uid="Bodu.Text.Configuration.ConfigurationDocument.ParseWithDiagnostics*"></a>
+
+  <h3 id="Bodu_Text_Configuration_ConfigurationDocument_ParseWithDiagnostics_System_String_Bodu_Text_Configuration_ConfigurationParseOptions_" data-uid="Bodu.Text.Configuration.ConfigurationDocument.ParseWithDiagnostics(System.String,Bodu.Text.Configuration.ConfigurationParseOptions)">
+  ParseWithDiagnostics(string, ConfigurationParseOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationDocument.cs/#L131"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Parses configuration text and returns the resulting document together with any diagnostics collected during the
 parse.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Configuration_ConfigurationDocument_Save_Bodu_Text_Configuration_IniDocumentBase_System_IO_Stream_Bodu_Text_Configuration_ConfigurationWriteOptions_System_Boolean_" data-uid="Bodu.Text.Configuration.ConfigurationDocument.Save(Bodu.Text.Configuration.IniDocumentBase,System.IO.Stream,Bodu.Text.Configuration.ConfigurationWriteOptions,System.Boolean)">
-          <a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.Save.html#Bodu_Text_Configuration_ConfigurationDocument_Save_Bodu_Text_Configuration_IniDocumentBase_System_IO_Stream_Bodu_Text_Configuration_ConfigurationWriteOptions_System_Boolean_">Save(IniDocumentBase, Stream, ConfigurationWriteOptions?, bool)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Saves <code class="paramref">document</code> to the supplied stream.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Configuration_ConfigurationDocument_Save_Bodu_Text_Configuration_IniDocumentBase_System_IO_TextWriter_Bodu_Text_Configuration_ConfigurationWriteOptions_" data-uid="Bodu.Text.Configuration.ConfigurationDocument.Save(Bodu.Text.Configuration.IniDocumentBase,System.IO.TextWriter,Bodu.Text.Configuration.ConfigurationWriteOptions)">
-          <a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.Save.html#Bodu_Text_Configuration_ConfigurationDocument_Save_Bodu_Text_Configuration_IniDocumentBase_System_IO_TextWriter_Bodu_Text_Configuration_ConfigurationWriteOptions_">Save(IniDocumentBase, TextWriter, ConfigurationWriteOptions?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Saves <code class="paramref">document</code> to the supplied text writer.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Configuration_ConfigurationDocument_Save_Bodu_Text_Configuration_IniDocumentBase_System_String_Bodu_Text_Configuration_ConfigurationWriteOptions_" data-uid="Bodu.Text.Configuration.ConfigurationDocument.Save(Bodu.Text.Configuration.IniDocumentBase,System.String,Bodu.Text.Configuration.ConfigurationWriteOptions)">
-          <a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.Save.html#Bodu_Text_Configuration_ConfigurationDocument_Save_Bodu_Text_Configuration_IniDocumentBase_System_String_Bodu_Text_Configuration_ConfigurationWriteOptions_">Save(IniDocumentBase, string, ConfigurationWriteOptions?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Saves <code class="paramref">document</code> to the file at <code class="paramref">path</code>, replacing any existing content.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Configuration_ConfigurationDocument_TryParse_System_String_Bodu_Text_Configuration_ConfigurationDocument__" data-uid="Bodu.Text.Configuration.ConfigurationDocument.TryParse(System.String,Bodu.Text.Configuration.ConfigurationDocument@)">
-          <a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.TryParse.html#Bodu_Text_Configuration_ConfigurationDocument_TryParse_System_String_Bodu_Text_Configuration_ConfigurationDocument__">TryParse(string?, out ConfigurationDocument?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to parse configuration text using the default Bodu profile.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Configuration_ConfigurationDocument_TryParse_System_String_Bodu_Text_Configuration_ConfigurationParseOptions_Bodu_Text_Configuration_ConfigurationDocument__" data-uid="Bodu.Text.Configuration.ConfigurationDocument.TryParse(System.String,Bodu.Text.Configuration.ConfigurationParseOptions,Bodu.Text.Configuration.ConfigurationDocument@)">
-          <a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.TryParse.html#Bodu_Text_Configuration_ConfigurationDocument_TryParse_System_String_Bodu_Text_Configuration_ConfigurationParseOptions_Bodu_Text_Configuration_ConfigurationDocument__">TryParse(string?, ConfigurationParseOptions?, out ConfigurationDocument?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to parse configuration text using the supplied options.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ConfigurationParseResult ParseWithDiagnostics(string text, ConfigurationParseOptions? options = null)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>text</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The configuration text to parse.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Configuration.ConfigurationParseOptions.html">ConfigurationParseOptions</a></dt>
+    <dd><p>The parse options to apply, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for the Bodu defaults.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Configuration.ConfigurationParseResult.html">ConfigurationParseResult</a></dt>
+    <dd><p>The parse result.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">text</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Text.Configuration.ConfigurationParseException.html">ConfigurationParseException</a></dt>
+    <dd><p>The text could not be parsed and <a class="xref" href="Bodu.Text.Configuration.ConfigurationParseOptions.html#Bodu_Text_Configuration_ConfigurationParseOptions_DiagnosticMode">DiagnosticMode</a> is
+<a class="xref" href="Bodu.Text.Configuration.ConfigurationDiagnosticMode.html#Bodu_Text_Configuration_ConfigurationDiagnosticMode_Throw">Throw</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationDocument_Save_" data-uid="Bodu.Text.Configuration.ConfigurationDocument.Save*"></a>
+
+  <h3 id="Bodu_Text_Configuration_ConfigurationDocument_Save_Bodu_Text_Configuration_IniDocumentBase_System_IO_Stream_Bodu_Text_Configuration_ConfigurationWriteOptions_System_Boolean_" data-uid="Bodu.Text.Configuration.ConfigurationDocument.Save(Bodu.Text.Configuration.IniDocumentBase,System.IO.Stream,Bodu.Text.Configuration.ConfigurationWriteOptions,System.Boolean)">
+  Save(IniDocumentBase, Stream, ConfigurationWriteOptions?, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationDocument.cs/#L278"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Saves <code class="paramref">document</code> to the supplied stream.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void Save(IniDocumentBase document, Stream stream, ConfigurationWriteOptions? options = null, bool leaveOpen = false)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>document</code> <a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.html">IniDocumentBase</a></dt>
+    <dd><p>The document to save.</p>
+</dd>
+    <dt><code>stream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The destination stream. Must support writing.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Configuration.ConfigurationWriteOptions.html">ConfigurationWriteOptions</a></dt>
+    <dd><p>The write options, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for the defaults.</p>
+</dd>
+    <dt><code>leaveOpen</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>When <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, the stream remains open after writing.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">document</code> or <code class="paramref">stream</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">stream</code> does not support writing.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationDocument_Save_" data-uid="Bodu.Text.Configuration.ConfigurationDocument.Save*"></a>
+
+  <h3 id="Bodu_Text_Configuration_ConfigurationDocument_Save_Bodu_Text_Configuration_IniDocumentBase_System_IO_TextWriter_Bodu_Text_Configuration_ConfigurationWriteOptions_" data-uid="Bodu.Text.Configuration.ConfigurationDocument.Save(Bodu.Text.Configuration.IniDocumentBase,System.IO.TextWriter,Bodu.Text.Configuration.ConfigurationWriteOptions)">
+  Save(IniDocumentBase, TextWriter, ConfigurationWriteOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationDocument.cs/#L298"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Saves <code class="paramref">document</code> to the supplied text writer.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void Save(IniDocumentBase document, TextWriter writer, ConfigurationWriteOptions? options = null)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>document</code> <a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.html">IniDocumentBase</a></dt>
+    <dd><p>The document to save.</p>
+</dd>
+    <dt><code>writer</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.textwriter">TextWriter</a></dt>
+    <dd><p>The destination writer.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Configuration.ConfigurationWriteOptions.html">ConfigurationWriteOptions</a></dt>
+    <dd><p>The write options, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for the defaults.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">document</code> or <code class="paramref">writer</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationDocument_Save_" data-uid="Bodu.Text.Configuration.ConfigurationDocument.Save*"></a>
+
+  <h3 id="Bodu_Text_Configuration_ConfigurationDocument_Save_Bodu_Text_Configuration_IniDocumentBase_System_String_Bodu_Text_Configuration_ConfigurationWriteOptions_" data-uid="Bodu.Text.Configuration.ConfigurationDocument.Save(Bodu.Text.Configuration.IniDocumentBase,System.String,Bodu.Text.Configuration.ConfigurationWriteOptions)">
+  Save(IniDocumentBase, string, ConfigurationWriteOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationDocument.cs/#L256"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Saves <code class="paramref">document</code> to the file at <code class="paramref">path</code>, replacing any existing content.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void Save(IniDocumentBase document, string path, ConfigurationWriteOptions? options = null)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>document</code> <a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.html">IniDocumentBase</a></dt>
+    <dd><p>The document to save.</p>
+</dd>
+    <dt><code>path</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The destination file path.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Configuration.ConfigurationWriteOptions.html">ConfigurationWriteOptions</a></dt>
+    <dd><p>The write options, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for the defaults.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">document</code> or <code class="paramref">path</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">path</code> is empty or whitespace.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationDocument_TryParse_" data-uid="Bodu.Text.Configuration.ConfigurationDocument.TryParse*"></a>
+
+  <h3 id="Bodu_Text_Configuration_ConfigurationDocument_TryParse_System_String_Bodu_Text_Configuration_ConfigurationDocument__" data-uid="Bodu.Text.Configuration.ConfigurationDocument.TryParse(System.String,Bodu.Text.Configuration.ConfigurationDocument@)">
+  TryParse(string?, out ConfigurationDocument?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationDocument.cs/#L145"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Attempts to parse configuration text using the default Bodu profile.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool TryParse(string? text, out ConfigurationDocument? document)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Text.Configuration.ConfigurationExtensions.Resolve.html#Bodu_Text_Configuration_ConfigurationExtensions_Resolve_Bodu_Text_Configuration_IniDocumentBase_System_String_">ConfigurationExtensions.Resolve(IniDocumentBase, string?)</a>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>text</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The text to parse.</p>
+</dd>
+    <dt><code>document</code> <a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.html">ConfigurationDocument</a></dt>
+    <dd><p>The parsed document on success; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> on failure.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> on success; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_Text_Configuration_ConfigurationDocument_TryParse_" data-uid="Bodu.Text.Configuration.ConfigurationDocument.TryParse*"></a>
+
+  <h3 id="Bodu_Text_Configuration_ConfigurationDocument_TryParse_System_String_Bodu_Text_Configuration_ConfigurationParseOptions_Bodu_Text_Configuration_ConfigurationDocument__" data-uid="Bodu.Text.Configuration.ConfigurationDocument.TryParse(System.String,Bodu.Text.Configuration.ConfigurationParseOptions,Bodu.Text.Configuration.ConfigurationDocument@)">
+  TryParse(string?, ConfigurationParseOptions?, out ConfigurationDocument?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationDocument.cs/#L155"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Attempts to parse configuration text using the supplied options.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool TryParse(string? text, ConfigurationParseOptions? options, out ConfigurationDocument? document)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Text.Configuration.ConfigurationExtensions.Resolve.html#Bodu_Text_Configuration_ConfigurationExtensions_Resolve_Bodu_Text_Configuration_IniDocumentBase_System_String_Bodu_Text_Configuration_ConfigurationResolveOptions_">ConfigurationExtensions.Resolve(IniDocumentBase, string?, ConfigurationResolveOptions?)</a>
-  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>text</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The text to parse.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Configuration.ConfigurationParseOptions.html">ConfigurationParseOptions</a></dt>
+    <dd><p>The parse options, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for the Bodu defaults.</p>
+</dd>
+    <dt><code>document</code> <a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.html">ConfigurationDocument</a></dt>
+    <dd><p>The parsed document on success; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> on failure.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> on success; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 302e395 · Built: 2026-09-29 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 1e0dd9a · Built: 2026-09-29 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

@@ -1,99 +1,127 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
       <title>Class CurrencyRegistry | BODU </title>
-      <meta name="viewport" content="width=device-width">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class CurrencyRegistry | BODU ">
-    
-    <meta name="description" content="Read-only catalogue of  entries keyed by ISO 4217 alphabetic code. Supports lookup by code and enumeration of every shipped currency.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      
+      <meta name="description" content="Read-only catalogue of  entries keyed by ISO 4217 alphabetic code. Supports lookup by code and enumeration of every shipped currency.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/new/master/apiSpec/new?filename=Bodu_Financial_Currencies_CurrencyRegistry.md&amp;value=---%0Auid%3A%20Bodu.Financial.Currencies.CurrencyRegistry%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Financial.Currencies.CurrencyRegistry">
+
+        <article data-uid="Bodu.Financial.Currencies.CurrencyRegistry">
 
 
 
-  <h1 id="Bodu_Financial_Currencies_CurrencyRegistry" data-uid="Bodu.Financial.Currencies.CurrencyRegistry" class="text-break">Class CurrencyRegistry</h1>
-  <div class="markdown level0 summary"><p>Read-only catalogue of <a class="xref" href="Bodu.Financial.Currencies.CurrencyInfo.html">CurrencyInfo</a> entries keyed by ISO 4217 alphabetic code. Supports lookup by
+  <h1 id="Bodu_Financial_Currencies_CurrencyRegistry" data-uid="Bodu.Financial.Currencies.CurrencyRegistry" class="text-break">
+Class CurrencyRegistry  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.Currencies/CurrencyRegistry.cs/#L26"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Financial.html">Financial</a>.<a class="xref" href="Bodu.Financial.Currencies.html">Currencies</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Financial.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Read-only catalogue of <a class="xref" href="Bodu.Financial.Currencies.CurrencyInfo.html">CurrencyInfo</a> entries keyed by ISO 4217 alphabetic code. Supports lookup by
 code and enumeration of every shipped currency.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><span class="xref">CurrencyRegistry</span></div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class CurrencyRegistry</code></pre>
   </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">CurrencyRegistry</span></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
@@ -115,14 +143,12 @@ code and enumeration of every shipped currency.</p>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
-  </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Financial.html">Financial</a>.<a class="xref" href="Bodu.Financial.Currencies.html">Currencies</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Financial.dll</h6>
-  <h5 id="Bodu_Financial_Currencies_CurrencyRegistry_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static class CurrencyRegistry</code></pre>
-  </div>
-  <h5 id="Bodu_Financial_Currencies_CurrencyRegistry_remarks"><strong>Remarks</strong></h5>
+  </dd></dl>
+
+
+
+
+  <h2 id="Bodu_Financial_Currencies_CurrencyRegistry_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
 The catalogue is populated from the source-generated <span class="xref">Bodu.Financial.Currencies.GeneratedCurrencyRegistration</span> list at first
 access — no runtime reflection scans the assembly. It covers the full active and historic ISO 4217 set; every entry
@@ -132,103 +158,209 @@ has a corresponding <a class="xref" href="Bodu.Financial.Currencies.CurrencyCode
 Lookups are thread-safe because the backing <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.frozen.frozendictionary-2">FrozenDictionary&lt;TKey, TValue&gt;</a> is immutable.
 </p>
 </div>
-  <h3 id="properties">Properties
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyRegistry_All" data-uid="Bodu.Financial.Currencies.CurrencyRegistry.All">
-          <a class="xref" href="Bodu.Financial.Currencies.CurrencyRegistry.All.html#Bodu_Financial_Currencies_CurrencyRegistry_All">All</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets every shipped currency.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyRegistry_Contains_System_String_" data-uid="Bodu.Financial.Currencies.CurrencyRegistry.Contains(System.String)">
-          <a class="xref" href="Bodu.Financial.Currencies.CurrencyRegistry.Contains.html#Bodu_Financial_Currencies_CurrencyRegistry_Contains_System_String_">Contains(string)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether the registry contains an entry for <code class="paramref">isoCode</code>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyRegistry_Get_System_String_" data-uid="Bodu.Financial.Currencies.CurrencyRegistry.Get(System.String)">
-          <a class="xref" href="Bodu.Financial.Currencies.CurrencyRegistry.Get.html#Bodu_Financial_Currencies_CurrencyRegistry_Get_System_String_">Get(string)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the <a class="xref" href="Bodu.Financial.Currencies.CurrencyInfo.html">CurrencyInfo</a> for <code class="paramref">isoCode</code> or throws when no entry exists.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_Currencies_CurrencyRegistry_TryGet_System_String_Bodu_Financial_Currencies_CurrencyInfo__" data-uid="Bodu.Financial.Currencies.CurrencyRegistry.TryGet(System.String,Bodu.Financial.Currencies.CurrencyInfo@)">
-          <a class="xref" href="Bodu.Financial.Currencies.CurrencyRegistry.TryGet.html#Bodu_Financial_Currencies_CurrencyRegistry_TryGet_System_String_Bodu_Financial_Currencies_CurrencyInfo__">TryGet(string, out CurrencyInfo?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to look up the currency identified by <code class="paramref">isoCode</code>.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Bodu_Financial_Currencies_CurrencyRegistry_All_" data-uid="Bodu.Financial.Currencies.CurrencyRegistry.All*"></a>
+
+  <h3 id="Bodu_Financial_Currencies_CurrencyRegistry_All" data-uid="Bodu.Financial.Currencies.CurrencyRegistry.All">
+  All
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.Currencies/CurrencyRegistry.cs/#L35"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets every shipped currency.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IReadOnlyCollection&lt;CurrencyInfo&gt; All { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlycollection-1">IReadOnlyCollection</a>&lt;<a class="xref" href="Bodu.Financial.Currencies.CurrencyInfo.html">CurrencyInfo</a>&gt;</dt>
+    <dd><p>A read-only enumeration of the registered <a class="xref" href="Bodu.Financial.Currencies.CurrencyInfo.html">CurrencyInfo</a> entries.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Financial_Currencies_CurrencyRegistry_Contains_" data-uid="Bodu.Financial.Currencies.CurrencyRegistry.Contains*"></a>
+
+  <h3 id="Bodu_Financial_Currencies_CurrencyRegistry_Contains_System_String_" data-uid="Bodu.Financial.Currencies.CurrencyRegistry.Contains(System.String)">
+  Contains(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.Currencies/CurrencyRegistry.cs/#L96"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines whether the registry contains an entry for <code class="paramref">isoCode</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool Contains(string isoCode)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>isoCode</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The ISO 4217 alphabetic code to test.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when an entry exists; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_Financial_Currencies_CurrencyRegistry_Get_" data-uid="Bodu.Financial.Currencies.CurrencyRegistry.Get*"></a>
+
+  <h3 id="Bodu_Financial_Currencies_CurrencyRegistry_Get_System_String_" data-uid="Bodu.Financial.Currencies.CurrencyRegistry.Get(System.String)">
+  Get(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.Currencies/CurrencyRegistry.cs/#L81"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the <a class="xref" href="Bodu.Financial.Currencies.CurrencyInfo.html">CurrencyInfo</a> for <code class="paramref">isoCode</code> or throws when no entry exists.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CurrencyInfo Get(string isoCode)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>isoCode</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The ISO 4217 alphabetic code to resolve.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Financial.Currencies.CurrencyInfo.html">CurrencyInfo</a></dt>
+    <dd><p>The matching <a class="xref" href="Bodu.Financial.Currencies.CurrencyInfo.html">CurrencyInfo</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Financial_Currencies_CurrencyRegistry_Get_System_String__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Resolution is case-sensitive and matches canonical uppercase ISO 4217 codes only; a lower- or mixed-case code is
+treated as unknown and throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keynotfoundexception">KeyNotFoundException</a>.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">isoCode</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keynotfoundexception">KeyNotFoundException</a></dt>
+    <dd><p>No currency is registered under <code class="paramref">isoCode</code>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Financial_Currencies_CurrencyRegistry_TryGet_" data-uid="Bodu.Financial.Currencies.CurrencyRegistry.TryGet*"></a>
+
+  <h3 id="Bodu_Financial_Currencies_CurrencyRegistry_TryGet_System_String_Bodu_Financial_Currencies_CurrencyInfo__" data-uid="Bodu.Financial.Currencies.CurrencyRegistry.TryGet(System.String,Bodu.Financial.Currencies.CurrencyInfo@)">
+  TryGet(string, out CurrencyInfo?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.Currencies/CurrencyRegistry.cs/#L52"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Attempts to look up the currency identified by <code class="paramref">isoCode</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool TryGet(string isoCode, out CurrencyInfo? info)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>isoCode</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The ISO 4217 alphabetic code to resolve.</p>
+</dd>
+    <dt><code>info</code> <a class="xref" href="Bodu.Financial.Currencies.CurrencyInfo.html">CurrencyInfo</a></dt>
+    <dd><p>When this method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, the matching <a class="xref" href="Bodu.Financial.Currencies.CurrencyInfo.html">CurrencyInfo</a>; otherwise the
+default value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the currency is registered; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Financial_Currencies_CurrencyRegistry_TryGet_System_String_Bodu_Financial_Currencies_CurrencyInfo___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Lookup is case-sensitive and matches canonical uppercase ISO 4217 codes only; a lower- or mixed-case code is
+treated as unknown and returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>. This mirrors the uppercase-only ISO-code contract the
+exchange-rate providers enforce (a mixed-case code is rejected as malformed there), keeping code resolution
+uniform across the library.</p>
+</div>
+
+
+
+
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 302e395 · Built: 2026-09-29 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 1e0dd9a · Built: 2026-09-29 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

@@ -1,150 +1,180 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
       <title>Class YahooRateProvider | BODU </title>
-      <meta name="viewport" content="width=device-width">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class YahooRateProvider | BODU ">
-    
-    <meta name="description" content="Serves Yahoo Finance exchange rates as  values, implementing the Bodu.Financial provider contracts over the Yahoo Finance v8/finance/chart JSON REST service.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      
+      <meta name="description" content="Serves Yahoo Finance exchange rates as  values, implementing the Bodu.Financial provider contracts over the Yahoo Finance v8/finance/chart JSON REST service.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/new/master/apiSpec/new?filename=Bodu_Financial_ExchangeRates_YahooRateProvider.md&amp;value=---%0Auid%3A%20Bodu.Financial.ExchangeRates.YahooRateProvider%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Financial.ExchangeRates.YahooRateProvider">
+
+        <article data-uid="Bodu.Financial.ExchangeRates.YahooRateProvider">
 
 
 
-  <h1 id="Bodu_Financial_ExchangeRates_YahooRateProvider" data-uid="Bodu.Financial.ExchangeRates.YahooRateProvider" class="text-break">Class YahooRateProvider</h1>
-  <div class="markdown level0 summary"><p>Serves Yahoo Finance exchange rates as <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.html">ExchangeRate</a> values, implementing the Bodu.Financial provider
+  <h1 id="Bodu_Financial_ExchangeRates_YahooRateProvider" data-uid="Bodu.Financial.ExchangeRates.YahooRateProvider" class="text-break">
+Class YahooRateProvider  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial.ExchangeRates.Yahoo/src/Financial.ExchangeRates/YahooRateProvider.cs/#L44"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Financial.html">Financial</a>.<a class="xref" href="Bodu.Financial.ExchangeRates.html">ExchangeRates</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Financial.ExchangeRates.Yahoo.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Serves Yahoo Finance exchange rates as <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.html">ExchangeRate</a> values, implementing the Bodu.Financial provider
 contracts over the Yahoo Finance <code>v8/finance/chart</code> JSON REST service.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.html">WebRateProvider</a></div>
-    <div class="level2"><a class="xref" href="Bodu.Financial.ExchangeRates.PairWebRateProvider-1.html">PairWebRateProvider</a>&lt;<a class="xref" href="Bodu.Financial.ExchangeRates.YahooSeriesInfo.html">YahooSeriesInfo</a>&gt;</div>
-    <div class="level3"><span class="xref">YahooRateProvider</span></div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class YahooRateProvider : PairWebRateProvider&lt;YahooSeriesInfo&gt;, IDatedRateProvider, IRateProvider, IPairRateLoader, IHistoricalRateProvider, IDisposable</code></pre>
   </div>
-  <div class="implements">
-    <h5>Implements</h5>
-    <div><a class="xref" href="Bodu.Financial.ExchangeRates.IDatedRateProvider.html">IDatedRateProvider</a></div>
-    <div><a class="xref" href="Bodu.Financial.ExchangeRates.IRateProvider.html">IRateProvider</a></div>
-    <div><a class="xref" href="Bodu.Financial.ExchangeRates.IPairRateLoader.html">IPairRateLoader</a></div>
-    <div><a class="xref" href="Bodu.Financial.ExchangeRates.IHistoricalRateProvider.html">IHistoricalRateProvider</a></div>
-    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
-  </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.html">WebRateProvider</a></div>
+      <div><a class="xref" href="Bodu.Financial.ExchangeRates.PairWebRateProvider-1.html">PairWebRateProvider</a>&lt;<a class="xref" href="Bodu.Financial.ExchangeRates.YahooSeriesInfo.html">YahooSeriesInfo</a>&gt;</div>
+      <div><span class="xref">YahooRateProvider</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="Bodu.Financial.ExchangeRates.IDatedRateProvider.html">IDatedRateProvider</a></div>
+      <div><a class="xref" href="Bodu.Financial.ExchangeRates.IRateProvider.html">IRateProvider</a></div>
+      <div><a class="xref" href="Bodu.Financial.ExchangeRates.IPairRateLoader.html">IPairRateLoader</a></div>
+      <div><a class="xref" href="Bodu.Financial.ExchangeRates.IHistoricalRateProvider.html">IHistoricalRateProvider</a></div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
-      <a class="xref" href="Bodu.Financial.ExchangeRates.PairWebRateProvider-1.HistoryAvailability.html#Bodu_Financial_ExchangeRates_PairWebRateProvider_1_HistoryAvailability">PairWebRateProvider&lt;YahooSeriesInfo&gt;.HistoryAvailability</a>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.PairWebRateProvider-1.html#Bodu_Financial_ExchangeRates_PairWebRateProvider_1_HistoryAvailability">PairWebRateProvider&lt;YahooSeriesInfo&gt;.HistoryAvailability</a>
     </div>
     <div>
-      <a class="xref" href="Bodu.Financial.ExchangeRates.PairWebRateProvider-1.GetAvailablePairs.html#Bodu_Financial_ExchangeRates_PairWebRateProvider_1_GetAvailablePairs">PairWebRateProvider&lt;YahooSeriesInfo&gt;.GetAvailablePairs()</a>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.PairWebRateProvider-1.html#Bodu_Financial_ExchangeRates_PairWebRateProvider_1_GetAvailablePairs">PairWebRateProvider&lt;YahooSeriesInfo&gt;.GetAvailablePairs()</a>
     </div>
     <div>
-      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.GetRate.html#Bodu_Financial_ExchangeRates_WebRateProvider_GetRate_System_String_System_String_Bodu_Financial_ExchangeRates_RateLookupOptions_">WebRateProvider.GetRate(string, string, RateLookupOptions)</a>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.html#Bodu_Financial_ExchangeRates_WebRateProvider_GetRate_System_String_System_String_Bodu_Financial_ExchangeRates_RateLookupOptions_">WebRateProvider.GetRate(string, string, RateLookupOptions)</a>
     </div>
     <div>
-      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.GetRate.html#Bodu_Financial_ExchangeRates_WebRateProvider_GetRate_System_String_System_String_System_DateOnly_Bodu_Financial_ExchangeRates_RateLookupOptions_">WebRateProvider.GetRate(string, string, DateOnly, RateLookupOptions)</a>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.html#Bodu_Financial_ExchangeRates_WebRateProvider_GetRate_System_String_System_String_System_DateOnly_Bodu_Financial_ExchangeRates_RateLookupOptions_">WebRateProvider.GetRate(string, string, DateOnly, RateLookupOptions)</a>
     </div>
     <div>
-      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.TryGetRate.html#Bodu_Financial_ExchangeRates_WebRateProvider_TryGetRate_System_String_System_String_System_DateOnly_Bodu_Financial_ExchangeRates_RateLookupOptions_Bodu_Financial_ExchangeRates_RateLookupResult__">WebRateProvider.TryGetRate(string, string, DateOnly, RateLookupOptions, out RateLookupResult)</a>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.html#Bodu_Financial_ExchangeRates_WebRateProvider_TryGetRate_System_String_System_String_System_DateOnly_Bodu_Financial_ExchangeRates_RateLookupOptions_Bodu_Financial_ExchangeRates_RateLookupResult__">WebRateProvider.TryGetRate(string, string, DateOnly, RateLookupOptions, out RateLookupResult)</a>
     </div>
     <div>
-      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.GetRates.html#Bodu_Financial_ExchangeRates_WebRateProvider_GetRates_System_String_System_String_System_DateOnly_System_DateOnly_">WebRateProvider.GetRates(string, string, DateOnly, DateOnly)</a>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.html#Bodu_Financial_ExchangeRates_WebRateProvider_GetRates_System_String_System_String_System_DateOnly_System_DateOnly_">WebRateProvider.GetRates(string, string, DateOnly, DateOnly)</a>
     </div>
     <div>
-      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.GetRateAsync.html#Bodu_Financial_ExchangeRates_WebRateProvider_GetRateAsync_System_String_System_String_Bodu_Financial_ExchangeRates_RateLookupOptions_System_Threading_CancellationToken_">WebRateProvider.GetRateAsync(string, string, RateLookupOptions, CancellationToken)</a>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.html#Bodu_Financial_ExchangeRates_WebRateProvider_GetRateAsync_System_String_System_String_Bodu_Financial_ExchangeRates_RateLookupOptions_System_Threading_CancellationToken_">WebRateProvider.GetRateAsync(string, string, RateLookupOptions, CancellationToken)</a>
     </div>
     <div>
-      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.GetRateAsync.html#Bodu_Financial_ExchangeRates_WebRateProvider_GetRateAsync_System_String_System_String_System_DateOnly_Bodu_Financial_ExchangeRates_RateLookupOptions_System_Threading_CancellationToken_">WebRateProvider.GetRateAsync(string, string, DateOnly, RateLookupOptions, CancellationToken)</a>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.html#Bodu_Financial_ExchangeRates_WebRateProvider_GetRateAsync_System_String_System_String_System_DateOnly_Bodu_Financial_ExchangeRates_RateLookupOptions_System_Threading_CancellationToken_">WebRateProvider.GetRateAsync(string, string, DateOnly, RateLookupOptions, CancellationToken)</a>
     </div>
     <div>
-      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.GetRatesAsync.html#Bodu_Financial_ExchangeRates_WebRateProvider_GetRatesAsync_System_String_System_String_System_DateOnly_System_DateOnly_System_Threading_CancellationToken_">WebRateProvider.GetRatesAsync(string, string, DateOnly, DateOnly, CancellationToken)</a>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.html#Bodu_Financial_ExchangeRates_WebRateProvider_GetRatesAsync_System_String_System_String_System_DateOnly_System_DateOnly_System_Threading_CancellationToken_">WebRateProvider.GetRatesAsync(string, string, DateOnly, DateOnly, CancellationToken)</a>
     </div>
     <div>
-      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.LoadPairAsync.html#Bodu_Financial_ExchangeRates_WebRateProvider_LoadPairAsync_System_String_System_String_System_DateOnly_System_DateOnly_System_Threading_CancellationToken_">WebRateProvider.LoadPairAsync(string, string, DateOnly, DateOnly, CancellationToken)</a>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.html#Bodu_Financial_ExchangeRates_WebRateProvider_LoadPairAsync_System_String_System_String_System_DateOnly_System_DateOnly_System_Threading_CancellationToken_">WebRateProvider.LoadPairAsync(string, string, DateOnly, DateOnly, CancellationToken)</a>
     </div>
     <div>
-      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.GetLoadedPairs.html#Bodu_Financial_ExchangeRates_WebRateProvider_GetLoadedPairs">WebRateProvider.GetLoadedPairs()</a>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.html#Bodu_Financial_ExchangeRates_WebRateProvider_GetLoadedPairs">WebRateProvider.GetLoadedPairs()</a>
     </div>
     <div>
-      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.GetLoadedBook.html#Bodu_Financial_ExchangeRates_WebRateProvider_GetLoadedBook">WebRateProvider.GetLoadedBook()</a>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.html#Bodu_Financial_ExchangeRates_WebRateProvider_GetLoadedBook">WebRateProvider.GetLoadedBook()</a>
     </div>
     <div>
-      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.GetLoadedSnapshot.html#Bodu_Financial_ExchangeRates_WebRateProvider_GetLoadedSnapshot">WebRateProvider.GetLoadedSnapshot()</a>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.html#Bodu_Financial_ExchangeRates_WebRateProvider_GetLoadedSnapshot">WebRateProvider.GetLoadedSnapshot()</a>
     </div>
     <div>
-      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.Dispose.html#Bodu_Financial_ExchangeRates_WebRateProvider_Dispose">WebRateProvider.Dispose()</a>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.html#Bodu_Financial_ExchangeRates_WebRateProvider_Dispose">WebRateProvider.Dispose()</a>
     </div>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
@@ -164,195 +194,350 @@ contracts over the Yahoo Finance <code>v8/finance/chart</code> JSON REST service
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
+  </dd></dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Financial.Extensions.DatedRateProviderExtensions.html#Bodu_Financial_Extensions_DatedRateProviderExtensions_ToFixedProviderAsync_Bodu_Financial_ExchangeRates_IDatedRateProvider_System_Collections_Generic_IEnumerable_Bodu_Financial_ExchangeRates_CurrencyPair__System_DateOnly_System_DateOnly_System_Threading_CancellationToken_">DatedRateProviderExtensions.ToFixedProviderAsync(IDatedRateProvider, IEnumerable&lt;CurrencyPair&gt;, DateOnly, DateOnly, CancellationToken)</a>
   </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Financial.html">Financial</a>.<a class="xref" href="Bodu.Financial.ExchangeRates.html">ExchangeRates</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Financial.ExchangeRates.Yahoo.dll</h6>
-  <h5 id="Bodu_Financial_ExchangeRates_YahooRateProvider_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class YahooRateProvider : PairWebRateProvider&lt;YahooSeriesInfo&gt;, IDatedRateProvider, IRateProvider, IPairRateLoader, IHistoricalRateProvider, IDisposable</code></pre>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h5 id="Bodu_Financial_ExchangeRates_YahooRateProvider_remarks"><strong>Remarks</strong></h5>
-  <div class="markdown level0 remarks"><p>
-The provider derives from <a class="xref" href="Bodu.Financial.ExchangeRates.PairWebRateProvider-1.html">PairWebRateProvider&lt;TSeries&gt;</a>, which supplies the per-pair coverage
-tracking, single-flight coalescing, fetch-and-accumulate orchestration, and diagnostic logging shared by every
-pair-based web source; this type contributes only the Yahoo identity, the ticker-based log label, and the
-Yahoo-specific exception text. Yahoo serves arbitrary pairs through the <code>{FROM}{TO}=X</code> ticker convention, so
-any pair of ISO codes can be requested directly. Use <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.LoadPairAsync.html#Bodu_Financial_ExchangeRates_WebRateProvider_LoadPairAsync_System_String_System_String_System_DateOnly_System_DateOnly_System_Threading_CancellationToken_">LoadPairAsync(string, string, DateOnly, DateOnly, CancellationToken)</a> to warm a pair's
-in-memory store.
-</p>
-<p>
-<strong>HttpClient ownership.</strong> The constructor that takes only options builds and owns an
-<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.net.http.httpclient">HttpClient</a> configured with the options' <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.UserAgent.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_UserAgent">UserAgent</a> and
-<a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.HttpTimeout.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_HttpTimeout">HttpTimeout</a> (the Yahoo endpoint answers requests without a recognizable user
-agent with <code>429 Too Many Requests</code>), disposing it with the provider. The constructor that takes an
-<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.net.http.httpclient">HttpClient</a> uses the caller-supplied client as-is, leaving its configuration and lifetime to the
-caller; this is the path the dependency-injection package uses.
-</p>
-</div>
-  <h5 id="Bodu_Financial_ExchangeRates_YahooRateProvider_examples"><strong>Examples</strong></h5>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  </dd></dl>
+
+
+  <h2 id="Bodu_Financial_ExchangeRates_YahooRateProvider_examples">Examples</h2>
   <pre><code class="lang-csharp">using var yahoo = new YahooRateProvider(new YahooRateProviderOptions());
 await yahoo.LoadPairAsync("AUD", "USD", new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 31));
 
 RateLookupResult aud = yahoo.GetRate("AUD", "USD", new DateOnly(2023, 1, 3));</code></pre>
 
-  <h3 id="constructors">Constructors
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_YahooRateProvider__ctor_Bodu_Financial_ExchangeRates_YahooRateProviderOptions_Microsoft_Extensions_Logging_ILogger_System_TimeProvider_" data-uid="Bodu.Financial.ExchangeRates.YahooRateProvider.#ctor(Bodu.Financial.ExchangeRates.YahooRateProviderOptions,Microsoft.Extensions.Logging.ILogger,System.TimeProvider)">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.YahooRateProvider.-ctor.html#Bodu_Financial_ExchangeRates_YahooRateProvider__ctor_Bodu_Financial_ExchangeRates_YahooRateProviderOptions_Microsoft_Extensions_Logging_ILogger_System_TimeProvider_">YahooRateProvider(YahooRateProviderOptions, ILogger?, TimeProvider?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Financial.ExchangeRates.YahooRateProvider.html">YahooRateProvider</a> class backed by an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.net.http.httpclient">HttpClient</a>
+
+  <h2 id="Bodu_Financial_ExchangeRates_YahooRateProvider_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>
+The provider derives from <a class="xref" href="Bodu.Financial.ExchangeRates.PairWebRateProvider-1.html">PairWebRateProvider&lt;TSeries&gt;</a>, which supplies the per-pair coverage
+tracking, single-flight coalescing, fetch-and-accumulate orchestration, and diagnostic logging shared by every
+pair-based web source; this type contributes only the Yahoo identity, the ticker-based log label, and the
+Yahoo-specific exception text. Yahoo serves arbitrary pairs through the <code>{FROM}{TO}=X</code> ticker convention, so
+any pair of ISO codes can be requested directly. Use <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.html#Bodu_Financial_ExchangeRates_WebRateProvider_LoadPairAsync_System_String_System_String_System_DateOnly_System_DateOnly_System_Threading_CancellationToken_">LoadPairAsync(string, string, DateOnly, DateOnly, CancellationToken)</a> to warm a pair's
+in-memory store.
+</p>
+<p>
+<strong>HttpClient ownership.</strong> The constructor that takes only options builds and owns an
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.net.http.httpclient">HttpClient</a> configured with the options' <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_UserAgent">UserAgent</a> and
+<a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_HttpTimeout">HttpTimeout</a> (the Yahoo endpoint answers requests without a recognizable user
+agent with <code>429 Too Many Requests</code>), disposing it with the provider. The constructor that takes an
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.net.http.httpclient">HttpClient</a> uses the caller-supplied client as-is, leaving its configuration and lifetime to the
+caller; this is the path the dependency-injection package uses.
+</p>
+</div>
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Bodu_Financial_ExchangeRates_YahooRateProvider__ctor_" data-uid="Bodu.Financial.ExchangeRates.YahooRateProvider.#ctor*"></a>
+
+  <h3 id="Bodu_Financial_ExchangeRates_YahooRateProvider__ctor_Bodu_Financial_ExchangeRates_YahooRateProviderOptions_Microsoft_Extensions_Logging_ILogger_System_TimeProvider_" data-uid="Bodu.Financial.ExchangeRates.YahooRateProvider.#ctor(Bodu.Financial.ExchangeRates.YahooRateProviderOptions,Microsoft.Extensions.Logging.ILogger,System.TimeProvider)">
+  YahooRateProvider(YahooRateProviderOptions, ILogger?, TimeProvider?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial.ExchangeRates.Yahoo/src/Financial.ExchangeRates/YahooRateProvider.cs/#L70"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Financial.ExchangeRates.YahooRateProvider.html">YahooRateProvider</a> class backed by an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.net.http.httpclient">HttpClient</a>
 the provider creates and owns, configured from the supplied options.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_YahooRateProvider__ctor_System_Net_Http_HttpClient_Bodu_Financial_ExchangeRates_YahooRateProviderOptions_Microsoft_Extensions_Logging_ILogger_System_TimeProvider_" data-uid="Bodu.Financial.ExchangeRates.YahooRateProvider.#ctor(System.Net.Http.HttpClient,Bodu.Financial.ExchangeRates.YahooRateProviderOptions,Microsoft.Extensions.Logging.ILogger,System.TimeProvider)">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.YahooRateProvider.-ctor.html#Bodu_Financial_ExchangeRates_YahooRateProvider__ctor_System_Net_Http_HttpClient_Bodu_Financial_ExchangeRates_YahooRateProviderOptions_Microsoft_Extensions_Logging_ILogger_System_TimeProvider_">YahooRateProvider(HttpClient, YahooRateProviderOptions, ILogger?, TimeProvider?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Financial.ExchangeRates.YahooRateProvider.html">YahooRateProvider</a> class backed by the Yahoo Finance chart
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public YahooRateProvider(YahooRateProviderOptions options, ILogger? logger = null, TimeProvider? timeProvider = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>options</code> <a class="xref" href="Bodu.Financial.ExchangeRates.YahooRateProviderOptions.html">YahooRateProviderOptions</a></dt>
+    <dd><p>The provider options.</p>
+</dd>
+    <dt><code>logger</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.ilogger">ILogger</a></dt>
+    <dd><p>The logger that records chart downloads and on-demand network fetches. <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> selects a no-op
+logger.</p>
+</dd>
+    <dt><code>timeProvider</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.timeprovider">TimeProvider</a></dt>
+    <dd><p>The time source used to resolve the current instant for the undated lookup surface. <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>
+selects <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.timeprovider.system">System</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">options</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">options</code> fails validation.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Financial_ExchangeRates_YahooRateProvider__ctor_" data-uid="Bodu.Financial.ExchangeRates.YahooRateProvider.#ctor*"></a>
+
+  <h3 id="Bodu_Financial_ExchangeRates_YahooRateProvider__ctor_System_Net_Http_HttpClient_Bodu_Financial_ExchangeRates_YahooRateProviderOptions_Microsoft_Extensions_Logging_ILogger_System_TimeProvider_" data-uid="Bodu.Financial.ExchangeRates.YahooRateProvider.#ctor(System.Net.Http.HttpClient,Bodu.Financial.ExchangeRates.YahooRateProviderOptions,Microsoft.Extensions.Logging.ILogger,System.TimeProvider)">
+  YahooRateProvider(HttpClient, YahooRateProviderOptions, ILogger?, TimeProvider?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial.ExchangeRates.Yahoo/src/Financial.ExchangeRates/YahooRateProvider.cs/#L93"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Financial.ExchangeRates.YahooRateProvider.html">YahooRateProvider</a> class backed by the Yahoo Finance chart
 endpoint, queried with the caller-supplied HTTP client. The caller owns the client's configuration and lifetime.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="fields">Fields
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_YahooRateProvider_ProviderName" data-uid="Bodu.Financial.ExchangeRates.YahooRateProvider.ProviderName">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.YahooRateProvider.ProviderName.html">ProviderName</a>
-        </td>
-        <td class="markdown level1 summary"><p>The provider identifier stamped on every rate this provider produces.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="properties">Properties
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_YahooRateProvider_ProviderId" data-uid="Bodu.Financial.ExchangeRates.YahooRateProvider.ProviderId">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.YahooRateProvider.ProviderId.html#Bodu_Financial_ExchangeRates_YahooRateProvider_ProviderId">ProviderId</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the provider identifier stamped on every rate this provider produces.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_YahooRateProvider_FormatPairForLog_Bodu_Financial_ExchangeRates_CurrencyPair_" data-uid="Bodu.Financial.ExchangeRates.YahooRateProvider.FormatPairForLog(Bodu.Financial.ExchangeRates.CurrencyPair)">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.YahooRateProvider.FormatPairForLog.html#Bodu_Financial_ExchangeRates_YahooRateProvider_FormatPairForLog_Bodu_Financial_ExchangeRates_CurrencyPair_">FormatPairForLog(CurrencyPair)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Formats the label used for a pair in the download log messages. The default returns the <code>FROM/TO</code> ISO-code
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public YahooRateProvider(HttpClient httpClient, YahooRateProviderOptions options, ILogger? logger = null, TimeProvider? timeProvider = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>httpClient</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.net.http.httpclient">HttpClient</a></dt>
+    <dd><p>The HTTP client used to issue chart requests.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Financial.ExchangeRates.YahooRateProviderOptions.html">YahooRateProviderOptions</a></dt>
+    <dd><p>The provider options.</p>
+</dd>
+    <dt><code>logger</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.ilogger">ILogger</a></dt>
+    <dd><p>The logger that records chart downloads and on-demand network fetches. <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> selects a no-op
+logger.</p>
+</dd>
+    <dt><code>timeProvider</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.timeprovider">TimeProvider</a></dt>
+    <dd><p>The time source used to resolve the current instant for the undated lookup surface. <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>
+selects <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.timeprovider.system">System</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">httpClient</code> or <code class="paramref">options</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">options</code> fails validation.</p>
+</dd>
+  </dl>
+
+
+
+  <h2 class="section" id="fields">Fields
+</h2>
+
+
+
+  <h3 id="Bodu_Financial_ExchangeRates_YahooRateProvider_ProviderName" data-uid="Bodu.Financial.ExchangeRates.YahooRateProvider.ProviderName">
+  ProviderName
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial.ExchangeRates.Yahoo/src/Financial.ExchangeRates/YahooRateProvider.cs/#L48"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The provider identifier stamped on every rate this provider produces.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string ProviderName = &quot;Yahoo&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Bodu_Financial_ExchangeRates_YahooRateProvider_ProviderId_" data-uid="Bodu.Financial.ExchangeRates.YahooRateProvider.ProviderId*"></a>
+
+  <h3 id="Bodu_Financial_ExchangeRates_YahooRateProvider_ProviderId" data-uid="Bodu.Financial.ExchangeRates.YahooRateProvider.ProviderId">
+  ProviderId
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial.ExchangeRates.Yahoo/src/Financial.ExchangeRates/YahooRateProvider.cs/#L151"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the provider identifier stamped on every rate this provider produces.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override string ProviderId { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The provider identifier.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Financial_ExchangeRates_YahooRateProvider_FormatPairForLog_" data-uid="Bodu.Financial.ExchangeRates.YahooRateProvider.FormatPairForLog*"></a>
+
+  <h3 id="Bodu_Financial_ExchangeRates_YahooRateProvider_FormatPairForLog_Bodu_Financial_ExchangeRates_CurrencyPair_" data-uid="Bodu.Financial.ExchangeRates.YahooRateProvider.FormatPairForLog(Bodu.Financial.ExchangeRates.CurrencyPair)">
+  FormatPairForLog(CurrencyPair)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial.ExchangeRates.Yahoo/src/Financial.ExchangeRates/YahooRateProvider.cs/#L154"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Formats the label used for a pair in the download log messages. The default returns the <code>FROM/TO</code> ISO-code
 pair; a derived type may override it to log a feed-specific identifier such as a ticker.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_YahooRateProvider_FormatRateNotFound_System_String_System_String_System_DateOnly_" data-uid="Bodu.Financial.ExchangeRates.YahooRateProvider.FormatRateNotFound(System.String,System.String,System.DateOnly)">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.YahooRateProvider.FormatRateNotFound.html#Bodu_Financial_ExchangeRates_YahooRateProvider_FormatRateNotFound_System_String_System_String_System_DateOnly_">FormatRateNotFound(string, string, DateOnly)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Formats the message for the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keynotfoundexception">KeyNotFoundException</a> thrown when a single-rate lookup fails. Derived
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override string FormatPairForLog(CurrencyPair pair)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>pair</code> <a class="xref" href="Bodu.Financial.ExchangeRates.CurrencyPair.html">CurrencyPair</a></dt>
+    <dd><p>The pair being logged.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The label to log.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_Financial_ExchangeRates_YahooRateProvider_FormatRateNotFound_" data-uid="Bodu.Financial.ExchangeRates.YahooRateProvider.FormatRateNotFound*"></a>
+
+  <h3 id="Bodu_Financial_ExchangeRates_YahooRateProvider_FormatRateNotFound_System_String_System_String_System_DateOnly_" data-uid="Bodu.Financial.ExchangeRates.YahooRateProvider.FormatRateNotFound(System.String,System.String,System.DateOnly)">
+  FormatRateNotFound(string, string, DateOnly)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial.ExchangeRates.Yahoo/src/Financial.ExchangeRates/YahooRateProvider.cs/#L158"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Formats the message for the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keynotfoundexception">KeyNotFoundException</a> thrown when a single-rate lookup fails. Derived
 types may override to use a feed-specific resource string.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="Bodu.Financial.Extensions.DatedRateProviderExtensions.ToFixedProviderAsync.html#Bodu_Financial_Extensions_DatedRateProviderExtensions_ToFixedProviderAsync_Bodu_Financial_ExchangeRates_IDatedRateProvider_System_Collections_Generic_IEnumerable_Bodu_Financial_ExchangeRates_CurrencyPair__System_DateOnly_System_DateOnly_System_Threading_CancellationToken_">DatedRateProviderExtensions.ToFixedProviderAsync(IDatedRateProvider, IEnumerable&lt;CurrencyPair&gt;, DateOnly, DateOnly, CancellationToken)</a>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override string FormatRateNotFound(string fromIsoCode, string toIsoCode, DateOnly date)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>fromIsoCode</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The source-currency ISO code.</p>
+</dd>
+    <dt><code>toIsoCode</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The destination-currency ISO code.</p>
+</dd>
+    <dt><code>date</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>The requested date.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The exception message.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 302e395 · Built: 2026-09-29 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 1e0dd9a · Built: 2026-09-29 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

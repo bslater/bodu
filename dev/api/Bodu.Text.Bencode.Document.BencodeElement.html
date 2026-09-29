@@ -1,94 +1,120 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
       <title>Struct BencodeElement | BODU </title>
-      <meta name="viewport" content="width=device-width">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Struct BencodeElement | BODU ">
-    
-    <meta name="description" content="Represents a single read-only value within a . The element is a lightweight view — a pair of the owning document and a row index — so copying it is cheap and never materializes a node.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      
+      <meta name="description" content="Represents a single read-only value within a . The element is a lightweight view — a pair of the owning document and a row index — so copying it is cheap and never materializes a node.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/new/master/apiSpec/new?filename=Bodu_Text_Bencode_Document_BencodeElement.md&amp;value=---%0Auid%3A%20Bodu.Text.Bencode.Document.BencodeElement%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Text.Bencode.Document.BencodeElement">
+
+        <article data-uid="Bodu.Text.Bencode.Document.BencodeElement">
 
 
 
-  <h1 id="Bodu_Text_Bencode_Document_BencodeElement" data-uid="Bodu.Text.Bencode.Document.BencodeElement" class="text-break">Struct BencodeElement</h1>
-  <div class="markdown level0 summary"><p>Represents a single read-only value within a <a class="xref" href="Bodu.Text.Bencode.Document.BencodeDocument.html">BencodeDocument</a>. The element is a lightweight view — a
+  <h1 id="Bodu_Text_Bencode_Document_BencodeElement" data-uid="Bodu.Text.Bencode.Document.BencodeElement" class="text-break">
+Struct BencodeElement  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeElement.ObjectEnumerator.cs/#L11"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Bencode.html">Bencode</a>.<a class="xref" href="Bodu.Text.Bencode.Document.html">Document</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Text.Bencode.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Represents a single read-only value within a <a class="xref" href="Bodu.Text.Bencode.Document.BencodeDocument.html">BencodeDocument</a>. The element is a lightweight view — a
 pair of the owning document and a row index — so copying it is cheap and never materializes a node.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly struct BencodeElement</code></pre>
+  </div>
+
+
+
+
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetype.equals">ValueType.Equals(object)</a>
     </div>
@@ -104,22 +130,60 @@ pair of the owning document and a row index — so copying it is cheap and never
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
     </div>
+  </dd></dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Bencode.html">Bencode</a>.<a class="xref" href="Bodu.Text.Bencode.Document.html">Document</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Text.Bencode.dll</h6>
-  <h5 id="Bodu_Text_Bencode_Document_BencodeElement_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public readonly struct BencodeElement</code></pre>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h5 id="Bodu_Text_Bencode_Document_BencodeElement_remarks"><strong>Remarks</strong></h5>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.Clamp&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsBetween__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsBetween&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsGreaterThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsLessThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsOutside__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsOutside&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  </dd></dl>
+
+
+
+  <h2 id="Bodu_Text_Bencode_Document_BencodeElement_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
 An element is valid only for the lifetime of its owning <a class="xref" href="Bodu.Text.Bencode.Document.BencodeDocument.html">BencodeDocument</a>. After the document is
 disposed, any member access throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a>.
 </p>
 <p>
 Because Bencode (BEP 3) defines only dictionaries, lists, byte strings, and integers, this type has no Boolean,
-null, or floating-point surface, and exposes byte-string content through both <a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.GetString.html#Bodu_Text_Bencode_Document_BencodeElement_GetString">GetString()</a> (UTF-8 text)
-and <a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.GetBytes.html#Bodu_Text_Bencode_Document_BencodeElement_GetBytes">GetBytes()</a> (raw bytes).
+null, or floating-point surface, and exposes byte-string content through both <a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.html#Bodu_Text_Bencode_Document_BencodeElement_GetString">GetString()</a> (UTF-8 text)
+and <a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.html#Bodu_Text_Bencode_Document_BencodeElement_GetBytes">GetBytes()</a> (raw bytes).
 </p>
 <example>
 <pre><code class="lang-csharp">// Navigate a parsed torrent without materializing a mutable tree.
@@ -132,233 +196,816 @@ var pieceLength = info.GetProperty("piece length").GetInt64();
 byte[] pieces = info.GetProperty("pieces").GetBytes();   // raw byte string</code></pre>
 </example>
 </div>
-  <h3 id="properties">Properties
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Text_Bencode_Document_BencodeElement_Item_System_Int32_" data-uid="Bodu.Text.Bencode.Document.BencodeElement.Item(System.Int32)">
-          <a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.Item.html#Bodu_Text_Bencode_Document_BencodeElement_Item_System_Int32_">this[int]</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the element at the supplied index within this array element.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Bencode_Document_BencodeElement_ValueKind" data-uid="Bodu.Text.Bencode.Document.BencodeElement.ValueKind">
-          <a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.ValueKind.html#Bodu_Text_Bencode_Document_BencodeElement_ValueKind">ValueKind</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the kind of this element.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Text_Bencode_Document_BencodeElement_Clone" data-uid="Bodu.Text.Bencode.Document.BencodeElement.Clone">
-          <a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.Clone.html#Bodu_Text_Bencode_Document_BencodeElement_Clone">Clone()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Creates an independent copy of this element whose lifetime is not tied to the owning document.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Bencode_Document_BencodeElement_EnumerateArray" data-uid="Bodu.Text.Bencode.Document.BencodeElement.EnumerateArray">
-          <a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.EnumerateArray.html#Bodu_Text_Bencode_Document_BencodeElement_EnumerateArray">EnumerateArray()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns an enumerator that iterates the elements of this array element in order.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Bencode_Document_BencodeElement_EnumerateObject" data-uid="Bodu.Text.Bencode.Document.BencodeElement.EnumerateObject">
-          <a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.EnumerateObject.html#Bodu_Text_Bencode_Document_BencodeElement_EnumerateObject">EnumerateObject()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns an enumerator that iterates the key/value pairs of this object element in stored order.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Bencode_Document_BencodeElement_GetArrayLength" data-uid="Bodu.Text.Bencode.Document.BencodeElement.GetArrayLength">
-          <a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.GetArrayLength.html#Bodu_Text_Bencode_Document_BencodeElement_GetArrayLength">GetArrayLength()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the number of elements in this array element.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Bencode_Document_BencodeElement_GetBytes" data-uid="Bodu.Text.Bencode.Document.BencodeElement.GetBytes">
-          <a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.GetBytes.html#Bodu_Text_Bencode_Document_BencodeElement_GetBytes">GetBytes()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Copies this byte-string element's content to a new array.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Bencode_Document_BencodeElement_GetInt64" data-uid="Bodu.Text.Bencode.Document.BencodeElement.GetInt64">
-          <a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.GetInt64.html#Bodu_Text_Bencode_Document_BencodeElement_GetInt64">GetInt64()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the value of this integer element as a 64-bit signed integer.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Bencode_Document_BencodeElement_GetProperty_System_String_" data-uid="Bodu.Text.Bencode.Document.BencodeElement.GetProperty(System.String)">
-          <a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.GetProperty.html#Bodu_Text_Bencode_Document_BencodeElement_GetProperty_System_String_">GetProperty(string)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the value of the property with the supplied name within this object element.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Bencode_Document_BencodeElement_GetRawBytes" data-uid="Bodu.Text.Bencode.Document.BencodeElement.GetRawBytes">
-          <a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.GetRawBytes.html#Bodu_Text_Bencode_Document_BencodeElement_GetRawBytes">GetRawBytes()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Copies the complete encoded form of this element to a new array. For a byte string the result includes the
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Bodu_Text_Bencode_Document_BencodeElement_Item_" data-uid="Bodu.Text.Bencode.Document.BencodeElement.Item*"></a>
+
+  <h3 id="Bodu_Text_Bencode_Document_BencodeElement_Item_System_Int32_" data-uid="Bodu.Text.Bencode.Document.BencodeElement.Item(System.Int32)">
+  this[int]
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeElement.cs/#L235"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the element at the supplied index within this array element.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public BencodeElement this[int index] { get; }</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>index</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The zero-based index of the element to retrieve.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.html">BencodeElement</a></dt>
+    <dd><p>The element at <code class="paramref">index</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown when the owning document has been disposed.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when this element is not an <a class="xref" href="Bodu.Text.Bencode.BencodeValueKind.html#Bodu_Text_Bencode_BencodeValueKind_Array">Array</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <code class="paramref">index</code> is negative or not less than the array length.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Bencode_Document_BencodeElement_ValueKind_" data-uid="Bodu.Text.Bencode.Document.BencodeElement.ValueKind*"></a>
+
+  <h3 id="Bodu_Text_Bencode_Document_BencodeElement_ValueKind" data-uid="Bodu.Text.Bencode.Document.BencodeElement.ValueKind">
+  ValueKind
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeElement.cs/#L64"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the kind of this element.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public BencodeValueKind ValueKind { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Bencode.BencodeValueKind.html">BencodeValueKind</a></dt>
+    <dd><p>The value kind.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown when the owning document has been disposed.</p>
+</dd>
+  </dl>
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Text_Bencode_Document_BencodeElement_Clone_" data-uid="Bodu.Text.Bencode.Document.BencodeElement.Clone*"></a>
+
+  <h3 id="Bodu_Text_Bencode_Document_BencodeElement_Clone" data-uid="Bodu.Text.Bencode.Document.BencodeElement.Clone">
+  Clone()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeElement.cs/#L209"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates an independent copy of this element whose lifetime is not tied to the owning document.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public BencodeElement Clone()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.html">BencodeElement</a></dt>
+    <dd><p>A <a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.html">BencodeElement</a> backed by a private document that does not require disposal.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown when the owning document has been disposed.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Bencode_Document_BencodeElement_EnumerateArray_" data-uid="Bodu.Text.Bencode.Document.BencodeElement.EnumerateArray*"></a>
+
+  <h3 id="Bodu_Text_Bencode_Document_BencodeElement_EnumerateArray" data-uid="Bodu.Text.Bencode.Document.BencodeElement.EnumerateArray">
+  EnumerateArray()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeElement.cs/#L302"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns an enumerator that iterates the elements of this array element in order.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public BencodeElement.ArrayEnumerator EnumerateArray()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.html">BencodeElement</a>.<a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.ArrayEnumerator.html">ArrayEnumerator</a></dt>
+    <dd><p>An <a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.ArrayEnumerator.html">BencodeElement.ArrayEnumerator</a> over the array's elements.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown when the owning document has been disposed.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when this element is not an <a class="xref" href="Bodu.Text.Bencode.BencodeValueKind.html#Bodu_Text_Bencode_BencodeValueKind_Array">Array</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Bencode_Document_BencodeElement_EnumerateObject_" data-uid="Bodu.Text.Bencode.Document.BencodeElement.EnumerateObject*"></a>
+
+  <h3 id="Bodu_Text_Bencode_Document_BencodeElement_EnumerateObject" data-uid="Bodu.Text.Bencode.Document.BencodeElement.EnumerateObject">
+  EnumerateObject()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeElement.cs/#L316"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns an enumerator that iterates the key/value pairs of this object element in stored order.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public BencodeElement.ObjectEnumerator EnumerateObject()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.html">BencodeElement</a>.<a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.ObjectEnumerator.html">ObjectEnumerator</a></dt>
+    <dd><p>An <a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.ObjectEnumerator.html">BencodeElement.ObjectEnumerator</a> over the object's properties.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown when the owning document has been disposed.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when this element is not an <a class="xref" href="Bodu.Text.Bencode.BencodeValueKind.html#Bodu_Text_Bencode_BencodeValueKind_Object">Object</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Bencode_Document_BencodeElement_GetArrayLength_" data-uid="Bodu.Text.Bencode.Document.BencodeElement.GetArrayLength*"></a>
+
+  <h3 id="Bodu_Text_Bencode_Document_BencodeElement_GetArrayLength" data-uid="Bodu.Text.Bencode.Document.BencodeElement.GetArrayLength">
+  GetArrayLength()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeElement.cs/#L220"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the number of elements in this array element.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int GetArrayLength()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The element count.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown when the owning document has been disposed.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when this element is not an <a class="xref" href="Bodu.Text.Bencode.BencodeValueKind.html#Bodu_Text_Bencode_BencodeValueKind_Array">Array</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Bencode_Document_BencodeElement_GetBytes_" data-uid="Bodu.Text.Bencode.Document.BencodeElement.GetBytes*"></a>
+
+  <h3 id="Bodu_Text_Bencode_Document_BencodeElement_GetBytes" data-uid="Bodu.Text.Bencode.Document.BencodeElement.GetBytes">
+  GetBytes()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeElement.cs/#L166"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Copies this byte-string element's content to a new array.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public byte[] GetBytes()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>A copy of the byte-string content.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown when the owning document has been disposed.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when this element is not a <a class="xref" href="Bodu.Text.Bencode.BencodeValueKind.html#Bodu_Text_Bencode_BencodeValueKind_ByteString">ByteString</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Bencode_Document_BencodeElement_GetInt64_" data-uid="Bodu.Text.Bencode.Document.BencodeElement.GetInt64*"></a>
+
+  <h3 id="Bodu_Text_Bencode_Document_BencodeElement_GetInt64" data-uid="Bodu.Text.Bencode.Document.BencodeElement.GetInt64">
+  GetInt64()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeElement.cs/#L79"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the value of this integer element as a 64-bit signed integer.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public long GetInt64()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a></dt>
+    <dd><p>The decoded integer value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown when the owning document has been disposed.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when this element is not an <a class="xref" href="Bodu.Text.Bencode.BencodeValueKind.html#Bodu_Text_Bencode_BencodeValueKind_Integer">Integer</a>.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Text.Bencode.BencodeFormatException.html">BencodeFormatException</a></dt>
+    <dd><p>Thrown when the integer's value exceeds <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64.maxvalue">MaxValue</a>; use <a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.html#Bodu_Text_Bencode_Document_BencodeElement_GetUInt64">GetUInt64()</a> to read
+values in the upper unsigned 64-bit range.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Bencode_Document_BencodeElement_GetProperty_" data-uid="Bodu.Text.Bencode.Document.BencodeElement.GetProperty*"></a>
+
+  <h3 id="Bodu_Text_Bencode_Document_BencodeElement_GetProperty_System_String_" data-uid="Bodu.Text.Bencode.Document.BencodeElement.GetProperty(System.String)">
+  GetProperty(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeElement.cs/#L253"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the value of the property with the supplied name within this object element.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public BencodeElement GetProperty(string propertyName)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>propertyName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the property to retrieve.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.html">BencodeElement</a></dt>
+    <dd><p>The value element of the matching property.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">propertyName</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown when the owning document has been disposed.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when this element is not an <a class="xref" href="Bodu.Text.Bencode.BencodeValueKind.html#Bodu_Text_Bencode_BencodeValueKind_Object">Object</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keynotfoundexception">KeyNotFoundException</a></dt>
+    <dd><p>Thrown when no property named <code class="paramref">propertyName</code> exists.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Bencode_Document_BencodeElement_GetRawBytes_" data-uid="Bodu.Text.Bencode.Document.BencodeElement.GetRawBytes*"></a>
+
+  <h3 id="Bodu_Text_Bencode_Document_BencodeElement_GetRawBytes" data-uid="Bodu.Text.Bencode.Document.BencodeElement.GetRawBytes">
+  GetRawBytes()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeElement.cs/#L180"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Copies the complete encoded form of this element to a new array. For a byte string the result includes the
 length prefix, for an integer the <code>i…e</code> framing, and for a container both delimiters and every child.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Bencode_Document_BencodeElement_GetString" data-uid="Bodu.Text.Bencode.Document.BencodeElement.GetString">
-          <a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.GetString.html#Bodu_Text_Bencode_Document_BencodeElement_GetString">GetString()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Decodes this byte-string element as UTF-8 text.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Bencode_Document_BencodeElement_GetUInt64" data-uid="Bodu.Text.Bencode.Document.BencodeElement.GetUInt64">
-          <a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.GetUInt64.html#Bodu_Text_Bencode_Document_BencodeElement_GetUInt64">GetUInt64()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the value of this integer element as a 64-bit unsigned integer, accepting any value in [0,
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public byte[] GetRawBytes()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The raw encoded bytes of this element.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Text_Bencode_Document_BencodeElement_GetRawBytes_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Because canonical Bencode is byte-exact, the returned slice is suitable for hashing — for example, computing a
+torrent's info-hash from the <code>info</code> dictionary's element — and for verbatim re-emission through
+<a class="xref" href="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.html#Bodu_Text_Bencode_Writer_Utf8BencodeWriter_WriteRawValue_System_ReadOnlySpan_System_Byte__System_Boolean_">WriteRawValue(ReadOnlySpan&lt;byte&gt;, bool)</a>.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown when the owning document has been disposed.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Bencode_Document_BencodeElement_GetString_" data-uid="Bodu.Text.Bencode.Document.BencodeElement.GetString*"></a>
+
+  <h3 id="Bodu_Text_Bencode_Document_BencodeElement_GetString" data-uid="Bodu.Text.Bencode.Document.BencodeElement.GetString">
+  GetString()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeElement.cs/#L155"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Decodes this byte-string element as UTF-8 text.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string GetString()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The decoded string.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Text_Bencode_Document_BencodeElement_GetString_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Use <a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.html#Bodu_Text_Bencode_Document_BencodeElement_GetBytes">GetBytes()</a> instead when the byte string is not valid UTF-8 text.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown when the owning document has been disposed.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when this element is not a <a class="xref" href="Bodu.Text.Bencode.BencodeValueKind.html#Bodu_Text_Bencode_BencodeValueKind_ByteString">ByteString</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Bencode_Document_BencodeElement_GetUInt64_" data-uid="Bodu.Text.Bencode.Document.BencodeElement.GetUInt64*"></a>
+
+  <h3 id="Bodu_Text_Bencode_Document_BencodeElement_GetUInt64" data-uid="Bodu.Text.Bencode.Document.BencodeElement.GetUInt64">
+  GetUInt64()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeElement.cs/#L112"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the value of this integer element as a 64-bit unsigned integer, accepting any value in [0,
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint64.maxvalue">MaxValue</a> ].</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Bencode_Document_BencodeElement_ToString" data-uid="Bodu.Text.Bencode.Document.BencodeElement.ToString">
-          <a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.ToString.html#Bodu_Text_Bencode_Document_BencodeElement_ToString">ToString()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns a textual representation of this element.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Bencode_Document_BencodeElement_TryGetInt64_System_Int64__" data-uid="Bodu.Text.Bencode.Document.BencodeElement.TryGetInt64(System.Int64@)">
-          <a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.TryGetInt64.html#Bodu_Text_Bencode_Document_BencodeElement_TryGetInt64_System_Int64__">TryGetInt64(out long)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to get the value of this integer element as a 64-bit signed integer.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Bencode_Document_BencodeElement_TryGetProperty_System_String_Bodu_Text_Bencode_Document_BencodeElement__" data-uid="Bodu.Text.Bencode.Document.BencodeElement.TryGetProperty(System.String,Bodu.Text.Bencode.Document.BencodeElement@)">
-          <a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.TryGetProperty.html#Bodu_Text_Bencode_Document_BencodeElement_TryGetProperty_System_String_Bodu_Text_Bencode_Document_BencodeElement__">TryGetProperty(string, out BencodeElement)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to get the value of the property with the supplied name within this object element.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Bencode_Document_BencodeElement_TryGetUInt64_System_UInt64__" data-uid="Bodu.Text.Bencode.Document.BencodeElement.TryGetUInt64(System.UInt64@)">
-          <a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.TryGetUInt64.html#Bodu_Text_Bencode_Document_BencodeElement_TryGetUInt64_System_UInt64__">TryGetUInt64(out ulong)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Attempts to get the value of this integer element as a 64-bit unsigned integer.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Bencode_Document_BencodeElement_WriteTo_Bodu_Text_Bencode_Writer_Utf8BencodeWriter_" data-uid="Bodu.Text.Bencode.Document.BencodeElement.WriteTo(Bodu.Text.Bencode.Writer.Utf8BencodeWriter)">
-          <a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.WriteTo.html#Bodu_Text_Bencode_Document_BencodeElement_WriteTo_Bodu_Text_Bencode_Writer_Utf8BencodeWriter_">WriteTo(Utf8BencodeWriter)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Writes the complete encoded form of this element to the supplied writer.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ulong GetUInt64()</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint64">ulong</a></dt>
+    <dd><p>The decoded unsigned integer value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Text_Bencode_Document_BencodeElement_GetUInt64_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Bencode integers are arbitrary-precision per BEP 3, so a document may carry a value between
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64.maxvalue">MaxValue</a> and <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint64.maxvalue">MaxValue</a> that <a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.html#Bodu_Text_Bencode_Document_BencodeElement_GetInt64">GetInt64()</a> cannot represent;
+this accessor reads such values without loss, mirroring <a class="xref" href="Bodu.Text.Bencode.Reader.Utf8BencodeReader.html#Bodu_Text_Bencode_Reader_Utf8BencodeReader_GetUInt64">GetUInt64()</a>.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown when the owning document has been disposed.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when this element is not an <a class="xref" href="Bodu.Text.Bencode.BencodeValueKind.html#Bodu_Text_Bencode_BencodeValueKind_Integer">Integer</a>.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Text.Bencode.BencodeFormatException.html">BencodeFormatException</a></dt>
+    <dd><p>Thrown when the integer's value is negative.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Bencode_Document_BencodeElement_ToString_" data-uid="Bodu.Text.Bencode.Document.BencodeElement.ToString*"></a>
+
+  <h3 id="Bodu_Text_Bencode_Document_BencodeElement_ToString" data-uid="Bodu.Text.Bencode.Document.BencodeElement.ToString">
+  ToString()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeElement.cs/#L334"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns a textual representation of this element.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override string ToString()</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Clamp.html#Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.Clamp&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The decimal value for an integer, the UTF-8 text for a byte string, or the literal name of the container kind
+for an array or object.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Text_Bencode_Document_BencodeElement_ToString_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Container values are not re-serialized; the kind name is returned instead to keep the operation
+allocation-light.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown when the owning document has been disposed.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Bencode_Document_BencodeElement_TryGetInt64_" data-uid="Bodu.Text.Bencode.Document.BencodeElement.TryGetInt64*"></a>
+
+  <h3 id="Bodu_Text_Bencode_Document_BencodeElement_TryGetInt64_System_Int64__" data-uid="Bodu.Text.Bencode.Document.BencodeElement.TryGetInt64(System.Int64@)">
+  TryGetInt64(out long)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeElement.cs/#L94"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Attempts to get the value of this integer element as a 64-bit signed integer.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TryGetInt64(out long value)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsBetween.html#Bodu_Extensions_ComparableExtensions_IsBetween__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsBetween&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a></dt>
+    <dd><p>When this method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, the integer value; otherwise zero.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the value fits the signed 64-bit range; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> when it is
+readable only through <a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.html#Bodu_Text_Bencode_Document_BencodeElement_GetUInt64">GetUInt64()</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown when the owning document has been disposed.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when this element is not an <a class="xref" href="Bodu.Text.Bencode.BencodeValueKind.html#Bodu_Text_Bencode_BencodeValueKind_Integer">Integer</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Bencode_Document_BencodeElement_TryGetProperty_" data-uid="Bodu.Text.Bencode.Document.BencodeElement.TryGetProperty*"></a>
+
+  <h3 id="Bodu_Text_Bencode_Document_BencodeElement_TryGetProperty_System_String_Bodu_Text_Bencode_Document_BencodeElement__" data-uid="Bodu.Text.Bencode.Document.BencodeElement.TryGetProperty(System.String,Bodu.Text.Bencode.Document.BencodeElement@)">
+  TryGetProperty(string, out BencodeElement)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeElement.cs/#L280"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Attempts to get the value of the property with the supplied name within this object element.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TryGetProperty(string propertyName, out BencodeElement value)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>propertyName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the property to retrieve.</p>
+</dd>
+    <dt><code>value</code> <a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.html">BencodeElement</a></dt>
+    <dd><p>When this method returns, the value element of the matching property; otherwise the default element.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when a matching property was found; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">propertyName</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown when the owning document has been disposed.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when this element is not an <a class="xref" href="Bodu.Text.Bencode.BencodeValueKind.html#Bodu_Text_Bencode_BencodeValueKind_Object">Object</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Bencode_Document_BencodeElement_TryGetUInt64_" data-uid="Bodu.Text.Bencode.Document.BencodeElement.TryGetUInt64*"></a>
+
+  <h3 id="Bodu_Text_Bencode_Document_BencodeElement_TryGetUInt64_System_UInt64__" data-uid="Bodu.Text.Bencode.Document.BencodeElement.TryGetUInt64(System.UInt64@)">
+  TryGetUInt64(out ulong)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeElement.cs/#L126"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Attempts to get the value of this integer element as a 64-bit unsigned integer.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TryGetUInt64(out ulong value)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint64">ulong</a></dt>
+    <dd><p>When this method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, the unsigned integer value; otherwise zero.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the value is non-negative; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown when the owning document has been disposed.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when this element is not an <a class="xref" href="Bodu.Text.Bencode.BencodeValueKind.html#Bodu_Text_Bencode_BencodeValueKind_Integer">Integer</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Bencode_Document_BencodeElement_WriteTo_" data-uid="Bodu.Text.Bencode.Document.BencodeElement.WriteTo*"></a>
+
+  <h3 id="Bodu_Text_Bencode_Document_BencodeElement_WriteTo_Bodu_Text_Bencode_Writer_Utf8BencodeWriter_" data-uid="Bodu.Text.Bencode.Document.BencodeElement.WriteTo(Bodu.Text.Bencode.Writer.Utf8BencodeWriter)">
+  WriteTo(Utf8BencodeWriter)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeElement.cs/#L196"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Writes the complete encoded form of this element to the supplied writer.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void WriteTo(Utf8BencodeWriter writer)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThan.html#Bodu_Extensions_ComparableExtensions_IsGreaterThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThan.html#Bodu_Extensions_ComparableExtensions_IsLessThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsOutside.html#Bodu_Extensions_ComparableExtensions_IsOutside__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsOutside&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>writer</code> <a class="xref" href="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.html">Utf8BencodeWriter</a></dt>
+    <dd><p>The destination writer.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Text_Bencode_Document_BencodeElement_WriteTo_Bodu_Text_Bencode_Writer_Utf8BencodeWriter__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The encoded bytes are emitted verbatim; because the owning document was validated when parsed, no re-validation
+occurs.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when this element is the default value and belongs to no document, or when the writer's call sequence
+does not permit a value at the current position.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown when the owning document has been disposed.</p>
+</dd>
+  </dl>
+
+
+
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 302e395 · Built: 2026-09-29 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 1e0dd9a · Built: 2026-09-29 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

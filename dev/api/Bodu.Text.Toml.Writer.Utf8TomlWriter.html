@@ -1,95 +1,121 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
       <title>Struct Utf8TomlWriter | BODU </title>
-      <meta name="viewport" content="width=device-width">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Struct Utf8TomlWriter | BODU ">
-    
-    <meta name="description" content="Provides an append-only writer that emits normalized TOML bytes to an . Because TOML&#39;s surface layout is a whole-document property, the writer is not progressive: it buffers every value into an in-memory tree and serializes it when the root table is closed.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      
+      <meta name="description" content="Provides an append-only writer that emits normalized TOML bytes to an . Because TOML&#39;s surface layout is a whole-document property, the writer is not progressive: it buffers every value into an in-memory tree and serializes it when the root table is closed.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/new/master/apiSpec/new?filename=Bodu_Text_Toml_Writer_Utf8TomlWriter.md&amp;value=---%0Auid%3A%20Bodu.Text.Toml.Writer.Utf8TomlWriter%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter">
+
+        <article data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter">
 
 
 
-  <h1 id="Bodu_Text_Toml_Writer_Utf8TomlWriter" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter" class="text-break">Struct Utf8TomlWriter</h1>
-  <div class="markdown level0 summary"><p>Provides an append-only writer that emits normalized TOML bytes to an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.ibufferwriter-1">IBufferWriter&lt;T&gt;</a>. Because
+  <h1 id="Bodu_Text_Toml_Writer_Utf8TomlWriter" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter" class="text-break">
+Struct Utf8TomlWriter  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Writer/Utf8TomlWriter.WriteProperties.cs/#L11"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Toml.html">Toml</a>.<a class="xref" href="Bodu.Text.Toml.Writer.html">Writer</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Text.Toml.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides an append-only writer that emits normalized TOML bytes to an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.ibufferwriter-1">IBufferWriter&lt;T&gt;</a>. Because
 TOML's surface layout is a whole-document property, the writer is not progressive: it buffers every value into an
 in-memory tree and serializes it when the root table is closed.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ref struct Utf8TomlWriter</code></pre>
+  </div>
+
+
+
+
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetype.equals">ValueType.Equals(object)</a>
     </div>
@@ -108,33 +134,11 @@ in-memory tree and serializes it when the root table is closed.</p>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
     </div>
-  </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Toml.html">Toml</a>.<a class="xref" href="Bodu.Text.Toml.Writer.html">Writer</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Text.Toml.dll</h6>
-  <h5 id="Bodu_Text_Toml_Writer_Utf8TomlWriter_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public ref struct Utf8TomlWriter</code></pre>
-  </div>
-  <h5 id="Bodu_Text_Toml_Writer_Utf8TomlWriter_remarks"><strong>Remarks</strong></h5>
-  <div class="markdown level0 remarks"><p>
-The writer is a <code>ref struct</code> whose mutable state lives in shared managed objects — a stack of open
-containers and the buffered value tree — so a copy taken by value continues to write to the same output. Whether a
-table becomes a <code>[header]</code> block or an inline <code>{ … }</code> depends on where it sits in the finished document,
-and arrays are inline, so the layout cannot be decided incrementally: the forward <code>Write*</code> calls only build the
-tree.
-</p>
-<p>
-Normalized emission happens once, when the outermost table is closed by the root <a class="xref" href="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteEndTable.html#Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteEndTable">WriteEndTable()</a>. A
-table's scalar and array members are written first as <code>key = value</code> lines, then its sub-tables as
-<code>[dotted.path]</code> block headers (depth-first, in document order); an array whose every element is a table is
-emitted as a run of <code>[[path]]</code> blocks. Arrays of non-table values are inline (<code>[1, 2, 3]</code>), and a table
-that appears as an array element is an inline table (<code>{ a = 1, b = 2 }</code>). Keys are bare when they match the
-bare-key grammar and basic-quoted otherwise; strings are basic-quoted with escaping; floats render <code>inf</code>,
-<code>-inf</code>, and <code>nan</code> and otherwise use their shortest round-trippable spelling; date-times use the RFC 3339
-form matching their kind.
-</p>
-</div>
-  <h5 id="Bodu_Text_Toml_Writer_Utf8TomlWriter_examples"><strong>Examples</strong></h5>
+  </dd></dl>
+
+
+
+  <h2 id="Bodu_Text_Toml_Writer_Utf8TomlWriter_examples">Examples</h2>
   <pre><code class="lang-csharp">var buffer = new ArrayBufferWriter&lt;byte&gt;();
 var writer = new Utf8TomlWriter(buffer);
 
@@ -153,341 +157,1527 @@ writer.WriteEndTable();
 writer.WriteEndTable();               // closing the root table emits the document
 // buffer.WrittenSpan now holds the UTF-8 TOML bytes.</code></pre>
 
-  <h3 id="constructors">Constructors
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Text_Toml_Writer_Utf8TomlWriter__ctor_System_Buffers_IBufferWriter_System_Byte__" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.#ctor(System.Buffers.IBufferWriter{System.Byte})">
-          <a class="xref" href="Bodu.Text.Toml.Writer.Utf8TomlWriter.-ctor.html#Bodu_Text_Toml_Writer_Utf8TomlWriter__ctor_System_Buffers_IBufferWriter_System_Byte__">Utf8TomlWriter(IBufferWriter&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Text.Toml.Writer.Utf8TomlWriter.html">Utf8TomlWriter</a> struct.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Toml_Writer_Utf8TomlWriter__ctor_System_Buffers_IBufferWriter_System_Byte__Bodu_Text_Toml_Writer_TomlWriterOptions_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.#ctor(System.Buffers.IBufferWriter{System.Byte},Bodu.Text.Toml.Writer.TomlWriterOptions)">
-          <a class="xref" href="Bodu.Text.Toml.Writer.Utf8TomlWriter.-ctor.html#Bodu_Text_Toml_Writer_Utf8TomlWriter__ctor_System_Buffers_IBufferWriter_System_Byte__Bodu_Text_Toml_Writer_TomlWriterOptions_">Utf8TomlWriter(IBufferWriter&lt;byte&gt;, TomlWriterOptions)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Text.Toml.Writer.Utf8TomlWriter.html">Utf8TomlWriter</a> struct using the supplied options.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Toml_Writer_Utf8TomlWriter__ctor_System_IO_Stream_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.#ctor(System.IO.Stream)">
-          <a class="xref" href="Bodu.Text.Toml.Writer.Utf8TomlWriter.-ctor.html#Bodu_Text_Toml_Writer_Utf8TomlWriter__ctor_System_IO_Stream_">Utf8TomlWriter(Stream)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Text.Toml.Writer.Utf8TomlWriter.html">Utf8TomlWriter</a> struct that writes the finished document to a
+
+  <h2 id="Bodu_Text_Toml_Writer_Utf8TomlWriter_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>
+The writer is a <code>ref struct</code> whose mutable state lives in shared managed objects — a stack of open
+containers and the buffered value tree — so a copy taken by value continues to write to the same output. Whether a
+table becomes a <code>[header]</code> block or an inline <code>{ … }</code> depends on where it sits in the finished document,
+and arrays are inline, so the layout cannot be decided incrementally: the forward <code>Write*</code> calls only build the
+tree.
+</p>
+<p>
+Normalized emission happens once, when the outermost table is closed by the root <a class="xref" href="Bodu.Text.Toml.Writer.Utf8TomlWriter.html#Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteEndTable">WriteEndTable()</a>. A
+table's scalar and array members are written first as <code>key = value</code> lines, then its sub-tables as
+<code>[dotted.path]</code> block headers (depth-first, in document order); an array whose every element is a table is
+emitted as a run of <code>[[path]]</code> blocks. Arrays of non-table values are inline (<code>[1, 2, 3]</code>), and a table
+that appears as an array element is an inline table (<code>{ a = 1, b = 2 }</code>). Keys are bare when they match the
+bare-key grammar and basic-quoted otherwise; strings are basic-quoted with escaping; floats render <code>inf</code>,
+<code>-inf</code>, and <code>nan</code> and otherwise use their shortest round-trippable spelling; date-times use the RFC 3339
+form matching their kind.
+</p>
+</div>
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Bodu_Text_Toml_Writer_Utf8TomlWriter__ctor_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.#ctor*"></a>
+
+  <h3 id="Bodu_Text_Toml_Writer_Utf8TomlWriter__ctor_System_Buffers_IBufferWriter_System_Byte__" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.#ctor(System.Buffers.IBufferWriter{System.Byte})">
+  Utf8TomlWriter(IBufferWriter&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Writer/Utf8TomlWriter.cs/#L110"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Text.Toml.Writer.Utf8TomlWriter.html">Utf8TomlWriter</a> struct.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Utf8TomlWriter(IBufferWriter&lt;byte&gt; output)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>output</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.ibufferwriter-1">IBufferWriter</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The destination buffer writer.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">output</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Toml_Writer_Utf8TomlWriter__ctor_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.#ctor*"></a>
+
+  <h3 id="Bodu_Text_Toml_Writer_Utf8TomlWriter__ctor_System_Buffers_IBufferWriter_System_Byte__Bodu_Text_Toml_Writer_TomlWriterOptions_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.#ctor(System.Buffers.IBufferWriter{System.Byte},Bodu.Text.Toml.Writer.TomlWriterOptions)">
+  Utf8TomlWriter(IBufferWriter&lt;byte&gt;, TomlWriterOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Writer/Utf8TomlWriter.cs/#L138"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Text.Toml.Writer.Utf8TomlWriter.html">Utf8TomlWriter</a> struct using the supplied options.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Utf8TomlWriter(IBufferWriter&lt;byte&gt; output, TomlWriterOptions options)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>output</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.ibufferwriter-1">IBufferWriter</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The destination buffer writer.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Toml.Writer.TomlWriterOptions.html">TomlWriterOptions</a></dt>
+    <dd><p>The writer options controlling the specification version and maximum nesting depth.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Text_Toml_Writer_Utf8TomlWriter__ctor_System_Buffers_IBufferWriter_System_Byte__Bodu_Text_Toml_Writer_TomlWriterOptions__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>A <a class="xref" href="Bodu.Text.Toml.Writer.TomlWriterOptions.html#Bodu_Text_Toml_Writer_TomlWriterOptions_MaxDepth">MaxDepth</a> of zero or less selects the default maximum depth of 64, and a
+larger value is clamped to <span class="xref">Bodu.Text.Toml.TomlLimits.AbsoluteMaxDepth</span> so that an unbounded configured value
+cannot drive the writer into a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.stackoverflowexception">StackOverflowException</a>. Opening a container past that depth — a
+table or array nested deeper than the effective limit — throws <a class="xref" href="Bodu.Text.Toml.TomlSerializationException.html">TomlSerializationException</a>.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">output</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Toml_Writer_Utf8TomlWriter__ctor_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.#ctor*"></a>
+
+  <h3 id="Bodu_Text_Toml_Writer_Utf8TomlWriter__ctor_System_IO_Stream_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.#ctor(System.IO.Stream)">
+  Utf8TomlWriter(Stream)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Writer/Utf8TomlWriter.Streaming.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Text.Toml.Writer.Utf8TomlWriter.html">Utf8TomlWriter</a> struct that writes the finished document to a
 stream.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Toml_Writer_Utf8TomlWriter__ctor_System_IO_Stream_Bodu_Text_Toml_Writer_TomlWriterOptions_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.#ctor(System.IO.Stream,Bodu.Text.Toml.Writer.TomlWriterOptions)">
-          <a class="xref" href="Bodu.Text.Toml.Writer.Utf8TomlWriter.-ctor.html#Bodu_Text_Toml_Writer_Utf8TomlWriter__ctor_System_IO_Stream_Bodu_Text_Toml_Writer_TomlWriterOptions_">Utf8TomlWriter(Stream, TomlWriterOptions)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Text.Toml.Writer.Utf8TomlWriter.html">Utf8TomlWriter</a> struct that writes the finished document to a
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Utf8TomlWriter(Stream utf8Toml)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>utf8Toml</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The writable destination stream.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">utf8Toml</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">utf8Toml</code> does not support writing.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Toml_Writer_Utf8TomlWriter__ctor_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.#ctor*"></a>
+
+  <h3 id="Bodu_Text_Toml_Writer_Utf8TomlWriter__ctor_System_IO_Stream_Bodu_Text_Toml_Writer_TomlWriterOptions_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.#ctor(System.IO.Stream,Bodu.Text.Toml.Writer.TomlWriterOptions)">
+  Utf8TomlWriter(Stream, TomlWriterOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Writer/Utf8TomlWriter.Streaming.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Text.Toml.Writer.Utf8TomlWriter.html">Utf8TomlWriter</a> struct that writes the finished document to a
 stream, using the supplied options.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="properties">Properties
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Text_Toml_Writer_Utf8TomlWriter_BytesCommitted" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.BytesCommitted">
-          <a class="xref" href="Bodu.Text.Toml.Writer.Utf8TomlWriter.BytesCommitted.html#Bodu_Text_Toml_Writer_Utf8TomlWriter_BytesCommitted">BytesCommitted</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the number of bytes committed to the destination so far.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Toml_Writer_Utf8TomlWriter_BytesPending" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.BytesPending">
-          <a class="xref" href="Bodu.Text.Toml.Writer.Utf8TomlWriter.BytesPending.html#Bodu_Text_Toml_Writer_Utf8TomlWriter_BytesPending">BytesPending</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the number of rendered bytes buffered for a stream destination and not yet flushed.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Text_Toml_Writer_Utf8TomlWriter_Dispose" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.Dispose">
-          <a class="xref" href="Bodu.Text.Toml.Writer.Utf8TomlWriter.Dispose.html#Bodu_Text_Toml_Writer_Utf8TomlWriter_Dispose">Dispose()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Flushes any buffered output to the destination stream.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Toml_Writer_Utf8TomlWriter_Flush" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.Flush">
-          <a class="xref" href="Bodu.Text.Toml.Writer.Utf8TomlWriter.Flush.html#Bodu_Text_Toml_Writer_Utf8TomlWriter_Flush">Flush()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Writes any buffered output to the destination stream and flushes it.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Toml_Writer_Utf8TomlWriter_Reset" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.Reset">
-          <a class="xref" href="Bodu.Text.Toml.Writer.Utf8TomlWriter.Reset.html#Bodu_Text_Toml_Writer_Utf8TomlWriter_Reset">Reset()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Resets the writer so a new document can be written to the same destination.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteBoolean_System_Boolean_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteBoolean(System.Boolean)">
-          <a class="xref" href="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteBoolean.html#Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteBoolean_System_Boolean_">WriteBoolean(bool)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Writes a Boolean value.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteBoolean_System_String_System_Boolean_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteBoolean(System.String,System.Boolean)">
-          <a class="xref" href="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteBoolean.html#Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteBoolean_System_String_System_Boolean_">WriteBoolean(string, bool)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Writes a property name and Boolean value as a pair.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteEndArray" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteEndArray">
-          <a class="xref" href="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteEndArray.html#Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteEndArray">WriteEndArray()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Writes the end of the current array.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteEndTable" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteEndTable">
-          <a class="xref" href="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteEndTable.html#Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteEndTable">WriteEndTable()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Writes the end of the current table.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteFloat_System_Double_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteFloat(System.Double)">
-          <a class="xref" href="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteFloat.html#Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteFloat_System_Double_">WriteFloat(double)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Writes an IEEE 754 binary64 floating-point value.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteFloat_System_String_System_Double_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteFloat(System.String,System.Double)">
-          <a class="xref" href="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteFloat.html#Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteFloat_System_String_System_Double_">WriteFloat(string, double)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Writes a property name and IEEE 754 binary64 floating-point value as a pair.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteInteger_System_Int64_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteInteger(System.Int64)">
-          <a class="xref" href="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteInteger.html#Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteInteger_System_Int64_">WriteInteger(long)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Writes a 64-bit signed integer value.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteInteger_System_String_System_Int64_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteInteger(System.String,System.Int64)">
-          <a class="xref" href="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteInteger.html#Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteInteger_System_String_System_Int64_">WriteInteger(string, long)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Writes a property name and 64-bit signed integer value as a pair.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteLocalDate_System_DateOnly_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteLocalDate(System.DateOnly)">
-          <a class="xref" href="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteLocalDate.html#Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteLocalDate_System_DateOnly_">WriteLocalDate(DateOnly)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Writes a local date value in RFC 3339 form.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteLocalDate_System_String_System_DateOnly_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteLocalDate(System.String,System.DateOnly)">
-          <a class="xref" href="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteLocalDate.html#Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteLocalDate_System_String_System_DateOnly_">WriteLocalDate(string, DateOnly)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Writes a property name and local date value as a pair.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteLocalDateTime_System_DateTime_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteLocalDateTime(System.DateTime)">
-          <a class="xref" href="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteLocalDateTime.html#Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteLocalDateTime_System_DateTime_">WriteLocalDateTime(DateTime)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Writes a local date-time value in RFC 3339 form, without any offset.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteLocalDateTime_System_String_System_DateTime_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteLocalDateTime(System.String,System.DateTime)">
-          <a class="xref" href="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteLocalDateTime.html#Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteLocalDateTime_System_String_System_DateTime_">WriteLocalDateTime(string, DateTime)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Writes a property name and local date-time value as a pair.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteLocalTime_System_String_System_TimeOnly_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteLocalTime(System.String,System.TimeOnly)">
-          <a class="xref" href="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteLocalTime.html#Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteLocalTime_System_String_System_TimeOnly_">WriteLocalTime(string, TimeOnly)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Writes a property name and local time value as a pair.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteLocalTime_System_TimeOnly_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteLocalTime(System.TimeOnly)">
-          <a class="xref" href="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteLocalTime.html#Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteLocalTime_System_TimeOnly_">WriteLocalTime(TimeOnly)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Writes a local time value in RFC 3339 form.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteOffsetDateTime_System_DateTimeOffset_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteOffsetDateTime(System.DateTimeOffset)">
-          <a class="xref" href="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteOffsetDateTime.html#Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteOffsetDateTime_System_DateTimeOffset_">WriteOffsetDateTime(DateTimeOffset)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Writes an offset date-time value in RFC 3339 form.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteOffsetDateTime_System_String_System_DateTimeOffset_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteOffsetDateTime(System.String,System.DateTimeOffset)">
-          <a class="xref" href="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteOffsetDateTime.html#Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteOffsetDateTime_System_String_System_DateTimeOffset_">WriteOffsetDateTime(string, DateTimeOffset)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Writes a property name and offset date-time value as a pair.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WritePropertyName_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WritePropertyName(System.ReadOnlySpan{System.Byte})">
-          <a class="xref" href="Bodu.Text.Toml.Writer.Utf8TomlWriter.WritePropertyName.html#Bodu_Text_Toml_Writer_Utf8TomlWriter_WritePropertyName_System_ReadOnlySpan_System_Byte__">WritePropertyName(ReadOnlySpan&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Writes the name of the table key whose value follows from UTF-8 text.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WritePropertyName_System_ReadOnlySpan_System_Char__" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WritePropertyName(System.ReadOnlySpan{System.Char})">
-          <a class="xref" href="Bodu.Text.Toml.Writer.Utf8TomlWriter.WritePropertyName.html#Bodu_Text_Toml_Writer_Utf8TomlWriter_WritePropertyName_System_ReadOnlySpan_System_Char__">WritePropertyName(ReadOnlySpan&lt;char&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Writes the name of the table key whose value follows.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WritePropertyName_System_String_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WritePropertyName(System.String)">
-          <a class="xref" href="Bodu.Text.Toml.Writer.Utf8TomlWriter.WritePropertyName.html#Bodu_Text_Toml_Writer_Utf8TomlWriter_WritePropertyName_System_String_">WritePropertyName(string)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Writes the name of the table key whose value follows.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteStartArray" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteStartArray">
-          <a class="xref" href="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteStartArray.html#Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteStartArray">WriteStartArray()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Writes the start of an array.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteStartArray_System_String_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteStartArray(System.String)">
-          <a class="xref" href="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteStartArray.html#Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteStartArray_System_String_">WriteStartArray(string)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Writes a property name and the start of its array as a pair.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteStartTable" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteStartTable">
-          <a class="xref" href="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteStartTable.html#Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteStartTable">WriteStartTable()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Writes the start of a table.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteStartTable_System_String_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteStartTable(System.String)">
-          <a class="xref" href="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteStartTable.html#Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteStartTable_System_String_">WriteStartTable(string)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Writes a property name and the start of its table as a pair.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteString_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteString(System.ReadOnlySpan{System.Byte})">
-          <a class="xref" href="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteString.html#Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteString_System_ReadOnlySpan_System_Byte__">WriteString(ReadOnlySpan&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Writes a string value from UTF-8 text.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteString_System_ReadOnlySpan_System_Char__" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteString(System.ReadOnlySpan{System.Char})">
-          <a class="xref" href="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteString.html#Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteString_System_ReadOnlySpan_System_Char__">WriteString(ReadOnlySpan&lt;char&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Writes a string value.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteString_System_String_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteString(System.String)">
-          <a class="xref" href="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteString.html#Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteString_System_String_">WriteString(string)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Writes a string value.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteString_System_String_System_String_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteString(System.String,System.String)">
-          <a class="xref" href="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteString.html#Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteString_System_String_System_String_">WriteString(string, string)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Writes a property name and string value as a pair.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Utf8TomlWriter(Stream utf8Toml, TomlWriterOptions options)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>utf8Toml</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The writable destination stream.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Bodu.Text.Toml.Writer.TomlWriterOptions.html">TomlWriterOptions</a></dt>
+    <dd><p>The writer options controlling the maximum nesting depth.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Text_Toml_Writer_Utf8TomlWriter__ctor_System_IO_Stream_Bodu_Text_Toml_Writer_TomlWriterOptions__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Rendered bytes are buffered when the root table is closed and reach the stream when <a class="xref" href="Bodu.Text.Toml.Writer.Utf8TomlWriter.html#Bodu_Text_Toml_Writer_Utf8TomlWriter_Flush">Flush()</a> or
+<a class="xref" href="Bodu.Text.Toml.Writer.Utf8TomlWriter.html#Bodu_Text_Toml_Writer_Utf8TomlWriter_Dispose">Dispose()</a> is called; <a class="xref" href="Bodu.Text.Toml.Writer.Utf8TomlWriter.html#Bodu_Text_Toml_Writer_Utf8TomlWriter_BytesPending">BytesPending</a> reports the buffered count.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">utf8Toml</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">utf8Toml</code> does not support writing.</p>
+</dd>
+  </dl>
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Bodu_Text_Toml_Writer_Utf8TomlWriter_BytesCommitted_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.BytesCommitted*"></a>
+
+  <h3 id="Bodu_Text_Toml_Writer_Utf8TomlWriter_BytesCommitted" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.BytesCommitted">
+  BytesCommitted
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Writer/Utf8TomlWriter.Streaming.cs/#L68"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the number of bytes committed to the destination so far.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly long BytesCommitted { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a></dt>
+    <dd><p>For a buffer-writer destination, the bytes delivered when the root table was closed; for a stream destination,
+the bytes written to the stream by <a class="xref" href="Bodu.Text.Toml.Writer.Utf8TomlWriter.html#Bodu_Text_Toml_Writer_Utf8TomlWriter_Flush">Flush()</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Text_Toml_Writer_Utf8TomlWriter_BytesPending_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.BytesPending*"></a>
+
+  <h3 id="Bodu_Text_Toml_Writer_Utf8TomlWriter_BytesPending" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.BytesPending">
+  BytesPending
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Writer/Utf8TomlWriter.Streaming.cs/#L78"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the number of rendered bytes buffered for a stream destination and not yet flushed.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly long BytesPending { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a></dt>
+    <dd><p>The pending byte count. Always zero for a buffer-writer destination, where bytes are delivered as the root table
+closes; for a stream destination the count becomes non-zero when the document completes and returns to zero on
+<a class="xref" href="Bodu.Text.Toml.Writer.Utf8TomlWriter.html#Bodu_Text_Toml_Writer_Utf8TomlWriter_Flush">Flush()</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Text_Toml_Writer_Utf8TomlWriter_Dispose_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.Dispose*"></a>
+
+  <h3 id="Bodu_Text_Toml_Writer_Utf8TomlWriter_Dispose" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.Dispose">
+  Dispose()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Writer/Utf8TomlWriter.Streaming.cs/#L111"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Flushes any buffered output to the destination stream.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly void Dispose()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Text_Toml_Writer_Utf8TomlWriter_Dispose_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The writer holds no unmanaged resources and does not own the destination, so disposal only flushes; it may be
+called multiple times. The method enables the <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/using">using</a> pattern over the
+<code>ref struct</code>.</p>
+</div>
+
+
+
+
+  <a id="Bodu_Text_Toml_Writer_Utf8TomlWriter_Flush_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.Flush*"></a>
+
+  <h3 id="Bodu_Text_Toml_Writer_Utf8TomlWriter_Flush" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.Flush">
+  Flush()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Writer/Utf8TomlWriter.Streaming.cs/#L87"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Writes any buffered output to the destination stream and flushes it.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly void Flush()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Text_Toml_Writer_Utf8TomlWriter_Flush_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>For a buffer-writer destination the method is a no-op: rendered bytes are delivered to the
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.ibufferwriter-1">IBufferWriter&lt;T&gt;</a> when the root table is closed.</p>
+</div>
+
+
+
+
+  <a id="Bodu_Text_Toml_Writer_Utf8TomlWriter_Reset_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.Reset*"></a>
+
+  <h3 id="Bodu_Text_Toml_Writer_Utf8TomlWriter_Reset" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.Reset">
+  Reset()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Writer/Utf8TomlWriter.Streaming.cs/#L120"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Resets the writer so a new document can be written to the same destination.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly void Reset()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Text_Toml_Writer_Utf8TomlWriter_Reset_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Open containers, the buffered value tree, any unflushed stream output, and the <a class="xref" href="Bodu.Text.Toml.Writer.Utf8TomlWriter.html#Bodu_Text_Toml_Writer_Utf8TomlWriter_BytesCommitted">BytesCommitted</a> /
+<a class="xref" href="Bodu.Text.Toml.Writer.Utf8TomlWriter.html#Bodu_Text_Toml_Writer_Utf8TomlWriter_BytesPending">BytesPending</a> counts are all cleared.</p>
+</div>
+
+
+
+
+  <a id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteBoolean_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteBoolean*"></a>
+
+  <h3 id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteBoolean_System_Boolean_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteBoolean(System.Boolean)">
+  WriteBoolean(bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Writer/Utf8TomlWriter.cs/#L329"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Writes a Boolean value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly void WriteBoolean(bool value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>The Boolean value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteBoolean_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteBoolean*"></a>
+
+  <h3 id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteBoolean_System_String_System_Boolean_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteBoolean(System.String,System.Boolean)">
+  WriteBoolean(string, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Writer/Utf8TomlWriter.WriteProperties.cs/#L190"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Writes a property name and Boolean value as a pair.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly void WriteBoolean(string name, bool value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The key text.</p>
+</dd>
+    <dt><code>value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>The Boolean value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">name</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">name</code> contains an unpaired surrogate.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when the document is already complete, the innermost open container is not a table, another property name
+is already pending, or <code class="paramref">name</code> has already been written to the current table.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteEndArray_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteEndArray*"></a>
+
+  <h3 id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteEndArray" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteEndArray">
+  WriteEndArray()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Writer/Utf8TomlWriter.cs/#L253"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Writes the end of the current array.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly void WriteEndArray()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when no container is open or the innermost open container is not an array.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteEndTable_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteEndTable*"></a>
+
+  <h3 id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteEndTable" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteEndTable">
+  WriteEndTable()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Writer/Utf8TomlWriter.cs/#L212"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Writes the end of the current table.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly void WriteEndTable()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteEndTable_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Closing the outermost table serializes the buffered value tree to normalized TOML and writes the resulting UTF-8
+bytes to the destination buffer writer.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when no container is open, the innermost open container is not a table, or the table has a pending
+property name without a value.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteFloat_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteFloat*"></a>
+
+  <h3 id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteFloat_System_Double_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteFloat(System.Double)">
+  WriteFloat(double)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Writer/Utf8TomlWriter.cs/#L322"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Writes an IEEE 754 binary64 floating-point value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly void WriteFloat(double value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd><p>The floating-point value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteFloat_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteFloat*"></a>
+
+  <h3 id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteFloat_System_String_System_Double_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteFloat(System.String,System.Double)">
+  WriteFloat(string, double)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Writer/Utf8TomlWriter.WriteProperties.cs/#L169"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Writes a property name and IEEE 754 binary64 floating-point value as a pair.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly void WriteFloat(string name, double value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The key text.</p>
+</dd>
+    <dt><code>value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd><p>The floating-point value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">name</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">name</code> contains an unpaired surrogate.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when the document is already complete, the innermost open container is not a table, another property name
+is already pending, or <code class="paramref">name</code> has already been written to the current table.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteInteger_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteInteger*"></a>
+
+  <h3 id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteInteger_System_Int64_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteInteger(System.Int64)">
+  WriteInteger(long)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Writer/Utf8TomlWriter.cs/#L315"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Writes a 64-bit signed integer value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly void WriteInteger(long value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a></dt>
+    <dd><p>The integer value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteInteger_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteInteger*"></a>
+
+  <h3 id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteInteger_System_String_System_Int64_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteInteger(System.String,System.Int64)">
+  WriteInteger(string, long)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Writer/Utf8TomlWriter.WriteProperties.cs/#L148"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Writes a property name and 64-bit signed integer value as a pair.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly void WriteInteger(string name, long value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The key text.</p>
+</dd>
+    <dt><code>value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a></dt>
+    <dd><p>The integer value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">name</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">name</code> contains an unpaired surrogate.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when the document is already complete, the innermost open container is not a table, another property name
+is already pending, or <code class="paramref">name</code> has already been written to the current table.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteLocalDate_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteLocalDate*"></a>
+
+  <h3 id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteLocalDate_System_DateOnly_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteLocalDate(System.DateOnly)">
+  WriteLocalDate(DateOnly)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Writer/Utf8TomlWriter.cs/#L350"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Writes a local date value in RFC 3339 form.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly void WriteLocalDate(DateOnly value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>The local date value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteLocalDate_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteLocalDate*"></a>
+
+  <h3 id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteLocalDate_System_String_System_DateOnly_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteLocalDate(System.String,System.DateOnly)">
+  WriteLocalDate(string, DateOnly)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Writer/Utf8TomlWriter.WriteProperties.cs/#L253"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Writes a property name and local date value as a pair.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly void WriteLocalDate(string name, DateOnly value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The key text.</p>
+</dd>
+    <dt><code>value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>The local date value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">name</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">name</code> contains an unpaired surrogate.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when the document is already complete, the innermost open container is not a table, another property name
+is already pending, or <code class="paramref">name</code> has already been written to the current table.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteLocalDateTime_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteLocalDateTime*"></a>
+
+  <h3 id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteLocalDateTime_System_DateTime_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteLocalDateTime(System.DateTime)">
+  WriteLocalDateTime(DateTime)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Writer/Utf8TomlWriter.cs/#L343"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Writes a local date-time value in RFC 3339 form, without any offset.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly void WriteLocalDateTime(DateTime value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a></dt>
+    <dd><p>The local date-time value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteLocalDateTime_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteLocalDateTime*"></a>
+
+  <h3 id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteLocalDateTime_System_String_System_DateTime_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteLocalDateTime(System.String,System.DateTime)">
+  WriteLocalDateTime(string, DateTime)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Writer/Utf8TomlWriter.WriteProperties.cs/#L232"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Writes a property name and local date-time value as a pair.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly void WriteLocalDateTime(string name, DateTime value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The key text.</p>
+</dd>
+    <dt><code>value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a></dt>
+    <dd><p>The local date-time value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">name</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">name</code> contains an unpaired surrogate.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when the document is already complete, the innermost open container is not a table, another property name
+is already pending, or <code class="paramref">name</code> has already been written to the current table.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteLocalTime_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteLocalTime*"></a>
+
+  <h3 id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteLocalTime_System_String_System_TimeOnly_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteLocalTime(System.String,System.TimeOnly)">
+  WriteLocalTime(string, TimeOnly)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Writer/Utf8TomlWriter.WriteProperties.cs/#L274"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Writes a property name and local time value as a pair.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly void WriteLocalTime(string name, TimeOnly value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The key text.</p>
+</dd>
+    <dt><code>value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.timeonly">TimeOnly</a></dt>
+    <dd><p>The local time value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">name</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">name</code> contains an unpaired surrogate.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when the document is already complete, the innermost open container is not a table, another property name
+is already pending, or <code class="paramref">name</code> has already been written to the current table.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteLocalTime_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteLocalTime*"></a>
+
+  <h3 id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteLocalTime_System_TimeOnly_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteLocalTime(System.TimeOnly)">
+  WriteLocalTime(TimeOnly)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Writer/Utf8TomlWriter.cs/#L357"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Writes a local time value in RFC 3339 form.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly void WriteLocalTime(TimeOnly value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.timeonly">TimeOnly</a></dt>
+    <dd><p>The local time value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteOffsetDateTime_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteOffsetDateTime*"></a>
+
+  <h3 id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteOffsetDateTime_System_DateTimeOffset_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteOffsetDateTime(System.DateTimeOffset)">
+  WriteOffsetDateTime(DateTimeOffset)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Writer/Utf8TomlWriter.cs/#L336"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Writes an offset date-time value in RFC 3339 form.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly void WriteOffsetDateTime(DateTimeOffset value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetimeoffset">DateTimeOffset</a></dt>
+    <dd><p>The offset date-time value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteOffsetDateTime_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteOffsetDateTime*"></a>
+
+  <h3 id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteOffsetDateTime_System_String_System_DateTimeOffset_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteOffsetDateTime(System.String,System.DateTimeOffset)">
+  WriteOffsetDateTime(string, DateTimeOffset)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Writer/Utf8TomlWriter.WriteProperties.cs/#L211"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Writes a property name and offset date-time value as a pair.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly void WriteOffsetDateTime(string name, DateTimeOffset value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The key text.</p>
+</dd>
+    <dt><code>value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetimeoffset">DateTimeOffset</a></dt>
+    <dd><p>The offset date-time value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">name</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">name</code> contains an unpaired surrogate.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when the document is already complete, the innermost open container is not a table, another property name
+is already pending, or <code class="paramref">name</code> has already been written to the current table.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WritePropertyName_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WritePropertyName*"></a>
+
+  <h3 id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WritePropertyName_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WritePropertyName(System.ReadOnlySpan{System.Byte})">
+  WritePropertyName(ReadOnlySpan&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Writer/Utf8TomlWriter.WriteProperties.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Writes the name of the table key whose value follows from UTF-8 text.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly void WritePropertyName(ReadOnlySpan&lt;byte&gt; utf8Name)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>utf8Name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The UTF-8 key text.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">utf8Name</code> is not valid UTF-8.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when the document is already complete, the innermost open container is not a table, another property name
+is already pending, or the key has already been written to the current table.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WritePropertyName_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WritePropertyName*"></a>
+
+  <h3 id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WritePropertyName_System_ReadOnlySpan_System_Char__" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WritePropertyName(System.ReadOnlySpan{System.Char})">
+  WritePropertyName(ReadOnlySpan&lt;char&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Writer/Utf8TomlWriter.WriteProperties.cs/#L27"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Writes the name of the table key whose value follows.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly void WritePropertyName(ReadOnlySpan&lt;char&gt; name)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The key text.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">name</code> contains an unpaired surrogate.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when the document is already complete, the innermost open container is not a table, another property name
+is already pending, or <code class="paramref">name</code> has already been written to the current table.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WritePropertyName_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WritePropertyName*"></a>
+
+  <h3 id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WritePropertyName_System_String_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WritePropertyName(System.String)">
+  WritePropertyName(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Writer/Utf8TomlWriter.cs/#L278"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Writes the name of the table key whose value follows.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly void WritePropertyName(string name)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The key text.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">name</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">name</code> contains an unpaired surrogate.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when the document is already complete, the innermost open container is not a table, another property name
+is already pending, or <code class="paramref">name</code> has already been written to the current table.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteStartArray_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteStartArray*"></a>
+
+  <h3 id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteStartArray" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteStartArray">
+  WriteStartArray()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Writer/Utf8TomlWriter.cs/#L235"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Writes the start of an array.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly void WriteStartArray()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Toml.TomlSerializationException.html">TomlSerializationException</a></dt>
+    <dd><p>Thrown when opening the array would exceed the effective maximum nesting depth.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when the document is already complete, when the array would become the document root (the root of a TOML
+document must be a table), or when the enclosing container is a table with no pending property name.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteStartArray_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteStartArray*"></a>
+
+  <h3 id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteStartArray_System_String_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteStartArray(System.String)">
+  WriteStartArray(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Writer/Utf8TomlWriter.WriteProperties.cs/#L106"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Writes a property name and the start of its array as a pair.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly void WriteStartArray(string name)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The key text.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">name</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">name</code> contains an unpaired surrogate.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Text.Toml.TomlSerializationException.html">TomlSerializationException</a></dt>
+    <dd><p>Thrown when opening the array would exceed the configured maximum nesting depth.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when the document is already complete, the innermost open container is not a table, another property name
+is already pending, or <code class="paramref">name</code> has already been written to the current table.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteStartTable_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteStartTable*"></a>
+
+  <h3 id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteStartTable" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteStartTable">
+  WriteStartTable()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Writer/Utf8TomlWriter.cs/#L191"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Writes the start of a table.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly void WriteStartTable()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Text.Toml.TomlSerializationException.html">TomlSerializationException</a></dt>
+    <dd><p>Thrown when opening the table would exceed the effective maximum nesting depth.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when the document is already complete, or when the enclosing container is a table with no pending
+property name.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteStartTable_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteStartTable*"></a>
+
+  <h3 id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteStartTable_System_String_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteStartTable(System.String)">
+  WriteStartTable(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Writer/Utf8TomlWriter.WriteProperties.cs/#L83"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Writes a property name and the start of its table as a pair.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly void WriteStartTable(string name)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The key text.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">name</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">name</code> contains an unpaired surrogate.</p>
+</dd>
+    <dt><a class="xref" href="Bodu.Text.Toml.TomlSerializationException.html">TomlSerializationException</a></dt>
+    <dd><p>Thrown when opening the table would exceed the configured maximum nesting depth.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when the document is already complete, the innermost open container is not a table, another property name
+is already pending, or <code class="paramref">name</code> has already been written to the current table.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteString_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteString*"></a>
+
+  <h3 id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteString_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteString(System.ReadOnlySpan{System.Byte})">
+  WriteString(ReadOnlySpan&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Writer/Utf8TomlWriter.WriteProperties.cs/#L63"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Writes a string value from UTF-8 text.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly void WriteString(ReadOnlySpan&lt;byte&gt; utf8Value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>utf8Value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The UTF-8 string value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">utf8Value</code> is not valid UTF-8.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when the document is already complete or the enclosing table has no pending property name.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteString_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteString*"></a>
+
+  <h3 id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteString_System_ReadOnlySpan_System_Char__" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteString(System.ReadOnlySpan{System.Char})">
+  WriteString(ReadOnlySpan&lt;char&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Writer/Utf8TomlWriter.WriteProperties.cs/#L52"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Writes a string value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly void WriteString(ReadOnlySpan&lt;char&gt; value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The string value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">value</code> contains an unpaired surrogate.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when the document is already complete or the enclosing table has no pending property name.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteString_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteString*"></a>
+
+  <h3 id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteString_System_String_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteString(System.String)">
+  WriteString(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Writer/Utf8TomlWriter.cs/#L303"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Writes a string value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly void WriteString(string value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The string value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">value</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">value</code> contains an unpaired surrogate.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteString_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteString*"></a>
+
+  <h3 id="Bodu_Text_Toml_Writer_Utf8TomlWriter_WriteString_System_String_System_String_" data-uid="Bodu.Text.Toml.Writer.Utf8TomlWriter.WriteString(System.String,System.String)">
+  WriteString(string, string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Text.Toml/src/Text.Toml.Writer/Utf8TomlWriter.WriteProperties.cs/#L127"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Writes a property name and string value as a pair.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly void WriteString(string name, string value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The key text.</p>
+</dd>
+    <dt><code>value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The string value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">name</code> or <code class="paramref">value</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">name</code> or <code class="paramref">value</code> contains an unpaired surrogate.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when the document is already complete, the innermost open container is not a table, another property name
+is already pending, or <code class="paramref">name</code> has already been written to the current table.</p>
+</dd>
+  </dl>
+
+
+
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 302e395 · Built: 2026-09-29 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 1e0dd9a · Built: 2026-09-29 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

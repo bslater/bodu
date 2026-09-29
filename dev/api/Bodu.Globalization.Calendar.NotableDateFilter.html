@@ -1,100 +1,128 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
       <title>Class NotableDateFilter | BODU </title>
-      <meta name="viewport" content="width=device-width">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class NotableDateFilter | BODU ">
-    
-    <meta name="description" content="Represents a composable predicate over resolved  occurrences, used to restrict the results returned by  to those matching a category, tag, name, duration, or observed-state criterion. This class cannot be inherited.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      
+      <meta name="description" content="Represents a composable predicate over resolved  occurrences, used to restrict the results returned by  to those matching a category, tag, name, duration, or observed-state criterion. This class cannot be inherited.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/new/master/apiSpec/new?filename=Bodu_Globalization_Calendar_NotableDateFilter.md&amp;value=---%0Auid%3A%20Bodu.Globalization.Calendar.NotableDateFilter%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Globalization.Calendar.NotableDateFilter">
+
+        <article data-uid="Bodu.Globalization.Calendar.NotableDateFilter">
 
 
 
-  <h1 id="Bodu_Globalization_Calendar_NotableDateFilter" data-uid="Bodu.Globalization.Calendar.NotableDateFilter" class="text-break">Class NotableDateFilter</h1>
-  <div class="markdown level0 summary"><p>Represents a composable predicate over resolved <a class="xref" href="Bodu.Globalization.Calendar.NotableDate.html">NotableDate</a> occurrences, used to restrict the results
+  <h1 id="Bodu_Globalization_Calendar_NotableDateFilter" data-uid="Bodu.Globalization.Calendar.NotableDateFilter" class="text-break">
+Class NotableDateFilter  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateFilter.cs/#L60"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Globalization.html">Globalization</a>.<a class="xref" href="Bodu.Globalization.Calendar.html">Calendar</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Globalization.Calendar.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Represents a composable predicate over resolved <a class="xref" href="Bodu.Globalization.Calendar.NotableDate.html">NotableDate</a> occurrences, used to restrict the results
 returned by <a class="xref" href="Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a> to those matching a category, tag, name, duration, or observed-state
 criterion. This class cannot be inherited.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><span class="xref">NotableDateFilter</span></div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class NotableDateFilter</code></pre>
   </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">NotableDateFilter</span></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
@@ -113,35 +141,30 @@ criterion. This class cannot be inherited.</p>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
+  </dd></dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Globalization</span>.<a class="xref" href="Bodu.Globalization.Calendar.html">Calendar</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Globalization.Calendar.dll</h6>
-  <h5 id="Bodu_Globalization_Calendar_NotableDateFilter_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class NotableDateFilter</code></pre>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h5 id="Bodu_Globalization_Calendar_NotableDateFilter_remarks"><strong>Remarks</strong></h5>
-  <div class="markdown level0 remarks"><p>
-<strong>Construction.</strong> A filter is created through the static factory methods on this class — for example
-<a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.ForCategory.html#Bodu_Globalization_Calendar_NotableDateFilter_ForCategory_Bodu_Globalization_Calendar_NotableDateCategory_">ForCategory(NotableDateCategory)</a>, <a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.WithTag.html#Bodu_Globalization_Calendar_NotableDateFilter_WithTag_System_String_">WithTag(string)</a>, <a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.IsNonWorkingDay.html#Bodu_Globalization_Calendar_NotableDateFilter_IsNonWorkingDay">IsNonWorkingDay()</a>,
-and <a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.InDateRange.html#Bodu_Globalization_Calendar_NotableDateFilter_InDateRange_System_DateOnly_System_DateOnly_">InDateRange(DateOnly, DateOnly)</a>. There is no public constructor; every factory returns an
-immutable instance.
-</p>
-<p>
-<strong>Composition.</strong> Filters combine through the instance operators <a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.And.html#Bodu_Globalization_Calendar_NotableDateFilter_And_Bodu_Globalization_Calendar_NotableDateFilter_">And(NotableDateFilter)</a>,
-<a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.Or.html#Bodu_Globalization_Calendar_NotableDateFilter_Or_Bodu_Globalization_Calendar_NotableDateFilter_">Or(NotableDateFilter)</a>, and <a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.Not.html#Bodu_Globalization_Calendar_NotableDateFilter_Not">Not()</a>, and the variadic factories
-<a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.AllOf.html#Bodu_Globalization_Calendar_NotableDateFilter_AllOf_Bodu_Globalization_Calendar_NotableDateFilter___">AllOf(params NotableDateFilter[])</a> and <a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.AnyOf.html#Bodu_Globalization_Calendar_NotableDateFilter_AnyOf_Bodu_Globalization_Calendar_NotableDateFilter___">AnyOf(params NotableDateFilter[])</a>. Because every instance is
-immutable, composition always produces a new filter and never mutates an operand, so a filter can be cached and
-reused across queries and threads.
-</p>
-<p>
-<strong>Evaluation.</strong> A filter is evaluated against each materialized occurrence after resolution: pass a
-filter to one of the <code>Resolve</code> overloads on <a class="xref" href="Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a> (which keeps only the
-occurrences for which <a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.Matches.html#Bodu_Globalization_Calendar_NotableDateFilter_Matches_Bodu_Globalization_Calendar_NotableDate_">Matches(NotableDate)</a> returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>), or call
-<a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.Matches.html#Bodu_Globalization_Calendar_NotableDateFilter_Matches_Bodu_Globalization_Calendar_NotableDate_">Matches(NotableDate)</a> directly to test a single occurrence.
-</p>
-</div>
-  <h5 id="Bodu_Globalization_Calendar_NotableDateFilter_examples"><strong>Examples</strong></h5>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  </dd></dl>
+
+
+  <h2 id="Bodu_Globalization_Calendar_NotableDateFilter_examples">Examples</h2>
   <pre><code class="lang-csharp">INotableDateService service = AmericasCalendarData.CreateService("US");
 DateRange year = new(new DateOnly(2026, 1, 1), new DateOnly(2026, 12, 31));
 
@@ -160,162 +183,795 @@ NotableDateFilter christian = NotableDateFilter
 
 IReadOnlyList&lt;NotableDate&gt; observances = service.Resolve(year, "US", christian);</code></pre>
 
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Globalization_Calendar_NotableDateFilter_AllOf_Bodu_Globalization_Calendar_NotableDateFilter___" data-uid="Bodu.Globalization.Calendar.NotableDateFilter.AllOf(Bodu.Globalization.Calendar.NotableDateFilter[])">
-          <a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.AllOf.html#Bodu_Globalization_Calendar_NotableDateFilter_AllOf_Bodu_Globalization_Calendar_NotableDateFilter___">AllOf(params NotableDateFilter[])</a>
-        </td>
-        <td class="markdown level1 summary"><p>Creates a filter that matches an occurrence only when every supplied filter matches it.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Globalization_Calendar_NotableDateFilter_And_Bodu_Globalization_Calendar_NotableDateFilter_" data-uid="Bodu.Globalization.Calendar.NotableDateFilter.And(Bodu.Globalization.Calendar.NotableDateFilter)">
-          <a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.And.html#Bodu_Globalization_Calendar_NotableDateFilter_And_Bodu_Globalization_Calendar_NotableDateFilter_">And(NotableDateFilter)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Combines this filter with another so that both must match.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Globalization_Calendar_NotableDateFilter_AnyOf_Bodu_Globalization_Calendar_NotableDateFilter___" data-uid="Bodu.Globalization.Calendar.NotableDateFilter.AnyOf(Bodu.Globalization.Calendar.NotableDateFilter[])">
-          <a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.AnyOf.html#Bodu_Globalization_Calendar_NotableDateFilter_AnyOf_Bodu_Globalization_Calendar_NotableDateFilter___">AnyOf(params NotableDateFilter[])</a>
-        </td>
-        <td class="markdown level1 summary"><p>Creates a filter that matches an occurrence when any supplied filter matches it.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Globalization_Calendar_NotableDateFilter_ForAnyCategory_Bodu_Globalization_Calendar_NotableDateCategory___" data-uid="Bodu.Globalization.Calendar.NotableDateFilter.ForAnyCategory(Bodu.Globalization.Calendar.NotableDateCategory[])">
-          <a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.ForAnyCategory.html#Bodu_Globalization_Calendar_NotableDateFilter_ForAnyCategory_Bodu_Globalization_Calendar_NotableDateCategory___">ForAnyCategory(params NotableDateCategory[])</a>
-        </td>
-        <td class="markdown level1 summary"><p>Creates a filter that matches occurrences belonging to any of the supplied categories.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Globalization_Calendar_NotableDateFilter_ForCategory_Bodu_Globalization_Calendar_NotableDateCategory_" data-uid="Bodu.Globalization.Calendar.NotableDateFilter.ForCategory(Bodu.Globalization.Calendar.NotableDateCategory)">
-          <a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.ForCategory.html#Bodu_Globalization_Calendar_NotableDateFilter_ForCategory_Bodu_Globalization_Calendar_NotableDateCategory_">ForCategory(NotableDateCategory)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Creates a filter that matches occurrences of a specific category.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Globalization_Calendar_NotableDateFilter_InDateRange_System_DateOnly_System_DateOnly_" data-uid="Bodu.Globalization.Calendar.NotableDateFilter.InDateRange(System.DateOnly,System.DateOnly)">
-          <a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.InDateRange.html#Bodu_Globalization_Calendar_NotableDateFilter_InDateRange_System_DateOnly_System_DateOnly_">InDateRange(DateOnly, DateOnly)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Creates a filter that matches occurrences whose emitted date falls within an inclusive date range.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Globalization_Calendar_NotableDateFilter_IsNonWorkingDay" data-uid="Bodu.Globalization.Calendar.NotableDateFilter.IsNonWorkingDay">
-          <a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.IsNonWorkingDay.html#Bodu_Globalization_Calendar_NotableDateFilter_IsNonWorkingDay">IsNonWorkingDay()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Creates a filter that matches occurrences flagged as non-working days.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Globalization_Calendar_NotableDateFilter_Matches_Bodu_Globalization_Calendar_NotableDate_" data-uid="Bodu.Globalization.Calendar.NotableDateFilter.Matches(Bodu.Globalization.Calendar.NotableDate)">
-          <a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.Matches.html#Bodu_Globalization_Calendar_NotableDateFilter_Matches_Bodu_Globalization_Calendar_NotableDate_">Matches(NotableDate)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether the supplied occurrence satisfies the filter.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Globalization_Calendar_NotableDateFilter_Not" data-uid="Bodu.Globalization.Calendar.NotableDateFilter.Not">
-          <a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.Not.html#Bodu_Globalization_Calendar_NotableDateFilter_Not">Not()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Negates this filter.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Globalization_Calendar_NotableDateFilter_Or_Bodu_Globalization_Calendar_NotableDateFilter_" data-uid="Bodu.Globalization.Calendar.NotableDateFilter.Or(Bodu.Globalization.Calendar.NotableDateFilter)">
-          <a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.Or.html#Bodu_Globalization_Calendar_NotableDateFilter_Or_Bodu_Globalization_Calendar_NotableDateFilter_">Or(NotableDateFilter)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Combines this filter with another so that either may match.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Globalization_Calendar_NotableDateFilter_WasAdjusted" data-uid="Bodu.Globalization.Calendar.NotableDateFilter.WasAdjusted">
-          <a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.WasAdjusted.html#Bodu_Globalization_Calendar_NotableDateFilter_WasAdjusted">WasAdjusted()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Creates a filter that matches occurrences whose emitted date differs from the calculated date because an
+
+  <h2 id="Bodu_Globalization_Calendar_NotableDateFilter_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>
+<strong>Construction.</strong> A filter is created through the static factory methods on this class — for example
+<a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.html#Bodu_Globalization_Calendar_NotableDateFilter_ForCategory_Bodu_Globalization_Calendar_NotableDateCategory_">ForCategory(NotableDateCategory)</a>, <a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.html#Bodu_Globalization_Calendar_NotableDateFilter_WithTag_System_String_">WithTag(string)</a>, <a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.html#Bodu_Globalization_Calendar_NotableDateFilter_IsNonWorkingDay">IsNonWorkingDay()</a>,
+and <a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.html#Bodu_Globalization_Calendar_NotableDateFilter_InDateRange_System_DateOnly_System_DateOnly_">InDateRange(DateOnly, DateOnly)</a>. There is no public constructor; every factory returns an
+immutable instance.
+</p>
+<p>
+<strong>Composition.</strong> Filters combine through the instance operators <a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.html#Bodu_Globalization_Calendar_NotableDateFilter_And_Bodu_Globalization_Calendar_NotableDateFilter_">And(NotableDateFilter)</a>,
+<a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.html#Bodu_Globalization_Calendar_NotableDateFilter_Or_Bodu_Globalization_Calendar_NotableDateFilter_">Or(NotableDateFilter)</a>, and <a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.html#Bodu_Globalization_Calendar_NotableDateFilter_Not">Not()</a>, and the variadic factories
+<a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.html#Bodu_Globalization_Calendar_NotableDateFilter_AllOf_Bodu_Globalization_Calendar_NotableDateFilter___">AllOf(params NotableDateFilter[])</a> and <a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.html#Bodu_Globalization_Calendar_NotableDateFilter_AnyOf_Bodu_Globalization_Calendar_NotableDateFilter___">AnyOf(params NotableDateFilter[])</a>. Because every instance is
+immutable, composition always produces a new filter and never mutates an operand, so a filter can be cached and
+reused across queries and threads.
+</p>
+<p>
+<strong>Evaluation.</strong> A filter is evaluated against each materialized occurrence after resolution: pass a
+filter to one of the <code>Resolve</code> overloads on <a class="xref" href="Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a> (which keeps only the
+occurrences for which <a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.html#Bodu_Globalization_Calendar_NotableDateFilter_Matches_Bodu_Globalization_Calendar_NotableDate_">Matches(NotableDate)</a> returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>), or call
+<a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.html#Bodu_Globalization_Calendar_NotableDateFilter_Matches_Bodu_Globalization_Calendar_NotableDate_">Matches(NotableDate)</a> directly to test a single occurrence.
+</p>
+</div>
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Globalization_Calendar_NotableDateFilter_AllOf_" data-uid="Bodu.Globalization.Calendar.NotableDateFilter.AllOf*"></a>
+
+  <h3 id="Bodu_Globalization_Calendar_NotableDateFilter_AllOf_Bodu_Globalization_Calendar_NotableDateFilter___" data-uid="Bodu.Globalization.Calendar.NotableDateFilter.AllOf(Bodu.Globalization.Calendar.NotableDateFilter[])">
+  AllOf(params NotableDateFilter[])
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateFilter.cs/#L233"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a filter that matches an occurrence only when every supplied filter matches it.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static NotableDateFilter AllOf(params NotableDateFilter[] filters)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>filters</code> <a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.html">NotableDateFilter</a>[]</dt>
+    <dd><p>The filters that must all match.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.html">NotableDateFilter</a></dt>
+    <dd><p>A filter matching the conjunction of the supplied filters.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">filters</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Globalization_Calendar_NotableDateFilter_And_" data-uid="Bodu.Globalization.Calendar.NotableDateFilter.And*"></a>
+
+  <h3 id="Bodu_Globalization_Calendar_NotableDateFilter_And_Bodu_Globalization_Calendar_NotableDateFilter_" data-uid="Bodu.Globalization.Calendar.NotableDateFilter.And(Bodu.Globalization.Calendar.NotableDateFilter)">
+  And(NotableDateFilter)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateFilter.cs/#L261"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Combines this filter with another so that both must match.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NotableDateFilter And(NotableDateFilter other)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>other</code> <a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.html">NotableDateFilter</a></dt>
+    <dd><p>The filter to combine with.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.html">NotableDateFilter</a></dt>
+    <dd><p>A filter matching the conjunction of the two filters.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">other</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Globalization_Calendar_NotableDateFilter_AnyOf_" data-uid="Bodu.Globalization.Calendar.NotableDateFilter.AnyOf*"></a>
+
+  <h3 id="Bodu_Globalization_Calendar_NotableDateFilter_AnyOf_Bodu_Globalization_Calendar_NotableDateFilter___" data-uid="Bodu.Globalization.Calendar.NotableDateFilter.AnyOf(Bodu.Globalization.Calendar.NotableDateFilter[])">
+  AnyOf(params NotableDateFilter[])
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateFilter.cs/#L247"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a filter that matches an occurrence when any supplied filter matches it.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static NotableDateFilter AnyOf(params NotableDateFilter[] filters)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>filters</code> <a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.html">NotableDateFilter</a>[]</dt>
+    <dd><p>The filters, any of which may match.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.html">NotableDateFilter</a></dt>
+    <dd><p>A filter matching the disjunction of the supplied filters.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">filters</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Globalization_Calendar_NotableDateFilter_ForAnyCategory_" data-uid="Bodu.Globalization.Calendar.NotableDateFilter.ForAnyCategory*"></a>
+
+  <h3 id="Bodu_Globalization_Calendar_NotableDateFilter_ForAnyCategory_Bodu_Globalization_Calendar_NotableDateCategory___" data-uid="Bodu.Globalization.Calendar.NotableDateFilter.ForAnyCategory(Bodu.Globalization.Calendar.NotableDateCategory[])">
+  ForAnyCategory(params NotableDateCategory[])
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateFilter.cs/#L104"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a filter that matches occurrences belonging to any of the supplied categories.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static NotableDateFilter ForAnyCategory(params NotableDateCategory[] categories)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>categories</code> <a class="xref" href="Bodu.Globalization.Calendar.NotableDateCategory.html">NotableDateCategory</a>[]</dt>
+    <dd><p>The categories to match.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.html">NotableDateFilter</a></dt>
+    <dd><p>A filter matching any of the categories.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">categories</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Globalization_Calendar_NotableDateFilter_ForCategory_" data-uid="Bodu.Globalization.Calendar.NotableDateFilter.ForCategory*"></a>
+
+  <h3 id="Bodu_Globalization_Calendar_NotableDateFilter_ForCategory_Bodu_Globalization_Calendar_NotableDateCategory_" data-uid="Bodu.Globalization.Calendar.NotableDateFilter.ForCategory(Bodu.Globalization.Calendar.NotableDateCategory)">
+  ForCategory(NotableDateCategory)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateFilter.cs/#L95"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a filter that matches occurrences of a specific category.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static NotableDateFilter ForCategory(NotableDateCategory category)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>category</code> <a class="xref" href="Bodu.Globalization.Calendar.NotableDateCategory.html">NotableDateCategory</a></dt>
+    <dd><p>The category to match.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.html">NotableDateFilter</a></dt>
+    <dd><p>A filter matching the category.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_Globalization_Calendar_NotableDateFilter_InDateRange_" data-uid="Bodu.Globalization.Calendar.NotableDateFilter.InDateRange*"></a>
+
+  <h3 id="Bodu_Globalization_Calendar_NotableDateFilter_InDateRange_System_DateOnly_System_DateOnly_" data-uid="Bodu.Globalization.Calendar.NotableDateFilter.InDateRange(System.DateOnly,System.DateOnly)">
+  InDateRange(DateOnly, DateOnly)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateFilter.cs/#L224"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a filter that matches occurrences whose emitted date falls within an inclusive date range.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static NotableDateFilter InDateRange(DateOnly startInclusive, DateOnly endInclusive)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>startInclusive</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>The inclusive start date.</p>
+</dd>
+    <dt><code>endInclusive</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>The inclusive end date.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.html">NotableDateFilter</a></dt>
+    <dd><p>A filter matching occurrences within the range.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_Globalization_Calendar_NotableDateFilter_IsNonWorkingDay_" data-uid="Bodu.Globalization.Calendar.NotableDateFilter.IsNonWorkingDay*"></a>
+
+  <h3 id="Bodu_Globalization_Calendar_NotableDateFilter_IsNonWorkingDay" data-uid="Bodu.Globalization.Calendar.NotableDateFilter.IsNonWorkingDay">
+  IsNonWorkingDay()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateFilter.cs/#L116"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a filter that matches occurrences flagged as non-working days.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static NotableDateFilter IsNonWorkingDay()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.html">NotableDateFilter</a></dt>
+    <dd><p>A filter matching non-working occurrences.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_Globalization_Calendar_NotableDateFilter_Matches_" data-uid="Bodu.Globalization.Calendar.NotableDateFilter.Matches*"></a>
+
+  <h3 id="Bodu_Globalization_Calendar_NotableDateFilter_Matches_Bodu_Globalization_Calendar_NotableDate_" data-uid="Bodu.Globalization.Calendar.NotableDateFilter.Matches(Bodu.Globalization.Calendar.NotableDate)">
+  Matches(NotableDate)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateFilter.cs/#L83"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines whether the supplied occurrence satisfies the filter.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Matches(NotableDate notableDate)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>notableDate</code> <a class="xref" href="Bodu.Globalization.Calendar.NotableDate.html">NotableDate</a></dt>
+    <dd><p>The resolved occurrence to test.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the occurrence matches; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">notableDate</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Globalization_Calendar_NotableDateFilter_Not_" data-uid="Bodu.Globalization.Calendar.NotableDateFilter.Not*"></a>
+
+  <h3 id="Bodu_Globalization_Calendar_NotableDateFilter_Not" data-uid="Bodu.Globalization.Calendar.NotableDateFilter.Not">
+  Not()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateFilter.cs/#L285"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Negates this filter.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NotableDateFilter Not()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.html">NotableDateFilter</a></dt>
+    <dd><p>A filter matching exactly the occurrences this filter does not.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_Globalization_Calendar_NotableDateFilter_Or_" data-uid="Bodu.Globalization.Calendar.NotableDateFilter.Or*"></a>
+
+  <h3 id="Bodu_Globalization_Calendar_NotableDateFilter_Or_Bodu_Globalization_Calendar_NotableDateFilter_" data-uid="Bodu.Globalization.Calendar.NotableDateFilter.Or(Bodu.Globalization.Calendar.NotableDateFilter)">
+  Or(NotableDateFilter)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateFilter.cs/#L274"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Combines this filter with another so that either may match.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NotableDateFilter Or(NotableDateFilter other)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>other</code> <a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.html">NotableDateFilter</a></dt>
+    <dd><p>The filter to combine with.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.html">NotableDateFilter</a></dt>
+    <dd><p>A filter matching the disjunction of the two filters.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">other</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Globalization_Calendar_NotableDateFilter_WasAdjusted_" data-uid="Bodu.Globalization.Calendar.NotableDateFilter.WasAdjusted*"></a>
+
+  <h3 id="Bodu_Globalization_Calendar_NotableDateFilter_WasAdjusted" data-uid="Bodu.Globalization.Calendar.NotableDateFilter.WasAdjusted">
+  WasAdjusted()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateFilter.cs/#L124"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a filter that matches occurrences whose emitted date differs from the calculated date because an
 adjustment applied.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Globalization_Calendar_NotableDateFilter_WithAllTags_System_String___" data-uid="Bodu.Globalization.Calendar.NotableDateFilter.WithAllTags(System.String[])">
-          <a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.WithAllTags.html#Bodu_Globalization_Calendar_NotableDateFilter_WithAllTags_System_String___">WithAllTags(params string[])</a>
-        </td>
-        <td class="markdown level1 summary"><p>Creates a filter that matches occurrences carrying all of the supplied tags.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Globalization_Calendar_NotableDateFilter_WithAnyName_System_String___" data-uid="Bodu.Globalization.Calendar.NotableDateFilter.WithAnyName(System.String[])">
-          <a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.WithAnyName.html#Bodu_Globalization_Calendar_NotableDateFilter_WithAnyName_System_String___">WithAnyName(params string[])</a>
-        </td>
-        <td class="markdown level1 summary"><p>Creates a filter that matches occurrences whose display name equals any of the supplied names.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Globalization_Calendar_NotableDateFilter_WithAnyTag_System_String___" data-uid="Bodu.Globalization.Calendar.NotableDateFilter.WithAnyTag(System.String[])">
-          <a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.WithAnyTag.html#Bodu_Globalization_Calendar_NotableDateFilter_WithAnyTag_System_String___">WithAnyTag(params string[])</a>
-        </td>
-        <td class="markdown level1 summary"><p>Creates a filter that matches occurrences carrying any of the supplied tags.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Globalization_Calendar_NotableDateFilter_WithId_System_String_" data-uid="Bodu.Globalization.Calendar.NotableDateFilter.WithId(System.String)">
-          <a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.WithId.html#Bodu_Globalization_Calendar_NotableDateFilter_WithId_System_String_">WithId(string)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Creates a filter that matches occurrences produced by a specific notable-date concept identifier.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Globalization_Calendar_NotableDateFilter_WithMinDuration_System_Int32_" data-uid="Bodu.Globalization.Calendar.NotableDateFilter.WithMinDuration(System.Int32)">
-          <a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.WithMinDuration.html#Bodu_Globalization_Calendar_NotableDateFilter_WithMinDuration_System_Int32_">WithMinDuration(int)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Creates a filter that matches occurrences spanning at least the supplied number of days.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Globalization_Calendar_NotableDateFilter_WithName_System_String_" data-uid="Bodu.Globalization.Calendar.NotableDateFilter.WithName(System.String)">
-          <a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.WithName.html#Bodu_Globalization_Calendar_NotableDateFilter_WithName_System_String_">WithName(string)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Creates a filter that matches occurrences with a specific display name.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Globalization_Calendar_NotableDateFilter_WithTag_System_String_" data-uid="Bodu.Globalization.Calendar.NotableDateFilter.WithTag(System.String)">
-          <a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.WithTag.html#Bodu_Globalization_Calendar_NotableDateFilter_WithTag_System_String_">WithTag(string)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Creates a filter that matches occurrences carrying a specific tag.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static NotableDateFilter WasAdjusted()</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.html">NotableDateFilter</a></dt>
+    <dd><p>A filter matching observed (adjusted) occurrences.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_Globalization_Calendar_NotableDateFilter_WithAllTags_" data-uid="Bodu.Globalization.Calendar.NotableDateFilter.WithAllTags*"></a>
+
+  <h3 id="Bodu_Globalization_Calendar_NotableDateFilter_WithAllTags_System_String___" data-uid="Bodu.Globalization.Calendar.NotableDateFilter.WithAllTags(System.String[])">
+  WithAllTags(params string[])
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateFilter.cs/#L202"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a filter that matches occurrences carrying all of the supplied tags.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static NotableDateFilter WithAllTags(params string[] tags)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>tags</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>[]</dt>
+    <dd><p>The tags that must all be present.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.html">NotableDateFilter</a></dt>
+    <dd><p>A filter matching occurrences with every tag.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">tags</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Globalization_Calendar_NotableDateFilter_WithAnyName_" data-uid="Bodu.Globalization.Calendar.NotableDateFilter.WithAnyName*"></a>
+
+  <h3 id="Bodu_Globalization_Calendar_NotableDateFilter_WithAnyName_System_String___" data-uid="Bodu.Globalization.Calendar.NotableDateFilter.WithAnyName(System.String[])">
+  WithAnyName(params string[])
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateFilter.cs/#L146"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a filter that matches occurrences whose display name equals any of the supplied names.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static NotableDateFilter WithAnyName(params string[] displayNames)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>displayNames</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>[]</dt>
+    <dd><p>The display names to match.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.html">NotableDateFilter</a></dt>
+    <dd><p>A filter matching any of the names.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">displayNames</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Globalization_Calendar_NotableDateFilter_WithAnyTag_" data-uid="Bodu.Globalization.Calendar.NotableDateFilter.WithAnyTag*"></a>
+
+  <h3 id="Bodu_Globalization_Calendar_NotableDateFilter_WithAnyTag_System_String___" data-uid="Bodu.Globalization.Calendar.NotableDateFilter.WithAnyTag(System.String[])">
+  WithAnyTag(params string[])
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateFilter.cs/#L188"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a filter that matches occurrences carrying any of the supplied tags.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static NotableDateFilter WithAnyTag(params string[] tags)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>tags</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>[]</dt>
+    <dd><p>The tags to match.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.html">NotableDateFilter</a></dt>
+    <dd><p>A filter matching occurrences with any of the tags.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">tags</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Globalization_Calendar_NotableDateFilter_WithId_" data-uid="Bodu.Globalization.Calendar.NotableDateFilter.WithId*"></a>
+
+  <h3 id="Bodu_Globalization_Calendar_NotableDateFilter_WithId_System_String_" data-uid="Bodu.Globalization.Calendar.NotableDateFilter.WithId(System.String)">
+  WithId(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateFilter.cs/#L162"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a filter that matches occurrences produced by a specific notable-date concept identifier.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static NotableDateFilter WithId(string notableDateId)</code></pre>
   </div>
-  <h3 id="seealso">See Also</h3>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>notableDateId</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The notable-date concept identifier to match.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.html">NotableDateFilter</a></dt>
+    <dd><p>A filter matching the concept identifier.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">notableDateId</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Globalization_Calendar_NotableDateFilter_WithMinDuration_" data-uid="Bodu.Globalization.Calendar.NotableDateFilter.WithMinDuration*"></a>
+
+  <h3 id="Bodu_Globalization_Calendar_NotableDateFilter_WithMinDuration_System_Int32_" data-uid="Bodu.Globalization.Calendar.NotableDateFilter.WithMinDuration(System.Int32)">
+  WithMinDuration(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateFilter.cs/#L215"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a filter that matches occurrences spanning at least the supplied number of days.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static NotableDateFilter WithMinDuration(int days)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>days</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The minimum inclusive duration in days.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.html">NotableDateFilter</a></dt>
+    <dd><p>A filter matching occurrences of at least the duration.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_Globalization_Calendar_NotableDateFilter_WithName_" data-uid="Bodu.Globalization.Calendar.NotableDateFilter.WithName*"></a>
+
+  <h3 id="Bodu_Globalization_Calendar_NotableDateFilter_WithName_System_String_" data-uid="Bodu.Globalization.Calendar.NotableDateFilter.WithName(System.String)">
+  WithName(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateFilter.cs/#L133"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a filter that matches occurrences with a specific display name.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static NotableDateFilter WithName(string displayName)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>displayName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The display name to match.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.html">NotableDateFilter</a></dt>
+    <dd><p>A filter matching the display name.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">displayName</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Globalization_Calendar_NotableDateFilter_WithTag_" data-uid="Bodu.Globalization.Calendar.NotableDateFilter.WithTag*"></a>
+
+  <h3 id="Bodu_Globalization_Calendar_NotableDateFilter_WithTag_System_String_" data-uid="Bodu.Globalization.Calendar.NotableDateFilter.WithTag(System.String)">
+  WithTag(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateFilter.cs/#L175"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a filter that matches occurrences carrying a specific tag.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static NotableDateFilter WithTag(string tag)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>tag</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The tag to match.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.html">NotableDateFilter</a></dt>
+    <dd><p>A filter matching occurrences with the tag.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">tag</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <h2 id="seealso">See Also</h2>
   <div class="seealso">
       <div><a class="xref" href="Bodu.Globalization.Calendar.NotableDate.html">NotableDate</a></div>
       <div><a class="xref" href="Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a></div>
@@ -324,49 +980,24 @@ adjustment applied.</p>
   </div>
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 302e395 · Built: 2026-09-29 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 1e0dd9a · Built: 2026-09-29 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

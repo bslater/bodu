@@ -1,118 +1,148 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
       <title>Class XSalsa20Poly1305 | BODU </title>
-      <meta name="viewport" content="width=device-width">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class XSalsa20Poly1305 | BODU ">
-    
-    <meta name="description" content="Provides authenticated encryption using the XSalsa20-Poly1305 construction of NaCl / libsodium crypto_secretbox, with the Bodu AEAD combined layout ciphertext ‖ tag. Accepts a 256-bit key and a 192-bit nonce and produces a 128-bit authentication tag. This class cannot be inherited.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      
+      <meta name="description" content="Provides authenticated encryption using the XSalsa20-Poly1305 construction of NaCl / libsodium crypto_secretbox, with the Bodu AEAD combined layout ciphertext ‖ tag. Accepts a 256-bit key and a 192-bit nonce and produces a 128-bit authentication tag. This class cannot be inherited.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/new/master/apiSpec/new?filename=Bodu_Security_Cryptography_XSalsa20Poly1305.md&amp;value=---%0Auid%3A%20Bodu.Security.Cryptography.XSalsa20Poly1305%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Security.Cryptography.XSalsa20Poly1305">
+
+        <article data-uid="Bodu.Security.Cryptography.XSalsa20Poly1305">
 
 
 
-  <h1 id="Bodu_Security_Cryptography_XSalsa20Poly1305" data-uid="Bodu.Security.Cryptography.XSalsa20Poly1305" class="text-break">Class XSalsa20Poly1305</h1>
-  <div class="markdown level0 summary"><p>Provides authenticated encryption using the XSalsa20-Poly1305 construction of NaCl / libsodium
+  <h1 id="Bodu_Security_Cryptography_XSalsa20Poly1305" data-uid="Bodu.Security.Cryptography.XSalsa20Poly1305" class="text-break">
+Class XSalsa20Poly1305  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/XSalsa20Poly1305.cs/#L60"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Security</span>.<a class="xref" href="Bodu.Security.Cryptography.html">Cryptography</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Security.Cryptography.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides authenticated encryption using the XSalsa20-Poly1305 construction of NaCl / libsodium
 <code>crypto_secretbox</code>, with the Bodu AEAD combined layout <code>ciphertext ‖ tag</code>. Accepts a 256-bit key and a
 192-bit nonce and produces a 128-bit authentication tag. This class cannot be inherited.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><a class="xref" href="Bodu.Security.Cryptography.Poly1305AeadTransform.html">Poly1305AeadTransform</a></div>
-    <div class="level2"><span class="xref">XSalsa20Poly1305</span></div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class XSalsa20Poly1305 : Poly1305AeadTransform, IStreamAeadTransform, IAeadTransform, IDisposable</code></pre>
   </div>
-  <div class="implements">
-    <h5>Implements</h5>
-    <div><a class="xref" href="Bodu.Security.Cryptography.IStreamAeadTransform.html">IStreamAeadTransform</a></div>
-    <div><a class="xref" href="Bodu.Security.Cryptography.IAeadTransform.html">IAeadTransform</a></div>
-    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
-  </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><a class="xref" href="Bodu.Security.Cryptography.Poly1305AeadTransform.html">Poly1305AeadTransform</a></div>
+      <div><span class="xref">XSalsa20Poly1305</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="Bodu.Security.Cryptography.IStreamAeadTransform.html">IStreamAeadTransform</a></div>
+      <div><a class="xref" href="Bodu.Security.Cryptography.IAeadTransform.html">IAeadTransform</a></div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Poly1305AeadTransform.TagSize.html#Bodu_Security_Cryptography_Poly1305AeadTransform_TagSize">Poly1305AeadTransform.TagSize</a>
+      <a class="xref" href="Bodu.Security.Cryptography.Poly1305AeadTransform.html#Bodu_Security_Cryptography_Poly1305AeadTransform_TagSize">Poly1305AeadTransform.TagSize</a>
     </div>
     <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Poly1305AeadTransform.Encrypt.html#Bodu_Security_Cryptography_Poly1305AeadTransform_Encrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_ReadOnlySpan_System_Byte__">Poly1305AeadTransform.Encrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
+      <a class="xref" href="Bodu.Security.Cryptography.Poly1305AeadTransform.html#Bodu_Security_Cryptography_Poly1305AeadTransform_Encrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_ReadOnlySpan_System_Byte__">Poly1305AeadTransform.Encrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
     </div>
     <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Poly1305AeadTransform.Decrypt.html#Bodu_Security_Cryptography_Poly1305AeadTransform_Decrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_ReadOnlySpan_System_Byte__">Poly1305AeadTransform.Decrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
+      <a class="xref" href="Bodu.Security.Cryptography.Poly1305AeadTransform.html#Bodu_Security_Cryptography_Poly1305AeadTransform_Decrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_ReadOnlySpan_System_Byte__">Poly1305AeadTransform.Decrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
     </div>
     <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Poly1305AeadTransform.Dispose.html#Bodu_Security_Cryptography_Poly1305AeadTransform_Dispose">Poly1305AeadTransform.Dispose()</a>
+      <a class="xref" href="Bodu.Security.Cryptography.Poly1305AeadTransform.html#Bodu_Security_Cryptography_Poly1305AeadTransform_Dispose">Poly1305AeadTransform.Dispose()</a>
     </div>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
@@ -132,14 +162,46 @@
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
+  </dd></dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.AeadTransformExtensions.html#Bodu_Security_Cryptography_Extensions_AeadTransformExtensions_Decrypt_Bodu_Security_Cryptography_IAeadTransform_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__">AeadTransformExtensions.Decrypt(IAeadTransform, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
   </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Security</span>.<a class="xref" href="Bodu.Security.Cryptography.html">Cryptography</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Security.Cryptography.dll</h6>
-  <h5 id="Bodu_Security_Cryptography_XSalsa20Poly1305_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class XSalsa20Poly1305 : Poly1305AeadTransform, IStreamAeadTransform, IAeadTransform, IDisposable</code></pre>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.AeadTransformExtensions.html#Bodu_Security_Cryptography_Extensions_AeadTransformExtensions_Encrypt_Bodu_Security_Cryptography_IAeadTransform_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__">AeadTransformExtensions.Encrypt(IAeadTransform, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
   </div>
-  <h5 id="Bodu_Security_Cryptography_XSalsa20Poly1305_remarks"><strong>Remarks</strong></h5>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  </dd></dl>
+
+
+  <h2 id="Bodu_Security_Cryptography_XSalsa20Poly1305_examples">Examples</h2>
+  <pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+using Bodu.Security.Cryptography.Extensions;
+
+using var enc = new XSalsa20Poly1305(key, nonce);
+byte[] sealed_ = enc.Encrypt(plaintext); // ciphertext || tag, no associated data
+using var dec = new XSalsa20Poly1305(key, nonce);
+byte[] recovered = dec.Decrypt(sealed_);</code></pre>
+
+
+  <h2 id="Bodu_Security_Cryptography_XSalsa20Poly1305_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
 The cryptographic body matches secretbox: a 256-bit subkey is derived from the key and the first 128 bits of the
 nonce via HSalsa20, Salsa20 runs under that subkey with the trailing 64 bits of the nonce, the leading 32 bytes of
@@ -149,12 +211,12 @@ keystream from byte 32 onward, and the tag is computed over the ciphertext alone
 <p>
 <strong>Wire format is not libsodium combined-mode.</strong> libsodium <code>crypto_secretbox_easy</code> emits
 <code>tag ‖ ciphertext</code>; this type emits <code>ciphertext ‖ tag</code> to match the rest of the Bodu AEAD surface. The
-ciphertext and tag bytes are identical — only the order differs. Use <a class="xref" href="Bodu.Security.Cryptography.XSalsa20Poly1305.ToLibsodiumCombined.html#Bodu_Security_Cryptography_XSalsa20Poly1305_ToLibsodiumCombined_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">ToLibsodiumCombined(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a> /
-<a class="xref" href="Bodu.Security.Cryptography.XSalsa20Poly1305.FromLibsodiumCombined.html#Bodu_Security_Cryptography_XSalsa20Poly1305_FromLibsodiumCombined_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">FromLibsodiumCombined(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a> at the interop boundary to convert between the two layouts.
+ciphertext and tag bytes are identical — only the order differs. Use <a class="xref" href="Bodu.Security.Cryptography.XSalsa20Poly1305.html#Bodu_Security_Cryptography_XSalsa20Poly1305_ToLibsodiumCombined_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">ToLibsodiumCombined(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a> /
+<a class="xref" href="Bodu.Security.Cryptography.XSalsa20Poly1305.html#Bodu_Security_Cryptography_XSalsa20Poly1305_FromLibsodiumCombined_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">FromLibsodiumCombined(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a> at the interop boundary to convert between the two layouts.
 </p>
 <p>
 <strong>No associated data.</strong> The secretbox construction does not authenticate associated data; supplying
-non-empty associated data to <a class="xref" href="Bodu.Security.Cryptography.IAeadTransform.Encrypt.html#Bodu_Security_Cryptography_IAeadTransform_Encrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_ReadOnlySpan_System_Byte__">Encrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a> or <a class="xref" href="Bodu.Security.Cryptography.IAeadTransform.Decrypt.html#Bodu_Security_Cryptography_IAeadTransform_Decrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_ReadOnlySpan_System_Byte__">Decrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a> throws
+non-empty associated data to <a class="xref" href="Bodu.Security.Cryptography.IAeadTransform.html#Bodu_Security_Cryptography_IAeadTransform_Encrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_ReadOnlySpan_System_Byte__">Encrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a> or <a class="xref" href="Bodu.Security.Cryptography.IAeadTransform.html#Bodu_Security_Cryptography_IAeadTransform_Decrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_ReadOnlySpan_System_Byte__">Decrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a> throws
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a>. When associated-data support is required, use <a class="xref" href="Bodu.Security.Cryptography.XSalsa20Poly1305Aead.html">XSalsa20Poly1305Aead</a>
 (XSalsa20 with RFC 8439 framing) or <a class="xref" href="Bodu.Security.Cryptography.XChaCha20Poly1305.html">XChaCha20Poly1305</a>.
 </p>
@@ -168,158 +230,437 @@ cipher, or any other AEAD construction unless an external key-separation scheme 
 use.
 </p>
 </div>
-  <h5 id="Bodu_Security_Cryptography_XSalsa20Poly1305_examples"><strong>Examples</strong></h5>
-  <pre><code class="lang-csharp">using Bodu.Security.Cryptography;
-using Bodu.Security.Cryptography.Extensions;
 
-using var enc = new XSalsa20Poly1305(key, nonce);
-byte[] sealed_ = enc.Encrypt(plaintext); // ciphertext || tag, no associated data
-using var dec = new XSalsa20Poly1305(key, nonce);
-byte[] recovered = dec.Decrypt(sealed_);</code></pre>
 
-  <h3 id="constructors">Constructors
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Security_Cryptography_XSalsa20Poly1305__ctor_System_Byte___System_Byte___" data-uid="Bodu.Security.Cryptography.XSalsa20Poly1305.#ctor(System.Byte[],System.Byte[])">
-          <a class="xref" href="Bodu.Security.Cryptography.XSalsa20Poly1305.-ctor.html#Bodu_Security_Cryptography_XSalsa20Poly1305__ctor_System_Byte___System_Byte___">XSalsa20Poly1305(byte[], byte[])</a>
-        </td>
-        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Security.Cryptography.XSalsa20Poly1305.html">XSalsa20Poly1305</a> class with the specified key and nonce.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_XSalsa20Poly1305__ctor_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.XSalsa20Poly1305.#ctor(System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte})">
-          <a class="xref" href="Bodu.Security.Cryptography.XSalsa20Poly1305.-ctor.html#Bodu_Security_Cryptography_XSalsa20Poly1305__ctor_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__">XSalsa20Poly1305(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Security.Cryptography.XSalsa20Poly1305.html">XSalsa20Poly1305</a> class with the specified key and nonce spans.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="fields">Fields
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Security_Cryptography_XSalsa20Poly1305_KeySize" data-uid="Bodu.Security.Cryptography.XSalsa20Poly1305.KeySize">
-          <a class="xref" href="Bodu.Security.Cryptography.XSalsa20Poly1305.KeySize.html">KeySize</a>
-        </td>
-        <td class="markdown level1 summary"><p>Length of the XSalsa20-Poly1305 key is 256 bits (32 bytes).</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_XSalsa20Poly1305_NonceSize" data-uid="Bodu.Security.Cryptography.XSalsa20Poly1305.NonceSize">
-          <a class="xref" href="Bodu.Security.Cryptography.XSalsa20Poly1305.NonceSize.html">NonceSize</a>
-        </td>
-        <td class="markdown level1 summary"><p>Length of the XSalsa20-Poly1305 nonce is 192 bits (24 bytes).</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="properties">Properties
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Security_Cryptography_XSalsa20Poly1305_SupportsAssociatedData" data-uid="Bodu.Security.Cryptography.XSalsa20Poly1305.SupportsAssociatedData">
-          <a class="xref" href="Bodu.Security.Cryptography.XSalsa20Poly1305.SupportsAssociatedData.html#Bodu_Security_Cryptography_XSalsa20Poly1305_SupportsAssociatedData">SupportsAssociatedData</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets a value indicating whether this construction authenticates associated data.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Security_Cryptography_XSalsa20Poly1305_CreateEngine" data-uid="Bodu.Security.Cryptography.XSalsa20Poly1305.CreateEngine">
-          <a class="xref" href="Bodu.Security.Cryptography.XSalsa20Poly1305.CreateEngine.html#Bodu_Security_Cryptography_XSalsa20Poly1305_CreateEngine">CreateEngine()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Creates the keystream engine for a single message, positioned at block counter 0.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_XSalsa20Poly1305_FromLibsodiumCombined_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__" data-uid="Bodu.Security.Cryptography.XSalsa20Poly1305.FromLibsodiumCombined(System.ReadOnlySpan{System.Byte},System.Span{System.Byte})">
-          <a class="xref" href="Bodu.Security.Cryptography.XSalsa20Poly1305.FromLibsodiumCombined.html#Bodu_Security_Cryptography_XSalsa20Poly1305_FromLibsodiumCombined_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">FromLibsodiumCombined(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Converts a libsodium combined output <code>tag ‖ ciphertext</code> into the Bodu combined layout
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Bodu_Security_Cryptography_XSalsa20Poly1305__ctor_" data-uid="Bodu.Security.Cryptography.XSalsa20Poly1305.#ctor*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_XSalsa20Poly1305__ctor_System_Byte___System_Byte___" data-uid="Bodu.Security.Cryptography.XSalsa20Poly1305.#ctor(System.Byte[],System.Byte[])">
+  XSalsa20Poly1305(byte[], byte[])
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/XSalsa20Poly1305.cs/#L83"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Security.Cryptography.XSalsa20Poly1305.html">XSalsa20Poly1305</a> class with the specified key and nonce.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public XSalsa20Poly1305(byte[] key, byte[] nonce)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The 256-bit (32-byte) secret key. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>nonce</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The 192-bit (24-byte) nonce. Must be unique for every message encrypted under the same key. Must not be
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">key</code> or <code class="paramref">nonce</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">key</code> is not exactly 32 bytes, or <code class="paramref">nonce</code> is not exactly 24 bytes.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Security_Cryptography_XSalsa20Poly1305__ctor_" data-uid="Bodu.Security.Cryptography.XSalsa20Poly1305.#ctor*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_XSalsa20Poly1305__ctor_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.XSalsa20Poly1305.#ctor(System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte})">
+  XSalsa20Poly1305(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/XSalsa20Poly1305.cs/#L100"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Security.Cryptography.XSalsa20Poly1305.html">XSalsa20Poly1305</a> class with the specified key and nonce spans.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public XSalsa20Poly1305(ReadOnlySpan&lt;byte&gt; key, ReadOnlySpan&lt;byte&gt; nonce)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The 256-bit (32-byte) secret key.</p>
+</dd>
+    <dt><code>nonce</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The 192-bit (24-byte) nonce. Must be unique for every message encrypted under the same key.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">key</code> is not exactly 32 bytes, or <code class="paramref">nonce</code> is not exactly 24 bytes.</p>
+</dd>
+  </dl>
+
+
+
+  <h2 class="section" id="fields">Fields
+</h2>
+
+
+
+  <h3 id="Bodu_Security_Cryptography_XSalsa20Poly1305_KeySize" data-uid="Bodu.Security.Cryptography.XSalsa20Poly1305.KeySize">
+  KeySize
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/XSalsa20Poly1305.cs/#L64"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Length of the XSalsa20-Poly1305 key is 256 bits (32 bytes).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const int KeySize = 256</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Bodu_Security_Cryptography_XSalsa20Poly1305_NonceSize" data-uid="Bodu.Security.Cryptography.XSalsa20Poly1305.NonceSize">
+  NonceSize
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/XSalsa20Poly1305.cs/#L67"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Length of the XSalsa20-Poly1305 nonce is 192 bits (24 bytes).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const int NonceSize = 192</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Bodu_Security_Cryptography_XSalsa20Poly1305_SupportsAssociatedData_" data-uid="Bodu.Security.Cryptography.XSalsa20Poly1305.SupportsAssociatedData*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_XSalsa20Poly1305_SupportsAssociatedData" data-uid="Bodu.Security.Cryptography.XSalsa20Poly1305.SupportsAssociatedData">
+  SupportsAssociatedData
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/XSalsa20Poly1305.cs/#L152"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether this construction authenticates associated data.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override bool SupportsAssociatedData { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> for the RFC 8439-framed constructions; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> for the secretbox
+construction, which has no associated-data input.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Security_Cryptography_XSalsa20Poly1305_CreateEngine_" data-uid="Bodu.Security.Cryptography.XSalsa20Poly1305.CreateEngine*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_XSalsa20Poly1305_CreateEngine" data-uid="Bodu.Security.Cryptography.XSalsa20Poly1305.CreateEngine">
+  CreateEngine()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/XSalsa20Poly1305.cs/#L155"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates the keystream engine for a single message, positioned at block counter 0.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override IStreamCipher CreateEngine()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Security.Cryptography.IStreamCipher.html">IStreamCipher</a></dt>
+    <dd><p>A freshly constructed <a class="xref" href="Bodu.Security.Cryptography.IStreamCipher.html">IStreamCipher</a> bound to <a class="xref" href="Bodu.Security.Cryptography.Poly1305AeadTransform.html#Bodu_Security_Cryptography_Poly1305AeadTransform_Key">Key</a> and <a class="xref" href="Bodu.Security.Cryptography.Poly1305AeadTransform.html#Bodu_Security_Cryptography_Poly1305AeadTransform_Nonce">Nonce</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Security_Cryptography_XSalsa20Poly1305_CreateEngine_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The caller owns the returned engine and disposes it after the message completes.</p>
+</div>
+
+
+
+
+  <a id="Bodu_Security_Cryptography_XSalsa20Poly1305_FromLibsodiumCombined_" data-uid="Bodu.Security.Cryptography.XSalsa20Poly1305.FromLibsodiumCombined*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_XSalsa20Poly1305_FromLibsodiumCombined_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__" data-uid="Bodu.Security.Cryptography.XSalsa20Poly1305.FromLibsodiumCombined(System.ReadOnlySpan{System.Byte},System.Span{System.Byte})">
+  FromLibsodiumCombined(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/XSalsa20Poly1305.cs/#L141"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Converts a libsodium combined output <code>tag ‖ ciphertext</code> into the Bodu combined layout
 <code>ciphertext ‖ tag</code>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_XSalsa20Poly1305_OpenCore_Bodu_Security_Cryptography_IStreamCipher_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__System_Span_System_Byte__" data-uid="Bodu.Security.Cryptography.XSalsa20Poly1305.OpenCore(Bodu.Security.Cryptography.IStreamCipher,System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte},System.Span{System.Byte})">
-          <a class="xref" href="Bodu.Security.Cryptography.XSalsa20Poly1305.OpenCore.html#Bodu_Security_Cryptography_XSalsa20Poly1305_OpenCore_Bodu_Security_Cryptography_IStreamCipher_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">OpenCore(IStreamCipher, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Verifies and decrypts a message. The default implementation applies the RFC 8439 framing.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_XSalsa20Poly1305_SealCore_Bodu_Security_Cryptography_IStreamCipher_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__System_Span_System_Byte__" data-uid="Bodu.Security.Cryptography.XSalsa20Poly1305.SealCore(Bodu.Security.Cryptography.IStreamCipher,System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte},System.Span{System.Byte})">
-          <a class="xref" href="Bodu.Security.Cryptography.XSalsa20Poly1305.SealCore.html#Bodu_Security_Cryptography_XSalsa20Poly1305_SealCore_Bodu_Security_Cryptography_IStreamCipher_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">SealCore(IStreamCipher, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Encrypts and authenticates a message. The default implementation applies the RFC 8439 framing.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Security_Cryptography_XSalsa20Poly1305_ToLibsodiumCombined_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__" data-uid="Bodu.Security.Cryptography.XSalsa20Poly1305.ToLibsodiumCombined(System.ReadOnlySpan{System.Byte},System.Span{System.Byte})">
-          <a class="xref" href="Bodu.Security.Cryptography.XSalsa20Poly1305.ToLibsodiumCombined.html#Bodu_Security_Cryptography_XSalsa20Poly1305_ToLibsodiumCombined_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">ToLibsodiumCombined(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Converts a Bodu combined output <code>ciphertext ‖ tag</code> into the libsodium combined layout
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void FromLibsodiumCombined(ReadOnlySpan&lt;byte&gt; tagThenCiphertext, Span&lt;byte&gt; ciphertextThenTag)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>tagThenCiphertext</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The libsodium output: the 16-byte tag followed by the ciphertext.</p>
+</dd>
+    <dt><code>ciphertextThenTag</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>Receives the Bodu layout: the ciphertext followed by the 16-byte tag. May alias
+<code class="paramref">tagThenCiphertext</code> for an in-place conversion.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">tagThenCiphertext</code> is shorter than the tag, or <code class="paramref">ciphertextThenTag</code> is too
+small.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Security_Cryptography_XSalsa20Poly1305_OpenCore_" data-uid="Bodu.Security.Cryptography.XSalsa20Poly1305.OpenCore*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_XSalsa20Poly1305_OpenCore_Bodu_Security_Cryptography_IStreamCipher_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__System_Span_System_Byte__" data-uid="Bodu.Security.Cryptography.XSalsa20Poly1305.OpenCore(Bodu.Security.Cryptography.IStreamCipher,System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte},System.Span{System.Byte})">
+  OpenCore(IStreamCipher, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/XSalsa20Poly1305.cs/#L167"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Verifies and decrypts a message. The default implementation applies the RFC 8439 framing.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override int OpenCore(IStreamCipher engine, ReadOnlySpan&lt;byte&gt; associatedData, ReadOnlySpan&lt;byte&gt; ciphertextWithTag, Span&lt;byte&gt; output)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>engine</code> <a class="xref" href="Bodu.Security.Cryptography.IStreamCipher.html">IStreamCipher</a></dt>
+    <dd><p>The keystream engine, positioned at block counter 0.</p>
+</dd>
+    <dt><code>associatedData</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The associated data that must match the value used at encryption time.</p>
+</dd>
+    <dt><code>ciphertextWithTag</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The ciphertext followed by its authentication tag.</p>
+</dd>
+    <dt><code>output</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>Receives the recovered plaintext.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of plaintext bytes written.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicexception">CryptographicException</a></dt>
+    <dd><p>The authentication tag did not match.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Security_Cryptography_XSalsa20Poly1305_SealCore_" data-uid="Bodu.Security.Cryptography.XSalsa20Poly1305.SealCore*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_XSalsa20Poly1305_SealCore_Bodu_Security_Cryptography_IStreamCipher_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__System_Span_System_Byte__" data-uid="Bodu.Security.Cryptography.XSalsa20Poly1305.SealCore(Bodu.Security.Cryptography.IStreamCipher,System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte},System.Span{System.Byte})">
+  SealCore(IStreamCipher, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/XSalsa20Poly1305.cs/#L159"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Encrypts and authenticates a message. The default implementation applies the RFC 8439 framing.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override int SealCore(IStreamCipher engine, ReadOnlySpan&lt;byte&gt; associatedData, ReadOnlySpan&lt;byte&gt; plaintext, Span&lt;byte&gt; output)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>engine</code> <a class="xref" href="Bodu.Security.Cryptography.IStreamCipher.html">IStreamCipher</a></dt>
+    <dd><p>The keystream engine, positioned at block counter 0.</p>
+</dd>
+    <dt><code>associatedData</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The associated data to authenticate.</p>
+</dd>
+    <dt><code>plaintext</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The data to encrypt.</p>
+</dd>
+    <dt><code>output</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>Receives the ciphertext followed by the authentication tag.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of bytes written.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_Security_Cryptography_XSalsa20Poly1305_ToLibsodiumCombined_" data-uid="Bodu.Security.Cryptography.XSalsa20Poly1305.ToLibsodiumCombined*"></a>
+
+  <h3 id="Bodu_Security_Cryptography_XSalsa20Poly1305_ToLibsodiumCombined_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__" data-uid="Bodu.Security.Cryptography.XSalsa20Poly1305.ToLibsodiumCombined(System.ReadOnlySpan{System.Byte},System.Span{System.Byte})">
+  ToLibsodiumCombined(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Security.Cryptography/src/Security.Cryptography/XSalsa20Poly1305.cs/#L118"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Converts a Bodu combined output <code>ciphertext ‖ tag</code> into the libsodium combined layout
 <code>tag ‖ ciphertext</code>.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.AeadTransformExtensions.Decrypt.html#Bodu_Security_Cryptography_Extensions_AeadTransformExtensions_Decrypt_Bodu_Security_Cryptography_IAeadTransform_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__">AeadTransformExtensions.Decrypt(IAeadTransform, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void ToLibsodiumCombined(ReadOnlySpan&lt;byte&gt; ciphertextThenTag, Span&lt;byte&gt; tagThenCiphertext)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Security.Cryptography.Extensions.AeadTransformExtensions.Encrypt.html#Bodu_Security_Cryptography_Extensions_AeadTransformExtensions_Encrypt_Bodu_Security_Cryptography_IAeadTransform_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__">AeadTransformExtensions.Encrypt(IAeadTransform, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <h3 id="seealso">See Also</h3>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>ciphertextThenTag</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The Bodu output: ciphertext followed by the 16-byte tag.</p>
+</dd>
+    <dt><code>tagThenCiphertext</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>Receives the libsodium layout: the 16-byte tag followed by the ciphertext. May alias
+<code class="paramref">ciphertextThenTag</code> for an in-place conversion.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">ciphertextThenTag</code> is shorter than the tag, or <code class="paramref">tagThenCiphertext</code> is too
+small.</p>
+</dd>
+  </dl>
+
+
+
+  <h2 id="seealso">See Also</h2>
   <div class="seealso">
       <div><span><a href="https://nacl.cr.yp.to/secretbox.html">NaCl crypto_secretbox</a></span></div>
       <div><a class="xref" href="Bodu.Security.Cryptography.XSalsa20.html">XSalsa20</a></div>
@@ -329,49 +670,24 @@ byte[] recovered = dec.Decrypt(sealed_);</code></pre>
   </div>
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 302e395 · Built: 2026-09-29 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 1e0dd9a · Built: 2026-09-29 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

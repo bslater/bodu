@@ -1,99 +1,127 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
       <title>Class NotableDateTimeExtensions | BODU </title>
-      <meta name="viewport" content="width=device-width">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class NotableDateTimeExtensions | BODU ">
-    
-    <meta name="description" content="Provides working-day, traversal, and notable-date query extension methods over , delegating to the  surface on the date component.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      
+      <meta name="description" content="Provides working-day, traversal, and notable-date query extension methods over , delegating to the  surface on the date component.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/new/master/apiSpec/new?filename=Bodu_Extensions_NotableDateTimeExtensions.md&amp;value=---%0Auid%3A%20Bodu.Extensions.NotableDateTimeExtensions%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Extensions.NotableDateTimeExtensions">
+
+        <article data-uid="Bodu.Extensions.NotableDateTimeExtensions">
 
 
 
-  <h1 id="Bodu_Extensions_NotableDateTimeExtensions" data-uid="Bodu.Extensions.NotableDateTimeExtensions" class="text-break">Class NotableDateTimeExtensions</h1>
-  <div class="markdown level0 summary"><p>Provides working-day, traversal, and notable-date query extension methods over <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>, delegating
+  <h1 id="Bodu_Extensions_NotableDateTimeExtensions" data-uid="Bodu.Extensions.NotableDateTimeExtensions" class="text-break">
+Class NotableDateTimeExtensions  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Globalization.Calendar/src/Extensions/NotableDateTimeExtensions.WorkingDaysBetween.cs/#L9"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Extensions.html">Extensions</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Globalization.Calendar.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides working-day, traversal, and notable-date query extension methods over <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>, delegating
 to the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a> surface on the date component.</p>
 </div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><span class="xref">NotableDateTimeExtensions</span></div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class NotableDateTimeExtensions</code></pre>
   </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">NotableDateTimeExtensions</span></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
@@ -115,20 +143,11 @@ to the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateo
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
-  </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Extensions.html">Extensions</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Globalization.Calendar.dll</h6>
-  <h5 id="Bodu_Extensions_NotableDateTimeExtensions_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static class NotableDateTimeExtensions</code></pre>
-  </div>
-  <h5 id="Bodu_Extensions_NotableDateTimeExtensions_remarks"><strong>Remarks</strong></h5>
-  <div class="markdown level0 remarks"><p>
-Predicate and query methods evaluate the date component only. Traversal methods that return a moved
-<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> preserve the original time-of-day and <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime.kind">Kind</a>.
-</p>
-</div>
-  <h5 id="Bodu_Extensions_NotableDateTimeExtensions_examples"><strong>Examples</strong></h5>
+  </dd></dl>
+
+
+
+  <h2 id="Bodu_Extensions_NotableDateTimeExtensions_examples">Examples</h2>
   <pre><code class="lang-csharp">INotableDateService service = AmericasCalendarData.CreateService("US");
 DateTime stamp = new(2026, 12, 25, 9, 30, 0, DateTimeKind.Local); // Christmas morning
 
@@ -137,155 +156,1058 @@ bool working = stamp.IsWorkingDay(service, "US"); // false
 // The next working day keeps the original 09:30 local time-of-day.
 DateTime resume = stamp.NextWorkingDay(service, "US");</code></pre>
 
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Extensions_NotableDateTimeExtensions_AddWorkingDays_System_DateTime_System_Int32_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateTimeExtensions.AddWorkingDays(System.DateTime,System.Int32,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
-          <a class="xref" href="Bodu.Extensions.NotableDateTimeExtensions.AddWorkingDays.html#Bodu_Extensions_NotableDateTimeExtensions_AddWorkingDays_System_DateTime_System_Int32_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__">AddWorkingDays(DateTime, int, INotableDateService, string, WeekPattern?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Advances the date by a signed number of working days, preserving the time-of-day and kind.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_NotableDateTimeExtensions_EnumerateNonWorkingDays_System_DateTime_System_DateTime_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateTimeExtensions.EnumerateNonWorkingDays(System.DateTime,System.DateTime,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
-          <a class="xref" href="Bodu.Extensions.NotableDateTimeExtensions.EnumerateNonWorkingDays.html#Bodu_Extensions_NotableDateTimeExtensions_EnumerateNonWorkingDays_System_DateTime_System_DateTime_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__">EnumerateNonWorkingDays(DateTime, DateTime, INotableDateService, string, WeekPattern?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Lazily enumerates the non-working days in the inclusive range, in ascending order, each at the start's
+
+  <h2 id="Bodu_Extensions_NotableDateTimeExtensions_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>
+Predicate and query methods evaluate the date component only. Traversal methods that return a moved
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> preserve the original time-of-day and <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime.kind">Kind</a>.
+</p>
+</div>
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Extensions_NotableDateTimeExtensions_AddWorkingDays_" data-uid="Bodu.Extensions.NotableDateTimeExtensions.AddWorkingDays*"></a>
+
+  <h3 id="Bodu_Extensions_NotableDateTimeExtensions_AddWorkingDays_System_DateTime_System_Int32_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateTimeExtensions.AddWorkingDays(System.DateTime,System.Int32,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
+  AddWorkingDays(DateTime, int, INotableDateService, string, WeekPattern?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Globalization.Calendar/src/Extensions/NotableDateTimeExtensions.AddWorkingDays.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Advances the date by a signed number of working days, preserving the time-of-day and kind.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DateTime AddWorkingDays(this DateTime date, int count, INotableDateService service, string territory, WeekPattern? workingWeek = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>date</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a></dt>
+    <dd><p>The starting date.</p>
+</dd>
+    <dt><code>count</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of working days to add; negative retreats, zero returns the date unchanged.</p>
+</dd>
+    <dt><code>service</code> <a class="xref" href="Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a></dt>
+    <dd><p>The service used to resolve notable dates.</p>
+</dd>
+    <dt><code>territory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The requested territory code.</p>
+</dd>
+    <dt><code>workingWeek</code> <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a>?</dt>
+    <dd><p>The working-week pattern, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for Monday to Friday.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a></dt>
+    <dd><p>The resulting date at the original time-of-day.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">service</code> or <code class="paramref">territory</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Extensions_NotableDateTimeExtensions_EnumerateNonWorkingDays_" data-uid="Bodu.Extensions.NotableDateTimeExtensions.EnumerateNonWorkingDays*"></a>
+
+  <h3 id="Bodu_Extensions_NotableDateTimeExtensions_EnumerateNonWorkingDays_System_DateTime_System_DateTime_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateTimeExtensions.EnumerateNonWorkingDays(System.DateTime,System.DateTime,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
+  EnumerateNonWorkingDays(DateTime, DateTime, INotableDateService, string, WeekPattern?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Globalization.Calendar/src/Extensions/NotableDateTimeExtensions.EnumerateNonWorkingDays.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Lazily enumerates the non-working days in the inclusive range, in ascending order, each at the start's
 time-of-day and kind.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_NotableDateTimeExtensions_EnumerateNotableDates_System_DateTime_System_DateTime_Bodu_Globalization_Calendar_INotableDateService_System_String_Bodu_Globalization_Calendar_NotableDateFilter_" data-uid="Bodu.Extensions.NotableDateTimeExtensions.EnumerateNotableDates(System.DateTime,System.DateTime,Bodu.Globalization.Calendar.INotableDateService,System.String,Bodu.Globalization.Calendar.NotableDateFilter)">
-          <a class="xref" href="Bodu.Extensions.NotableDateTimeExtensions.EnumerateNotableDates.html#Bodu_Extensions_NotableDateTimeExtensions_EnumerateNotableDates_System_DateTime_System_DateTime_Bodu_Globalization_Calendar_INotableDateService_System_String_Bodu_Globalization_Calendar_NotableDateFilter_">EnumerateNotableDates(DateTime, DateTime, INotableDateService, string, NotableDateFilter?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Resolves the notable dates emitted within the inclusive range for the territory.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_NotableDateTimeExtensions_EnumerateWorkingDays_System_DateTime_System_DateTime_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateTimeExtensions.EnumerateWorkingDays(System.DateTime,System.DateTime,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
-          <a class="xref" href="Bodu.Extensions.NotableDateTimeExtensions.EnumerateWorkingDays.html#Bodu_Extensions_NotableDateTimeExtensions_EnumerateWorkingDays_System_DateTime_System_DateTime_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__">EnumerateWorkingDays(DateTime, DateTime, INotableDateService, string, WeekPattern?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Lazily enumerates the working days in the inclusive range, in ascending order, each at the start's time-of-day
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;DateTime&gt; EnumerateNonWorkingDays(this DateTime start, DateTime end, INotableDateService service, string territory, WeekPattern? workingWeek = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>start</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a></dt>
+    <dd><p>The inclusive start date.</p>
+</dd>
+    <dt><code>end</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a></dt>
+    <dd><p>The inclusive end date.</p>
+</dd>
+    <dt><code>service</code> <a class="xref" href="Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a></dt>
+    <dd><p>The service used to resolve notable dates.</p>
+</dd>
+    <dt><code>territory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The requested territory code.</p>
+</dd>
+    <dt><code>workingWeek</code> <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a>?</dt>
+    <dd><p>The working-week pattern, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for Monday to Friday.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>&gt;</dt>
+    <dd><p>The non-working days in the range at the start's time-of-day.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">service</code> or <code class="paramref">territory</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Extensions_NotableDateTimeExtensions_EnumerateNotableDates_" data-uid="Bodu.Extensions.NotableDateTimeExtensions.EnumerateNotableDates*"></a>
+
+  <h3 id="Bodu_Extensions_NotableDateTimeExtensions_EnumerateNotableDates_System_DateTime_System_DateTime_Bodu_Globalization_Calendar_INotableDateService_System_String_Bodu_Globalization_Calendar_NotableDateFilter_" data-uid="Bodu.Extensions.NotableDateTimeExtensions.EnumerateNotableDates(System.DateTime,System.DateTime,Bodu.Globalization.Calendar.INotableDateService,System.String,Bodu.Globalization.Calendar.NotableDateFilter)">
+  EnumerateNotableDates(DateTime, DateTime, INotableDateService, string, NotableDateFilter?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Globalization.Calendar/src/Extensions/NotableDateTimeExtensions.EnumerateNotableDates.cs/#L23"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Resolves the notable dates emitted within the inclusive range for the territory.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IReadOnlyList&lt;NotableDate&gt; EnumerateNotableDates(this DateTime start, DateTime end, INotableDateService service, string territory, NotableDateFilter? filter = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>start</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a></dt>
+    <dd><p>The inclusive start date.</p>
+</dd>
+    <dt><code>end</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a></dt>
+    <dd><p>The inclusive end date.</p>
+</dd>
+    <dt><code>service</code> <a class="xref" href="Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a></dt>
+    <dd><p>The service used to resolve notable dates.</p>
+</dd>
+    <dt><code>territory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The requested territory code.</p>
+</dd>
+    <dt><code>filter</code> <a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.html">NotableDateFilter</a></dt>
+    <dd><p>An optional filter the occurrences must satisfy.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Bodu.Globalization.Calendar.NotableDate.html">NotableDate</a>&gt;</dt>
+    <dd><p>The emitted occurrences, ordered by date then identity.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">service</code> or <code class="paramref">territory</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Extensions_NotableDateTimeExtensions_EnumerateWorkingDays_" data-uid="Bodu.Extensions.NotableDateTimeExtensions.EnumerateWorkingDays*"></a>
+
+  <h3 id="Bodu_Extensions_NotableDateTimeExtensions_EnumerateWorkingDays_System_DateTime_System_DateTime_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateTimeExtensions.EnumerateWorkingDays(System.DateTime,System.DateTime,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
+  EnumerateWorkingDays(DateTime, DateTime, INotableDateService, string, WeekPattern?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Globalization.Calendar/src/Extensions/NotableDateTimeExtensions.EnumerateWorkingDays.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Lazily enumerates the working days in the inclusive range, in ascending order, each at the start's time-of-day
 and kind.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_NotableDateTimeExtensions_GetNotableDates_System_DateTime_Bodu_Globalization_Calendar_INotableDateService_System_String_Bodu_Globalization_Calendar_NotableDateFilter_" data-uid="Bodu.Extensions.NotableDateTimeExtensions.GetNotableDates(System.DateTime,Bodu.Globalization.Calendar.INotableDateService,System.String,Bodu.Globalization.Calendar.NotableDateFilter)">
-          <a class="xref" href="Bodu.Extensions.NotableDateTimeExtensions.GetNotableDates.html#Bodu_Extensions_NotableDateTimeExtensions_GetNotableDates_System_DateTime_Bodu_Globalization_Calendar_INotableDateService_System_String_Bodu_Globalization_Calendar_NotableDateFilter_">GetNotableDates(DateTime, INotableDateService, string, NotableDateFilter?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the notable dates emitted on the date for the territory.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_NotableDateTimeExtensions_IsNonWorkingDay_System_DateTime_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateTimeExtensions.IsNonWorkingDay(System.DateTime,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
-          <a class="xref" href="Bodu.Extensions.NotableDateTimeExtensions.IsNonWorkingDay.html#Bodu_Extensions_NotableDateTimeExtensions_IsNonWorkingDay_System_DateTime_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__">IsNonWorkingDay(DateTime, INotableDateService, string, WeekPattern?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether the date is a non-working day for the territory.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_NotableDateTimeExtensions_IsNotableDate_System_DateTime_Bodu_Globalization_Calendar_INotableDateService_System_String_Bodu_Globalization_Calendar_NotableDateFilter_" data-uid="Bodu.Extensions.NotableDateTimeExtensions.IsNotableDate(System.DateTime,Bodu.Globalization.Calendar.INotableDateService,System.String,Bodu.Globalization.Calendar.NotableDateFilter)">
-          <a class="xref" href="Bodu.Extensions.NotableDateTimeExtensions.IsNotableDate.html#Bodu_Extensions_NotableDateTimeExtensions_IsNotableDate_System_DateTime_Bodu_Globalization_Calendar_INotableDateService_System_String_Bodu_Globalization_Calendar_NotableDateFilter_">IsNotableDate(DateTime, INotableDateService, string, NotableDateFilter?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether any notable date is emitted on the date for the territory.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_NotableDateTimeExtensions_IsWeekend_System_DateTime_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateTimeExtensions.IsWeekend(System.DateTime,System.Nullable{Bodu.WeekPattern})">
-          <a class="xref" href="Bodu.Extensions.NotableDateTimeExtensions.IsWeekend.html#Bodu_Extensions_NotableDateTimeExtensions_IsWeekend_System_DateTime_System_Nullable_Bodu_WeekPattern__">IsWeekend(DateTime, WeekPattern?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether the date falls outside the working week.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_NotableDateTimeExtensions_IsWorkingDay_System_DateTime_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateTimeExtensions.IsWorkingDay(System.DateTime,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
-          <a class="xref" href="Bodu.Extensions.NotableDateTimeExtensions.IsWorkingDay.html#Bodu_Extensions_NotableDateTimeExtensions_IsWorkingDay_System_DateTime_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__">IsWorkingDay(DateTime, INotableDateService, string, WeekPattern?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether the date is a working day for the territory.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_NotableDateTimeExtensions_NextNonWorkingDay_System_DateTime_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateTimeExtensions.NextNonWorkingDay(System.DateTime,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
-          <a class="xref" href="Bodu.Extensions.NotableDateTimeExtensions.NextNonWorkingDay.html#Bodu_Extensions_NotableDateTimeExtensions_NextNonWorkingDay_System_DateTime_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__">NextNonWorkingDay(DateTime, INotableDateService, string, WeekPattern?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the first non-working day strictly after the date, preserving the time-of-day and kind.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_NotableDateTimeExtensions_NextNotableDate_System_DateTime_Bodu_Globalization_Calendar_INotableDateService_System_String_Bodu_Globalization_Calendar_NotableDateFilter_" data-uid="Bodu.Extensions.NotableDateTimeExtensions.NextNotableDate(System.DateTime,Bodu.Globalization.Calendar.INotableDateService,System.String,Bodu.Globalization.Calendar.NotableDateFilter)">
-          <a class="xref" href="Bodu.Extensions.NotableDateTimeExtensions.NextNotableDate.html#Bodu_Extensions_NotableDateTimeExtensions_NextNotableDate_System_DateTime_Bodu_Globalization_Calendar_INotableDateService_System_String_Bodu_Globalization_Calendar_NotableDateFilter_">NextNotableDate(DateTime, INotableDateService, string, NotableDateFilter?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the earliest notable date emitted strictly after the date for the territory.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_NotableDateTimeExtensions_NextWorkingDay_System_DateTime_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateTimeExtensions.NextWorkingDay(System.DateTime,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
-          <a class="xref" href="Bodu.Extensions.NotableDateTimeExtensions.NextWorkingDay.html#Bodu_Extensions_NotableDateTimeExtensions_NextWorkingDay_System_DateTime_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__">NextWorkingDay(DateTime, INotableDateService, string, WeekPattern?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the first working day strictly after the date, preserving the time-of-day and kind.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_NotableDateTimeExtensions_PreviousNonWorkingDay_System_DateTime_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateTimeExtensions.PreviousNonWorkingDay(System.DateTime,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
-          <a class="xref" href="Bodu.Extensions.NotableDateTimeExtensions.PreviousNonWorkingDay.html#Bodu_Extensions_NotableDateTimeExtensions_PreviousNonWorkingDay_System_DateTime_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__">PreviousNonWorkingDay(DateTime, INotableDateService, string, WeekPattern?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the first non-working day strictly before the date, preserving the time-of-day and kind.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_NotableDateTimeExtensions_PreviousNotableDate_System_DateTime_Bodu_Globalization_Calendar_INotableDateService_System_String_Bodu_Globalization_Calendar_NotableDateFilter_" data-uid="Bodu.Extensions.NotableDateTimeExtensions.PreviousNotableDate(System.DateTime,Bodu.Globalization.Calendar.INotableDateService,System.String,Bodu.Globalization.Calendar.NotableDateFilter)">
-          <a class="xref" href="Bodu.Extensions.NotableDateTimeExtensions.PreviousNotableDate.html#Bodu_Extensions_NotableDateTimeExtensions_PreviousNotableDate_System_DateTime_Bodu_Globalization_Calendar_INotableDateService_System_String_Bodu_Globalization_Calendar_NotableDateFilter_">PreviousNotableDate(DateTime, INotableDateService, string, NotableDateFilter?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the most recent notable date emitted strictly before the date for the territory.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_NotableDateTimeExtensions_PreviousWorkingDay_System_DateTime_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateTimeExtensions.PreviousWorkingDay(System.DateTime,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
-          <a class="xref" href="Bodu.Extensions.NotableDateTimeExtensions.PreviousWorkingDay.html#Bodu_Extensions_NotableDateTimeExtensions_PreviousWorkingDay_System_DateTime_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__">PreviousWorkingDay(DateTime, INotableDateService, string, WeekPattern?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the first working day strictly before the date, preserving the time-of-day and kind.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_NotableDateTimeExtensions_SnapToNearestWorkingDay_System_DateTime_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateTimeExtensions.SnapToNearestWorkingDay(System.DateTime,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
-          <a class="xref" href="Bodu.Extensions.NotableDateTimeExtensions.SnapToNearestWorkingDay.html#Bodu_Extensions_NotableDateTimeExtensions_SnapToNearestWorkingDay_System_DateTime_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__">SnapToNearestWorkingDay(DateTime, INotableDateService, string, WeekPattern?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the date if it is a working day; otherwise the nearest working day, preserving the time-of-day and kind.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_NotableDateTimeExtensions_SnapToWorkingDay_System_DateTime_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateTimeExtensions.SnapToWorkingDay(System.DateTime,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
-          <a class="xref" href="Bodu.Extensions.NotableDateTimeExtensions.SnapToWorkingDay.html#Bodu_Extensions_NotableDateTimeExtensions_SnapToWorkingDay_System_DateTime_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__">SnapToWorkingDay(DateTime, INotableDateService, string, WeekPattern?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the date if it is a working day; otherwise the next working day, preserving the time-of-day and kind.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_NotableDateTimeExtensions_SnapToWorkingDayBackward_System_DateTime_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateTimeExtensions.SnapToWorkingDayBackward(System.DateTime,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
-          <a class="xref" href="Bodu.Extensions.NotableDateTimeExtensions.SnapToWorkingDayBackward.html#Bodu_Extensions_NotableDateTimeExtensions_SnapToWorkingDayBackward_System_DateTime_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__">SnapToWorkingDayBackward(DateTime, INotableDateService, string, WeekPattern?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns the date if it is a working day; otherwise the previous working day, preserving the time-of-day and
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;DateTime&gt; EnumerateWorkingDays(this DateTime start, DateTime end, INotableDateService service, string territory, WeekPattern? workingWeek = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>start</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a></dt>
+    <dd><p>The inclusive start date.</p>
+</dd>
+    <dt><code>end</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a></dt>
+    <dd><p>The inclusive end date.</p>
+</dd>
+    <dt><code>service</code> <a class="xref" href="Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a></dt>
+    <dd><p>The service used to resolve notable dates.</p>
+</dd>
+    <dt><code>territory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The requested territory code.</p>
+</dd>
+    <dt><code>workingWeek</code> <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a>?</dt>
+    <dd><p>The working-week pattern, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for Monday to Friday.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>&gt;</dt>
+    <dd><p>The working days in the range at the start's time-of-day.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">service</code> or <code class="paramref">territory</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Extensions_NotableDateTimeExtensions_GetNotableDates_" data-uid="Bodu.Extensions.NotableDateTimeExtensions.GetNotableDates*"></a>
+
+  <h3 id="Bodu_Extensions_NotableDateTimeExtensions_GetNotableDates_System_DateTime_Bodu_Globalization_Calendar_INotableDateService_System_String_Bodu_Globalization_Calendar_NotableDateFilter_" data-uid="Bodu.Extensions.NotableDateTimeExtensions.GetNotableDates(System.DateTime,Bodu.Globalization.Calendar.INotableDateService,System.String,Bodu.Globalization.Calendar.NotableDateFilter)">
+  GetNotableDates(DateTime, INotableDateService, string, NotableDateFilter?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Globalization.Calendar/src/Extensions/NotableDateTimeExtensions.GetNotableDates.cs/#L22"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the notable dates emitted on the date for the territory.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IReadOnlyList&lt;NotableDate&gt; GetNotableDates(this DateTime date, INotableDateService service, string territory, NotableDateFilter? filter = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>date</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a></dt>
+    <dd><p>The date whose date component is resolved.</p>
+</dd>
+    <dt><code>service</code> <a class="xref" href="Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a></dt>
+    <dd><p>The service used to resolve notable dates.</p>
+</dd>
+    <dt><code>territory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The requested territory code.</p>
+</dd>
+    <dt><code>filter</code> <a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.html">NotableDateFilter</a></dt>
+    <dd><p>An optional filter the occurrences must satisfy.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Bodu.Globalization.Calendar.NotableDate.html">NotableDate</a>&gt;</dt>
+    <dd><p>The emitted occurrences; empty when there are none.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">service</code> or <code class="paramref">territory</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Extensions_NotableDateTimeExtensions_IsNonWorkingDay_" data-uid="Bodu.Extensions.NotableDateTimeExtensions.IsNonWorkingDay*"></a>
+
+  <h3 id="Bodu_Extensions_NotableDateTimeExtensions_IsNonWorkingDay_System_DateTime_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateTimeExtensions.IsNonWorkingDay(System.DateTime,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
+  IsNonWorkingDay(DateTime, INotableDateService, string, WeekPattern?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Globalization.Calendar/src/Extensions/NotableDateTimeExtensions.IsNonWorkingDay.cs/#L22"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines whether the date is a non-working day for the territory.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsNonWorkingDay(this DateTime date, INotableDateService service, string territory, WeekPattern? workingWeek = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>date</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a></dt>
+    <dd><p>The date whose date component is tested.</p>
+</dd>
+    <dt><code>service</code> <a class="xref" href="Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a></dt>
+    <dd><p>The service used to resolve notable dates.</p>
+</dd>
+    <dt><code>territory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The requested territory code.</p>
+</dd>
+    <dt><code>workingWeek</code> <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a>?</dt>
+    <dd><p>The working-week pattern, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for Monday to Friday.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the date is non-working; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">service</code> or <code class="paramref">territory</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Extensions_NotableDateTimeExtensions_IsNotableDate_" data-uid="Bodu.Extensions.NotableDateTimeExtensions.IsNotableDate*"></a>
+
+  <h3 id="Bodu_Extensions_NotableDateTimeExtensions_IsNotableDate_System_DateTime_Bodu_Globalization_Calendar_INotableDateService_System_String_Bodu_Globalization_Calendar_NotableDateFilter_" data-uid="Bodu.Extensions.NotableDateTimeExtensions.IsNotableDate(System.DateTime,Bodu.Globalization.Calendar.INotableDateService,System.String,Bodu.Globalization.Calendar.NotableDateFilter)">
+  IsNotableDate(DateTime, INotableDateService, string, NotableDateFilter?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Globalization.Calendar/src/Extensions/NotableDateTimeExtensions.IsNotableDate.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines whether any notable date is emitted on the date for the territory.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsNotableDate(this DateTime date, INotableDateService service, string territory, NotableDateFilter? filter = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>date</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a></dt>
+    <dd><p>The date whose date component is tested.</p>
+</dd>
+    <dt><code>service</code> <a class="xref" href="Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a></dt>
+    <dd><p>The service used to resolve notable dates.</p>
+</dd>
+    <dt><code>territory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The requested territory code.</p>
+</dd>
+    <dt><code>filter</code> <a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.html">NotableDateFilter</a></dt>
+    <dd><p>An optional filter the occurrence must satisfy.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if at least one occurrence is emitted; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">service</code> or <code class="paramref">territory</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Extensions_NotableDateTimeExtensions_IsWeekend_" data-uid="Bodu.Extensions.NotableDateTimeExtensions.IsWeekend*"></a>
+
+  <h3 id="Bodu_Extensions_NotableDateTimeExtensions_IsWeekend_System_DateTime_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateTimeExtensions.IsWeekend(System.DateTime,System.Nullable{Bodu.WeekPattern})">
+  IsWeekend(DateTime, WeekPattern?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Globalization.Calendar/src/Extensions/NotableDateTimeExtensions.IsWeekend.cs/#L19"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines whether the date falls outside the working week.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsWeekend(this DateTime date, WeekPattern? workingWeek = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>date</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a></dt>
+    <dd><p>The date whose date component is tested.</p>
+</dd>
+    <dt><code>workingWeek</code> <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a>?</dt>
+    <dd><p>The working-week pattern, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for Monday to Friday.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the date is not a working-week day; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_Extensions_NotableDateTimeExtensions_IsWorkingDay_" data-uid="Bodu.Extensions.NotableDateTimeExtensions.IsWorkingDay*"></a>
+
+  <h3 id="Bodu_Extensions_NotableDateTimeExtensions_IsWorkingDay_System_DateTime_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateTimeExtensions.IsWorkingDay(System.DateTime,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
+  IsWorkingDay(DateTime, INotableDateService, string, WeekPattern?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Globalization.Calendar/src/Extensions/NotableDateTimeExtensions.IsWorkingDay.cs/#L22"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines whether the date is a working day for the territory.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsWorkingDay(this DateTime date, INotableDateService service, string territory, WeekPattern? workingWeek = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>date</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a></dt>
+    <dd><p>The date whose date component is tested.</p>
+</dd>
+    <dt><code>service</code> <a class="xref" href="Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a></dt>
+    <dd><p>The service used to resolve notable dates.</p>
+</dd>
+    <dt><code>territory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The requested territory code.</p>
+</dd>
+    <dt><code>workingWeek</code> <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a>?</dt>
+    <dd><p>The working-week pattern, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for Monday to Friday.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the date is a working day; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">service</code> or <code class="paramref">territory</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Extensions_NotableDateTimeExtensions_NextNonWorkingDay_" data-uid="Bodu.Extensions.NotableDateTimeExtensions.NextNonWorkingDay*"></a>
+
+  <h3 id="Bodu_Extensions_NotableDateTimeExtensions_NextNonWorkingDay_System_DateTime_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateTimeExtensions.NextNonWorkingDay(System.DateTime,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
+  NextNonWorkingDay(DateTime, INotableDateService, string, WeekPattern?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Globalization.Calendar/src/Extensions/NotableDateTimeExtensions.NextNonWorkingDay.cs/#L23"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the first non-working day strictly after the date, preserving the time-of-day and kind.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DateTime NextNonWorkingDay(this DateTime date, INotableDateService service, string territory, WeekPattern? workingWeek = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>date</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a></dt>
+    <dd><p>The starting date.</p>
+</dd>
+    <dt><code>service</code> <a class="xref" href="Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a></dt>
+    <dd><p>The service used to resolve notable dates.</p>
+</dd>
+    <dt><code>territory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The requested territory code.</p>
+</dd>
+    <dt><code>workingWeek</code> <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a>?</dt>
+    <dd><p>The working-week pattern, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for Monday to Friday.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a></dt>
+    <dd><p>The next non-working day at the original time-of-day.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">service</code> or <code class="paramref">territory</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>No non-working day is found within the traversal guard.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Extensions_NotableDateTimeExtensions_NextNotableDate_" data-uid="Bodu.Extensions.NotableDateTimeExtensions.NextNotableDate*"></a>
+
+  <h3 id="Bodu_Extensions_NotableDateTimeExtensions_NextNotableDate_System_DateTime_Bodu_Globalization_Calendar_INotableDateService_System_String_Bodu_Globalization_Calendar_NotableDateFilter_" data-uid="Bodu.Extensions.NotableDateTimeExtensions.NextNotableDate(System.DateTime,Bodu.Globalization.Calendar.INotableDateService,System.String,Bodu.Globalization.Calendar.NotableDateFilter)">
+  NextNotableDate(DateTime, INotableDateService, string, NotableDateFilter?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Globalization.Calendar/src/Extensions/NotableDateTimeExtensions.NextNotableDate.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the earliest notable date emitted strictly after the date for the territory.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static NotableDate? NextNotableDate(this DateTime date, INotableDateService service, string territory, NotableDateFilter? filter = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>date</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a></dt>
+    <dd><p>The reference date whose date component is used.</p>
+</dd>
+    <dt><code>service</code> <a class="xref" href="Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a></dt>
+    <dd><p>The service used to resolve notable dates.</p>
+</dd>
+    <dt><code>territory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The requested territory code.</p>
+</dd>
+    <dt><code>filter</code> <a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.html">NotableDateFilter</a></dt>
+    <dd><p>An optional filter the occurrence must satisfy.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.NotableDate.html">NotableDate</a></dt>
+    <dd><p>The next matching occurrence, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when none exists up to the maximum year.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">service</code> or <code class="paramref">territory</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Extensions_NotableDateTimeExtensions_NextWorkingDay_" data-uid="Bodu.Extensions.NotableDateTimeExtensions.NextWorkingDay*"></a>
+
+  <h3 id="Bodu_Extensions_NotableDateTimeExtensions_NextWorkingDay_System_DateTime_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateTimeExtensions.NextWorkingDay(System.DateTime,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
+  NextWorkingDay(DateTime, INotableDateService, string, WeekPattern?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Globalization.Calendar/src/Extensions/NotableDateTimeExtensions.NextWorkingDay.cs/#L22"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the first working day strictly after the date, preserving the time-of-day and kind.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DateTime NextWorkingDay(this DateTime date, INotableDateService service, string territory, WeekPattern? workingWeek = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>date</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a></dt>
+    <dd><p>The starting date.</p>
+</dd>
+    <dt><code>service</code> <a class="xref" href="Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a></dt>
+    <dd><p>The service used to resolve notable dates.</p>
+</dd>
+    <dt><code>territory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The requested territory code.</p>
+</dd>
+    <dt><code>workingWeek</code> <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a>?</dt>
+    <dd><p>The working-week pattern, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for Monday to Friday.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a></dt>
+    <dd><p>The next working day at the original time-of-day.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">service</code> or <code class="paramref">territory</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Extensions_NotableDateTimeExtensions_PreviousNonWorkingDay_" data-uid="Bodu.Extensions.NotableDateTimeExtensions.PreviousNonWorkingDay*"></a>
+
+  <h3 id="Bodu_Extensions_NotableDateTimeExtensions_PreviousNonWorkingDay_System_DateTime_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateTimeExtensions.PreviousNonWorkingDay(System.DateTime,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
+  PreviousNonWorkingDay(DateTime, INotableDateService, string, WeekPattern?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Globalization.Calendar/src/Extensions/NotableDateTimeExtensions.PreviousNonWorkingDay.cs/#L23"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the first non-working day strictly before the date, preserving the time-of-day and kind.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DateTime PreviousNonWorkingDay(this DateTime date, INotableDateService service, string territory, WeekPattern? workingWeek = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>date</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a></dt>
+    <dd><p>The starting date.</p>
+</dd>
+    <dt><code>service</code> <a class="xref" href="Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a></dt>
+    <dd><p>The service used to resolve notable dates.</p>
+</dd>
+    <dt><code>territory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The requested territory code.</p>
+</dd>
+    <dt><code>workingWeek</code> <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a>?</dt>
+    <dd><p>The working-week pattern, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for Monday to Friday.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a></dt>
+    <dd><p>The previous non-working day at the original time-of-day.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">service</code> or <code class="paramref">territory</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>No non-working day is found within the traversal guard.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Extensions_NotableDateTimeExtensions_PreviousNotableDate_" data-uid="Bodu.Extensions.NotableDateTimeExtensions.PreviousNotableDate*"></a>
+
+  <h3 id="Bodu_Extensions_NotableDateTimeExtensions_PreviousNotableDate_System_DateTime_Bodu_Globalization_Calendar_INotableDateService_System_String_Bodu_Globalization_Calendar_NotableDateFilter_" data-uid="Bodu.Extensions.NotableDateTimeExtensions.PreviousNotableDate(System.DateTime,Bodu.Globalization.Calendar.INotableDateService,System.String,Bodu.Globalization.Calendar.NotableDateFilter)">
+  PreviousNotableDate(DateTime, INotableDateService, string, NotableDateFilter?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Globalization.Calendar/src/Extensions/NotableDateTimeExtensions.PreviousNotableDate.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the most recent notable date emitted strictly before the date for the territory.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static NotableDate? PreviousNotableDate(this DateTime date, INotableDateService service, string territory, NotableDateFilter? filter = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>date</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a></dt>
+    <dd><p>The reference date whose date component is used.</p>
+</dd>
+    <dt><code>service</code> <a class="xref" href="Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a></dt>
+    <dd><p>The service used to resolve notable dates.</p>
+</dd>
+    <dt><code>territory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The requested territory code.</p>
+</dd>
+    <dt><code>filter</code> <a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.html">NotableDateFilter</a></dt>
+    <dd><p>An optional filter the occurrence must satisfy.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Globalization.Calendar.NotableDate.html">NotableDate</a></dt>
+    <dd><p>The previous matching occurrence, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when none exists down to the minimum year.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">service</code> or <code class="paramref">territory</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Extensions_NotableDateTimeExtensions_PreviousWorkingDay_" data-uid="Bodu.Extensions.NotableDateTimeExtensions.PreviousWorkingDay*"></a>
+
+  <h3 id="Bodu_Extensions_NotableDateTimeExtensions_PreviousWorkingDay_System_DateTime_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateTimeExtensions.PreviousWorkingDay(System.DateTime,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
+  PreviousWorkingDay(DateTime, INotableDateService, string, WeekPattern?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Globalization.Calendar/src/Extensions/NotableDateTimeExtensions.PreviousWorkingDay.cs/#L22"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the first working day strictly before the date, preserving the time-of-day and kind.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DateTime PreviousWorkingDay(this DateTime date, INotableDateService service, string territory, WeekPattern? workingWeek = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>date</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a></dt>
+    <dd><p>The starting date.</p>
+</dd>
+    <dt><code>service</code> <a class="xref" href="Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a></dt>
+    <dd><p>The service used to resolve notable dates.</p>
+</dd>
+    <dt><code>territory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The requested territory code.</p>
+</dd>
+    <dt><code>workingWeek</code> <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a>?</dt>
+    <dd><p>The working-week pattern, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for Monday to Friday.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a></dt>
+    <dd><p>The previous working day at the original time-of-day.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">service</code> or <code class="paramref">territory</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Extensions_NotableDateTimeExtensions_SnapToNearestWorkingDay_" data-uid="Bodu.Extensions.NotableDateTimeExtensions.SnapToNearestWorkingDay*"></a>
+
+  <h3 id="Bodu_Extensions_NotableDateTimeExtensions_SnapToNearestWorkingDay_System_DateTime_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateTimeExtensions.SnapToNearestWorkingDay(System.DateTime,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
+  SnapToNearestWorkingDay(DateTime, INotableDateService, string, WeekPattern?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Globalization.Calendar/src/Extensions/NotableDateTimeExtensions.SnapToNearestWorkingDay.cs/#L22"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the date if it is a working day; otherwise the nearest working day, preserving the time-of-day and kind.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DateTime SnapToNearestWorkingDay(this DateTime date, INotableDateService service, string territory, WeekPattern? workingWeek = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>date</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a></dt>
+    <dd><p>The date to snap.</p>
+</dd>
+    <dt><code>service</code> <a class="xref" href="Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a></dt>
+    <dd><p>The service used to resolve notable dates.</p>
+</dd>
+    <dt><code>territory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The requested territory code.</p>
+</dd>
+    <dt><code>workingWeek</code> <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a>?</dt>
+    <dd><p>The working-week pattern, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for Monday to Friday.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a></dt>
+    <dd><p>The nearest working day at the original time-of-day.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">service</code> or <code class="paramref">territory</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Extensions_NotableDateTimeExtensions_SnapToWorkingDay_" data-uid="Bodu.Extensions.NotableDateTimeExtensions.SnapToWorkingDay*"></a>
+
+  <h3 id="Bodu_Extensions_NotableDateTimeExtensions_SnapToWorkingDay_System_DateTime_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateTimeExtensions.SnapToWorkingDay(System.DateTime,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
+  SnapToWorkingDay(DateTime, INotableDateService, string, WeekPattern?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Globalization.Calendar/src/Extensions/NotableDateTimeExtensions.SnapToWorkingDay.cs/#L22"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the date if it is a working day; otherwise the next working day, preserving the time-of-day and kind.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DateTime SnapToWorkingDay(this DateTime date, INotableDateService service, string territory, WeekPattern? workingWeek = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>date</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a></dt>
+    <dd><p>The date to snap.</p>
+</dd>
+    <dt><code>service</code> <a class="xref" href="Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a></dt>
+    <dd><p>The service used to resolve notable dates.</p>
+</dd>
+    <dt><code>territory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The requested territory code.</p>
+</dd>
+    <dt><code>workingWeek</code> <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a>?</dt>
+    <dd><p>The working-week pattern, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for Monday to Friday.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a></dt>
+    <dd><p>The date or the next working day, at the original time-of-day.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">service</code> or <code class="paramref">territory</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Extensions_NotableDateTimeExtensions_SnapToWorkingDayBackward_" data-uid="Bodu.Extensions.NotableDateTimeExtensions.SnapToWorkingDayBackward*"></a>
+
+  <h3 id="Bodu_Extensions_NotableDateTimeExtensions_SnapToWorkingDayBackward_System_DateTime_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateTimeExtensions.SnapToWorkingDayBackward(System.DateTime,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
+  SnapToWorkingDayBackward(DateTime, INotableDateService, string, WeekPattern?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Globalization.Calendar/src/Extensions/NotableDateTimeExtensions.SnapToWorkingDayBackward.cs/#L23"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the date if it is a working day; otherwise the previous working day, preserving the time-of-day and
 kind.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Extensions_NotableDateTimeExtensions_WorkingDaysBetween_System_DateTime_System_DateTime_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateTimeExtensions.WorkingDaysBetween(System.DateTime,System.DateTime,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
-          <a class="xref" href="Bodu.Extensions.NotableDateTimeExtensions.WorkingDaysBetween.html#Bodu_Extensions_NotableDateTimeExtensions_WorkingDaysBetween_System_DateTime_System_DateTime_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__">WorkingDaysBetween(DateTime, DateTime, INotableDateService, string, WeekPattern?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Counts the working days in the inclusive range bounded by the two dates, regardless of their order.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="seealso">See Also</h3>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DateTime SnapToWorkingDayBackward(this DateTime date, INotableDateService service, string territory, WeekPattern? workingWeek = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>date</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a></dt>
+    <dd><p>The date to snap.</p>
+</dd>
+    <dt><code>service</code> <a class="xref" href="Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a></dt>
+    <dd><p>The service used to resolve notable dates.</p>
+</dd>
+    <dt><code>territory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The requested territory code.</p>
+</dd>
+    <dt><code>workingWeek</code> <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a>?</dt>
+    <dd><p>The working-week pattern, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for Monday to Friday.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a></dt>
+    <dd><p>The date or the previous working day, at the original time-of-day.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">service</code> or <code class="paramref">territory</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Bodu_Extensions_NotableDateTimeExtensions_WorkingDaysBetween_" data-uid="Bodu.Extensions.NotableDateTimeExtensions.WorkingDaysBetween*"></a>
+
+  <h3 id="Bodu_Extensions_NotableDateTimeExtensions_WorkingDaysBetween_System_DateTime_System_DateTime_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateTimeExtensions.WorkingDaysBetween(System.DateTime,System.DateTime,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
+  WorkingDaysBetween(DateTime, DateTime, INotableDateService, string, WeekPattern?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Globalization.Calendar/src/Extensions/NotableDateTimeExtensions.WorkingDaysBetween.cs/#L23"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Counts the working days in the inclusive range bounded by the two dates, regardless of their order.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static int WorkingDaysBetween(this DateTime start, DateTime end, INotableDateService service, string territory, WeekPattern? workingWeek = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>start</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a></dt>
+    <dd><p>One end of the range.</p>
+</dd>
+    <dt><code>end</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a></dt>
+    <dd><p>The other end of the range.</p>
+</dd>
+    <dt><code>service</code> <a class="xref" href="Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a></dt>
+    <dd><p>The service used to resolve notable dates.</p>
+</dd>
+    <dt><code>territory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The requested territory code.</p>
+</dd>
+    <dt><code>workingWeek</code> <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a>?</dt>
+    <dd><p>The working-week pattern, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for Monday to Friday.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The number of working days in the inclusive range.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">service</code> or <code class="paramref">territory</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <h2 id="seealso">See Also</h2>
   <div class="seealso">
       <div><a class="xref" href="Bodu.Extensions.NotableDateOnlyExtensions.html">NotableDateOnlyExtensions</a></div>
       <div><a class="xref" href="Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a></div>
@@ -293,49 +1215,24 @@ kind.</p>
   </div>
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 302e395 · Built: 2026-09-29 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 1e0dd9a · Built: 2026-09-29 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

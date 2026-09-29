@@ -1,97 +1,125 @@
 <!DOCTYPE html>
-<!--[if IE]><![endif]-->
 <html>
-
   <head>
     <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
       <title>Struct ExchangeRate | BODU </title>
-      <meta name="viewport" content="width=device-width">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Struct ExchangeRate | BODU ">
-    
-    <meta name="description" content="Represents a single dated foreign-exchange rate observation produced by a named provider.">
-      <link rel="shortcut icon" href="../images/favicon.svg">
-      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
-      <link rel="stylesheet" href="../styles/docfx.css">
-      <link rel="stylesheet" href="../styles/main.css">
-      <meta property="docfx:navrel" content="../toc.html">
-      <meta property="docfx:tocrel" content="toc.html">
-    
-    <meta property="docfx:rel" content="../">
-    
+      
+      <meta name="description" content="Represents a single dated foreign-exchange rate observation produced by a named provider.">
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/new/master/apiSpec/new?filename=Bodu_Financial_ExchangeRates_ExchangeRate.md&amp;value=---%0Auid%3A%20Bodu.Financial.ExchangeRates.ExchangeRate%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb">
-            <ul class="breadcrumb">
-              <li></li>
-            </ul>
-          </div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
-          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
 
-        <div class="sidenav hide-when-search">
-          <div class="toc-toggle">
-            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          </div>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
         </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Bodu.Financial.ExchangeRates.ExchangeRate">
+
+        <article data-uid="Bodu.Financial.ExchangeRates.ExchangeRate">
 
 
 
-  <h1 id="Bodu_Financial_ExchangeRates_ExchangeRate" data-uid="Bodu.Financial.ExchangeRates.ExchangeRate" class="text-break">Struct ExchangeRate</h1>
-  <div class="markdown level0 summary"><p>Represents a single dated foreign-exchange rate observation produced by a named provider.</p>
-</div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="implements">
-    <h5>Implements</h5>
-    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.html">ExchangeRate</a>&gt;</div>
+  <h1 id="Bodu_Financial_ExchangeRates_ExchangeRate" data-uid="Bodu.Financial.ExchangeRates.ExchangeRate" class="text-break">
+Struct ExchangeRate  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.ExchangeRates/ExchangeRate.cs/#L37"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Financial.html">Financial</a>.<a class="xref" href="Bodu.Financial.ExchangeRates.html">ExchangeRates</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Bodu.Financial.dll</dd></dl>
   </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+  <div class="markdown summary"><p>Represents a single dated foreign-exchange rate observation produced by a named provider.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly record struct ExchangeRate : IEquatable&lt;ExchangeRate&gt;</code></pre>
+  </div>
+
+
+
+
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.html">ExchangeRate</a>&gt;</div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetype.equals">ValueType.Equals(object)</a>
     </div>
@@ -107,14 +135,52 @@
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
     </div>
+  </dd></dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Financial.html">Financial</a>.<a class="xref" href="Bodu.Financial.ExchangeRates.html">ExchangeRates</a></h6>
-  <h6><strong>Assembly</strong>: Bodu.Financial.dll</h6>
-  <h5 id="Bodu_Financial_ExchangeRates_ExchangeRate_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public readonly record struct ExchangeRate : IEquatable&lt;ExchangeRate&gt;</code></pre>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
   </div>
-  <h5 id="Bodu_Financial_ExchangeRates_ExchangeRate_remarks"><strong>Remarks</strong></h5>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.Clamp&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsBetween__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsBetween&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsGreaterThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsLessThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_IsOutside__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsOutside&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  </dd></dl>
+
+
+
+  <h2 id="Bodu_Financial_ExchangeRates_ExchangeRate_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
 An <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.html">ExchangeRate</a> is an immutable value object intended to be passed back from a provider together with
 resolution metadata in an <a class="xref" href="Bodu.Financial.ExchangeRates.RateLookupResult.html">RateLookupResult</a>. It carries enough context — direction, date, provider
@@ -132,219 +198,541 @@ var rate = new ExchangeRate(
 decimal euros = rate.Convert(100m);   // 92.00</code></pre>
 </example>
 </div>
-  <h3 id="constructors">Constructors
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_ExchangeRate__ctor_Bodu_Financial_Currencies_CurrencyCode_Bodu_Financial_Currencies_CurrencyCode_System_DateOnly_System_Decimal_System_String_System_Boolean_System_Nullable_System_DateTimeOffset__" data-uid="Bodu.Financial.ExchangeRates.ExchangeRate.#ctor(Bodu.Financial.Currencies.CurrencyCode,Bodu.Financial.Currencies.CurrencyCode,System.DateOnly,System.Decimal,System.String,System.Boolean,System.Nullable{System.DateTimeOffset})">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.-ctor.html#Bodu_Financial_ExchangeRates_ExchangeRate__ctor_Bodu_Financial_Currencies_CurrencyCode_Bodu_Financial_Currencies_CurrencyCode_System_DateOnly_System_Decimal_System_String_System_Boolean_System_Nullable_System_DateTimeOffset__">ExchangeRate(CurrencyCode, CurrencyCode, DateOnly, decimal, string, bool, DateTimeOffset?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.html">ExchangeRate</a> struct.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="properties">Properties
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_ExchangeRate_Date" data-uid="Bodu.Financial.ExchangeRates.ExchangeRate.Date">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.Date.html#Bodu_Financial_ExchangeRates_ExchangeRate_Date">Date</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the calendar date on which the rate was observed.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_ExchangeRate_FetchedAtUtc" data-uid="Bodu.Financial.ExchangeRates.ExchangeRate.FetchedAtUtc">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.FetchedAtUtc.html#Bodu_Financial_ExchangeRates_ExchangeRate_FetchedAtUtc">FetchedAtUtc</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the UTC instant at which the upstream data backing this rate was originally fetched, or
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Bodu_Financial_ExchangeRates_ExchangeRate__ctor_" data-uid="Bodu.Financial.ExchangeRates.ExchangeRate.#ctor*"></a>
+
+  <h3 id="Bodu_Financial_ExchangeRates_ExchangeRate__ctor_Bodu_Financial_Currencies_CurrencyCode_Bodu_Financial_Currencies_CurrencyCode_System_DateOnly_System_Decimal_System_String_System_Boolean_System_Nullable_System_DateTimeOffset__" data-uid="Bodu.Financial.ExchangeRates.ExchangeRate.#ctor(Bodu.Financial.Currencies.CurrencyCode,Bodu.Financial.Currencies.CurrencyCode,System.DateOnly,System.Decimal,System.String,System.Boolean,System.Nullable{System.DateTimeOffset})">
+  ExchangeRate(CurrencyCode, CurrencyCode, DateOnly, decimal, string, bool, DateTimeOffset?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.ExchangeRates/ExchangeRate.cs/#L63"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.html">ExchangeRate</a> struct.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ExchangeRate(CurrencyCode from, CurrencyCode to, DateOnly date, decimal rate, string provider, bool isInverted = false, DateTimeOffset? fetchedAtUtc = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>from</code> <a class="xref" href="Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a></dt>
+    <dd><p>The source currency.</p>
+</dd>
+    <dt><code>to</code> <a class="xref" href="Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a></dt>
+    <dd><p>The destination currency.</p>
+</dd>
+    <dt><code>date</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>The calendar date on which the rate was observed.</p>
+</dd>
+    <dt><code>rate</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a></dt>
+    <dd><p>The multiplier that converts a source-currency amount to the destination currency.</p>
+</dd>
+    <dt><code>provider</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The non-empty identifier of the publishing source.</p>
+</dd>
+    <dt><code>isInverted</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the rate was derived from the reverse pair; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+    <dt><code>fetchedAtUtc</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetimeoffset">DateTimeOffset</a>?</dt>
+    <dd><p>The UTC instant at which the upstream data backing this rate was originally fetched, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>
+when not tracked.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown if <code class="paramref">provider</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown if <code class="paramref">provider</code> is empty or white-space.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown if <code class="paramref">from</code> or <code class="paramref">to</code> is not a defined currency, or if
+<code class="paramref">rate</code> is zero or negative.</p>
+</dd>
+  </dl>
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Bodu_Financial_ExchangeRates_ExchangeRate_Date_" data-uid="Bodu.Financial.ExchangeRates.ExchangeRate.Date*"></a>
+
+  <h3 id="Bodu_Financial_ExchangeRates_ExchangeRate_Date" data-uid="Bodu.Financial.ExchangeRates.ExchangeRate.Date">
+  Date
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.ExchangeRates/ExchangeRate.cs/#L199"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the calendar date on which the rate was observed.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DateOnly Date { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
+    <dd><p>The observation date.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Financial_ExchangeRates_ExchangeRate_FetchedAtUtc_" data-uid="Bodu.Financial.ExchangeRates.ExchangeRate.FetchedAtUtc*"></a>
+
+  <h3 id="Bodu_Financial_ExchangeRates_ExchangeRate_FetchedAtUtc" data-uid="Bodu.Financial.ExchangeRates.ExchangeRate.FetchedAtUtc">
+  FetchedAtUtc
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.ExchangeRates/ExchangeRate.cs/#L232"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the UTC instant at which the upstream data backing this rate was originally fetched, or
 <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when not tracked.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_ExchangeRate_From" data-uid="Bodu.Financial.ExchangeRates.ExchangeRate.From">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.From.html#Bodu_Financial_ExchangeRates_ExchangeRate_From">From</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the source currency.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_ExchangeRate_IsInverted" data-uid="Bodu.Financial.ExchangeRates.ExchangeRate.IsInverted">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.IsInverted.html#Bodu_Financial_ExchangeRates_ExchangeRate_IsInverted">IsInverted</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets a value indicating whether this rate was derived from the reverse pair.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_ExchangeRate_Pair" data-uid="Bodu.Financial.ExchangeRates.ExchangeRate.Pair">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.Pair.html#Bodu_Financial_ExchangeRates_ExchangeRate_Pair">Pair</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the directional currency pair this rate quotes.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_ExchangeRate_Provider" data-uid="Bodu.Financial.ExchangeRates.ExchangeRate.Provider">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.Provider.html#Bodu_Financial_ExchangeRates_ExchangeRate_Provider">Provider</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the non-empty identifier of the publishing source.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_ExchangeRate_Rate" data-uid="Bodu.Financial.ExchangeRates.ExchangeRate.Rate">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.Rate.html#Bodu_Financial_ExchangeRates_ExchangeRate_Rate">Rate</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the multiplier that converts an amount in <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.From.html#Bodu_Financial_ExchangeRates_ExchangeRate_From">From</a> to <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.To.html#Bodu_Financial_ExchangeRates_ExchangeRate_To">To</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_ExchangeRate_To" data-uid="Bodu.Financial.ExchangeRates.ExchangeRate.To">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.To.html#Bodu_Financial_ExchangeRates_ExchangeRate_To">To</a>
-        </td>
-        <td class="markdown level1 summary"><p>Gets the destination currency.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="methods">Methods
-</h3>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_ExchangeRate_Convert_System_Decimal_" data-uid="Bodu.Financial.ExchangeRates.ExchangeRate.Convert(System.Decimal)">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.Convert.html#Bodu_Financial_ExchangeRates_ExchangeRate_Convert_System_Decimal_">Convert(decimal)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Converts <code class="paramref">amount</code> from the source currency to the destination currency.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_ExchangeRate_Equals_Bodu_Financial_ExchangeRates_ExchangeRate_" data-uid="Bodu.Financial.ExchangeRates.ExchangeRate.Equals(Bodu.Financial.ExchangeRates.ExchangeRate)">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.Equals.html#Bodu_Financial_ExchangeRates_ExchangeRate_Equals_Bodu_Financial_ExchangeRates_ExchangeRate_">Equals(ExchangeRate)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Determines whether this rate equals <code class="paramref">other</code> by its public fields. The internal observed rate
-and the <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.FetchedAtUtc.html#Bodu_Financial_ExchangeRates_ExchangeRate_FetchedAtUtc">FetchedAtUtc</a> fetch instant are excluded — both are provenance metadata — so two rates
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DateTimeOffset? FetchedAtUtc { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetimeoffset">DateTimeOffset</a>?</dt>
+    <dd><p>The fetch instant when known; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_Financial_ExchangeRates_ExchangeRate_FetchedAtUtc_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The value is provenance metadata describing when the load that produced this rate downloaded its source data. It
+is excluded from <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.html#Bodu_Financial_ExchangeRates_ExchangeRate_Equals_Bodu_Financial_ExchangeRates_ExchangeRate_">Equals(ExchangeRate)</a> and <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.html#Bodu_Financial_ExchangeRates_ExchangeRate_GetHashCode">GetHashCode()</a>, so two rates that differ
+only in their fetch instant still compare equal.</p>
+</div>
+
+
+
+
+  <a id="Bodu_Financial_ExchangeRates_ExchangeRate_From_" data-uid="Bodu.Financial.ExchangeRates.ExchangeRate.From*"></a>
+
+  <h3 id="Bodu_Financial_ExchangeRates_ExchangeRate_From" data-uid="Bodu.Financial.ExchangeRates.ExchangeRate.From">
+  From
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.ExchangeRates/ExchangeRate.cs/#L181"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the source currency.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CurrencyCode From { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a></dt>
+    <dd><p>The currency an amount is converted from.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Financial_ExchangeRates_ExchangeRate_IsInverted_" data-uid="Bodu.Financial.ExchangeRates.ExchangeRate.IsInverted*"></a>
+
+  <h3 id="Bodu_Financial_ExchangeRates_ExchangeRate_IsInverted" data-uid="Bodu.Financial.ExchangeRates.ExchangeRate.IsInverted">
+  IsInverted
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.ExchangeRates/ExchangeRate.cs/#L220"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether this rate was derived from the reverse pair.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsInverted { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.html#Bodu_Financial_ExchangeRates_ExchangeRate_Rate">Rate</a> is the reciprocal of an originally published reverse-direction
+rate; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Financial_ExchangeRates_ExchangeRate_Pair_" data-uid="Bodu.Financial.ExchangeRates.ExchangeRate.Pair*"></a>
+
+  <h3 id="Bodu_Financial_ExchangeRates_ExchangeRate_Pair" data-uid="Bodu.Financial.ExchangeRates.ExchangeRate.Pair">
+  Pair
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.ExchangeRates/ExchangeRate.cs/#L193"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the directional currency pair this rate quotes.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CurrencyPair Pair { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Financial.ExchangeRates.CurrencyPair.html">CurrencyPair</a></dt>
+    <dd><p>An <a class="xref" href="Bodu.Financial.ExchangeRates.CurrencyPair.html">CurrencyPair</a> of <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.html#Bodu_Financial_ExchangeRates_ExchangeRate_From">From</a> and <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.html#Bodu_Financial_ExchangeRates_ExchangeRate_To">To</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Financial_ExchangeRates_ExchangeRate_Provider_" data-uid="Bodu.Financial.ExchangeRates.ExchangeRate.Provider*"></a>
+
+  <h3 id="Bodu_Financial_ExchangeRates_ExchangeRate_Provider" data-uid="Bodu.Financial.ExchangeRates.ExchangeRate.Provider">
+  Provider
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.ExchangeRates/ExchangeRate.cs/#L211"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the non-empty identifier of the publishing source.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string Provider { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The provider identifier.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Financial_ExchangeRates_ExchangeRate_Rate_" data-uid="Bodu.Financial.ExchangeRates.ExchangeRate.Rate*"></a>
+
+  <h3 id="Bodu_Financial_ExchangeRates_ExchangeRate_Rate" data-uid="Bodu.Financial.ExchangeRates.ExchangeRate.Rate">
+  Rate
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.ExchangeRates/ExchangeRate.cs/#L205"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the multiplier that converts an amount in <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.html#Bodu_Financial_ExchangeRates_ExchangeRate_From">From</a> to <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.html#Bodu_Financial_ExchangeRates_ExchangeRate_To">To</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public decimal Rate { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a></dt>
+    <dd><p>A strictly positive multiplier.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Bodu_Financial_ExchangeRates_ExchangeRate_To_" data-uid="Bodu.Financial.ExchangeRates.ExchangeRate.To*"></a>
+
+  <h3 id="Bodu_Financial_ExchangeRates_ExchangeRate_To" data-uid="Bodu.Financial.ExchangeRates.ExchangeRate.To">
+  To
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.ExchangeRates/ExchangeRate.cs/#L187"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the destination currency.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CurrencyCode To { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a></dt>
+    <dd><p>The currency an amount is converted to.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Bodu_Financial_ExchangeRates_ExchangeRate_Convert_" data-uid="Bodu.Financial.ExchangeRates.ExchangeRate.Convert*"></a>
+
+  <h3 id="Bodu_Financial_ExchangeRates_ExchangeRate_Convert_System_Decimal_" data-uid="Bodu.Financial.ExchangeRates.ExchangeRate.Convert(System.Decimal)">
+  Convert(decimal)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.ExchangeRates/ExchangeRate.cs/#L252"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Converts <code class="paramref">amount</code> from the source currency to the destination currency.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public decimal Convert(decimal amount)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>amount</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a></dt>
+    <dd><p>The amount in <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.html#Bodu_Financial_ExchangeRates_ExchangeRate_From">From</a> to convert.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a></dt>
+    <dd><p>The converted amount in <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.html#Bodu_Financial_ExchangeRates_ExchangeRate_To">To</a>, unrounded.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Financial_ExchangeRates_ExchangeRate_Convert_System_Decimal__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>A non-inverted rate multiplies by <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.html#Bodu_Financial_ExchangeRates_ExchangeRate_Rate">Rate</a>; an inverted rate divides by the original reverse-pair
+rate rather than multiplying by a pre-rounded reciprocal, avoiding a double-rounding step. Rounding is
+intentionally deferred to the money boundary so the rate object stays decoupled from the destination currency's
+minor-unit precision.</p>
+</div>
+
+
+
+
+  <a id="Bodu_Financial_ExchangeRates_ExchangeRate_Equals_" data-uid="Bodu.Financial.ExchangeRates.ExchangeRate.Equals*"></a>
+
+  <h3 id="Bodu_Financial_ExchangeRates_ExchangeRate_Equals_Bodu_Financial_ExchangeRates_ExchangeRate_" data-uid="Bodu.Financial.ExchangeRates.ExchangeRate.Equals(Bodu.Financial.ExchangeRates.ExchangeRate)">
+  Equals(ExchangeRate)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.ExchangeRates/ExchangeRate.cs/#L281"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines whether this rate equals <code class="paramref">other</code> by its public fields. The internal observed rate
+and the <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.html#Bodu_Financial_ExchangeRates_ExchangeRate_FetchedAtUtc">FetchedAtUtc</a> fetch instant are excluded — both are provenance metadata — so two rates
 that report the same direction, date, multiplier, provider, and inversion compare equal regardless of how each
 was constructed or when its source data was fetched.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_ExchangeRate_GetHashCode" data-uid="Bodu.Financial.ExchangeRates.ExchangeRate.GetHashCode">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.GetHashCode.html#Bodu_Financial_ExchangeRates_ExchangeRate_GetHashCode">GetHashCode()</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns a hash code over the public fields, consistent with <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.Equals.html#Bodu_Financial_ExchangeRates_ExchangeRate_Equals_Bodu_Financial_ExchangeRates_ExchangeRate_">Equals(ExchangeRate)</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Bodu_Financial_ExchangeRates_ExchangeRate_WithFetchedAtUtc_System_Nullable_System_DateTimeOffset__" data-uid="Bodu.Financial.ExchangeRates.ExchangeRate.WithFetchedAtUtc(System.Nullable{System.DateTimeOffset})">
-          <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.WithFetchedAtUtc.html#Bodu_Financial_ExchangeRates_ExchangeRate_WithFetchedAtUtc_System_Nullable_System_DateTimeOffset__">WithFetchedAtUtc(DateTimeOffset?)</a>
-        </td>
-        <td class="markdown level1 summary"><p>Returns a copy of this rate with the specified upstream fetch instant, preserving all other values.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Equals(ExchangeRate other)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>other</code> <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.html">ExchangeRate</a></dt>
+    <dd><p>The rate to compare with.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the public fields match; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_Financial_ExchangeRates_ExchangeRate_GetHashCode_" data-uid="Bodu.Financial.ExchangeRates.ExchangeRate.GetHashCode*"></a>
+
+  <h3 id="Bodu_Financial_ExchangeRates_ExchangeRate_GetHashCode" data-uid="Bodu.Financial.ExchangeRates.ExchangeRate.GetHashCode">
+  GetHashCode()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.ExchangeRates/ExchangeRate.cs/#L293"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns a hash code over the public fields, consistent with <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.html#Bodu_Financial_ExchangeRates_ExchangeRate_Equals_Bodu_Financial_ExchangeRates_ExchangeRate_">Equals(ExchangeRate)</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override int GetHashCode()</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Clamp.html#Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.Clamp&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The hash code.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Bodu_Financial_ExchangeRates_ExchangeRate_WithFetchedAtUtc_" data-uid="Bodu.Financial.ExchangeRates.ExchangeRate.WithFetchedAtUtc*"></a>
+
+  <h3 id="Bodu_Financial_ExchangeRates_ExchangeRate_WithFetchedAtUtc_System_Nullable_System_DateTimeOffset__" data-uid="Bodu.Financial.ExchangeRates.ExchangeRate.WithFetchedAtUtc(System.Nullable{System.DateTimeOffset})">
+  WithFetchedAtUtc(DateTimeOffset?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Financial/src/Financial.ExchangeRates/ExchangeRate.cs/#L270"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns a copy of this rate with the specified upstream fetch instant, preserving all other values.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ExchangeRate WithFetchedAtUtc(DateTimeOffset? fetchedAtUtc)</code></pre>
   </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsBetween.html#Bodu_Extensions_ComparableExtensions_IsBetween__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsBetween&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThan.html#Bodu_Extensions_ComparableExtensions_IsGreaterThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThan.html#Bodu_Extensions_ComparableExtensions_IsLessThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsOutside.html#Bodu_Extensions_ComparableExtensions_IsOutside__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsOutside&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
-  <div>
-      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
-  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>fetchedAtUtc</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetimeoffset">DateTimeOffset</a>?</dt>
+    <dd><p>The UTC instant the upstream data backing the returned rate was originally fetched, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>
+when not tracked.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.html">ExchangeRate</a></dt>
+    <dd><p>A new <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.html">ExchangeRate</a> identical to this one except for its <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.html#Bodu_Financial_ExchangeRates_ExchangeRate_FetchedAtUtc">FetchedAtUtc</a> value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_Financial_ExchangeRates_ExchangeRate_WithFetchedAtUtc_System_Nullable_System_DateTimeOffset___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The internal observed rate is carried over exactly, so an inverted rate's precise reverse-pair value survives
+the copy. Because <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.html#Bodu_Financial_ExchangeRates_ExchangeRate_FetchedAtUtc">FetchedAtUtc</a> is excluded from equality, the returned rate compares equal to
+this one.</p>
+</div>
+
+
+
+
 
 </article>
-          </div>
 
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="toggle-mode">
-                <div class="icon">
-                  <i aria-hidden="true">☀</i>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" id="switch-style">
-                  <span class="slider round"></span>
-                </label>
-                <div class="icon">
-                  <i aria-hidden="true">☾</i>
-                </div>
-                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
-              </div>
 
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In this article</h5>
-                <div></div>
-              </nav>
-            </div>
-          </div>
-        </div>
+
       </div>
 
-      <footer>
-        <div class="grad-bottom"></div>
-        <div class="footer">
-          <div class="container">
-            <span class="pull-right">
-              <a href="#top">Back to top</a>
-            </span>
-      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 302e395 · Built: 2026-09-29 (UTC)</span>
-      
-          </div>
-        </div>
-      </footer>
-    </div>
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
-    <script type="text/javascript" src="../styles/docfx.js"></script>
-    <script type="text/javascript" src="../styles/main.js"></script>
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 1e0dd9a · Built: 2026-09-29 (UTC)</span>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>
