@@ -144,9 +144,10 @@ jobs:
         if: steps.gate.outputs.should_fix == 'true'
         uses: actions/setup-dotnet@v6
         with:
-          dotnet-version: |
-            8.0.x
-            10.0.x
+          # The .NET 10 SDK is the exact version global.json pins. The .NET 8 SDK beside it builds the
+          # Bodu.CodeStyle solution and runs the net8.0 legs.
+          global-json-file: global.json
+          dotnet-version: 8.0.x
 
       - name: Configure git identity
         if: steps.gate.outputs.should_fix == 'true'

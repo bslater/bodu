@@ -92,7 +92,7 @@ unlike `Array.Reverse`) and matches both the neighbouring `SpanExtensions.ToReve
 `[OverloadResolutionPriority]` cannot fix this class of collision — it is not consulted between
 candidates from different declaring types.
 
-Compiling and testing the solution requires the **.NET 10 SDK**, pinned via the repository-root `global.json` (`10.0.100`, `rollForward: latestMinor`): the sources use C# 14 language features and the `.slnx` solution format, neither of which the 8.0 SDK supports. The separate `Bodu.CodeStyle` solution pins its own SDK via `Bodu.CodeStyle/global.json` and is unaffected.
+Compiling and testing the solution requires the **.NET 10 SDK**: the sources use C# 14 language features and the `.slnx` solution format, neither of which the 8.0 SDK supports. The repository-root `global.json` pins the exact SDK version, and CI installs that version too (see **Reproducing what CI runs** below). Its `rollForward: patch` accepts a later patch in the same feature band only when the pinned version itself is not installed. The separate `Bodu.CodeStyle` solution pins its own SDK via `Bodu.CodeStyle/global.json` and is unaffected.
 
 Nullable reference types are enabled everywhere. `ImplicitUsings` is enabled across all projects, including `Bodu.Core`. Test projects have `ImplicitUsings` enabled and pre-import MSTest via `<Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />`. `Bodu.Core/test/Bodu.Core.Test.csproj` additionally pre-imports `Bodu.Test.Assertions.ExceptionAssert` statically so the shared `AssertGuard(...)` call resolves unqualified across all `ThrowHelperTests.*.cs` partial files.
 
@@ -165,11 +165,14 @@ and the first two have bitten:
   analyzers, the BODU XML-doc rules — fails the pull request, while a local build still reports it as
   a warning. To match CI: `dotnet build <project> -c Release -p:TreatWarningsAsErrors=true`. A
   deliberate finding is suppressed at its site with a `Justification`, as the existing suppressions are.
-- **CI builds with the newest .NET 10 SDK.** `setup-dotnet` installs `10.0.x` and `global.json` rolls
-  forward (`latestMinor`), so CI runs that SDK's analyzers, and an older local SDK can disagree with
-  them in either direction (`CA1873`, for one, reports different sites under 10.0.100 and 10.0.401).
-  When a warning appears only in CI, build with CI's version, which the `Setup .NET` step logs;
-  `dotnet-install.sh --version <version> --install-dir <dir>` installs it beside the existing SDK.
+- **CI builds with the SDK that `global.json` pins.** Every workflow except `Bodu.CodeStyle`'s,
+  which builds against that solution's own `global.json`, installs exactly the pinned version, so
+  CI's analyzers change only when the pin does.
+  A local build uses the same SDK once it is installed; a different one can disagree with CI in
+  either direction (`CA1873`, for one, reports different sites under 10.0.100 and 10.0.401).
+  `dotnet --version` at the repository root names the SDK in use, and
+  `dotnet-install.sh --jsonfile global.json --install-dir <dir>` installs the pinned one beside the
+  others.
 
 **Restore and build must agree on the configuration.** Fourteen projects — the benchmarks, the AOT
 smoke app, the `Calendar.Tool` / `.Build` toolchain, and two samples — are excluded from the *Debug*
@@ -216,7 +219,7 @@ A plain `dotnet restore` rewrites the assets files in place and clears it; delet
 
 ### SDK Bootstrap (Claude Code on the web)
 
-`.claude/hooks/session-start.sh` installs `dotnet-sdk-10.0` from `apt` on session start when running in the remote Claude Code on the web environment (`CLAUDE_CODE_REMOTE=true`). It is idempotent — when a .NET 10 SDK is already installed it exits immediately, so resume / clear / compact sessions pay no extra cost. The repository-root `global.json` pins SDK resolution to the 10.0.1xx band, so once the hook has run, `dotnet build` / `dotnet test` pick up the installed SDK 10 automatically.
+`.claude/hooks/session-start.sh` installs the SDK that `global.json` pins, and the .NET 8 runtime the `net8.0` test legs run on, on session start when running in the remote Claude Code on the web environment (`CLAUDE_CODE_REMOTE=true`). It uses Microsoft's `dotnet-install.sh` rather than `apt`, because Ubuntu's archive carries only the 10.0.1xx feature band, and installs into the installation the `dotnet` on `PATH` already uses. It is idempotent — when `dotnet --version` at the repository root resolves the pinned SDK and a .NET 8 runtime is present it installs nothing, so resume / clear / compact sessions pay no extra cost, and a new pin is installed by the next session start.
 
 The hook also repairs the `dotnet-dnceng` plugin that `.claude/settings.json` enables from the `dotnet/arcade-skills` marketplace (`extraKnownMarketplaces` / `enabledPlugins`): the upstream plugin manifest currently fails Claude Code's path validation (its `agents` entry lacks the required `./` prefix), so the hook patches the cached marketplace clone and installs the plugin. Its skills then load from the next session in the container. The repair is a no-op once the manifest is fixed upstream and can be removed at that point.
 
