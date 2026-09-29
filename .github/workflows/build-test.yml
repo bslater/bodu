@@ -427,6 +427,10 @@ jobs:
           path: TestResults/**/*.trx
           reporter: dotnet-trx
           fail-on-error: false
+          # Only failing tests are listed. The suite has more than 90,000 tests per framework, and with
+          # every one listed the report runs to megabytes, far past the summary's size limit, and the
+          # reporter overflows its stack assembling it. Each test class is still listed with its counts.
+          list-tests: failed
 
   # The job above runs every suite on x64, where the Argon2 AdvSimd kernel and the GHASH PMULL kernel cannot
   # execute. This one runs the two cryptography suites on GitHub's hosted ARM64 runner (free for public
@@ -531,3 +535,6 @@ jobs:
           path: TestResults/**/*.trx
           reporter: dotnet-trx
           fail-on-error: false
+          # Only failing tests are listed, as in the job above: a full list runs past the summary's size
+          # limit, and a long enough one overflows the reporter's stack. Each test class is still listed.
+          list-tests: failed
