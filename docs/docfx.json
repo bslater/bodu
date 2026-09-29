@@ -5,15 +5,13 @@
         {
           "src": "../",
           "files": [
-            "Bodu.*/src/bin/Release/net10.0/Bodu.*.dll"
+            "**/src/*.csproj"
           ],
           "exclude": [
             "Bodu.CodeStyle/**",
             "Bodu.Text.Formats.Generators/**",
             "Bodu.Globalization.Calendar.Build/**",
-            "archive/**",
-            "**/ref/**",
-            "**/refint/**"
+            "archive/**"
           ]
         }
       ],
@@ -23,7 +21,11 @@
       "namespaceLayout": "nested",
       "enumSortOrder": "declaringOrder",
       "globalNamespaceId": "global",
-      "disableDefaultFilter": false
+      "disableDefaultFilter": false,
+      "properties": {
+        "TargetFramework": "net8.0",
+        "BuildingForDocfx": "true"
+      }
     }
   ],
 
