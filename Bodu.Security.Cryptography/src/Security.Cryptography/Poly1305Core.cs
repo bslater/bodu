@@ -71,10 +71,11 @@ internal partial struct Poly1305Core
 
     /// <summary>The shortest run of whole blocks, in bytes, that dispatch gives the four-lane AVX2 kernel.</summary>
     /// <remarks>
-    /// Below it, computing the powers of <c>r</c> costs more than the lanes save: measured on .NET 8 and .NET 10, the
-    /// kernel first beats the scalar loop at 192 to 256 bytes.
+    /// Measured on .NET 8 and .NET 10, the kernel beats the scalar loop from 192 to 256 bytes when the MAC runs alone.
+    /// Inside an AEAD it pays only from about 512 bytes: below that, the Poly1305 AEADs' messages ran up to 10% slower
+    /// through it, as its 256-bit multiplies cost the rest of the message more than they save.
     /// </remarks>
-    internal const int Avx2MinimumBytes = 256;
+    internal const int Avx2MinimumBytes = 512;
 
     /// <summary>The shortest run of whole blocks, in bytes, that dispatch gives the AVX2 kernel's paired loop, where AVX-512VL provides its registers.</summary>
     /// <remarks>
