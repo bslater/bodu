@@ -608,7 +608,7 @@ current culture's calendar.</p>
 </dd>
     <dt><code>calendar</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.calendar">Calendar</a></dt>
     <dd><p>An optional <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.calendar">Calendar</a> instance used to evaluate the result. If <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, the
-calendar of <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.cultureinfo.currentculture">CurrentCulture</a> is used.</p>
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.datetimeformatinfo.calendar">Calendar</a> of <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.cultureinfo.currentculture">CurrentCulture</a> is used.</p>
 </dd>
   </dl>
 
@@ -633,8 +633,8 @@ This overload supports calendar-aware computations for systems such as <a class=
 <code class="paramref">date</code> is first projected into the target calendar, so the result is equivalent to
 <code>calendar.GetDaysInMonth(calendar.GetYear(dateTime), calendar.GetMonth(dateTime))</code> for the
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> at midnight of <code class="paramref">date</code> — the length of the calendar's own month
-containing the date, not the Gregorian month. The current culture's calendar is used if
-<code class="paramref">calendar</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.
+containing the date, not the Gregorian month. If <code class="paramref">calendar</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, the
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.datetimeformatinfo.calendar">Calendar</a> of <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.cultureinfo.currentculture">CurrentCulture</a> is used.
 </p>
 <p>
 This method does not account for leap months. For calendars that support leap months or multiple eras, consider
@@ -706,7 +706,7 @@ them explicitly. For precise control, use the overload that accepts a <a class="
 
   <h3 id="Bodu_Extensions_DateOnlyExtensions_DaysInYear_System_DateOnly_" data-uid="Bodu.Extensions.DateOnlyExtensions.DaysInYear(System.DateOnly)">
   DaysInYear(DateOnly)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Extensions/DateOnlyExtensions.DaysInYear.cs/#L28"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Extensions/DateOnlyExtensions.DaysInYear.cs/#L30"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Returns the number of days in the calendar year of the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a>, using the calendar of
@@ -741,8 +741,10 @@ them explicitly. For precise control, use the overload that accepts a <a class="
 
   <h4 class="section" id="Bodu_Extensions_DateOnlyExtensions_DaysInYear_System_DateOnly__remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>
-This overload uses the calendar defined by <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.cultureinfo.currentculture">CurrentCulture</a>. The result may vary
-depending on the calendar system (e.g. Gregorian, Hebrew, Hijri).
+This overload uses the calendar the current culture is set to use: the
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.datetimeformatinfo.calendar">Calendar</a> of <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.cultureinfo.currentculture">CurrentCulture</a>, which is not
+necessarily the culture's default <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.cultureinfo.calendar">Calendar</a>. The result may vary depending on the
+calendar system (e.g. Gregorian, Hebrew, Hijri).
 </p>
 </div>
 
@@ -753,7 +755,7 @@ depending on the calendar system (e.g. Gregorian, Hebrew, Hijri).
 
   <h3 id="Bodu_Extensions_DateOnlyExtensions_DaysInYear_System_DateOnly_System_Globalization_Calendar_" data-uid="Bodu.Extensions.DateOnlyExtensions.DaysInYear(System.DateOnly,System.Globalization.Calendar)">
   DaysInYear(DateOnly, Calendar?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Extensions/DateOnlyExtensions.DaysInYear.cs/#L54"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/master/Bodu.Core/src/Extensions/DateOnlyExtensions.DaysInYear.cs/#L57"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Returns the number of days in the calendar year of the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a>, using the supplied or
@@ -771,8 +773,8 @@ current calendar.</p>
     <dd><p>The date value whose year is used to determine the result.</p>
 </dd>
     <dt><code>calendar</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.calendar">Calendar</a></dt>
-    <dd><p>An optional <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.calendar">Calendar</a> used to evaluate the result. If <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, the calendar of
-<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.cultureinfo.currentculture">CurrentCulture</a> is used.</p>
+    <dd><p>An optional <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.calendar">Calendar</a> used to evaluate the result. If <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, the
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.datetimeformatinfo.calendar">Calendar</a> of <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.cultureinfo.currentculture">CurrentCulture</a> is used.</p>
 </dd>
   </dl>
 
@@ -793,7 +795,8 @@ current calendar.</p>
   <div class="markdown level1 remarks"><p>
 Use this overload when you want to explicitly calculate based on a specific calendar system (e.g.
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.gregoriancalendar">GregorianCalendar</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.hebrewcalendar">HebrewCalendar</a>). If <code class="paramref">calendar</code> is
-<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, the calendar of <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.cultureinfo.currentculture">CurrentCulture</a> is used.
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.datetimeformatinfo.calendar">Calendar</a> of
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.cultureinfo.currentculture">CurrentCulture</a> is used.
 </p>
 <p>
 <code class="paramref">date</code> is first projected into the target calendar, so the result is equivalent to
@@ -6790,7 +6793,7 @@ based on <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dat
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: e4c394f · Built: 2026-09-29 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 682525c · Built: 2026-09-29 (UTC)</span>
         </div>
       </div>
     </footer>
