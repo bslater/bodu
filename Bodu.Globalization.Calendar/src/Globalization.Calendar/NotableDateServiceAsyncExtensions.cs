@@ -86,7 +86,7 @@ public static class NotableDateServiceAsyncExtensions
         ThrowHelper.ThrowIfNull(territory);
         ThrowHelper.ThrowIfGreaterThan(range.StartDate, range.EndDate);
 
-        return ResolveAsyncCore(service, range, territory, filter, cancellationToken);
+        return ResolveCoreAsync(service, range, territory, filter, cancellationToken);
     }
 
     /// <summary>
@@ -98,7 +98,7 @@ public static class NotableDateServiceAsyncExtensions
     /// <param name="filter">The optional occurrence filter.</param>
     /// <param name="cancellationToken">The token observed between resolved years.</param>
     /// <returns>The asynchronous occurrence sequence.</returns>
-    private static async IAsyncEnumerable<NotableDate> ResolveAsyncCore(
+    private static async IAsyncEnumerable<NotableDate> ResolveCoreAsync(
         INotableDateService service,
         DateRange range,
         string territory,

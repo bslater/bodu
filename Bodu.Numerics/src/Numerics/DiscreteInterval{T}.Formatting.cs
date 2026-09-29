@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+
 namespace Bodu.Numerics;
 
 public readonly partial struct DiscreteInterval<T> :
@@ -35,7 +37,7 @@ public readonly partial struct DiscreteInterval<T> :
     /// </param>
     /// <returns>The interval text with each endpoint formatted by <paramref name="format" />.</returns>
     public string ToString(string? format) =>
-        ToInterval().ToString(format);
+        ToInterval().ToString(format, CultureInfo.CurrentCulture);
 
     /// <summary>
     /// Returns a string representation of this interval using the supplied endpoint format and culture.
