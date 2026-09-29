@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MLKemEngine.Ntt.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -40,7 +40,7 @@ internal static partial class MLKemEngine
     /// </remarks>
     internal static void Ntt(Span<int> f)
     {
-        ThrowHelper.ThrowIfLessThan(f.Length, N, nameof(f));
+        ArgumentOutOfRangeException.ThrowIfLessThan(f.Length, N, nameof(f));
 
         // The length is checked above, so the butterflies address the coefficients by reference, without a bounds
         // check on each access.
@@ -85,7 +85,7 @@ internal static partial class MLKemEngine
     /// </remarks>
     internal static void InvNtt(Span<int> f)
     {
-        ThrowHelper.ThrowIfLessThan(f.Length, N, nameof(f));
+        ArgumentOutOfRangeException.ThrowIfLessThan(f.Length, N, nameof(f));
 
         ref int coefficients = ref MemoryMarshal.GetReference(f);
 
@@ -132,9 +132,9 @@ internal static partial class MLKemEngine
     /// </remarks>
     internal static void MultiplyNtt(ReadOnlySpan<int> left, ReadOnlySpan<int> right, Span<int> destination)
     {
-        ThrowHelper.ThrowIfLessThan(left.Length, N, nameof(left));
-        ThrowHelper.ThrowIfLessThan(right.Length, N, nameof(right));
-        ThrowHelper.ThrowIfLessThan(destination.Length, N, nameof(destination));
+        ArgumentOutOfRangeException.ThrowIfLessThan(left.Length, N, nameof(left));
+        ArgumentOutOfRangeException.ThrowIfLessThan(right.Length, N, nameof(right));
+        ArgumentOutOfRangeException.ThrowIfLessThan(destination.Length, N, nameof(destination));
 
         for (int i = 0; i < 128; i++)
         {

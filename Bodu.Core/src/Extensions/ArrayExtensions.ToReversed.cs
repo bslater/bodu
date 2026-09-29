@@ -29,7 +29,7 @@ public static partial class ArrayExtensions
     /// </remarks>
     public static T[] ToReversed<T>(this T[] source)
     {
-        ThrowHelper.ThrowIfNull(source);
+        ArgumentNullException.ThrowIfNull(source);
         return ReverseCore<T>(source, 0, source.Length);
     }
 
