@@ -1,6 +1,6 @@
 # Implementation plan: the cryptography speed-ups left for later
 
-**Status:** In progress — F1 done (§9) · **Source:** the "Left for later" items in
+**Status:** In progress — F1 and F2 done (§9) · **Source:** the "Left for later" items in
 [`crypto-performance.md`](crypto-performance.md) §10 and the open items in
 [`argon2-performance.md`](argon2-performance.md) §10.3, after `Bodu.Security.Cryptography` 1.1.0 ·
 **Target:** `Bodu.Security.Cryptography`, next lock-step release
@@ -512,3 +512,164 @@ How it was done, and where it departs from the design above:
     block function one at a time.
   - Poly1305 no longer bounds the AEADs: at 1 MiB with AVX-512 the MAC takes about 0.15 ms
     of XChaCha20-Poly1305's 0.45 ms, and the keystream the rest.
+
+### F2 — the short AEAD message (done)
+
+Before and after, on both runtimes, in the harness's five processor configurations.
+*Change* is the ratio of the two ranges' midpoints, above 1 where F2 is faster. The BCL
+rows run OpenSSL's code, which F2 does not touch, so they show how far the runs drift on
+their own. Messages of up to 960 bytes can now be drawn in one pass; XChaCha20-Poly1305
+at 0 bytes, and at 512 with AVX-512VL, messages of 1 KiB and more, and every message
+without vector code are drawn as before.
+
+| Measure (net10.0) | Before F2 | After F2 | Change |
+|---|---|---|---|
+| XChaCha20-Poly1305 64 B / 128 B, this host's default (AVX-512VL) | 0.79–0.82 µs / 1.09–1.17 µs | 0.57–0.70 µs / 0.67–0.68 µs | 1.27× / 1.67× |
+| XChaCha20-Poly1305 192 B / 256 B, this host's default (AVX-512VL) | 1.28–1.51 µs / 0.92–1.06 µs | 0.70 µs / 0.77–0.80 µs | 1.99× / 1.26× |
+| XChaCha20-Poly1305 448 B / 960 B, this host's default (AVX-512VL) | 1.66–1.79 µs / 2.02–2.26 µs | 0.97–1.12 µs / 1.24–1.27 µs | 1.65× / 1.71× |
+| XChaCha20-Poly1305 0 B / 512 B, this host's default (AVX-512VL) | 0.53–0.56 µs / 1.05–1.07 µs | 0.54–0.55 µs / 1.10–1.18 µs | 1.00× / 0.93× |
+| XSalsa20-Poly1305 64 B / 256 B, this host's default (AVX-512VL) | 0.63–0.73 µs / 1.33–1.38 µs | 0.55–0.64 µs / 0.76–0.81 µs | 1.14× / 1.73× |
+| XSalsa20-Poly1305 512 B / 960 B, this host's default (AVX-512VL) | 1.73–1.74 µs / 2.05–2.08 µs | 1.04–1.09 µs / 1.20–1.32 µs | 1.63× / 1.64× |
+| XChaCha20-Poly1305 64 B / 448 B, 512-bit vectors (`DOTNET_PreferredVectorBitWidth=512`) | 1.01–1.06 µs / 1.94–2.14 µs | 0.72–0.79 µs / 1.14–1.37 µs | 1.37× / 1.63× |
+| XChaCha20-Poly1305 128 B / 448 B, AVX2 alone | 1.03–1.18 µs / 1.84–1.91 µs | 0.96–1.00 µs / 1.16–1.33 µs | 1.13× / 1.51× |
+| XSalsa20-Poly1305 128 B / 448 B, AVX2 alone | 0.97–1.04 µs / 1.83–2.02 µs | 0.90–0.91 µs / 1.25–1.41 µs | 1.11× / 1.45× |
+| XChaCha20-Poly1305 64 B / 448 B, SSSE3 (AVX2 disabled) | 0.89 µs / 2.06–2.18 µs | 0.87–0.92 µs / 1.66–1.68 µs | 0.99× / 1.27× |
+| XChaCha20-Poly1305 64 B / 448 B, without vector code | 0.95–1.04 µs / 2.59–2.69 µs | 0.88–0.90 µs / 2.51–2.60 µs | 1.12× / 1.03× |
+| XChaCha20-Poly1305 1 KiB / 16 KiB, this host's default (AVX-512VL) | 622–782 MiB/s / 1,500–1,573 MiB/s | 680–724 MiB/s / 1,641–1,653 MiB/s | 1.00× / 1.07× |
+| BCL ChaCha20-Poly1305 (OpenSSL) 64 B / 1 KiB, this host's default (AVX-512VL), for reference | 1.31–1.50 µs / 2.12 µs | 1.30–1.42 µs / 1.91–1.99 µs | 1.03× / 1.09× |
+
+| Measure (net8.0) | Before F2 | After F2 | Change |
+|---|---|---|---|
+| XChaCha20-Poly1305 64 B / 128 B, this host's default (AVX-512VL) | 0.86–0.90 µs / 1.12–1.25 µs | 0.63–0.70 µs / 0.69–0.75 µs | 1.32× / 1.65× |
+| XChaCha20-Poly1305 192 B / 256 B, this host's default (AVX-512VL) | 1.40–1.42 µs / 0.99 µs | 0.73–0.94 µs / 0.82–0.85 µs | 1.69× / 1.19× |
+| XChaCha20-Poly1305 448 B / 960 B, this host's default (AVX-512VL) | 1.70–1.77 µs / 2.26–2.33 µs | 1.00–1.06 µs / 1.35–1.37 µs | 1.68× / 1.69× |
+| XChaCha20-Poly1305 0 B / 512 B, this host's default (AVX-512VL) | 0.58–0.60 µs / 1.11–1.19 µs | 0.58–0.59 µs / 1.15–1.17 µs | 1.01× / 0.99× |
+| XSalsa20-Poly1305 64 B / 256 B, this host's default (AVX-512VL) | 0.74–0.87 µs / 1.36–1.54 µs | 0.59–0.64 µs / 0.74–0.78 µs | 1.31× / 1.91× |
+| XSalsa20-Poly1305 512 B / 960 B, this host's default (AVX-512VL) | 1.84–2.02 µs / 1.80–2.03 µs | 1.15 µs / 1.33–1.42 µs | 1.68× / 1.39× |
+| XChaCha20-Poly1305 64 B / 448 B, 512-bit vectors (`DOTNET_PreferredVectorBitWidth=512`) | 0.99–1.00 µs / 2.04–2.19 µs | 0.72–0.78 µs / 1.21–1.27 µs | 1.33× / 1.71× |
+| XChaCha20-Poly1305 128 B / 448 B, AVX2 alone | 1.13–1.19 µs / 1.83–1.94 µs | 0.85–1.09 µs / 1.22–1.23 µs | 1.20× / 1.54× |
+| XSalsa20-Poly1305 128 B / 448 B, AVX2 alone | 1.02–1.05 µs / 1.94–1.98 µs | 1.05–1.08 µs / 1.38–1.47 µs | 0.97× / 1.38× |
+| XChaCha20-Poly1305 64 B / 448 B, SSSE3 (AVX2 disabled) | 0.85–0.90 µs / 1.96–2.08 µs | 0.87–1.09 µs / 1.58 µs | 0.89× / 1.28× |
+| XChaCha20-Poly1305 64 B / 448 B, without vector code | 0.89 µs / 2.47–2.67 µs | 0.91–0.95 µs / 2.46–2.65 µs | 0.96× / 1.01× |
+| XChaCha20-Poly1305 1 KiB / 16 KiB, this host's default (AVX-512VL) | 679–692 MiB/s / 1,476–1,643 MiB/s | 616–693 MiB/s / 1,525–1,559 MiB/s | 0.95× / 0.99× |
+| BCL ChaCha20-Poly1305 (OpenSSL) 64 B / 1 KiB, this host's default (AVX-512VL), for reference | 1.42–1.44 µs / 2.23–2.28 µs | 1.33–1.41 µs / 1.98–2.02 µs | 1.04× / 1.13× |
+
+The harness measures 64 bytes first in each process, before tiering has always settled,
+so that row was also taken from alternating A/B runs of the two builds in separate
+processes. XChaCha20-Poly1305 seals a 64-byte message in 546–577 ns on .NET 10, over
+eleven rounds, against 746–810 before, which meets the target of 0.6 µs; on .NET 8 it
+takes 597–630 ns, over six rounds, against 805–900, just above it. The same runs hold the
+lengths whose draws F2 leaves as they were to their old cost: with AVX-512VL, 0 bytes at
+0.95–1.02× and the 512-byte messages that tie at 0.98–1.03×; without it, 64, 512 and
+1,100 bytes at 0.95–1.02× over five rounds, except one secretbox row at 1.09× on .NET 8
+that measured 0.94× when 1,100 bytes was the only length its process ran. That, and the
+0.93× the harness shows at 512 bytes, is dynamic PGO. The framing is compiled once for
+both of its paths and laid out for the one the process has run most, so a message drawn
+as it comes costs a little more in a process that has mostly drawn in one pass:
+XChaCha20-Poly1305 at 512 bytes on .NET 10 measured 0.99× alone, 1.03× after 64-byte
+messages, and 0.93–1.02× in the harness, which runs most one-pass lengths first. Giving
+each path a method of its own was tried; it cost one-pass messages 1–5% and did not
+remove the effect, so the paths share one method. The .NET 8 row with AVX2 disabled at
+64 bytes is one run with a gen-2 collection in it (1.09 µs); the other ran 0.87 µs.
+
+These figures were taken with F2 on ef973018. Master has since routed the keystream
+functions' guards through `ThrowHelper` (0e73d4b0); alternating runs of both builds, with
+and without F2, measured that change at 0.96–1.02× at 0, 64, 512 and 1,100 bytes on both
+runtimes, and F2 on the new master within the same rounds' spread of F2 on ef973018.
+
+How it was done, and where it departs from the design above:
+
+- **The whole short keystream in one pass, where it costs less.** The design drew the
+  Poly1305 key block and the first three message blocks in one four-block call, for
+  messages of up to 192 bytes. The framings instead plan each message's draws. By
+  default a message draws its keystream as it comes: the key block, then its whole blocks
+  in one `XorBlocks` call, then its partial last block. Where it is estimated to cost
+  less, all of its keystream, the key block included, is drawn in one run of up to
+  sixteen blocks through a buffer on the stack, so a message of up to 960 bytes under
+  RFC 8439, or 992 under secretbox, can take one or two kernel steps. The run is rounded
+  up past the blocks the message needs where a whole kernel group makes it cheaper, and
+  the keystream it does not use is discarded. A longer message's blocks after its last
+  whole group of four pass through the buffer in one step the same way, which ends the
+  unevenness F1 left for later: XChaCha20-Poly1305 at 448 bytes no longer costs more
+  than at 512.
+- **Why the plan is estimated rather than fixed.** The first version rounded every run
+  up to a group of four and took the one pass whenever a message fit. Alternating A/B
+  runs measured it 3% slower for an empty XChaCha20-Poly1305 message, 9% for an empty
+  XSalsa20-Poly1305 one, and 5–7% slower for XChaCha20-Poly1305 at exactly 512 bytes.
+  In each case the one pass takes as many kernel steps as drawing as it comes, and adds
+  the copies through the buffer. Nor is a kernel step always worth one block. Measured
+  against the block function over one block:
+
+  | Step, against the block function over one block (ChaCha20 / Salsa20) | .NET 10 | .NET 8 |
+  |---|---|---|
+  | 4 or 8 blocks, AVX-512VL | 0.95–0.97 / 1.11–1.14 | 0.93–0.95 / 1.09–1.16 |
+  | 4 or 8 blocks, 512-bit vectors | 0.95–0.98 / 1.02–1.06 | 0.96–0.98 / 1.07–1.10 |
+  | 16 blocks, 512-bit vectors | 1.43 / 1.49 | 1.40 / 1.56 |
+  | 4 or 8 blocks, AVX2 alone | 1.77–2.04 / 2.33–2.73 | 1.88–1.95 / 3.15–3.47 |
+  | 4 blocks, SSSE3 (`DOTNET_EnableAVX=0`) | 1.69 / 1.96 | 1.97 / 2.45 |
+
+  `ChaCha20Core.StepCost` rounds these to halves of a block: 2 for the block function,
+  2 for four or eight blocks with AVX-512VL and 3 for sixteen, and 4 for four or eight
+  blocks on AVX2, SSSE3 and, unmeasured, ARM64's AdvSimd. `CostFor` sums a run's steps
+  as the kernel divides it. `Poly1305AeadCore.PlanOnePass` takes the one pass only where
+  its estimate is strictly lower than drawing as it comes, which copies nothing. On the
+  block function every way costs the same, so a keystream there, and an engine, which
+  reports the scalar kernel, is always drawn exactly as before.
+- **The plan is kept per kernel.** Planning a message afresh took 75–140 ns, about half
+  a block, so `OnePassBlocks` computes the plan for every length up to 1 KiB of
+  keystream on a kernel's first message and keeps it, published with
+  `Interlocked.CompareExchange`. A lookup takes a few instructions.
+- **Generated code, on both runtimes.**
+  - With AVX-512, .NET 10's `SealRfc8439` grew from 2,989 to 3,376 bytes of Tier1 code
+    and `OpenRfc8439` from 3,486 to 3,927, making the same calls into Poly1305 as
+    before: the plan lookup compiles to a few instructions at a constant index, and
+    nothing that was inlined stopped being inlined.
+  - Without AVX-512, .NET 10 did not inline `LanesFor` into `XorKeystream`, so every
+    message drawn as it comes called it twice and divided by the group's width, and
+    XChaCha20-Poly1305 ran 6–8% slower at 64 bytes, where its draws had not changed.
+    `LanesFor`, `StepCost` and the plan's per-message helpers are now
+    `AggressiveInlining`, and for each keystream's kernel, a constant when the framing
+    is compiled, the decisions fold away. .NET 8 inlined `LanesFor` but still divided,
+    not folding the width into the divisor, so the bytes after the whole groups are
+    now taken with a mask. After both changes the 64-byte message is back to its old
+    cost without AVX-512: medians of five alternating rounds lie between 0.97× and
+    1.02× on both runtimes.
+  - The run buffer is zeroed when it is allocated, as every stack buffer in the
+    framings is: .NET 10 zeroes it inline and .NET 8 through `Buffer._ZeroMemory`, at a
+    cost that grows with the run. `[SkipLocalsInit]` would save that, but an engine
+    from a derived `Poly1305AeadTransform` fills the same buffers, and one that left a
+    block unfilled would then leak whatever the stack held into the keystream, so the
+    zeroing stays.
+- **Tests.**
+  - A `RecordingKeystream` reports whichever kernel a test names, so every kernel's
+    plan runs through the four framings on any processor. At every message length to
+    1,299 bytes, and 4,099, it holds the output to the engine's, the draws to the cost
+    the plan estimated for them, and every departure from drawing as it comes to a lower
+    estimate; on the block function that leaves the draws exactly as they were. Three
+    mutations of the planner — one pass on a tie, the rest's step left out of the
+    estimate, the rest never rounded — each fail those tests.
+  - `StepCost`, `CostFor`, `CheapestRunBlocks`, `KeystreamCost` and `PlanOnePass` are
+    pinned at chosen values; `CheapestRunBlocks` is held to every longer run up to
+    sixteen blocks, and the plan kept for each kernel to planning afresh. The SIMD-off
+    assembly asserts that no message is drawn in one pass there.
+  - A tampered tag leaves the output unwritten for messages drawn in one pass and for
+    longer ones, and exact in-place encryption matches a separate buffer's for both.
+  - The full suite passes on both runtimes, and the AEAD, ChaCha20 and Salsa20 groups
+    also without AVX-512 and without AVX2.
+  - Under qemu on ARM64, where the keystreams plan for AdvSimd, the plan and keystream
+    tests pass, and seal-and-open round trips through all three AEADs at every length to
+    1,299 bytes, and 4,099, produce byte for byte the messages x64 does with and without
+    vector code, and the library did before F2.
+- **Left for later.**
+  - HChaCha20 and HSalsa20 are now the largest fixed cost of a short message: about
+    170 ns of the 575 a 64-byte XChaCha20-Poly1305 message takes on .NET 10, computed one
+    block at a time because they derive the key the other blocks use. A one-block vector
+    kernel, as BLAKE2s has, could shorten that.
+  - Salsa20's AVX2 and SSSE3 kernels take 3.1–3.5 blocks' time per step on .NET 8,
+    against 2.3–2.7 on .NET 10. The estimates follow ChaCha20, so on .NET 8 without
+    AVX-512 a three-block XSalsa20-Poly1305 message takes one step where three calls of
+    the block function would be about 3% faster (0.97× at 128 bytes). Finding why .NET 8
+    compiles those kernels slower would remove that and speed up long XSalsa20 messages
+    on such processors.
+  - The ARM64 estimate is assumed, not measured: F7 should time the AdvSimd kernel's
+    steps against the block function and correct `StepCost` if they differ.
