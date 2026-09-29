@@ -33,18 +33,18 @@ internal static partial class VectorRotation
         /// the choice between the forms folds away when the call is inlined.
         /// </para>
         /// <para>
-        /// The shifts are the instruction set's own, their counts immediates. .NET 8 compiles
-        /// <c>Vector128.ShiftRightLogical(value, 32 - count)</c> to a shift by a count loaded into a register on every
-        /// call, even where <paramref name="count" /> is a constant, but folds the constant into the immediate form.
+        /// The shifts are the portable operators, not <c>Sse2.ShiftLeftLogical</c> and <c>Sse2.ShiftRightLogical</c>.
+        /// .NET 10 compiles either form to immediate shifts. .NET 8 does not fold <c>(byte)(32 - count)</c> into the
+        /// intrinsic's immediate: it passes the count from memory, and the ChaCha20 and Salsa20 kernels built on that
+        /// form spill more and run slower than on the portable operators, which move the count into a register.
         /// </para>
         /// </remarks>
-        [SuppressMessage("Performance", "CA1857:A constant is expected for the parameter", Justification = "The count is a constant wherever the rotation is called, so once the call is inlined the complementary shift count folds to the constant the instruction takes.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector128<uint> RotateLeft(Vector128<uint> value, [ConstantExpected(Min = 1, Max = 31)] byte count) => count switch
         {
             16 => X86.Ssse3.Shuffle(value.AsByte(), Vector128.Create((byte)2, 3, 0, 1, 6, 7, 4, 5, 10, 11, 8, 9, 14, 15, 12, 13)).AsUInt32(),
             8 => X86.Ssse3.Shuffle(value.AsByte(), Vector128.Create((byte)3, 0, 1, 2, 7, 4, 5, 6, 11, 8, 9, 10, 15, 12, 13, 14)).AsUInt32(),
-            _ => X86.Sse2.ShiftLeftLogical(value, count) | X86.Sse2.ShiftRightLogical(value, (byte)(32 - count)),
+            _ => Vector128.ShiftLeft(value, count) | Vector128.ShiftRightLogical(value, 32 - count),
         };
     }
 }

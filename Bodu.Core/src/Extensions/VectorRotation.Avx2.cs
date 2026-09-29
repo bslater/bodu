@@ -34,12 +34,12 @@ internal static partial class VectorRotation
         /// half, so its pattern repeats.
         /// </para>
         /// <para>
-        /// The shifts are the instruction set's own, their counts immediates. .NET 8 compiles
-        /// <c>Vector256.ShiftRightLogical(value, 32 - count)</c> to a shift by a count loaded into a register on every
-        /// call, even where <paramref name="count" /> is a constant, but folds the constant into the immediate form.
+        /// The shifts are the portable operators, not <c>Avx2.ShiftLeftLogical</c> and <c>Avx2.ShiftRightLogical</c>.
+        /// .NET 10 compiles either form to immediate shifts. .NET 8 does not fold <c>(byte)(32 - count)</c> into the
+        /// intrinsic's immediate: it passes the count from memory, and the ChaCha20 and Salsa20 kernels built on that
+        /// form spill more and run slower than on the portable operators, which move the count into a register.
         /// </para>
         /// </remarks>
-        [SuppressMessage("Performance", "CA1857:A constant is expected for the parameter", Justification = "The count is a constant wherever the rotation is called, so once the call is inlined the complementary shift count folds to the constant the instruction takes.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector256<uint> RotateLeft(Vector256<uint> value, [ConstantExpected(Min = 1, Max = 31)] byte count) => count switch
         {
@@ -49,7 +49,7 @@ internal static partial class VectorRotation
             8 => X86.Avx2.Shuffle(
                 value.AsByte(),
                 Vector256.Create((byte)3, 0, 1, 2, 7, 4, 5, 6, 11, 8, 9, 10, 15, 12, 13, 14, 3, 0, 1, 2, 7, 4, 5, 6, 11, 8, 9, 10, 15, 12, 13, 14)).AsUInt32(),
-            _ => X86.Avx2.ShiftLeftLogical(value, count) | X86.Avx2.ShiftRightLogical(value, (byte)(32 - count)),
+            _ => Vector256.ShiftLeft(value, count) | Vector256.ShiftRightLogical(value, 32 - count),
         };
 
         /// <summary>
@@ -66,12 +66,10 @@ internal static partial class VectorRotation
         /// half, so their patterns repeat.
         /// </para>
         /// <para>
-        /// The shifts are the instruction set's own, their counts immediates. .NET 8 compiles
-        /// <c>Vector256.ShiftRightLogical(value, 64 - count)</c> to a shift by a count loaded into a register on every
-        /// call, even where <paramref name="count" /> is a constant, but folds the constant into the immediate form.
+        /// The shifts are the portable operators, as for 32-bit lanes. .NET 10 compiles them to immediate shifts, and
+        /// the instruction set's intrinsics measured no faster on .NET 8.
         /// </para>
         /// </remarks>
-        [SuppressMessage("Performance", "CA1857:A constant is expected for the parameter", Justification = "The count is a constant wherever the rotation is called, so once the call is inlined the complementary shift count folds to the constant the instruction takes.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector256<ulong> RotateLeft(Vector256<ulong> value, [ConstantExpected(Min = 1, Max = 63)] byte count) => count switch
         {
@@ -94,7 +92,7 @@ internal static partial class VectorRotation
             56 => X86.Avx2.Shuffle(
                 value.AsByte(),
                 Vector256.Create((byte)1, 2, 3, 4, 5, 6, 7, 0, 9, 10, 11, 12, 13, 14, 15, 8, 1, 2, 3, 4, 5, 6, 7, 0, 9, 10, 11, 12, 13, 14, 15, 8)).AsUInt64(),
-            _ => X86.Avx2.ShiftLeftLogical(value, count) | X86.Avx2.ShiftRightLogical(value, (byte)(64 - count)),
+            _ => Vector256.ShiftLeft(value, count) | Vector256.ShiftRightLogical(value, 64 - count),
         };
     }
 }
