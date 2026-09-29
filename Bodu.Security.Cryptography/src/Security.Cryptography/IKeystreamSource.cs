@@ -19,6 +19,17 @@ namespace Bodu.Security.Cryptography;
 internal interface IKeystreamSource
 {
     /// <summary>
+    /// Gets the kernel that <see cref="XorBlocks" /> runs, for which the framings plan how they draw a message's
+    /// keystream.
+    /// </summary>
+    /// <value>
+    /// The kernel dispatch selects for the keystream; never <see cref="ChaCha20Core.KernelKind.Auto" />.
+    /// <see cref="ChaCha20Core.KernelKind.Scalar" /> where runs take the block function one block at a time, and for a
+    /// keystream whose kernels are not known.
+    /// </value>
+    ChaCha20Core.KernelKind Kernel { get; }
+
+    /// <summary>
     /// Writes the next keystream block and advances past it.
     /// </summary>
     /// <param name="destination">Receives the 64-byte block in its first 64 bytes.</param>

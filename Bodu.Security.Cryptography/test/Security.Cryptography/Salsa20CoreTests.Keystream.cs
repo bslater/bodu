@@ -9,6 +9,18 @@ namespace Bodu.Security.Cryptography;
 public sealed partial class Salsa20CoreTests
 {
     /// <summary>
+    /// Verifies that a <see cref="Salsa20Core.Keystream" /> reports the kernel dispatch selects, which its runs of
+    /// blocks take, so that the Poly1305 AEADs plan their draws for it.
+    /// </summary>
+    [TestMethod]
+    public void KeystreamKernel_WhenQueried_ShouldBeTheKernelDispatchSelects()
+    {
+        Salsa20Core.Keystream keystream = default;
+
+        Assert.AreEqual(ChaCha20Core.SelectKernel(), keystream.Kernel);
+    }
+
+    /// <summary>
     /// Verifies that the keystream drawn a block at a time from a <see cref="Salsa20Core.Keystream" /> is the core
     /// function at successive counters from the initial one, carrying from the counter's low word into its high word,
     /// under both key sizes.

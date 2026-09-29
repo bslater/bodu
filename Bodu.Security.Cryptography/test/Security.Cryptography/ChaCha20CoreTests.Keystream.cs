@@ -9,6 +9,18 @@ namespace Bodu.Security.Cryptography;
 public sealed partial class ChaCha20CoreTests
 {
     /// <summary>
+    /// Verifies that a <see cref="ChaCha20Core.Keystream" /> reports the kernel dispatch selects, which its runs of
+    /// blocks take, so that the Poly1305 AEADs plan their draws for it.
+    /// </summary>
+    [TestMethod]
+    public void KeystreamKernel_WhenQueried_ShouldBeTheKernelDispatchSelects()
+    {
+        ChaCha20Core.Keystream keystream = default;
+
+        Assert.AreEqual(ChaCha20Core.SelectKernel(), keystream.Kernel);
+    }
+
+    /// <summary>
     /// Verifies that the keystream drawn a block at a time from a <see cref="ChaCha20Core.Keystream" /> is the block
     /// function at successive counters from the initial one.
     /// </summary>

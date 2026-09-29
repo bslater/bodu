@@ -55,6 +55,9 @@ internal static partial class ChaCha20Core
     /// <summary>The index of the block counter in the state.</summary>
     internal const int CounterWord = 12;
 
+    /// <summary>The number of blocks the narrowest vector kernels compute at once: one in each 32-bit lane of a 128-bit vector.</summary>
+    internal const int NarrowestKernelLanes = 4;
+
     /// <summary>The first little-endian word of the ASCII constant <c>"expand 32-byte k"</c>.</summary>
     internal const uint Sigma0 = 0x61707865;
 
@@ -316,6 +319,11 @@ internal static partial class ChaCha20Core
     /// <param name="kernel">The kernel; not <see cref="KernelKind.Auto" />.</param>
     /// <param name="remaining">The number of blocks left.</param>
     /// <returns>16, 8, 4 or 1.</returns>
+    /// <remarks>
+    /// Inlined, so that for a kernel known when the caller is compiled, as the Poly1305 AEADs' keystream is, the widths
+    /// fold to constants.
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static int LanesFor(KernelKind kernel, int remaining) => kernel switch
     {
         KernelKind.Avx512Wide when remaining >= 16 => 16,
@@ -323,6 +331,68 @@ internal static partial class ChaCha20Core
         KernelKind.Avx512Wide or KernelKind.Avx512 or KernelKind.Avx2 or KernelKind.Ssse3 or KernelKind.AdvSimd when remaining >= 4 => 4,
         _ => 1,
     };
+
+    /// <summary>
+    /// Estimates the time one step of the specified kernel takes over the specified number of lanes, in halves of the
+    /// time the block function takes over one block.
+    /// </summary>
+    /// <param name="kernel">The kernel; not <see cref="KernelKind.Auto" />.</param>
+    /// <param name="lanes">
+    /// The number of blocks the step computes: 1, 4, 8 or 16, as <see cref="LanesFor" /> returns.
+    /// </param>
+    /// <returns>
+    /// 2 for the block function; 2 for four or eight blocks with AVX-512VL, and 3 for sixteen; 4 for four or eight
+    /// blocks on the other kernels.
+    /// </returns>
+    /// <remarks>
+    /// <para>
+    /// The estimates follow measurements on .NET 8 and .NET 10, each step against the block function over one block.
+    /// With AVX-512VL, whose 32 vector registers hold a kernel's sixteen state vectors and its temporaries, a step of
+    /// four or eight blocks takes 0.9 to 1.2 times as long, and a step of sixteen 1.4 to 1.6 times as long, for
+    /// ChaCha20 and Salsa20 alike. With 16 registers the AVX2 and SSSE3 kernels spill: a step takes 1.7 to 2.0 times as
+    /// long for ChaCha20, and 2.0 to 3.5 times for Salsa20, whose rotations all take two shifts. The estimate follows
+    /// ChaCha20. The ARM64 kernel, which has not been measured, is taken to cost as the AVX2 and SSSE3 kernels do.
+    /// </para>
+    /// <para>
+    /// The keystream a step produces is the same whichever kernel runs it, so the estimates only choose between ways of
+    /// drawing the same blocks; <see cref="Poly1305AeadCore" /> draws a short message's keystream the cheaper way.
+    /// </para>
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static int StepCost(KernelKind kernel, int lanes) => lanes switch
+    {
+        1 => 2,
+        16 => 3,
+        _ => kernel is KernelKind.Avx512 or KernelKind.Avx512Wide ? 2 : 4,
+    };
+
+    /// <summary>
+    /// Estimates the time
+    /// <see cref="XorBlocks(KernelKind, ReadOnlySpan{uint}, uint, ReadOnlySpan{byte}, Span{byte})" /> takes over a run
+    /// of blocks, in the units of <see cref="StepCost" />.
+    /// </summary>
+    /// <param name="kernel">The kernel; not <see cref="KernelKind.Auto" />.</param>
+    /// <param name="blocks">The number of blocks in the run.</param>
+    /// <returns>The sum of the costs of the steps the run is divided into; zero for an empty run.</returns>
+    /// <remarks>
+    /// The run is divided as the kernel divides it: into as many groups of the widest lanes <see cref="LanesFor" />
+    /// offers as fit, then of the next widest, down to the blocks left over, which the block function takes one at a
+    /// time.
+    /// </remarks>
+    internal static int CostFor(KernelKind kernel, int blocks)
+    {
+        int cost = 0;
+
+        while (blocks > 0)
+        {
+            int lanes = LanesFor(kernel, blocks);
+            int groups = blocks / lanes;
+            cost += groups * StepCost(kernel, lanes);
+            blocks -= groups * lanes;
+        }
+
+        return cost;
+    }
 
     /// <summary>
     /// Applies the ChaCha20 quarter round (RFC 8439, Section 2.1) to four state words in place.

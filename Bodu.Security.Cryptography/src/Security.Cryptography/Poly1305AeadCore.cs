@@ -47,6 +47,15 @@ namespace Bodu.Security.Cryptography;
 /// </item>
 /// </list>
 /// <para>
+/// A message draws the key block, then its whole blocks in one call to <see cref="IKeystreamSource.XorBlocks" />, then
+/// its last partial block, unless drawing more keystream than it needs in fewer kernel steps is estimated to cost less
+/// (<see cref="OnePassBlocks" />): then all of its keystream, the key block included, is drawn in one run of up to
+/// sixteen blocks through a buffer on the stack, so a message of up to 960 bytes under RFC 8439, or 992 under
+/// secretbox, can take one or two kernel steps where the block function would take the key block and each message block
+/// in turn. A longer message's last blocks, after its whole groups of the narrowest kernel, pass through the buffer
+/// together in the same way where that costs less than drawing them one at a time.
+/// </para>
+/// <para>
 /// Both decryption paths are <em>verify-before-release</em>: the tag is recomputed over the received ciphertext and
 /// compared in constant time before any plaintext byte is written, so a failed authentication leaves <c>output</c>
 /// untouched.
@@ -106,22 +115,35 @@ internal static partial class Poly1305AeadCore
     {
         ValidateSealBuffers(plaintext, output);
 
-        Span<byte> poly1305Key = stackalloc byte[Poly1305KeyBytes];
+        // The message draws its Poly1305 key and its keystream in one pass where that is estimated to cost less;
+        // otherwise the key block, then its own blocks from counter 1. Either way the key is the first 32 bytes of the
+        // run.
+        int runBlocks = OnePassBlocks(keystream.Kernel, KeystreamBlockBytes + plaintext.Length);
+        bool onePass = runBlocks != 0;
+        Span<byte> run = stackalloc byte[(onePass ? runBlocks : 1) * KeystreamBlockBytes];
 
         try
         {
-            DerivePoly1305KeyDiscardingBlock(ref keystream, poly1305Key);
-
             Span<byte> ciphertext = output[..plaintext.Length];
-            XorKeystream(ref keystream, plaintext, ciphertext);
 
-            ComputeRfc8439Tag(poly1305Key, associatedData, ciphertext, output.Slice(plaintext.Length, TagBytes));
+            if (onePass)
+            {
+                XorRun(ref keystream, KeystreamBlockBytes, plaintext, run);
+                run.Slice(KeystreamBlockBytes, plaintext.Length).CopyTo(ciphertext);
+            }
+            else
+            {
+                keystream.NextBlock(run);
+                XorKeystream(ref keystream, plaintext, ciphertext);
+            }
+
+            ComputeRfc8439Tag(run[..Poly1305KeyBytes], associatedData, ciphertext, output.Slice(plaintext.Length, TagBytes));
 
             return plaintext.Length + TagBytes;
         }
         finally
         {
-            CryptographicOperations.ZeroMemory(poly1305Key);
+            CryptographicOperations.ZeroMemory(run);
         }
     }
 
@@ -170,24 +192,35 @@ internal static partial class Poly1305AeadCore
         ReadOnlySpan<byte> ciphertext = ciphertextWithTag[..ciphertextLength];
         ReadOnlySpan<byte> receivedTag = ciphertextWithTag[ciphertextLength..];
 
-        Span<byte> poly1305Key = stackalloc byte[Poly1305KeyBytes];
+        // As in SealRfc8439. Drawn in one pass, the plaintext stays in the run until the tag verifies; drawn separately,
+        // it is decrypted into the output only after the tag has verified.
+        int runBlocks = OnePassBlocks(keystream.Kernel, KeystreamBlockBytes + ciphertextLength);
+        bool onePass = runBlocks != 0;
+        Span<byte> run = stackalloc byte[(onePass ? runBlocks : 1) * KeystreamBlockBytes];
         Span<byte> expectedTag = stackalloc byte[TagBytes];
 
         try
         {
-            DerivePoly1305KeyDiscardingBlock(ref keystream, poly1305Key);
-            ComputeRfc8439Tag(poly1305Key, associatedData, ciphertext, expectedTag);
+            if (onePass)
+                XorRun(ref keystream, KeystreamBlockBytes, ciphertext, run);
+            else
+                keystream.NextBlock(run);
+
+            ComputeRfc8439Tag(run[..Poly1305KeyBytes], associatedData, ciphertext, expectedTag);
 
             if (!CryptographicOperations.FixedTimeEquals(receivedTag, expectedTag))
                 throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_AuthenticationTagMismatch);
 
-            XorKeystream(ref keystream, ciphertext, output[..ciphertextLength]);
+            if (onePass)
+                run.Slice(KeystreamBlockBytes, ciphertextLength).CopyTo(output);
+            else
+                XorKeystream(ref keystream, ciphertext, output[..ciphertextLength]);
 
             return ciphertextLength;
         }
         finally
         {
-            CryptographicOperations.ZeroMemory(poly1305Key);
+            CryptographicOperations.ZeroMemory(run);
             CryptographicOperations.ZeroMemory(expectedTag);
         }
     }
@@ -222,25 +255,35 @@ internal static partial class Poly1305AeadCore
     {
         ValidateSealBuffers(plaintext, output);
 
-        Span<byte> block0 = stackalloc byte[KeystreamBlockBytes];
-        Span<byte> poly1305Key = stackalloc byte[Poly1305KeyBytes];
+        // The message draws its Poly1305 key and its keystream in one pass where that is estimated to cost less;
+        // otherwise the counter-0 block, whose trailing 32 bytes encrypt its first bytes, then its remaining blocks.
+        // Either way the key is the first 32 bytes of the run.
+        int runBlocks = OnePassBlocks(keystream.Kernel, SecretboxKeystreamOffset + plaintext.Length);
+        bool onePass = runBlocks != 0;
+        Span<byte> run = stackalloc byte[(onePass ? runBlocks : 1) * KeystreamBlockBytes];
 
         try
         {
-            keystream.NextBlock(block0);
-            block0[..Poly1305KeyBytes].CopyTo(poly1305Key);
-
             Span<byte> ciphertext = output[..plaintext.Length];
-            EncryptSecretboxBody(ref keystream, block0, plaintext, ciphertext);
 
-            ComputePoly1305(poly1305Key, ciphertext, output.Slice(plaintext.Length, TagBytes));
+            if (onePass)
+            {
+                XorRun(ref keystream, SecretboxKeystreamOffset, plaintext, run);
+                run.Slice(SecretboxKeystreamOffset, plaintext.Length).CopyTo(ciphertext);
+            }
+            else
+            {
+                keystream.NextBlock(run);
+                EncryptSecretboxBody(ref keystream, run, plaintext, ciphertext);
+            }
+
+            ComputePoly1305(run[..Poly1305KeyBytes], ciphertext, output.Slice(plaintext.Length, TagBytes));
 
             return plaintext.Length + TagBytes;
         }
         finally
         {
-            CryptographicOperations.ZeroMemory(block0);
-            CryptographicOperations.ZeroMemory(poly1305Key);
+            CryptographicOperations.ZeroMemory(run);
         }
     }
 
@@ -279,52 +322,36 @@ internal static partial class Poly1305AeadCore
         ReadOnlySpan<byte> ciphertext = ciphertextWithTag[..ciphertextLength];
         ReadOnlySpan<byte> receivedTag = ciphertextWithTag[ciphertextLength..];
 
-        Span<byte> block0 = stackalloc byte[KeystreamBlockBytes];
-        Span<byte> poly1305Key = stackalloc byte[Poly1305KeyBytes];
+        // As in SealSecretbox. Drawn in one pass, the plaintext stays in the run until the tag verifies; drawn
+        // separately, it is decrypted into the output only after the tag has verified.
+        int runBlocks = OnePassBlocks(keystream.Kernel, SecretboxKeystreamOffset + ciphertextLength);
+        bool onePass = runBlocks != 0;
+        Span<byte> run = stackalloc byte[(onePass ? runBlocks : 1) * KeystreamBlockBytes];
         Span<byte> expectedTag = stackalloc byte[TagBytes];
 
         try
         {
-            keystream.NextBlock(block0);
-            block0[..Poly1305KeyBytes].CopyTo(poly1305Key);
+            if (onePass)
+                XorRun(ref keystream, SecretboxKeystreamOffset, ciphertext, run);
+            else
+                keystream.NextBlock(run);
 
-            ComputePoly1305(poly1305Key, ciphertext, expectedTag);
+            ComputePoly1305(run[..Poly1305KeyBytes], ciphertext, expectedTag);
 
             if (!CryptographicOperations.FixedTimeEquals(receivedTag, expectedTag))
                 throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_AuthenticationTagMismatch);
 
-            EncryptSecretboxBody(ref keystream, block0, ciphertext, output[..ciphertextLength]);
+            if (onePass)
+                run.Slice(SecretboxKeystreamOffset, ciphertextLength).CopyTo(output);
+            else
+                EncryptSecretboxBody(ref keystream, run, ciphertext, output[..ciphertextLength]);
 
             return ciphertextLength;
         }
         finally
         {
-            CryptographicOperations.ZeroMemory(block0);
-            CryptographicOperations.ZeroMemory(poly1305Key);
+            CryptographicOperations.ZeroMemory(run);
             CryptographicOperations.ZeroMemory(expectedTag);
-        }
-    }
-
-    /// <summary>
-    /// Reads the counter-0 keystream block, copies its leading 32 bytes into <paramref name="poly1305Key" />, and
-    /// discards the remainder — the RFC 8439 key-derivation step that leaves the keystream positioned at counter 1.
-    /// </summary>
-    /// <typeparam name="TKeystream">The type of the keystream.</typeparam>
-    /// <param name="keystream">A keystream positioned at block counter 0.</param>
-    /// <param name="poly1305Key">A 32-byte span that receives the one-time Poly1305 key.</param>
-    private static void DerivePoly1305KeyDiscardingBlock<TKeystream>(ref TKeystream keystream, Span<byte> poly1305Key)
-        where TKeystream : struct, IKeystreamSource
-    {
-        Span<byte> block0 = stackalloc byte[KeystreamBlockBytes];
-
-        try
-        {
-            keystream.NextBlock(block0);
-            block0[..Poly1305KeyBytes].CopyTo(poly1305Key);
-        }
-        finally
-        {
-            CryptographicOperations.ZeroMemory(block0);
         }
     }
 
@@ -360,32 +387,69 @@ internal static partial class Poly1305AeadCore
     /// <param name="input">The data to combine with the keystream.</param>
     /// <param name="output">Receives the XOR result; must be at least <c>input.Length</c> bytes.</param>
     /// <remarks>
-    /// The whole blocks go to <see cref="IKeystreamSource.XorBlocks" /> in one call; a partial last block takes one
-    /// more keystream block, of which the unused tail is discarded.
+    /// The whole blocks go to <see cref="IKeystreamSource.XorBlocks" /> in one call, and a last partial block takes the
+    /// next block alone. Where <see cref="RestRunBlocks" /> finds it cheaper, the bytes after the whole groups of the
+    /// keystream's narrowest kernel instead pass through a buffer in one step of that kernel, and the keystream the
+    /// buffer does not use is discarded.
     /// </remarks>
     private static void XorKeystream<TKeystream>(ref TKeystream keystream, ReadOnlySpan<byte> input, Span<byte> output)
         where TKeystream : struct, IKeystreamSource
     {
-        int whole = input.Length / KeystreamBlockBytes * KeystreamBlockBytes;
+        // A group is a power of two blocks, so the bytes after the whole groups are the length's low bits: a mask
+        // where .NET 8, which does not fold the group's width into the divisor, would otherwise divide.
+        ChaCha20Core.KernelKind kernel = keystream.Kernel;
+        int rest = input.Length & ((GroupBlocks(kernel) * KeystreamBlockBytes) - 1);
+        int runBlocks = RestRunBlocks(kernel, rest);
+        int whole = runBlocks == 0 ? input.Length / KeystreamBlockBytes * KeystreamBlockBytes : input.Length - rest;
+
         if (whole > 0)
             keystream.XorBlocks(input[..whole], output);
 
         if (whole == input.Length)
             return;
 
-        Span<byte> block = stackalloc byte[KeystreamBlockBytes];
+        int tail = input.Length - whole;
+        Span<byte> run = stackalloc byte[(runBlocks == 0 ? 1 : runBlocks) * KeystreamBlockBytes];
 
         try
         {
-            keystream.NextBlock(block);
-
-            int tail = input.Length - whole;
-            CryptographyHelper.Xor(input[whole..], block[..tail], output.Slice(whole, tail));
+            if (runBlocks == 0)
+            {
+                keystream.NextBlock(run);
+                CryptographyHelper.Xor(input[whole..], run[..tail], output.Slice(whole, tail));
+            }
+            else
+            {
+                XorRun(ref keystream, 0, input[whole..], run);
+                run[..tail].CopyTo(output[whole..]);
+            }
         }
         finally
         {
-            CryptographicOperations.ZeroMemory(block);
+            CryptographicOperations.ZeroMemory(run);
         }
+    }
+
+    /// <summary>
+    /// Fills a run with the next keystream blocks, combined by XOR with input bytes placed after its first
+    /// <paramref name="offset" /> bytes, which take the keystream alone, and advances the keystream past the run.
+    /// </summary>
+    /// <typeparam name="TKeystream">The type of the keystream.</typeparam>
+    /// <param name="keystream">The keystream to draw from.</param>
+    /// <param name="offset">The number of bytes at the start of the run that receive the keystream alone.</param>
+    /// <param name="input">The bytes combined with the keystream after the first <paramref name="offset" />.</param>
+    /// <param name="run">The run, overwritten whatever it held.</param>
+    /// <remarks>
+    /// <paramref name="run" /> is a whole number of blocks, at least <c>offset + input.Length</c> bytes long; the bytes
+    /// after the input also receive the keystream alone.
+    /// </remarks>
+    private static void XorRun<TKeystream>(ref TKeystream keystream, int offset, ReadOnlySpan<byte> input, Span<byte> run)
+        where TKeystream : struct, IKeystreamSource
+    {
+        run[..offset].Clear();
+        input.CopyTo(run[offset..]);
+        run[(offset + input.Length)..].Clear();
+        keystream.XorBlocks(run, run);
     }
 
     /// <summary>
