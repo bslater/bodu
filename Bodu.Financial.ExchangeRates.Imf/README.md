@@ -98,4 +98,4 @@ services
     .AddImfExchangeRates(configuration);
 ```
 
-Part of the [Bodu](https://github.com/bodu/bodu) utility library.
+Part of the [Bodu](https://github.com/bslater/bodu) utility library.

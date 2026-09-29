@@ -76,4 +76,4 @@ fixture — under
 
 Formulas, styles, charts, pivot tables, macros, named ranges, and writing `.xls` files.
 
-Part of the [Bodu](https://github.com/bodu/bodu) utility library.
+Part of the [Bodu](https://github.com/bslater/bodu) utility library.

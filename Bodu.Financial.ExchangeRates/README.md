@@ -88,4 +88,4 @@ observation-ingested / download-failed levels are individually configurable on
 
 Depends on `Bodu.Financial`, `Bodu.Core`, and `Microsoft.Extensions.Logging.Abstractions`.
 
-Part of the [Bodu](https://github.com/bodu/bodu) utility library.
+Part of the [Bodu](https://github.com/bslater/bodu) utility library.

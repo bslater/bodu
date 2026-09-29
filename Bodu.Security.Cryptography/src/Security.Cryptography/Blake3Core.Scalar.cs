@@ -5,8 +5,8 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Buffers.Binary;
-using System.Numerics;
 using System.Runtime.CompilerServices;
+using Bodu.Extensions;
 
 namespace Bodu.Security.Cryptography;
 
@@ -138,13 +138,13 @@ internal static partial class Blake3Core
     private static void G(ref uint a, ref uint b, ref uint c, ref uint d, uint x, uint y)
     {
         a += b + x;
-        d = BitOperations.RotateRight(d ^ a, 16);
+        d = (d ^ a).RotateBitsRightUnchecked(16);
         c += d;
-        b = BitOperations.RotateRight(b ^ c, 12);
+        b = (b ^ c).RotateBitsRightUnchecked(12);
         a += b + y;
-        d = BitOperations.RotateRight(d ^ a, 8);
+        d = (d ^ a).RotateBitsRightUnchecked(8);
         c += d;
-        b = BitOperations.RotateRight(b ^ c, 7);
+        b = (b ^ c).RotateBitsRightUnchecked(7);
     }
 
     /// <summary>

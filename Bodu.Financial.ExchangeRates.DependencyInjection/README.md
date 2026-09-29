@@ -43,4 +43,4 @@ provided, so a provider can be registered from configuration or configured inlin
 Consumers do not usually reference this package directly — they add a concrete provider
 package (which brings this one transitively) and call its `Add…` method.
 
-Part of the [Bodu](https://github.com/bodu/bodu) utility library.
+Part of the [Bodu](https://github.com/bslater/bodu) utility library.

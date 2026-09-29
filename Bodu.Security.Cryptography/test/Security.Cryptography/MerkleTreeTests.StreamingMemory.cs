@@ -32,13 +32,23 @@ namespace Bodu.Security.Cryptography;
 /// certain proves nothing about its absence elsewhere, so that half is what keeps this test from being vacuous.
 /// </para>
 /// <para>
-/// Both thresholds are deliberately loose against the measured behavior. On a four-core x64 container the fold
-/// grows 136-160 bytes going from 4,096 to 65,536 leaves, while the leaf-retaining pass grows 3,588,096 bytes, so
-/// the ratio assertion clears its bound by roughly three orders of magnitude and the anti-vacuity floor by 3.6x.
-/// The fold's figure is not merely small but close to the predicted one: the sample lands nine-tenths of the way
-/// through each stream, where the fold holds one subtree per set bit of the blocks consumed so far, and the two
-/// extra set bits between the two inputs account for most of it. Because every assertion compares two samples
-/// taken in the same process, the spread across repeated runs is a few dozen bytes rather than a few megabytes.
+/// Both thresholds are deliberately loose against the measured behavior. On a four-core x64 container, going from 4,096
+/// to 65,536 leaves, the fold grows 344-424 bytes on both .NET 8 and .NET 10, while the leaf-retaining pass grows
+/// 3,588,096 bytes, so the ratio assertion clears its bound by roughly three orders of magnitude and the anti-vacuity
+/// floor by 3.6x. The fold's figure is not merely small but close to the predicted one: the sample lands nine-tenths of
+/// the way through each stream, where the fold holds a short list for each level of the tree and one pending hash for
+/// each set bit of the blocks consumed so far, and the larger input adds four levels and two set bits.
+/// </para>
+/// <para>
+/// That cancellation holds only while the baseline holds still, and the host does not always keep it still. Arrays
+/// cached by <see cref="System.Buffers.ArrayPool{T}.Shared" /> count as live, and the host releases them on its own
+/// schedule: a thread-pool worker that retires after idling takes the arrays in its thread-local slots with it, and the
+/// pool trims itself on the very gen-2 collections the probe forces. In one CI run such a release took about 3.75 MB
+/// out of the leaf-retaining pass's growth and failed the anti-vacuity floor, and even this test run alone sees either
+/// figure move by several kilobytes between rounds. So the comparison runs <see cref="ProbeRounds" /> times, and each
+/// assertion takes the round least disturbed in the direction that would fail it: the smallest fold growth and the
+/// largest retaining growth. A release disturbs a round rather than the test, whereas a fold that accumulates, or a
+/// probe that cannot see growth, shows in every round.
 /// </para>
 /// </remarks>
 public partial class MerkleTreeTests
@@ -53,6 +63,12 @@ public partial class MerkleTreeTests
     private const int ProbeLargeLeafCount = 65536;
 
     /// <summary>
+    /// The number of times the probe repeats its comparison, so that memory the rest of the test host releases
+    /// mid-measurement disturbs one round rather than deciding the outcome.
+    /// </summary>
+    private const int ProbeRounds = 3;
+
+    /// <summary>
     /// Verifies that the streaming fold's retained memory does not grow with the input: folding sixteen times as
     /// many leaves holds essentially the same amount live, while the leaf-retaining pass over the same inputs grows
     /// by roughly one hash per leaf.
@@ -63,13 +79,20 @@ public partial class MerkleTreeTests
     {
         var tree = new MerkleTree(SHA256.Create);
 
-        long foldSmall = MeasureLiveBytesMidStream(ProbeSmallLeafCount, folding: true, tree);
-        long foldLarge = MeasureLiveBytesMidStream(ProbeLargeLeafCount, folding: true, tree);
-        long retainSmall = MeasureLiveBytesMidStream(ProbeSmallLeafCount, folding: false, tree);
-        long retainLarge = MeasureLiveBytesMidStream(ProbeLargeLeafCount, folding: false, tree);
+        // Each assertion takes the round least disturbed in the direction that would fail it: the smallest fold
+        // growth and the largest retaining growth (see the remarks on this class).
+        long foldGrowth = long.MaxValue;
+        long retainGrowth = long.MinValue;
+        for (int round = 0; round < ProbeRounds; round++)
+        {
+            long foldSmall = MeasureLiveBytesMidStream(ProbeSmallLeafCount, folding: true, tree);
+            long foldLarge = MeasureLiveBytesMidStream(ProbeLargeLeafCount, folding: true, tree);
+            long retainSmall = MeasureLiveBytesMidStream(ProbeSmallLeafCount, folding: false, tree);
+            long retainLarge = MeasureLiveBytesMidStream(ProbeLargeLeafCount, folding: false, tree);
 
-        long foldGrowth = foldLarge - foldSmall;
-        long retainGrowth = retainLarge - retainSmall;
+            foldGrowth = Math.Min(foldGrowth, foldLarge - foldSmall);
+            retainGrowth = Math.Max(retainGrowth, retainLarge - retainSmall);
+        }
 
         // Sanity: the probe must be able to see growth where growth is certain. The leaf-retaining pass holds one
         // 32-byte hash plus its object header per leaf, so 61,440 extra leaves is well over a mebibyte.

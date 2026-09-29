@@ -5,8 +5,8 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Buffers.Binary;
-using System.Numerics;
 using System.Runtime.CompilerServices;
+using Bodu.Extensions;
 
 namespace Bodu.Security.Cryptography;
 
@@ -103,7 +103,7 @@ internal sealed class Hc128StreamCipher
     /// <returns><c>(x &gt;&gt;&gt; 7) ^ (x &gt;&gt;&gt; 18) ^ (x &gt;&gt; 3)</c>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static uint F1(uint x) =>
-        BitOperations.RotateRight(x, 7) ^ BitOperations.RotateRight(x, 18) ^ (x >> 3);
+        x.RotateBitsRightUnchecked(7) ^ x.RotateBitsRightUnchecked(18) ^ (x >> 3);
 
     /// <summary>
     /// The second SHA-256-style message-schedule function used during initialization.
@@ -112,7 +112,7 @@ internal sealed class Hc128StreamCipher
     /// <returns><c>(x &gt;&gt;&gt; 17) ^ (x &gt;&gt;&gt; 19) ^ (x &gt;&gt; 10)</c>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static uint F2(uint x) =>
-        BitOperations.RotateRight(x, 17) ^ BitOperations.RotateRight(x, 19) ^ (x >> 10);
+        x.RotateBitsRightUnchecked(17) ^ x.RotateBitsRightUnchecked(19) ^ (x >> 10);
 
     /// <summary>
     /// The <c>g1</c> mixing function used when updating the <c>P</c> table.
@@ -123,7 +123,7 @@ internal sealed class Hc128StreamCipher
     /// <returns><c>((x &gt;&gt;&gt; 10) ^ (z &gt;&gt;&gt; 23)) + (y &gt;&gt;&gt; 8)</c>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static uint G1(uint x, uint y, uint z) =>
-        unchecked((BitOperations.RotateRight(x, 10) ^ BitOperations.RotateRight(z, 23)) + BitOperations.RotateRight(y, 8));
+        unchecked((x.RotateBitsRightUnchecked(10) ^ z.RotateBitsRightUnchecked(23)) + y.RotateBitsRightUnchecked(8));
 
     /// <summary>
     /// The <c>g2</c> mixing function used when updating the <c>Q</c> table.
@@ -134,7 +134,7 @@ internal sealed class Hc128StreamCipher
     /// <returns><c>((x &lt;&lt;&lt; 10) ^ (z &lt;&lt;&lt; 23)) + (y &lt;&lt;&lt; 8)</c>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static uint G2(uint x, uint y, uint z) =>
-        unchecked((BitOperations.RotateLeft(x, 10) ^ BitOperations.RotateLeft(z, 23)) + BitOperations.RotateLeft(y, 8));
+        unchecked((x.RotateBitsLeftUnchecked(10) ^ z.RotateBitsLeftUnchecked(23)) + y.RotateBitsLeftUnchecked(8));
 
     /// <summary>
     /// The <c>h1</c> table-lookup function, indexing the <c>Q</c> table by the low and high-middle bytes of
