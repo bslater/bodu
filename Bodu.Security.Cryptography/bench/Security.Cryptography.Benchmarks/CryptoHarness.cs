@@ -13,8 +13,9 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography.Benchmarks;
 
 /// <summary>
-/// Measures throughput, latency, and allocation for the primitives the cross-library performance plan (<c>plans/crypto-performance.md</c>)
-/// targets, next to the BCL and — on Linux — OpenSSL on the same machine.
+/// Measures throughput, latency, and allocation for the primitives the cryptography performance plans
+/// (<c>plans/crypto-performance.md</c> and <c>plans/crypto-performance-followups.md</c>) target, next to the BCL and — on
+/// Linux — OpenSSL on the same machine.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -46,6 +47,9 @@ internal static class CryptoHarness
 
     /// <summary>The size of the small-message input.</summary>
     private const int SmallLength = 64;
+
+    /// <summary>The message lengths the Poly1305 cases sweep: one AEAD block, then up to the bulk input.</summary>
+    private static readonly int[] s_macLengths = [SmallLength, 256, 1 << 10, 16 << 10, BulkLength];
 
     /// <summary>The case filters from the command line; empty to run every case.</summary>
     private static string[] s_filters = [];
@@ -169,17 +173,23 @@ internal static class CryptoHarness
         byte[] nonce24 = Random(24, 9);
         byte[] iv16 = Random(16, 10);
 
-        Measure("aead", "Bodu XChaCha20-Poly1305 1 MiB", BulkLength, () => { using var aead = new XChaCha20Poly1305(key32, nonce24); aead.Encrypt(bulk, output); });
-        Measure("aead", "Bodu XChaCha20-Poly1305 64 B", SmallLength, () => { using var aead = new XChaCha20Poly1305(key32, nonce24); aead.Encrypt(small, output); });
-        Measure("aead", "Bodu XSalsa20-Poly1305 1 MiB", BulkLength, () => { using var aead = new XSalsa20Poly1305(key32, nonce24); aead.Encrypt(bulk, output); });
-        if (ChaCha20Poly1305.IsSupported)
+        // The Poly1305 family over a sweep of lengths, from one AEAD block to the bulk input, to show where each
+        // Poly1305 kernel takes over from the one below it.
+        using var bcl = ChaCha20Poly1305.IsSupported ? new ChaCha20Poly1305(key32) : null;
+        bool openSslMac = OpenSsl.TryCreateMac("POLY1305", out nint openSslPoly1305);
+        foreach (int length in s_macLengths)
         {
-            using var bcl = new ChaCha20Poly1305(key32);
-            Measure("aead", "BCL ChaCha20-Poly1305 1 MiB", BulkLength, () => bcl.Encrypt(nonce12, bulk, output.AsSpan(0, BulkLength), tag));
-            Measure("aead", "BCL ChaCha20-Poly1305 64 B", SmallLength, () => bcl.Encrypt(nonce12, small, output.AsSpan(0, SmallLength), tag));
-        }
+            byte[] message = length switch { BulkLength => bulk, SmallLength => small, _ => Random(length, 14) };
+            string size = SizeLabel(length);
+            Measure("aead", $"Bodu XChaCha20-Poly1305 {size}", length, () => { using var aead = new XChaCha20Poly1305(key32, nonce24); aead.Encrypt(message, output); });
+            Measure("aead", $"Bodu XSalsa20-Poly1305 {size}", length, () => { using var aead = new XSalsa20Poly1305(key32, nonce24); aead.Encrypt(message, output); });
+            if (bcl is not null)
+                Measure("aead", $"BCL ChaCha20-Poly1305 {size}", length, () => bcl.Encrypt(nonce12, message, output.AsSpan(0, length), tag));
 
-        Measure("mac", "Bodu Poly1305 1 MiB", BulkLength, () => { using var mac = new Poly1305(); mac.Key = key32; mac.TryComputeHash(bulk, digest, out _); });
+            Measure("mac", $"Bodu Poly1305 {size}", length, () => { using var mac = new Poly1305(); mac.Key = key32; mac.TryComputeHash(message, digest, out _); });
+            if (openSslMac)
+                Measure("mac", $"OpenSSL Poly1305 {size}", length, () => OpenSsl.Mac(openSslPoly1305, key32, message, digest));
+        }
 
         using (var aes = new AesBlockCipher(key16))
         using (var aes2 = new AesBlockCipher(key32[..16]))
@@ -360,6 +370,18 @@ internal static class CryptoHarness
     }
 
     /// <summary>
+    /// Formats a length for a case name: in bytes below 1 KiB, in KiB below 1 MiB, and in MiB from there.
+    /// </summary>
+    /// <param name="length">The length, in bytes.</param>
+    /// <returns>The label, such as <c>64 B</c>, <c>16 KiB</c> or <c>1 MiB</c>.</returns>
+    private static string SizeLabel(int length) => length switch
+    {
+        >= 1 << 20 => string.Create(CultureInfo.InvariantCulture, $"{length >> 20} MiB"),
+        >= 1 << 10 => string.Create(CultureInfo.InvariantCulture, $"{length >> 10} KiB"),
+        _ => string.Create(CultureInfo.InvariantCulture, $"{length} B"),
+    };
+
+    /// <summary>
     /// Describes the build and the host the numbers come from.
     /// </summary>
     /// <returns>
@@ -411,6 +433,32 @@ internal static class CryptoHarness
         }
 
         /// <summary>
+        /// Fetches a MAC implementation by name and creates a context for it.
+        /// </summary>
+        /// <param name="name">The OpenSSL algorithm name.</param>
+        /// <param name="context">The created <c>EVP_MAC_CTX</c>, or zero.</param>
+        /// <returns><see langword="true" /> if OpenSSL is available and has the algorithm.</returns>
+        internal static bool TryCreateMac(string name, out nint context)
+        {
+            nint mac = IsAvailable ? EVP_MAC_fetch(0, name, 0) : 0;
+            context = mac != 0 ? EVP_MAC_CTX_new(mac) : 0;
+            return context != 0;
+        }
+
+        /// <summary>
+        /// Keys a MAC context afresh, as a one-time key requires, and computes the MAC of <paramref name="data" />.
+        /// </summary>
+        /// <param name="context">The <c>EVP_MAC_CTX</c>.</param>
+        /// <param name="key">The key.</param>
+        /// <param name="data">The input.</param>
+        /// <param name="mac">The destination, at least the MAC's size.</param>
+        internal static void Mac(nint context, byte[] key, byte[] data, byte[] mac)
+        {
+            if (EVP_MAC_init(context, key, (nuint)key.Length, 0) != 1 || EVP_MAC_update(context, data, (nuint)data.Length) != 1 || EVP_MAC_final(context, mac, out _, (nuint)mac.Length) != 1)
+                throw new CryptographicException("EVP_MAC failed.");
+        }
+
+        /// <summary>
         /// Derives a scrypt key with OpenSSL.
         /// </summary>
         /// <param name="password">The password.</param>
@@ -430,6 +478,21 @@ internal static class CryptoHarness
 
         [DllImport(Library)]
         private static extern int EVP_Digest(byte[] data, nuint count, byte[] md, out uint size, nint type, nint engine);
+
+        [DllImport(Library)]
+        private static extern nint EVP_MAC_fetch(nint context, string algorithm, nint properties);
+
+        [DllImport(Library)]
+        private static extern nint EVP_MAC_CTX_new(nint mac);
+
+        [DllImport(Library)]
+        private static extern int EVP_MAC_init(nint context, byte[] key, nuint keyLength, nint parameters);
+
+        [DllImport(Library)]
+        private static extern int EVP_MAC_update(nint context, byte[] data, nuint length);
+
+        [DllImport(Library)]
+        private static extern int EVP_MAC_final(nint context, byte[] output, out nuint outputLength, nuint outputSize);
 
         [DllImport(Library)]
         private static extern int EVP_PBE_scrypt(byte[] pass, nuint passLength, byte[] salt, nuint saltLength, ulong n, ulong r, ulong p, ulong maxMemory, byte[] key, nuint keyLength);
