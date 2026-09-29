@@ -161,7 +161,11 @@ public abstract class PairWebRateProvider<TSeries>
     protected sealed override void OnObservationIngested(ExchangeRate rate)
     {
         if (_logger.IsEnabled(_options.ObservationIngestedLogLevel))
-            WebRateProviderLog.ObservationIngested(_logger, _options.ObservationIngestedLogLevel, rate.From.ToString(), rate.To.ToString(), rate.Date, rate.Rate);
+        {
+            string from = rate.From.ToString();
+            string to = rate.To.ToString();
+            WebRateProviderLog.ObservationIngested(_logger, _options.ObservationIngestedLogLevel, from, to, rate.Date, rate.Rate);
+        }
     }
 
     /// <inheritdoc />

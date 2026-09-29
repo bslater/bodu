@@ -243,7 +243,11 @@ public sealed class BoeRateProvider
     protected override void OnObservationIngested(ExchangeRate rate)
     {
         if (_logger.IsEnabled(_options.ObservationIngestedLogLevel))
-            Log.ObservationIngested(_logger, _options.ObservationIngestedLogLevel, rate.From.ToString(), rate.To.ToString(), rate.Date, rate.Rate);
+        {
+            string from = rate.From.ToString();
+            string to = rate.To.ToString();
+            Log.ObservationIngested(_logger, _options.ObservationIngestedLogLevel, from, to, rate.Date, rate.Rate);
+        }
     }
 
     /// <inheritdoc />
