@@ -301,6 +301,7 @@ public sealed partial class NavigableSet<T>
     /// <exception cref="ArgumentException">
     /// <paramref name="other" /> contains a <see langword="null" /> element.
     /// </exception>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2208:Instantiate argument exceptions correctly", Justification = "Keeps the parameter name the set operations reported when every operand went through the bulk-load constructor, so callers observe an unchanged exception.")]
     private T[] BuildSortedOperand(IEnumerable<T> other, out int uniqueCount)
     {
         T[] items = other.ToArray();

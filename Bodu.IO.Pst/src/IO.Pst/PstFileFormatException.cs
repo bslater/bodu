@@ -9,6 +9,7 @@ namespace Bodu.IO.Pst;
 /// <summary>
 /// Represents an error raised when a PST file's structure is malformed or fails validation.
 /// </summary>
+[System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1194:Implement exception constructors", Justification = "Provides the standard constructors and both error-code overloads; the base (message, innerException, error) ordering exists for the fixed-code subclasses, and mirroring it would add a second public overload with the same meaning.")]
 public sealed class PstFileFormatException
     : PstFileException
 {

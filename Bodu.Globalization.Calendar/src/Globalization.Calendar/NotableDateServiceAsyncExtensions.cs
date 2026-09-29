@@ -98,6 +98,7 @@ public static class NotableDateServiceAsyncExtensions
     /// <param name="filter">The optional occurrence filter.</param>
     /// <param name="cancellationToken">The token observed between resolved years.</param>
     /// <returns>The asynchronous occurrence sequence.</returns>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "VSTHRD103:Call async methods when in an async method", Justification = "Resolution is synchronous, CPU-bound work with no asynchronous counterpart; the ResolveAsync the analyzer proposes is this streaming projection itself.")]
     private static async IAsyncEnumerable<NotableDate> ResolveCoreAsync(
         INotableDateService service,
         DateRange range,

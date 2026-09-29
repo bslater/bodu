@@ -159,6 +159,7 @@ public static partial class Hotp
     /// <param name="source">The counter block to authenticate.</param>
     /// <param name="destination">The span that receives the MAC; must be at least the hash length long.</param>
     /// <returns>The number of bytes written, equal to the hash length of <paramref name="algorithm" />.</returns>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Security", "CA5350:Do Not Use Weak Cryptographic Algorithms", Justification = "RFC 4226 defines HOTP over HMAC-SHA1 and RFC 6238 makes it the TOTP default, so authenticator interoperability requires it; the SHA-1 collision attacks do not break HMAC-SHA1 as a PRF.")]
     private static int ComputeHmac(OtpHashAlgorithm algorithm, ReadOnlySpan<byte> secret, ReadOnlySpan<byte> source, Span<byte> destination) =>
         algorithm switch
         {

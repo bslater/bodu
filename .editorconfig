@@ -284,7 +284,8 @@ dotnet_diagnostic.CS8625.severity = warning # Cannot convert null literal to non
 
 # Public API safety.
 dotnet_diagnostic.CA1062.severity = warning # Validate arguments of public methods
-dotnet_code_quality.CA1062.null_check_validation_methods = ThrowIfNull|ThrowIfNullOrEmpty|ThrowIfNullOrWhiteSpace
+# The ThrowHelper array guards reject a null array before any other check, so they count as null validation too.
+dotnet_code_quality.CA1062.null_check_validation_methods = ThrowIfNull|ThrowIfNullOrEmpty|ThrowIfNullOrWhiteSpace|ThrowIfArrayContainsNonNumeric|ThrowIfArrayMultidimensional|ThrowIfArrayIsNotZeroBased|ThrowIfArrayLengthIsNotEqualTo|ThrowIfArrayLengthIsInsufficient|ThrowIfArrayLengthIsZero|ThrowIfArrayLengthOutOfRange|ThrowIfArrayLengthNotPositiveMultipleOf|ThrowIfArrayOffsetOrCountInvalid
 dotnet_diagnostic.CA2208.severity = warning # Instantiate ArgumentExceptions correctly
 
 # CA1510-CA1512 suggest switching to BCL ThrowIf* shorthands. This codebase uses project-level ThrowHelper helpers.
