@@ -38,18 +38,91 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v7
-    - name: Dotnet Setup
+    - name: Setup .NET
       uses: actions/setup-dotnet@v6
       with:
-        # The .NET 10 SDK is the exact version global.json pins; .NET 8 serves docfx's net8.0 metadata build.
+        # The .NET 10 SDK is pinned by global.json and is used to build the canonical
+        # API documentation assemblies. .NET 8 remains installed because BODU ships
+        # both net8.0 and net10.0 and supporting build tooling may target net8.0.
         global-json-file: global.json
-        dotnet-version: 8.x
+        dotnet-version: 8.0.x
 
-    # Pinned. An unpinned `tool update` means a docfx release can change the generated output or
-    # trip --warningsAsErrors below, turning master red with no commit of ours; everything else
-    # here is pinned on purpose (global.json, Directory.Packages.props, the manifest versions).
-    # 2.81.0 is what the unpinned command resolved to, so this preserves current behaviour.
-    - run: dotnet tool update -g docfx --version 2.81.0
+    # Pinned. An unpinned `tool update` means a DocFX release can change generated output
+    # or trip --warningsAsErrors without any corresponding repository change.
+    - name: Install DocFX
+      run: dotnet tool update -g docfx --version 2.81.0
+
+    # BODU projects consume the XML documentation analyzer from the repository-local feed.
+    # Build that package before restoring/building the shipping libraries, matching build-test.yml.
+    - name: Pack Bodu.CodeStyle.XmlDocumentation analyzer (local feed)
+      working-directory: Bodu.CodeStyle
+      run: |
+        dotnet pack Bodu.CodeStyle.XmlDocumentation/Bodu.CodeStyle.XmlDocumentation.csproj \
+          --configuration Release \
+          --output "${{ github.workspace }}/local-packages"
+
+    # DocFX now reads compiled Release assemblies rather than asking MSBuild to evaluate
+    # the projects itself. Build each shipping library explicitly so docs describe the
+    # same public surface that is actually compiled and shipped.
+    #
+    # BODU supports both net8.0 and net10.0. CI validates both frameworks; net10.0 is the
+    # canonical documentation assembly to avoid duplicate API entries for identical types.
+    - name: Build documentation assemblies
+      shell: bash
+      run: |
+        set -euo pipefail
+
+        projects="$(
+          find . \
+            -path './archive' -prune -o \
+            -path './Bodu.CodeStyle' -prune -o \
+            -path './Bodu.Text.Formats.Generators' -prune -o \
+            -path './Bodu.Globalization.Calendar.Build' -prune -o \
+            -path '*/src/*.csproj' -print \
+          | sort -u
+        )"
+
+        if [ -z "$projects" ]; then
+          echo "::error::No documentation projects were discovered."
+          exit 1
+        fi
+
+        echo "Documentation projects:"
+        printf '%s\n' "$projects"
+
+        while IFS= read -r proj; do
+          [ -n "$proj" ] || continue
+
+          # Non-packable support projects are not part of the public package API site.
+          if grep -qi '<IsPackable>false</IsPackable>' "$proj"; then
+            echo "Skipping non-packable project: $proj"
+            continue
+          fi
+
+          echo "::group::Build $proj (net10.0)"
+          dotnet build "$proj" \
+            --configuration Release \
+            --framework net10.0 \
+            -p:TreatWarningsAsErrors=true
+          echo "::endgroup::"
+        done <<< "$projects"
+
+    - name: Verify documentation assemblies
+      shell: bash
+      run: |
+        set -euo pipefail
+
+        count="$(find . -path '*/src/bin/Release/net10.0/Bodu.*.dll' \
+          ! -path '*/ref/*' \
+          ! -path '*/refint/*' \
+          -type f | wc -l)"
+
+        if [ "$count" -eq 0 ]; then
+          echo "::error::No BODU net10.0 Release assemblies were produced for DocFX."
+          exit 1
+        fi
+
+        echo "Found $count BODU net10.0 Release assemblies for DocFX."
 
     - name: Stamp build metadata into the docs footer
       # The versions matter as much as the commit. The site is rebuilt from master on every merge,
