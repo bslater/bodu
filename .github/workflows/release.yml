@@ -66,7 +66,15 @@ jobs:
   # ship.
   # ---------------------------------------------------------------------------------------------
   test:
-    runs-on: ubuntu-latest
+    # Runs on both Ubuntu 24.04 and 26.04 while GitHub moves ubuntu-latest from one to the other,
+    # gradually, between October 19 and November 19, 2026, so a release is gated on both. Drop
+    # ubuntu-24.04 from the list once 26.04 has proven itself. fail-fast is off so a failure on one
+    # image does not cancel the other, and the gate reports both.
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, ubuntu-26.04]
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 45
 
     # Deliberately NO job-level CONFIGURATION env. MSBuild reads environment variables as global
@@ -197,7 +205,7 @@ jobs:
             echo "### Release gate failed" >> "$GITHUB_STEP_SUMMARY"
             echo "" >> "$GITHUB_STEP_SUMMARY"
             echo "These test projects exited non-zero. A project listed here with no failing test in" >> "$GITHUB_STEP_SUMMARY"
-            echo "its TRX aborted or discovered no tests - check the uploaded \`release-test-results-trx\` artifact." >> "$GITHUB_STEP_SUMMARY"
+            echo "its TRX aborted or discovered no tests - check the uploaded \`release-test-results-trx-${{ matrix.os }}\` artifact." >> "$GITHUB_STEP_SUMMARY"
             echo "" >> "$GITHUB_STEP_SUMMARY"
             printf '%s' "$failed" | sed 's/%0A/\n/g' | while IFS= read -r line; do
               [ -n "$line" ] && echo "- $line" >> "$GITHUB_STEP_SUMMARY"
@@ -211,14 +219,18 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: release-test-results-trx
+          name: release-test-results-trx-${{ matrix.os }}
           path: TestResults/**/*.trx
           retention-days: 14
           if-no-files-found: warn
 
   release:
     needs: test
-    runs-on: ubuntu-latest
+    # Runs on one image, not the pair the test gate uses: this job signs, packs and publishes, so it
+    # must run once. The label is named rather than ubuntu-latest so GitHub's move of that label to
+    # 26.04 cannot change the image a release is built on. Switch it to ubuntu-26.04 when the gate
+    # drops 24.04, and make a dry run on it before the next tag.
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
 
     # Named by the nuget.org trusted-publishing policy. The OIDC claim carries it, so the
