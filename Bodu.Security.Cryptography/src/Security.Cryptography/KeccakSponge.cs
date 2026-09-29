@@ -29,6 +29,12 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// </remarks>
 internal struct KeccakSponge
+    /// <summary>Domain-separation suffix for the fixed-output SHA-3 hashes.</summary>
+    private const byte Sha3DomainSuffix = 0x06;
+
+    /// <summary>Domain-separation suffix for the SHAKE extendable-output functions.</summary>
+    private const byte ShakeDomainSuffix = 0x1F;
+
 {
     /// <summary>The sponge rate, in bytes.</summary>
     private readonly int _rateBytes;
@@ -44,12 +50,6 @@ internal struct KeccakSponge
 
     /// <summary>Indicates whether the sponge has entered the squeeze phase.</summary>
     private bool _squeezing;
-
-    /// <summary>Domain-separation suffix for the fixed-output SHA-3 hashes.</summary>
-    private const byte Sha3DomainSuffix = 0x06;
-
-    /// <summary>Domain-separation suffix for the SHAKE extendable-output functions.</summary>
-    private const byte ShakeDomainSuffix = 0x1F;
 
     /// <summary>The SHAKE128 rate, in bytes: one squeeze of this length costs exactly one permutation.</summary>
     internal const int Shake128RateBytes = 168;

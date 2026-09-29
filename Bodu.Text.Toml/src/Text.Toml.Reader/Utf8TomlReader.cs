@@ -55,6 +55,9 @@ namespace Bodu.Text.Toml.Reader;
 /// </remarks>
 public ref partial struct Utf8TomlReader
 {
+    /// <summary>The number of 100-nanosecond ticks in one second.</summary>
+    private const long TicksPerSecond = 10_000_000L;
+
     /// <summary>The UTF-8 source bytes being lexed.</summary>
     private readonly ReadOnlySpan<byte> _source;
 
@@ -144,9 +147,6 @@ public ref partial struct Utf8TomlReader
 
     /// <summary>The decoded value of the current <see cref="TomlTokenType.LocalTime" /> token.</summary>
     private TimeOnly _timeOnlyValue;
-
-    /// <summary>The number of 100-nanosecond ticks in one second.</summary>
-    private const long TicksPerSecond = 10_000_000L;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Utf8TomlReader" /> struct over the supplied bytes, enforcing strict

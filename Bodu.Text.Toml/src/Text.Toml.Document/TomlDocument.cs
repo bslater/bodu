@@ -57,23 +57,23 @@ public sealed partial class TomlDocument
     /// <summary>The UTF-8 encoding used to encode the <see cref="string" /> overload of <see cref="Parse(string)" />; invalid sequences are rejected rather than replaced.</summary>
     private static readonly UTF8Encoding s_utf8 = new(encoderShouldEmitUTF8Identifier: false, throwOnInvalidBytes: true);
 
-    /// <summary>The flat row store describing the parsed document, or <see langword="null" /> once the document has been disposed. The store may be shared with the owning read when this document is a subtree view.</summary>
-    private List<TomlReaderRow>? _rows;
-
     /// <summary>The row index of this document's root within <see cref="_rows" />, which is zero for a parsed document and the subtree root for a value materialized over a shared store.</summary>
     private readonly int _rootIndex;
-
-    /// <summary>The UTF-8 source the document retains so a string scalar can be decoded on demand, or <see langword="null" /> once the document has been disposed. A parsed document rents this from the shared array pool; a subtree view shares the owning read's garbage-collected copy.</summary>
-    private byte[]? _source;
 
     /// <summary>Whether <see cref="_source" /> was rented from <see cref="ArrayPool{T}" /> and must be returned on disposal. A subtree view shares a garbage-collected copy instead, so it does not return the buffer.</summary>
     private readonly bool _pooledSource;
 
+    /// <summary>The parent rows tracked in <see cref="_childIndex" />, or <see langword="null" />.</summary>
+    private readonly HashSet<int>? _indexedParents;
+
     /// <summary>The hashed key index the structural parser built for large tables, inherited so property lookups over those tables stay O(1); <see langword="null" /> when no table crossed the builder's threshold.</summary>
     private readonly Dictionary<(int Parent, string Key), int>? _childIndex;
 
-    /// <summary>The parent rows tracked in <see cref="_childIndex" />, or <see langword="null" />.</summary>
-    private readonly HashSet<int>? _indexedParents;
+    /// <summary>The flat row store describing the parsed document, or <see langword="null" /> once the document has been disposed. The store may be shared with the owning read when this document is a subtree view.</summary>
+    private List<TomlReaderRow>? _rows;
+
+    /// <summary>The UTF-8 source the document retains so a string scalar can be decoded on demand, or <see langword="null" /> once the document has been disposed. A parsed document rents this from the shared array pool; a subtree view shares the owning read's garbage-collected copy.</summary>
+    private byte[]? _source;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="TomlDocument" /> class over the supplied store and retained source.

@@ -59,6 +59,9 @@ namespace Bodu.Text.Bencode.Reader;
 /// </remarks>
 public ref struct Utf8BencodeReader
 {
+    /// <summary>The seen-key count at which a dictionary switches from a linear duplicate scan to a hashed index.</summary>
+    private const int UnsortedKeyIndexThreshold = 64;
+
     /// <summary>The source bytes being read.</summary>
     private readonly ReadOnlySpan<byte> _data;
 
@@ -778,9 +781,6 @@ public ref struct Utf8BencodeReader
             top.SeenKeys.Add((_valueStart, _valueLength));
         }
     }
-
-    /// <summary>The seen-key count at which a dictionary switches from a linear duplicate scan to a hashed index.</summary>
-    private const int UnsortedKeyIndexThreshold = 64;
 
     /// <summary>
     /// Computes a stable content hash of a key's bytes (FNV-1a), used to bucket seen keys for O(1) duplicate lookup.
