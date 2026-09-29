@@ -19,7 +19,7 @@
       - Bodu.Security.Cryptography   : the *Unchecked numeric extensions (RotateBitsLeftUnchecked /
                                        RotateBitsRightUnchecked in the cipher and hash cores), and the vector
                                        rotations (VectorExtensions.RotateBitsLeftUnchecked over VectorRotation) in
-                                       the ChaCha20, Salsa20, Serpent and CubeHash kernels.
+                                       the ChaCha20, Salsa20, Serpent, CubeHash and four-way Keccak kernels.
       - Bodu.IO.Hashing              : ResourceStrings, RotateBitsRightUnchecked.
     Drop an entry only after a fresh `dotnet build` of the corresponding sibling confirms no internal use.
   -->

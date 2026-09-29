@@ -35,6 +35,23 @@ public partial class VectorExtensionsTests
     }
 
     /// <summary>
+    /// Returns the 64-bit lanes of one sample: a fixed pattern in which every byte differs for the first sample, and
+    /// seeded random words after it.
+    /// </summary>
+    /// <param name="random">The source of the random words.</param>
+    /// <param name="count">The number of lanes.</param>
+    /// <param name="sample">The index of the sample.</param>
+    /// <returns>The lanes.</returns>
+    private static ulong[] NextWideLanes(Random random, int count, int sample)
+    {
+        ulong[] lanes = new ulong[count];
+        for (int i = 0; i < lanes.Length; i++)
+            lanes[i] = sample == 0 ? unchecked((ulong)(i + 1) * 0x0807_0605_0403_0201UL) : ((ulong)random.NextInt64() << 1) ^ (ulong)random.Next(2);
+
+        return lanes;
+    }
+
+    /// <summary>
     /// Marks the test inconclusive when the processor lacks the instruction set that a
     /// <see cref="VectorRotation" /> implementation needs at a vector width.
     /// </summary>
