@@ -17,8 +17,8 @@ public readonly partial struct YamlElement
     /// Provides forward-only enumeration over the elements of a sequence node.
     /// </summary>
     public struct SequenceEnumerator
-        : IEnumerable<YamlElement>
-        , IEnumerator<YamlElement>
+        : IEnumerable<YamlElement>,
+        IEnumerator<YamlElement>
     {
         /// <summary>The owning document.</summary>
         private readonly YamlDocument _document;

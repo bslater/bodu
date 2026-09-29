@@ -79,7 +79,7 @@ internal static class YamlScalarResolver
     /// <see langword="true" /> when the scalar is the null value; otherwise <see langword="false" />.
     /// </returns>
     private static bool IsNull(ReadOnlySpan<byte> text) =>
-        text.Length == 1 && text[0] == (byte)'~'
+        (text.Length == 1 && text[0] == (byte)'~')
         || Matches(text, "null") || Matches(text, "Null") || Matches(text, "NULL");
 
     /// <summary>
@@ -292,7 +292,7 @@ internal static class YamlScalarResolver
             if (d < 0 || d >= radix)
                 return false;
 
-            ulong next = acc * (ulong)radix + (ulong)d;
+            ulong next = (acc * (ulong)radix) + (ulong)d;
             if (next < acc)
                 return false;
 

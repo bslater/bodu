@@ -69,7 +69,7 @@ public static class PaddingFactory
         PaddingMode.ANSIX923 => new Ansix923Padding(),
         PaddingMode.ISO10126 => new Iso10126Padding(),
         _ => throw new CryptographicException(
-            string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_UnsupportedPaddingMode, mode))
+            string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_UnsupportedPaddingMode, mode)),
     };
 
     /// <summary>
@@ -92,6 +92,6 @@ public static class PaddingFactory
         PaddingModeKind.ISO10126 => new Iso10126Padding(),
         PaddingModeKind.ISO7816_4 => new Iso7816_4Padding(),
         _ => throw new CryptographicException(
-            string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_UnsupportedPaddingMode, mode))
+            string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_UnsupportedPaddingMode, mode)),
     };
 }

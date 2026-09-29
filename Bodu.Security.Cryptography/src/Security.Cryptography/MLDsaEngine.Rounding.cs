@@ -145,7 +145,7 @@ internal static partial class MLDsaEngine
 
             // centered > (q−1)/2 ? centered = q − centered. Folded through a sign-bit mask so the centering of each
             // secret coefficient does not branch; Math.Max lowers to a branch-free conditional move.
-            int mask = ((Q - 1) / 2 - centered) >> 31; // -1 when centered > (q−1)/2; otherwise 0
+            int mask = (((Q - 1) / 2) - centered) >> 31; // -1 when centered > (q−1)/2; otherwise 0
             centered -= ((2 * centered) - Q) & mask;
 
             maximum = Math.Max(maximum, centered);

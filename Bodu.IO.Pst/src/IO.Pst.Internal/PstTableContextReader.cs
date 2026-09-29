@@ -85,6 +85,7 @@ internal static class PstTableContextReader
         var tcInfo = new PstTcInfo(endOffset4, endOffset2, endOffset1, rowWidth, rowIndexHid, rowsHnid, columns);
 
         PstBthHeader rowIndex = PstBTreeOnHeap.ReadHeader(heap, rowIndexHid);
+
         // The row index maps the 32-bit row identifier to a row number that is four bytes wide in a Unicode store and
         // two in an ANSI store (MS-PST §2.3.4.3 TCROWID).
         if (rowIndex.KeySize != RowIndexKeySize || rowIndex.DataSize is not (2 or 4))

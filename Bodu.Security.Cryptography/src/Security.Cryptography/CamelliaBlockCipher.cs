@@ -771,7 +771,7 @@ public sealed class CamelliaBlockCipher
         return bits switch
         {
             0 => (lo, hi),
-            _ => (lo << bits | hi >> (64 - bits), hi << bits | lo >> (64 - bits))
+            _ => (lo << bits | hi >> (64 - bits), hi << bits | lo >> (64 - bits)),
         };
     }
 

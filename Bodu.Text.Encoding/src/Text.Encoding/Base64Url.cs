@@ -68,8 +68,13 @@ public static class Base64Url
 
         byte[] destination = new byte[Base64.GetMaxDecodedLength(utf8Source.Length)];
         OperationStatus status = Base64.DecodeFromUtf8(
-            utf8Source, destination, out _, out int bytesWritten,
-            Base64Variant.UrlSafe, BaseFormatStyles.AllowMissingPadding, isFinalBlock: true);
+            utf8Source,
+            destination,
+            out _,
+            out int bytesWritten,
+            Base64Variant.UrlSafe,
+            BaseFormatStyles.AllowMissingPadding,
+            isFinalBlock: true);
 
         if (status != OperationStatus.Done)
             throw new FormatException(EncodingResourceStrings.Format_Invalid_UrlSafeBase64);

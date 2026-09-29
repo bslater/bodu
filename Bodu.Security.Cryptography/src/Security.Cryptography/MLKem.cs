@@ -427,5 +427,4 @@ public abstract partial class MLKem
         ReplaceKeyMaterial(
             MLKemKeyMaterial.ForKeyPair(_parameters, encapsulationKey, decapsulationKey, matrix, publicVector, secretVector));
     }
-
 }

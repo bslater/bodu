@@ -244,7 +244,7 @@ public sealed partial class Pearson
         PearsonTableType.SHA256Constants => (byte[])s_sHA256ConstantsTable.Value.Clone(),
         _ => throw new ArgumentOutOfRangeException(
                 nameof(type),
-                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_EnumValue, type, typeof(PearsonTableType).Name))
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_EnumValue, type, typeof(PearsonTableType).Name)),
 
     };
 

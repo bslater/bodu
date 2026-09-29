@@ -255,9 +255,20 @@ public sealed class RecurrenceRuleBuilder
     /// <returns>The constructed rule.</returns>
     public RecurrenceRule Build() =>
         new(
-            _frequency, _interval, _count, _until, _weekStart,
-            _bySecond, _byMinute, _byHour, _byDay,
-            _byMonthDay, _byYearDay, _byWeekNo, _byMonth, _bySetPos);
+            _frequency,
+            _interval,
+            _count,
+            _until,
+            _weekStart,
+            _bySecond,
+            _byMinute,
+            _byHour,
+            _byDay,
+            _byMonthDay,
+            _byYearDay,
+            _byWeekNo,
+            _byMonth,
+            _bySetPos);
 
     /// <summary>
     /// Validates that every value lies within an inclusive non-negative range and returns a defensive copy.

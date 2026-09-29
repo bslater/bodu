@@ -222,8 +222,9 @@ internal static class PstBTree
         int level = page[layout.PageLevelOffset];
         if (stride < layout.BbtLeafStride || count * stride > layout.PageEntryArea || depth > MaxDepth || (expectedLevel >= 0 && level != expectedLevel))
         {
-            throw new PstFileFormatException(string.Format(
-                CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstPage, bref.Offset), PstFileError.InvalidPage);
+            throw new PstFileFormatException(
+                string.Format(CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstPage, bref.Offset),
+                PstFileError.InvalidPage);
         }
 
         return (count, stride, level);
@@ -256,8 +257,9 @@ internal static class PstBTree
         ulong nodeId = layout.ReadId(page.AsSpan(offset));
         if (nodeId > uint.MaxValue)
         {
-            throw new PstFileFormatException(string.Format(
-                CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstNodeIdentifier, nodeId), PstFileError.InvalidPage);
+            throw new PstFileFormatException(
+                string.Format(CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstNodeIdentifier, nodeId),
+                PstFileError.InvalidPage);
         }
 
         int idWidth = layout.IdWidth;

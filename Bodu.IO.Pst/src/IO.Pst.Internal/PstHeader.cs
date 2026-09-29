@@ -157,5 +157,4 @@ internal sealed class PstHeader
 
         return new PstHeader(layout, (PstCryptMethod)cryptMethod, fileLength, nbtRoot, bbtRoot);
     }
-
 }

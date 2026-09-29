@@ -185,8 +185,9 @@ public sealed class PstPropertyContext
     {
         if (!TryGetValue(propertyId, out PstPropertyValue value))
         {
-            throw new PstFileException(string.Format(
-                CultureInfo.CurrentCulture, PstResourceStrings.IO_KeyNotFound_PstProperty, propertyId, new PstNodeId(_context.NodeId)), PstFileError.PropertyNotFound);
+            throw new PstFileException(
+                string.Format(CultureInfo.CurrentCulture, PstResourceStrings.IO_KeyNotFound_PstProperty, propertyId, new PstNodeId(_context.NodeId)),
+                PstFileError.PropertyNotFound);
         }
 
         return value;
@@ -266,8 +267,9 @@ public sealed class PstPropertyContext
             byte[] payload = _context.ResolveHnidPayload(_heap, entry.RawValue);
             if (payload.Length < fixedSize)
             {
-                throw new PstFileFormatException(string.Format(
-                    CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstPropertyContext, new PstNodeId(_context.NodeId)), PstFileError.InvalidPropertyContext);
+                throw new PstFileFormatException(
+                    string.Format(CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstPropertyContext, new PstNodeId(_context.NodeId)),
+                    PstFileError.InvalidPropertyContext);
             }
 
             return new PstPropertyValue(entry.PropertyId, entry.WireType, payload.AsMemory(0, fixedSize));

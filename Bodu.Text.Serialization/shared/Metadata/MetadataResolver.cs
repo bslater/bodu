@@ -4,10 +4,10 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Text.Serialization;
 using System.Globalization;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using Bodu.Text.Serialization;
 
 #if BENCODE
 namespace Bodu.Text.Bencode.Serialization.Metadata;

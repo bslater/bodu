@@ -13,8 +13,8 @@ namespace Bodu.Text.Yaml.Nodes;
 /// Represents a mutable YAML sequence node whose elements are <see cref="YamlNode" /> values.
 /// </summary>
 public sealed class YamlArray
-    : YamlNode
-    , IList<YamlNode?>
+    : YamlNode,
+    IList<YamlNode?>
 {
     /// <summary>The element nodes in sequence order.</summary>
     private readonly List<YamlNode?> _items = [];

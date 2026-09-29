@@ -14,8 +14,8 @@ namespace Bodu.Numerics;
 #pragma warning disable SA1648 // inheritdoc should be used with inheriting class
 
 public readonly partial struct BigDecimal
-    : INumber<BigDecimal>
-    , ISignedNumber<BigDecimal>
+    : INumber<BigDecimal>,
+    ISignedNumber<BigDecimal>
 {
     /// <inheritdoc />
     static BigDecimal IAdditiveIdentity<BigDecimal, BigDecimal>.AdditiveIdentity => Zero;

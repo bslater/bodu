@@ -110,7 +110,11 @@ public sealed partial class YamlSerializerOptions
     public NamingPolicy? PropertyNamingPolicy
     {
         get => _propertyNamingPolicy;
-        set { VerifyMutable(); _propertyNamingPolicy = value; }
+        set
+        {
+            VerifyMutable();
+            _propertyNamingPolicy = value;
+        }
     }
 
     /// <summary>
@@ -121,7 +125,11 @@ public sealed partial class YamlSerializerOptions
     public bool IncludeFields
     {
         get => _includeFields;
-        set { VerifyMutable(); _includeFields = value; }
+        set
+        {
+            VerifyMutable();
+            _includeFields = value;
+        }
     }
 
     /// <summary>
@@ -159,7 +167,11 @@ public sealed partial class YamlSerializerOptions
     public bool WriteEnumsAsStrings
     {
         get => _writeEnumsAsStrings;
-        set { VerifyMutable(); _writeEnumsAsStrings = value; }
+        set
+        {
+            VerifyMutable();
+            _writeEnumsAsStrings = value;
+        }
     }
 
     /// <summary>
@@ -170,7 +182,11 @@ public sealed partial class YamlSerializerOptions
     public bool PropertyNameCaseInsensitive
     {
         get => _propertyNameCaseInsensitive;
-        set { VerifyMutable(); _propertyNameCaseInsensitive = value; }
+        set
+        {
+            VerifyMutable();
+            _propertyNameCaseInsensitive = value;
+        }
     }
 
     /// <summary>
@@ -181,7 +197,11 @@ public sealed partial class YamlSerializerOptions
     public YamlSpecVersion SpecVersion
     {
         get => _specVersion;
-        set { VerifyMutable(); _specVersion = value; }
+        set
+        {
+            VerifyMutable();
+            _specVersion = value;
+        }
     }
 
     /// <summary>
@@ -192,7 +212,11 @@ public sealed partial class YamlSerializerOptions
     public YamlDuplicateKeyBehavior DuplicateKeyBehavior
     {
         get => _duplicateKeyBehavior;
-        set { VerifyMutable(); _duplicateKeyBehavior = value; }
+        set
+        {
+            VerifyMutable();
+            _duplicateKeyBehavior = value;
+        }
     }
 
     /// <summary>
@@ -203,7 +227,11 @@ public sealed partial class YamlSerializerOptions
     public YamlMergeKeyBehavior MergeKeyBehavior
     {
         get => _mergeKeyBehavior;
-        set { VerifyMutable(); _mergeKeyBehavior = value; }
+        set
+        {
+            VerifyMutable();
+            _mergeKeyBehavior = value;
+        }
     }
 
     /// <summary>
@@ -214,7 +242,11 @@ public sealed partial class YamlSerializerOptions
     public YamlNumberHandling NumberHandling
     {
         get => _numberHandling;
-        set { VerifyMutable(); _numberHandling = value; }
+        set
+        {
+            VerifyMutable();
+            _numberHandling = value;
+        }
     }
 
     /// <summary>
@@ -225,7 +257,11 @@ public sealed partial class YamlSerializerOptions
     public UnmappedMemberHandling UnmappedMemberHandling
     {
         get => _unmappedMemberHandling;
-        set { VerifyMutable(); _unmappedMemberHandling = value; }
+        set
+        {
+            VerifyMutable();
+            _unmappedMemberHandling = value;
+        }
     }
 
     /// <summary>
@@ -239,7 +275,11 @@ public sealed partial class YamlSerializerOptions
     public ObjectCreationHandling PreferredObjectCreationHandling
     {
         get => _preferredObjectCreationHandling;
-        set { VerifyMutable(); _preferredObjectCreationHandling = value; }
+        set
+        {
+            VerifyMutable();
+            _preferredObjectCreationHandling = value;
+        }
     }
 
     /// <summary>
@@ -250,7 +290,11 @@ public sealed partial class YamlSerializerOptions
     public int MaxDepth
     {
         get => _maxDepth;
-        set { VerifyMutable(); _maxDepth = value; }
+        set
+        {
+            VerifyMutable();
+            _maxDepth = value;
+        }
     }
 
     /// <summary>
@@ -264,5 +308,4 @@ public sealed partial class YamlSerializerOptions
     /// </remarks>
     internal int EffectiveMaxDepth =>
         _maxDepth <= 0 ? YamlLimits.DefaultMaxDepth : Math.Min(_maxDepth, YamlLimits.AbsoluteMaxDepth);
-
 }

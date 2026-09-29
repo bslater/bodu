@@ -93,7 +93,7 @@ public static partial class IEnumerableExtensions
                     CultureInfo.CurrentCulture,
                     ResourceStrings.Arg_OutOfRange_EnumValue,
                     nameof(RandomizationMode),
-                    mode))
+                    mode)),
         };
     }
 

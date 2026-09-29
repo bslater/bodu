@@ -4,9 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Runtime.CompilerServices;
-
 using System.Buffers.Binary;
+using System.Runtime.CompilerServices;
 
 namespace Bodu.Security.Cryptography;
 
@@ -29,13 +28,13 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// </remarks>
 internal struct KeccakSponge
+{
     /// <summary>Domain-separation suffix for the fixed-output SHA-3 hashes.</summary>
     private const byte Sha3DomainSuffix = 0x06;
 
     /// <summary>Domain-separation suffix for the SHAKE extendable-output functions.</summary>
     private const byte ShakeDomainSuffix = 0x1F;
 
-{
     /// <summary>The sponge rate, in bytes.</summary>
     private readonly int _rateBytes;
 

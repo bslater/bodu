@@ -454,5 +454,4 @@ public abstract partial class MLDsa
     /// <param name="seed">The 32-byte seed.</param>
     private void SetKeysFromSeed(ReadOnlySpan<byte> seed) =>
         ReplaceKeyMaterial(MLDsaKeyMaterial.Generate(_parameters, seed));
-
 }

@@ -5,12 +5,11 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using Bodu.Text.Serialization;
 using Bodu.Text.Toml.Nodes;
 using Bodu.Text.Toml.Reader;
 using Bodu.Text.Toml.Serialization.Metadata;
 using Bodu.Text.Toml.Writer;
-
-using Bodu.Text.Serialization;
 
 namespace Bodu.Text.Toml.Serialization.Converters;
 

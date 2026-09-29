@@ -57,7 +57,7 @@ public partial struct WeekPattern
             {
                 'M' => true,
                 'S' => false,
-                _ => null
+                _ => null,
             };
         }
 
@@ -72,7 +72,7 @@ public partial struct WeekPattern
                     '0' => false,
                     '1' => true,
                     _ => throw new FormatException(
-                               string.Format(CultureInfo.CurrentCulture, ResourceStrings.Format_Invalid_Character, c, i + 1))
+                               string.Format(CultureInfo.CurrentCulture, ResourceStrings.Format_Invalid_Character, c, i + 1)),
                 };
 
                 if (bitSet)
@@ -190,7 +190,7 @@ public partial struct WeekPattern
                 'U' => ('S', '_', false),
                 'D' => ('S', '-', false),
                 'A' => ('S', '*', false),
-                _ => default
+                _ => default,
             };
 
             return info != default;

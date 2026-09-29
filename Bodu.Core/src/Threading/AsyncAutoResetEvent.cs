@@ -174,7 +174,8 @@ public sealed class AsyncAutoResetEvent
             {
                 (AsyncAutoResetEvent? owner, LinkedListNode<TaskCompletionSource<bool>>? waiter, CancellationToken token) = ((AsyncAutoResetEvent Owner, LinkedListNode<TaskCompletionSource<bool>> Node, CancellationToken Token))state!;
                 owner.CancelWaiter(waiter, token);
-            }, (this, node, cancellationToken)))
+            },
+            (this, node, cancellationToken)))
         {
             // The waiter's task is completed by Set on this same primitive, not work scheduled elsewhere, and the
             // type uses no JoinableTaskFactory, so the foreign-task deadlock VSTHRD003 guards against cannot arise.

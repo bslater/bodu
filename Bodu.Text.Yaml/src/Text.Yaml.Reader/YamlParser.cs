@@ -573,6 +573,7 @@ internal sealed partial class YamlParser
             return MaterializeString(r);
 
         if (r.Kind == YamlReaderNodeKind.Scalar)
+        {
             return r.ValueKind switch
             {
                 YamlValueKind.Null => string.Empty,
@@ -581,6 +582,7 @@ internal sealed partial class YamlParser
                 YamlValueKind.Float => r.AsDouble().ToString(CultureInfo.InvariantCulture),
                 _ => string.Empty,
             };
+        }
 
         // A sequence, mapping, or alias used as a key cannot be represented in the JSON-compatible tree profile.
         throw Error(YamlResourceStrings.Format_Invalid_YamlComplexKeyUnsupported);

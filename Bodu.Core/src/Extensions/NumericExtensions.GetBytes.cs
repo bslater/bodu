@@ -64,7 +64,7 @@ public static partial class NumericExtensions
             ulong ul => BitConverter.GetBytes(ul),
             float f => BitConverter.GetBytes(f),
             double d => BitConverter.GetBytes(d),
-            _ => throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, ResourceStrings.Op_Invalid_UnsupportedNumericType, typeof(T).Name))
+            _ => throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, ResourceStrings.Op_Invalid_UnsupportedNumericType, typeof(T).Name)),
         };
 
         // BitConverter always produces bytes in the system's native byte order. Reverse when the

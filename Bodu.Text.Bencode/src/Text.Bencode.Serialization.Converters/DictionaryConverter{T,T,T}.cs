@@ -4,10 +4,10 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Text.Serialization;
 using System.Globalization;
 using Bodu.Text.Bencode.Reader;
 using Bodu.Text.Bencode.Writer;
+using Bodu.Text.Serialization;
 
 namespace Bodu.Text.Bencode.Serialization.Converters;
 

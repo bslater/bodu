@@ -24,7 +24,6 @@ internal sealed class PstSource
     /// <summary>The page size, shared by the Unicode and ANSI formats.</summary>
     internal const int PageSize = 512;
 
-
     /// <summary>The source stream.</summary>
     private readonly Stream _stream;
 
@@ -180,8 +179,9 @@ internal sealed class PstSource
         byte pageType = page[layout.PageTrailerOffset];
         if (pageType != expectedType || page[layout.PageTrailerOffset + 1] != pageType)
         {
-            throw new PstFileFormatException(string.Format(
-                CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstPage, bref.Offset), PstFileError.InvalidPage);
+            throw new PstFileFormatException(
+                string.Format(CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstPage, bref.Offset),
+                PstFileError.InvalidPage);
         }
 
         if (ValidationLevel == PstValidationLevel.Strict)
@@ -193,8 +193,9 @@ internal sealed class PstSource
                 || recordedCrc != PstCrc.Compute(page.AsSpan(0, layout.PageCrcLength))
                 || recordedSignature != ComputeSignature(bref.Offset, bref.BlockId))
             {
-                throw new PstFileFormatException(string.Format(
-                    CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstPageTrailer, bref.Offset), PstFileError.InvalidPage);
+                throw new PstFileFormatException(
+                    string.Format(CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstPageTrailer, bref.Offset),
+                    PstFileError.InvalidPage);
             }
         }
 
@@ -221,8 +222,9 @@ internal sealed class PstSource
         int diskLength = (payloadLength + layout.BlockTrailerSize + 63) & ~63;
         if (payloadLength == 0 || diskLength > PstLayout.MaxBlockSize)
         {
-            throw new PstFileFormatException(string.Format(
-                CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstBlock, entry.Bref.Offset), PstFileError.InvalidBlock);
+            throw new PstFileFormatException(
+                string.Format(CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstBlock, entry.Bref.Offset),
+                PstFileError.InvalidBlock);
         }
 
         var block = new byte[diskLength];
@@ -232,8 +234,9 @@ internal sealed class PstSource
         ReadOnlySpan<byte> trailer = block.AsSpan(diskLength - layout.BlockTrailerSize);
         if (BinaryPrimitives.ReadUInt16LittleEndian(trailer) != payloadLength)
         {
-            throw new PstFileFormatException(string.Format(
-                CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstBlock, entry.Bref.Offset), PstFileError.InvalidBlock);
+            throw new PstFileFormatException(
+                string.Format(CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstBlock, entry.Bref.Offset),
+                PstFileError.InvalidBlock);
         }
 
         if (ValidationLevel == PstValidationLevel.Strict)
@@ -242,8 +245,9 @@ internal sealed class PstSource
                 || BinaryPrimitives.ReadUInt32LittleEndian(trailer.Slice(layout.BlockTrailerCrcOffset)) != PstCrc.Compute(block.AsSpan(0, payloadLength))
                 || BinaryPrimitives.ReadUInt16LittleEndian(trailer.Slice(2)) != ComputeSignature(entry.Bref.Offset, entry.Bref.BlockId))
             {
-                throw new PstFileFormatException(string.Format(
-                    CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstBlock, entry.Bref.Offset), PstFileError.InvalidBlock);
+                throw new PstFileFormatException(
+                    string.Format(CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstBlock, entry.Bref.Offset),
+                    PstFileError.InvalidBlock);
             }
         }
 

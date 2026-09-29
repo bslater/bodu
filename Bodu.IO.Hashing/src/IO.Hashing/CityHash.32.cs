@@ -82,7 +82,7 @@ public sealed class CityHash32
             <= 4 => Hash32Len0to4(source),
             <= 12 => Hash32Len5to12(source),
             <= 24 => Hash32Len13to24(source),
-            _ => Hash32Len25Plus(source)
+            _ => Hash32Len25Plus(source),
         };
 
         byte[] buffer = new byte[4];

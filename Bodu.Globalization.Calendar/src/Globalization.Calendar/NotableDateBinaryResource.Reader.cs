@@ -172,8 +172,15 @@ public static partial class NotableDateBinaryResource
         List<int> exceptYears = reader.ReadInt32List();
 
         AdjustmentScope scope = new(
-            territories, calendars, categories, notableDateRefs, ruleRefs,
-            scopeFromYear, scopeToYear, onlyYears, exceptYears);
+            territories,
+            calendars,
+            categories,
+            notableDateRefs,
+            ruleRefs,
+            scopeFromYear,
+            scopeToYear,
+            onlyYears,
+            exceptYears);
 
         var trigger = reader.ReadEnum<AdjustmentTrigger>();
         List<DayOfWeek> triggerWeekdays = reader.ReadEnumList<DayOfWeek>();
@@ -203,9 +210,27 @@ public static partial class NotableDateBinaryResource
         }
 
         return new AdjustmentPolicy(
-            id, priority, scope, trigger, triggerWeekdays, action, actionWeekday, actionDays, maxSearchDays,
-            skipWeekends, skipNonWorkingDates, emission, reason, nonWorking, triggerMonth, triggerDay,
-            triggerWeekOrdinal, actionNotableDateRef, actionRuleRef, actionHandlerKey, triggerHandlerKey,
+            id,
+            priority,
+            scope,
+            trigger,
+            triggerWeekdays,
+            action,
+            actionWeekday,
+            actionDays,
+            maxSearchDays,
+            skipWeekends,
+            skipNonWorkingDates,
+            emission,
+            reason,
+            nonWorking,
+            triggerMonth,
+            triggerDay,
+            triggerWeekOrdinal,
+            actionNotableDateRef,
+            actionRuleRef,
+            actionHandlerKey,
+            triggerHandlerKey,
             handlerParameters);
     }
 
