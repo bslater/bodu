@@ -83,8 +83,8 @@ internal static partial class ChaCha20Core
     internal static void Initialize(Span<uint> state, ReadOnlySpan<byte> key, ReadOnlySpan<byte> nonce)
     {
         ThrowHelper.ThrowIfLessThan(state.Length, StateWords, nameof(state));
-        ThrowHelper.ThrowIfNotEqual(key.Length, KeyBytes, nameof(key));
-        ThrowHelper.ThrowIfNotEqual(nonce.Length, NonceBytes, nameof(nonce));
+        ArgumentOutOfRangeException.ThrowIfNotEqual(key.Length, KeyBytes, nameof(key));
+        ArgumentOutOfRangeException.ThrowIfNotEqual(nonce.Length, NonceBytes, nameof(nonce));
 
         state[0] = Sigma0;
         state[1] = Sigma1;

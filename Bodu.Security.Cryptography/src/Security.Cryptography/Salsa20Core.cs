@@ -97,7 +97,7 @@ internal static partial class Salsa20Core
     {
         ThrowHelper.ThrowIfLessThan(state.Length, StateWords, nameof(state));
         if (key.Length is not Key128Bytes and not Key256Bytes) throw new ArgumentOutOfRangeException(nameof(key));
-        ThrowHelper.ThrowIfNotEqual(nonce.Length, NonceBytes, nameof(nonce));
+        ArgumentOutOfRangeException.ThrowIfNotEqual(nonce.Length, NonceBytes, nameof(nonce));
 
         bool is256 = key.Length == Key256Bytes;
 
