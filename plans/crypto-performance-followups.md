@@ -1,6 +1,6 @@
 # Implementation plan: the cryptography speed-ups left for later
 
-**Status:** In progress — F1 and F2 done (§9) · **Source:** the "Left for later" items in
+**Status:** In progress — F1, F2 and F3 done (§9) · **Source:** the "Left for later" items in
 [`crypto-performance.md`](crypto-performance.md) §10 and the open items in
 [`argon2-performance.md`](argon2-performance.md) §10.3, after `Bodu.Security.Cryptography` 1.1.0 ·
 **Target:** `Bodu.Security.Cryptography`, next lock-step release
@@ -110,6 +110,8 @@ Done: see §9 for the results and where the build departs from this design.
 
 ### F2 — the short AEAD message
 
+Done: see §9 for the results and where the build departs from this design.
+
 - **Problem:** a 64-byte XChaCha20-Poly1305 message costs 0.82–0.86 µs. Three scalar
   ChaCha20 block computations are most of that.
 - **Design:**
@@ -126,6 +128,8 @@ Done: see §9 for the results and where the build departs from this design.
   - New rows sit at 192 bytes and at each block boundary around it.
 
 ### F3 — ML-DSA and ML-KEM vector transforms, and a four-way SHAKE
+
+Done: see §9 for the results and where the build departs from this design.
 
 - **Problem:**
   - A signing attempt runs 29 scalar transforms, about 60% of its time. Each scalar
@@ -312,8 +316,9 @@ As `crypto-performance.md` §6:
 
 ## 9. Results
 
-Figures are from the `--crypto-harness` of `Bodu.Security.Cryptography.Benchmarks` on the
-same 4-vCPU Xeon VM as §1, at 2.8 GHz with AVX-512F/VL but no IFMA. Each is the range over
+Figures are from the `--crypto-harness` of `Bodu.Security.Cryptography.Benchmarks`. F1's and F2's
+are from the same 4-vCPU Xeon VM as §1, at 2.8 GHz with AVX-512F/VL but no IFMA; F3's section
+describes the machine it moved to. Each is the range over
 two runs of the median of five rounds. The baselines were measured the same day on this
 branch before the item's code, with the harness change that added the case in place.
 
@@ -673,3 +678,360 @@ How it was done, and where it departs from the design above:
     on such processors.
   - The ARM64 estimate is assumed, not measured: F7 should time the AdvSimd kernel's
     steps against the block function and correct `StepCost` if they differ.
+
+### F3 — ML-DSA and ML-KEM vector transforms, and a four-way SHAKE (done)
+
+F3's figures come from a second machine. Part-way through F3 the work moved from §1's VM to a
+4-vCPU Xeon VM at 2.1 GHz (family 6, model 207) with AVX-512F/VL/BW/DQ, IFMA, VBMI and FP16,
+which runs every row here faster than the first did. Its runtimes prefer 512-bit vectors by
+default, so this host's default and `DOTNET_PreferredVectorBitWidth=512` are the same
+configuration and show how far two runs of it drift. The before build is master at 427b804a
+with F3's harness rows added; the after build is F3 as merged (#728). Both ran on the second
+machine, alternately, in each of the harness's five processor configurations on both
+runtimes, in two runs, the second in the opposite order. *Change* is the ratio of the two
+ranges' midpoints, above 1 where F3 is faster.
+
+| Operation (net10.0, this host's default) | Before F3 (µs) | After F3 (µs) | Change |
+|---|---|---|---|
+| ML-KEM-512 key generation | 31.7–32.1 | 17.4–17.9 | 1.81× |
+| ML-KEM-512 encapsulate | 20.6–21.3 | 10.0–10.6 | 2.04× |
+| ML-KEM-512 decapsulate | 29.1–30.3 | 15.4–15.6 | 1.91× |
+| ML-KEM-512 encapsulate to an imported key | 34.3–35.9 | 17.9–18.2 | 1.94× |
+| ML-KEM-768 key generation | 50.5–50.6 | 28.3–29.4 | 1.75× |
+| ML-KEM-768 encapsulate | 27.4–29.4 | 13.5 | 2.10× |
+| ML-KEM-768 decapsulate | 43.1–44.5 | 19.5–20.2 | 2.21× |
+| ML-KEM-768 encapsulate to an imported key | 54.2–67.8 | 27.9–28.6 | 2.16× |
+| ML-KEM-1024 key generation | 84.8–86.6 | 41.7 | 2.05× |
+| ML-KEM-1024 encapsulate | 39.3–44.0 | 18.5–19.3 | 2.21× |
+| ML-KEM-1024 decapsulate | 57.0–58.7 | 27.3–27.7 | 2.10× |
+| ML-KEM-1024 encapsulate to an imported key | 83.0–87.2 | 39.1–41.6 | 2.11× |
+| ML-DSA-44 key generation | 109–120 | 51.9–53.4 | 2.17× |
+| ML-DSA-44 sign | 339–369 | 98–113 | 3.36× |
+| ML-DSA-44 verify | 32.3–32.6 | 16.7–16.9 | 1.93× |
+| ML-DSA-44 verify with an imported key | 106–111 | 43.0–46.4 | 2.43× |
+| ML-DSA-65 key generation | 243–434 | 105 | 3.23× |
+| ML-DSA-65 sign | 579–581 | 156–168 | 3.58× |
+| ML-DSA-65 verify | 45.9–55.3 | 20.7–22.8 | 2.32× |
+| ML-DSA-65 verify with an imported key | 164–174 | 72.6–80.0 | 2.22× |
+| ML-DSA-87 key generation | 331–346 | 125–126 | 2.70× |
+| ML-DSA-87 sign | 718–812 | 160–173 | 4.60× |
+| ML-DSA-87 verify | 58.7–72.1 | 30.4–32.6 | 2.08× |
+| ML-DSA-87 verify with an imported key | 271–274 | 115–124 | 2.28× |
+
+| Operation (net8.0, this host's default) | Before F3 (µs) | After F3 (µs) | Change |
+|---|---|---|---|
+| ML-KEM-512 key generation | 32.6–36.5 | 19.6–20.1 | 1.74× |
+| ML-KEM-512 encapsulate | 24.5–24.7 | 11.1–11.2 | 2.21× |
+| ML-KEM-512 decapsulate | 33.9–34.1 | 16.8–19.3 | 1.88× |
+| ML-KEM-512 encapsulate to an imported key | 38.9–40.6 | 19.5–21.1 | 1.96× |
+| ML-KEM-768 key generation | 54.0–57.5 | 32.2–35.0 | 1.66× |
+| ML-KEM-768 encapsulate | 31.7–32.4 | 13.2–15.6 | 2.22× |
+| ML-KEM-768 decapsulate | 46.9–48.1 | 22.0–24.4 | 2.05× |
+| ML-KEM-768 encapsulate to an imported key | 61.9–62.0 | 31.0–31.5 | 1.98× |
+| ML-KEM-1024 key generation | 90.3–91.7 | 43.4–46.4 | 2.03× |
+| ML-KEM-1024 encapsulate | 46.2–46.4 | 19.4–20.4 | 2.32× |
+| ML-KEM-1024 decapsulate | 63.5–66.1 | 28.8–30.0 | 2.20× |
+| ML-KEM-1024 encapsulate to an imported key | 90.2–90.3 | 41.2–41.3 | 2.19× |
+| ML-DSA-44 key generation | 133–139 | 57.9–58.9 | 2.32× |
+| ML-DSA-44 sign | 395–404 | 102–110 | 3.78× |
+| ML-DSA-44 verify | 39.9–45.0 | 18.4–19.6 | 2.24× |
+| ML-DSA-44 verify with an imported key | 115–132 | 46.3–47.7 | 2.62× |
+| ML-DSA-65 key generation | 243–253 | 108–110 | 2.27× |
+| ML-DSA-65 sign | 607–650 | 168–172 | 3.69× |
+| ML-DSA-65 verify | 50.8–54.3 | 24.2–25.1 | 2.13× |
+| ML-DSA-65 verify with an imported key | 174–197 | 78.9–86.6 | 2.24× |
+| ML-DSA-87 key generation | 336–360 | 134–139 | 2.55× |
+| ML-DSA-87 sign | 674–697 | 155–167 | 4.25× |
+| ML-DSA-87 verify | 72.0–78.6 | 31.7 | 2.38× |
+| ML-DSA-87 verify with an imported key | 281–297 | 131–132 | 2.20× |
+
+The ML-DSA-65 key generation range before F3 on .NET 10, 243–434 µs, holds one outlying run.
+Alternating A/B runs of the three target rows, five rounds of each build in separate
+processes, put it at 238–266 µs:
+
+| Operation | Configuration | Runtime | Before F3 (µs) | After F3 (µs) | Change (medians) |
+|---|---|---|---|---|---|
+| ML-DSA-65 key generation | this host's default | net10.0 | 238–266 | 95–115 | 2.49× |
+| ML-DSA-65 key generation | this host's default | net8.0 | 242–311 | 107–120 | 2.26× |
+| ML-DSA-65 key generation | no vector instructions | net10.0 | 235–270 | 227–260 | 1.08× |
+| ML-DSA-65 key generation | no vector instructions | net8.0 | 250–292 | 231–242 | 1.12× |
+| ML-DSA-65 sign | this host's default | net10.0 | 593–690 | 151–167 | 3.91× |
+| ML-DSA-65 sign | this host's default | net8.0 | 660–718 | 155–175 | 4.38× |
+| ML-DSA-65 sign | no vector instructions | net10.0 | 566–794 | 509–621 | 1.15× |
+| ML-DSA-65 sign | no vector instructions | net8.0 | 624–712 | 503–720 | 1.26× |
+| ML-KEM-768 decapsulate | this host's default | net10.0 | 41.7–48.0 | 21.9–31.4 | 1.87× |
+| ML-KEM-768 decapsulate | this host's default | net8.0 | 44.3–54.1 | 22.6–27.0 | 2.09× |
+| ML-KEM-768 decapsulate | no vector instructions | net10.0 | 43.0–52.7 | 45.4–48.5 | 0.98× |
+| ML-KEM-768 decapsulate | no vector instructions | net8.0 | 46.6–57.6 | 46.3–56.3 | 1.00× |
+
+The plan's targets are met with a wide margin. They were set on the first machine: 0.45 ms,
+200 µs and 45 µs against 1.1.0's 0.79–0.85 ms, 302–328 µs and 60–80 µs. On that machine, during
+development, the F3 build signed with ML-DSA-65 in 258–281 µs, generated an ML-DSA-65 key in
+172–186 µs and decapsulated with ML-KEM-768 in 38–41 µs. Scaled to the before figures here,
+the targets come to about 350 µs, 160 µs and 29 µs, against 151–175 µs, 95–120 µs and 19.5–24.4 µs.
+
+The three targets in each configuration:
+
+| net10.0 | ML-DSA-65 sign | ML-DSA-65 key generation | ML-KEM-768 decapsulate |
+|---|---|---|---|
+| this host's default | 579–581 → 156–168 (3.58×) | 243–434 → 105 (3.23×) | 43.1–44.5 → 19.5–20.2 (2.21×) |
+| `DOTNET_PreferredVectorBitWidth=512` | 593–602 → 150–163 (3.82×) | 247–250 → 100 (2.48×) | 41.7–42.4 → 19.2–20.7 (2.11×) |
+| AVX-512 off | 577–596 → 183–208 (3.00×) | 235–256 → 132–144 (1.78×) | 41.3–42.8 → 21.5–22.6 (1.91×) |
+| AVX2 off | 626–637 → 479–546 (1.23×) | 228–238 → 221–227 (1.04×) | 43.7–50.7 → 43.5–44.5 (1.07×) |
+| no vector instructions | 621–707 → 536–545 (1.23×) | 238–268 → 231 (1.09×) | 45.8–46.0 → 44.2–48.7 (0.99×) |
+
+| net8.0 | ML-DSA-65 sign | ML-DSA-65 key generation | ML-KEM-768 decapsulate |
+|---|---|---|---|
+| this host's default | 607–650 → 168–172 (3.69×) | 243–253 → 108–110 (2.27×) | 46.9–48.1 → 22.0–24.4 (2.05×) |
+| `DOTNET_PreferredVectorBitWidth=512` | 626–665 → 162–163 (3.97×) | 246 → 107–135 (2.03×) | 45.2–54.3 → 21.9–22.2 (2.26×) |
+| AVX-512 off | 634–717 → 204–207 (3.28×) | 239–251 → 138–163 (1.62×) | 46.0–49.6 → 23.8–26.4 (1.90×) |
+| AVX2 off | 679–739 → 526–599 (1.26×) | 246–256 → 216–249 (1.08×) | 47.2–55.7 → 47.6–48.4 (1.07×) |
+| no vector instructions | 670–742 → 517–637 (1.22×) | 244–256 → 221–231 (1.11×) | 46.5–50.9 → 49.0–50.6 (0.98×) |
+
+Every row's change, in every configuration:
+
+| Operation (net10.0) | this host's default | `DOTNET_PreferredVectorBitWidth=512` | AVX-512 off | AVX2 off | no vector instructions |
+|---|---|---|---|---|---|
+| ML-KEM-512 key generation | 1.81× | 1.81× | 1.52× | 1.04× | 0.91× |
+| ML-KEM-512 encapsulate | 2.04× | 2.01× | 1.90× | 0.99× | 0.97× |
+| ML-KEM-512 decapsulate | 1.91× | 2.02× | 1.71× | 1.02× | 1.03× |
+| ML-KEM-512 encapsulate to an imported key | 1.94× | 1.91× | 1.78× | 0.95× | 0.90× |
+| ML-KEM-768 key generation | 1.75× | 1.96× | 1.42× | 0.90× | 0.88× |
+| ML-KEM-768 encapsulate | 2.10× | 2.20× | 2.00× | 1.09× | 0.97× |
+| ML-KEM-768 decapsulate | 2.21× | 2.11× | 1.91× | 1.07× | 0.99× |
+| ML-KEM-768 encapsulate to an imported key | 2.16× | 1.90× | 1.62× | 1.00× | 1.00× |
+| ML-KEM-1024 key generation | 2.05× | 1.83× | 1.64× | 1.04× | 0.98× |
+| ML-KEM-1024 encapsulate | 2.21× | 2.37× | 2.12× | 1.03× | 1.14× |
+| ML-KEM-1024 decapsulate | 2.10× | 2.23× | 1.89× | 0.95× | 0.94× |
+| ML-KEM-1024 encapsulate to an imported key | 2.11× | 2.20× | 1.62× | 1.03× | 0.98× |
+| ML-DSA-44 key generation | 2.17× | 2.20× | 1.75× | 1.12× | 1.04× |
+| ML-DSA-44 sign | 3.36× | 3.56× | 2.69× | 1.18× | 1.16× |
+| ML-DSA-44 verify | 1.93× | 2.10× | 1.88× | 0.99× | 1.02× |
+| ML-DSA-44 verify with an imported key | 2.43× | 2.59× | 1.73× | 0.98× | 1.06× |
+| ML-DSA-65 key generation | 3.23× | 2.48× | 1.78× | 1.04× | 1.09× |
+| ML-DSA-65 sign | 3.58× | 3.82× | 3.00× | 1.23× | 1.23× |
+| ML-DSA-65 verify | 2.32× | 1.97× | 2.08× | 1.02× | 1.05× |
+| ML-DSA-65 verify with an imported key | 2.22× | 2.68× | 1.91× | 1.01× | 1.02× |
+| ML-DSA-87 key generation | 2.70× | 2.48× | 2.07× | 0.94× | 1.14× |
+| ML-DSA-87 sign | 4.60× | 3.99× | 3.64× | 1.25× | 1.22× |
+| ML-DSA-87 verify | 2.08× | 1.99× | 2.01× | 0.90× | 0.94× |
+| ML-DSA-87 verify with an imported key | 2.28× | 2.46× | 1.88× | 1.02× | 0.91× |
+
+| Operation (net8.0) | this host's default | `DOTNET_PreferredVectorBitWidth=512` | AVX-512 off | AVX2 off | no vector instructions |
+|---|---|---|---|---|---|
+| ML-KEM-512 key generation | 1.74× | 1.85× | 1.53× | 1.03× | 1.07× |
+| ML-KEM-512 encapsulate | 2.21× | 2.01× | 1.82× | 1.12× | 0.94× |
+| ML-KEM-512 decapsulate | 1.88× | 2.02× | 1.72× | 1.02× | 1.03× |
+| ML-KEM-512 encapsulate to an imported key | 1.96× | 2.08× | 1.63× | 0.96× | 1.17× |
+| ML-KEM-768 key generation | 1.66× | 1.84× | 1.38× | 0.96× | 1.07× |
+| ML-KEM-768 encapsulate | 2.22× | 2.36× | 2.02× | 1.09× | 1.01× |
+| ML-KEM-768 decapsulate | 2.05× | 2.26× | 1.90× | 1.07× | 0.98× |
+| ML-KEM-768 encapsulate to an imported key | 1.98× | 2.06× | 1.63× | 1.07× | 0.96× |
+| ML-KEM-1024 key generation | 2.03× | 1.88× | 1.57× | 1.11× | 1.13× |
+| ML-KEM-1024 encapsulate | 2.32× | 2.17× | 2.10× | 1.07× | 0.96× |
+| ML-KEM-1024 decapsulate | 2.20× | 2.01× | 1.93× | 1.07× | 0.92× |
+| ML-KEM-1024 encapsulate to an imported key | 2.19× | 2.11× | 1.72× | 1.00× | 1.23× |
+| ML-DSA-44 key generation | 2.32× | 2.37× | 1.71× | 0.97× | 1.07× |
+| ML-DSA-44 sign | 3.78× | 3.59× | 3.20× | 1.29× | 1.30× |
+| ML-DSA-44 verify | 2.24× | 2.06× | 1.96× | 1.02× | 1.19× |
+| ML-DSA-44 verify with an imported key | 2.62× | 2.29× | 1.78× | 1.02× | 1.11× |
+| ML-DSA-65 key generation | 2.27× | 2.03× | 1.62× | 1.08× | 1.11× |
+| ML-DSA-65 sign | 3.69× | 3.97× | 3.28× | 1.26× | 1.22× |
+| ML-DSA-65 verify | 2.13× | 2.04× | 2.18× | 1.07× | 0.96× |
+| ML-DSA-65 verify with an imported key | 2.24× | 2.35× | 1.72× | 1.03× | 1.01× |
+| ML-DSA-87 key generation | 2.55× | 2.46× | 1.79× | 1.14× | 1.14× |
+| ML-DSA-87 sign | 4.25× | 3.82× | 3.62× | 1.34× | 1.28× |
+| ML-DSA-87 verify | 2.38× | 1.98× | 2.43× | 1.08× | 1.14× |
+| ML-DSA-87 verify with an imported key | 2.20× | 2.64× | 1.76× | 1.05× | 1.01× |
+
+Without AVX2, dispatch selects the scalar code. ML-DSA signing still runs 1.15–1.34× faster
+there, and key generation 0.94–1.14×, from the scalar twins of the polynomial passes described
+below. The ML-KEM rows scatter from 0.88× to 1.23× between the two runs. Alternating runs, three
+rounds of each build, of ML-KEM-768 key generation and its parts through the engine measured the
+whole operation at 0.99–1.03× on both runtimes, and the A/B runs above put decapsulation at
+0.98–1.00×. Of the parts, only the scalar base-case product measured slower, on .NET 10 with AVX2
+disabled: 379 ns against 284, about 2% of a key generation.
+
+How it was done, and where it departs from the design above:
+
+- **ML-DSA's kernel.** `MLDsaEngine.Vector256Kernel` works on eight `int` coefficients per
+  vector, as the design and the reference implementation's AVX2 code do.
+  - Each Montgomery product multiplies the even and the odd lanes with `vpmuldq`, forms each
+    lane's multiple m from a second product with ζ·q⁻¹, precomputed for every twiddle, and
+    subtracts the high halves of m·q from those of a·ζ: `MontgomeryReduce` bit for bit.
+  - The forward transform makes two passes over memory: the first three layers on eight
+    vectors 32 coefficients apart, held in registers, and the other five on each block of 32
+    coefficients, the last three after an in-register rearrangement that reads lane-ordered
+    twiddle tables. The inverse runs the same passes in the opposite order.
+  - Every layer adds, subtracts and reduces in the scalar code's order, so the output equals
+    the scalar code's exactly, not only modulo q.
+  - In the spike, on the second machine, a forward transform took 346–374 ns against
+    1,226–1,461 scalar, an inverse 325–328 against 1,331–1,384, and a pointwise product
+    53–74 ns against 231–249.
+- **ML-KEM's kernel: sixteen 16-bit lanes over a copy.** The design left open whether to keep
+  eight `int` lanes, and the layout, or take the reference's sixteen 16-bit lanes, which it
+  expected to need 16-bit storage throughout. The spike measured the forward transform at
+  376–402 ns with eight `int` lanes and 149–162 ns with sixteen 16-bit ones, against
+  1,285–1,323 ns scalar. Every value the scalar code forms fits in 16 bits: its transforms
+  keep each coefficient below 8q = 26,632 in magnitude. So `MLKemEngine.Vector256Kernel` packs
+  the `int` coefficients into a 16-bit copy on the stack as it loads them (`vpackssdw`, then
+  `vpermq` to restore the order), and sign-extends them as it stores them (`vpmovsxwd`).
+  Storage stays `int` everywhere else, and the copy is cleared before the kernel returns.
+  Montgomery products use `vpmullw` and `vpmulhw`, and Barrett reduction takes its quotient
+  from `vpmulhw` by 20,159, rounded and shifted exactly as `BarrettReduce` does. Four layers run
+  over the whole copy and the last three on each block of 32, after the in-register
+  rearrangement; the base-case products take sixteen pairs per vector. The inverse transform
+  took 152–161 ns against 1,675–1,777, and a product 91–93 ns against 346–410.
+- **The four-way Keccak.** `KeccakPermutation.Permute4` advances four independent states, one
+  per 64-bit lane of 25 `Vector256<ulong>`s, through `Vector256Kernel<TIsa>` over
+  `VectorRotation.Avx512` or `.Avx2`, or as four scalar permutations.
+  - Its rotations go through Bodu.Core, which gained 64-bit lanes for `Vector256`: `vprolq` on
+    AVX-512VL, and on AVX2 a doubleword shuffle for 32 bits, an in-lane byte shuffle for the
+    other multiples of 8, and a pair of shifts otherwise.
+  - With AVX-512VL, θ's five-way parity takes two `vpternlogq` (0x96) and χ one (0xD2).
+  - `KeccakSponge4` runs four SHAKE128 or SHAKE256 sponges over it. Each absorbs one message
+    shorter than the rate, which every lattice stream's seed and index is, and squeezes whole
+    blocks.
+  - In the library the kernel permutes four states in 0.26–0.27 µs with AVX-512VL on both
+    runtimes, and, with AVX-512 disabled, in 0.62 µs over AVX2 on .NET 10 and 0.77 on .NET 8,
+    against 0.38–0.40 µs for one scalar permutation.
+- **No eight-way Keccak, and no AVX-512 kernels.** The spike's eight-way permutation over
+  `Vector512<ulong>` took 374–395 ns for eight states on the second machine, 47–49 ns each
+  against the four-way kernel's 64. But it needs eight streams at once, which only matrix
+  expansion supplies: ExpandMask draws four, five or seven per signing attempt, and ML-KEM's
+  noise four to nine per operation. And on the first machine, which does not prefer 512-bit
+  vectors, it gained only 20% per state. The ML-DSA pointwise product over 512-bit vectors
+  took 42–56 ns against AVX2's 53–74, on a product that is a small share of signing, and the
+  transforms would need a fourth in-register layer. Every kernel is 256-bit.
+- **Where the four-way sponge serves.**
+  - ML-DSA: `SampleMatrix` (ExpandA) when a key is set, `SampleSecretVector` (ExpandS) at key
+    generation, and `ExpandMaskVector` (ExpandMask) on every signing attempt.
+  - ML-KEM: `SampleMatrix` and `SampleNoiseVector`.
+  - A batch of fewer than four streams gives its idle sponges a copy of an active one's
+    message and never reads their output. Each batch squeezes until every stream in it is
+    full, parsing each block as the one-stream code did, so the coefficients do not depend on
+    the batching.
+  - The four-way sponge runs only where `KeccakPermutation.IsFourWayAccelerated`, that is,
+    with AVX2: four scalar permutations cost what one stream at a time does.
+- **The per-coefficient signing passes are a finding, not the design.** With the transforms,
+  products and expansions vectorized, ML-DSA-65 signing still took 511–581 µs on the first
+  machine, above the target. `Sign` compiles differently from the methods it calls: its
+  `stackalloc` buffers rule out on-stack replacement, so the JIT compiles it once, fully
+  optimized but without the profile dynamic PGO collects (its disassembly reads
+  `Tier0-FullOpts`), and that compilation left `HighBits`, `MakeHint` and `InfinityNorm` as
+  calls on every coefficient. A profile of one ML-DSA-65 signing attempt put the pass that
+  forms r₀ at 16 µs of the attempt's 73 on .NET 10, and the hint pass at 14, against half a
+  microsecond for a transform. Each per-coefficient pass is now a method over whole
+  polynomials, with an AVX2 kernel and a scalar twin: `HighBits`, `LowBitsNorm`, `MakeHints`,
+  `InfinityNorm`, `AddModQ` and `SubtractModQ` for signing, and `ToMontgomery` and `Reduce32`
+  for setting a key. They compile, and tier up, on their own, whatever `Sign` does. Signing
+  then took 258–281 µs on the first machine. On the second, one attempt takes about 25 µs on
+  both runtimes, of which ExpandMask is 5.7–6.7 µs and w1Encode with its SHAKE256 4.2.
+- **Generated code, on both runtimes.**
+  - **.NET 10 kept the AVX-512 Keccak kernel's state on the stack**, with 52 stack references
+    in its round loop against .NET 8's 2. Two things caused it:
+    - The helpers that choose between `vpternlogq` and plain operators were written with `?:`.
+      Inlined, each left a join temporary that the register allocator would not keep in a
+      register while 25 state vectors were live. In a scratch copy of the kernel on the
+      second machine, .NET 10 ran that form in 449 ns and the same helpers written with
+      `if` / `return` in 268; .NET 8 ran both in 210–264.
+    - The kernel loaded the state and then, before its round loop, checked that
+      `KeccakPermutation`'s static fields were initialized, calling the runtime's
+      static-base helper if not: it read the round constants from a `static readonly` array.
+      No vector register survives a call under the System V ABI, so the 25 state vectors,
+      live across that call, were given stack homes for the whole loop. The constants are now
+      a `ReadOnlySpan<ulong>` over the assembly's data, which needs no initialization. A
+      build that keeps everything else but reads the constants from the array ran the
+      AVX-512 kernel in 0.39 µs on .NET 10 against 0.26, and the four-way sponge's absorb and
+      five squeezes in 2.33 µs against 1.49.
+  - With both changes the AVX-512 kernel has 2 stack references in its loop on both runtimes.
+    Over AVX2's sixteen registers the 25 state vectors cannot stay in registers, and the kernel
+    spills on both runtimes whatever the round constants or the shifts.
+  - **F3's change to Bodu.Core's shift pairs is undone.** On the first machine the four-way
+    AVX2 kernel ran about twice as fast on .NET 10 as on .NET 8, and .NET 8 compiled the right
+    half of every shift-pair rotation, `Vector256.ShiftRightLogical(value, 64 - count)`, to a
+    count moved into a register on each call. F3 therefore wrote every shift pair, 32- and
+    64-bit, over SSSE3, AVX2 and AdvSimd, with the instruction set's intrinsics,
+    `X86.Avx2.ShiftRightLogical(value, (byte)(64 - count))`. That was measured in a process with
+    AVX-512 enabled, where the AVX2 kernel runs only when a test names it. On the second machine
+    the change proved a mistake:
+    - .NET 8 does not fold `(byte)(32 - count)` into the intrinsic's immediate: it passes the
+      count from memory. In the ChaCha20 and Salsa20 kernels that form spilled more. Over SSSE3
+      the Salsa20 kernel grew from 2,987 to 3,387 bytes, with 251 stack references against 208.
+      .NET 10 compiles the SSSE3 kernels identically in every build below.
+    - Alternating runs of four builds, three rounds each, with AVX-512 or AVX2 disabled:
+
+      | Row (MiB/s, median of three) | Configuration | Runtime | Before F3 | F3 as merged | 32-bit shifts portable | Literal immediates |
+      |---|---|---|---|---|---|---|
+      | ChaCha20 1 MiB | AVX2 alone | net8.0 | 1,740 | 1,462 (0.84×) | 1,541 (0.89×) | 1,482 (0.85×) |
+      | ChaCha20 1 MiB | SSSE3 (AVX2 disabled) | net8.0 | 977 | 861 (0.88×) | 959 (0.98×) | 883 (0.90×) |
+      | Salsa20 1 MiB | AVX2 alone | net8.0 | 943 | 858 (0.91×) | 1,047 (1.11×) | 749 (0.79×) |
+      | Salsa20 1 MiB | SSSE3 (AVX2 disabled) | net8.0 | 716 | 589 (0.82×) | 704 (0.98×) | 559 (0.78×) |
+      | Serpent-128-CTR 1 MiB | AVX2 alone | net8.0 | 357 | 419 (1.17×) | 370 (1.04×) | 417 (1.17×) |
+      | Serpent-128-CTR 1 MiB | SSSE3 (AVX2 disabled) | net8.0 | 215 | 218 (1.01×) | 218 (1.01×) | 207 (0.96×) |
+      | CubeHash 1 MiB | AVX2 alone | net8.0 | 359 | 366 (1.02×) | 357 (0.99×) | 359 (1.00×) |
+      | CubeHash 1 MiB | AVX2 alone | net10.0 | 353 | 350 (0.99×) | 350 (0.99×) | 119 (0.34×) |
+      | CubeHash 1 MiB | SSSE3 (AVX2 disabled) | net8.0 | 299 | 330 (1.11×) | 284 (0.95×) | 319 (1.07×) |
+      | CubeHash 1 MiB | SSSE3 (AVX2 disabled) | net10.0 | 308 | 317 (1.03×) | 315 (1.02×) | 84 (0.27×) |
+
+    - A switch over every count with literal immediates gave .NET 8 immediate shifts but the
+      same spills, and cost CubeHash about two thirds of its speed on .NET 10, whose inliner gave
+      up on the larger rotation. With the 64-bit shifts portable as well, the four-way Keccak
+      over AVX2 took 0.79 µs on .NET 8 against 0.77, and .NET 10 compiled it identically.
+    - So every shift pair is the portable operators again, as in 1.1.0. ChaCha20 and Salsa20 are
+      back to their earlier speed on .NET 8, and F3's gains there for Serpent-128-CTR with AVX2
+      alone (1.17×) and CubeHash over SSSE3 (1.11×) go with the change. ChaCha20 with AVX2 alone
+      varies by about ±10% between runs of one build: the portable build compiles it as before
+      F3 and still read 0.89×.
+  - The ML-DSA and ML-KEM kernels compile with no calls in their loops on either runtime;
+    ML-KEM's only calls, which clear its copy, follow them. Every kernel entry point is
+    `NoInlining | AggressiveOptimization`, per §2, and a reflection test checks each.
+- **Tests.**
+  - Each kernel is driven explicitly through a `KernelKind` overload, whatever dispatch
+    would pick, and held bit for bit to the scalar kernel and to `MLDsaReference` /
+    `MLKemReference`, the remainder-operator code W9 replaced. The inputs are edge
+    polynomials (zeros, q − 1 and −(q − 1) throughout, ML-KEM's twelve-bit maximum), each
+    sign or value alternating in runs of every power of two from 1 to 128, which pair
+    differently in each layer, and seeded polynomials, signed wherever the scalar code
+    accepts signed input. A kernel the processor lacks reports inconclusive.
+  - `HighBits` and `LowBitsNorm` are checked over every coefficient from 0 to q − 1 in the
+    Regression tier, and at the decomposition's boundaries in BVT. `MakeHints`,
+    `InfinityNorm`, `AddModQ`, `SubtractModQ`, `ToMontgomery` and `Reduce32` are checked over
+    boundary and seeded polynomials, the norms with the largest value in every position, and
+    in place.
+  - The four-way samplers are held to one stream at a time over every batch remainder and
+    across nonce and counter carries.
+  - `Permute4` is held to the scalar permutation over seeded states and uniform but distinct
+    ones, per kernel. `KeccakSponge4` is held to four scalar sponges at every message length
+    below the rate and every split of up to three whole squeezed blocks, and to the FIPS 202
+    SHAKE128 and SHAKE256 outputs for four published messages. The design asked for every
+    squeeze length up to three rates; the sponge squeezes whole blocks only, because every
+    sampler parses whole blocks.
+  - Bodu.Core's 64-bit rotation is held to the scalar rotation for every count on each
+    instruction set.
+  - The SIMD-off assembly links the ML-KEM and ML-DSA ACVP suites and asserts that every one
+    of these dispatches takes its scalar path. The repository holds no Wycheproof vectors
+    for ML-KEM or ML-DSA, so the NIST ACVP vectors are the published ones run through both
+    paths: key generation, encapsulation and decapsulation, key checks, and signature
+    generation and verification.
+  - The full suite passes on both runtimes, and the ML-DSA engine tests also with AVX2
+    disabled.
+- **ARM64 and SSSE3 keep the scalar lattice code.** The design's 128-bit kernel for SSSE3 and
+  AdvSimd waits for F7, as F1's AdvSimd kernel does: nothing here can measure it on ARM64.
+- **Left for later.**
+  - Key generation now spends most of its time outside the transforms. Of ML-DSA-65's
+    76–93 µs in the profiler on the second machine, the matrix's rejection sampling takes
+    about 25, encoding the keys and hashing the public key 18–21, and keeping the key's
+    values 8–10. Vectorized rejection parsing and bit packing are the next steps.
+  - The eight-way Keccak would serve matrix expansion where 512-bit vectors are preferred,
+    as they are on the second machine, at 47–49 ns per state against 64.
+  - Verification gained 1.9–2.6×, less than signing: its `UseHint` pass is still per
+    coefficient.
+  - ML-KEM's 16-bit copy is zeroed when the JIT allocates it, as every stack buffer is, and
+    cleared again after use; the kernel writes every element before reading any, so
+    `[SkipLocalsInit]` could save the first.
+  - On .NET 8 the intrinsic shifts that slowed ChaCha20 and Salsa20 ran Serpent-128-CTR with
+    AVX2 alone 1.17× faster and CubeHash over SSSE3 1.11× faster. Stream-cipher kernels that do
+    not spill on that form would let every kernel have it.
+  - ML-KEM's scalar base-case product runs 0.75× on .NET 10 with AVX2 disabled, now that it
+    shares a method with the dispatch to its kernel.
