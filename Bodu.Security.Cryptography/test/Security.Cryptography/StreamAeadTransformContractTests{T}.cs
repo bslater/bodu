@@ -307,17 +307,27 @@ public abstract class StreamAeadTransformContractTests<TAead>
 
     /// <summary>
     /// Verifies that encryption and decryption succeed when the plaintext and output occupy the same buffer at the same
-    /// start (exact in-place operation).
+    /// start (exact in-place operation), the encryption matching one into a separate buffer, both for a message short
+    /// enough to pass through a buffer in one pass and for a longer one.
     /// </summary>
+    /// <param name="length">The length of the message, in bytes.</param>
     [TestMethod]
-    public void EncryptDecrypt_WhenExactInPlace_ShouldRoundTrip()
+    [DataRow(100)]
+    [DataRow(2000)]
+    public void EncryptDecrypt_WhenExactInPlace_ShouldRoundTrip(int length)
     {
-        byte[] plaintext = Pattern(100);
+        byte[] plaintext = Pattern(length);
+        byte[] expected = new byte[plaintext.Length + 16];
         byte[] buffer = new byte[plaintext.Length + 16];
         plaintext.CopyTo(buffer, 0);
 
         using (TAead enc = Create(Key(), Nonce()))
+            enc.Encrypt(plaintext, expected);
+
+        using (TAead enc = Create(Key(), Nonce()))
             enc.Encrypt(buffer.AsSpan(0, plaintext.Length), buffer);
+
+        CollectionAssert.AreEqual(expected, buffer, "The in-place encryption differs from the separate one.");
 
         using (TAead dec = Create(Key(), Nonce()))
         {

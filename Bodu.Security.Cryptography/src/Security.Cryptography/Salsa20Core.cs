@@ -95,7 +95,7 @@ internal static partial class Salsa20Core
     /// </remarks>
     internal static void Initialize(Span<uint> state, ReadOnlySpan<byte> key, ReadOnlySpan<byte> nonce)
     {
-        ThrowHelper.ThrowIfLessThan(state.Length, StateWords, nameof(state));
+        ArgumentOutOfRangeException.ThrowIfLessThan(state.Length, StateWords, nameof(state));
         if (key.Length is not Key128Bytes and not Key256Bytes) throw new ArgumentOutOfRangeException(nameof(key));
         ArgumentOutOfRangeException.ThrowIfNotEqual(nonce.Length, NonceBytes, nameof(nonce));
 
@@ -133,8 +133,8 @@ internal static partial class Salsa20Core
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1107:Code should not contain multiple statements on one line", Justification = "The sixteen state words are loaded four to a line, as the 4×4 matrix the specification draws.")]
     internal static void Block(ReadOnlySpan<uint> state, ulong counter, Span<byte> destination)
     {
-        ThrowHelper.ThrowIfLessThan(state.Length, StateWords, nameof(state));
-        ThrowHelper.ThrowIfLessThan(destination.Length, BlockBytes, nameof(destination));
+        ArgumentOutOfRangeException.ThrowIfLessThan(state.Length, StateWords, nameof(state));
+        ArgumentOutOfRangeException.ThrowIfLessThan(destination.Length, BlockBytes, nameof(destination));
 
         uint j0 = state[0], j1 = state[1], j2 = state[2], j3 = state[3];
         uint j4 = state[4], j5 = state[5], j6 = state[6], j7 = state[7];
@@ -227,9 +227,9 @@ internal static partial class Salsa20Core
     /// </remarks>
     internal static void XorBlocks(ChaCha20Core.KernelKind kernel, ReadOnlySpan<uint> state, ulong counter, ReadOnlySpan<byte> input, Span<byte> output)
     {
-        ThrowHelper.ThrowIfLessThan(state.Length, StateWords, nameof(state));
+        ArgumentOutOfRangeException.ThrowIfLessThan(state.Length, StateWords, nameof(state));
         if (input.Length % BlockBytes != 0) throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_InputLengthBlockMultiple, BlockBytes), nameof(input));
-        ThrowHelper.ThrowIfLessThan(output.Length, input.Length, nameof(output));
+        ArgumentOutOfRangeException.ThrowIfLessThan(output.Length, input.Length, nameof(output));
 
         if (kernel == ChaCha20Core.KernelKind.Auto)
             kernel = ChaCha20Core.SelectKernel();

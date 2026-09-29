@@ -4,13 +4,21 @@
       "src": [
         {
           "src": "../",
-          "files": [ "**/src/*.csproj" ],
-          "exclude": [ "Bodu.CodeStyle/**", "Bodu.Text.Formats.Generators/**", "Bodu.Globalization.Calendar.Build/**", "archive/**" ]
+          "files": [
+            "**/src/*.csproj"
+          ],
+          "exclude": [
+            "Bodu.CodeStyle/**",
+            "Bodu.Text.Formats.Generators/**",
+            "Bodu.Globalization.Calendar.Build/**",
+            "archive/**"
+          ]
         }
       ],
       "dest": "api",
       "includePrivateMembers": false,
-      "memberLayout": "separatePages",
+      "memberLayout": "samePage",
+      "namespaceLayout": "nested",
       "enumSortOrder": "declaringOrder",
       "globalNamespaceId": "global",
       "disableDefaultFilter": false,
@@ -20,33 +28,59 @@
       }
     }
   ],
+
   "build": {
     "content": [
       {
-        "files": [ "**/*.{md,yml}" ],
-        "exclude": [ "_site/**", "templates/**", "apidoc/**", "reviews/**", "forensic-review/**" ]
+        "files": [
+          "**/*.{md,yml}"
+        ],
+        "exclude": [
+          "_site/**",
+          "templates/**",
+          "apidoc/**",
+          "reviews/**",
+          "forensic-review/**"
+        ]
       }
     ],
+
     "resource": [
       {
-        "files": [ "images/**" ]
+        "files": [
+          "images/**"
+        ]
       }
     ],
+
     "overwrite": [
       {
-        "files": [ "apidoc/**.md" ],
-        "exclude": [ "_site/**" ]
+        "files": [
+          "apidoc/**/*.md"
+        ],
+        "exclude": [
+          "_site/**"
+        ]
       }
     ],
+
     "dest": "_site",
-    "template": [ "default", "templates/darkerfx" ],
+
+    "template": [
+      "default",
+      "modern"
+    ],
+
     "markdownEngineName": "markdig",
+
     "xrefService": [
       "https://xref.docs.microsoft.com/query?uid={uid}"
     ],
+
     "keepFileLink": false,
     "noLangKeyword": false,
-    "disableGitFeatures": true,
+    "disableGitFeatures": false,
+
     "globalMetadata": {
       "_appName": "BODU",
       "_appTitle": "BODU",

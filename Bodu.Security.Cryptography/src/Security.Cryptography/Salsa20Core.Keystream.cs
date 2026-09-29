@@ -35,6 +35,10 @@ internal static partial class Salsa20Core
         /// <summary>The block counter of the next block.</summary>
         private ulong _counter;
 
+        /// <inheritdoc />
+        public readonly ChaCha20Core.KernelKind Kernel =>
+            ChaCha20Core.SelectKernel();
+
         /// <summary>
         /// Seeds the keystream from a key and a nonce, positioned at the specified block counter.
         /// </summary>

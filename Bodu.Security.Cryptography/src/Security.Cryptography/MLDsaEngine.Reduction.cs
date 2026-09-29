@@ -100,7 +100,7 @@ internal static partial class MLDsaEngine
     /// </exception>
     internal static void ToMontgomery(Span<int> poly)
     {
-        ThrowHelper.ThrowIfLessThan(poly.Length, N, nameof(poly));
+        ArgumentOutOfRangeException.ThrowIfLessThan(poly.Length, N, nameof(poly));
 
         for (int i = 0; i < N; i++)
             poly[i] = ToMontgomery(poly[i]);

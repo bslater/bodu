@@ -163,8 +163,8 @@ internal static partial class Blake3Core
     /// </remarks>
     internal static void Compress(KernelKind kernel, Span<uint> chainingValue, ReadOnlySpan<byte> block, ulong counter, uint blockLength, uint flags)
     {
-        ThrowHelper.ThrowIfLessThan(chainingValue.Length, ChainingValueWords, nameof(chainingValue));
-        ThrowHelper.ThrowIfLessThan(block.Length, BlockBytes, nameof(block));
+        ArgumentOutOfRangeException.ThrowIfLessThan(chainingValue.Length, ChainingValueWords, nameof(chainingValue));
+        ArgumentOutOfRangeException.ThrowIfLessThan(block.Length, BlockBytes, nameof(block));
 
         ref uint cv = ref MemoryMarshal.GetReference(chainingValue);
         ref byte m = ref MemoryMarshal.GetReference(block);
@@ -251,8 +251,8 @@ internal static partial class Blake3Core
     /// </exception>
     internal static void StoreChainingValue(ReadOnlySpan<uint> chainingValue, Span<byte> destination)
     {
-        ThrowHelper.ThrowIfLessThan(chainingValue.Length, ChainingValueWords, nameof(chainingValue));
-        ThrowHelper.ThrowIfLessThan(destination.Length, ChainingValueBytes, nameof(destination));
+        ArgumentOutOfRangeException.ThrowIfLessThan(chainingValue.Length, ChainingValueWords, nameof(chainingValue));
+        ArgumentOutOfRangeException.ThrowIfLessThan(destination.Length, ChainingValueBytes, nameof(destination));
 
         if (BitConverter.IsLittleEndian)
         {
@@ -275,8 +275,8 @@ internal static partial class Blake3Core
     /// </exception>
     internal static void LoadChainingValue(ReadOnlySpan<byte> source, Span<uint> chainingValue)
     {
-        ThrowHelper.ThrowIfLessThan(source.Length, ChainingValueBytes, nameof(source));
-        ThrowHelper.ThrowIfLessThan(chainingValue.Length, ChainingValueWords, nameof(chainingValue));
+        ArgumentOutOfRangeException.ThrowIfLessThan(source.Length, ChainingValueBytes, nameof(source));
+        ArgumentOutOfRangeException.ThrowIfLessThan(chainingValue.Length, ChainingValueWords, nameof(chainingValue));
 
         for (int i = 0; i < ChainingValueWords; i++)
             chainingValue[i] = BinaryPrimitives.ReadUInt32LittleEndian(source[(i * sizeof(uint))..]);

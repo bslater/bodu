@@ -51,6 +51,12 @@ internal static class CryptoHarness
     /// <summary>The message lengths the Poly1305 cases sweep: one AEAD block, then up to the bulk input.</summary>
     private static readonly int[] s_macLengths = [SmallLength, 256, 1 << 10, 16 << 10, BulkLength];
 
+    /// <summary>
+    /// The message lengths below 1 KiB the AEAD cases sweep as well: with those of <see cref="s_macLengths" />, every
+    /// number of keystream blocks up to nine, then twelve and fifteen.
+    /// </summary>
+    private static readonly int[] s_shortAeadLengths = [0, 16, 128, 192, 320, 384, 448, 512, 576, 768, 960];
+
     /// <summary>The case filters from the command line; empty to run every case.</summary>
     private static string[] s_filters = [];
 
@@ -189,6 +195,18 @@ internal static class CryptoHarness
             Measure("mac", $"Bodu Poly1305 {size}", length, () => { using var mac = new Poly1305(); mac.Key = key32; mac.TryComputeHash(message, digest, out _); });
             if (openSslMac)
                 Measure("mac", $"OpenSSL Poly1305 {size}", length, () => OpenSsl.Mac(openSslPoly1305, key32, message, digest));
+        }
+
+        // The AEADs again over short messages, whose few keystream blocks, with the block that keys Poly1305 and the
+        // derivation of the subkey, make up most of their cost.
+        foreach (int length in s_shortAeadLengths)
+        {
+            byte[] message = Random(length, 15);
+            string size = SizeLabel(length);
+            Measure("aead", $"Bodu XChaCha20-Poly1305 {size}", length, () => { using var aead = new XChaCha20Poly1305(key32, nonce24); aead.Encrypt(message, output); });
+            Measure("aead", $"Bodu XSalsa20-Poly1305 {size}", length, () => { using var aead = new XSalsa20Poly1305(key32, nonce24); aead.Encrypt(message, output); });
+            if (bcl is not null)
+                Measure("aead", $"BCL ChaCha20-Poly1305 {size}", length, () => bcl.Encrypt(nonce12, message, output.AsSpan(0, length), tag));
         }
 
         using (var aes = new AesBlockCipher(key16))

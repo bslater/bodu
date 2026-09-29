@@ -48,11 +48,16 @@ Every public `Import*` method is a trust boundary and must reject malformed inpu
 ## 4. Span-writing APIs
 
 - [ ] **Aliasing.** Each span-writing API either tolerates input/output aliasing (with a test) or
-      documents the non-aliasing precondition (`X25519Tests.DeriveSharedSecret_WhenDestinationAliasesPeerKey_*`).
+      documents the non-aliasing precondition (`X25519Tests.DeriveSharedSecret_WhenDestinationAliasesPeerKey_*`;
+      the Poly1305 AEADs' exact in-place round trip, for a message drawn in one pass through a stack
+      buffer and for a longer one, in `StreamAeadTransformContractTests.EncryptDecrypt_WhenExactInPlace_*`).
 - [ ] **Destination length.** Wrong-length destinations are rejected; the span overload matches the
       allocating overload (per-family span-overload tests).
 - [ ] **Zero on failure.** Sensitive destinations are zeroed before throwing
-      (`X25519Tests.DeriveSharedSecret_WhenPeerKeyIsLowOrderPoint_ShouldZeroDestinationBeforeThrowing`).
+      (`X25519Tests.DeriveSharedSecret_WhenPeerKeyIsLowOrderPoint_ShouldZeroDestinationBeforeThrowing`),
+      or left unwritten until the operation has succeeded (the Poly1305 AEADs verify the tag before
+      releasing any plaintext, on both of the framings' paths:
+      `Poly1305AeadCoreTests.Open*_WhenTagIsTampered_ForEitherPath_ShouldThrowWithoutWritingOutput`).
 
 ## 5. Specification conformance
 

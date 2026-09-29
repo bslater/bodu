@@ -225,7 +225,7 @@ public abstract class BlockNonCryptographicHashAlgorithm
     /// <exception cref="ArgumentNullException"><paramref name="source" /> is <see langword="null" />.</exception>
     protected void CopyResidualStateFrom(BlockNonCryptographicHashAlgorithm source)
     {
-        ThrowHelper.ThrowIfNull(source);
+        ArgumentNullException.ThrowIfNull(source);
         source._residualByteBuffer.AsSpan(0, source._residualBytes).CopyTo(_residualByteBuffer);
         _residualBytes = source._residualBytes;
         TotalLength = source.TotalLength;

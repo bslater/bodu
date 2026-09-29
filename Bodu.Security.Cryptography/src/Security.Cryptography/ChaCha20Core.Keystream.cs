@@ -35,6 +35,10 @@ internal static partial class ChaCha20Core
         /// <summary>The block counter of the next block.</summary>
         private uint _counter;
 
+        /// <inheritdoc />
+        public readonly KernelKind Kernel =>
+            SelectKernel();
+
         /// <summary>
         /// Seeds the keystream from a key and a nonce, positioned at the specified block counter.
         /// </summary>

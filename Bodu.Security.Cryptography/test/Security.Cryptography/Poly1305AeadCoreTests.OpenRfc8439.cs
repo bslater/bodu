@@ -61,7 +61,7 @@ public partial class Poly1305AeadCoreTests
     {
         var random = new Random(0x5EA1_0002);
 
-        foreach (int length in Enumerable.Range(0, 300).Concat([1024, 1029, 4099]))
+        foreach (int length in MessageLengths)
         {
             byte[] plaintext = new byte[length];
             random.NextBytes(plaintext);
@@ -115,5 +115,91 @@ public partial class Poly1305AeadCoreTests
         });
 
         Assert.IsTrue(output.All(value => value == 0xCC), "The output was written before the tag was verified.");
+    }
+
+    /// <summary>
+    /// Verifies that opening under the RFC 8439 framing with the keystream drawn from a
+    /// <see cref="ChaCha20Core.Keystream" /> value throws <see cref="CryptographicException" /> for an altered tag
+    /// before writing any plaintext, both for messages short enough to be decrypted in one pass through a buffer and for
+    /// longer ones.
+    /// </summary>
+    /// <param name="length">The length of the message, in bytes.</param>
+    [TestMethod]
+    [DataRow(0)]
+    [DataRow(64)]
+    [DataRow(960)]
+    [DataRow(961)]
+    [DataRow(2000)]
+    public void OpenRfc8439_WhenTagIsTampered_ForEitherPath_ShouldThrowWithoutWritingOutput(int length)
+    {
+        var random = new Random(0x5EA1_0008 + length);
+        byte[] sealedMessage = new byte[length + Poly1305AeadCore.TagBytes];
+        using (var engine = new ChaCha20StreamCipher(s_key, s_nonce, initialCounter: 0))
+            _ = Poly1305AeadCore.SealRfc8439(engine, s_associatedData, NextBytes(random, length), sealedMessage);
+
+        sealedMessage[^1] ^= 0x01;
+        byte[] output = new byte[length];
+        Array.Fill(output, (byte)0xCC);
+
+        Assert.ThrowsExactly<CryptographicException>(() =>
+        {
+            ChaCha20Core.Keystream keystream = default;
+            keystream.Initialize(s_key, s_nonce, counter: 0);
+            _ = Poly1305AeadCore.OpenRfc8439(ref keystream, s_associatedData, sealedMessage, output);
+        });
+
+        Assert.IsTrue(output.All(value => value == 0xCC), "The output was written before the tag was verified.");
+    }
+
+    /// <summary>
+    /// Verifies that opening under the RFC 8439 framing with the keystream's draws planned for each kernel recovers
+    /// every plaintext sealed with a ChaCha20 engine, for every message length from empty to past the longest drawn in
+    /// one pass and a longer one.
+    /// </summary>
+    /// <param name="kernel">The name of the kernel the draws are planned for.</param>
+    [TestMethod]
+    [DataRow("Scalar")]
+    [DataRow("Ssse3")]
+    [DataRow("AdvSimd")]
+    [DataRow("Avx2")]
+    [DataRow("Avx512")]
+    [DataRow("Avx512Wide")]
+    public void OpenRfc8439_WhenPlannedForEachKernel_ShouldRecoverPlaintext(string kernel)
+    {
+        AssertPlannedMatchesTheEngine(nameof(Poly1305AeadCore.OpenRfc8439), kernel);
+    }
+
+    /// <summary>
+    /// Verifies that opening under the RFC 8439 framing draws the keystream as it comes, planned for each kernel,
+    /// except where its draws are estimated to cost less: so on the block function it always draws as it comes.
+    /// </summary>
+    /// <param name="kernel">The name of the kernel the draws are planned for.</param>
+    [TestMethod]
+    [DataRow("Scalar")]
+    [DataRow("Ssse3")]
+    [DataRow("AdvSimd")]
+    [DataRow("Avx2")]
+    [DataRow("Avx512")]
+    [DataRow("Avx512Wide")]
+    public void OpenRfc8439_WhenPlannedForEachKernel_ShouldCostNoMoreThanDrawingAsItComes(string kernel)
+    {
+        AssertPlannedCostsNoMoreThanAsItComes(nameof(Poly1305AeadCore.OpenRfc8439), kernel);
+    }
+
+    /// <summary>
+    /// Verifies that opening under the RFC 8439 framing, planned for each kernel, makes draws whose estimated cost is
+    /// the one the plan chose them by.
+    /// </summary>
+    /// <param name="kernel">The name of the kernel the draws are planned for.</param>
+    [TestMethod]
+    [DataRow("Scalar")]
+    [DataRow("Ssse3")]
+    [DataRow("AdvSimd")]
+    [DataRow("Avx2")]
+    [DataRow("Avx512")]
+    [DataRow("Avx512Wide")]
+    public void OpenRfc8439_WhenPlannedForEachKernel_ShouldCostWhatThePlanEstimates(string kernel)
+    {
+        AssertPlannedCostsWhatThePlanEstimates(nameof(Poly1305AeadCore.OpenRfc8439), kernel);
     }
 }
