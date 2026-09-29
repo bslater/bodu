@@ -145,7 +145,7 @@ See **Test Tiers** below for the category convention each runsettings file appli
 
 `test.runsettings` enables parallel execution (`MaxCpuCount=0`) and disables AppDomains.
 
-**Reproducing what CI runs.** Three differences make a green local run a weaker signal than it looks,
+**Reproducing what CI runs.** Five differences make a green local run a weaker signal than it looks,
 and the first two have bitten:
 
 - **CI uses `test.runsettings`, not `bvt.runsettings`.** `test.runsettings` excludes only `Stress`
@@ -160,6 +160,16 @@ and the first two have bitten:
 - **Some code runs only on ARM64.** `build-test.yml`'s `build-test-arm64` job runs the two
   cryptography test projects on GitHub's hosted ARM64 runner, the only place the Argon2 AdvSimd shim
   executes; on x64 its tests report inconclusive. A green x64 run says nothing about that path.
+- **CI treats warnings as errors.** `build-test.yml` builds every test project with
+  `-p:TreatWarningsAsErrors=true`, so any compiler or analyzer warning — StyleCop, Roslynator, the .NET
+  analyzers, the BODU XML-doc rules — fails the pull request, while a local build still reports it as
+  a warning. To match CI: `dotnet build <project> -c Release -p:TreatWarningsAsErrors=true`. A
+  deliberate finding is suppressed at its site with a `Justification`, as the existing suppressions are.
+- **CI builds with the newest .NET 10 SDK.** `setup-dotnet` installs `10.0.x` and `global.json` rolls
+  forward (`latestMinor`), so CI runs that SDK's analyzers, and an older local SDK can disagree with
+  them in either direction (`CA1873`, for one, reports different sites under 10.0.100 and 10.0.401).
+  When a warning appears only in CI, build with CI's version, which the `Setup .NET` step logs;
+  `dotnet-install.sh --version <version> --install-dir <dir>` installs it beside the existing SDK.
 
 **Restore and build must agree on the configuration.** Fourteen projects — the benchmarks, the AOT
 smoke app, the `Calendar.Tool` / `.Build` toolchain, and two samples — are excluded from the *Debug*
