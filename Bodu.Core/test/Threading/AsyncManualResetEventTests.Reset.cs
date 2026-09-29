@@ -19,7 +19,7 @@ public sealed partial class AsyncManualResetEventTests
         sut.Reset();
 
         Assert.IsFalse(sut.IsSet);
-        Assert.IsFalse(sut.WaitAsync().IsCompleted);
+        Assert.IsFalse(sut.WaitAsync().AsTask().IsCompleted);
     }
 
     /// <summary>

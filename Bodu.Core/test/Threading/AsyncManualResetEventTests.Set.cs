@@ -33,6 +33,6 @@ public sealed partial class AsyncManualResetEventTests
         sut.Set();
 
         Assert.IsTrue(sut.IsSet);
-        Assert.IsTrue(sut.WaitAsync().IsCompleted);
+        Assert.IsTrue(sut.WaitAsync().AsTask().IsCompleted);
     }
 }

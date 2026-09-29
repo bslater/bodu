@@ -34,7 +34,7 @@ public sealed partial class AsyncManualResetEventTests
     {
         var sut = new AsyncManualResetEvent(initialState: true);
 
-        Assert.IsTrue(sut.WaitAsync().IsCompleted);
+        Assert.IsTrue(sut.WaitAsync().AsTask().IsCompleted);
     }
 
     /// <summary>
@@ -47,7 +47,7 @@ public sealed partial class AsyncManualResetEventTests
         using var cts = new CancellationTokenSource();
         cts.Cancel();
 
-        Assert.IsTrue(sut.WaitAsync(cts.Token).IsCompletedSuccessfully);
+        Assert.IsTrue(sut.WaitAsync(cts.Token).AsTask().IsCompletedSuccessfully);
     }
 
     /// <summary>

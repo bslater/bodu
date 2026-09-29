@@ -16,7 +16,7 @@ public sealed partial class AsyncAutoResetEventTests
     {
         var sut = new AsyncAutoResetEvent(initialState: true);
 
-        Assert.IsTrue(sut.WaitAsync().IsCompleted);
+        Assert.IsTrue(sut.WaitAsync().AsTask().IsCompleted);
     }
 
     /// <summary>
@@ -29,7 +29,7 @@ public sealed partial class AsyncAutoResetEventTests
 
         await sut.WaitAsync();
 
-        Assert.IsFalse(sut.WaitAsync().IsCompleted);
+        Assert.IsFalse(sut.WaitAsync().AsTask().IsCompleted);
     }
 
     /// <summary>
@@ -48,7 +48,7 @@ public sealed partial class AsyncAutoResetEventTests
         Assert.IsTrue(wait.IsCompletedSuccessfully);
 
         // The signal was consumed, so a subsequent wait does not complete immediately.
-        Assert.IsFalse(sut.WaitAsync().IsCompleted);
+        Assert.IsFalse(sut.WaitAsync().AsTask().IsCompleted);
     }
 
     /// <summary>

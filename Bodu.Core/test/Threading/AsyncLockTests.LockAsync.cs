@@ -80,7 +80,7 @@ public sealed partial class AsyncLockTests
         using var cts = new CancellationTokenSource();
         cts.Cancel();
 
-        ValueTask<AsyncLock.Releaser> acquire = sut.LockAsync(cts.Token);
+        Task<AsyncLock.Releaser> acquire = sut.LockAsync(cts.Token).AsTask();
 
         Assert.IsTrue(acquire.IsCompletedSuccessfully);
         acquire.Result.Dispose();
@@ -169,7 +169,7 @@ public sealed partial class AsyncLockTests
         }
 
         // The grant was honored and released cleanly, so the lock is free again for the next caller.
-        ValueTask<AsyncLock.Releaser> next = sut.LockAsync();
+        Task<AsyncLock.Releaser> next = sut.LockAsync().AsTask();
         Assert.IsTrue(next.IsCompletedSuccessfully);
         next.Result.Dispose();
     }
@@ -185,7 +185,7 @@ public sealed partial class AsyncLockTests
 
         Assert.ThrowsExactly<ObjectDisposedException>(() =>
         {
-            _ = sut.LockAsync();
+            _ = sut.LockAsync().AsTask();
         });
     }
 

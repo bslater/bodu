@@ -80,7 +80,7 @@ public sealed partial class AsyncDebouncerTests
 
         Assert.ThrowsExactly<ObjectDisposedException>(() =>
         {
-            _ = sut.FlushAsync();
+            _ = sut.FlushAsync().AsTask();
         });
     }
 
