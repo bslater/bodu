@@ -30,8 +30,15 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # Runs on both Ubuntu 24.04 and 26.04 while GitHub moves ubuntu-latest from one to the other,
+  # gradually, between October 19 and November 19, 2026. Drop ubuntu-24.04 from the list once 26.04
+  # has proven itself. fail-fast is off so a failure on one image does not cancel the other.
   deterministic-policy:
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, ubuntu-26.04]
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 10
     if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
 

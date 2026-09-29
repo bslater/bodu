@@ -41,7 +41,10 @@ env:
 
 jobs:
   fix:
-    runs-on: ubuntu-latest
+    # Runs on one image, not the 24.04 and 26.04 pair the verification jobs use: this job pushes a
+    # commit, so it must run once. The label is named rather than ubuntu-latest so GitHub's move of
+    # that label to 26.04 cannot change it; switch it to ubuntu-26.04 when the others drop 24.04.
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     # Dormant until armed. This job PUSHES COMMITS to the pull request's branch, so it stays
     # off until the repository variable ENABLE_CLAUDE_POLICY_AGENTS is set to 'true' and the
