@@ -142,9 +142,14 @@ jobs:
 
       - name: Build
         run: |
+          # Warnings are errors, as in build-test.yml: a compiler or analyzer warning in the code being
+          # released stops the release here, before anything is signed, packed or published. This
+          # build compiles every shipped package's code (the Bodu.Text.Formats meta-package has none),
+          # so the pack step does not repeat the property, which would also turn NuGet restore and
+          # pack warnings into errors, a newly published advisory for a dependency among them.
           for proj in $TEST_PROJECTS; do
             echo "::group::Build $proj"
-            dotnet build "$proj" --configuration Release --no-restore
+            dotnet build "$proj" --configuration Release --no-restore -p:TreatWarningsAsErrors=true
             echo "::endgroup::"
           done
 

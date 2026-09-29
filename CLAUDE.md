@@ -171,9 +171,10 @@ and the first two have bitten:
   executes; on x64 its tests report inconclusive. A green x64 run says nothing about that path.
 - **CI treats warnings as errors.** `build-test.yml` builds every test project with
   `-p:TreatWarningsAsErrors=true`, so any compiler or analyzer warning — StyleCop, Roslynator, the .NET
-  analyzers, the BODU XML-doc rules — fails the pull request, while a local build still reports it as
-  a warning. To match CI: `dotnet build <project> -c Release -p:TreatWarningsAsErrors=true`. A
-  deliberate finding is suppressed at its site with a `Justification`, as the existing suppressions are.
+  analyzers, the BODU XML-doc rules — fails the pull request, and `release.yml`'s test gate builds the
+  same way, so the same warning stops a release. A local build still reports it as a warning. To match
+  CI: `dotnet build <project> -c Release -p:TreatWarningsAsErrors=true`. A deliberate finding is
+  suppressed at its site with a `Justification`, as the existing suppressions are.
 - **CI builds with the SDK that `global.json` pins.** Every workflow except `Bodu.CodeStyle`'s,
   which builds against that solution's own `global.json`, installs exactly the pinned version, so
   CI's analyzers change only when the pin does. Dependabot (`.github/dependabot.yml`) proposes each
