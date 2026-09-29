@@ -162,7 +162,7 @@ internal static partial class MLDsaEngine
     /// </remarks>
     internal static void Reduce32(KernelKind kernel, Span<int> poly)
     {
-        ThrowHelper.ThrowIfLessThan(poly.Length, N, nameof(poly));
+        ArgumentOutOfRangeException.ThrowIfLessThan(poly.Length, N, nameof(poly));
 
         if (Resolve(kernel) == KernelKind.Avx2)
         {
@@ -206,9 +206,9 @@ internal static partial class MLDsaEngine
     /// </remarks>
     internal static void AddModQ(KernelKind kernel, ReadOnlySpan<int> left, ReadOnlySpan<int> right, Span<int> sum)
     {
-        ThrowHelper.ThrowIfLessThan(left.Length, N, nameof(left));
-        ThrowHelper.ThrowIfLessThan(right.Length, N, nameof(right));
-        ThrowHelper.ThrowIfLessThan(sum.Length, N, nameof(sum));
+        ArgumentOutOfRangeException.ThrowIfLessThan(left.Length, N, nameof(left));
+        ArgumentOutOfRangeException.ThrowIfLessThan(right.Length, N, nameof(right));
+        ArgumentOutOfRangeException.ThrowIfLessThan(sum.Length, N, nameof(sum));
 
         if (Resolve(kernel) == KernelKind.Avx2)
         {
@@ -256,9 +256,9 @@ internal static partial class MLDsaEngine
     /// </remarks>
     internal static void SubtractModQ(KernelKind kernel, ReadOnlySpan<int> left, ReadOnlySpan<int> right, Span<int> difference)
     {
-        ThrowHelper.ThrowIfLessThan(left.Length, N, nameof(left));
-        ThrowHelper.ThrowIfLessThan(right.Length, N, nameof(right));
-        ThrowHelper.ThrowIfLessThan(difference.Length, N, nameof(difference));
+        ArgumentOutOfRangeException.ThrowIfLessThan(left.Length, N, nameof(left));
+        ArgumentOutOfRangeException.ThrowIfLessThan(right.Length, N, nameof(right));
+        ArgumentOutOfRangeException.ThrowIfLessThan(difference.Length, N, nameof(difference));
 
         if (Resolve(kernel) == KernelKind.Avx2)
         {

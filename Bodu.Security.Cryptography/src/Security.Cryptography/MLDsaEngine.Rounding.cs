@@ -161,8 +161,8 @@ internal static partial class MLDsaEngine
     /// </remarks>
     internal static void HighBits(KernelKind kernel, int gamma2, ReadOnlySpan<int> r, Span<int> r1)
     {
-        ThrowHelper.ThrowIfLessThan(r.Length, N, nameof(r));
-        ThrowHelper.ThrowIfLessThan(r1.Length, N, nameof(r1));
+        ArgumentOutOfRangeException.ThrowIfLessThan(r.Length, N, nameof(r));
+        ArgumentOutOfRangeException.ThrowIfLessThan(r1.Length, N, nameof(r1));
 
         if (Resolve(kernel) == KernelKind.Avx2)
         {
@@ -210,7 +210,7 @@ internal static partial class MLDsaEngine
     /// </remarks>
     internal static int LowBitsNorm(KernelKind kernel, int gamma2, ReadOnlySpan<int> r)
     {
-        ThrowHelper.ThrowIfLessThan(r.Length, N, nameof(r));
+        ArgumentOutOfRangeException.ThrowIfLessThan(r.Length, N, nameof(r));
 
         if (Resolve(kernel) == KernelKind.Avx2)
             return Vector256Kernel.LowBitsNorm(gamma2, ref MemoryMarshal.GetReference(r));
@@ -266,9 +266,9 @@ internal static partial class MLDsaEngine
     /// </remarks>
     internal static int MakeHints(KernelKind kernel, int gamma2, ReadOnlySpan<int> ct0, ReadOnlySpan<int> wMinusCs2, Span<int> hints)
     {
-        ThrowHelper.ThrowIfLessThan(ct0.Length, N, nameof(ct0));
-        ThrowHelper.ThrowIfLessThan(wMinusCs2.Length, N, nameof(wMinusCs2));
-        ThrowHelper.ThrowIfLessThan(hints.Length, N, nameof(hints));
+        ArgumentOutOfRangeException.ThrowIfLessThan(ct0.Length, N, nameof(ct0));
+        ArgumentOutOfRangeException.ThrowIfLessThan(wMinusCs2.Length, N, nameof(wMinusCs2));
+        ArgumentOutOfRangeException.ThrowIfLessThan(hints.Length, N, nameof(hints));
 
         if (Resolve(kernel) == KernelKind.Avx2)
             return Vector256Kernel.MakeHints(gamma2, ref MemoryMarshal.GetReference(ct0), ref MemoryMarshal.GetReference(wMinusCs2), ref MemoryMarshal.GetReference(hints));
@@ -318,7 +318,7 @@ internal static partial class MLDsaEngine
     /// </remarks>
     internal static int InfinityNorm(KernelKind kernel, ReadOnlySpan<int> poly)
     {
-        ThrowHelper.ThrowIfLessThan(poly.Length, N, nameof(poly));
+        ArgumentOutOfRangeException.ThrowIfLessThan(poly.Length, N, nameof(poly));
 
         if (Resolve(kernel) == KernelKind.Avx2)
             return Vector256Kernel.InfinityNorm(ref MemoryMarshal.GetReference(poly));

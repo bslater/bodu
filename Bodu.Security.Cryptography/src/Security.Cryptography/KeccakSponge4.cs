@@ -109,7 +109,7 @@ internal struct KeccakSponge4
     /// </remarks>
     internal void Absorb(ReadOnlySpan<byte> message0, ReadOnlySpan<byte> message1, ReadOnlySpan<byte> message2, ReadOnlySpan<byte> message3)
     {
-        ThrowHelper.ThrowIfGreaterThanOrEqual(message0.Length, _rateBytes, nameof(message0));
+        ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(message0.Length, _rateBytes, nameof(message0));
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(message1, message0.Length);
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(message2, message0.Length);
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(message3, message0.Length);
