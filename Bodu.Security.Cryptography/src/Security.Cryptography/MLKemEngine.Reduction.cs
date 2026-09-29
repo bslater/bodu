@@ -27,6 +27,9 @@ internal static partial class MLKemEngine
     /// <summary>The Barrett multiplier ⌊2^39 / q⌋ for non-negative values below 2^36.</summary>
     private const ulong WideBarrettMultiplier = (1UL << 39) / Q;
 
+    /// <summary>2^32 mod q: the factor that <see cref="MontgomeryReduce" /> turns into 2^16, removing the 2^−16 a Montgomery product of two plain values carries.</summary>
+    private const int MontgomerySquared = 1353;
+
     /// <summary>
     /// Returns a value congruent to <paramref name="value" /> · 2^−16 modulo q, in (−q, q).
     /// </summary>

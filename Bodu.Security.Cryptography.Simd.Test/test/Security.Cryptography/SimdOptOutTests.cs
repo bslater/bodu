@@ -115,6 +115,28 @@ public sealed class SimdOptOutTests
     }
 
     /// <summary>
+    /// Verifies that with SIMD disabled, the four-way Keccak permutation takes its scalar kernel whatever the processor
+    /// supports, and reports itself unaccelerated, so ML-KEM and ML-DSA sample one XOF stream at a time.
+    /// </summary>
+    [TestMethod]
+    public void KeccakPermutationSelectKernel_WhenSimdDisabled_ShouldReturnTheScalarKernel()
+    {
+        Assert.AreEqual(KeccakPermutation.KernelKind.Scalar, KeccakPermutation.SelectKernel());
+        Assert.IsFalse(KeccakPermutation.IsFourWayAccelerated);
+    }
+
+    /// <summary>
+    /// Verifies that with SIMD disabled, ML-KEM and ML-DSA transform and multiply with their scalar kernels whatever
+    /// the processor supports, so the linked ACVP vectors in this assembly hold the scalar kernels to them.
+    /// </summary>
+    [TestMethod]
+    public void LatticeSelectKernel_WhenSimdDisabled_ShouldReturnTheScalarKernels()
+    {
+        Assert.AreEqual(MLKemEngine.KernelKind.Scalar, MLKemEngine.SelectKernel());
+        Assert.AreEqual(MLDsaEngine.KernelKind.Scalar, MLDsaEngine.SelectKernel());
+    }
+
+    /// <summary>
     /// Verifies that with SIMD disabled, Serpent-128 encrypts and decrypts runs of blocks with its scalar rounds, one
     /// block at a time, whatever the processor supports.
     /// </summary>

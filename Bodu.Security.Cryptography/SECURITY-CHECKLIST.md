@@ -82,29 +82,36 @@ Every public `Import*` method is a trust boundary and must reject malformed inpu
 
 Applies when adding or changing any SIMD kernel — the AVX-512 kernels, the GHASH / POLYVAL
 kernels (PCLMULQDQ, PMULL and the scalar multiply), Argon2's AVX2, SSSE3 and AdvSimd kernels,
-scrypt's SSE2 and AdvSimd BlockMix kernels, the BLAKE2b and BLAKE2s compression kernels, and
-Poly1305's AVX2 and AVX-512 block kernels.
+scrypt's SSE2 and AdvSimd BlockMix kernels, the BLAKE2b and BLAKE2s compression kernels,
+Poly1305's AVX2 and AVX-512 block kernels, the four-way Keccak permutation, and ML-DSA's and
+ML-KEM's AVX2 transform, product and ML-DSA's per-coefficient kernels.
 
 - [ ] **Data-independent.** The kernel uses arithmetic, rotations, XORs and shuffles by constant
       indices only — no branch on, and no memory access indexed by, the data. Anything the algorithm
       itself makes data-dependent (Argon2's reference-block choice, scrypt's read of `V[j]`) happens
       outside the kernel (`Argon2Core.IArgon2Kernel`, `ScryptCore.IScryptKernel` and the
-      `IVector128Isa` remarks).
+      `IVector128Isa` remarks). ML-KEM's and ML-DSA's rejection samplers parse the XOF streams
+      outside the four-way permutation, exactly as they parse one stream at a time.
 - [ ] **Bit-identical to the scalar reference.** A differential test compares the kernel with the
       scalar path on seeded random inputs (`Argon2CoreTests.FillBlock_*`,
       `GhashTests.Update_*_ShouldMatchBitSerialReference*`,
       `ScryptCoreTests.BlockMix_WhenUnitsAreRandom_ForEachKernel_ShouldMatchScalarKernel`,
       `ScryptCoreTests.ROMix_WhenBlocksAreRandom_ForEachKernel_ShouldMatchScalarKernel`,
       `Blake2bCoreTests` / `Blake2sCoreTests.Compress_WhenStatesAreRandom_ForEachKernel_ShouldMatchScalarKernel`,
-      `Poly1305CoreTests.Update_*_ForEachKernel_ShouldMatchReferenceImplementation`).
+      `Poly1305CoreTests.Update_*_ForEachKernel_ShouldMatchReferenceImplementation`,
+      `KeccakPermutationTests.Permute4_*_ForEachKernel_ShouldMatchTheScalarPermutation`,
+      `KeccakSponge4Tests.*_ForEachKernel_*`, and the `MLDsaEngineTests` / `MLKemEngineTests`
+      `*_ForEachKernel_*` tests over edge, run-patterned, signed and seeded polynomials).
 - [ ] **Every kernel meets the published vectors.** The vector corpus runs through each kernel the
       host supports, not only the one dispatch picks
       (`Argon2CoreTests.DeriveTag_WhenEachSupportedKernelFillsTheMatrix_*`,
       `GhashTests.Update_*_ShouldMatchPublishedValue`, `ScryptCoreTests.*_ForEachKernel_*` over RFC
       7914's Salsa20/8, BlockMix and ROMix vectors and the OpenSSL corpus, and the BLAKE2 cores'
       `Compress_WhenHashing*_ForEachKernel_*` over RFC 7693's examples and the official blake2-kat.json,
-      and `Poly1305CoreTests.Update_WhenGivenRfc8439AppendixA3Vector_ForEachKernel_ShouldProduceTag`), and
-      `Bodu.Security.Cryptography.Simd.Test` holds the scalar path to the same vectors.
+      and `Poly1305CoreTests.Update_WhenGivenRfc8439AppendixA3Vector_ForEachKernel_ShouldProduceTag`,
+      and `KeccakSponge4Tests.Squeeze_WhenAbsorbingFips202Messages_ForEachKernel_*`), and
+      `Bodu.Security.Cryptography.Simd.Test` holds the scalar path to the same vectors — for ML-KEM
+      and ML-DSA, the linked ACVP suites.
 - [ ] **Gated and switchable.** Dispatch goes through a `SimdCapabilities` gate that honours the
       `DisableSimd` switch, and `SimdOptOutTests` asserts the gate is closed under it.
 - [ ] **Architecture-only code runs somewhere.** Every shim operation has a test against its scalar
@@ -116,5 +123,6 @@ Poly1305's AVX2 and AVX-512 block kernels.
 - [ ] **Scratch is cleared.** Scratch holding secret-derived words is cleared when the kernel's
       caller finishes with it (Argon2's per-segment scratch, H0 and the matrix; scrypt's `B`, `V` and
       ROMix scratch; the powers of `r` a Poly1305 kernel run computes on the stack, cleared as the run
-      ends; `Argon2CoreTests.DeriveTag_WhenMatrixStartsWithGarbage_*` and
+      ends; ML-KEM's 16-bit working copy of each polynomial; the four-way sponge's state and every
+      block of a secret or mask stream it squeezes, cleared by the samplers; `Argon2CoreTests.DeriveTag_WhenMatrixStartsWithGarbage_*` and
       `ScryptCoreTests.ROMix_*Garbage*` show neither needs zeroing before use).

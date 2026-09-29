@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Reflection;
+
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
@@ -104,5 +106,96 @@ public partial class MLDsaEngineTests
         var random = new Random(0x0204_0001);
         for (int iteration = 0; iteration < 200; iteration++)
             yield return Enumerable.Range(0, MLDsaEngine.N).Select(_ => random.Next(Q)).ToArray();
+    }
+
+    /// <summary>
+    /// Returns polynomials whose coefficients sit at the ends of (−q, q) — all q − 1, all −(q − 1), and the two signs
+    /// alternating in runs of every power of two from 1 to 128, which pairs them differently in each butterfly layer —
+    /// then seeded ones.
+    /// </summary>
+    /// <returns>The polynomials.</returns>
+    private static IEnumerable<int[]> SignedPolynomials()
+    {
+        yield return Enumerable.Repeat(Q - 1, MLDsaEngine.N).ToArray();
+        yield return Enumerable.Repeat(-(Q - 1), MLDsaEngine.N).ToArray();
+
+        for (int shift = 0; shift < 8; shift++)
+            yield return Enumerable.Range(0, MLDsaEngine.N).Select(i => ((i >> shift) & 1) == 0 ? Q - 1 : -(Q - 1)).ToArray();
+
+        var random = new Random(0x0204_0006);
+        for (int iteration = 0; iteration < 200; iteration++)
+            yield return Enumerable.Range(0, MLDsaEngine.N).Select(_ => random.Next(-Q + 1, Q)).ToArray();
+    }
+
+    /// <summary>
+    /// Returns the coefficients around the decomposition's boundaries for a value of γ₂: the ends of [0, q), either
+    /// side of (q − 1) / 2, and either side of every multiple of 2γ₂ and of every midpoint between two.
+    /// </summary>
+    /// <param name="gamma2">The parameter γ₂.</param>
+    /// <returns>The coefficients, each in [0, q).</returns>
+    private static IEnumerable<int> BoundaryCoefficients(int gamma2)
+    {
+        IEnumerable<int> multiples = Enumerable.Range(0, (Q / (2 * gamma2)) + 1)
+            .SelectMany(m => new[] { (2 * gamma2 * m) - 1, 2 * gamma2 * m, (2 * gamma2 * m) + 1, (2 * gamma2 * m) + gamma2, (2 * gamma2 * m) + gamma2 + 1 });
+
+        return new[] { 0, 1, ((Q - 1) / 2) - 1, (Q - 1) / 2, (Q + 1) / 2, Q - 2, Q - 1 }
+            .Concat(multiples)
+            .Where(value => value >= 0 && value < Q);
+    }
+
+    /// <summary>
+    /// Packs a sequence of coefficients into polynomials, 256 at a time, padding the last with zeros.
+    /// </summary>
+    /// <param name="coefficients">The coefficients.</param>
+    /// <returns>The polynomials.</returns>
+    private static IEnumerable<int[]> AsPolynomials(IEnumerable<int> coefficients)
+    {
+        foreach (int[] chunk in coefficients.Chunk(MLDsaEngine.N))
+        {
+            int[] polynomial = new int[MLDsaEngine.N];
+            chunk.CopyTo(polynomial, 0);
+            yield return polynomial;
+        }
+    }
+
+    /// <summary>
+    /// Returns the edge, patterned and seeded polynomials of <see cref="Polynomials" />, each paired with a second one
+    /// drawn from the same set.
+    /// </summary>
+    /// <returns>The pairs.</returns>
+    private static IEnumerable<(int[] Left, int[] Right)> PolynomialPairs()
+    {
+        int[][] polynomials = Polynomials().ToArray();
+        for (int i = 0; i < polynomials.Length; i++)
+            yield return (polynomials[i], polynomials[((i * 7) + 1) % polynomials.Length]);
+    }
+
+    /// <summary>
+    /// Asserts that a method of the vector kernel forbids inlining and is aggressively optimized, so it is compiled on
+    /// its own, with its own inlining budget, whatever dynamic PGO makes of the dispatcher.
+    /// </summary>
+    /// <param name="name">The method's name; of its overloads, the entry point, which takes coefficients by reference.</param>
+    private static void AssertKernelIsCompiledOnItsOwn(string name)
+    {
+        MethodInfo kernel = typeof(MLDsaEngine.Vector256Kernel)
+            .GetMethods(BindingFlags.NonPublic | BindingFlags.Static)
+            .Single(method => method.Name == name && method.GetParameters().Any(parameter => parameter.ParameterType.IsByRef));
+
+        Assert.IsTrue(kernel.MethodImplementationFlags.HasFlag(MethodImplAttributes.NoInlining), name);
+        Assert.IsTrue(kernel.MethodImplementationFlags.HasFlag(MethodImplAttributes.AggressiveOptimization), name);
+    }
+
+    /// <summary>
+    /// Parses a kernel's name, reporting the test inconclusive when the processor cannot run the kernel.
+    /// </summary>
+    /// <param name="name">The kernel's name.</param>
+    /// <returns>The kernel.</returns>
+    private static MLDsaEngine.KernelKind ParseSupportedKernel(string name)
+    {
+        MLDsaEngine.KernelKind kernel = Enum.Parse<MLDsaEngine.KernelKind>(name);
+        if (!MLDsaEngine.IsSupported(kernel))
+            Assert.Inconclusive($"The {name} kernel cannot run on this processor.");
+
+        return kernel;
     }
 }

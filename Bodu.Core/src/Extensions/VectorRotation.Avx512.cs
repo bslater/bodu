@@ -52,6 +52,20 @@ internal static partial class VectorRotation
             Avx512F.VL.RotateLeft(value, count);
 
         /// <summary>
+        /// Rotates every 64-bit lane of a 256-bit vector left by a number of bits, with one AVX-512VL rotate
+        /// instruction.
+        /// </summary>
+        /// <param name="value">The lanes to rotate.</param>
+        /// <param name="count">The number of bits to rotate each lane by.</param>
+        /// <returns>The rotated lanes.</returns>
+        /// <remarks>
+        /// <paramref name="count" /> must be a constant from 1 to 63; it is not validated.
+        /// </remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector256<ulong> RotateLeft(Vector256<ulong> value, [ConstantExpected(Min = 1, Max = 63)] byte count) =>
+            Avx512F.VL.RotateLeft(value, count);
+
+        /// <summary>
         /// Rotates every 32-bit lane of a 512-bit vector left by a number of bits, with one AVX-512F rotate
         /// instruction.
         /// </summary>
