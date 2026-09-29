@@ -19,7 +19,8 @@ namespace Bodu.Security.Cryptography;
 /// Input data is accumulated into the inherited residual buffer until a complete block of
 /// <see cref="BufferedBlockHashAlgorithm.BlockSize" /> is available, at which point it is passed to
 /// <see cref="ProcessBlock" />. Any residual bytes left over at <see cref="HashAlgorithm.HashFinal" /> are padded via
-/// <see cref="PadBlock" /> before a final call to <see cref="ProcessFinalBlock" /> produces the digest.
+/// <see cref="PadBlock(ReadOnlySpan{byte}, ulong, Span{byte})" /> before a final call to
+/// <see cref="ProcessFinalBlock" /> produces the digest.
 /// </para>
 /// <para>
 /// Derived classes must implement the following:
@@ -30,7 +31,9 @@ namespace Bodu.Security.Cryptography;
 /// </item>
 /// <item>
 /// <description>
-/// <see cref="PadBlock" /> pads the final input segment and encodes the total message length.
+/// <see cref="PadBlock(ReadOnlySpan{byte}, ulong, Span{byte})" /> (or the array-returning
+/// <see cref="PadBlock(ReadOnlySpan{byte}, ulong)" />) pads the final input segment and encodes the total message
+/// length.
 /// </description>
 /// </item>
 /// <item>

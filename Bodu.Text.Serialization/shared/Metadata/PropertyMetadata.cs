@@ -107,8 +107,9 @@ internal sealed class PropertyMetadata
     internal string WireName { get; }
 
     /// <summary>
-    /// Gets the member's position within its type's ordered member list, assigned by <see cref="TypeMetadata" />, so
-    /// per-object read buffers can be flat arrays indexed by slot instead of dictionaries keyed by metadata.
+    /// Gets or sets the member's position within its type's ordered member list, assigned by
+    /// <see cref="TypeMetadata" />, so per-object read buffers can be flat arrays indexed by slot instead of
+    /// dictionaries keyed by metadata.
     /// </summary>
     /// <value>The zero-based slot index.</value>
     internal int SlotIndex { get; set; } = -1;
