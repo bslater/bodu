@@ -15,29 +15,34 @@ namespace Bodu.Financial.ExchangeRates;
 [TestClass]
 public sealed partial class FileSystemByteCacheTests
 {
-    /// <summary>The per-test cache root, removed on cleanup.</summary>
+    /// <summary>The per-test parent of the cache directory, removed with everything in it on cleanup.</summary>
+    private string _root = null!;
+
+    /// <summary>The per-test cache directory, inside <see cref="_root" />.</summary>
     private string _directory = null!;
 
     /// <summary>
-    /// Creates a unique cache directory for each test.
+    /// Creates a unique parent and cache directory path for each test.
     /// </summary>
+    /// <remarks>
+    /// The parent belongs to one test alone. The target frameworks' test runs execute concurrently, so a parent shared
+    /// between tests can be removed by one run's cleanup while another run is using it.
+    /// </remarks>
     [TestInitialize]
-    public void Initialize() =>
-        _directory = Path.Combine(Path.GetTempPath(), "bodu-byte-cache-tests", Guid.NewGuid().ToString("N"));
+    public void Initialize()
+    {
+        _root = Path.Combine(Path.GetTempPath(), "bodu-byte-cache-tests-" + Guid.NewGuid().ToString("N"));
+        _directory = Path.Combine(_root, "cache");
+    }
 
     /// <summary>
-    /// Removes the per-test cache directory.
+    /// Removes the per-test directory tree.
     /// </summary>
     [TestCleanup]
     public void Cleanup()
     {
-        string root = Path.GetDirectoryName(_directory)!;
-        if (Directory.Exists(_directory))
-            Directory.Delete(_directory, recursive: true);
-        if (File.Exists(_directory))
-            File.Delete(_directory);
-        if (Directory.Exists(root) && !Directory.EnumerateFileSystemEntries(root).Any())
-            Directory.Delete(root);
+        if (Directory.Exists(_root))
+            Directory.Delete(_root, recursive: true);
     }
 
     /// <summary>
