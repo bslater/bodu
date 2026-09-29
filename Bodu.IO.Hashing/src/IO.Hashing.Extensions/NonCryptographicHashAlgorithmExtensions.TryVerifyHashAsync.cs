@@ -40,7 +40,7 @@ public static partial class NonCryptographicHashAlgorithmExtensions
         byte[] expectedHash,
         CancellationToken cancellationToken = default)
     {
-        ThrowHelper.ThrowIfNull(algorithm);
+        ArgumentNullException.ThrowIfNull(algorithm);
 
         if (stream == null || expectedHash == null)
             return false;
@@ -84,8 +84,8 @@ public static partial class NonCryptographicHashAlgorithmExtensions
         string expectedHex,
         CancellationToken cancellationToken = default)
     {
-        ThrowHelper.ThrowIfNull(algorithm);
-        ThrowHelper.ThrowIfNull(expectedHex);
+        ArgumentNullException.ThrowIfNull(algorithm);
+        ArgumentNullException.ThrowIfNull(expectedHex);
 
         if (stream == null)
             return false;
@@ -127,7 +127,7 @@ public static partial class NonCryptographicHashAlgorithmExtensions
         ReadOnlyMemory<byte> expectedHash,
         CancellationToken cancellationToken = default)
     {
-        ThrowHelper.ThrowIfNull(algorithm);
+        ArgumentNullException.ThrowIfNull(algorithm);
 
         if (stream == null)
             return false;
@@ -171,9 +171,9 @@ public static partial class NonCryptographicHashAlgorithmExtensions
         byte[] expectedHash,
         CancellationToken cancellationToken = default)
     {
-        ThrowHelper.ThrowIfNull(algorithm);
-        ThrowHelper.ThrowIfNull(input);
-        ThrowHelper.ThrowIfNull(expectedHash);
+        ArgumentNullException.ThrowIfNull(algorithm);
+        ArgumentNullException.ThrowIfNull(input);
+        ArgumentNullException.ThrowIfNull(expectedHash);
 
         try
         {
@@ -219,9 +219,9 @@ public static partial class NonCryptographicHashAlgorithmExtensions
         string expectedHex,
         CancellationToken cancellationToken = default)
     {
-        ThrowHelper.ThrowIfNull(algorithm);
-        ThrowHelper.ThrowIfNull(input);
-        ThrowHelper.ThrowIfNull(expectedHex);
+        ArgumentNullException.ThrowIfNull(algorithm);
+        ArgumentNullException.ThrowIfNull(input);
+        ArgumentNullException.ThrowIfNull(expectedHex);
 
         try
         {
@@ -266,10 +266,10 @@ public static partial class NonCryptographicHashAlgorithmExtensions
         byte[] expectedHash,
         CancellationToken cancellationToken = default)
     {
-        ThrowHelper.ThrowIfNull(algorithm);
-        ThrowHelper.ThrowIfNull(input);
-        ThrowHelper.ThrowIfNull(encoding);
-        ThrowHelper.ThrowIfNull(expectedHash);
+        ArgumentNullException.ThrowIfNull(algorithm);
+        ArgumentNullException.ThrowIfNull(input);
+        ArgumentNullException.ThrowIfNull(encoding);
+        ArgumentNullException.ThrowIfNull(expectedHash);
 
         try
         {

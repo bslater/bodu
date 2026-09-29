@@ -164,7 +164,7 @@ public abstract class TweakableSymmetricAlgorithm
         set
         {
             ThrowIfDisposed();
-            ThrowHelper.ThrowIfNull(value);
+            ArgumentNullException.ThrowIfNull(value);
 
             ThrowIfInvalidTweakSize(value.Length * 8);
 
@@ -341,7 +341,7 @@ public abstract class TweakableSymmetricAlgorithm
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected void ThrowIfInvalidTweakSize(byte[] tweak)
     {
-        ThrowHelper.ThrowIfNull(tweak);
+        ArgumentNullException.ThrowIfNull(tweak);
         ThrowIfInvalidTweakSize(tweak.Length * 8);
     }
 

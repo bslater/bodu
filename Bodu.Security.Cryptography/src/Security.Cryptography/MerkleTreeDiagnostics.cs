@@ -146,7 +146,7 @@ public sealed partial class MerkleTreeDiagnostics
     /// </exception>
     public bool Validate(Func<HashAlgorithm> algorithmFactory, out IReadOnlyList<string> errors)
     {
-        ThrowHelper.ThrowIfNull(algorithmFactory);
+        ArgumentNullException.ThrowIfNull(algorithmFactory);
 
         var issues = new List<string>();
 
@@ -191,7 +191,7 @@ public sealed partial class MerkleTreeDiagnostics
     /// <exception cref="ArgumentNullException"><paramref name="writer" /> is <see langword="null" />.</exception>
     public void WriteTo(TextWriter writer, Func<HashAlgorithm>? algorithmFactory = null)
     {
-        ThrowHelper.ThrowIfNull(writer);
+        ArgumentNullException.ThrowIfNull(writer);
 
         IReadOnlyList<Node> allNodes = GetAllNodes();
         int levelCount = GetLevelCount();

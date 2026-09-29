@@ -137,7 +137,7 @@ public sealed partial class Pearson
     public Pearson(int hashSizeBits, byte[] permutationTable)
         : base(ValidateHashSize(hashSizeBits) / 8)
     {
-        ThrowHelper.ThrowIfNull(permutationTable);
+        ArgumentNullException.ThrowIfNull(permutationTable);
         if (permutationTable.Length != 256 || permutationTable.Distinct().Count() != 256)
             throw new ArgumentException(HashingResourceStrings.Arg_Invalid_PearsonTable, nameof(permutationTable));
 
