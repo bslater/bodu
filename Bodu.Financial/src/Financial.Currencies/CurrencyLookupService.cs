@@ -144,7 +144,7 @@ public sealed class CurrencyLookupService
     /// Builds the symbol index from primary and alternative symbols.
     /// </summary>
     /// <returns>The symbol index.</returns>
-    private static IReadOnlyDictionary<string, IReadOnlyList<CurrencyInfo>> BuildSymbolIndex()
+    private static Dictionary<string, IReadOnlyList<CurrencyInfo>> BuildSymbolIndex()
     {
         Dictionary<string, List<CurrencyInfo>> index = new(StringComparer.Ordinal);
         foreach (CurrencyInfo info in CurrencyRegistry.All)
@@ -167,7 +167,7 @@ public sealed class CurrencyLookupService
     /// Builds the region index from each currency's region codes.
     /// </summary>
     /// <returns>The region index.</returns>
-    private static IReadOnlyDictionary<string, IReadOnlyList<CurrencyInfo>> BuildRegionIndex()
+    private static Dictionary<string, IReadOnlyList<CurrencyInfo>> BuildRegionIndex()
     {
         Dictionary<string, List<CurrencyInfo>> index = new(StringComparer.Ordinal);
         foreach (CurrencyInfo info in CurrencyRegistry.All)
