@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Reflection;
 using Bodu.Security.Cryptography.Infrastructure;
 using Bodu.Test.Kat;
 
@@ -295,6 +296,42 @@ public sealed partial class Poly1305CoreTests
 
                 CollectionAssert.AreEqual(Poly1305Reference.ComputeTag(key, message), ComputeTag(key, message), $"length {message.Length}");
             }
+        }
+    }
+
+    /// <summary>
+    /// Verifies that the scalar loop, the dispatch to the vector kernels and every kernel forbid inlining, so that each
+    /// is compiled on its own rather than into the methods that absorb a message.
+    /// </summary>
+    /// <remarks>
+    /// Under .NET 10's dynamic PGO, <c>Poly1305.HashCore</c> inlined the scalar loop, ran out of inlining budget inside
+    /// it, and left the limb multiplications as calls: the scalar path lost about a tenth of its speed. The AEADs'
+    /// framing methods, inlining the dispatch with its three kernel calls, ran out of budget the same way and left small
+    /// helpers as calls on every message. A method that cannot be inlined is compiled on its own, with its own budget,
+    /// whatever the profile says.
+    /// </remarks>
+    [TestMethod]
+    public void Update_WhenDeclared_ForEachLoop_ShouldForbidInliningIntoItsCallers()
+    {
+        const BindingFlags Instance = BindingFlags.NonPublic | BindingFlags.Instance;
+        const BindingFlags Static = BindingFlags.NonPublic | BindingFlags.Static;
+        Type core = typeof(Poly1305Core);
+        Type? vector256 = core.GetNestedType("Vector256Kernel", BindingFlags.NonPublic);
+        Type? vector512 = core.GetNestedType("Vector512Kernel", BindingFlags.NonPublic);
+
+        (string Name, MethodInfo? Method)[] loops =
+        [
+            ("Poly1305Core.Blocks", core.GetMethod("Blocks", Instance)),
+            ("Poly1305Core.KernelBlocks", core.GetMethod("KernelBlocks", Instance)),
+            ("Vector256Kernel.Blocks", vector256?.GetMethod("Blocks", Static)),
+            ("Vector256Kernel.BlocksPaired", vector256?.GetMethod("BlocksPaired", Static)),
+            ("Vector512Kernel.Blocks", vector512?.GetMethod("Blocks", Static)),
+        ];
+
+        foreach ((string name, MethodInfo? method) in loops)
+        {
+            Assert.IsNotNull(method, $"{name} is not declared.");
+            Assert.IsTrue(method.MethodImplementationFlags.HasFlag(MethodImplAttributes.NoInlining), name);
         }
     }
 }
