@@ -722,6 +722,8 @@ capped at 16 MiB vectors.
   if CPU exceeds 60 %. CI and emulation check the AdvSimd kernel's output, not its speed.
 - **A small-L3 desktop**, the second machine §7 names.
 
+Both are planned as F7 in [`crypto-performance-followups.md`](crypto-performance-followups.md).
+
 Closed since this section was written:
 
 - **The ARM64 CI job** has run on every pull request since #710, and passes.
