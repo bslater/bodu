@@ -172,9 +172,13 @@ and the first two have bitten:
 - **CI treats warnings as errors.** `build-test.yml` builds every test project with
   `-p:TreatWarningsAsErrors=true`, so any compiler or analyzer warning — StyleCop, Roslynator, the .NET
   analyzers, the BODU XML-doc rules — fails the pull request, and `release.yml`'s test gate builds the
-  same way, so the same warning stops a release. A local build still reports it as a warning. To match
-  CI: `dotnet build <project> -c Release -p:TreatWarningsAsErrors=true`. A deliberate finding is
-  suppressed at its site with a `Justification`, as the existing suppressions are.
+  same way, so the same warning stops a release. The release's pack step goes further and also fails on
+  NuGet restore and pack warnings, so a newly published advisory for a dependency stops a release until
+  the dependency is updated or that advisory is suppressed with a `NuGetAuditSuppress` item giving the
+  reason. A local build still reports all of these as warnings. To match CI:
+  `dotnet build <project> -c Release -p:TreatWarningsAsErrors=true`, and for the release's pack,
+  `dotnet pack bodu.slnx -c Release -p:BoduShipping=true -p:TreatWarningsAsErrors=true`. A deliberate
+  finding is suppressed at its site with a `Justification`, as the existing suppressions are.
 - **CI builds with the SDK that `global.json` pins.** Every workflow except `Bodu.CodeStyle`'s,
   which builds against that solution's own `global.json`, installs exactly the pinned version, so
   CI's analyzers change only when the pin does. Dependabot (`.github/dependabot.yml`) proposes each

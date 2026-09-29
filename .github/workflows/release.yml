@@ -143,10 +143,8 @@ jobs:
       - name: Build
         run: |
           # Warnings are errors, as in build-test.yml: a compiler or analyzer warning in the code being
-          # released stops the release here, before anything is signed, packed or published. This
-          # build compiles every shipped package's code (the Bodu.Text.Formats meta-package has none),
-          # so the pack step does not repeat the property, which would also turn NuGet restore and
-          # pack warnings into errors, a newly published advisory for a dependency among them.
+          # released stops the release here, before anything is signed, packed or published. The pack
+          # step treats warnings as errors as well, which also covers NuGet restore and pack warnings.
           for proj in $TEST_PROJECTS; do
             echo "::group::Build $proj"
             dotnet build "$proj" --configuration Release --no-restore -p:TreatWarningsAsErrors=true
@@ -325,13 +323,18 @@ jobs:
       - name: Pack (real-signed, shipping)
         shell: bash
         run: |
+          # Warnings are errors here too. The test job has already stopped the release on any compiler
+          # or analyzer warning; this step also stops it on NuGet restore and pack warnings, a newly
+          # published advisory for a dependency (NU1901-NU1904) among them. To release, update the
+          # dependency, or suppress that one advisory with a NuGetAuditSuppress item giving the reason.
           dotnet pack bodu.slnx \
             --configuration "$CONFIGURATION" \
             --output "$ARTIFACTS_DIR" \
             -p:BoduSignAssembly=true \
             -p:BoduRealSign=true \
             -p:BoduStrongNameKeyFile="$RUNNER_TEMP/Bodu.snk" \
-            -p:BoduShipping=true
+            -p:BoduShipping=true \
+            -p:TreatWarningsAsErrors=true
 
       - name: Shred strong-name private key
         if: always()
