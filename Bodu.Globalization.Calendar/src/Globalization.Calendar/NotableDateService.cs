@@ -477,7 +477,7 @@ public sealed class NotableDateService
     /// </summary>
     /// <param name="ordered">The date-ordered occurrences.</param>
     /// <returns>The occurrences surviving the policy, preserving order.</returns>
-    private IReadOnlyList<NotableDate> ApplySameDayCollisionPolicy(List<NotableDate> ordered)
+    private List<NotableDate> ApplySameDayCollisionPolicy(List<NotableDate> ordered)
     {
         CollisionPolicy policy = _resource.ResolutionPolicy.SameDayCollisionPolicy;
         if (policy == CollisionPolicy.KeepAll || ordered.Count < 2)

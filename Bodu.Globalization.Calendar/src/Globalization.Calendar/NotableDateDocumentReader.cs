@@ -107,7 +107,7 @@ internal static class NotableDateDocumentReader
     /// </summary>
     /// <param name="policy">The adjustment-policy node.</param>
     /// <returns>The parameter map, or <see langword="null" /> when none are declared.</returns>
-    private static IReadOnlyDictionary<string, string>? ReadHandlerParameters(IDocumentNode policy)
+    private static Dictionary<string, string>? ReadHandlerParameters(IDocumentNode policy)
     {
         Dictionary<string, string> parameters = new(StringComparer.Ordinal);
         foreach ((string? key, string? value) in policy.KeyValueList("Parameters", "Param", "key", "value", "parameters"))

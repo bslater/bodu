@@ -125,7 +125,7 @@ public sealed class CurrencyLookupService
     /// Builds the numeric-code index, preferring non-historic entries on a collision.
     /// </summary>
     /// <returns>The numeric-code index.</returns>
-    private static IReadOnlyDictionary<int, CurrencyInfo> BuildNumericIndex()
+    private static Dictionary<int, CurrencyInfo> BuildNumericIndex()
     {
         Dictionary<int, CurrencyInfo> index = new();
         foreach (CurrencyInfo info in CurrencyRegistry.All)
@@ -205,7 +205,7 @@ public sealed class CurrencyLookupService
     /// </summary>
     /// <param name="index">The build index.</param>
     /// <returns>The read-only index.</returns>
-    private static IReadOnlyDictionary<string, IReadOnlyList<CurrencyInfo>> Freeze(Dictionary<string, List<CurrencyInfo>> index)
+    private static Dictionary<string, IReadOnlyList<CurrencyInfo>> Freeze(Dictionary<string, List<CurrencyInfo>> index)
     {
         Dictionary<string, IReadOnlyList<CurrencyInfo>> frozen = new(index.Count, StringComparer.Ordinal);
         foreach (KeyValuePair<string, List<CurrencyInfo>> entry in index)

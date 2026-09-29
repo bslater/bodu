@@ -119,7 +119,7 @@ public sealed class XmlDocTypeParamRequiresShortContentCodeFixProvider : CodeFix
         if (docComment is null) return document;
 
         var lineEnding = DocCommentSource.ResolveLineEnding(text);
-        IReadOnlyList<TextChange> changes = BuildChangesForDocComment(
+        List<TextChange> changes = BuildChangesForDocComment(
             text, docComment, new[] { typeParam }, lineEnding);
         if (changes.Count == 0) return document;
 

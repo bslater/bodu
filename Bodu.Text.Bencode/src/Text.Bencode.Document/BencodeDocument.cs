@@ -199,6 +199,7 @@ public sealed partial class BencodeDocument
     /// </summary>
     /// <param name="index">The container's row index.</param>
     /// <returns>The row index immediately following the container row.</returns>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Instance method by design: it mirrors TomlDocument.FirstChildRow, which reads the row table; this layout just places the first child on the next row.")]
     internal int FirstChildRow(int index) =>
         index + 1;
 

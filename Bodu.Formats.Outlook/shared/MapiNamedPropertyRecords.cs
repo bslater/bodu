@@ -194,6 +194,7 @@ internal static class MapiNamedPropertyRecords
     /// Creates the malformed-mapping exception for the consuming format.
     /// </summary>
     /// <returns>The exception to throw.</returns>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1859:Use concrete types when possible for improved performance", Justification = "This source compiles into both the .msg and .pst readers, which throw different concrete types; the helper only feeds a throw, so a narrower return type would buy nothing.")]
     private static Exception Malformed() =>
 #if MSG
         new OutlookMsgFormatException(OutlookMsgResourceStrings.Format_Invalid_MsgNameId);
