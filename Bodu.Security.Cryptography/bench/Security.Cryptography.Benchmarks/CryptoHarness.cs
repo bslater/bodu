@@ -293,6 +293,19 @@ internal static class CryptoHarness
             byte[] signature = ed25519.SignData(message);
             Measure("asym", "Bodu Ed25519 sign", 0, () => ed25519.SignData(message));
             Measure("asym", "Bodu Ed25519 verify", 0, () => ed25519.VerifyData(message, signature));
+
+            // Signing into a span allocates nothing for the signature, so its B/op is the hashing's alone. The longer
+            // messages show what the hashing costs as a message grows.
+            byte[] destination = new byte[Ed25519.SignatureSizeInBytes];
+            Measure("asym", "Bodu Ed25519 sign into a span", 0, () => ed25519.SignData(message, destination));
+            foreach (int length in new[] { 1 << 10, 16 << 10 })
+            {
+                byte[] longer = Random(length, 17);
+                byte[] longerSignature = ed25519.SignData(longer);
+                string size = SizeLabel(length);
+                Measure("asym", $"Bodu Ed25519 sign {size} into a span", 0, () => ed25519.SignData(longer, destination));
+                Measure("asym", $"Bodu Ed25519 verify {size}", 0, () => ed25519.VerifyData(longer, longerSignature));
+            }
         }
 
         MeasureKem("512", () => new MLKem512());
