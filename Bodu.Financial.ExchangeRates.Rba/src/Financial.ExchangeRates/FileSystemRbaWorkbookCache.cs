@@ -41,6 +41,7 @@ public sealed class FileSystemRbaWorkbookCache
         : base(directory, "bodu-rba", logger) { }
 
     /// <inheritdoc />
+    /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
     protected override string GetFileName(RbaEraWorkbook key)
     {
         ThrowHelper.ThrowIfNull(key);
@@ -52,6 +53,11 @@ public sealed class FileSystemRbaWorkbookCache
     /// <remarks>
     /// The open-ended current era expires on the refresh interval; fixed eras are immutable and never expire.
     /// </remarks>
-    protected override bool IsFresh(RbaEraWorkbook key, TimeSpan age, TimeSpan refreshInterval) =>
-        key.End is not null || age <= refreshInterval;
+    /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
+    protected override bool IsFresh(RbaEraWorkbook key, TimeSpan age, TimeSpan refreshInterval)
+    {
+        ThrowHelper.ThrowIfNull(key);
+
+        return key.End is not null || age <= refreshInterval;
+    }
 }
