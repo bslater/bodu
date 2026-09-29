@@ -73,6 +73,33 @@ public sealed class SimdOptOutTests
     }
 
     /// <summary>
+    /// Verifies that with SIMD disabled, the ChaCha20 and Salsa20 keystream values report the scalar block function,
+    /// so that the Poly1305 AEADs draw their keystream as it comes.
+    /// </summary>
+    [TestMethod]
+    public void KeystreamKernel_WhenSimdDisabled_ShouldBeScalar()
+    {
+        ChaCha20Core.Keystream chacha = default;
+        Salsa20Core.Keystream salsa = default;
+
+        Assert.AreEqual(ChaCha20Core.KernelKind.Scalar, chacha.Kernel);
+        Assert.AreEqual(ChaCha20Core.KernelKind.Scalar, salsa.Kernel);
+    }
+
+    /// <summary>
+    /// Verifies that with SIMD disabled, the Poly1305 AEADs draw no message's keystream in one pass through a buffer,
+    /// whatever its length.
+    /// </summary>
+    [TestMethod]
+    public void Poly1305AeadCoreOnePassBlocks_WhenSimdDisabled_ShouldNeverTakeOnePass()
+    {
+        ChaCha20Core.Keystream keystream = default;
+
+        for (int bytes = 0; bytes <= 1100; bytes++)
+            Assert.AreEqual(0, Poly1305AeadCore.OnePassBlocks(keystream.Kernel, bytes), $"{bytes} bytes");
+    }
+
+    /// <summary>
     /// Verifies that with SIMD disabled, Poly1305 absorbs every run of whole blocks, however long, through its scalar
     /// loop, whatever the processor supports.
     /// </summary>

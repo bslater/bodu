@@ -22,7 +22,7 @@ public partial class Poly1305AeadCoreTests
         random.NextBytes(key);
         random.NextBytes(nonce);
 
-        foreach (int length in Enumerable.Range(0, 300).Concat([1024, 1029, 4099]))
+        foreach (int length in MessageLengths)
         {
             byte[] plaintext = new byte[length];
             random.NextBytes(plaintext);
@@ -64,5 +64,57 @@ public partial class Poly1305AeadCoreTests
 
             CollectionAssert.AreEqual(expected, actual, $"length {length}");
         }
+    }
+
+    /// <summary>
+    /// Verifies that sealing under the secretbox framing with the keystream's draws planned for each kernel matches
+    /// sealing with a ChaCha20 engine, for every message length from empty to past the longest drawn in one pass and a
+    /// longer one.
+    /// </summary>
+    /// <param name="kernel">The name of the kernel the draws are planned for.</param>
+    [TestMethod]
+    [DataRow("Scalar")]
+    [DataRow("Ssse3")]
+    [DataRow("AdvSimd")]
+    [DataRow("Avx2")]
+    [DataRow("Avx512")]
+    [DataRow("Avx512Wide")]
+    public void SealSecretbox_WhenPlannedForEachKernel_ShouldMatchTheEngine(string kernel)
+    {
+        AssertPlannedMatchesTheEngine(nameof(Poly1305AeadCore.SealSecretbox), kernel);
+    }
+
+    /// <summary>
+    /// Verifies that sealing under the secretbox framing draws the keystream as it comes, planned for each kernel,
+    /// except where its draws are estimated to cost less: so on the block function it always draws as it comes.
+    /// </summary>
+    /// <param name="kernel">The name of the kernel the draws are planned for.</param>
+    [TestMethod]
+    [DataRow("Scalar")]
+    [DataRow("Ssse3")]
+    [DataRow("AdvSimd")]
+    [DataRow("Avx2")]
+    [DataRow("Avx512")]
+    [DataRow("Avx512Wide")]
+    public void SealSecretbox_WhenPlannedForEachKernel_ShouldCostNoMoreThanDrawingAsItComes(string kernel)
+    {
+        AssertPlannedCostsNoMoreThanAsItComes(nameof(Poly1305AeadCore.SealSecretbox), kernel);
+    }
+
+    /// <summary>
+    /// Verifies that sealing under the secretbox framing, planned for each kernel, makes draws whose estimated cost is
+    /// the one the plan chose them by.
+    /// </summary>
+    /// <param name="kernel">The name of the kernel the draws are planned for.</param>
+    [TestMethod]
+    [DataRow("Scalar")]
+    [DataRow("Ssse3")]
+    [DataRow("AdvSimd")]
+    [DataRow("Avx2")]
+    [DataRow("Avx512")]
+    [DataRow("Avx512Wide")]
+    public void SealSecretbox_WhenPlannedForEachKernel_ShouldCostWhatThePlanEstimates(string kernel)
+    {
+        AssertPlannedCostsWhatThePlanEstimates(nameof(Poly1305AeadCore.SealSecretbox), kernel);
     }
 }

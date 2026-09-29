@@ -31,6 +31,13 @@ internal static partial class Poly1305AeadCore
             _engine = engine;
 
         /// <inheritdoc />
+        /// <remarks>
+        /// Always <see cref="ChaCha20Core.KernelKind.Scalar" />: whatever kernels the engine has are not known here, so
+        /// the framings draw from it as the keystream comes, and it supplies only the blocks the message needs.
+        /// </remarks>
+        public ChaCha20Core.KernelKind Kernel => ChaCha20Core.KernelKind.Scalar;
+
+        /// <inheritdoc />
         public void NextBlock(Span<byte> destination) =>
             _engine.NextKeystreamBlock(destination);
 

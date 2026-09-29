@@ -43,12 +43,14 @@ public partial class Poly1305AeadCoreTests
         Convert.FromHexString("1ae10b594f09e26a7e902ecbd0600691");
 
     /// <summary>
-    /// Gets the message lengths the differential tests sweep: every length from empty to 299 bytes, which crosses the
-    /// block, secretbox-offset and 4-, 8- and 16-block run boundaries, and a few longer ones with partial tails.
+    /// Gets the message lengths the differential tests sweep: every length from empty to 1,299 bytes, which crosses the
+    /// block, secretbox-offset and 4-, 8- and 16-block run boundaries, the longest message each framing can draw in one
+    /// pass through a buffer (960 bytes under RFC 8439, 992 under secretbox), and every count of bytes, from one to a
+    /// whole group, after the whole groups of a longer message; and 4,099 bytes, whose last block is partial.
     /// </summary>
     /// <value>The lengths, in bytes.</value>
     private static IEnumerable<int> MessageLengths =>
-        Enumerable.Range(0, 300).Concat([1024, 1029, 4099]);
+        Enumerable.Range(0, 1300).Append(4099);
 
     /// <summary>
     /// Returns the RFC 8439 Section 2.8.2 ciphertext followed by its tag.
