@@ -518,9 +518,9 @@ How it was done, and where it departs from the design above:
 Before and after, on both runtimes, in the harness's five processor configurations.
 *Change* is the ratio of the two ranges' midpoints, above 1 where F2 is faster. The BCL
 rows run OpenSSL's code, which F2 does not touch, so they show how far the runs drift on
-their own. Messages of up to 960 bytes can now be drawn in one pass; XChaCha20-Poly1305
-at 0 bytes, and at 512 with AVX-512VL, messages of 1 KiB and more, and every message
-without vector code are drawn as before.
+their own. Messages of up to 960 bytes can now be drawn in one pass. XChaCha20-Poly1305
+at 0 bytes, at 512 with AVX-512VL, and at 1 KiB and 16 KiB, whose blocks fill whole
+groups, and every message without vector code are drawn as before.
 
 | Measure (net10.0) | Before F2 | After F2 | Change |
 |---|---|---|---|
