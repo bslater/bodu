@@ -4,9 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using Bodu.Extensions;
 
 namespace Bodu.Security.Cryptography;
 
@@ -89,38 +89,38 @@ internal static class KeccakPermutation
             var c2 = a02 ^ a07 ^ a12 ^ a17 ^ a22;
             var c3 = a03 ^ a08 ^ a13 ^ a18 ^ a23;
             var c4 = a04 ^ a09 ^ a14 ^ a19 ^ a24;
-            var d0 = c4 ^ BitOperations.RotateLeft(c1, 1);
-            var d1 = c0 ^ BitOperations.RotateLeft(c2, 1);
-            var d2 = c1 ^ BitOperations.RotateLeft(c3, 1);
-            var d3 = c2 ^ BitOperations.RotateLeft(c4, 1);
-            var d4 = c3 ^ BitOperations.RotateLeft(c0, 1);
+            var d0 = c4 ^ c1.RotateBitsLeftUnchecked(1);
+            var d1 = c0 ^ c2.RotateBitsLeftUnchecked(1);
+            var d2 = c1 ^ c3.RotateBitsLeftUnchecked(1);
+            var d3 = c2 ^ c4.RotateBitsLeftUnchecked(1);
+            var d4 = c3 ^ c0.RotateBitsLeftUnchecked(1);
 
             // ρ and π: lane (x, y), θ-adjusted and rotated by its offset, moves to position (y, 2x + 3y).
             var b00 = a00 ^ d0;
-            var b01 = BitOperations.RotateLeft(a06 ^ d1, 44);
-            var b02 = BitOperations.RotateLeft(a12 ^ d2, 43);
-            var b03 = BitOperations.RotateLeft(a18 ^ d3, 21);
-            var b04 = BitOperations.RotateLeft(a24 ^ d4, 14);
-            var b05 = BitOperations.RotateLeft(a03 ^ d3, 28);
-            var b06 = BitOperations.RotateLeft(a09 ^ d4, 20);
-            var b07 = BitOperations.RotateLeft(a10 ^ d0, 3);
-            var b08 = BitOperations.RotateLeft(a16 ^ d1, 45);
-            var b09 = BitOperations.RotateLeft(a22 ^ d2, 61);
-            var b10 = BitOperations.RotateLeft(a01 ^ d1, 1);
-            var b11 = BitOperations.RotateLeft(a07 ^ d2, 6);
-            var b12 = BitOperations.RotateLeft(a13 ^ d3, 25);
-            var b13 = BitOperations.RotateLeft(a19 ^ d4, 8);
-            var b14 = BitOperations.RotateLeft(a20 ^ d0, 18);
-            var b15 = BitOperations.RotateLeft(a04 ^ d4, 27);
-            var b16 = BitOperations.RotateLeft(a05 ^ d0, 36);
-            var b17 = BitOperations.RotateLeft(a11 ^ d1, 10);
-            var b18 = BitOperations.RotateLeft(a17 ^ d2, 15);
-            var b19 = BitOperations.RotateLeft(a23 ^ d3, 56);
-            var b20 = BitOperations.RotateLeft(a02 ^ d2, 62);
-            var b21 = BitOperations.RotateLeft(a08 ^ d3, 55);
-            var b22 = BitOperations.RotateLeft(a14 ^ d4, 39);
-            var b23 = BitOperations.RotateLeft(a15 ^ d0, 41);
-            var b24 = BitOperations.RotateLeft(a21 ^ d1, 2);
+            var b01 = (a06 ^ d1).RotateBitsLeftUnchecked(44);
+            var b02 = (a12 ^ d2).RotateBitsLeftUnchecked(43);
+            var b03 = (a18 ^ d3).RotateBitsLeftUnchecked(21);
+            var b04 = (a24 ^ d4).RotateBitsLeftUnchecked(14);
+            var b05 = (a03 ^ d3).RotateBitsLeftUnchecked(28);
+            var b06 = (a09 ^ d4).RotateBitsLeftUnchecked(20);
+            var b07 = (a10 ^ d0).RotateBitsLeftUnchecked(3);
+            var b08 = (a16 ^ d1).RotateBitsLeftUnchecked(45);
+            var b09 = (a22 ^ d2).RotateBitsLeftUnchecked(61);
+            var b10 = (a01 ^ d1).RotateBitsLeftUnchecked(1);
+            var b11 = (a07 ^ d2).RotateBitsLeftUnchecked(6);
+            var b12 = (a13 ^ d3).RotateBitsLeftUnchecked(25);
+            var b13 = (a19 ^ d4).RotateBitsLeftUnchecked(8);
+            var b14 = (a20 ^ d0).RotateBitsLeftUnchecked(18);
+            var b15 = (a04 ^ d4).RotateBitsLeftUnchecked(27);
+            var b16 = (a05 ^ d0).RotateBitsLeftUnchecked(36);
+            var b17 = (a11 ^ d1).RotateBitsLeftUnchecked(10);
+            var b18 = (a17 ^ d2).RotateBitsLeftUnchecked(15);
+            var b19 = (a23 ^ d3).RotateBitsLeftUnchecked(56);
+            var b20 = (a02 ^ d2).RotateBitsLeftUnchecked(62);
+            var b21 = (a08 ^ d3).RotateBitsLeftUnchecked(55);
+            var b22 = (a14 ^ d4).RotateBitsLeftUnchecked(39);
+            var b23 = (a15 ^ d0).RotateBitsLeftUnchecked(41);
+            var b24 = (a21 ^ d1).RotateBitsLeftUnchecked(2);
 
             // χ and ι: each output lane mixes the next two in its row; the round constant enters lane (0, 0).
             a00 = b00 ^ (~b01 & b02) ^ s_roundConstants[round];

@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Extensions;
+
 namespace Bodu.Security.Cryptography;
 
 public sealed partial class Whirlpool
@@ -137,7 +139,7 @@ public sealed partial class Whirlpool
                 vector |= (ulong)GaloisMultiply(sbox[i], mds[j]) << ((7 - j) * 8);
 
             for (int j = 0; j < 8; j++)
-                table[(j << 8) | i] = System.Numerics.BitOperations.RotateRight(vector, j * 8);
+                table[(j << 8) | i] = vector.RotateBitsRightUnchecked(j * 8);
         }
 
         return table;
