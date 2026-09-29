@@ -7,6 +7,7 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics;
+using Bodu.Extensions;
 
 namespace Bodu.Security.Cryptography;
 
@@ -15,7 +16,10 @@ internal static partial class CubeHashCore
     /// <summary>
     /// Applies rounds of the CubeHash permutation with the state in eight 128-bit registers, four words each.
     /// </summary>
-    /// <typeparam name="TIsa">The instruction-set shim that supplies the rotations.</typeparam>
+    /// <typeparam name="TIsa">
+    /// The instruction set that performs the rotations: <see cref="VectorRotation.Ssse3" /> or
+    /// <see cref="VectorRotation.AdvSimd" />.
+    /// </typeparam>
     /// <param name="state">The 32-word state.</param>
     /// <param name="roundCount">The number of rounds.</param>
     /// <remarks>
@@ -25,7 +29,7 @@ internal static partial class CubeHashCore
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     private static void Vector128Rounds<TIsa>(Span<uint> state, int roundCount)
-        where TIsa : ChaCha20Core.IVector128Isa
+        where TIsa : struct, IVector128Rotation
     {
         ref uint words = ref MemoryMarshal.GetReference(state);
         var lower0 = Vector128.LoadUnsafe(ref words);
@@ -45,10 +49,10 @@ internal static partial class CubeHashCore
             upper3 += lower3;
 
             // Rotate the lower words by 7 and exchange those 8 apart, registers 0 and 2, 1 and 3; XOR in the upper words.
-            Vector128<uint> next0 = TIsa.RotateLeft(lower2, 7) ^ upper0;
-            Vector128<uint> next1 = TIsa.RotateLeft(lower3, 7) ^ upper1;
-            Vector128<uint> next2 = TIsa.RotateLeft(lower0, 7) ^ upper2;
-            Vector128<uint> next3 = TIsa.RotateLeft(lower1, 7) ^ upper3;
+            Vector128<uint> next0 = lower2.RotateBitsLeftUnchecked<TIsa>(7) ^ upper0;
+            Vector128<uint> next1 = lower3.RotateBitsLeftUnchecked<TIsa>(7) ^ upper1;
+            Vector128<uint> next2 = lower0.RotateBitsLeftUnchecked<TIsa>(7) ^ upper2;
+            Vector128<uint> next3 = lower1.RotateBitsLeftUnchecked<TIsa>(7) ^ upper3;
 
             // Exchange the upper words 2 apart, the halves of each register, and add the lower words in.
             upper0 = SwapHalves(upper0) + next0;
@@ -57,10 +61,10 @@ internal static partial class CubeHashCore
             upper3 = SwapHalves(upper3) + next3;
 
             // Rotate by 11 and exchange the lower words 4 apart, registers 0 and 1, 2 and 3; XOR in the upper words.
-            lower0 = TIsa.RotateLeft(next1, 11) ^ upper0;
-            lower1 = TIsa.RotateLeft(next0, 11) ^ upper1;
-            lower2 = TIsa.RotateLeft(next3, 11) ^ upper2;
-            lower3 = TIsa.RotateLeft(next2, 11) ^ upper3;
+            lower0 = next1.RotateBitsLeftUnchecked<TIsa>(11) ^ upper0;
+            lower1 = next0.RotateBitsLeftUnchecked<TIsa>(11) ^ upper1;
+            lower2 = next3.RotateBitsLeftUnchecked<TIsa>(11) ^ upper2;
+            lower3 = next2.RotateBitsLeftUnchecked<TIsa>(11) ^ upper3;
 
             // Exchange the upper words 1 apart, adjacent within each register.
             upper0 = SwapPairs(upper0);

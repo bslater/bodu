@@ -24,7 +24,8 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// In registers of four or eight words, the lower words' exchanges move whole registers or register halves: the 128-bit
 /// kernel renames registers instead, and the 256-bit kernel swaps halves. The upper words' exchanges stay within
-/// 128-bit lanes and take one shuffle per register. The rotations come from ChaCha20's instruction-set shims.
+/// 128-bit lanes and take one shuffle per register. The rotations go through Bodu.Core's
+/// <see cref="VectorExtensions" />, as ChaCha20's do.
 /// </para>
 /// </remarks>
 internal static partial class CubeHashCore
@@ -68,11 +69,11 @@ internal static partial class CubeHashCore
                 break;
 
             case KernelKind.AdvSimd:
-                Vector128Rounds<ChaCha20Core.AdvSimdIsa>(state, roundCount);
+                Vector128Rounds<VectorRotation.AdvSimd>(state, roundCount);
                 break;
 
             case KernelKind.Ssse3:
-                Vector128Rounds<ChaCha20Core.Ssse3Isa>(state, roundCount);
+                Vector128Rounds<VectorRotation.Ssse3>(state, roundCount);
                 break;
 
             default:

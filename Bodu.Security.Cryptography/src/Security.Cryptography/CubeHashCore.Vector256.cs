@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
+using Bodu.Extensions;
 
 namespace Bodu.Security.Cryptography;
 
@@ -42,16 +43,16 @@ internal static partial class CubeHashCore
             upper1 += lower1;
 
             // Rotate the lower words by 7 and exchange those 8 apart, the two registers; XOR in the upper words.
-            Vector256<uint> next0 = ChaCha20Core.Avx2Isa.RotateLeft(lower1, 7) ^ upper0;
-            Vector256<uint> next1 = ChaCha20Core.Avx2Isa.RotateLeft(lower0, 7) ^ upper1;
+            Vector256<uint> next0 = lower1.RotateBitsLeftUnchecked<VectorRotation.Avx2>(7) ^ upper0;
+            Vector256<uint> next1 = lower0.RotateBitsLeftUnchecked<VectorRotation.Avx2>(7) ^ upper1;
 
             // Exchange the upper words 2 apart, within each 128-bit lane, and add the lower words in.
             upper0 = Avx2.Shuffle(upper0, SwapHalvesControl) + next0;
             upper1 = Avx2.Shuffle(upper1, SwapHalvesControl) + next1;
 
             // Rotate by 11 and exchange the lower words 4 apart, the halves of each register; XOR in the upper words.
-            lower0 = ChaCha20Core.Avx2Isa.RotateLeft(Avx2.Permute2x128(next0, next0, 0x01), 11) ^ upper0;
-            lower1 = ChaCha20Core.Avx2Isa.RotateLeft(Avx2.Permute2x128(next1, next1, 0x01), 11) ^ upper1;
+            lower0 = Avx2.Permute2x128(next0, next0, 0x01).RotateBitsLeftUnchecked<VectorRotation.Avx2>(11) ^ upper0;
+            lower1 = Avx2.Permute2x128(next1, next1, 0x01).RotateBitsLeftUnchecked<VectorRotation.Avx2>(11) ^ upper1;
 
             // Exchange the upper words 1 apart, adjacent within each register.
             upper0 = Avx2.Shuffle(upper0, SwapPairsControl);

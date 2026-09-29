@@ -336,43 +336,43 @@ internal static partial class SerpentCore
             switch (kernel)
             {
                 case KernelKind.Avx512 when lanes == 8 && encrypt:
-                    Vector256Kernel<ChaCha20Core.Avx512Isa>.EncryptBlocks(ref keys, ref source, ref destination, groups);
+                    Vector256Kernel<VectorRotation.Avx512>.EncryptBlocks(ref keys, ref source, ref destination, groups);
                     break;
 
                 case KernelKind.Avx512 when lanes == 8:
-                    Vector256Kernel<ChaCha20Core.Avx512Isa>.DecryptBlocks(ref keys, ref source, ref destination, groups);
+                    Vector256Kernel<VectorRotation.Avx512>.DecryptBlocks(ref keys, ref source, ref destination, groups);
                     break;
 
                 case KernelKind.Avx2 when lanes == 8 && encrypt:
-                    Vector256Kernel<ChaCha20Core.Avx2Isa>.EncryptBlocks(ref keys, ref source, ref destination, groups);
+                    Vector256Kernel<VectorRotation.Avx2>.EncryptBlocks(ref keys, ref source, ref destination, groups);
                     break;
 
                 case KernelKind.Avx2 when lanes == 8:
-                    Vector256Kernel<ChaCha20Core.Avx2Isa>.DecryptBlocks(ref keys, ref source, ref destination, groups);
+                    Vector256Kernel<VectorRotation.Avx2>.DecryptBlocks(ref keys, ref source, ref destination, groups);
                     break;
 
                 case KernelKind.Avx512 when lanes == 4 && encrypt:
-                    Vector128Kernel<ChaCha20Core.Avx512Isa>.EncryptBlocks(ref keys, ref source, ref destination, groups);
+                    Vector128Kernel<VectorRotation.Avx512>.EncryptBlocks(ref keys, ref source, ref destination, groups);
                     break;
 
                 case KernelKind.Avx512 when lanes == 4:
-                    Vector128Kernel<ChaCha20Core.Avx512Isa>.DecryptBlocks(ref keys, ref source, ref destination, groups);
+                    Vector128Kernel<VectorRotation.Avx512>.DecryptBlocks(ref keys, ref source, ref destination, groups);
                     break;
 
                 case KernelKind.Avx2 or KernelKind.Ssse3 when lanes == 4 && encrypt:
-                    Vector128Kernel<ChaCha20Core.Ssse3Isa>.EncryptBlocks(ref keys, ref source, ref destination, groups);
+                    Vector128Kernel<VectorRotation.Ssse3>.EncryptBlocks(ref keys, ref source, ref destination, groups);
                     break;
 
                 case KernelKind.Avx2 or KernelKind.Ssse3 when lanes == 4:
-                    Vector128Kernel<ChaCha20Core.Ssse3Isa>.DecryptBlocks(ref keys, ref source, ref destination, groups);
+                    Vector128Kernel<VectorRotation.Ssse3>.DecryptBlocks(ref keys, ref source, ref destination, groups);
                     break;
 
                 case KernelKind.AdvSimd when lanes == 4 && encrypt:
-                    Vector128Kernel<ChaCha20Core.AdvSimdIsa>.EncryptBlocks(ref keys, ref source, ref destination, groups);
+                    Vector128Kernel<VectorRotation.AdvSimd>.EncryptBlocks(ref keys, ref source, ref destination, groups);
                     break;
 
                 case KernelKind.AdvSimd when lanes == 4:
-                    Vector128Kernel<ChaCha20Core.AdvSimdIsa>.DecryptBlocks(ref keys, ref source, ref destination, groups);
+                    Vector128Kernel<VectorRotation.AdvSimd>.DecryptBlocks(ref keys, ref source, ref destination, groups);
                     break;
 
                 default:

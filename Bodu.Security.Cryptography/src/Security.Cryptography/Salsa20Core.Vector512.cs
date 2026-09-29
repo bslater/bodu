@@ -6,7 +6,7 @@
 
 using System.Runtime.CompilerServices;
 using System.Runtime.Intrinsics;
-using System.Runtime.Intrinsics.X86;
+using Bodu.Extensions;
 
 namespace Bodu.Security.Cryptography;
 
@@ -117,10 +117,10 @@ internal static partial class Salsa20Core
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void QuarterRound(ref Vector512<uint> a, ref Vector512<uint> b, ref Vector512<uint> c, ref Vector512<uint> d)
         {
-            b ^= Avx512F.RotateLeft(a + d, 7);
-            c ^= Avx512F.RotateLeft(b + a, 9);
-            d ^= Avx512F.RotateLeft(c + b, 13);
-            a ^= Avx512F.RotateLeft(d + c, 18);
+            b ^= (a + d).RotateBitsLeftUnchecked<VectorRotation.Avx512>(7);
+            c ^= (b + a).RotateBitsLeftUnchecked<VectorRotation.Avx512>(9);
+            d ^= (c + b).RotateBitsLeftUnchecked<VectorRotation.Avx512>(13);
+            a ^= (d + c).RotateBitsLeftUnchecked<VectorRotation.Avx512>(18);
         }
     }
 }
