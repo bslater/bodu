@@ -28,11 +28,13 @@ namespace Bodu.Security.Cryptography;
 /// The many-block kernels keep one state word of 4, 8 or 16 consecutive blocks in each vector, with the blocks'
 /// counters in successive lanes, so a quarter round costs the same few instructions for every block at once. The words
 /// are transposed back into block order as the keystream meets the input. Rotations by 16 and 8 bits are byte shuffles
-/// where the processor has no rotate instruction, and rotations by 12 and 7 are shift pairs.
+/// where the processor has no rotate instruction, and rotations by 12 and 7 are shift pairs. The rotations go through
+/// Bodu.Core's <see cref="VectorExtensions" />, which take the instruction set as a type argument, so each kernel is
+/// compiled once per instruction set and the tests can run every one the processor supports.
 /// </para>
 /// <para>
-/// <see cref="Salsa20Core" /> shares the kernel kinds, the instruction-set shims and the transposition back into block
-/// order: Salsa20 differs only in its round function and in where its state keeps the counter.
+/// <see cref="Salsa20Core" /> shares the kernel kinds, the rotations and the transposition back into block order:
+/// Salsa20 differs only in its round function and in where its state keeps the counter.
 /// </para>
 /// </remarks>
 [SkipLocalsInit]
@@ -231,23 +233,23 @@ internal static partial class ChaCha20Core
                     break;
 
                 case KernelKind.Avx512Wide or KernelKind.Avx512 when lanes == 8:
-                    Vector256Kernel<Avx512Isa>.XorBlocks(ref words, first, ref source, ref destination, groups);
+                    Vector256Kernel<VectorRotation.Avx512>.XorBlocks(ref words, first, ref source, ref destination, groups);
                     break;
 
                 case KernelKind.Avx2 when lanes == 8:
-                    Vector256Kernel<Avx2Isa>.XorBlocks(ref words, first, ref source, ref destination, groups);
+                    Vector256Kernel<VectorRotation.Avx2>.XorBlocks(ref words, first, ref source, ref destination, groups);
                     break;
 
                 case KernelKind.Avx512Wide or KernelKind.Avx512 when lanes == 4:
-                    Vector128Kernel<Avx512Isa>.XorBlocks(ref words, first, ref source, ref destination, groups);
+                    Vector128Kernel<VectorRotation.Avx512>.XorBlocks(ref words, first, ref source, ref destination, groups);
                     break;
 
                 case KernelKind.Avx2 or KernelKind.Ssse3 when lanes == 4:
-                    Vector128Kernel<Ssse3Isa>.XorBlocks(ref words, first, ref source, ref destination, groups);
+                    Vector128Kernel<VectorRotation.Ssse3>.XorBlocks(ref words, first, ref source, ref destination, groups);
                     break;
 
                 case KernelKind.AdvSimd when lanes == 4:
-                    Vector128Kernel<AdvSimdIsa>.XorBlocks(ref words, first, ref source, ref destination, groups);
+                    Vector128Kernel<VectorRotation.AdvSimd>.XorBlocks(ref words, first, ref source, ref destination, groups);
                     break;
 
                 default:

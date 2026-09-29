@@ -7,6 +7,7 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
+using Bodu.Extensions;
 
 namespace Bodu.Security.Cryptography;
 
@@ -183,10 +184,10 @@ internal static partial class ChaCha20Core
         [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1107:Code should not contain multiple statements on one line", Justification = "The grouped add / XOR / rotate steps mirror the RFC 8439 quarter-round definition, as the scalar quarter round does.")]
         private static void QuarterRound(ref Vector512<uint> a, ref Vector512<uint> b, ref Vector512<uint> c, ref Vector512<uint> d)
         {
-            a += b; d ^= a; d = Avx512F.RotateLeft(d, 16);
-            c += d; b ^= c; b = Avx512F.RotateLeft(b, 12);
-            a += b; d ^= a; d = Avx512F.RotateLeft(d, 8);
-            c += d; b ^= c; b = Avx512F.RotateLeft(b, 7);
+            a += b; d ^= a; d = d.RotateBitsLeftUnchecked<VectorRotation.Avx512>(16);
+            c += d; b ^= c; b = b.RotateBitsLeftUnchecked<VectorRotation.Avx512>(12);
+            a += b; d ^= a; d = d.RotateBitsLeftUnchecked<VectorRotation.Avx512>(8);
+            c += d; b ^= c; b = b.RotateBitsLeftUnchecked<VectorRotation.Avx512>(7);
         }
     }
 }

@@ -7,6 +7,7 @@
 using System.Buffers.Binary;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using Bodu.Extensions;
 
 namespace Bodu.Security.Cryptography;
 
@@ -183,15 +184,26 @@ internal static partial class Blake2bCore
     /// <param name="x">The first message word.</param>
     /// <param name="y">The second message word.</param>
     /// <remarks>
-    /// The rotations call <see cref="BitOperations" /> directly rather than Bodu.Core's <c>RotateBitsRightUnchecked</c>,
-    /// which wraps it. The wrapper costs the JIT one inline per rotation, and across the 96 calls to this method that
-    /// <c>CompressScalar</c> unrolls, that exhausts the .NET 8 JIT's inline budget: this method and the message loads
-    /// stop being inlined, and the scalar path runs about 3.4 times slower. The JIT in .NET 10 inlines both forms
-    /// alike.
+    /// On .NET 10 the rotations go through Bodu.Core's
+    /// <see cref="NumericExtensions.RotateBitsRightUnchecked(ulong, int)" />, which the JIT inlines to the same
+    /// instruction as <see cref="BitOperations.RotateRight(ulong, int)" />. On .NET 8 they call
+    /// <see cref="BitOperations" /> directly: there the wrapper costs one more inline per rotation, and across the 96
+    /// calls to this method that <c>CompressScalar</c> unrolls, that exhausts the JIT's inline budget, so this method
+    /// and the message loads stop being inlined and the scalar path runs about 3.4 times slower.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void G(ref ulong a, ref ulong b, ref ulong c, ref ulong d, ulong x, ulong y)
     {
+#if NET10_0_OR_GREATER
+        a += b + x;
+        d = (d ^ a).RotateBitsRightUnchecked(32);
+        c += d;
+        b = (b ^ c).RotateBitsRightUnchecked(24);
+        a += b + y;
+        d = (d ^ a).RotateBitsRightUnchecked(16);
+        c += d;
+        b = (b ^ c).RotateBitsRightUnchecked(63);
+#else
         a += b + x;
         d = BitOperations.RotateRight(d ^ a, 32);
         c += d;
@@ -200,6 +212,7 @@ internal static partial class Blake2bCore
         d = BitOperations.RotateRight(d ^ a, 16);
         c += d;
         b = BitOperations.RotateRight(b ^ c, 63);
+#endif
     }
 
     /// <summary>

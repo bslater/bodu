@@ -6,6 +6,7 @@
 
 using System.Runtime.CompilerServices;
 using System.Runtime.Intrinsics;
+using Bodu.Extensions;
 
 namespace Bodu.Security.Cryptography;
 
@@ -13,9 +14,12 @@ internal static partial class SerpentCore
 {
     /// <summary>
     /// Provides the Serpent-128 rounds over four blocks at once, one block to each lane of a 128-bit vector, generic
-    /// over the instruction-set shim that supplies the rotations and the transposes.
+    /// over the instruction set that performs the rotations.
     /// </summary>
-    /// <typeparam name="TIsa">The shim: SSSE3 or AVX-512VL on x64, AdvSimd on ARM64.</typeparam>
+    /// <typeparam name="TIsa">
+    /// The instruction set that performs the rotations: <see cref="VectorRotation.Ssse3" /> or
+    /// <see cref="VectorRotation.Avx512" /> on x64, <see cref="VectorRotation.AdvSimd" /> on ARM64.
+    /// </typeparam>
     /// <remarks>
     /// Four blocks load as four vectors, one block each, and a 4×4 transpose turns them into four vectors that each
     /// hold one word of all four blocks: the bitsliced form the S-box circuits and the linear transform work on, with
@@ -24,7 +28,7 @@ internal static partial class SerpentCore
     /// them once for both that the JIT keeps inlined.
     /// </remarks>
     internal static class Vector128Kernel<TIsa>
-        where TIsa : struct, ChaCha20Core.IVector128Isa
+        where TIsa : struct, IVector128Rotation
     {
         /// <summary>The number of bytes in a group of four blocks.</summary>
         private const int GroupBytes = 4 * BlockBytes;
@@ -81,7 +85,7 @@ internal static partial class SerpentCore
             x1 = Vector128.LoadUnsafe(ref input, (nuint)(offset + BlockBytes)).AsUInt32();
             x2 = Vector128.LoadUnsafe(ref input, (nuint)(offset + (2 * BlockBytes))).AsUInt32();
             x3 = Vector128.LoadUnsafe(ref input, (nuint)(offset + (3 * BlockBytes))).AsUInt32();
-            TIsa.Transpose(ref x0, ref x1, ref x2, ref x3);
+            ChaCha20Core.Transpose(ref x0, ref x1, ref x2, ref x3);
         }
 
         /// <summary>
@@ -96,7 +100,7 @@ internal static partial class SerpentCore
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void Store(Vector128<uint> x0, Vector128<uint> x1, Vector128<uint> x2, Vector128<uint> x3, ref byte output, nint offset)
         {
-            TIsa.Transpose(ref x0, ref x1, ref x2, ref x3);
+            ChaCha20Core.Transpose(ref x0, ref x1, ref x2, ref x3);
             x0.AsByte().StoreUnsafe(ref output, (nuint)offset);
             x1.AsByte().StoreUnsafe(ref output, (nuint)(offset + BlockBytes));
             x2.AsByte().StoreUnsafe(ref output, (nuint)(offset + (2 * BlockBytes)));
@@ -215,16 +219,16 @@ internal static partial class SerpentCore
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void LinearTransform(ref Vector128<uint> x0, ref Vector128<uint> x1, ref Vector128<uint> x2, ref Vector128<uint> x3)
         {
-            x0 = TIsa.RotateLeft(x0, 13);
-            x2 = TIsa.RotateLeft(x2, 3);
+            x0 = x0.RotateBitsLeftUnchecked<TIsa>(13);
+            x2 = x2.RotateBitsLeftUnchecked<TIsa>(3);
             x1 ^= x0 ^ x2;
             x3 ^= x2 ^ Vector128.ShiftLeft(x0, 3);
-            x1 = TIsa.RotateLeft(x1, 1);
-            x3 = TIsa.RotateLeft(x3, 7);
+            x1 = x1.RotateBitsLeftUnchecked<TIsa>(1);
+            x3 = x3.RotateBitsLeftUnchecked<TIsa>(7);
             x0 ^= x1 ^ x3;
             x2 ^= x3 ^ Vector128.ShiftLeft(x1, 7);
-            x0 = TIsa.RotateLeft(x0, 5);
-            x2 = TIsa.RotateLeft(x2, 22);
+            x0 = x0.RotateBitsLeftUnchecked<TIsa>(5);
+            x2 = x2.RotateBitsLeftUnchecked<TIsa>(22);
         }
 
         /// <summary>
@@ -240,16 +244,16 @@ internal static partial class SerpentCore
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void InverseLinearTransform(ref Vector128<uint> x0, ref Vector128<uint> x1, ref Vector128<uint> x2, ref Vector128<uint> x3)
         {
-            x2 = TIsa.RotateLeft(x2, 32 - 22);
-            x0 = TIsa.RotateLeft(x0, 32 - 5);
+            x2 = x2.RotateBitsLeftUnchecked<TIsa>(32 - 22);
+            x0 = x0.RotateBitsLeftUnchecked<TIsa>(32 - 5);
             x2 ^= x3 ^ Vector128.ShiftLeft(x1, 7);
             x0 ^= x1 ^ x3;
-            x3 = TIsa.RotateLeft(x3, 32 - 7);
-            x1 = TIsa.RotateLeft(x1, 32 - 1);
+            x3 = x3.RotateBitsLeftUnchecked<TIsa>(32 - 7);
+            x1 = x1.RotateBitsLeftUnchecked<TIsa>(32 - 1);
             x3 ^= x2 ^ Vector128.ShiftLeft(x0, 3);
             x1 ^= x0 ^ x2;
-            x2 = TIsa.RotateLeft(x2, 32 - 3);
-            x0 = TIsa.RotateLeft(x0, 32 - 13);
+            x2 = x2.RotateBitsLeftUnchecked<TIsa>(32 - 3);
+            x0 = x0.RotateBitsLeftUnchecked<TIsa>(32 - 13);
         }
 
         /// <summary>

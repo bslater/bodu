@@ -25,10 +25,10 @@ namespace Bodu.Security.Cryptography;
 /// after it count up modulo 2^64.
 /// </para>
 /// <para>
-/// The many-block kernels are laid out as <see cref="ChaCha20Core" />'s are, and share its kernel kinds, its
-/// instruction-set shims and its transposition back into block order; the counter's low word counts up across the
-/// lanes, carrying into the high word where it wraps. None of Salsa20's rotations is by whole bytes, so they are shift
-/// pairs where the processor has no rotate instruction.
+/// The many-block kernels are laid out as <see cref="ChaCha20Core" />'s are, and share its kernel kinds, its rotations
+/// through Bodu.Core's <see cref="VectorExtensions" /> and its transposition back into block order; the counter's low
+/// word counts up across the lanes, carrying into the high word where it wraps. None of Salsa20's rotations is by whole
+/// bytes, so they are shift pairs where the processor has no rotate instruction.
 /// </para>
 /// </remarks>
 [SkipLocalsInit]
@@ -255,23 +255,23 @@ internal static partial class Salsa20Core
                     break;
 
                 case ChaCha20Core.KernelKind.Avx512Wide or ChaCha20Core.KernelKind.Avx512 when lanes == 8:
-                    Vector256Kernel<ChaCha20Core.Avx512Isa>.XorBlocks(ref words, first, ref source, ref destination, groups);
+                    Vector256Kernel<VectorRotation.Avx512>.XorBlocks(ref words, first, ref source, ref destination, groups);
                     break;
 
                 case ChaCha20Core.KernelKind.Avx2 when lanes == 8:
-                    Vector256Kernel<ChaCha20Core.Avx2Isa>.XorBlocks(ref words, first, ref source, ref destination, groups);
+                    Vector256Kernel<VectorRotation.Avx2>.XorBlocks(ref words, first, ref source, ref destination, groups);
                     break;
 
                 case ChaCha20Core.KernelKind.Avx512Wide or ChaCha20Core.KernelKind.Avx512 when lanes == 4:
-                    Vector128Kernel<ChaCha20Core.Avx512Isa>.XorBlocks(ref words, first, ref source, ref destination, groups);
+                    Vector128Kernel<VectorRotation.Avx512>.XorBlocks(ref words, first, ref source, ref destination, groups);
                     break;
 
                 case ChaCha20Core.KernelKind.Avx2 or ChaCha20Core.KernelKind.Ssse3 when lanes == 4:
-                    Vector128Kernel<ChaCha20Core.Ssse3Isa>.XorBlocks(ref words, first, ref source, ref destination, groups);
+                    Vector128Kernel<VectorRotation.Ssse3>.XorBlocks(ref words, first, ref source, ref destination, groups);
                     break;
 
                 case ChaCha20Core.KernelKind.AdvSimd when lanes == 4:
-                    Vector128Kernel<ChaCha20Core.AdvSimdIsa>.XorBlocks(ref words, first, ref source, ref destination, groups);
+                    Vector128Kernel<VectorRotation.AdvSimd>.XorBlocks(ref words, first, ref source, ref destination, groups);
                     break;
 
                 default:

@@ -6,6 +6,7 @@
 
 using System.Runtime.CompilerServices;
 using System.Runtime.Intrinsics;
+using Bodu.Extensions;
 
 namespace Bodu.Security.Cryptography;
 
@@ -15,9 +16,12 @@ internal static partial class Salsa20Core
     /// Produces the Salsa20 keystream eight blocks at a time over 256-bit vectors: lane <c>i</c> of vector <c>w</c>
     /// holds word <c>w</c> of the run's <c>i</c>-th block, whose counter is the run's first counter plus <c>i</c>.
     /// </summary>
-    /// <typeparam name="TIsa">The instruction-set shim that rotates.</typeparam>
+    /// <typeparam name="TIsa">
+    /// The instruction set that performs the rotations: <see cref="VectorRotation.Avx2" /> or
+    /// <see cref="VectorRotation.Avx512" />.
+    /// </typeparam>
     internal static class Vector256Kernel<TIsa>
-        where TIsa : struct, ChaCha20Core.IVector256Isa
+        where TIsa : struct, IVector256Rotation
     {
         /// <summary>
         /// Combines runs of eight blocks of input with the keystream by XOR.
@@ -93,10 +97,10 @@ internal static partial class Salsa20Core
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void QuarterRound(ref Vector256<uint> a, ref Vector256<uint> b, ref Vector256<uint> c, ref Vector256<uint> d)
         {
-            b ^= TIsa.RotateLeft(a + d, 7);
-            c ^= TIsa.RotateLeft(b + a, 9);
-            d ^= TIsa.RotateLeft(c + b, 13);
-            a ^= TIsa.RotateLeft(d + c, 18);
+            b ^= (a + d).RotateBitsLeftUnchecked<TIsa>(7);
+            c ^= (b + a).RotateBitsLeftUnchecked<TIsa>(9);
+            d ^= (c + b).RotateBitsLeftUnchecked<TIsa>(13);
+            a ^= (d + c).RotateBitsLeftUnchecked<TIsa>(18);
         }
     }
 }

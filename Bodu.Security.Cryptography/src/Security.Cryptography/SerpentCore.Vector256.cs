@@ -6,6 +6,7 @@
 
 using System.Runtime.CompilerServices;
 using System.Runtime.Intrinsics;
+using Bodu.Extensions;
 
 namespace Bodu.Security.Cryptography;
 
@@ -13,9 +14,12 @@ internal static partial class SerpentCore
 {
     /// <summary>
     /// Provides the Serpent-128 rounds over eight blocks at once, one block to each lane of a 256-bit vector, generic
-    /// over the instruction-set shim that supplies the rotations.
+    /// over the instruction set that performs the rotations.
     /// </summary>
-    /// <typeparam name="TIsa">The shim: AVX2, or AVX-512VL for its rotate instruction.</typeparam>
+    /// <typeparam name="TIsa">
+    /// The instruction set that performs the rotations: <see cref="VectorRotation.Avx2" />, or
+    /// <see cref="VectorRotation.Avx512" /> for its rotate instruction.
+    /// </typeparam>
     /// <remarks>
     /// Eight blocks load as four vectors of two consecutive blocks each. A 4×4 transpose within each 128-bit lane — the
     /// one <see cref="ChaCha20Core.Vector256Kernel{TIsa}" /> uses — turns them into four vectors that each hold one
@@ -24,7 +28,7 @@ internal static partial class SerpentCore
     /// <see cref="SerpentCore" /> over vectors.
     /// </remarks>
     internal static class Vector256Kernel<TIsa>
-        where TIsa : struct, ChaCha20Core.IVector256Isa
+        where TIsa : struct, IVector256Rotation
     {
         /// <summary>The number of bytes in a group of eight blocks.</summary>
         private const int GroupBytes = 8 * BlockBytes;
@@ -215,16 +219,16 @@ internal static partial class SerpentCore
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void LinearTransform(ref Vector256<uint> x0, ref Vector256<uint> x1, ref Vector256<uint> x2, ref Vector256<uint> x3)
         {
-            x0 = TIsa.RotateLeft(x0, 13);
-            x2 = TIsa.RotateLeft(x2, 3);
+            x0 = x0.RotateBitsLeftUnchecked<TIsa>(13);
+            x2 = x2.RotateBitsLeftUnchecked<TIsa>(3);
             x1 ^= x0 ^ x2;
             x3 ^= x2 ^ Vector256.ShiftLeft(x0, 3);
-            x1 = TIsa.RotateLeft(x1, 1);
-            x3 = TIsa.RotateLeft(x3, 7);
+            x1 = x1.RotateBitsLeftUnchecked<TIsa>(1);
+            x3 = x3.RotateBitsLeftUnchecked<TIsa>(7);
             x0 ^= x1 ^ x3;
             x2 ^= x3 ^ Vector256.ShiftLeft(x1, 7);
-            x0 = TIsa.RotateLeft(x0, 5);
-            x2 = TIsa.RotateLeft(x2, 22);
+            x0 = x0.RotateBitsLeftUnchecked<TIsa>(5);
+            x2 = x2.RotateBitsLeftUnchecked<TIsa>(22);
         }
 
         /// <summary>
@@ -240,16 +244,16 @@ internal static partial class SerpentCore
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void InverseLinearTransform(ref Vector256<uint> x0, ref Vector256<uint> x1, ref Vector256<uint> x2, ref Vector256<uint> x3)
         {
-            x2 = TIsa.RotateLeft(x2, 32 - 22);
-            x0 = TIsa.RotateLeft(x0, 32 - 5);
+            x2 = x2.RotateBitsLeftUnchecked<TIsa>(32 - 22);
+            x0 = x0.RotateBitsLeftUnchecked<TIsa>(32 - 5);
             x2 ^= x3 ^ Vector256.ShiftLeft(x1, 7);
             x0 ^= x1 ^ x3;
-            x3 = TIsa.RotateLeft(x3, 32 - 7);
-            x1 = TIsa.RotateLeft(x1, 32 - 1);
+            x3 = x3.RotateBitsLeftUnchecked<TIsa>(32 - 7);
+            x1 = x1.RotateBitsLeftUnchecked<TIsa>(32 - 1);
             x3 ^= x2 ^ Vector256.ShiftLeft(x0, 3);
             x1 ^= x0 ^ x2;
-            x2 = TIsa.RotateLeft(x2, 32 - 3);
-            x0 = TIsa.RotateLeft(x0, 32 - 13);
+            x2 = x2.RotateBitsLeftUnchecked<TIsa>(32 - 3);
+            x0 = x0.RotateBitsLeftUnchecked<TIsa>(32 - 13);
         }
 
         /// <summary>

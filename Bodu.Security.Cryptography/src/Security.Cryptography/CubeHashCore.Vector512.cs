@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
+using Bodu.Extensions;
 
 namespace Bodu.Security.Cryptography;
 
@@ -37,9 +38,9 @@ internal static partial class CubeHashCore
         for (int r = 0; r < roundCount; r++)
         {
             upper += lower;
-            lower = Avx512F.RotateLeft(Avx512F.PermuteVar16x32(lower, exchange8), 7) ^ upper;
+            lower = Avx512F.PermuteVar16x32(lower, exchange8).RotateBitsLeftUnchecked<VectorRotation.Avx512>(7) ^ upper;
             upper = Avx512F.PermuteVar16x32(upper, exchange2) + lower;
-            lower = Avx512F.RotateLeft(Avx512F.PermuteVar16x32(lower, exchange4), 11) ^ upper;
+            lower = Avx512F.PermuteVar16x32(lower, exchange4).RotateBitsLeftUnchecked<VectorRotation.Avx512>(11) ^ upper;
             upper = Avx512F.PermuteVar16x32(upper, exchange1);
         }
 

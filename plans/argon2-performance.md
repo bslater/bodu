@@ -1,7 +1,7 @@
 # Implementation plan: a faster Argon2id
 
-**Status:** Implemented on `claude/argon2-prototype-co27tu`, not yet merged; measured on
-one x64 machine (§10), ARM64 performance still to measure · **Source:** FallbackPlan requirements document "a faster
+**Status:** Done and released: merged in #710 and shipped in `Bodu.Security.Cryptography` 1.1.0,
+released out of band (#711); measured on one x64 machine (§10), ARM64 performance still to measure (§10.3) · **Source:** FallbackPlan requirements document "a faster
 Argon2id in Bodu" (`ARG-F-*` / `ARG-N-*`, raised 2026-09-27 against 1.0.0) ·
 **Target:** `Bodu.Security.Cryptography` 1.1.0
 
@@ -719,11 +719,14 @@ capped at 16 MiB vectors.
 
 - **ARM64 performance**, the riskiest target: run the harness on Apple silicon (or
   Graviton) against 1.0.0, and tune the shim (for example `SHL`/`SRI` in place of `TBL`)
-  if CPU exceeds 60 %.
-- **The ARM64 CI job's first run.** It triggers on pull requests, pushes to `master`
-  and manual dispatch, so it has not run on this branch.
+  if CPU exceeds 60 %. CI and emulation check the AdvSimd kernel's output, not its speed.
 - **A small-L3 desktop**, the second machine §7 names.
-- **Release** at the next lock-step bump, with notes such as these:
+
+Closed since this section was written:
+
+- **The ARM64 CI job** has run on every pull request since #710, and passes.
+- **Release.** The work shipped in `Bodu.Security.Cryptography` 1.1.0, released out of
+  band (#711) ahead of the next lock-step bump, with notes along these lines:
 
   > **Argon2 is faster.** Derivations now divide their lanes among threads once each lane
   > is about 1 MiB, compress blocks with AVX2, SSSE3 or AdvSimd, and hold the matrix in

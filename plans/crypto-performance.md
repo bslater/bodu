@@ -1,7 +1,9 @@
 # Implementation plan: faster primitives across Bodu.Security.Cryptography
 
-**Status:** Done on `claude/argon2-prototype-co27tu` (W0–W10; results in §10) · **Source:** the assessment run on
-2026-09-27 after the Argon2 work (§1) · **Target:** `Bodu.Security.Cryptography`, next lock-step release
+**Status:** Done and released: W0–W10 merged in #710 and shipped in `Bodu.Security.Cryptography` 1.1.0,
+released out of band (#711); results in §10, where each workstream's "Left for later" items remain open ·
+**Source:** the assessment run on 2026-09-27 after the Argon2 work (§1) · **Target:** `Bodu.Security.Cryptography`
+1.1.0
 
 The Argon2 work ([`argon2-performance.md`](argon2-performance.md)) used four techniques: a
 clean hot loop, pooled native memory, threads over independent work, and vector kernels
@@ -880,6 +882,10 @@ How it was done, and where it departs from the design above:
   - Salsa20 shares the kernel kinds, shims and transposes. Its 64-bit counter carries
     into the high word lane by lane. The scalar quarter rounds use Bodu.Core's internal
     `RotateBitsLeftUnchecked`.
+  - Since 1.1.0 the shims are gone: the kernels rotate through Bodu.Core's internal
+    `VectorExtensions.RotateBitsLeftUnchecked<TIsa>`, whose `TIsa` is one of its
+    `VectorRotation` structs, and share one 4×4 transpose, `ChaCha20Core.Transpose`. The
+    kernels' machine code is unchanged.
   - The engines expose the kernels through the internal
     `IBulkStreamCipher.XorKeystreamBlocks`, which `StreamCipherTransform` and the AEADs
     call for whole blocks. A request past the end of the keystream writes the blocks

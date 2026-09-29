@@ -1,6 +1,9 @@
 # Implementation plan: the shared recurrence and scheduling requirements
 
-**Status:** Proposed · **Source:** FallbackPlan requirements document
+**Status:** Implemented through Phase 6: every capability in §4's Phases 0–6 is in the codebase,
+and the package is in the release manifest (first shipped in the 0.6.0 wave). Phase 7, the
+optional steady-state speed-up, is not done: `RecurrenceRule`'s point queries still enumerate
+from the series start · **Source:** FallbackPlan requirements document
 (`REC-F-*` / `REC-N-*`, dated 2026-08-05) · **Target:** `Bodu.Globalization.Recurrence`
 
 This plan maps the FallbackPlan requirements statement onto the Bodu

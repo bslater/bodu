@@ -7,6 +7,7 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
+using Bodu.Extensions;
 
 namespace Bodu.Security.Cryptography;
 
@@ -16,9 +17,12 @@ internal static partial class ChaCha20Core
     /// Produces the ChaCha20 keystream eight blocks at a time over 256-bit vectors: lane <c>i</c> of vector <c>w</c>
     /// holds word <c>w</c> of the run's <c>i</c>-th block, whose counter is the run's first counter plus <c>i</c>.
     /// </summary>
-    /// <typeparam name="TIsa">The instruction-set shim that rotates.</typeparam>
+    /// <typeparam name="TIsa">
+    /// The instruction set that performs the rotations: <see cref="VectorRotation.Avx2" /> or
+    /// <see cref="VectorRotation.Avx512" />.
+    /// </typeparam>
     internal static class Vector256Kernel<TIsa>
-        where TIsa : struct, IVector256Isa
+        where TIsa : struct, IVector256Rotation
     {
         /// <summary>
         /// Combines runs of eight blocks of input with the keystream by XOR.
@@ -180,10 +184,10 @@ internal static partial class ChaCha20Core
         [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1107:Code should not contain multiple statements on one line", Justification = "The grouped add / XOR / rotate steps mirror the RFC 8439 quarter-round definition, as the scalar quarter round does.")]
         private static void QuarterRound(ref Vector256<uint> a, ref Vector256<uint> b, ref Vector256<uint> c, ref Vector256<uint> d)
         {
-            a += b; d ^= a; d = TIsa.RotateLeft(d, 16);
-            c += d; b ^= c; b = TIsa.RotateLeft(b, 12);
-            a += b; d ^= a; d = TIsa.RotateLeft(d, 8);
-            c += d; b ^= c; b = TIsa.RotateLeft(b, 7);
+            a += b; d ^= a; d = d.RotateBitsLeftUnchecked<TIsa>(16);
+            c += d; b ^= c; b = b.RotateBitsLeftUnchecked<TIsa>(12);
+            a += b; d ^= a; d = d.RotateBitsLeftUnchecked<TIsa>(8);
+            c += d; b ^= c; b = b.RotateBitsLeftUnchecked<TIsa>(7);
         }
     }
 }
