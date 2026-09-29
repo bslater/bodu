@@ -118,7 +118,7 @@ internal static partial class MLDsaEngine
     /// </remarks>
     internal static void ToMontgomery(KernelKind kernel, Span<int> poly)
     {
-        ThrowHelper.ThrowIfLessThan(poly.Length, N, nameof(poly));
+        ArgumentOutOfRangeException.ThrowIfLessThan(poly.Length, N, nameof(poly));
 
         if (Resolve(kernel) == KernelKind.Avx2)
         {

@@ -95,8 +95,8 @@ internal static partial class Blake3Core
         }
 
         if (totalChunks * ChunkBytes != input.Length) throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Arg_Invalid_Blake3SubtreeChunkCount, ChunkBytes), nameof(input));
-        ThrowHelper.ThrowIfLessThan(key.Length, ChainingValueWords, nameof(key));
-        ThrowHelper.ThrowIfLessThan(chainingValues.Length, subtreeChunks.Length * ChainingValueBytes, nameof(chainingValues));
+        ArgumentOutOfRangeException.ThrowIfLessThan(key.Length, ChainingValueWords, nameof(key));
+        ArgumentOutOfRangeException.ThrowIfLessThan(chainingValues.Length, subtreeChunks.Length * ChainingValueBytes, nameof(chainingValues));
         CryptographyThrowHelper.ThrowIfDegreeOfParallelismInvalid(maxDegreeOfParallelism);
 
         if (kernel == KernelKind.Auto)

@@ -255,7 +255,7 @@ internal partial struct Poly1305Core
     /// </remarks>
     internal void Finish(Span<byte> tag)
     {
-        ThrowHelper.ThrowIfLessThan(tag.Length, TagBytes, nameof(tag));
+        ArgumentOutOfRangeException.ThrowIfLessThan(tag.Length, TagBytes, nameof(tag));
 
         if (_pendingLength > 0)
         {
