@@ -52,7 +52,7 @@ public sealed partial class CachingNotableDateServiceTests
     public void Warm_WhenOneTerritoryFails_ShouldWarmRemainingTerritories()
     {
         var time = new MutableTimeProvider(Now);
-        var gated = new GatedNotableDateService(throwOnFirstCall: true);
+        using var gated = new GatedNotableDateService(throwOnFirstCall: true);
         var service = new CachingNotableDateService(
             gated,
             new InMemoryNotableDateCache(),

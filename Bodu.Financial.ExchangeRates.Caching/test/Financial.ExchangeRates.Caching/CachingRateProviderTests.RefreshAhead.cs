@@ -144,7 +144,7 @@ public sealed partial class CachingRateProviderTests
     public async Task TryGetRate_WhenConcurrentAgedHits_ShouldRefetchOnlyOnce()
     {
         _options.RefreshAheadFraction = 0.5;
-        var gated = new GatedDatedRateProvider(new[]
+        using var gated = new GatedDatedRateProvider(new[]
         {
             new ExchangeRate(CurrencyCode.AUD, CurrencyCode.USD, new DateOnly(2023, 1, 3), 0.75m, Provider),
         });
@@ -215,7 +215,7 @@ public sealed partial class CachingRateProviderTests
     public async Task Dispose_WhenRefreshPending_ShouldNotThrowAndPendingRefreshCompletes()
     {
         _options.RefreshAheadFraction = 0.5;
-        var gated = new GatedDatedRateProvider(new[]
+        using var gated = new GatedDatedRateProvider(new[]
         {
             new ExchangeRate(CurrencyCode.AUD, CurrencyCode.USD, new DateOnly(2023, 1, 3), 0.75m, Provider),
         });

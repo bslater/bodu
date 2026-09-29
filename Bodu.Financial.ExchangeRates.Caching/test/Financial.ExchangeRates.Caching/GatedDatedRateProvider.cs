@@ -11,7 +11,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// hold a background refresh in flight, pile up further triggers, and assert how many inner fetches actually ran.
 /// </summary>
 internal sealed class GatedDatedRateProvider
-    : IDatedRateProvider
+    : IDatedRateProvider, IDisposable
 {
     /// <summary>The gate every lookup waits on before resolving.</summary>
     private readonly ManualResetEventSlim _gate = new(initialState: false);
@@ -48,6 +48,9 @@ internal sealed class GatedDatedRateProvider
     /// Releases every caller waiting on the gate.
     /// </summary>
     public void Open() => _gate.Set();
+
+    /// <inheritdoc />
+    public void Dispose() => _gate.Dispose();
 
     /// <inheritdoc />
     public RateLookupResult GetRate(string fromIsoCode, string toIsoCode, RateLookupOptions? options = null)

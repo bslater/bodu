@@ -15,7 +15,7 @@ public sealed partial class CachingNotableDateServiceTests
     [TestMethod]
     public void Resolve_WhenConcurrentColdCallsForSameYear_ShouldComputeInnerExactlyOnce()
     {
-        var gated = new GatedNotableDateService();
+        using var gated = new GatedNotableDateService();
         var service = new CachingNotableDateService(
             gated,
             new InMemoryNotableDateCache(),
@@ -52,7 +52,7 @@ public sealed partial class CachingNotableDateServiceTests
     [TestMethod]
     public void Resolve_WhenFirstComputationThrows_ShouldRecomputeOnNextCall()
     {
-        var gated = new GatedNotableDateService(throwOnFirstCall: true);
+        using var gated = new GatedNotableDateService(throwOnFirstCall: true);
         gated.Open();
         var service = new CachingNotableDateService(
             gated,

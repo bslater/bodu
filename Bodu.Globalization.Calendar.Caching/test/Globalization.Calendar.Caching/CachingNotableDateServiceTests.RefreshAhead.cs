@@ -104,7 +104,7 @@ public sealed partial class CachingNotableDateServiceTests
     public async Task Resolve_WhenConcurrentAgedHits_ShouldRecomputeOnlyOnce()
     {
         var time = new MutableTimeProvider(Now);
-        var gated = new GatedNotableDateService();
+        using var gated = new GatedNotableDateService();
         var cache = new InMemoryNotableDateCache();
         CachingNotableDateService service = BuildRefreshAheadService(time, 0.5, gated, cache);
 
@@ -153,7 +153,7 @@ public sealed partial class CachingNotableDateServiceTests
         string territory = UniqueTerritory();
         using var collector = new TestMeterCollector(CalendarCachingMeter.MeterName);
         var time = new MutableTimeProvider(Now);
-        var gated = new GatedNotableDateService(throwOnFirstCall: true);
+        using var gated = new GatedNotableDateService(throwOnFirstCall: true);
         var cache = new InMemoryNotableDateCache();
         CachingNotableDateService service = BuildRefreshAheadService(time, 0.5, gated, cache);
         gated.Open();

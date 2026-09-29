@@ -12,7 +12,7 @@ namespace Bodu.Globalization.Calendar.Caching;
 /// invocation to exercise failure paths.
 /// </summary>
 internal sealed class GatedNotableDateService
-    : INotableDateService
+    : INotableDateService, IDisposable
 {
     /// <summary>The gate every resolution waits on before returning.</summary>
     private readonly ManualResetEventSlim _gate = new(initialState: false);
@@ -44,6 +44,9 @@ internal sealed class GatedNotableDateService
     /// Releases every caller waiting on the gate.
     /// </summary>
     public void Open() => _gate.Set();
+
+    /// <inheritdoc />
+    public void Dispose() => _gate.Dispose();
 
     /// <inheritdoc />
     public IReadOnlyList<NotableDate> Resolve(DateOnly date, string territory) =>

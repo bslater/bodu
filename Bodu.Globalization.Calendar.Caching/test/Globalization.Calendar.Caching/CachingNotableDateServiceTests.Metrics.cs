@@ -46,7 +46,7 @@ public sealed partial class CachingNotableDateServiceTests
     {
         string territory = UniqueTerritory();
         using var collector = new TestMeterCollector(CalendarCachingMeter.MeterName);
-        var gated = new GatedNotableDateService();
+        using var gated = new GatedNotableDateService();
         var service = new CachingNotableDateService(
             gated,
             new InMemoryNotableDateCache(),
