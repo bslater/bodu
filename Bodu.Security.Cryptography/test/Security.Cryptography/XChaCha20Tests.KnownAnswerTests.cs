@@ -175,7 +175,7 @@ public sealed partial class XChaCha20Tests
         byte[] zeros = new byte[expected.Length];
 
         using var cipher = new XChaCha20 { InitialCounter = vector.Counter };
-        using ICryptoTransform encryptor = cipher.CreateEncryptor(vector.Key, vector.Nonce);
+        using ICryptoTransform encryptor = cipher.CreateEncryptor(vector.Key!, vector.Nonce);
         byte[] keystream = encryptor.TransformFinalBlock(zeros, 0, zeros.Length);
 
         CollectionAssert.AreEqual(expected, keystream, $"XChaCha20 keystream mismatch for {vector.Name}.");

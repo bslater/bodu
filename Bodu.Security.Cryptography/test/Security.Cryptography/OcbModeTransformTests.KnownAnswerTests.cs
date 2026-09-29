@@ -225,7 +225,7 @@ public sealed partial class OcbModeTransformTests
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void Encrypt_WithRfc7253Vector_ShouldMatchExpected(AeadKnownAnswer vector)
     {
-        using var cipher = new AesBlockCipherFixture(vector.Key);
+        using var cipher = new AesBlockCipherFixture(vector.Key!);
         byte[] expectedOutput = vector.CiphertextWithTag;
 
         var transform = new OcbModeTransform(cipher, vector.Nonce, vector.Tag.Length * 8);
@@ -258,7 +258,7 @@ public sealed partial class OcbModeTransformTests
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void Decrypt_WithRfc7253Vector_ShouldRecoverPlaintext(AeadKnownAnswer vector)
     {
-        using var cipher = new AesBlockCipherFixture(vector.Key);
+        using var cipher = new AesBlockCipherFixture(vector.Key!);
         byte[] ciphertextWithTag = vector.CiphertextWithTag;
 
         var transform = new OcbModeTransform(cipher, vector.Nonce, vector.Tag.Length * 8);

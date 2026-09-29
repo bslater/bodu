@@ -76,7 +76,7 @@ public sealed partial class XSalsa20Tests
     public void CreateEncryptor_WhenGivenNaClKeystreamVector_ShouldMatchExpected(StreamCipherKnownAnswer vector)
     {
         using var cipher = new XSalsa20();
-        using ICryptoTransform encryptor = cipher.CreateEncryptor(vector.Key, vector.Nonce);
+        using ICryptoTransform encryptor = cipher.CreateEncryptor(vector.Key!, vector.Nonce);
         byte[] actual = encryptor.TransformFinalBlock(vector.Plaintext, 0, vector.Plaintext.Length);
 
         CollectionAssert.AreEqual(vector.Ciphertext, actual, $"XSalsa20 ciphertext mismatch for {vector.Name}.");

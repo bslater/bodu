@@ -49,7 +49,7 @@ public partial class DateTimeExtensionsTests
 
         Assert.AreEqual(
             DateTime.DaysInMonth(2023, 4),
-            date.DaysInMonth((System.Globalization.CultureInfo?)null));
+            date.DaysInMonth((System.Globalization.CultureInfo)null));
     }
 
     /// <summary>
@@ -75,7 +75,7 @@ public partial class DateTimeExtensionsTests
 
         Assert.AreEqual(
             DateTime.DaysInMonth(2023, 4),
-            date.DaysInMonth((System.Globalization.Calendar?)null));
+            date.DaysInMonth((System.Globalization.Calendar)null));
     }
 
     /// <summary>

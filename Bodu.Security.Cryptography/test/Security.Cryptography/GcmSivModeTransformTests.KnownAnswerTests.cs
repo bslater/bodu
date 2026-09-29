@@ -141,7 +141,7 @@ public sealed partial class GcmSivModeTransformTests
         vector.Nonce.CopyTo(iv, 0);
 
         var t = new GcmSivModeTransform(
-            new AesBlockCipherFixture(vector.Key),
+            new AesBlockCipherFixture(vector.Key!),
             k => new AesBlockCipherFixture(k),
             iv);
         if (vector.AssociatedData.Length > 0) t.ProcessAssociatedData(vector.AssociatedData);

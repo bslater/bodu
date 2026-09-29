@@ -286,8 +286,8 @@ public sealed class ParserEnumSurfaceTests
             }
             """;
 
-        var xmlStrategy = (DayOfWeekInMonthStrategy)NotableDateResourceLoader.Load(xml).NotableDates.Single().Rules.Single().Strategy;
-        var jsonStrategy = (DayOfWeekInMonthStrategy)NotableDateResourceLoader.LoadJson(json).NotableDates.Single().Rules.Single().Strategy;
+        var xmlStrategy = (DayOfWeekInMonthStrategy)NotableDateResourceLoader.Load(xml).NotableDates.Single().Rules.Single().Strategy!;
+        var jsonStrategy = (DayOfWeekInMonthStrategy)NotableDateResourceLoader.LoadJson(json).NotableDates.Single().Rules.Single().Strategy!;
 
         Assert.AreEqual(expected, xmlStrategy.DayOfWeek, "XML dayOfWeek");
         Assert.AreEqual(expected, jsonStrategy.DayOfWeek, "JSON dayOfWeek");
@@ -331,8 +331,8 @@ public sealed class ParserEnumSurfaceTests
             }
             """;
 
-        var xmlStrategy = (DayOfWeekInMonthStrategy)NotableDateResourceLoader.Load(xml).NotableDates.Single().Rules.Single().Strategy;
-        var jsonStrategy = (DayOfWeekInMonthStrategy)NotableDateResourceLoader.LoadJson(json).NotableDates.Single().Rules.Single().Strategy;
+        var xmlStrategy = (DayOfWeekInMonthStrategy)NotableDateResourceLoader.Load(xml).NotableDates.Single().Rules.Single().Strategy!;
+        var jsonStrategy = (DayOfWeekInMonthStrategy)NotableDateResourceLoader.LoadJson(json).NotableDates.Single().Rules.Single().Strategy!;
 
         Assert.AreEqual(expected, xmlStrategy.WeekOrdinal, "XML weekOrdinal");
         Assert.AreEqual(expected, jsonStrategy.WeekOrdinal, "JSON weekOrdinal");
@@ -375,8 +375,8 @@ public sealed class ParserEnumSurfaceTests
             }
             """;
 
-        var xmlStrategy = (WeekdayNearDateStrategy)NotableDateResourceLoader.Load(xml).NotableDates.Single().Rules.Single().Strategy;
-        var jsonStrategy = (WeekdayNearDateStrategy)NotableDateResourceLoader.LoadJson(json).NotableDates.Single().Rules.Single().Strategy;
+        var xmlStrategy = (WeekdayNearDateStrategy)NotableDateResourceLoader.Load(xml).NotableDates.Single().Rules.Single().Strategy!;
+        var jsonStrategy = (WeekdayNearDateStrategy)NotableDateResourceLoader.LoadJson(json).NotableDates.Single().Rules.Single().Strategy!;
 
         Assert.AreEqual(expected, xmlStrategy.Direction, "XML direction");
         Assert.AreEqual(expected, jsonStrategy.Direction, "JSON direction");

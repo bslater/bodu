@@ -35,7 +35,7 @@ public partial class YamlSerializerTests
     [TestMethod]
     public void Deserialize_WhenTargetIsYamlDocument_ShouldProduceDocument()
     {
-        YamlDocument document = YamlSerializer.Deserialize<YamlDocument>("- 1\n- 2\n");
+        YamlDocument document = YamlSerializer.Deserialize<YamlDocument>("- 1\n- 2\n")!;
 
         Assert.AreEqual(YamlValueKind.Sequence, document.RootElement.ValueKind);
         Assert.AreEqual(2, document.RootElement.GetSequenceLength());
@@ -50,7 +50,7 @@ public partial class YamlSerializerTests
     {
         const string canonical = "name: svc\ntags:\n  - a\n  - b\n";
 
-        YamlDocument document = YamlSerializer.Deserialize<YamlDocument>(canonical);
+        YamlDocument document = YamlSerializer.Deserialize<YamlDocument>(canonical)!;
 
         Assert.AreEqual(canonical, YamlSerializer.Serialize(document));
     }
@@ -62,7 +62,7 @@ public partial class YamlSerializerTests
     [TestMethod]
     public void SerializeDeserialize_WhenElementTypedMember_ShouldRoundTripSubtree()
     {
-        ElementHost host = YamlSerializer.Deserialize<ElementHost>("Name: cfg\nPayload:\n  k: 1\n");
+        ElementHost host = YamlSerializer.Deserialize<ElementHost>("Name: cfg\nPayload:\n  k: 1\n")!;
 
         Assert.AreEqual("cfg", host.Name);
         Assert.AreEqual(YamlValueKind.Mapping, host.Payload.ValueKind);
@@ -79,7 +79,7 @@ public partial class YamlSerializerTests
     [TestMethod]
     public void Deserialize_WhenElementMemberFollowedByScalar_ShouldBindBothMembers()
     {
-        ElementHost host = YamlSerializer.Deserialize<ElementHost>("Payload:\n  k: 1\nName: after\n");
+        ElementHost host = YamlSerializer.Deserialize<ElementHost>("Payload:\n  k: 1\nName: after\n")!;
 
         Assert.AreEqual(1L, host.Payload.GetProperty("k").GetInt64());
         Assert.AreEqual("after", host.Name);
@@ -105,7 +105,7 @@ public partial class YamlSerializerTests
     [TestMethod]
     public void Serialize_WhenDisposedDocument_ShouldThrowObjectDisposedException()
     {
-        YamlDocument document = YamlSerializer.Deserialize<YamlDocument>("a: 1\n");
+        YamlDocument document = YamlSerializer.Deserialize<YamlDocument>("a: 1\n")!;
         document.Dispose();
 
         _ = Assert.ThrowsExactly<ObjectDisposedException>(() =>

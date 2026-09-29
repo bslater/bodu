@@ -56,7 +56,7 @@ public sealed class ParserMonthTokenTests
     /// <param name="resource">The loaded resource.</param>
     /// <returns>The fixed-date strategy.</returns>
     private static FixedDateStrategy Strategy(NotableDateResource resource) =>
-        (FixedDateStrategy)resource.NotableDates.Single().Rules.Single().Strategy;
+        (FixedDateStrategy)resource.NotableDates.Single().Rules.Single().Strategy!;
 
     /// <summary>
     /// Verifies that a Gregorian <c>Fixed</c> rule authored with a numeric month token resolves to the matching integer
@@ -378,7 +378,7 @@ public sealed class ParserMonthTokenTests
             </NotableDateResource>
             """;
 
-        var strategy = (DayOfWeekInMonthStrategy)NotableDateResourceLoader.Load(xml).NotableDates.Single().Rules.Single().Strategy;
+        var strategy = (DayOfWeekInMonthStrategy)NotableDateResourceLoader.Load(xml).NotableDates.Single().Rules.Single().Strategy!;
 
         Assert.AreEqual(10, strategy.Month, "month");
     }

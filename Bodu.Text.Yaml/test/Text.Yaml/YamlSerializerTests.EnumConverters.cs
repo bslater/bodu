@@ -31,7 +31,7 @@ public partial class YamlSerializerTests
 
         Assert.AreEqual("Status: Active\n", text);
 
-        StatusModel roundTripped = YamlSerializer.Deserialize<StatusModel>(text);
+        StatusModel roundTripped = YamlSerializer.Deserialize<StatusModel>(text)!;
         Assert.AreEqual(Status.Active, roundTripped.Status);
     }
 
@@ -49,7 +49,7 @@ public partial class YamlSerializerTests
 
         Assert.AreEqual("Status: 2\n", text);
 
-        StatusModel roundTripped = YamlSerializer.Deserialize<StatusModel>(text, options);
+        StatusModel roundTripped = YamlSerializer.Deserialize<StatusModel>(text, options)!;
         Assert.AreEqual(Status.Archived, roundTripped.Status);
     }
 
@@ -75,7 +75,7 @@ public partial class YamlSerializerTests
     [TestMethod]
     public void Deserialize_WhenDefaultEnumReadsInteger_ShouldReadIntegerAsEnum()
     {
-        StatusModel model = YamlSerializer.Deserialize<StatusModel>("Status: 2\n");
+        StatusModel model = YamlSerializer.Deserialize<StatusModel>("Status: 2\n")!;
 
         Assert.AreEqual(Status.Archived, model.Status);
     }
@@ -93,7 +93,7 @@ public partial class YamlSerializerTests
 
         Assert.AreEqual("Status: not-found\n", text);
 
-        RenamedStatusModel roundTripped = YamlSerializer.Deserialize<RenamedStatusModel>(text);
+        RenamedStatusModel roundTripped = YamlSerializer.Deserialize<RenamedStatusModel>(text)!;
         Assert.AreEqual(RenamedStatus.NotFound, roundTripped.Status);
     }
 
@@ -112,7 +112,7 @@ public partial class YamlSerializerTests
 
         Assert.AreEqual("Status: active\n", text);
 
-        StatusModel roundTripped = YamlSerializer.Deserialize<StatusModel>(text, options);
+        StatusModel roundTripped = YamlSerializer.Deserialize<StatusModel>(text, options)!;
         Assert.AreEqual(Status.Active, roundTripped.Status);
     }
 
@@ -161,7 +161,7 @@ public partial class YamlSerializerTests
 
         Assert.AreEqual("Status: 2\n", text);
 
-        NumberEnumModel roundTripped = YamlSerializer.Deserialize<NumberEnumModel>(text);
+        NumberEnumModel roundTripped = YamlSerializer.Deserialize<NumberEnumModel>(text)!;
         Assert.AreEqual(Status.Archived, roundTripped.Status);
     }
 
@@ -179,7 +179,7 @@ public partial class YamlSerializerTests
 
         Assert.AreEqual("Status: Pending\n", text);
 
-        StringEnumModel roundTripped = YamlSerializer.Deserialize<StringEnumModel>(text);
+        StringEnumModel roundTripped = YamlSerializer.Deserialize<StringEnumModel>(text)!;
         Assert.AreEqual(Status.Pending, roundTripped.Status);
     }
 
@@ -198,7 +198,7 @@ public partial class YamlSerializerTests
 
         Assert.AreEqual("Status: Active\n", text);
 
-        StatusModel roundTripped = YamlSerializer.Deserialize<StatusModel>(text, options);
+        StatusModel roundTripped = YamlSerializer.Deserialize<StatusModel>(text, options)!;
         Assert.AreEqual(Status.Active, roundTripped.Status);
     }
 
@@ -209,7 +209,7 @@ public partial class YamlSerializerTests
     [TestMethod]
     public void Deserialize_WhenEnumStringCaseDiffers_ShouldMatchCaseInsensitively()
     {
-        StatusModel model = YamlSerializer.Deserialize<StatusModel>("Status: ACTIVE\n");
+        StatusModel model = YamlSerializer.Deserialize<StatusModel>("Status: ACTIVE\n")!;
 
         Assert.AreEqual(Status.Active, model.Status);
     }
@@ -221,7 +221,7 @@ public partial class YamlSerializerTests
     [TestMethod]
     public void Deserialize_WhenEnumReadsNumericString_ShouldParseToValue()
     {
-        StatusModel model = YamlSerializer.Deserialize<StatusModel>("Status: \"2\"\n");
+        StatusModel model = YamlSerializer.Deserialize<StatusModel>("Status: \"2\"\n")!;
 
         Assert.AreEqual(Status.Archived, model.Status);
     }
@@ -241,7 +241,7 @@ public partial class YamlSerializerTests
 
         Assert.AreEqual("Status: active\n", text);
 
-        StatusModel roundTripped = YamlSerializer.Deserialize<StatusModel>(text, options);
+        StatusModel roundTripped = YamlSerializer.Deserialize<StatusModel>(text, options)!;
         Assert.AreEqual(Status.Active, roundTripped.Status);
     }
 
@@ -260,7 +260,7 @@ public partial class YamlSerializerTests
 
         Assert.AreEqual("Status: 2\n", text);
 
-        StatusModel roundTripped = YamlSerializer.Deserialize<StatusModel>(text, options);
+        StatusModel roundTripped = YamlSerializer.Deserialize<StatusModel>(text, options)!;
         Assert.AreEqual(Status.Archived, roundTripped.Status);
     }
 
@@ -284,7 +284,7 @@ public partial class YamlSerializerTests
     [TestMethod]
     public void Deserialize_WhenNumberEnumConverterReadsNull_ShouldReturnDefault()
     {
-        NumberEnumModel model = YamlSerializer.Deserialize<NumberEnumModel>("Status: null\n");
+        NumberEnumModel model = YamlSerializer.Deserialize<NumberEnumModel>("Status: null\n")!;
 
         Assert.AreEqual(Status.Pending, model.Status);
     }
@@ -302,7 +302,7 @@ public partial class YamlSerializerTests
 
         Assert.AreEqual("Status: \"99\"\n", text);
 
-        StatusModel roundTripped = YamlSerializer.Deserialize<StatusModel>(text);
+        StatusModel roundTripped = YamlSerializer.Deserialize<StatusModel>(text)!;
         Assert.AreEqual((Status)99, roundTripped.Status);
     }
 
@@ -319,7 +319,7 @@ public partial class YamlSerializerTests
 
         Assert.AreEqual("Flags: Read, Write\n", text);
 
-        FlagsModel roundTripped = YamlSerializer.Deserialize<FlagsModel>(text);
+        FlagsModel roundTripped = YamlSerializer.Deserialize<FlagsModel>(text)!;
         Assert.AreEqual(PermissionFlags.Read | PermissionFlags.Write, roundTripped.Flags);
     }
 
@@ -336,7 +336,7 @@ public partial class YamlSerializerTests
 
         Assert.AreEqual("Flags: Write\n", text);
 
-        FlagsModel roundTripped = YamlSerializer.Deserialize<FlagsModel>(text);
+        FlagsModel roundTripped = YamlSerializer.Deserialize<FlagsModel>(text)!;
         Assert.AreEqual(PermissionFlags.Write, roundTripped.Flags);
     }
 

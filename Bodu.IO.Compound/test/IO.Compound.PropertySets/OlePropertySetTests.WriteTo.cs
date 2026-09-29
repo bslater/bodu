@@ -83,8 +83,8 @@ public partial class OlePropertySetTests
         OlePropertySet parsed = OlePropertySet.Parse(destination.ToArray());
 
         Assert.HasCount(1, parsed.Sections);
-        Assert.AreEqual("Title value", parsed[2].AsString());
-        Assert.AreEqual(42, parsed[14].AsInt32());
+        Assert.AreEqual("Title value", parsed[2]!.AsString());
+        Assert.AreEqual(42, parsed[14]!.AsInt32());
     }
 
     /// <summary>

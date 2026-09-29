@@ -99,7 +99,7 @@ public sealed partial class Salsa20Tests
         byte[] expected = vector.Ciphertext;
         byte[] zeros = new byte[expected.Length];
 
-        using var cipher = new Salsa20 { KeySize = vector.Key.Length * 8 };
+        using var cipher = new Salsa20 { KeySize = vector.Key!.Length * 8 };
         using ICryptoTransform encryptor = cipher.CreateEncryptor(vector.Key, vector.Nonce);
         byte[] keystream = encryptor.TransformFinalBlock(zeros, 0, zeros.Length);
 

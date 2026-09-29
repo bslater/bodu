@@ -181,7 +181,7 @@ public partial class ComplexTests
     /// <param name="text">The text to parse.</param>
     /// <param name="value">Receives the parsed value on success.</param>
     /// <returns><see langword="true" /> when parsing succeeded.</returns>
-    private static bool TryParseNumberBase<TC>(string text, out TC value)
+    private static bool TryParseNumberBase<TC>(string text, [System.Diagnostics.CodeAnalysis.MaybeNullWhen(false)] out TC value)
         where TC : INumberBase<TC> =>
         TC.TryParse(text.AsSpan(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out value);
 

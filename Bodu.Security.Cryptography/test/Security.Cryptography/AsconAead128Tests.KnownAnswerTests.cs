@@ -64,7 +64,7 @@ public partial class AsconAead128Tests
     {
         // Encrypt
         byte[] ciphertextWithTag = new byte[vector.Plaintext.Length + AsconAead128.TagBytes];
-        using (var enc = new AsconAead128(vector.Key, vector.Nonce))
+        using (var enc = new AsconAead128(vector.Key!, vector.Nonce))
         {
             enc.ProcessAssociatedData(vector.AssociatedData);
             int written = enc.Encrypt(vector.Plaintext, ciphertextWithTag);
@@ -82,7 +82,7 @@ public partial class AsconAead128Tests
 
         // Decrypt round-trip
         byte[] recovered = new byte[vector.Plaintext.Length];
-        using (var dec = new AsconAead128(vector.Key, vector.Nonce))
+        using (var dec = new AsconAead128(vector.Key!, vector.Nonce))
         {
             dec.ProcessAssociatedData(vector.AssociatedData);
             int written = dec.Decrypt(ciphertextWithTag, recovered);

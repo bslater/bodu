@@ -90,7 +90,7 @@ public sealed partial class RabbitTests
         else
         {
             using var cipher = new Rabbit();
-            using ICryptoTransform encryptor = cipher.CreateEncryptor(vector.Key, vector.Nonce);
+            using ICryptoTransform encryptor = cipher.CreateEncryptor(vector.Key!, vector.Nonce);
             keystream = encryptor.TransformFinalBlock(new byte[expected.Length], 0, expected.Length);
         }
 
