@@ -19,7 +19,7 @@ namespace Bodu.Financial.ExchangeRates;
 public readonly record struct RateSeriesKey
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="RateSeriesKey" /> class.
+    /// Initializes a new instance of the <see cref="RateSeriesKey" /> struct.
     /// </summary>
     /// <param name="pair">The currency pair the series describes.</param>
     /// <param name="provider">The non-empty identifier of the publishing source.</param>

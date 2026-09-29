@@ -27,7 +27,7 @@ namespace Bodu.Financial.ExchangeRates;
 public readonly record struct RateHistoryAvailability
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="RateHistoryAvailability" /> class.
+    /// Initializes a new instance of the <see cref="RateHistoryAvailability" /> struct.
     /// </summary>
     /// <param name="kind">The shape of the availability bound.</param>
     /// <param name="windowDays">
