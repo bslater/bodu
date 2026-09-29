@@ -273,10 +273,10 @@ long unix          = day.ToUnixTimeSeconds();                          // 171573
 | `WeekOfYear`, `WeekOfMonth` | current culture's rule + first day | ✓ | — | — | — | — (also `(CalendarWeekRule, DayOfWeek)`) |
 | `DayName`, `MonthName`, static `GetMonthName` | current culture | ✓ | — | — | — | — |
 | `DaysInMonth` | Gregorian | ✓ (also `Calendar?`) | — | — | — | — |
-| `DaysInYear` | Gregorian | — (`Calendar?` only) | — | — | — | — |
+| `DaysInYear` | current culture's calendar | — (`Calendar?` only) | — | — | — | — |
 | static `GetStartDateOfWeek(year, week, culture)` | current culture | ✓ | — | — | — | — |
 
-A `null` `CultureInfo?` or `Calendar?` argument falls back to the same default as the parameterless overload.
+A `null` `CultureInfo?` or `Calendar?` argument falls back to the same default as the parameterless overload, except in `DaysInMonth`, whose parameterless overload is always Gregorian: there a `null` culture or calendar means the current culture's calendar. That is the calendar the current culture is set to use, `CultureInfo.CurrentCulture.DateTimeFormat.Calendar`, which is not necessarily the culture's default `CultureInfo.Calendar`.
 
 ## API summary
 
