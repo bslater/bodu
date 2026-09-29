@@ -167,9 +167,11 @@ and the first two have bitten:
   deliberate finding is suppressed at its site with a `Justification`, as the existing suppressions are.
 - **CI builds with the SDK that `global.json` pins.** Every workflow except `Bodu.CodeStyle`'s,
   which builds against that solution's own `global.json`, installs exactly the pinned version, so
-  CI's analyzers change only when the pin does.
-  A local build uses the same SDK once it is installed; a different one can disagree with CI in
-  either direction (`CA1873`, for one, reports different sites under 10.0.100 and 10.0.401).
+  CI's analyzers change only when the pin does. Dependabot (`.github/dependabot.yml`) proposes each
+  new .NET 10 SDK as a pull request that bumps the pin, so any warning the new analyzers add fails
+  that pull request and is fixed there. A local build uses the pinned SDK once it is installed; a
+  different one can disagree with CI in either direction (`CA1873`, for one, reports different
+  sites under 10.0.100 and 10.0.401).
   `dotnet --version` at the repository root names the SDK in use, and
   `dotnet-install.sh --jsonfile global.json --install-dir <dir>` installs the pinned one beside the
   others.
