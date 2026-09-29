@@ -49,6 +49,36 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.DaysInYear(DateTime)" /> uses the calendar the current culture is set
+    /// to use, its <see cref="DateTimeFormatInfo.Calendar" />, when that is not the culture's default calendar.
+    /// </summary>
+    [TestMethod]
+    public void DaysInYear_WhenCurrentCultureUsesNonDefaultCalendar_ShouldUseThatCalendar()
+    {
+        CultureInfo previousCulture = CultureInfo.CurrentCulture;
+        try
+        {
+            // ar-SA offers both the Um Al-Qura and the Gregorian calendar, and which of them is its default depends on
+            // the ICU version the runtime loads, so the culture is set to use whichever of the two is not.
+            var culture = new CultureInfo("ar-SA");
+            Calendar calendar = culture.Calendar is UmAlQuraCalendar ? new GregorianCalendar() : new UmAlQuraCalendar();
+            culture.DateTimeFormat.Calendar = calendar;
+            CultureInfo.CurrentCulture = culture;
+
+            var input = new DateTime(2024, 1, 15);
+            var expected = calendar.GetDaysInYear(calendar.GetYear(input));
+
+            var actual = input.DaysInYear();
+
+            Assert.AreEqual(expected, actual);
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = previousCulture;
+        }
+    }
+
+    /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.DaysInYear" />, when UsingCustomCalendar, projects the date into the
     /// calendar's own year reckoning and returns that year's length.
     /// </summary>
