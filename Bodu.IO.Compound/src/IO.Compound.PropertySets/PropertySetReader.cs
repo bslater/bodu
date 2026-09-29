@@ -119,7 +119,7 @@ internal static class PropertySetReader
             CompoundFileError.InvalidPropertySet);
         int propertyCount = (int)rawPropertyCount;
 
-        (int pid, int offset)[] pairs = new (int, int)[propertyCount];
+        (int Pid, int Offset)[] pairs = new (int, int)[propertyCount];
         int pairCursor = sectionOffset + 8;
         for (int i = 0; i < propertyCount; i++)
         {
@@ -165,7 +165,7 @@ internal static class PropertySetReader
     /// <param name="sectionOffset">The byte offset of the section.</param>
     /// <param name="pairs">The parsed property identifier/offset pairs.</param>
     /// <returns>The resolved code page.</returns>
-    private static int ResolveCodePage(ReadOnlySpan<byte> data, int sectionOffset, (int pid, int offset)[] pairs)
+    private static int ResolveCodePage(ReadOnlySpan<byte> data, int sectionOffset, (int Pid, int Offset)[] pairs)
     {
         foreach ((int pid, int offset) in pairs)
         {

@@ -113,7 +113,7 @@ public static partial class DateOnlyExtensions
     private static int ComputeQuarterEndDayNumber(
         int year,
         int quarter,
-        (uint defMonth, uint defDay) definition) =>
+        (uint Month, uint Day) definition) =>
         QuarterCalculator.GetEndDayNumber(year, quarter, definition);
 
     /// <summary>
@@ -133,7 +133,7 @@ public static partial class DateOnlyExtensions
     private static int ComputeQuarterStartDayNumber(
         int year,
         int quarter,
-        (uint defMonth, uint defDay) definition) =>
+        (uint Month, uint Day) definition) =>
         QuarterCalculator.GetStartDayNumber(year, quarter, definition);
 
     /// <summary>
@@ -161,14 +161,14 @@ public static partial class DateOnlyExtensions
     /// A <see cref="CalendarQuarterDefinition" /> value encoded as MMDD (e.g. 406 for April 6).
     /// </param>
     /// <returns>
-    /// A tuple <c>(defMonth, defDay)</c> representing the anchor month and day that define the start of Q1.
+    /// A tuple <c>(Month, Day)</c> representing the anchor month and day that define the start of Q1.
     /// </returns>
     /// <remarks>
     /// Delegates to <see cref="QuarterCalculator.GetDefinition(CalendarQuarterDefinition)" /> — the shared quarter
     /// engine.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static (uint defMonth, uint defDay) GetQuarterDefinition(CalendarQuarterDefinition definition) =>
+    private static (uint Month, uint Day) GetQuarterDefinition(CalendarQuarterDefinition definition) =>
         QuarterCalculator.GetDefinition(definition);
 
     /// <summary>
@@ -183,6 +183,6 @@ public static partial class DateOnlyExtensions
     /// engine — passing the month and day components of <paramref name="date" />.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static int GetQuarterForDate(this DateOnly date, (uint defMonth, uint defDay) definition) =>
+    private static int GetQuarterForDate(this DateOnly date, (uint Month, uint Day) definition) =>
         QuarterCalculator.GetQuarter(date.Month, date.Day, definition);
 }

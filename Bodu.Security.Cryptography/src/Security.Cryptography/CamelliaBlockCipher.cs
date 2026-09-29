@@ -757,7 +757,7 @@ public sealed class CamelliaBlockCipher
     /// used by RFC 3713.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static (ulong hi, ulong lo) RotL128(ulong hi, ulong lo, int bits)
+    private static (ulong Hi, ulong Lo) RotL128(ulong hi, ulong lo, int bits)
     {
         bits &= 127;
 
