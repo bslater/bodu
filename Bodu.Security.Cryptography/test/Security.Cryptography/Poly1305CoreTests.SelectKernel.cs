@@ -12,7 +12,8 @@ public sealed partial class Poly1305CoreTests
 {
     /// <summary>
     /// Verifies that dispatch keeps runs shorter than <see cref="Poly1305Core.Avx2MinimumBytes" /> on the scalar loop,
-    /// whatever the processor supports.
+    /// whatever the processor supports, as the block loop assumes when it sends such runs there without consulting
+    /// dispatch.
     /// </summary>
     /// <param name="length">The length of the run, in bytes.</param>
     [TestMethod]

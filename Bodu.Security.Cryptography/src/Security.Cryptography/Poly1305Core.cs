@@ -391,32 +391,57 @@ internal partial struct Poly1305Core
     /// <paramref name="kernel" /> names a kernel the processor does not support, and <paramref name="blocks" /> fills
     /// at least one group of its lanes.
     /// </exception>
+    /// <remarks>
+    /// A run shorter than <see cref="Avx2MinimumBytes" />, the shortest any kernel takes, goes straight to the scalar
+    /// loop, and longer runs are dispatched out of line in <see cref="KernelBlocks" />, so a caller that inlines this
+    /// method takes on only a comparison and two calls. The AEADs inline it into the methods that frame each message;
+    /// with the dispatch inlined as well, those methods exceeded the JIT's inlining budget and left the small helpers
+    /// of every message as calls.
+    /// </remarks>
     private void FullBlocks(KernelKind kernel, ReadOnlySpan<byte> blocks)
+    {
+        if (kernel != KernelKind.Auto || blocks.Length >= Avx2MinimumBytes)
+            blocks = KernelBlocks(kernel, blocks);
+
+        if (!blocks.IsEmpty)
+            Blocks(blocks, FullBlockBit);
+    }
+
+    /// <summary>
+    /// Absorbs the groups of blocks at the start of a run that fill the lanes of a vector kernel, and returns the
+    /// blocks after them.
+    /// </summary>
+    /// <param name="kernel">The kernel, or <see cref="KernelKind.Auto" /> for the one dispatch selects.</param>
+    /// <param name="blocks">The blocks, a whole number of 16 bytes.</param>
+    /// <returns>
+    /// The blocks after the kernel's last whole group; all of them when the kernel is the scalar loop, or when they
+    /// fill no group.
+    /// </returns>
+    /// <exception cref="PlatformNotSupportedException">
+    /// <paramref name="kernel" /> names a kernel the processor does not support, and <paramref name="blocks" /> fills
+    /// at least one group of its lanes.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private ReadOnlySpan<byte> KernelBlocks(KernelKind kernel, ReadOnlySpan<byte> blocks)
     {
         if (kernel == KernelKind.Auto)
             kernel = SelectKernel(blocks.Length);
 
         int lanes = LanesFor(kernel);
-        if (lanes > 1)
-        {
-            int groups = blocks.Length / (lanes * BlockBytes);
-            if (groups > 0)
-            {
-                ref byte message = ref MemoryMarshal.GetReference(blocks);
-                if (kernel == KernelKind.Avx512)
-                    Vector512Kernel.Blocks(ref this, ref message, groups);
-                else if (kernel == KernelKind.Avx2Paired)
-                    Vector256Kernel.BlocksPaired(ref this, ref message, groups);
-                else
-                    Vector256Kernel.Blocks(ref this, ref message, groups);
+        int groups = blocks.Length / (lanes * BlockBytes);
+        if (lanes == 1 || groups == 0)
+            return blocks;
 
-                int absorbed = groups * lanes * BlockBytes;
-                blocks = blocks[absorbed..];
-            }
-        }
+        ref byte message = ref MemoryMarshal.GetReference(blocks);
+        if (kernel == KernelKind.Avx512)
+            Vector512Kernel.Blocks(ref this, ref message, groups);
+        else if (kernel == KernelKind.Avx2Paired)
+            Vector256Kernel.BlocksPaired(ref this, ref message, groups);
+        else
+            Vector256Kernel.Blocks(ref this, ref message, groups);
 
-        if (!blocks.IsEmpty)
-            Blocks(blocks, FullBlockBit);
+        int absorbed = groups * lanes * BlockBytes;
+        return blocks[absorbed..];
     }
 
     /// <summary>
@@ -426,7 +451,7 @@ internal partial struct Poly1305Core
     /// <param name="highBit">
     /// <see cref="FullBlockBit" /> for full message blocks; zero for a padded partial last block.
     /// </param>
-    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+    [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.AggressiveOptimization)]
     private void Blocks(ReadOnlySpan<byte> blocks, ulong highBit)
     {
         ulong r0 = _r0;
