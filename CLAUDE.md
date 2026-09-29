@@ -190,14 +190,14 @@ and the first two have bitten:
   `dotnet-install.sh --jsonfile global.json --install-dir <dir>` installs the pinned one beside the
   others.
 
-**Restore and build must agree on the configuration.** Fourteen projects — the benchmarks, the AOT
-smoke app, the `Calendar.Tool` / `.Build` toolchain, and two samples — are excluded from the *Debug*
+**Restore and build must agree on the configuration.** Fifteen projects — the benchmarks, the AOT
+smoke app, the `Calendar.Tool` / `.Build` toolchain, and three samples — are excluded from the *Debug*
 solution configuration in `bodu.slnx` (`<Build Solution="Debug|*" Project="false" />`). `dotnet
 restore bodu.slnx` defaults to Debug and therefore skips them, while `dotnet build bodu.slnx -c
 Release` builds them, so the pair
 
 ```bash
-dotnet restore bodu.slnx                        # Debug: 14 projects skipped
+dotnet restore bodu.slnx                        # Debug: 15 projects skipped
 dotnet build   bodu.slnx -c Release --no-restore # ... which then fail with NETSDK1004
 ```
 
@@ -206,6 +206,12 @@ fails on projects that are perfectly well configured. Either let the build resto
 configuration to both: `dotnet restore bodu.slnx -p:Configuration=Release`. The exclusions are
 deliberate — they keep the benchmarks and toolchain out of ordinary Debug builds — so this is a
 usage constraint, not a defect in the solution file.
+
+A project that runs the toolchain has to be excluded from Debug along with it. A solution build does
+not build a reference that the active configuration excludes, so in Debug the `CompileNotableDatePack`
+task assembly under `Bodu.Globalization.Calendar.Build/src/bin/Debug` never exists, and the consuming
+project fails with `MSB4062`, in Visual Studio and in `dotnet build bodu.slnx` alike. That is why the
+`RulePackToolchain` sample is one of the three samples excluded.
 
 **After the target-framework list changes, restore before building.** Every
 `obj/project.assets.json` records the frameworks it was restored for. Change a project's
