@@ -36,6 +36,7 @@ public partial class PairWebRateProviderTests
     /// rethrown, without being relabelled as an ordinary pair-load failure.
     /// </summary>
     [TestMethod]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2201:Do not raise reserved exception types", Justification = "The NullReferenceException stands in for a provider bug, the one failure the provider must log as unexpected rather than relabel as a load failure.")]
     public async Task LoadPairAsync_WhenSourceThrowsUnexpectedException_ShouldLogUnexpectedErrorAndRethrow()
     {
         (TestPairWebRateProvider provider, CapturingLogger logger) = CreateThrowing(new NullReferenceException());
