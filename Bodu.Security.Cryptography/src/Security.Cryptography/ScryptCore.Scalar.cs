@@ -4,8 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Numerics;
 using System.Runtime.CompilerServices;
+using Bodu.Extensions;
 
 namespace Bodu.Security.Cryptography;
 
@@ -175,10 +175,10 @@ internal static partial class ScryptCore
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void QuarterRound(ref uint a, ref uint b, ref uint c, ref uint d)
         {
-            b ^= BitOperations.RotateLeft(a + d, 7);
-            c ^= BitOperations.RotateLeft(b + a, 9);
-            d ^= BitOperations.RotateLeft(c + b, 13);
-            a ^= BitOperations.RotateLeft(d + c, 18);
+            b ^= (a + d).RotateBitsLeftUnchecked(7);
+            c ^= (b + a).RotateBitsLeftUnchecked(9);
+            d ^= (c + b).RotateBitsLeftUnchecked(13);
+            a ^= (d + c).RotateBitsLeftUnchecked(18);
         }
     }
 }

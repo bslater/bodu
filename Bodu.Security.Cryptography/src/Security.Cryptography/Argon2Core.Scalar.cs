@@ -4,8 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Numerics;
 using System.Runtime.CompilerServices;
+using Bodu.Extensions;
 
 namespace Bodu.Security.Cryptography;
 
@@ -135,13 +135,13 @@ internal static partial class Argon2Core
             ulong va = wa, vb = wb, vc = wc, vd = wd;
 
             va = FBlaMka(va, vb);
-            vd = BitOperations.RotateRight(vd ^ va, 32);
+            vd = (vd ^ va).RotateBitsRightUnchecked(32);
             vc = FBlaMka(vc, vd);
-            vb = BitOperations.RotateRight(vb ^ vc, 24);
+            vb = (vb ^ vc).RotateBitsRightUnchecked(24);
             va = FBlaMka(va, vb);
-            vd = BitOperations.RotateRight(vd ^ va, 16);
+            vd = (vd ^ va).RotateBitsRightUnchecked(16);
             vc = FBlaMka(vc, vd);
-            vb = BitOperations.RotateRight(vb ^ vc, 63);
+            vb = (vb ^ vc).RotateBitsRightUnchecked(63);
 
             wa = va;
             wb = vb;

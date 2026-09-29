@@ -182,6 +182,13 @@ internal static partial class Blake2bCore
     /// <param name="d">The fourth working word.</param>
     /// <param name="x">The first message word.</param>
     /// <param name="y">The second message word.</param>
+    /// <remarks>
+    /// The rotations call <see cref="BitOperations" /> directly rather than Bodu.Core's <c>RotateBitsRightUnchecked</c>,
+    /// which wraps it. The wrapper costs the JIT one inline per rotation, and across the 96 calls to this method that
+    /// <c>CompressScalar</c> unrolls, that exhausts the .NET 8 JIT's inline budget: this method and the message loads
+    /// stop being inlined, and the scalar path runs about 3.4 times slower. The JIT in .NET 10 inlines both forms
+    /// alike.
+    /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void G(ref ulong a, ref ulong b, ref ulong c, ref ulong d, ulong x, ulong y)
     {

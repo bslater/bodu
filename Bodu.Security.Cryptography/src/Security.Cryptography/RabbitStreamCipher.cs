@@ -5,8 +5,8 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Buffers.Binary;
-using System.Numerics;
 using System.Runtime.CompilerServices;
+using Bodu.Extensions;
 
 namespace Bodu.Security.Cryptography;
 
@@ -268,14 +268,14 @@ internal sealed partial class RabbitStreamCipher
             uint g6 = G(_x[6] + _c[6]);
             uint g7 = G(_x[7] + _c[7]);
 
-            _x[0] = g0 + BitOperations.RotateLeft(g7, 16) + BitOperations.RotateLeft(g6, 16);
-            _x[1] = g1 + BitOperations.RotateLeft(g0, 8) + g7;
-            _x[2] = g2 + BitOperations.RotateLeft(g1, 16) + BitOperations.RotateLeft(g0, 16);
-            _x[3] = g3 + BitOperations.RotateLeft(g2, 8) + g1;
-            _x[4] = g4 + BitOperations.RotateLeft(g3, 16) + BitOperations.RotateLeft(g2, 16);
-            _x[5] = g5 + BitOperations.RotateLeft(g4, 8) + g3;
-            _x[6] = g6 + BitOperations.RotateLeft(g5, 16) + BitOperations.RotateLeft(g4, 16);
-            _x[7] = g7 + BitOperations.RotateLeft(g6, 8) + g5;
+            _x[0] = g0 + g7.RotateBitsLeftUnchecked(16) + g6.RotateBitsLeftUnchecked(16);
+            _x[1] = g1 + g0.RotateBitsLeftUnchecked(8) + g7;
+            _x[2] = g2 + g1.RotateBitsLeftUnchecked(16) + g0.RotateBitsLeftUnchecked(16);
+            _x[3] = g3 + g2.RotateBitsLeftUnchecked(8) + g1;
+            _x[4] = g4 + g3.RotateBitsLeftUnchecked(16) + g2.RotateBitsLeftUnchecked(16);
+            _x[5] = g5 + g4.RotateBitsLeftUnchecked(8) + g3;
+            _x[6] = g6 + g5.RotateBitsLeftUnchecked(16) + g4.RotateBitsLeftUnchecked(16);
+            _x[7] = g7 + g6.RotateBitsLeftUnchecked(8) + g5;
         }
     }
 }
