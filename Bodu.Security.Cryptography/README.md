@@ -186,16 +186,18 @@ These primitives dispatch to vector, carry-less-multiply or wide-multiply instru
 | ChaCha20, XChaCha20, Salsa20, XSalsa20 | AVX-512 (16 blocks at a time), AVX2 (8) or SSSE3 (4) | AdvSimd (4) |
 | Poly1305 (and the Poly1305 AEADs) | AVX-512 (8 blocks at a time) or AVX2 (4) from 512 bytes; BMI2 `mulx` for 64-bit products below that | `umulh` for 64-bit products |
 | X25519, Ed25519 | BMI2 `mulx` for 64-bit products | `umulh` for 64-bit products |
-| BLAKE2b | AVX-512 or AVX2, else SSSE3 | AdvSimd |
-| BLAKE2s | AVX-512 or SSSE3 | AdvSimd |
-| BLAKE3 | AVX-512 (16 chunks at a time), AVX2 (8) or SSSE3 (4) | AdvSimd (4) |
+| BLAKE2b | AVX-512 or AVX2, else SSSE3 | — |
+| BLAKE2s | AVX-512 or SSSE3 | — |
+| BLAKE3 | AVX-512 (16 chunks at a time), AVX2 (8) or SSSE3 (4) | AdvSimd (4 chunks at a time) |
 | CubeHash | AVX-512, AVX2 or SSSE3 | AdvSimd |
 | Serpent-128, over several blocks, and the counter blocks of CTR, EAX and SIV | AVX-512 or AVX2 (8 blocks at a time), else SSSE3 (4) | AdvSimd (4) |
 | Threefish-256 / 512 / 1024 | AVX-512 | — |
-| Argon2 | AVX2, else SSSE3 | AdvSimd |
-| scrypt | SSE2 | AdvSimd |
+| Argon2 | AVX2, else SSSE3 | — |
+| scrypt | SSE2 | — |
 
 The 16-wide ChaCha20, Salsa20 and BLAKE3 kernels, and the 8-wide Poly1305 kernel, run where .NET accelerates 512-bit vectors (`Vector512.IsHardwareAccelerated`); other AVX-512 processors run the next narrower kernels.
+
+On ARM64, BLAKE2b, BLAKE2s, Argon2, scrypt, and BLAKE3 over a single block run their portable kernels, which ran faster than their AdvSimd kernels on a Neoverse N2 under .NET 8 and .NET 10, and faster or about as fast on an Apple M1 under .NET 10. Those kernels hold one state across a vector's lanes, which pays on x64 but not against ARM64's thirty-one general registers and one-instruction rotations.
 
 Set the process-wide feature switch **`Bodu.Security.Cryptography.DisableSimd`** to `true` to force the portable path in place of every vector and carry-less-multiply kernel above (AES and the 64-bit multiplies are unaffected) — useful for reproducibility, differential testing, or audit. It is read once, before first use of any accelerated primitive, so set it via `runtimeconfig.json` / a `<RuntimeHostConfigurationOption>` item or an early `AppContext.SetSwitch(...)`. The paths are equivalent (the ARX designs such as BLAKE2/3, ChaCha20 and Threefish are constant-time in both forms); the switch is not a security control. See the [hardware-acceleration guide](https://bslater.github.io/bodu/guides/cryptography/hardware-acceleration.html) for details.
 

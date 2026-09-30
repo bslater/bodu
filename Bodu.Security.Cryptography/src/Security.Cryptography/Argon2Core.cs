@@ -147,20 +147,26 @@ internal static partial class Argon2Core
     }
 
     /// <summary>
-    /// Selects the widest compression kernel the processor supports and the process allows: AVX2, then AdvSimd on
-    /// ARM64, then SSSE3, then the scalar kernel.
+    /// Selects the compression kernel dispatch runs: on x64 the widest the processor supports and the process allows,
+    /// AVX2, then SSSE3; the scalar kernel on ARM64 and everywhere else.
     /// </summary>
     /// <returns>The kernel dispatch runs; never <see cref="KernelKind.Auto" />.</returns>
     /// <remarks>
+    /// <para>
     /// Every gate honors the <see cref="SimdCapabilities.DisableSimdSwitchName" /> switch, which pins the scalar
     /// kernel.
+    /// </para>
+    /// <para>
+    /// The AdvSimd kernel waits on <see cref="SimdCapabilities.AdvSimdSingleState" />, which is closed: the scalar
+    /// kernel ran faster on a Neoverse N2, and as fast on an Apple M1 under .NET 10.
+    /// </para>
     /// </remarks>
     internal static KernelKind SelectKernel()
     {
         if (SimdCapabilities.Avx2)
             return KernelKind.Avx2;
 
-        if (SimdCapabilities.AdvSimd)
+        if (SimdCapabilities.AdvSimdSingleState)
             return KernelKind.AdvSimd;
 
         return SimdCapabilities.Ssse3 ? KernelKind.Ssse3 : KernelKind.Scalar;

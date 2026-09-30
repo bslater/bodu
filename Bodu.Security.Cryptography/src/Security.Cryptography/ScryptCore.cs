@@ -26,7 +26,8 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// ROMix is generic over an <see cref="IScryptKernel" />, BlockMix for one instruction set, so each kernel runs in a
 /// loop the JIT specializes for it: the scalar kernel everywhere, and a 128-bit kernel over SSE2 on x64 or AdvSimd on
-/// ARM64. Every kernel produces the same key.
+/// ARM64. Every kernel produces the same key. Dispatch selects the SSE2 kernel on x64 and the scalar kernel on ARM64,
+/// where it ran faster than the AdvSimd kernel (<see cref="SimdCapabilities.AdvSimdSingleState" />).
 /// </para>
 /// <para>
 /// <c>V</c> and the ROMix scratch live in a <see cref="Workspace" /> in native memory, taken from the
@@ -207,17 +208,22 @@ internal static partial class ScryptCore
     }
 
     /// <summary>
-    /// Selects the widest BlockMix kernel the processor supports and the process allows: AdvSimd on ARM64, then SSE2 on
-    /// x64, then the scalar kernel.
+    /// Selects the BlockMix kernel dispatch runs: SSE2 on x64, and the scalar kernel on ARM64 and everywhere else.
     /// </summary>
     /// <returns>The kernel dispatch runs; never <see cref="KernelKind.Auto" />.</returns>
     /// <remarks>
+    /// <para>
     /// Every gate honors the <see cref="SimdCapabilities.DisableSimdSwitchName" /> switch, which pins the scalar
     /// kernel.
+    /// </para>
+    /// <para>
+    /// The AdvSimd kernel waits on <see cref="SimdCapabilities.AdvSimdSingleState" />, which is closed: on the ARM64
+    /// processors measured, the scalar kernel ran faster.
+    /// </para>
     /// </remarks>
     internal static KernelKind SelectKernel()
     {
-        if (SimdCapabilities.AdvSimd)
+        if (SimdCapabilities.AdvSimdSingleState)
             return KernelKind.AdvSimd;
 
         return SimdCapabilities.Sse2 ? KernelKind.Sse2 : KernelKind.Scalar;

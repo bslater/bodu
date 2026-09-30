@@ -14,7 +14,8 @@ internal static partial class ScryptCore
     internal enum KernelKind
     {
         /// <summary>
-        /// The widest kernel the processor supports and the process allows: the kind dispatch selects.
+        /// The kind dispatch selects: the widest kernel the processor supports and the process allows, bar the AdvSimd
+        /// kernel, which <see cref="SimdCapabilities.AdvSimdSingleState" /> holds back.
         /// </summary>
         Auto = 0,
 
@@ -29,7 +30,8 @@ internal static partial class ScryptCore
         Sse2,
 
         /// <summary>
-        /// The 128-bit kernel on ARM64, over AdvSimd.
+        /// The 128-bit kernel on ARM64, over AdvSimd, which runs only where a caller names it: dispatch selects the
+        /// scalar kernel, which ran faster on the ARM64 processors measured.
         /// </summary>
         AdvSimd,
     }
