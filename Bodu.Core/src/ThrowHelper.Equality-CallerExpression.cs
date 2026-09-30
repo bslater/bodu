@@ -45,7 +45,7 @@ public static partial class ThrowHelper
     /// <param name="value">The value to validate.</param>
     /// <param name="other">The value that <paramref name="value" /> must equal.</param>
     /// <param name="paramName">The name of the value parameter. Supplied automatically by the compiler.</param>
-    /// <exception cref="ArgumentException">
+    /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="value" /> does not equal <paramref name="other" />.
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -55,8 +55,8 @@ public static partial class ThrowHelper
         where T : IEquatable<T>
     {
         if (!value.Equals(other))
-            throw new ArgumentException(
-                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_ValuesNotEqual, other),
-                paramName);
+            throw new ArgumentOutOfRangeException(
+                paramName,
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_ValuesNotEqual, other));
     }
 }

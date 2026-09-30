@@ -43,7 +43,7 @@ public static partial class TweakableSymmetricAlgorithmExtensions
         this TweakableSymmetricAlgorithm algorithm,
         out ICryptoTransform? transform)
     {
-        ArgumentNullException.ThrowIfNull(algorithm);
+        ThrowHelper.ThrowIfNull(algorithm);
 
         try
         {
@@ -88,7 +88,7 @@ public static partial class TweakableSymmetricAlgorithmExtensions
         byte[] tweak,
         out ICryptoTransform? transform)
     {
-        ArgumentNullException.ThrowIfNull(algorithm);
+        ThrowHelper.ThrowIfNull(algorithm);
 
         try
         {

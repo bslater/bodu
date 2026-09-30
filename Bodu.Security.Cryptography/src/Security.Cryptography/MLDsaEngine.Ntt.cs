@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MLDsaEngine.Ntt.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -40,7 +40,7 @@ internal static partial class MLDsaEngine
     /// </remarks>
     internal static void Ntt(Span<int> w)
     {
-        ArgumentOutOfRangeException.ThrowIfLessThan(w.Length, N, nameof(w));
+        ThrowHelper.ThrowIfLessThan(w.Length, N, nameof(w));
 
         // The length is checked above, so the butterflies address the coefficients by reference, without a bounds
         // check on each access.
@@ -99,7 +99,7 @@ internal static partial class MLDsaEngine
     /// </remarks>
     internal static void InvNtt(Span<int> w)
     {
-        ArgumentOutOfRangeException.ThrowIfLessThan(w.Length, N, nameof(w));
+        ThrowHelper.ThrowIfLessThan(w.Length, N, nameof(w));
 
         ref int coefficients = ref MemoryMarshal.GetReference(w);
 
@@ -155,9 +155,9 @@ internal static partial class MLDsaEngine
     /// </remarks>
     internal static void MultiplyNtt(ReadOnlySpan<int> montgomeryLeft, ReadOnlySpan<int> right, Span<int> destination)
     {
-        ArgumentOutOfRangeException.ThrowIfLessThan(montgomeryLeft.Length, N, nameof(montgomeryLeft));
-        ArgumentOutOfRangeException.ThrowIfLessThan(right.Length, N, nameof(right));
-        ArgumentOutOfRangeException.ThrowIfLessThan(destination.Length, N, nameof(destination));
+        ThrowHelper.ThrowIfLessThan(montgomeryLeft.Length, N, nameof(montgomeryLeft));
+        ThrowHelper.ThrowIfLessThan(right.Length, N, nameof(right));
+        ThrowHelper.ThrowIfLessThan(destination.Length, N, nameof(destination));
 
         for (int i = 0; i < N; i++)
             destination[i] = MontgomeryReduce((long)montgomeryLeft[i] * right[i]);
@@ -180,9 +180,9 @@ internal static partial class MLDsaEngine
     /// </exception>
     internal static void MultiplyAccumulateNtt(ReadOnlySpan<int> montgomeryLeft, ReadOnlySpan<int> right, Span<int> accumulator)
     {
-        ArgumentOutOfRangeException.ThrowIfLessThan(montgomeryLeft.Length, N, nameof(montgomeryLeft));
-        ArgumentOutOfRangeException.ThrowIfLessThan(right.Length, N, nameof(right));
-        ArgumentOutOfRangeException.ThrowIfLessThan(accumulator.Length, N, nameof(accumulator));
+        ThrowHelper.ThrowIfLessThan(montgomeryLeft.Length, N, nameof(montgomeryLeft));
+        ThrowHelper.ThrowIfLessThan(right.Length, N, nameof(right));
+        ThrowHelper.ThrowIfLessThan(accumulator.Length, N, nameof(accumulator));
 
         for (int i = 0; i < N; i++)
             accumulator[i] += MontgomeryReduce((long)montgomeryLeft[i] * right[i]);

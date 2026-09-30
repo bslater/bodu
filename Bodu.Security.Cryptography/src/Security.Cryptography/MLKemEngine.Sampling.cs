@@ -79,7 +79,7 @@ internal static partial class MLKemEngine
     /// </remarks>
     internal static void SamplePolyCbd(int eta, ReadOnlySpan<byte> seed, byte counter, Span<int> destination)
     {
-        ArgumentOutOfRangeException.ThrowIfLessThan(destination.Length, N, nameof(destination));
+        ThrowHelper.ThrowIfLessThan(destination.Length, N, nameof(destination));
 
         Span<byte> counterByte = stackalloc byte[1];
         counterByte[0] = counter;
