@@ -147,8 +147,9 @@ internal static partial class Argon2Core
     }
 
     /// <summary>
-    /// Selects the widest compression kernel the processor supports and the process allows: AVX2, then AdvSimd on
-    /// ARM64, then SSSE3, then the scalar kernel.
+    /// Selects the compression kernel dispatch runs: on x64 the widest the processor supports and the process allows,
+    /// AVX2, then SSSE3; on ARM64 the AdvSimd kernel under .NET 8 and the scalar kernel under .NET 10; and the scalar
+    /// kernel everywhere else.
     /// </summary>
     /// <returns>The kernel dispatch runs; never <see cref="KernelKind.Auto" />.</returns>
     /// <remarks>
@@ -160,10 +161,31 @@ internal static partial class Argon2Core
         if (SimdCapabilities.Avx2)
             return KernelKind.Avx2;
 
-        if (SimdCapabilities.AdvSimd)
+        if (IsAdvSimdSelected)
             return KernelKind.AdvSimd;
 
         return SimdCapabilities.Ssse3 ? KernelKind.Ssse3 : KernelKind.Scalar;
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether dispatch selects the AdvSimd kernel: under .NET 8 wherever
+    /// <see cref="SimdCapabilities.AdvSimd" /> allows it, and under .NET 10 only while
+    /// <see cref="SimdCapabilities.AdvSimdSingleState" />, which is closed, allows it.
+    /// </summary>
+    /// <remarks>
+    /// Under .NET 8 the AdvSimd kernel ran 1.3 to 1.6 times as fast as the scalar kernel on an Apple M1, and took 36 to
+    /// 48 percent of 1.0.0's CPU where the scalar kernel took 58 to 67 percent; on a Neoverse N2 it ran at 0.8 of the
+    /// scalar kernel's speed. Under .NET 10, whose scalar kernel is faster, the scalar kernel ran 1.25 times as fast as
+    /// the AdvSimd kernel on the N2 and about as fast on the M1.
+    /// </remarks>
+    private static bool IsAdvSimdSelected
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#if NET10_0_OR_GREATER
+        get => SimdCapabilities.AdvSimdSingleState;
+#else
+        get => SimdCapabilities.AdvSimd;
+#endif
     }
 
     /// <summary>

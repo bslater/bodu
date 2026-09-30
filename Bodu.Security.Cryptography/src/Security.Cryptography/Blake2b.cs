@@ -223,8 +223,9 @@ public sealed partial class Blake2b
     /// <see langword="true" /> if this is the final block; causes the finalization flag word to be inverted.
     /// </param>
     /// <remarks>
-    /// Compression runs on the widest kernel <see cref="Blake2bCore" /> selects: AVX-512, then AVX2, then the scalar
-    /// kernel, each gate honoring the process-wide SIMD opt-out.
+    /// Compression runs on the kernel <see cref="Blake2bCore" /> selects: AVX-512, then AVX2, then SSSE3 on x64, and
+    /// the scalar kernel on ARM64, where it ran faster than the AdvSimd kernel, and everywhere else; each gate honors
+    /// the process-wide SIMD opt-out.
     /// </remarks>
     protected override void ProcessBlock(ReadOnlySpan<byte> block, ulong totalBytesIncludingThisBlock, bool isFinal) =>
         Blake2bCore.Compress(_h, block, totalBytesIncludingThisBlock, isFinal);
