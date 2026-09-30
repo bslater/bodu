@@ -173,8 +173,8 @@ internal static partial class Argon2Core
     /// <see cref="SimdCapabilities.AdvSimdSingleState" />, which is closed, allows it.
     /// </summary>
     /// <remarks>
-    /// Under .NET 8 the AdvSimd kernel ran 1.5 to 1.6 times as fast as the scalar kernel on an Apple M1, and took about
-    /// a third of 1.0.0's CPU where the scalar kernel took nearly two thirds; on a Neoverse N2 it ran at 0.8 of the
+    /// Under .NET 8 the AdvSimd kernel ran 1.3 to 1.6 times as fast as the scalar kernel on an Apple M1, and took 36 to
+    /// 48 percent of 1.0.0's CPU where the scalar kernel took 58 to 67 percent; on a Neoverse N2 it ran at 0.8 of the
     /// scalar kernel's speed. Under .NET 10, whose scalar kernel is faster, the scalar kernel ran 1.25 times as fast as
     /// the AdvSimd kernel on the N2 and about as fast on the M1.
     /// </remarks>

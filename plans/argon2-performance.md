@@ -691,7 +691,7 @@ capped at 16 MiB vectors.
 | ARG-F-002 | Additive API only | `MaxDegreeOfParallelism`, a bounded constructor per variant, and a bounded `Verify`; nothing changed or removed |
 | ARG-F-003 | A bound on threads | Implemented; `1` is 1.0.0's behaviour |
 | ARG-N-001 | Wall ≤ 40 % | 12 % (AVX2), 17 % (SSSE3), 25 % (scalar) |
-| ARG-N-002 | CPU ≤ 60 % with vector code | 37 % (AVX2), 53 % (SSSE3); on ARM64 (§10.3), with the kernels dispatch now selects, 56 % on a Neoverse N2 and 36 % on an Apple M1 under .NET 8 (AdvSimd), and 46–50 % and 50–59 % under .NET 10 (scalar) |
+| ARG-N-002 | CPU ≤ 60 % with vector code | 37 % (AVX2), 53 % (SSSE3); on ARM64 (§10.3), with the kernels dispatch now selects, 56–57 % on a Neoverse N2 and 36–48 % on an Apple M1 under .NET 8 (AdvSimd), and 45–50 % on the N2 under .NET 10 (scalar), where the M1's readings of the same code spread from 47 % to 67 % |
 | ARG-N-003 | Scalar no slower | 77–79 % |
 | ARG-N-004 | < 1 MiB allocated, no gen2 | 26 KiB with threads, 0.2–0.3 KiB without; gen2 0 |
 | ARG-N-005 | Four at once ≥ 1.0.0 | 2.4× (AVX2), 1.7× (SSSE3), 1.2× (scalar) |
@@ -721,16 +721,17 @@ Both items this section left open were measured by F7 of
 [`crypto-performance-followups.md`](crypto-performance-followups.md), whose §9 has the
 figures, on GitHub's hosted runners:
 
-- **ARM64 performance.** On a Neoverse N2 the AdvSimd kernel ran at 0.76–0.80 of the
+- **ARM64 performance.** On a Neoverse N2 the AdvSimd kernel ran at 0.76–0.81 of the
   scalar kernel's speed, on .NET 8 and .NET 10, and took 56–59 % of 1.0.0's CPU. On an
-  Apple M1 it ran 1.5–1.6 times as fast as the scalar kernel under .NET 8, taking 36 %
-  of 1.0.0's CPU where the scalar kernel took 58–67 %, and about as fast under .NET 10.
-  BLAKE2b's and BLAKE2s's AdvSimd kernels lost by more, so the layout they share with
-  Argon2's, one state across a vector's lanes, is the cause rather than the shim's
+  Apple M1 it ran 1.3–1.6 times as fast as the scalar kernel under .NET 8, taking
+  36–48 % of 1.0.0's CPU where the scalar kernel took 58–67 %, and about as fast under
+  .NET 10. BLAKE2b's and BLAKE2s's AdvSimd kernels lost by more, so the layout they share
+  with Argon2's, one state across a vector's lanes, is the cause rather than the shim's
   rotations. Dispatch therefore follows the runtime: under .NET 8 it keeps the AdvSimd
   kernel, which meets ARG-N-002 on both processors, and under .NET 10 it runs the scalar
-  kernel (`SimdCapabilities.AdvSimdSingleState`), which takes 46–50 % of 1.0.0's CPU on
-  the N2 and 50–59 % on the M1.
+  kernel (`SimdCapabilities.AdvSimdSingleState`), which takes 45–50 % of 1.0.0's CPU on
+  the N2. On the M1 the same code read anywhere from 47 % to 67 % across the runs, twice
+  within one job, so that virtual machine cannot place it either side of the target.
 - **A small-L3 machine.** An AMD EPYC 7763 whose 32 MiB of L3 holds half of the 64 MiB
   matrix. From the 256-block threshold the threads cut the wall time by 1.6–2.4 times, on
   both runtimes, so the threshold stands; below it both runs take one thread. The AVX2

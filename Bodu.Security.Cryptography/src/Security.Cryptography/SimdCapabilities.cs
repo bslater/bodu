@@ -175,8 +175,8 @@ internal static class SimdCapabilities
     /// to hold each to the scalar kernel.
     /// </para>
     /// <para>
-    /// Argon2 consults this gate only under .NET 10. Under .NET 8 its AdvSimd kernel ran 1.5 to 1.6 times as fast as
-    /// the scalar kernel on the M1, where the scalar kernel took nearly two thirds of 1.0.0's CPU, so it runs there.
+    /// Argon2 consults this gate only under .NET 10. Under .NET 8 its AdvSimd kernel ran 1.3 to 1.6 times as fast as
+    /// the scalar kernel on the M1, where the scalar kernel took 58 to 67 percent of 1.0.0's CPU, so it runs there.
     /// </para>
     /// <para>
     /// The AdvSimd kernels that give each lane a state of its own (ChaCha20 and Salsa20 over several blocks, BLAKE3

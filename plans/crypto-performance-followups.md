@@ -1658,9 +1658,21 @@ runs before the gate:
 In the gated run the scalar kernel took 46–50% on the N2, but 66–67% on the M1 under .NET 8, past the target, and
 55–59% under .NET 10. The M1's rows drift between runs, but under .NET 8 its scalar kernel took 58–67% in both, against
 36% for the AdvSimd kernel, which also ran 1.5–1.6 times as fast there. So Argon2 keeps the AdvSimd kernel under
-.NET 8, which meets the target on both processors, 56% on the N2 and 36% on the M1, at 0.8 of the scalar kernel's speed
-on the N2. Under .NET 10 the scalar kernel meets it on both, at 46–50% and 50–59%, and runs at least as fast as the
-AdvSimd kernel. On the EPYC the AVX2 kernel takes 21–23%.
+.NET 8, at 0.8 of the scalar kernel's speed on the N2, and selects the scalar kernel under .NET 10, where it runs at
+least as fast as the AdvSimd kernel.
+
+A third run, on the build as it merges, held both choices:
+
+| 64 MiB, t = 3, p = 4, share of 1.0.0's CPU | N2, .NET 8 | N2, .NET 10 | M1, .NET 8 | M1, .NET 10 |
+|---|---|---|---|---|
+| *vector*: AdvSimd under .NET 8, scalar under .NET 10 | 56% | 47% | 48% | 67% |
+| *scalar* | 45% | 45% | 63% | 47% |
+
+Under .NET 8 the AdvSimd kernel meets the target on both processors, and on the M1 ran 1.3–1.4 times as fast as the
+scalar kernel, which missed it again. Under .NET 10 both configurations run the scalar kernel. It meets the target on
+the N2, but the M1 read the same code at 47% and 67% within one job, and at 47–67% over the three runs, so that virtual
+machine cannot place it either side. The AdvSimd kernel read 55% there in the one run that timed it under .NET 10. On
+the EPYC the AVX2 kernel takes 21–23%.
 
 **The small-L3 machine.** The EPYC's 32 MiB of L3 holds half of the harness's 64 MiB matrix, where the machine
 Argon2's thread threshold was set on held all of it. The sweep compares the default, which runs lanes on threads from
@@ -1751,7 +1763,7 @@ How it was done, and where it departs from the design above:
   the scalar kernel's, 1.00 on both runtimes.
 - **Left for later.**
   - Tuning the gated kernels. The losing layout, not the rotations, is the cause, and the M1 hints that a core with
-    more vector pipes can win: its Argon2 kernel ran 1.5–1.6 times as fast as its scalar path under .NET 8. Dispatch
+    more vector pipes can win: its Argon2 kernel ran 1.3–1.6 times as fast as its scalar path under .NET 8. Dispatch
     cannot tell an M1 from an N2, so under .NET 8 the N2 runs Argon2's AdvSimd kernel at 0.8 of its scalar path's
     speed. BLAKE2's parallel variants, BLAKE2bp and BLAKE2sp, would give each lane a state of its own, but they are
     different functions.
