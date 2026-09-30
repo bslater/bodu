@@ -190,7 +190,7 @@ These primitives dispatch to vector, carry-less-multiply or wide-multiply instru
 | BLAKE2s | AVX-512 or SSSE3 | AdvSimd |
 | BLAKE3 | AVX-512 (16 chunks at a time), AVX2 (8) or SSSE3 (4) | AdvSimd (4) |
 | CubeHash | AVX-512, AVX2 or SSSE3 | AdvSimd |
-| Serpent-128, over several blocks | AVX-512 or AVX2 (8 blocks at a time), else SSSE3 (4) | AdvSimd (4) |
+| Serpent-128, over several blocks, and the counter blocks of CTR, EAX and SIV | AVX-512 or AVX2 (8 blocks at a time), else SSSE3 (4) | AdvSimd (4) |
 | Threefish-256 / 512 / 1024 | AVX-512 | — |
 | Argon2 | AVX2, else SSSE3 | AdvSimd |
 | scrypt | SSE2 | AdvSimd |

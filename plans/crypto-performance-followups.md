@@ -1,6 +1,6 @@
 # Implementation plan: the cryptography speed-ups left for later
 
-**Status:** In progress — F1 to F5 done (§9) · **Source:** the "Left for later" items in
+**Status:** In progress — F1 to F6 done (§9) · **Source:** the "Left for later" items in
 [`crypto-performance.md`](crypto-performance.md) §10 and the open items in
 [`argon2-performance.md`](argon2-performance.md) §10.3, after `Bodu.Security.Cryptography` 1.1.0 ·
 **Target:** `Bodu.Security.Cryptography`, next lock-step release
@@ -223,6 +223,8 @@ Done: see §9 for the results and where the build departs from this design.
 
 ### F6 — counter mode without the counter run
 
+Done: see §9 for the results and where the build departs from this design.
+
 - **Problem:** Serpent-128-CTR runs at about three quarters of `EncryptBlocks`.
   `CounterKeystream` writes a 4 KiB run of counter blocks, encrypts it, then XORs it into
   the output in a second pass.
@@ -322,7 +324,7 @@ As `crypto-performance.md` §6:
 
 Figures are from the `--crypto-harness` of `Bodu.Security.Cryptography.Benchmarks`. F1's and F2's
 are from the same 4-vCPU Xeon VM as §1, at 2.8 GHz with AVX-512F/VL but no IFMA; F3's section
-describes the machine the work moved to, where F4's and F5's were measured as well. Each is the range over
+describes the machine the work moved to, where F4's, F5's and F6's were measured as well. Each is the range over
 two runs of the median of five rounds. The baselines were measured the same day on this
 branch before the item's code, with the harness change that added the case in place.
 
