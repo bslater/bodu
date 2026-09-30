@@ -5,6 +5,8 @@ HPKE protocol surface. Apply this checklist when adding or changing any asymmetr
 key codec, or protocol. Each gate names the property to verify and where it is currently
 enforced; a new algorithm is not "done" until every applicable row is satisfied. Section 7 is the
 exception in scope: it applies to every vectorized kernel in the package, whatever the primitive.
+Section 8 covers timing, which no unit test observes: its tests hold the values, and reading the
+generated code holds the timing.
 
 > The review tooling is a checklist by design. Per the forensic review, ordinary line-coverage
 > numbers do not prove much for this code; what matters is that each structural property below has
@@ -126,3 +128,34 @@ ML-KEM's AVX2 transform, product and ML-DSA's per-coefficient kernels.
       ends; ML-KEM's 16-bit working copy of each polynomial; the four-way sponge's state and every
       block of a secret or mask stream it squeezes, cleared by the samplers; `Argon2CoreTests.DeriveTag_WhenMatrixStartsWithGarbage_*` and
       `ScryptCoreTests.ROMix_*Garbage*` show neither needs zeroing before use).
+
+## 8. Secret-dependent timing
+
+Applies to every path that takes a private key or a value derived from one: X25519's ladder and
+key generation, Ed25519's signing, and ML-KEM's decapsulation.
+
+- [ ] **No branch on, and no index by, a secret.** Secret scalars are recoded, and table entries
+      chosen, by arithmetic and masks alone:
+  - Ed25519's fixed-base multiplication, which X25519 key generation shares, recodes the scalar into
+    signed digits with shifts and masks (`Ed25519Point.RecodeSignedRadix16`), reads all eight
+    entries of a row to keep one, negating it by a conditional swap and move
+    (`Ed25519Point.SelectBaseMultiple`), and adds the top digit's carry by a conditional move
+    (`Ed25519Point.ScalarMultBase`). The tests hold the selection to a plain lookup for every
+    signed digit of every row
+    (`Ed25519PointTests.SelectBaseMultiple_ForEverySignedDigitOfEveryRow_ShouldMatchAPlainLookup`)
+    and the recoding to the scalar's value (`Ed25519PointTests.RecodeSignedRadix16_*`).
+  - The Montgomery ladder (`Curve25519.ScalarMult`) swaps by masks
+    (`Curve25519FieldElement.ConditionalSwap` / `ConditionalMove`;
+    `Curve25519FieldElementTests.ConditionalSwap_*` / `ConditionalMove_*`), and inversion is a fixed
+    addition chain.
+  - ML-KEM's decapsulation compares the re-encryption and selects the shared secret or the
+    implicit-rejection key without a branch (`CryptographyHelper.ConstantTimeDifference` /
+    `ConstantTimeSelect`; `CryptoHelpersTests.ConstantTimeDifference_*` / `ConstantTimeSelect_*`).
+  - When one of these methods changes, read its generated code on both runtimes
+    (`DOTNET_JitDisasm`, with `DOTNET_TieredCompilation=0`) and confirm that its only conditional
+    jumps are loop and bounds checks that no secret decides.
+- [ ] **Variable time over public values only.** A routine whose timing depends on its inputs says
+      so in its name or remarks and is given only public values. Ed25519 verification's
+      `Ed25519Point.DoubleScalarMultBaseVartime` and its `ComputeNonAdjacentForm` recoding see the
+      signature's S, the challenge k and the public key, and `Ed25519Scalar.IsCanonical` compares
+      the public S; no signing or key-generation path calls them.

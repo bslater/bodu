@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Numerics;
+
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
@@ -26,6 +28,28 @@ public partial class Ed25519PointTests
     /// The canonical encoding of the base point's image on Curve25519, the X25519 base point u = 9.
     /// </summary>
     private const string MontgomeryNineHex = "0900000000000000000000000000000000000000000000000000000000000000";
+
+    /// <summary>
+    /// The canonical encodings of the eight points of small order: the identity, the point of order 2, the two of
+    /// order 4 and the four of order 8.
+    /// </summary>
+    private static readonly string[] s_smallOrderEncodings =
+    [
+        "0100000000000000000000000000000000000000000000000000000000000000",
+        "ecffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f",
+        "0000000000000000000000000000000000000000000000000000000000000000",
+        "0000000000000000000000000000000000000000000000000000000000000080",
+        "26e8958fc2b227b045c3f489f2ef98f0d5dfac05d3c63339b13802886d53fc05",
+        "c7176a703d4dd84fba3c0b760d10670f2a2053fa2c39ccc64ec7fd7792ac037a",
+        "26e8958fc2b227b045c3f489f2ef98f0d5dfac05d3c63339b13802886d53fc85",
+        "c7176a703d4dd84fba3c0b760d10670f2a2053fa2c39ccc64ec7fd7792ac03fa",
+    ];
+
+    /// <summary>
+    /// The group order L = 2^252 + 27742317777372353535851937790883648493, little-endian.
+    /// </summary>
+    private static readonly byte[] s_groupOrder =
+        Convert.FromHexString("edd3f55c1a631258d69cf7a2def9de1400000000000000000000000000000010");
 
     /// <summary>
     /// Verifies that <see cref="Ed25519Point.BasePoint" /> re-encodes to its canonical RFC 8032 encoding.
@@ -102,58 +126,82 @@ public partial class Ed25519PointTests
     }
 
     /// <summary>
-    /// Verifies that the precomputed fixed-base <see cref="Ed25519Point.ScalarMultBase" /> agrees with the general
-    /// reference <see cref="Ed25519Point.ScalarMult" /> over the base point for boundary and pseudo-random scalars.
+    /// Returns the canonical encoding of a point.
     /// </summary>
-    [TestMethod]
-    [TestCategory("Regression")]
-    public void ScalarMultBase_ForVariousScalars_ShouldMatchReferenceScalarMult()
+    /// <param name="point">The point to encode.</param>
+    /// <returns>The 32-byte RFC 8032 encoding.</returns>
+    private static byte[] Encoded(in Ed25519Point point)
     {
-        var random = new Random(8032);
-        byte[] scalar = new byte[32];
+        byte[] encoded = new byte[Ed25519Point.EncodedSizeInBytes];
+        point.Encode(encoded);
 
-        for (int iteration = 0; iteration < 256; iteration++)
-        {
-            SetScalar(scalar, iteration, random);
-
-            byte[] expected = new byte[Ed25519Point.EncodedSizeInBytes];
-            byte[] actual = new byte[Ed25519Point.EncodedSizeInBytes];
-            Ed25519Point.ScalarMult(Ed25519Point.BasePoint, scalar).Encode(expected);
-            Ed25519Point.ScalarMultBase(scalar).Encode(actual);
-
-            CollectionAssert.AreEqual(expected, actual, $"iteration {iteration}");
-        }
+        return encoded;
     }
 
     /// <summary>
-    /// Verifies that <see cref="Ed25519Point.DoubleScalarMultBaseVartime" /> equals the reference
-    /// [a]B + [b]P computed with two separate scalar multiplications, over pseudo-random scalars and points.
+    /// Decodes a canonical point encoding given in hex, failing the test when it does not decode.
     /// </summary>
-    [TestMethod]
-    [TestCategory("Regression")]
-    public void DoubleScalarMultBaseVartime_ForVariousInputs_ShouldMatchSeparateScalarMults()
+    /// <param name="hex">The encoding, in hex.</param>
+    /// <returns>The decoded point.</returns>
+    private static Ed25519Point Decoded(string hex)
     {
-        var random = new Random(80322);
-        byte[] a = new byte[32];
-        byte[] b = new byte[32];
-        byte[] pointScalar = new byte[32];
+        Assert.IsTrue(Ed25519Point.TryDecode(Convert.FromHexString(hex), out Ed25519Point point), hex);
 
-        for (int iteration = 0; iteration < 128; iteration++)
+        return point;
+    }
+
+    /// <summary>
+    /// Returns the scalar <paramref name="value" /> as a 32-byte little-endian encoding, reduced modulo 2^256.
+    /// </summary>
+    /// <param name="value">The scalar's value.</param>
+    /// <returns>The 32-byte encoding.</returns>
+    private static byte[] ScalarBytes(BigInteger value)
+    {
+        byte[] bytes = new byte[32];
+        BigInteger reduced = value & ((BigInteger.One << 256) - 1);
+        _ = reduced.TryWriteBytes(bytes, out _, isUnsigned: true, isBigEndian: false);
+
+        return bytes;
+    }
+
+    /// <summary>
+    /// Returns the value of a little-endian scalar.
+    /// </summary>
+    /// <param name="scalar">The little-endian scalar.</param>
+    /// <returns>The scalar's value.</returns>
+    private static BigInteger ScalarValue(ReadOnlySpan<byte> scalar) =>
+        new(scalar, isUnsigned: true, isBigEndian: false);
+
+    /// <summary>
+    /// Yields triples of points to add: seeded multiples of the base point, each point of small order added to a
+    /// seeded multiple and a seeded multiple added to it, and the identity on either side.
+    /// </summary>
+    /// <param name="seed">The seed of the multiples.</param>
+    /// <returns>The triples, each named: the two points to add, and a third to add to their sum.</returns>
+    private static IEnumerable<(string Name, Ed25519Point Point, Ed25519Point Other, Ed25519Point Further)> PointTriples(int seed)
+    {
+        var random = new Random(seed);
+        byte[] scalar = new byte[32];
+
+        Ed25519Point Next()
         {
-            SetScalar(a, iteration, random);
-            SetScalar(b, iteration + 1, random);
-            random.NextBytes(pointScalar);
-
-            // Derive an arbitrary prime-order point P = [pointScalar]B as the variable point.
-            var point = Ed25519Point.ScalarMultBase(pointScalar);
-
-            byte[] expected = new byte[Ed25519Point.EncodedSizeInBytes];
-            byte[] actual = new byte[Ed25519Point.EncodedSizeInBytes];
-            Ed25519Point.ScalarMultBase(a).Add(Ed25519Point.ScalarMult(point, b)).Encode(expected);
-            Ed25519Point.DoubleScalarMultBaseVartime(a, b, point).Encode(actual);
-
-            CollectionAssert.AreEqual(expected, actual, $"iteration {iteration}");
+            random.NextBytes(scalar);
+            return Ed25519Point.ScalarMultBase(scalar);
         }
+
+        for (int iteration = 0; iteration < 32; iteration++)
+            yield return ($"seeded {iteration}", Next(), Next(), Next());
+
+        foreach (string encoding in s_smallOrderEncodings)
+        {
+            Ed25519Point smallOrder = Decoded(encoding);
+            yield return ($"{encoding} on the right", Next(), smallOrder, Next());
+            yield return ($"{encoding} on the left", smallOrder, Next(), Next());
+            yield return ($"{encoding} with itself", smallOrder, smallOrder, Next());
+        }
+
+        yield return ("identity on the right", Next(), Ed25519Point.Identity, Next());
+        yield return ("identity on the left", Ed25519Point.Identity, Next(), Next());
     }
 
     /// <summary>

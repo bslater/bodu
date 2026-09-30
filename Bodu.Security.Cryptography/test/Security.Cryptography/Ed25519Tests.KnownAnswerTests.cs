@@ -22,8 +22,8 @@ public sealed partial class Ed25519Tests
     private const string WycheproofResourceName = "Bodu.Security.Cryptography.Ed25519.Wycheproof.txt";
 
     /// <summary>
-    /// Yields the published RFC 8032 §7.1 pure-Ed25519 vectors (TEST 1–3 and TEST SHA(abc)) as KAT rows carrying
-    /// the private seed for deterministic signing checks.
+    /// Yields the published RFC 8032 §7.1 pure-Ed25519 vectors (TEST 1–3, TEST 1024 and TEST SHA(abc)) as KAT rows
+    /// carrying the private seed for deterministic signing checks.
     /// </summary>
     /// <returns>One row per vector.</returns>
     private static IEnumerable<object[]> Rfc8032KnownAnswers()
@@ -83,6 +83,30 @@ public sealed partial class Ed25519Tests
                 ExpectedValid = true,
                 PrivateKey = Convert.FromHexString("833fe62409237b9d62ec77587520911e9a759cec1d19755b7da901b96dca3d42"),
             },
+        };
+
+        yield return new object[] { Rfc8032Test1024() };
+    }
+
+    /// <summary>
+    /// Builds the RFC 8032 §7.1 TEST 1024 row, whose message is 1023 bytes long: its public key, message and
+    /// signature from the embedded Wycheproof corpus, which carries the test as tcId 83, and its private seed from the
+    /// RFC.
+    /// </summary>
+    /// <returns>The KAT row.</returns>
+    /// <exception cref="InvalidOperationException">The embedded KAT resource cannot be located.</exception>
+    private static SignatureKnownAnswer Rfc8032Test1024()
+    {
+        using Stream stream = typeof(Ed25519Tests).Assembly.GetManifestResourceStream(WycheproofResourceName)
+            ?? throw new InvalidOperationException($"Embedded resource '{WycheproofResourceName}' is not present in the test assembly.");
+
+        SignatureKnownAnswer vector = SignatureKnownAnswer.Read(stream)
+            .Single(row => row.Name.StartsWith("tcId 83 ", StringComparison.Ordinal));
+
+        return vector with
+        {
+            Name = "RFC 8032 TEST 1024 (1023 bytes)",
+            PrivateKey = Convert.FromHexString("f5e5767cf153319517630f226876b86c8160cc583bc013744c6bf255f5cc0ee5"),
         };
     }
 
