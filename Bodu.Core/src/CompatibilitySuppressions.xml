@@ -17,10 +17,11 @@
   differ from.
 
   The six ArrayExtensions.Reverse baseline suppressions that covered that rename against 0.7.0 are
-  gone: Core's baseline is pinned to 1.0.0, which never had the old names, and ApiCompat fails a
-  pack on a suppression it no longer needs. Should the baseline return to the shared 0.7.0
-  (bld/Versioning.props), for instance when the out-of-band override and its pinned baseline are
-  removed, CP0002 errors for those six overloads are that rename, and their suppressions come back.
+  gone: Core's baseline is pinned to its own last release, 1.0.1, which, like 1.0.0, never had the
+  old names, and ApiCompat fails a pack on a suppression it no longer needs. Should the baseline
+  return to the shared 0.7.0 (bld/Versioning.props), for instance when the out-of-band override and
+  its pinned baseline are removed, CP0002 errors for those six overloads are that rename, and their
+  suppressions come back.
 -->
 <Suppressions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Suppression>
