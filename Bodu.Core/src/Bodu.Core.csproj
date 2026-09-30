@@ -5,16 +5,15 @@
     <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
 
     <!--
-      Out of band: ships 1.0.1 ahead of the lock-step BoduBaseVersion (bld/RELEASING.md, "Out-of-band
-      single-package release"), and validates against its own last release, 1.0.0, rather than the
-      shared baseline; move the baseline up to 1.0.1 once nuget.org lists it. 1.0.1 adds no public
-      API: it carries the internal vector rotations that Bodu.Security.Cryptography 1.2.0 calls, so
-      the two ship together. When BoduBaseVersion reaches 1.0.1, remove both properties; the
-      release-manifest check fails until they are gone. The shared baseline then needs the
-      suppressions that CompatibilitySuppressions.xml describes.
+      Out of band: shipped 1.0.1 ahead of the lock-step BoduBaseVersion (bld/RELEASING.md, "Out-of-band
+      single-package release"), and validates against its own last release, 1.0.1, rather than the
+      shared baseline. 1.0.1 added no public API: it carries the internal vector rotations that
+      Bodu.Security.Cryptography 1.2.0 calls, so the two shipped together. When BoduBaseVersion
+      reaches 1.0.1, remove both properties; the release-manifest check fails until they are gone.
+      The shared baseline then needs the suppressions that CompatibilitySuppressions.xml describes.
     -->
     <BoduPackageVersionOverride>1.0.1</BoduPackageVersionOverride>
-    <PackageValidationBaselineVersion Condition="'$(BoduSignAssembly)' == 'true'">1.0.0</PackageValidationBaselineVersion>
+    <PackageValidationBaselineVersion Condition="'$(BoduSignAssembly)' == 'true'">1.0.1</PackageValidationBaselineVersion>
     <RootNamespace>Bodu</RootNamespace>
     <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
     <IsAotCompatible Condition="'$(BoduTfmIsNetCore)' == 'true'">true</IsAotCompatible>
