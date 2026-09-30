@@ -260,7 +260,7 @@ bash bld/docs/build-api-docs.sh serve           # browse docs/_site
 | `metadata` | `docfx metadata` once per framework, from `docs/docfx.metadata.json` (the shared API settings), into `docs/obj/api/metadata/<tfm>`. |
 | `merge` | `bld/docs/merge_framework_metadata.py` unions the frameworks by UID into `docs/api` — the newest framework supplies an API's content, an API only an older framework has is kept — and annotates every item with `frameworks`, every type with `package`, and every namespace with `packages`. It compares every API present in more than one framework (declaration, and the compiler-written XML documentation) and **fails on a difference** not listed, with a reason, in `bld/docs-checks/framework-divergence-allowlist.txt`. The report lands in `docs/obj/api/divergence-report.md` and the CI job summary. |
 | `build` | `docfx build docs/docfx.json` with the `default` + `modern` + `templates/bodu` templates. |
-| `validate` | `bld/docs/validate_api_site.py` checks the merged metadata and the rendered pages (Applies to, package facts, source links, navigation, landing pages, overlay version). |
+| `validate` | `bld/docs/validate_api_site.py` checks the merged metadata and the rendered pages (Applies to, package facts, source links, navigation, landing pages, overlay version), that every link in the rendered site reaches a file and anchor the site has, and that every href in an XML documentation comment anywhere in the codebase that leads into the site (relative, as the API pages render it, or an absolute URL of the published site) does too. DocFX checks neither the links in an `apidoc` overwrite file nor XML-doc hrefs, so link an overview to another namespace with `xref:`, never by its `.md` file. |
 
 Things to know when changing it:
 

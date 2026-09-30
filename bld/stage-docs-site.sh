@@ -20,8 +20,9 @@
 #
 # A release therefore lands twice, from one build: at the root and under its series. Keeping the
 # root a full copy rather than a redirect is deliberate — a redirect only forwards the home page,
-# and the links that matter are deep ones (api/Bodu.Core.html) that a reader or a README already
-# holds. Those must not start 404ing the day versioning arrives.
+# and the links that matter are deep ones (api/Bodu.Collections.Generic.CircularBuffer-1.html, or
+# a member's anchor on its type's page) that a reader or a README already holds. Those must not
+# start 404ing the day versioning arrives.
 #
 # Writing a slot replaces that slot alone: publishing dev never touches a release, and publishing
 # a release never touches dev or an earlier series.
