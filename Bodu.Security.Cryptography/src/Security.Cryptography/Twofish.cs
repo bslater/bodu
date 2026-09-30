@@ -77,8 +77,8 @@ namespace Bodu.Security.Cryptography;
 /// </example>
 /// <seealso href="https://www.schneier.com/wp-content/uploads/2016/02/paper-twofish-paper.pdf">Twofish: A 128-Bit Block
 /// Cipher (Schneier, Kelsey, Whiting, Wagner, Hall, Ferguson, 1998)</seealso>
-/// <seealso href="../guides/cryptography/twofish.html">Using Twofish (guide with full encrypt / decrypt examples)
-/// </seealso> <seealso href="../guides/cryptography/encryption-basics.html">Encryption basics</seealso>
+/// <seealso href="../guides/cryptography/aes-family.html#twofish">Using Twofish</seealso>
+/// <seealso href="../guides/cryptography/encryption-basics.html">Encryption basics</seealso>
 /// <seealso href="../guides/cryptography/cipher-modes.html">Cipher block modes</seealso>
 /// <seealso href="../guides/cryptography/padding.html">Padding</seealso>
 public sealed class Twofish

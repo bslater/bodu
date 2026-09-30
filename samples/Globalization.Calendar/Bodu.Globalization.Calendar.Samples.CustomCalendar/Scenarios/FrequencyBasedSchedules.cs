@@ -17,7 +17,7 @@ namespace Bodu.Globalization.Calendar.Samples.CustomCalendar.Scenarios;
 /// yields many occurrences within a window instead of a single date per year. Covers the four recurrence kinds —
 /// daily interval, weekly (multi-weekday), monthly day-of-month, and monthly ordinal-weekday — authored fluently and
 /// resolved over a date range. For the full catalogue and semantics see the
-/// <see href="../../docs/guides/calendar/strategy-reference.html">Notable-date rule strategies</see> guide.
+/// <see href="https://bslater.github.io/bodu/guides/calendar/strategy-reference.html">Notable-date rule strategies</see> guide.
 /// </summary>
 public static class FrequencyBasedSchedules
 {
