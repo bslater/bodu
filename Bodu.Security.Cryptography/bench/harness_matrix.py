@@ -125,7 +125,7 @@ def span(values):
     low, high = min(values), max(values)
     digits = 0 if high >= 100 else 1 if high >= 10 else 2
     text = f'{low:,.{digits}f}'
-    return text if low == high else f'{text}–{high:,.{digits}f}'
+    return text if low == high else f'{text}-{high:,.{digits}f}'
 
 
 def speedup(vector, other, unit):
@@ -166,10 +166,10 @@ def summarize(out):
             print('| Case | Unit | vector | scalar | 1.0.0 | vector vs scalar | vector vs 1.0.0 |')
             print('|---|---|---|---|---|---|---|')
             for case, by_configuration in measured.items():
-                cells = [span(by_configuration[c]) if c in by_configuration else '—' for c in CONFIGURATIONS]
+                cells = [span(by_configuration[c]) if c in by_configuration else '-' for c in CONFIGURATIONS]
                 versus = [
                     speedup(by_configuration['vector'], by_configuration[c], units[case])
-                    if 'vector' in by_configuration and c in by_configuration else '—'
+                    if 'vector' in by_configuration and c in by_configuration else '-'
                     for c in ('scalar', '1.0.0')
                 ]
                 print(f'| {case} | {units[case]} | ' + ' | '.join(cells + versus) + ' |')
