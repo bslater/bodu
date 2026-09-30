@@ -30,9 +30,9 @@ internal static partial class Blake3Core
         Ssse3,
 
         /// <summary>
-        /// The kernels on ARM64: up to four inputs at once over AdvSimd, and the scalar kernel for a lone input, which
-        /// it compressed faster than the 128-bit kernel on the ARM64 processors measured. A single compression runs the
-        /// 128-bit kernel only where a caller names this kind.
+        /// The kernels on ARM64: up to four inputs at once over AdvSimd, and for a lone input the scalar kernel, which
+        /// compressed a block faster than the 128-bit kernel on the ARM64 processors measured. A single compression
+        /// runs the 128-bit kernel only where a caller names this kind.
         /// </summary>
         AdvSimd,
 

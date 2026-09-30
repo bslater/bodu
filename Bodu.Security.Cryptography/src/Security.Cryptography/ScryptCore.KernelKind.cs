@@ -31,7 +31,7 @@ internal static partial class ScryptCore
 
         /// <summary>
         /// The 128-bit kernel on ARM64, over AdvSimd, which runs only where a caller names it: dispatch selects the
-        /// scalar kernel, which ran faster on the ARM64 processors measured.
+        /// scalar kernel, which ran faster on a Neoverse N2 under .NET 8 and .NET 10.
         /// </summary>
         AdvSimd,
     }

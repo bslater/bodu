@@ -33,8 +33,8 @@ public sealed partial class ScryptCoreTests
     }
 
     /// <summary>
-    /// Verifies that dispatch selects the scalar kernel on ARM64, where it ran faster than the AdvSimd kernel on the
-    /// processors measured; the AdvSimd kernel runs only where a caller names it.
+    /// Verifies that dispatch selects the scalar kernel on ARM64, where it ran faster than the AdvSimd kernel on a
+    /// Neoverse N2; the AdvSimd kernel runs only where a caller names it.
     /// </summary>
     [TestMethod]
     public void SelectKernel_WhenAdvSimdIsAvailable_ShouldReturnScalar()

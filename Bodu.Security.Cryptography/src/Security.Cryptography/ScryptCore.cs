@@ -217,8 +217,8 @@ internal static partial class ScryptCore
     /// kernel.
     /// </para>
     /// <para>
-    /// The AdvSimd kernel waits on <see cref="SimdCapabilities.AdvSimdSingleState" />, which is closed: on the ARM64
-    /// processors measured, the scalar kernel ran faster.
+    /// The AdvSimd kernel waits on <see cref="SimdCapabilities.AdvSimdSingleState" />, which is closed: the scalar
+    /// kernel ran faster on a Neoverse N2, and on an Apple M1 faster under .NET 10 and as fast under .NET 8.
     /// </para>
     /// </remarks>
     internal static KernelKind SelectKernel()
