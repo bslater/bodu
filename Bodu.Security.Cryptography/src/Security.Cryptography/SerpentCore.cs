@@ -14,7 +14,7 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Implements the Serpent round function for <see cref="Serpent128Cipher" /> and the wide-block Serpent variants: the
-/// S-boxes as Boolean circuits, the linear transform, and the 32 rounds of Serpent-128.
+/// S-boxes as Boolean circuits, the linear transform, the 32 rounds of Serpent-128, and the rounds of the wide blocks.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -242,8 +242,8 @@ internal static partial class SerpentCore
     };
 
     /// <summary>
-    /// Applies the S-box with the specified index to four words: the form the key schedule and the wide-block variants
-    /// use, whose S-box follows from a round number.
+    /// Applies the S-box with the specified index to four words: the form the key schedules use, whose S-box follows
+    /// from a round-key number.
     /// </summary>
     /// <param name="index">The S-box index, 0 to 7.</param>
     /// <param name="x0">The first word, replaced by the first output word.</param>
@@ -272,7 +272,7 @@ internal static partial class SerpentCore
     }
 
     /// <summary>
-    /// Applies the inverse of the S-box with the specified index to four words: the form the wide-block variants use.
+    /// Applies the inverse of the S-box with the specified index to four words, choosing the circuit by the index.
     /// </summary>
     /// <param name="index">The index of the S-box whose inverse applies, 0 to 7.</param>
     /// <param name="x0">The first word, replaced by the first output word.</param>

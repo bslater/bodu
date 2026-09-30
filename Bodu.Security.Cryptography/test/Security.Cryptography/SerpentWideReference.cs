@@ -36,7 +36,8 @@ internal sealed class SerpentWideReference
     private readonly uint[] _tweakSchedule;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="SerpentWideReference" /> class, expanding a key and a tweak.
+    /// Initializes a new instance of the <see cref="SerpentWideReference" /> class, expanding a key and a tweak for the
+    /// variant whose block is as long as the key: Serpent-256, 512 or 1024.
     /// </summary>
     /// <param name="key">The key: 32, 64 or 128 bytes, the length of a block.</param>
     /// <param name="tweak">The 16-byte tweak.</param>
@@ -44,17 +45,35 @@ internal sealed class SerpentWideReference
     /// <paramref name="key" /> is not 32, 64 or 128 bytes, or <paramref name="tweak" /> is not 16 bytes.
     /// </exception>
     internal SerpentWideReference(ReadOnlySpan<byte> key, ReadOnlySpan<byte> tweak)
-    {
-        if (tweak.Length != 16) throw new ArgumentException("The tweak must be 16 bytes.", nameof(tweak));
-
-        _words = key.Length / 4;
-        _rounds = key.Length switch
+        : this(key, tweak, key.Length switch
         {
             32 => 48,
             64 => 64,
             128 => 80,
             _ => throw new ArgumentException("The key must be 32, 64 or 128 bytes.", nameof(key)),
-        };
+        })
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="SerpentWideReference" /> class, expanding a key and a tweak for a
+    /// block as long as the key and the specified number of rounds.
+    /// </summary>
+    /// <param name="key">The key: 32, 64 or 128 bytes, the length of a block.</param>
+    /// <param name="tweak">The 16-byte tweak.</param>
+    /// <param name="rounds">The number of rounds, a positive multiple of 4.</param>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="key" /> is not 32, 64 or 128 bytes, or <paramref name="tweak" /> is not 16 bytes.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="rounds" /> is not a positive multiple of 4.</exception>
+    internal SerpentWideReference(ReadOnlySpan<byte> key, ReadOnlySpan<byte> tweak, int rounds)
+    {
+        if (key.Length is not (32 or 64 or 128)) throw new ArgumentException("The key must be 32, 64 or 128 bytes.", nameof(key));
+        if (tweak.Length != 16) throw new ArgumentException("The tweak must be 16 bytes.", nameof(tweak));
+        if (rounds <= 0 || rounds % 4 != 0) throw new ArgumentOutOfRangeException(nameof(rounds));
+
+        _words = key.Length / 4;
+        _rounds = rounds;
 
         _tweakSchedule = new uint[5];
         for (int i = 0; i < 4; i++)
@@ -92,6 +111,35 @@ internal sealed class SerpentWideReference
                 _roundKeys[destination + 3] = x3;
             }
         }
+    }
+
+    /// <summary>
+    /// Gets the number of 32-bit words in a block.
+    /// </summary>
+    internal int Words => _words;
+
+    /// <summary>
+    /// Gets the number of rounds.
+    /// </summary>
+    internal int Rounds => _rounds;
+
+    /// <summary>
+    /// Returns the round keys with the tweak folded in, the form <see cref="SerpentCore" />'s wide-block rounds take:
+    /// the material injected after round <c>4j − 1</c> added to the last three words of round key <c>4j</c>.
+    /// </summary>
+    /// <returns>A new array holding the round keys.</returns>
+    internal uint[] FoldedRoundKeys()
+    {
+        uint[] keys = (uint[])_roundKeys.Clone();
+        for (int injection = 1; injection < _rounds / 4; injection++)
+        {
+            int start = 4 * injection * _words;
+            keys[start + _words - 3] ^= _tweakSchedule[injection % 5];
+            keys[start + _words - 2] ^= _tweakSchedule[(injection + 1) % 5];
+            keys[start + _words - 1] ^= (uint)injection;
+        }
+
+        return keys;
     }
 
     /// <summary>
