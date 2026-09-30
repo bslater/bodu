@@ -248,9 +248,10 @@ written down first and would have produced a window of failing runs.
 ## Next waves
 
 1. Append the wave's package ids to `bld/release-manifest.txt`.
-2. Bump `BoduBaseVersion` (e.g. the coordinated Calendar wave is slated
-   `1.2.0`; `Bodu.Security.Cryptography` ships `1.1.0` out of band, so the
-   lock-step stream has to move past it).
+2. Bump `BoduBaseVersion` past every out-of-band version.
+   `Bodu.Security.Cryptography` ships `1.2.0` and `Bodu.Core` `1.0.1` out of
+   band, so the lock-step stream has to move past `1.2.0`: the coordinated
+   Calendar wave, slated `1.2.0`, needs `1.3.0` at least.
 3. Tag `v<new-version>` and push. Existing packages re-publish at the new
    lock-step version; the new wave publishes for the first time.
 4. After publish, bump `BoduPackageValidationBaseline` to the new version.
@@ -271,7 +272,10 @@ worth releasing on their own, whether a fix or a feature release.
    workflow*, with `packages` set to the package id. Run it first with
    `publish` unchecked and inspect `nuget-packages-publish`, then again with
    `publish` checked. **Do not push a `v*` tag**: a tag releases the whole
-   manifest at `BoduBaseVersion`.
+   manifest at `BoduBaseVersion`. A release that needs another Bodu package's
+   unreleased changes takes that package out of band with it, and names both
+   ids in `packages`: `Bodu.Security.Cryptography` 1.2.0 calls internals that
+   only `Bodu.Core` 1.0.1 carries, and its package depends on that version.
 4. Once nuget.org lists the package, move the pinned
    `PackageValidationBaselineVersion` up to the version just published. Until
    then the strict comparison runs against the release before it, so removing
