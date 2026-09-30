@@ -15,8 +15,8 @@ name: Cryptography benchmarks
 # with the library's DisableSimd switch set (its scalar paths), and 1.0.0. harness_matrix.py describes the suites and
 # prints the comparison into the job summary.
 #
-# It runs on manual dispatch, and on a pull request that changes this file, so a change to it is exercised before
-# it merges.
+# It runs on manual dispatch, and on a pull request that changes this file or harness_matrix.py, the script it runs,
+# so a change to either is exercised before it merges.
 
 on:
   workflow_dispatch:
@@ -27,6 +27,7 @@ on:
   pull_request:
     paths:
       - '.github/workflows/crypto-benchmarks.yml'
+      - 'Bodu.Security.Cryptography/bench/harness_matrix.py'
 
 permissions:
   contents: read
